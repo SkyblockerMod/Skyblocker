@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import java.awt.Color;
+
+import de.hysky.skyblocker.utils.ChildScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -15,22 +17,20 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 
-public class DungeonMapConfigScreen extends Screen {
+public class DungeonMapConfigScreen extends ChildScreen {
 
 	private int mapX = SkyblockerConfigManager.get().dungeons.dungeonMap.mapX;
 	private int mapY = SkyblockerConfigManager.get().dungeons.dungeonMap.mapY;
 	private int scoreX = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 	private int scoreY = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
 	private static final Identifier EXAMPLE_MAP = SkyblockerMod.id("textures/gui/example_dungeon_map.png");
-	private final @Nullable Screen parent;
 
 	protected DungeonMapConfigScreen() {
 		this(null);
 	}
 
 	public DungeonMapConfigScreen(@Nullable Screen parent) {
-		super(Component.literal("Dungeon Map Config"));
-		this.parent = parent;
+		super(Component.literal("Dungeon Map Config"), parent);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class DungeonMapConfigScreen extends Screen {
 			config.dungeons.dungeonScore.scoreY = scoreY;
 		});
 
-		this.minecraft.setScreen(parent);
+		reopenParent();
 	}
 
 	public void extractHUDMap(GuiGraphicsExtractor graphics, int x, int y) {

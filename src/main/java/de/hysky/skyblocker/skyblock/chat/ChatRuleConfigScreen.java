@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -54,7 +55,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ChatRuleConfigScreen extends Screen {
+public class ChatRuleConfigScreen extends ChildScreen {
 	private static final int COLUMN_WIDTH = 105;
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
@@ -80,25 +81,22 @@ public class ChatRuleConfigScreen extends Screen {
 	private ChatRule.@Nullable ToastMessage previousToastMessage = null;
 	private ChatRule.@Nullable AnnouncementMessage previousAnnouncementMessage = null;
 
-	private final Screen parent;
-
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 	private final GridLayout content = new GridLayout().columnSpacing(GRID_SPACING);
 	@SuppressWarnings("rawtypes")
 	private CycleButton soundButton;
 
 	public ChatRuleConfigScreen(Screen parent, int chatRuleIndex) {
-		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
+		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"), parent);
 		this.chatRuleIndex = chatRuleIndex;
 		this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
-		this.parent = parent;
 	}
 
 	@Override
 	protected void init() {
 		Objects.requireNonNull(minecraft);
 		layout.addToHeader(new StringWidget(title, font));
-		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
+		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> reopenParent()).build());
 		layout.addToContents(new ContentContainer());
 
 		content.defaultCellSetting().alignVerticallyMiddle().alignHorizontallyCenter().paddingTop(GRID_SPACING); // Have to separate them due to the toggleable layouts, did not think about that when I made them
@@ -341,7 +339,7 @@ public class ChatRuleConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		save();
-		minecraft.setScreen(parent);
+		reopenParent();
 	}
 
 	private void save() {

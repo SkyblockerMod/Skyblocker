@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
@@ -21,15 +22,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class WaypointsOptionScreen extends Screen {
+public class WaypointsOptionScreen extends ChildScreen {
 	private static final Supplier<UIAndVisualsConfig.Waypoints> WAYPOINTS = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints;
 
-	private final Screen parent;
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 
 	protected WaypointsOptionScreen(Screen parent) {
-		super(Component.translatable("skyblocker.waypoints.waypointsOptions"));
-		this.parent = parent;
+		super(Component.translatable("skyblocker.waypoints.waypointsOptions"), parent);
 	}
 
 	@Override
@@ -97,7 +96,7 @@ public class WaypointsOptionScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(parent);
 		SkyblockerConfigManager.update(_ -> {});
+		reopenParent();
 	}
 }

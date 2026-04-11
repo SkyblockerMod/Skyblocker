@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
+import de.hysky.skyblocker.utils.ChildScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
@@ -10,15 +11,12 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
-public class SpeedPresetsScreen extends Screen {
-	protected final Screen parent;
-
+public class SpeedPresetsScreen extends ChildScreen {
 	protected @Nullable HeaderAndFooterLayout layout;
 	protected @Nullable SpeedPresetListWidget list;
 
 	public SpeedPresetsScreen(Screen parent) {
-		super(Component.translatable("skyblocker.config.general.speedPresets.config"));
-		this.parent = parent;
+		super(Component.translatable("skyblocker.config.general.speedPresets.config"), parent);
 	}
 
 	@Override
@@ -37,7 +35,7 @@ public class SpeedPresetsScreen extends Screen {
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE,
 						_ -> {
 							this.list.save();
-							this.minecraft.setScreen(parent);
+							reopenParent();
 						})
 				.width(Math.max(font.width(CommonComponents.GUI_DONE) + 8, 100))
 				.build(), s -> s.paddingRight(2));
@@ -58,7 +56,7 @@ public class SpeedPresetsScreen extends Screen {
 		if (this.list != null && this.list.hasBeenChanged()) {
 			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
-					this.minecraft.setScreen(parent);
+					reopenParent();
 				} else {
 					this.minecraft.setScreen(this);
 				}
@@ -66,6 +64,6 @@ public class SpeedPresetsScreen extends Screen {
 					.withStyle(ChatFormatting.RED), CommonComponents.GUI_CANCEL));
 			return;
 		}
-		this.minecraft.setScreen(parent);
+		reopenParent();
 	}
 }

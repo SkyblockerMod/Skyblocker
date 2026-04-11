@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.screens.eventnotifications;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.config.DurationController;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -27,17 +28,15 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
-public class EventConfigTimesEditScreen extends Screen {
+public class EventConfigTimesEditScreen extends ChildScreen {
 
 	private final EventNotificationsConfig.EventConfig eventConfig;
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
-	private final Screen parent;
 	private EntryList list;
 
 	public EventConfigTimesEditScreen(Screen parent, String name, EventNotificationsConfig.EventConfig eventConfig) {
-		super(Component.translatable("skyblocker.config.eventNotifications.screen.title", name));
+		super(Component.translatable("skyblocker.config.eventNotifications.screen.title", name), parent);
 		this.eventConfig = eventConfig;
-		this.parent = parent;
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class EventConfigTimesEditScreen extends Screen {
 
 		LinearLayout footerLayout = LinearLayout.horizontal().spacing(2);
 		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.eventNotifications.screen.addReminder"), _ -> list.addEntry(new Entry(5 * 60))).build());
-		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> reopenParent()).build());
 		layout.addToFooter(footerLayout);
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
@@ -69,7 +68,7 @@ public class EventConfigTimesEditScreen extends Screen {
 				.mapToInt(b -> b.seconds)
 				.sorted()
 				.collect(IntArrayList::new, IntArrayList::add, IntArrayList::addAll));
-		minecraft.setScreen(parent);
+		reopenParent();
 	}
 
 	private class EntryList extends ContainerObjectSelectionList<EventConfigTimesEditScreen.Entry> {

@@ -6,10 +6,11 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 
-	public WaypointsScreen(Screen parent) {
+	public WaypointsScreen(@Nullable Screen parent) {
 		super(Component.translatable("skyblocker.waypoints.config"), parent, Waypoints.waypointsDeepCopy());
 	}
 
@@ -20,10 +21,10 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.share"), _ -> minecraft.setScreen(new WaypointsShareScreen(this, waypoints))).build());
 		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.newGroup"), _ -> waypointsListWidget.addWaypointGroupAfterSelected()).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> reopenParent()).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 			saveWaypoints();
-			onClose();
+			reopenParent();
 		}).build());
 		layout.addToFooter(gridWidget);
 		layout.setFooterHeight(64);
@@ -47,7 +48,7 @@ public class WaypointsScreen extends AbstractWaypointsScreen<Screen> {
 					CommonComponents.GUI_CANCEL
 			));
 		} else {
-			minecraft.setScreen(parent);
+			reopenParent();
 		}
 	}
 }
