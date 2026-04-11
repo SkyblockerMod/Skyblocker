@@ -53,10 +53,10 @@ public class ChatRule {
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
 			Codec.BOOL.fieldOf("partialMatch").forGetter(ChatRule::getPartialMatch),
-			// Optional w/ default because this field wasn't always present.
-			Codec.BOOL.optionalFieldOf("includeFormatting", false).forGetter(ChatRule::getIncludeFormatting),
 			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
 			Codec.BOOL.fieldOf("ignoreCase").forGetter(ChatRule::getIgnoreCase),
+			// Optional w/ default because this field wasn't always present.
+			Codec.BOOL.optionalFieldOf("includeFormatting", false).forGetter(ChatRule::getIncludeFormatting),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
 			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
 			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
@@ -65,8 +65,8 @@ public class ChatRule {
 			AnnouncementMessage.CODEC.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
 			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
 			SoundEvent.DIRECT_CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
-	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, aBoolean5, s2, locations, aBoolean6, s3, s4, s5, toastMessage1, soundEvent) ->
-			new ChatRule(s, aBoolean, aBoolean2, aBoolean3, aBoolean4, aBoolean5, s2, locations, aBoolean6, s3.orElse(null), s4.orElse(null), s5.orElse(null), toastMessage1.orElse(null), soundEvent.orElse(null))
+	).apply(instance, (name, enabled, isPartialMatch, isRegex, isIgnoreCase, includeFormatting, filter, validLocations, hideMessage, chatMessage, actionBarMessage, announcementMessage, toastMessage, customSound) ->
+			new ChatRule(name, enabled, isPartialMatch, isRegex, isIgnoreCase, includeFormatting, filter, validLocations, hideMessage, chatMessage.orElse(null), actionBarMessage.orElse(null), announcementMessage.orElse(null), toastMessage.orElse(null), customSound.orElse(null))
 	));
 
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
