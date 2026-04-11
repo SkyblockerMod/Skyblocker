@@ -29,8 +29,8 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 	private static final int BORDER_COLOR = 0xFF6C7086;
 	private static final int INNER_MARGIN = 2;
 
-	public CorpseList(Minecraft client, int width, int height, int y, int entryHeight, List<CorpseLoot> lootList) {
-		super(client, width, height, y, entryHeight);
+	public CorpseList(Minecraft client, int width, int height, int entryHeight, List<CorpseLoot> lootList) {
+		super(client, width, height, 0, entryHeight);
 		if (lootList.isEmpty()) {
 			addEmptyEntry();
 			addEmptyEntry();
