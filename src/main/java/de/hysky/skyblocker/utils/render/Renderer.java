@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.MappableRingBuffer;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import java.util.function.Supplier;
+
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
@@ -33,6 +31,7 @@ import com.mojang.blaze3d.vertex.MeshData.DrawState;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.IndexType;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
@@ -40,6 +39,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.MappableRingBuffer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 /**
  * This class automatically handles batching, buffering, and drawing of objects within the world.
@@ -217,17 +220,17 @@ public class Renderer {
 			int vertexBufferSize = entry.getIntValue();
 			MappableRingBuffer vertexBuffer = VERTEX_BUFFERS.get(format);
 
-			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
+			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, () -> "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
 		}
 	}
 
-	private static MappableRingBuffer initOrResizeBuffer(MappableRingBuffer buffer, String name, int neededSize, int usageType) {
+	private static MappableRingBuffer initOrResizeBuffer(MappableRingBuffer buffer, Supplier<String> name, int neededSize, int usageType) {
 		if (buffer == null || buffer.size() < neededSize) {
 			if (buffer != null) {
 				buffer.close();
 			}
 
-			return new MappableRingBuffer(() -> name, GpuBuffer.USAGE_MAP_WRITE | usageType, neededSize);
+			return new MappableRingBuffer(name, GpuBuffer.USAGE_MAP_WRITE | usageType, neededSize);
 		}
 
 		return buffer;
