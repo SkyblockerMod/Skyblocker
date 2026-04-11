@@ -36,16 +36,19 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.StringDecomposer;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +63,10 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
+	// Link to helpful learning & testing website for regex w/ multilingual support.
+	private static final Component REGEX_LINK = Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink").withStyle(
+		style -> style.withUnderlined(true).withClickEvent(new ClickEvent.OpenUrl(URI.create("https://regex101.com/")))
+	);
 
 	private final Map<@Nullable SoundEvent, Component> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
 		map.put(SoundEvents.NOTE_BLOCK_PLING.value(), Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").withStyle(ChatFormatting.YELLOW));
@@ -116,6 +123,7 @@ public class ChatRuleConfigScreen extends Screen {
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3);
 		EditBox filterInput = contentAdder.addChild(new EditBox(font, getWidth(3), 20, Component.empty()), 3);
 		filterInput.setMaxLength(1024);
+		filterInput.addFormatter(createRenderTextProvider(filterInput::getValue, true));
 		filterInput.setValue(chatRule.getFilter());
 		filterInput.setResponder(chatRule::setFilter);
 		filterInput.setHint(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
@@ -123,36 +131,44 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow1.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), minecraft.font)
-				.selected(chatRule.getRegex())
-				.onValueChange((_, value) -> chatRule.setRegex(value))
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.maxWidth(getWidth(1.5f))
-				.build());
+		filtersRow1.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex", REGEX_LINK),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip"),
+				1.5f,
+				HorizontalAlignment.CENTER,
+				chatRule::setRegex,
+				chatRule.getRegex()
+		));
 		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
 						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
 		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"), minecraft.font)
-				.selected(chatRule.getIncludeFormatting())
-				.onValueChange((_, value) -> chatRule.setIncludeFormatting(value))
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip")))
-				.maxWidth(getWidth(1f))
-				.build());
-		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), minecraft.font)
-				.selected(chatRule.getPartialMatch())
-				.onValueChange((_, value) -> chatRule.setPartialMatch(value))
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.maxWidth(getWidth(1f))
-				.build());
-		filtersRow2.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), minecraft.font)
-				.selected(chatRule.getIgnoreCase())
-				.onValueChange((_, value) -> chatRule.setIgnoreCase(value))
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.maxWidth(getWidth(1f))
-				.build());
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip"),
+				1.25f,
+				HorizontalAlignment.LEFT,
+				chatRule::setIncludeFormatting,
+				chatRule.getIncludeFormatting()
+		));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip"),
+				0.75f,
+				HorizontalAlignment.CENTER,
+				chatRule::setPartialMatch,
+				chatRule.getPartialMatch()
+		));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip"),
+				1f,
+				HorizontalAlignment.RIGHT,
+				chatRule::setIgnoreCase,
+				chatRule.getIgnoreCase()
+		));
 
 		// ==== Outputs
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3, content.newCellSettings().paddingTop(4 + GRID_SPACING));
@@ -160,15 +176,17 @@ public class ChatRuleConfigScreen extends Screen {
 
 		LinearLayout buttons = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 
-		buttons.addChild(Checkbox.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), minecraft.font)
-				.selected(chatRule.getHideMessage())
-				.onValueChange((_, value) -> {
+		buttons.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip"),
+				1.5f,
+				HorizontalAlignment.LEFT,
+				value -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
-				})
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.maxWidth(getWidth(1.5f))
-				.build());
+				},
+				chatRule.getHideMessage()
+		));
 
 		// Sound
 		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.
@@ -310,12 +328,40 @@ public class ChatRuleConfigScreen extends Screen {
 		recreateLayout();
 	}
 
+	private enum HorizontalAlignment {
+		LEFT,
+		CENTER,
+		RIGHT
+	}
+
+	private FrameLayout buildCheckbox(Component text, Component tooltip, float width, HorizontalAlignment align, Consumer<Boolean> setter, boolean selected) {
+		FrameLayout frame = new FrameLayout().setMinWidth(getWidth(width));
+
+		switch (align) {
+			case LEFT -> frame.defaultChildLayoutSetting().alignHorizontallyLeft();
+			case CENTER -> frame.defaultChildLayoutSetting().alignHorizontallyCenter();
+			case RIGHT -> frame.defaultChildLayoutSetting().alignHorizontallyRight();
+		}
+
+		frame.addChild(Checkbox.builder(text, font)
+			.selected(selected)
+			.onValueChange((_, value) -> setter.accept(value))
+			.tooltip(Tooltip.create(tooltip))
+			.maxWidth(getWidth(width))
+			.build());
+
+		return frame;
+	}
+
 	private static String getItemString(ItemStack stack) {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
-	private static EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier, boolean conditional) {
 		return (s, start) -> visitor -> {
+			if (conditional && (!chatRule.getIncludeFormatting() || chatRule.getRegex())) {
+				return StringDecomposer.iterate(fullTextSupplier.get(), Style.EMPTY, visitor);
+			}
 			String fullText = fullTextSupplier.get();
 			char prefix = fullText.contains("§") ? '§' : '&';
 			Style style = Style.EMPTY;
@@ -335,6 +381,10 @@ public class ChatRuleConfigScreen extends Screen {
 			}
 			return true;
 		};
+	}
+
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
+		return createRenderTextProvider(fullTextSupplier, false);
 	}
 
 	private static int getWidth(float occupiedColumns) {
