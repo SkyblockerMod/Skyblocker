@@ -53,7 +53,8 @@ public class ChatRule {
 			Codec.STRING.fieldOf("name").forGetter(ChatRule::getName),
 			Codec.BOOL.fieldOf("enabled").forGetter(ChatRule::getEnabled),
 			Codec.BOOL.fieldOf("partialMatch").forGetter(ChatRule::getPartialMatch),
-			Codec.BOOL.fieldOf("includeFormatting").forGetter(ChatRule::getIncludeFormatting),
+			// Optional w/ default because this field wasn't always present.
+			Codec.BOOL.optionalFieldOf("includeFormatting", false).forGetter(ChatRule::getIncludeFormatting),
 			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
 			Codec.BOOL.fieldOf("ignoreCase").forGetter(ChatRule::getIgnoreCase),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),

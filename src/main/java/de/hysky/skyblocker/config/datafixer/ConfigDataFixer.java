@@ -68,8 +68,6 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix8ItemList(schema9, true));
 		Schema schema10 = builder.addSchema(10, Schema::new);
 		builder.addFixer(new ConfigFix9EventNotifications(schema10, true));
-		Schema schema11 = builder.addSchema(11, Schema::new);
-		builder.addFixer(new ConfigFix10ChatRulesFormatting(schema11, true));
 
 		return dataFixer = builder.build().fixer();
 	}
