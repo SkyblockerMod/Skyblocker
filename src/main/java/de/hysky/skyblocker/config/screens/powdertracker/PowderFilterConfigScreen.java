@@ -4,6 +4,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.ChildScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -15,14 +17,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-public class PowderFilterConfigScreen extends Screen {
-	private final @Nullable Screen parent;
+public class PowderFilterConfigScreen extends ChildScreen {
 	private final List<String> filters;
 	private final List<String> allItems;
 
 	public PowderFilterConfigScreen(@Nullable Screen parent, List<String> allItems) {
-		super(Component.nullToEmpty("Powder Mining Tracker Filter Config"));
-		this.parent = parent;
+		super(Component.nullToEmpty("Powder Mining Tracker Filter Config"), parent);
 		this.filters = new ArrayList<>(SkyblockerConfigManager.get().mining.crystalHollows.powderTrackerFilter); // Copy the list so we can undo changes when necessary
 		this.allItems = allItems;
 	}
@@ -49,7 +49,7 @@ public class PowderFilterConfigScreen extends Screen {
 		}).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 								saveFilters();
-								onClose();
+								reopenParent();
 							})
 							.width((Button.DEFAULT_WIDTH * 2) + 10)
 							.build(), 2);
@@ -61,10 +61,5 @@ public class PowderFilterConfigScreen extends Screen {
 	public void saveFilters() {
 		SkyblockerConfigManager.update(config -> config.mining.crystalHollows.powderTrackerFilter = filters);
 		PowderMiningTracker.INSTANCE.recalculateAll();
-	}
-
-	@Override
-	public void onClose() {
-		minecraft.setScreen(parent);
 	}
 }

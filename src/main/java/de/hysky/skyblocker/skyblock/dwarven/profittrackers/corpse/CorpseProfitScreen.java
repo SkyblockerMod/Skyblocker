@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
+import de.hysky.skyblocker.utils.ChildScreen;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import java.text.NumberFormat;
@@ -16,23 +17,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-public class CorpseProfitScreen extends Screen {
+public class CorpseProfitScreen extends ChildScreen {
 	private static final int ENTRY_HEIGHT = 11;
 
-	private final Screen parent;
 	private final List<CorpseLoot> rewardsList = CorpseProfitTracker.getCurrentProfileRewards();
 	private @Nullable CorpseList corpseList = null;
 	private @Nullable RewardList rewardList = null;
 	private final DoubleBooleanPair totalProfit = calculateTotalProfit(rewardsList);
 	private boolean summaryView;
 
-	public CorpseProfitScreen(Screen parent) {
+	public CorpseProfitScreen(@Nullable Screen parent) {
 		this(parent, true);
 	}
 
-	public CorpseProfitScreen(Screen parent, boolean summaryView) {
-		super(Component.translatable("skyblocker.corpseTracker.screenTitle"));
-		this.parent = parent;
+	public CorpseProfitScreen(@Nullable Screen parent, boolean summaryView) {
+		super(Component.translatable("skyblocker.corpseTracker.screenTitle"), parent);
 		this.summaryView = summaryView;
 	}
 
@@ -58,7 +57,7 @@ public class CorpseProfitScreen extends Screen {
 
 		Component buttonText = summaryView ? Component.translatable("skyblocker.corpseTracker.historyView") : Component.translatable("skyblocker.corpseTracker.summaryView");
 		adder.addChild(Button.builder(buttonText, this::changeView).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> reopenParent()).build());
 		gridWidget.arrangeElements();
 		FrameLayout.centerInRectangle(gridWidget, 0, this.height - 64, this.width, 64);
 		gridWidget.visitWidgets(this::addRenderableWidget);
@@ -88,10 +87,5 @@ public class CorpseProfitScreen extends Screen {
 			if (!loot.isPriceDataComplete()) isPriceComplete = false;
 		}
 		return DoubleBooleanImmutablePair.of(total, isPriceComplete);
-	}
-
-	@Override
-	public void onClose() {
-		minecraft.setScreen(parent);
 	}
 }

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.waypoint;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.mojang.blaze3d.platform.cursor.CursorType;
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
@@ -32,9 +33,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
-	protected final T parent;
+public abstract class AbstractWaypointsScreen<T extends Screen> extends ChildScreen {
 	protected final Multimap<Location, WaypointGroup> waypoints;
 	protected Location island;
 	protected WaypointsListWidget waypointsListWidget;
@@ -43,17 +44,16 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 	protected final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
 	private final PopupContainer popupContainer = new PopupContainer();
 
-	public AbstractWaypointsScreen(Component title, T parent) {
+	public AbstractWaypointsScreen(Component title, @Nullable T parent) {
 		this(title, parent, MultimapBuilder.enumKeys(Location.class).arrayListValues().build());
 	}
 
-	public AbstractWaypointsScreen(Component title, T parent, Multimap<Location, WaypointGroup> waypoints) {
+	public AbstractWaypointsScreen(Component title, @Nullable T parent, Multimap<Location, WaypointGroup> waypoints) {
 		this(title, parent, waypoints, Utils.getLocation());
 	}
 
-	public AbstractWaypointsScreen(Component title, T parent, Multimap<Location, WaypointGroup> waypoints, Location island) {
-		super(title);
-		this.parent = parent;
+	public AbstractWaypointsScreen(Component title, @Nullable T parent, Multimap<Location, WaypointGroup> waypoints, Location island) {
+		super(title, parent);
 		this.waypoints = waypoints;
 		this.island = island;
 		this.layout.setHeaderHeight(32);

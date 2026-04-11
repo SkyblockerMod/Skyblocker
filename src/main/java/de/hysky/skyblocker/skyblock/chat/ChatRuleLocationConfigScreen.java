@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.config.screens.powdertracker.ItemTickList;
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.Location;
 import java.util.EnumSet;
 import net.minecraft.ChatFormatting;
@@ -13,14 +14,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-public class ChatRuleLocationConfigScreen extends Screen {
-	private final @Nullable Screen parent;
+public class ChatRuleLocationConfigScreen extends ChildScreen {
 	private final ChatRule chatRule;
 	private final EnumSet<Location> enabledLocations;
 
 	public ChatRuleLocationConfigScreen(@Nullable Screen parent, ChatRule chatRule) {
-		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen"));
-		this.parent = parent;
+		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen"), parent);
 		this.chatRule = chatRule;
 		this.enabledLocations = EnumSet.copyOf(chatRule.getValidLocations()); // Copy the list so we can undo changes when necessary
 	}
@@ -49,7 +48,7 @@ public class ChatRuleLocationConfigScreen extends Screen {
 		}).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 								saveFilters();
-								onClose();
+								reopenParent();
 							})
 							.width((Button.DEFAULT_WIDTH * 2) + 10)
 							.build(), 2);
@@ -60,10 +59,5 @@ public class ChatRuleLocationConfigScreen extends Screen {
 
 	public void saveFilters() {
 		chatRule.setValidLocations(enabledLocations);
-	}
-
-	@Override
-	public void onClose() {
-		minecraft.setScreen(parent);
 	}
 }

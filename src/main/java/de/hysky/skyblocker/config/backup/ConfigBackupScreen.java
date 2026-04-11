@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ChildScreen;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -30,16 +31,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class ConfigBackupScreen extends Screen {
+public class ConfigBackupScreen extends ChildScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private final @Nullable Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
 
 	public ConfigBackupScreen(@Nullable Screen parent) {
-		super(Component.translatable("skyblocker.config.general.backup.title"));
-		this.parent = parent;
+		super(Component.translatable("skyblocker.config.general.backup.title"), parent);
 	}
 
 	@Override
@@ -98,17 +97,12 @@ public class ConfigBackupScreen extends Screen {
 		}).size(90, 20).pos(width / 2 - 95, height - 28).build();
 		addRenderableWidget(restoreBtn);
 
-		Button done = Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).size(90, 20).pos(width / 2 + 5, height - 28).build();
+		Button done = Button.builder(CommonComponents.GUI_DONE, _ -> reopenParent()).size(90, 20).pos(width / 2 + 5, height - 28).build();
 		addRenderableWidget(done);
 
 		StringWidget titleWidget = new StringWidget(title, font);
 		titleWidget.setPosition((width - font.width(title)) / 2, 12);
 		addRenderableWidget(titleWidget);
-	}
-
-	@Override
-	public void onClose() {
-		minecraft.setScreen(parent);
 	}
 
 	private class BackupListWidget extends ObjectSelectionList<BackupEntry> {

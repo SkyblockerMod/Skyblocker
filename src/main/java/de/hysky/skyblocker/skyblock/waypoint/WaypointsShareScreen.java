@@ -123,7 +123,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 				showErrorToast();
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> reopenParent()).build());
 		layout.addToFooter(gridWidget);
 		int rows = 4;
 		layout.setFooterHeight(20 * rows + rowSpacing * (rows - 1) + 8);
@@ -143,11 +143,5 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 	protected void enabledChanged(NamedWaypoint waypoint, boolean enabled) {
 		if (enabled) selectedWaypoints.add(waypoint);
 		else selectedWaypoints.remove(waypoint);
-	}
-
-	@SuppressWarnings("DataFlowIssue")
-	@Override
-	public void onClose() {
-		minecraft.setScreen(parent);
 	}
 }
