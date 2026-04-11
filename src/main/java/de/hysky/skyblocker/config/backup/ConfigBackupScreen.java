@@ -71,7 +71,6 @@ public class ConfigBackupScreen extends Screen {
 		Button restoreBtn = Button.builder(Component.translatable("skyblocker.config.general.backup.restore"), _ -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
-				assert minecraft != null;
 				minecraft.setScreen(new ConfirmScreen(confirm -> {
 					if (confirm) {
 						try {
@@ -109,7 +108,6 @@ public class ConfigBackupScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(parent);
 	}
 

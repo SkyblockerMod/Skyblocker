@@ -340,10 +340,8 @@ public class ChatRuleConfigScreen extends Screen {
 	 */
 	@Override
 	public void onClose() {
-		if (minecraft != null) {
-			save();
-			minecraft.setScreen(parent);
-		}
+		save();
+		minecraft.setScreen(parent);
 	}
 
 	private void save() {

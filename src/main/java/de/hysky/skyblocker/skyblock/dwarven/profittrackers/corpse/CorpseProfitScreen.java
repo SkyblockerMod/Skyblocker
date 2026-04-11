@@ -38,7 +38,6 @@ public class CorpseProfitScreen extends Screen {
 
 	@Override
 	protected void init() {
-		assert minecraft != null;
 		addRenderableOnly((context, _, _, _) -> {
 			context.centeredText(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
 		});
@@ -93,7 +92,6 @@ public class CorpseProfitScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(parent);
 	}
 }
