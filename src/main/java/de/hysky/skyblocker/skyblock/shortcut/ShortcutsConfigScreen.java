@@ -12,9 +12,10 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 public class ShortcutsConfigScreen extends Screen {
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private ShortcutsConfigListWidget shortcutsConfigListWidget;
 	private Button buttonDelete;
 	private Button buttonNew;
@@ -26,7 +27,7 @@ public class ShortcutsConfigScreen extends Screen {
 		this(null);
 	}
 
-	public ShortcutsConfigScreen(Screen parent) {
+	public ShortcutsConfigScreen(@Nullable Screen parent) {
 		super(Component.translatable("skyblocker.shortcuts.config"));
 		this.parent = parent;
 	}

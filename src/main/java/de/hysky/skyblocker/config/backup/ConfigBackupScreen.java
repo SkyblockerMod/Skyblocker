@@ -33,7 +33,7 @@ import net.minecraft.network.chat.Component;
 public class ConfigBackupScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
 
