@@ -17,7 +17,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class ConfigCommands {
 	static LiteralArgumentBuilder<FabricClientCommandSource> registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
 		try {
-			return registerConfigEntries(builder, SkyblockerConfigManager.get());
+			return registerConfigEntries(builder, SkyblockerConfigManager.getUnpatched());
 		} catch (Exception e) {
 			SkyblockerConfigManager.LOGGER.error("[Skyblocker Config Manager] Failed to register config entries command!", e);
 		}
