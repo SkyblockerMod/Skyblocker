@@ -11,16 +11,17 @@ import net.minecraft.network.chat.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class ConfigCommands {
-	static void registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
+	static LiteralArgumentBuilder<FabricClientCommandSource> registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
 		try {
-			registerConfigEntries(builder, SkyblockerConfigManager.get());
+			return registerConfigEntries(builder, SkyblockerConfigManager.get());
 		} catch (Exception e) {
 			SkyblockerConfigManager.LOGGER.error("[Skyblocker Config Manager] Failed to register config entries command!", e);
 		}
+		return builder;
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder, Object object) throws IllegalAccessException {
@@ -44,7 +45,7 @@ public class ConfigCommands {
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerBooleanConfigEntry(Field field, Object object, String name) {
 		return literal(name).then(argument("value", BoolArgumentType.bool()).executes(context -> {
-			SkyblockerConfigManager.update(config -> {
+			SkyblockerConfigManager.update(_ -> {
 				try {
 					boolean value = BoolArgumentType.getBool(context, "value");
 					field.setBoolean(object, value);
@@ -55,7 +56,7 @@ public class ConfigCommands {
 			});
 			return Command.SINGLE_SUCCESS;
 		})).then(literal("toggle").executes(context -> {
-			SkyblockerConfigManager.update(config -> {
+			SkyblockerConfigManager.update(_ -> {
 				try {
 					boolean toggled = !field.getBoolean(object);
 					field.setBoolean(object, toggled);

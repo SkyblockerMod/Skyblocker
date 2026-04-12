@@ -58,11 +58,10 @@ import java.util.function.UnaryOperator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
 	public static final int CONFIG_VERSION = 10;
-	private static final Logger LOGGER = LogUtils.getLogger();
+	static final Logger LOGGER = LogUtils.getLogger();
 	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
@@ -171,10 +170,9 @@ public class SkyblockerConfigManager {
 	 * @return the command builder
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
-		LiteralArgumentBuilder<FabricClientCommandSource> builder = literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(argument("option", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
-		ConfigCommands.registerConfigEntries(builder);
-		return builder;
+		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
+				.then(argument("search", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("search", String.class)))))
+				.then(ConfigCommands.registerConfigEntries(literal("execute")));
 	}
 
 	/**

@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
