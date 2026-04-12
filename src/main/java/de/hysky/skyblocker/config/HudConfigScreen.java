@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config;
 
+import de.hysky.skyblocker.utils.ChildScreen;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
@@ -20,8 +21,7 @@ import org.jspecify.annotations.Nullable;
  * Create one subclass for each collection of HUD widgets that are displayed at the same time.
  * (i.e. one for dwarven mines, one for the end, etc.) See an implementation for an example.
  */
-public abstract class HudConfigScreen extends Screen {
-	protected final @Nullable Screen parent;
+public abstract class HudConfigScreen extends ChildScreen {
 	protected final List<AbstractWidget> widgets;
 
 	private @Nullable AbstractWidget draggingWidget;
@@ -47,8 +47,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param widgets the widgets to configure
 	 */
 	public HudConfigScreen(Component title, @Nullable Screen parent, List<AbstractWidget> widgets) {
-		super(title);
-		this.parent = parent;
+		super(title, parent);
 		this.widgets = widgets;
 	}
 
@@ -141,7 +140,7 @@ public abstract class HudConfigScreen extends Screen {
 	@Override
 	public final void onClose() {
 		SkyblockerConfigManager.update(config -> savePos(config, widgets));
-		minecraft.setScreen(parent);
+		reopenParent();
 	}
 
 	/**

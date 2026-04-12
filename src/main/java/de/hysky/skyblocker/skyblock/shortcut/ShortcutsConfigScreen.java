@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import de.hysky.skyblocker.utils.ChildScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -14,8 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
-public class ShortcutsConfigScreen extends Screen {
-	private final @Nullable Screen parent;
+public class ShortcutsConfigScreen extends ChildScreen {
 	private ShortcutsConfigListWidget shortcutsConfigListWidget;
 	private Button buttonDelete;
 	private Button buttonNew;
@@ -28,8 +28,7 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	public ShortcutsConfigScreen(@Nullable Screen parent) {
-		super(Component.translatable("skyblocker.shortcuts.config"));
-		this.parent = parent;
+		super(Component.translatable("skyblocker.shortcuts.config"), parent);
 	}
 
 	@Override
@@ -56,10 +55,10 @@ public class ShortcutsConfigScreen extends Screen {
 		adder.addChild(buttonDelete);
 		buttonNew = Button.builder(Component.translatable("skyblocker.shortcuts.new"), _ -> shortcutsConfigListWidget.addShortcutAfterSelected()).build();
 		adder.addChild(buttonNew);
-		adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> reopenParent()).build());
 		buttonDone = Button.builder(CommonComponents.GUI_DONE, _ -> {
 			shortcutsConfigListWidget.saveShortcuts();
-			onClose();
+			reopenParent();
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.commandSuggestionTooltip"))).build();
 		adder.addChild(buttonDone);
 		gridWidget.arrangeElements();
@@ -110,13 +109,13 @@ public class ShortcutsConfigScreen extends Screen {
 		if (shortcutsConfigListWidget.hasChanges()) {
 			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
-					this.minecraft.setScreen(parent);
+					reopenParent();
 				} else {
 					minecraft.setScreen(this);
 				}
 			}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard"), CommonComponents.GUI_CANCEL));
 		} else {
-			this.minecraft.setScreen(parent);
+			reopenParent();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import de.hysky.skyblocker.utils.ChildScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -7,15 +8,14 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
-public class ChatRulesConfigScreen extends Screen {
+public class ChatRulesConfigScreen extends ChildScreen {
 	private ChatRulesConfigListWidget chatRulesConfigListWidget;
 	private HeaderAndFooterLayout layout;
-	private final Screen parent;
 
-	public ChatRulesConfigScreen(Screen parent) {
-		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"));
-		this.parent = parent;
+	public ChatRulesConfigScreen(@Nullable Screen parent) {
+		super(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen"), parent);
 	}
 
 	@Override
@@ -26,14 +26,14 @@ public class ChatRulesConfigScreen extends Screen {
 		LinearLayout footerLayout = layout.addToFooter(new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL));
 		footerLayout.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
-			onClose();
+			reopenParent();
 		}).build());
 		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.new"),
 				_ -> chatRulesConfigListWidget.addRuleAfterSelected()
 		).build());
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 			chatRulesConfigListWidget.saveRules();
-			onClose();
+			reopenParent();
 		}).build());
 
 		layout.arrangeElements();
@@ -50,12 +50,12 @@ public class ChatRulesConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (!chatRulesConfigListWidget.hasChanges()) {
-			this.minecraft.setScreen(parent);
+			reopenParent();
 			return;
 		}
 		minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 			if (confirmedAction) {
-				this.minecraft.setScreen(parent);
+				reopenParent();
 			} else {
 				minecraft.setScreen(this);
 			}
