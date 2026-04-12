@@ -1547,6 +1547,7 @@
   "skyblocker.disableAll.toast.title": "Skyblocker Disable All",
 
   "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
+  "skyblocker.dungeons.croesusHelper.incompletePriceData": "(Incomplete Price Data)",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
   "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
