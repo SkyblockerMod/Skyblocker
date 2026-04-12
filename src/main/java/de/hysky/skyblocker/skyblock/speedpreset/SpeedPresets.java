@@ -8,10 +8,11 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
@@ -38,21 +39,22 @@ public class SpeedPresets {
 	}
 
 	public static CommandNode<FabricClientCommandSource> getCommandNode() {
-		return ClientCommandManager.literal("setmaxspeed")
-				.requires(source -> Utils.isOnSkyblock())
-				.then(ClientCommandManager.argument("preset", StringArgumentType.string())
-						.suggests((ctx, builder) -> {
+		return ClientCommands.literal("setmaxspeed")
+				.requires(_ -> Utils.isOnSkyblock())
+				.executes(CommandUtils.noOp)
+				.then(ClientCommands.argument("preset", StringArgumentType.string())
+						.suggests((_, builder) -> {
 							if (SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets && getInstance().presets.isLoaded()) {
 								return SharedSuggestionProvider.suggest(instance.getPresets().keySet(), builder);
 							}
 							return builder.buildFuture();
-						})).build();
+						}).executes(CommandUtils.noOp)).build();
 	}
 
 	@Init
 	public static void init() {
 		SpeedPresets instance = getInstance();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> instance.presets.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> instance.presets.init());
 		ClientSendMessageEvents.MODIFY_COMMAND.register(command -> {
 			Matcher matcher = COMMAND_PATTERN.matcher(command);
 			if (matcher.matches() && SkyblockerConfigManager.get().general.speedPresets.enableSpeedPresets) {

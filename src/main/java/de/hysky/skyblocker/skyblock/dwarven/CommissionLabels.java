@@ -8,7 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class CommissionLabels {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(CommissionLabels::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CommissionLabels::extractRendering);
 		Scheduler.INSTANCE.scheduleCyclic(CommissionLabels::tick, 20);
 	}
 
@@ -90,7 +90,7 @@ public class CommissionLabels {
 		activeWaypoints.clear();
 		Area area = Utils.getArea();
 		//find commission locations in glacite
-		if (area.equals(Area.DWARVEN_BASE_CAMP) || area.equals(Area.GLACITE_TUNNELS) || area.equals(Area.GLACITE_MINESHAFTS) || area.equals(Area.GREAT_GLACITE_LAKE)) {
+		if (area.equals(Area.DwarvenMines.DWARVEN_BASE_CAMP) || area.equals(Area.DwarvenMines.GLACITE_TUNNELS) || area.equals(Area.DwarvenMines.GLACITE_MINESHAFTS) || area.equals(Area.DwarvenMines.GREAT_GLACITE_LAKE)) {
 			if (currentMode != MiningConfig.CommissionWaypointMode.BOTH && currentMode != MiningConfig.CommissionWaypointMode.GLACITE) {
 				return;
 			}

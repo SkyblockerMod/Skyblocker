@@ -9,6 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.ServerTickCallback;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +63,8 @@ import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MIN_Y;
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_Z;
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.WATER_ENTRANCE_POSITION;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /*
 Benchmark times for solutions in watertimes.json (for anyone trying to improve the solutions)
@@ -125,19 +127,20 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 	private static final Component CLICK_TEXT = Component.literal("CLICK").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static JsonObject SOLUTIONS;
 
-	private boolean timerEnabled;
+	private boolean timerEnabled = false;
 	private final List<Mark> marks = new ArrayList<>();
-	private ClientLevel world;
-	private Room room;
-	private LocalPlayer player;
+	private @Nullable ClientLevel world;
+	private @Nullable Room room;
+	private @Nullable LocalPlayer player;
 
 	private int variant;
-	private String doors;
-	private String initialDoors;
-	private EnumMap<LeverType, DoubleList> solution;
+	private @Nullable String doors;
+	private @Nullable String initialDoors;
+	private @Nullable EnumMap<LeverType, DoubleList> solution;
 	private boolean finished;
 	private long waterStartMillis;
-	private CompletableFuture<Void> solve;
+	private long currentTimeMillis;
+	private @Nullable CompletableFuture<Void> solve;
 
 	private WaterboardOneFlow() {
 		super("waterboard", "water-puzzle");
@@ -148,15 +151,16 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		ClientLifecycleEvents.CLIENT_STARTED.register(WaterboardOneFlow::loadSolutions);
 		UseBlockCallback.EVENT.register(INSTANCE::onUseBlock);
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
-						.then(literal("reset").executes(context -> {
-							INSTANCE.softReset();
-							return Command.SINGLE_SUCCESS;
-						}))
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+				.then(literal("reset").executes(_ -> {
+					INSTANCE.softReset();
+					return Command.SINGLE_SUCCESS;
+				}))
 		)))));
+		ServerTickCallback.EVENT.register(INSTANCE::onServerTick);
 
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 					.then(literal("setDoors").then(argument("combination", StringArgumentType.string()).executes(context -> {
 						String doorCombination = StringArgumentType.getString(context, "combination");
 						if (SOLUTIONS.get("1").getAsJsonObject().keySet().contains(doorCombination)) {
@@ -167,13 +171,13 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						}
 						return Command.SINGLE_SUCCESS;
 					})))
-					.then(literal("toggleTimer").executes((context) -> {
+					.then(literal("toggleTimer").executes(context -> {
 						INSTANCE.timerEnabled = !INSTANCE.timerEnabled;
 						context.getSource().sendFeedback(Constants.PREFIX.get().append(
 								INSTANCE.timerEnabled ? "Timer enabled." : "Timer disabled."));
 						return Command.SINGLE_SUCCESS;
 					}))
-					.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes((context) -> {
+					.then(literal("modifyLever").then(argument("leverType", LeverType.LeverTypeArgumentType.leverType()).then(argument("times", StringArgumentType.greedyString()).executes(context -> {
 						LeverType leverType = LeverType.LeverTypeArgumentType.getLeverType(context, "leverType");
 						if (leverType == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Invalid lever type"));
@@ -186,13 +190,13 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 									times.add(Double.parseDouble(time));
 								}
 								INSTANCE.solution.put(leverType, times);
-							} catch (NumberFormatException e) {
+							} catch (NumberFormatException _) {
 								context.getSource().sendError(Constants.PREFIX.get().append("Times must be valid numbers or decimals"));
 							}
 						}
 						return Command.SINGLE_SUCCESS;
 					}))))
-					.then(literal("addMark").executes((context) -> {
+					.then(literal("addMark").executes(context -> {
 						if (INSTANCE.world == null || INSTANCE.room == null || INSTANCE.player == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append("Solver not active"));
 							return Command.SINGLE_SUCCESS;
@@ -228,7 +232,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 						INSTANCE.marks.add(new Mark(INSTANCE.marks.size() + 1, pos));
 						return Command.SINGLE_SUCCESS;
 					}))
-					.then(literal("clearMarks").executes((context) -> {
+					.then(literal("clearMarks").executes(_ -> {
 						INSTANCE.marks.clear();
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -242,6 +246,11 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waterboard] Failed to load solutions json", e);
 		}
+	}
+
+	public void onServerTick() {
+		if (!SkyblockerConfigManager.get().dungeons.puzzleSolvers.waterboardOneFlow || !shouldSolve()) return;
+		currentTimeMillis += 50;
 	}
 
 	@Override
@@ -269,10 +278,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		if (!finished && isPuzzleSolved()) {
 			finished = true;
 			if (timerEnabled) {
-				double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
-				player.displayClientMessage(Constants.PREFIX.get().append("Puzzle solved in ")
+				double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
+				player.sendSystemMessage(Constants.PREFIX.get().append("Puzzle solved in ")
 						.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
-						.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
+						.append(ChatFormatting.RESET.toString()).append(" seconds."));
 			}
 		}
 
@@ -280,10 +289,10 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			for (Mark mark : marks) {
 				if (!mark.reached && world.getBlockState(mark.pos).is(Blocks.WATER)) {
 					mark.reached = true;
-					double elapsed = (System.currentTimeMillis() - waterStartMillis) / 1000.0;
-					player.displayClientMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
+					double elapsed = (currentTimeMillis - waterStartMillis) / 1000.0;
+					player.sendSystemMessage(Constants.PREFIX.get().append(String.format("Mark %d reached in ", mark.index))
 							.append(Component.literal(String.format("%.2f", elapsed)).withStyle(ChatFormatting.GREEN))
-							.append(ChatFormatting.RESET.toString()).append(" seconds."), false);
+							.append(ChatFormatting.RESET.toString()).append(" seconds."));
 				}
 			}
 		}
@@ -305,14 +314,14 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				finished = true;
 				return;
 			} else if (doors.length() != 3) {
-				player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")), false);
+				player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.invalidDoors")));
 				finished = true;
 				return;
 			}
 		}
 
 		if (!checkWater()) {
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.puzzle.waterboard.waterFound")));
 			finished = true;
 			return;
 		}
@@ -458,7 +467,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 
 			if (solution != null) {
 				List<ObjectDoublePair<LeverType>> sortedTimes = solution.entrySet().stream()
-						.flatMap((entry) -> entry.getValue().doubleStream().mapToObj((time) -> ObjectDoublePair.of(entry.getKey(), time)))
+						.flatMap(entry -> entry.getValue().doubleStream().mapToObj(time -> ObjectDoublePair.of(entry.getKey(), time)))
 						// Sort by next use time, then by lever type
 						.sorted(Comparator
 								.<ObjectDoublePair<LeverType>>comparingDouble(p -> p.rightDouble() + (p.left() == LeverType.WATER ? 0.001 : 0.0))
@@ -490,7 +499,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 			LeverType lever = leverData.getKey();
 			for (int i = 0; i < leverData.getValue().size(); i++) {
 				double nextTime = leverData.getValue().getDouble(i);
-				long remainingTime = waterStartMillis + (long) (nextTime * 1000) - System.currentTimeMillis();
+				long remainingTime = waterStartMillis + (long) (nextTime * 1000) - currentTimeMillis;
 				Component text;
 
 				if (lever == LeverType.WATER && nextTime == 0.0 && nextLever != LeverType.WATER) {
@@ -525,7 +534,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 							times.removeFirst();
 						}
 						if (waterStartMillis == 0 && leverType == LeverType.WATER) {
-							waterStartMillis = System.currentTimeMillis();
+							waterStartMillis = currentTimeMillis;
 						}
 					}
 				}
@@ -551,6 +560,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 		solution = null;
 		finished = false;
 		waterStartMillis = 0;
+		currentTimeMillis = 0;
 		for (Mark mark : marks) {
 			mark.reached = false;
 		}

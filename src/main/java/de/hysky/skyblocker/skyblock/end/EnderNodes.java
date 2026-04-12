@@ -5,7 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
@@ -32,12 +32,12 @@ public class EnderNodes {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
-		WorldRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		LevelRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			enderNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(EnderNodes::onParticle);
 	}
 

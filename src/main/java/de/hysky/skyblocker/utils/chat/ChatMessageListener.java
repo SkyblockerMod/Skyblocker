@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.barn.CallTrevor;
 import de.hysky.skyblocker.skyblock.barn.HungryHiker;
 import de.hysky.skyblocker.skyblock.barn.TreasureHunter;
@@ -18,6 +19,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
@@ -25,7 +27,9 @@ import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.HellionShieldFilter;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -40,7 +44,7 @@ public interface ChatMessageListener {
 	 * An event called when a game message is received. Register your listeners in {@link ChatMessageListener#init()}.
 	 */
 	Event<ChatMessageListener> EVENT = EventFactory.createArrayBacked(ChatMessageListener.class,
-			(listeners) -> (message, asString) -> {
+			listeners -> (message, asString) -> {
 				for (ChatMessageListener listener : listeners) {
 					ChatFilterResult result = listener.onMessage(message, asString);
 					if (result != ChatFilterResult.PASS) return result;
@@ -81,6 +85,8 @@ public interface ChatMessageListener {
 				new MimicFilter(),
 				new DeathFilter(),
 				new DungeonBreakerFilter(),
+				new SlayerMinibossSpawnFilter(),
+				new HellionShieldFilter(),
 		};
 
 		// Register all listeners to EVENT
@@ -105,10 +111,15 @@ public interface ChatMessageListener {
 					LocalPlayer player = Minecraft.getInstance().player;
 
 					if (player != null) {
-						player.displayClientMessage(message, true);
+						player.sendOverlayMessage(message);
 
 						return false;
 					}
+				}
+
+				case TOAST -> {
+					Minecraft.getInstance().getToastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), null));
+					return false;
 				}
 
 				case FILTER -> {

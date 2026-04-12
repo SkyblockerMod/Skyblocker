@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.io.InputStream;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -70,10 +71,12 @@ public class SackItemAutocomplete {
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command, Set<String> sackItems) {
 		return literal(command)
-				.requires(fccs -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
+				.executes(CommandUtils.noOp)
 				.then(argument("item", StringArgumentType.greedyString())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(sackItems, builder))
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(sackItems, builder))
 						.then(argument("amount", IntegerArgumentType.integer(0))) // Adds a nice <amount> text to the suggestion when any number is entered after the item string
+						.executes(CommandUtils.noOp)
 				)
 				.build();
 	}

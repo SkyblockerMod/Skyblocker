@@ -3,10 +3,11 @@ package de.hysky.skyblocker.skyblock.barn;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
@@ -32,12 +33,12 @@ public class GlowingMushrooms {
 	public static void init() {
 		ParticleEvents.FROM_SERVER.register(GlowingMushrooms::onParticle);
 		Scheduler.INSTANCE.scheduleCyclic(GlowingMushrooms::update, 1);
-		WorldRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		LevelRenderExtractionCallback.EVENT.register(GlowingMushrooms::extractRendering);
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (shouldProcess()) glowingMushrooms.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {
@@ -74,7 +75,7 @@ public class GlowingMushrooms {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getIslandArea().equals("⏣ Glowing Mushroom Cave");
+		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getArea() == Area.TheFarmingIslands.GLOWING_MUSHROOM_CAVE;
 	}
 
 	private static void reset() {

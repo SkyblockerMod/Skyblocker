@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -15,24 +16,26 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.item.ItemStack;
 
 public class EventToast implements Toast {
 	protected static final Identifier TEXTURE = SkyblockerMod.id("notification");
 
 	private long toastTime = 0;
 	private final long eventStartTime;
+	private final long eventEndTime;
 
 	protected final List<FormattedCharSequence> message;
 	protected final List<FormattedCharSequence> messageNow;
 	protected int messageWidth;
 	protected int messageNowWidth;
-	protected final ItemStack icon;
+	protected final FlexibleItemStack icon;
 
 	protected boolean started;
 
-	public EventToast(long eventStartTime, String name, ItemStack icon) {
+	public EventToast(long eventStartTime, long eventEndTime, String name, FlexibleItemStack icon) {
 		this.eventStartTime = eventStartTime;
+		this.eventEndTime = eventEndTime;
+
 		MutableComponent formatted = Component.translatable("skyblocker.events.startsSoon", Component.literal(name).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.WHITE);
 		Font renderer = Minecraft.getInstance().font;
 		message = renderer.split(formatted, 150);
@@ -43,29 +46,29 @@ public class EventToast implements Toast {
 		messageNowWidth = messageNow.stream().mapToInt(renderer::width).max().orElse(150);
 		this.icon = icon;
 		this.started = eventStartTime - System.currentTimeMillis() / 1000 < 0;
-
 	}
+
 	@Override
-	public void render(GuiGraphics context, Font textRenderer, long startTime) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
+	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, long startTime) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
 
 		int y = (height() - getInnerContentsHeight())/2;
-		y = 2 + drawMessage(context, 30, y, CommonColors.WHITE);
-		drawTimer(context, 30, y);
+		y = 2 + extractMessage(graphics, 30, y, CommonColors.WHITE);
+		extractTimer(graphics, 30, y);
 
-		context.renderFakeItem(icon, 8, height()/2 - 8);
+		graphics.fakeItem(icon.getStackOrThrow(), 8, height()/2 - 8);
 	}
 
-	protected int drawMessage(GuiGraphics context, int x, int y, int color) {
+	protected int extractMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {
 		Font textRenderer = Minecraft.getInstance().font;
 		for (FormattedCharSequence orderedText : started ? messageNow : message) {
-			context.drawString(textRenderer, orderedText, x, y, color, false);
+			graphics.text(textRenderer, orderedText, x, y, color, false);
 			y += textRenderer.lineHeight;
 		}
 		return y;
 	}
 
-	protected void drawTimer(GuiGraphics context, int x, int y) {
+	protected void extractTimer(GuiGraphicsExtractor graphics, int x, int y) {
 		long currentTime = System.currentTimeMillis() / 1000;
 		int timeTillEvent = (int) (eventStartTime - currentTime);
 		started = timeTillEvent < 0;
@@ -74,7 +77,7 @@ public class EventToast implements Toast {
 		Component time = SkyblockTime.formatTime(timeTillEvent);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		context.drawString(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
+		graphics.text(textRenderer, time, x, y, CommonColors.SOFT_YELLOW, false);
 	}
 
 	@Override
@@ -93,7 +96,9 @@ public class EventToast implements Toast {
 
 	@Override
 	public Visibility getWantedVisibility() {
-		return toastTime > 5_000 ? Visibility.HIDE : Visibility.SHOW;
+		long currentTime = System.currentTimeMillis() / 1000;
+		if (toastTime > 5_000 || currentTime > eventEndTime) return Visibility.HIDE;
+		return Visibility.SHOW;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -217,7 +218,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 				}
 			}
 		}
-		ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
+		FlexibleItemStack flexibleItemStack = ItemRepository.getItemStack(itemID);
+		ItemStack foundItemStack = flexibleItemStack == null ? null : flexibleItemStack.getStackOrThrow();
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
 			lines.add(Component.empty()
 					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
@@ -289,7 +291,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			ItemStack stack = entry.getValue();
 			if (stack == null || stack.isEmpty()) continue;
 
-			if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
+			if (CATEGORY_PATTERN.matcher(ItemUtils.getConcatenatedLore(stack)).find()) {
 				ObjectLongImmutablePair<String> categoryResults = calculateBestInCategory(stack);
 
 				String itemID = categoryResults.left();
@@ -312,7 +314,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (stack == null || stack.isEmpty()) continue;
 
 			String itemId = stack.getSkyblockApiId();
-			String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
+			String lore = ItemUtils.getConcatenatedLore(stack);
 			Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
 			if (!bitsMatcher.find()) continue;
 

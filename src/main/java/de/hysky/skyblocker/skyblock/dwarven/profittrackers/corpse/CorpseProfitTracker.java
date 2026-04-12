@@ -43,8 +43,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// Items without a proper item id or price
@@ -83,7 +83,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		SkyblockEvents.PROFILE_CHANGE.register(INSTANCE::onProfileChange);
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 			literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rewardTrackers")
 					.then(literal("corpse")
@@ -137,12 +137,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				Minecraft.getInstance().gui.getChat().addMessage(
+				Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
@@ -152,7 +152,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					Minecraft.getInstance().gui.getChat().addMessage(
+					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
@@ -178,14 +178,14 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 						new ObjectArrayList<>(),
 						Instant.now()
 				);
-			} catch (IllegalArgumentException e) {
+			} catch (IllegalArgumentException _) {
 				LOGGER.error("Unknown corpse type `{}` for message: `{}`. Report this!", corpse, message);
 				return true;
 			}
 
 			try {
 				lastCorpseLoot.profit(lastCorpseLoot.profit() - type.getKeyPrice()); //Negated since the key price is a cost, not a reward
-			} catch (IllegalStateException e) { // This is thrown when the key price is not found
+			} catch (IllegalStateException _) { // This is thrown when the key price is not found
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate, therefore it will not be sent to chat. It will still be added to the corpse history.", corpse);
 				lastCorpseLoot.markPriceDataIncomplete();
 			}
@@ -220,7 +220,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			try {
 				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());
-			} catch (IllegalStateException e) {
+			} catch (IllegalStateException _) {
 				LOGGER.warn("No key price found for corpse type `{}`. Profit calculation will not be accurate.", corpseLoot.corpseType());
 				corpseLoot.markPriceDataIncomplete();
 			}
@@ -239,6 +239,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 
 	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
+		// Gemstones
 		NAME2ID_MAP.put("☠ Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
 		NAME2ID_MAP.put("☠ Fine Onyx Gemstone", "FINE_ONYX_GEM");
 		NAME2ID_MAP.put("☠ Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
@@ -251,16 +252,18 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("☘ Fine Citrine Gemstone", "FINE_CITRINE_GEM");
 		NAME2ID_MAP.put("☘ Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
 
-		NAME2ID_MAP.put("α Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("α Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("α Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
+		NAME2ID_MAP.put("☂ Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
 
+		// Eggs
 		NAME2ID_MAP.put("Goblin Egg", "GOBLIN_EGG");
 		NAME2ID_MAP.put("Green Goblin Egg", "GOBLIN_EGG_GREEN");
 		NAME2ID_MAP.put("Blue Goblin Egg", "GOBLIN_EGG_BLUE");
 		NAME2ID_MAP.put("Red Goblin Egg", "GOBLIN_EGG_RED");
 		NAME2ID_MAP.put("Yellow Goblin Egg", "GOBLIN_EGG_YELLOW");
 
+		// Forge Items
 		NAME2ID_MAP.put("Enchanted Glacite", "ENCHANTED_GLACITE");
 		NAME2ID_MAP.put("Enchanted Umber", "ENCHANTED_UMBER");
 		NAME2ID_MAP.put("Enchanted Tungsten", "ENCHANTED_TUNGSTEN");
@@ -270,20 +273,27 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 		NAME2ID_MAP.put("Refined Mithril", "REFINED_MITHRIL");
 		NAME2ID_MAP.put("Refined Titanium", "REFINED_TITANIUM");
 
+		NAME2ID_MAP.put("Mithril Plate", "MITHRIL_PLATE");
 		NAME2ID_MAP.put("Umber Plate", "UMBER_PLATE");
 		NAME2ID_MAP.put("Tungsten Plate", "TUNGSTEN_PLATE");
 
+		// Keys
+		NAME2ID_MAP.put("Skeleton Key", "SKELETON_KEY");
+		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
+		NAME2ID_MAP.put("Umber Key", "UMBER_KEY");
+
+		// Misc.
 		NAME2ID_MAP.put("Glacite Amalgamation", "GLACITE_AMALGAMATION");
 		NAME2ID_MAP.put("Bejeweled Handle", "BEJEWELED_HANDLE");
-		NAME2ID_MAP.put("Umber Key", "UMBER_KEY");
-		NAME2ID_MAP.put("Tungsten Key", "TUNGSTEN_KEY");
 		NAME2ID_MAP.put("Glacite Jewel", "GLACITE_JEWEL");
 		NAME2ID_MAP.put("Suspicious Scrap", "SUSPICIOUS_SCRAP");
 		NAME2ID_MAP.put("Enchanted Book (Ice Cold I)", "ENCHANTMENT_ICE_COLD_1");
 		NAME2ID_MAP.put("Dwarven O's Metallic Minis", "DWARVEN_OS_METALLIC_MINIS");
-		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
-		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
 
+		// Valuables
+		NAME2ID_MAP.put("Frozen Scute", "FROZEN_SCUTE");
+		NAME2ID_MAP.put("Shattered Locket", "SHATTERED_PENDANT");
+		NAME2ID_MAP.put("Caged Wisp", "CAGED_WISP");
 		NAME2ID_MAP.put("Frostbitten Dye", "DYE_FROSTBITTEN");
 
 		//These don't have an associated item id or price, but they are in the map regardless so we know what items are not properly mapped and log them accordingly

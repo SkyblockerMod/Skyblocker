@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class IceFill extends DungeonPuzzle {
 	public static final IceFill INSTANCE = new IceFill();
@@ -37,7 +37,7 @@ public class IceFill extends DungeonPuzzle {
 			new BlockPos(17, 71, 16),
 			new BlockPos(18, 72, 25)
 	};
-	private CompletableFuture<Void> solve;
+	private @Nullable CompletableFuture<Void> solve;
 	private final boolean[][][] iceFillBoards = {new boolean[3][3], new boolean[5][5], new boolean[7][7]};
 	private final List<List<Vector2ic>> iceFillPaths = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
 
@@ -48,7 +48,7 @@ public class IceFill extends DungeonPuzzle {
 	@Init
 	public static void init() {
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 					.then(literal("printBoard1").executes(context -> {
 						context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[0])));
 						return Command.SINGLE_SUCCESS;
@@ -72,7 +72,7 @@ public class IceFill extends DungeonPuzzle {
 		}
 	}
 
-	private static String boardToString(boolean[][] iceFillBoard) {
+	public static String boardToString(boolean[][] iceFillBoard) {
 		StringBuilder sb = new StringBuilder();
 		for (boolean[] row : iceFillBoard) {
 			sb.append("\n");
@@ -89,6 +89,7 @@ public class IceFill extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
 
 		solve = CompletableFuture.runAsync(() -> {
 			BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -162,6 +163,8 @@ public class IceFill extends DungeonPuzzle {
 			return;
 		}
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) return;
+
 		for (int i = 0; i < 3; i++) {
 			extractPath(collector, room, iceFillPaths.get(i), BOARD_ORIGINS[i]);
 		}

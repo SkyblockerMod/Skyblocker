@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -41,13 +42,13 @@ public class MirrorverseWaypoints {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
 				JsonArray sections = JsonParser.parseReader(reader).getAsJsonObject().get("sections").getAsJsonArray();
 
-				/// Lava Path
+				// Lava Path
 				LAVA_PATH_WAYPOINTS = loadWaypoints(sections.get(0).getAsJsonObject().get("waypoints").getAsJsonArray());
 
-				/// Upside Down Parkour
+				// Upside Down Parkour
 				UPSIDE_DOWN_WAYPOINTS = loadWaypoints(sections.get(1).getAsJsonObject().get("waypoints").getAsJsonArray());
 
-				/// Turbulator Parkour
+				// Turbulator Parkour
 				TURBULATOR_WAYPOINTS = loadWaypoints(sections.get(2).getAsJsonObject().get("waypoints").getAsJsonArray());
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);
@@ -65,8 +66,7 @@ public class MirrorverseWaypoints {
 	}
 
 	protected static void extractRendering(PrimitiveCollector collector) {
-		//I would also check for the mirrorverse location but the scoreboard stuff is not performant at all...
-		if (Utils.isInTheRift() && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
+		if (Utils.isInTheRift() && Utils.getArea() == Area.TheRift.MIRRORVERSE && SkyblockerConfigManager.get().otherLocations.rift.mirrorverseWaypoints && waypointsLoaded.isDone()) {
 			for (Waypoint waypoint : LAVA_PATH_WAYPOINTS) {
 				waypoint.extractRendering(collector);
 			}

@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("kuudra.json");
-	private static final ProfiledData<KuudraProfileData> DATA = new ProfiledData<>(FILE, KuudraProfileData.CODEC, true, true);
+	private static final ProfiledData<KuudraProfileData> DATA = new ProfiledData<>(FILE, KuudraProfileData.CODEC);
 	private static final Pattern FACTION_SHOP_PATTERN = Pattern.compile("^(?<faction>Mage|Barbarian) Shop$");
 
 	protected static KuudraPhase phase = KuudraPhase.OTHER;
@@ -38,19 +38,19 @@ public class Kuudra {
 	@Init
 	public static void init() {
 		DATA.load();
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				String title = screen.getTitle().getString();
 				Matcher factionShopMatcher = FACTION_SHOP_PATTERN.matcher(title);
 
 				switch (title) {
-					case String s when factionShopMatcher.matches() -> {
-						ScreenEvents.afterTick(screen).register(_screen -> {
+					case String _ when factionShopMatcher.matches() -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							checkKuudraKeyShop(genericContainerScreen, factionShopMatcher);
 						});
 					}
 					case String s when s.startsWith("Pets") -> {
-						ScreenEvents.afterTick(screen).register(_screen -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							checkForKuudraPet(genericContainerScreen);
 						});
 					}
@@ -58,7 +58,7 @@ public class Kuudra {
 				}
 			}
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Kuudra::onMessage);
 	}
 

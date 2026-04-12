@@ -12,21 +12,22 @@ import org.joml.Vector2ic;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.withDefaultNamespace("textures/map/decorations/player.png");
-	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Unknown");
+	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Xalx", "Unknown");
 	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
-	private static CrystalsHudWidget instance = null;
+	private static @Nullable CrystalsHudWidget instance = null;
 
 	@SuppressWarnings("unused")
 	public static CrystalsHudWidget getInstance() {
@@ -82,7 +83,7 @@ public class CrystalsHudWidget extends HudWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
-		SkyblockerConfigManager.get().mining.crystalsHud.enabled = enabled;
+		SkyblockerConfigManager.update(config -> config.mining.crystalsHud.enabled = enabled);
 	}
 
 	public void update() {
@@ -95,19 +96,19 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
 		//and set position and scale
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(x, y);
 		matrices.scale(scale, scale);
 		w = h = (int) (62 * scale);
 
 		//draw map texture
-		context.blit(RenderPipelines.GUI_TEXTURED, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, MAP_TEXTURE, 0, 0, 0, 0, 62, 62, 62, 62);
 
 		//if enabled add waypoint locations to map
 		if (SkyblockerConfigManager.get().mining.crystalsHud.showLocations) {
@@ -122,7 +123,7 @@ public class CrystalsHudWidget extends HudWidget {
 				}
 
 				//fill square of size locationSize around the coordinates of the location
-				context.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, category.getColor());
+				graphics.fill(renderPos.x() - locationSize / 2, renderPos.y() - locationSize / 2, renderPos.x() + locationSize / 2, renderPos.y() + locationSize / 2, category.getColor());
 			}
 		}
 
@@ -146,7 +147,7 @@ public class CrystalsHudWidget extends HudWidget {
 		matrices.rotateAbout(Mth.DEG_TO_RAD * yaw2Cardinal(playerRotation), 2.5f, 3.5f);
 
 		//draw marker on map
-		context.blit(RenderPipelines.GUI_TEXTURED, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, MAP_ICON, 0, 0, 2, 0, 5, 7, 8, 8);
 		matrices.popMatrix();
 	}
 

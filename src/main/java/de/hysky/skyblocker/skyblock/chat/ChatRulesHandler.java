@@ -5,30 +5,26 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.nio.file.Path;
@@ -47,11 +43,11 @@ public class ChatRulesHandler {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-						.then(ClientCommandManager.literal("chatRules")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommands.literal("chatRules")
 								.executes(
 										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
 		)));
@@ -92,12 +88,12 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
-				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
+				CLIENT.player.sendOverlayMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())));
 			}
 
 			if (rule.getToastMessage() != null) {
 				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
-				CLIENT.getToastManager().addToast(new ChatRulesToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
+				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)));
 			}
 
 			// Play sound
@@ -127,55 +123,5 @@ public class ChatRulesHandler {
 
 	public static void saveChatRules() {
 		if (CHAT_RULE_LIST.isLoaded()) CHAT_RULE_LIST.save();
-	}
-
-	private static class ChatRulesToast implements Toast {
-		private static final Identifier TEXTURE = SkyblockerMod.id("notification");
-
-		private final long displayDuration;
-		private final ItemStack icon;
-		private final List<FormattedCharSequence> lines;
-		private final int width;
-		private Visibility visibility = Visibility.SHOW;
-
-		private ChatRulesToast(Component message, long displayDuration, ItemStack icon) {
-			Font textRenderer = Minecraft.getInstance().font;
-			this.lines = textRenderer.split(message, 200);
-			this.displayDuration = displayDuration;
-			this.icon = icon;
-			this.width = lines.stream().mapToInt(textRenderer::width).max().orElse(200) + 30;
-			for (FormattedCharSequence line : lines) {
-				System.out.println(textRenderer.width(line));
-			}
-		}
-
-		@Override
-		public Visibility getWantedVisibility() {
-			return visibility;
-		}
-
-		@Override
-		public void update(ToastManager manager, long time) {
-			if (time > displayDuration) visibility = Visibility.HIDE;
-		}
-
-		@Override
-		public void render(GuiGraphics context, Font textRenderer, long startTime) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width(), height());
-			context.renderFakeItem(icon, 4, 4);
-			for (int i = 0; i < lines.size(); i++) {
-				context.drawString(textRenderer, lines.get(i), 4 + 16 + 4, 8 + i * 12, -1, false);
-			}
-		}
-
-		@Override
-		public int height() {
-			return 8 + 4 + Math.max(lines.size(), 1) * 12;
-		}
-
-		@Override
-		public int width() {
-			return width;
-		}
 	}
 }

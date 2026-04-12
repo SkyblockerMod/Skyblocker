@@ -4,12 +4,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.config.screens.eventnotifications.EventConfigTimesEditScreen;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.utils.config.DurationController;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.LabelOption;
-import net.azureaaron.dandelion.api.ListOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.OptionListener.UpdateType;
@@ -61,21 +60,28 @@ public class EventNotificationsCategory {
 	}
 
 	private static List<OptionGroup> createGroups(SkyblockerConfig config) {
-		Map<String, IntArrayList> eventsReminderTimes = config.eventNotifications.eventsReminderTimes;
-		List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
+		Map<String, EventNotificationsConfig.EventConfig> eventsReminderTimes = config.eventNotifications.events;
 		if (eventsReminderTimes.isEmpty()) return List.of(OptionGroup.createBuilder().option(LabelOption.createBuilder().label(Component.translatable("skyblocker.config.eventNotifications.monologue")).build()).build());
-		for (Map.Entry<String, IntArrayList> entry : eventsReminderTimes.entrySet()) {
-			groups.add(ListOption.<Integer>createBuilder()
+		List<OptionGroup> groups = new ArrayList<>(eventsReminderTimes.size());
+		for (Map.Entry<String, EventNotificationsConfig.EventConfig> entry : eventsReminderTimes.entrySet()) {
+			groups.add(OptionGroup.createBuilder()
 					.name(Component.literal(entry.getKey()))
-					.binding(EventNotifications.DEFAULT_REMINDERS, entry::getValue, integers -> entry.setValue(new IntArrayList(integers)))
-					.controller(new DurationController())
-							.description(Component.translatable("skyblocker.config.eventNotifications.@Tooltip[0]"),
-									Component.empty(),
-									Component.translatable("skyblocker.config.eventNotifications.@Tooltip[1]"),
-									Component.empty(),
-									Component.translatable("skyblocker.config.eventNotifications.@Tooltip[2]", entry.getKey()))
-					.initial(60)
-					.collapsed(true)
+					.option(Option.<Boolean>createBuilder()
+							.name(Component.translatable("skyblocker.config.eventNotifications.event.enabled", entry.getKey()))
+							.binding(EventNotifications.DEFAULT_REMINDERS.enabled,
+									() -> entry.getValue().enabled,
+									enabled -> entry.getValue().enabled = enabled
+							)
+							.controller(ConfigUtils.createBooleanController())
+							.build()
+					)
+					.option(ButtonOption.createBuilder()
+							.name(Component.translatable("skyblocker.config.eventNotifications.event.editReminders", entry.getKey()))
+							.prompt(Component.translatable("skyblocker.config.eventNotifications.event.editReminders.prompt"))
+							.description(Component.translatable("skyblocker.config.eventNotifications.event.editReminders.tooltip"))
+							.action(s -> Minecraft.getInstance().setScreen(new EventConfigTimesEditScreen(s, entry.getKey(), entry.getValue())))
+							.build()
+					)
 					.build()
 			);
 		}

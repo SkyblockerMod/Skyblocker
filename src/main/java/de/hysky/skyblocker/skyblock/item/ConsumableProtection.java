@@ -20,7 +20,7 @@ public class ConsumableProtection {
 	public static void init() {
 		UseItemCallback.EVENT.register(ConsumableProtection::onInteract);
 		//Prevents placing the items when they are player heads (counts for consuming them)
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onInteract(player, world, hand));
+		UseBlockCallback.EVENT.register((player, world, hand, _) -> onInteract(player, world, hand));
 	}
 
 	private static InteractionResult onInteract(Player player, Level world, InteractionHand hand) {

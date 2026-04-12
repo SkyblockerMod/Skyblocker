@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(MapRenderer.class)
 public class MapRendererMixin {
 	@ModifyExpressionValue(method = "extractDecorationRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/saveddata/maps/MapDecoration;renderOnFrame()Z"))
-	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(argsOnly = true) MapDecoration decoration) {
+	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(name = "decoration") MapDecoration decoration) {
 		// Allow alwaysRendered if
 		// 1. not in dungeons and map is disabled OR
 		// 2. the decoration type is frame (self player) and either fancy map or show self head are off OR

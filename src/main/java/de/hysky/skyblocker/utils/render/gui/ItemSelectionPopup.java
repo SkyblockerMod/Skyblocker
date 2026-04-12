@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.Pair;
 import java.util.Collection;
@@ -8,7 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -94,11 +96,11 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	protected void init() {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 		addRenderableWidget(adder.addChild(new ItemList(300, (int) (height * 0.8f)), 2));
-		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, b -> {
+		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
 			onClose();
 			onDone.accept(null);
 		}).build()));
-		doneButton = Button.builder(CommonComponents.GUI_DONE, b -> {
+		doneButton = Button.builder(CommonComponents.GUI_DONE, _ -> {
 			onClose();
 			onDone.accept(selectedItem == null ? null : selectedItem.item);
 		}).build();
@@ -114,9 +116,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractBackground(context, mouseX, mouseY, delta);
+		extractPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
 	}
 
 	private class ItemList extends SearchableGridWidget {
@@ -124,8 +126,8 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 
 		private ItemList(int width, int height) {
 			super(0, 0, width, height, Component.literal("Item List"), 20);
-			Stream<ItemStack> icons = skullIcons.stream().map(pair -> {
-						ItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
+			Stream<FlexibleItemStack> icons = skullIcons.stream().map(pair -> {
+				FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
 						skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
 						return skull;
 			});
@@ -147,9 +149,9 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	private class ItemWidget extends AbstractWidget {
 		private final ItemStack item;
 
-		private ItemWidget(ItemStack stack) {
-			super(0, 0, 20, 20, Component.literal(stack.getHoverName().getString()));
-			item = new ItemStack(stack.getItem());
+		private ItemWidget(FlexibleItemStack stack) {
+			super(0, 0, 20, 20, Component.literal(stack.getStackOrThrow().getHoverName().getString()));
+			item = new ItemStack(stack.typeHolder());
 			item.copyFrom(DataComponents.PROFILE, stack);
 			String itemId = stack.getSkyblockId();
 			CompoundTag customData = new CompoundTag();
@@ -159,13 +161,13 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.renderItem(item, getX() + 2, getY() + 2);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+			graphics.item(item, getX() + 2, getY() + 2);
 			if (selectedItem == this) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			}
 			if (isHovered()) {
-				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+				graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
 			}
 		}
 

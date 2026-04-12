@@ -11,7 +11,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,12 +30,12 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (!(screen instanceof AbstractContainerScreen<?> handledScreen) || !INSTANCE.test(handledScreen) || !INSTANCE.isEnabled() || client.gameMode == null) return;
-			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((ignored, keyInput) ->
+			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((_, keyInput) ->
 					allowInput(client, handledScreen, keybinding -> keybinding.matches(keyInput))
 			);
-			ScreenMouseEvents.allowMouseClick(handledScreen).register((ignored, click) ->
+			ScreenMouseEvents.allowMouseClick(handledScreen).register((_, click) ->
 					allowInput(client, handledScreen, keybinding -> keybinding.matchesMouse(click))
 			);
 		});
@@ -58,7 +58,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		// This prevents usage when the inventory hasn't loaded fully or when the slot pressed is locked or when the slot has no armor (which would be meaningless to click)
 		if (!itemStack.is(Items.PINK_DYE) && !itemStack.is(Items.LIME_DYE)) return true;
 		assert client.gameMode != null;
-		client.gameMode.handleInventoryMouseClick(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ClickType.PICKUP, client.player);
+		client.gameMode.handleContainerInput(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ContainerInput.PICKUP, client.player);
 		return false;
 	}
 

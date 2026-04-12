@@ -33,7 +33,7 @@ public class Fetchur extends ChatPatternListener {
 		LOGGER.info("Original Fetchur message: {}", message.getString());
 		String riddle = matcher.group(1);
 		String answer = answers.getOrDefault(riddle, riddle);
-		client.player.displayClientMessage(Component.nullToEmpty("§e[NPC] Fetchur§f: " + answer), false);
+		client.player.sendSystemMessage(Component.nullToEmpty("§e[NPC] Fetchur§f: " + answer));
 		return true;
 	}
 

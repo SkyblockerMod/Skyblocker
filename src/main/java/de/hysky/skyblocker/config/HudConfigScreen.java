@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import java.awt.Color;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A screen for configuring the positions of HUD widgets.
@@ -20,10 +21,10 @@ import net.minecraft.network.chat.Component;
  * (i.e. one for dwarven mines, one for the end, etc.) See an implementation for an example.
  */
 public abstract class HudConfigScreen extends Screen {
-	protected final Screen parent;
+	protected final @Nullable Screen parent;
 	protected final List<AbstractWidget> widgets;
 
-	private AbstractWidget draggingWidget;
+	private @Nullable AbstractWidget draggingWidget;
 	private double mouseClickRelativeX;
 	private double mouseClickRelativeY;
 
@@ -34,7 +35,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent the parent screen
 	 * @param widget the widget to configure
 	 */
-	public HudConfigScreen(Component title, Screen parent, AbstractWidget widget) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, AbstractWidget widget) {
 		this(title, parent, List.of(widget));
 	}
 
@@ -45,7 +46,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent  the parent screen
 	 * @param widgets the widgets to configure
 	 */
-	public HudConfigScreen(Component title, Screen parent, List<AbstractWidget> widgets) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, List<AbstractWidget> widgets) {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;
@@ -59,10 +60,10 @@ public abstract class HudConfigScreen extends Screen {
 	}
 
 	@Override
-	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		renderWidget(context, widgets, delta);
-		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
+	public final void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
+		extractRenderState(graphics, widgets, delta);
+		graphics.centeredText(font, "Right Click To Reset Position", width / 2, height / 2, Color.GRAY.getRGB());
 	}
 
 	/**
@@ -71,9 +72,9 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param context the context to render in
 	 * @param widgets the widgets to render
 	 */
-	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
+	protected void extractRenderState(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
 		for (AbstractWidget widget : widgets) {
-			widget.render(context, -1, -1, delta);
+			widget.extractRenderState(graphics, -1, -1, delta);
 		}
 	}
 
@@ -90,7 +91,7 @@ public abstract class HudConfigScreen extends Screen {
 	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (click.button() == 0) {
 			for (AbstractWidget widget : widgets) {
-				if (HudHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
+				if (GuiHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
 					mouseClickRelativeX = click.x() - widget.getX() - getWidgetXOffset(widget);
 					mouseClickRelativeY = click.y() - widget.getY();

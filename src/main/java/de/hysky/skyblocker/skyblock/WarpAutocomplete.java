@@ -13,6 +13,7 @@ import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import net.azureaaron.hmapi.data.rank.PackageRank;
@@ -34,8 +35,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /**
  * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
@@ -83,7 +84,7 @@ public class WarpAutocomplete {
 			JsonObject object;
 			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 				object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-			} catch (NoSuchFileException e) {
+			} catch (NoSuchFileException _) {
 				return Object2BooleanMaps.<String>emptyMap();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to read warp autocomplete file", e);
@@ -95,9 +96,11 @@ public class WarpAutocomplete {
 
 	private static void createCommandNode(Object2BooleanMap<String> warps) {
 		commandNode = literal("warp")
-				.requires(fabricClientCommandSource -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
+				.executes(CommandUtils.noOp)
 				.then(argument("destination", StringArgumentType.greedyString())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(getEligibleWarps(warps), builder))
+						.executes(CommandUtils.noOp)
 				).build();
 	}
 

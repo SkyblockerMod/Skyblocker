@@ -7,7 +7,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
-import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -15,13 +14,11 @@ import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
@@ -36,6 +33,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputQuirks;
 import net.minecraft.network.chat.Component;
+
 import java.awt.Color;
 import java.util.Comparator;
 import java.util.List;
@@ -309,13 +307,7 @@ public class UIAndVisualsCategory {
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
 								.tags(Component.literal("gui"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> {
-									if (Utils.isOnSkyblock() && config.uiAndVisuals.tabHud.tabHudEnabled) {
-										MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
-									} else {
-										Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, WidgetManager.ScreenLayer.MAIN_TAB, screen));
-									}
-								})
+								.action(WidgetsConfigurationScreen::openWidgetsConfigScreen)
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
@@ -453,7 +445,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new StatusBarsConfigScreen()))
+								.action(_ -> Minecraft.getInstance().setScreen(new StatusBarsConfigScreen()))
 								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
@@ -519,6 +511,16 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.waypoints.allowSkippingWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_3_0)
+								.binding(defaults.uiAndVisuals.waypoints.waypointActivationRadius,
+										() -> config.uiAndVisuals.waypoints.waypointActivationRadius,
+										newValue -> config.uiAndVisuals.waypoints.waypointActivationRadius = newValue)
+								.controller(FloatController.createBuilder().range(1f, 10f).slider(0.5f).build())
+								.build()
+						)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip"))

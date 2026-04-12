@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -36,13 +36,13 @@ public class SkillsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int column2 = rootX + 113;
 		for (int i = 0; i < skillWidgets.size(); i++) {
 			int x = (i < 6) ? rootX : column2;
 			int y = rootY + (i % 6) * ROW_GAP;
-			context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
-			skillWidgets.get(i).render(context, mouseX, mouseY, x, y + 3);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
+			skillWidgets.get(i).extractRenderState(graphics, mouseX, mouseY, x, y + 3);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class SkillsPage implements ProfileViewerPage {
 
 				default -> -1;
 			};
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}
@@ -67,7 +67,7 @@ public class SkillsPage implements ProfileViewerPage {
 				case "SKILL_RUNECRAFT" -> this.skills.get("SKILL_RUNECRAFTING").getAsLong();
 				default -> this.skills.get(skill).getAsLong();
 			};
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}
@@ -76,7 +76,7 @@ public class SkillsPage implements ProfileViewerPage {
 		try {
 			JsonObject dungeonSkills = this.PLAYER_PROFILE.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types");
 			return dungeonSkills.getAsJsonObject("catacombs").get("experience").getAsLong();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}

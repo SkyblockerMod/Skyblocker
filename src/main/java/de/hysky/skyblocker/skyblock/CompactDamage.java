@@ -74,13 +74,13 @@ public class CompactDamage {
 		}
 		// Add the additional symbol back, if present
 		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
-		entity.setCustomName(prettierCustomName);
+		entity.skyblocker$setCustomName(prettierCustomName);
 	}
 
-	/// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.
-	/// For example:
-	/// 123,456,789 (precision 3) -> 123M
-	/// 12,345 (precision 4) -> 1.234k
+	// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.
+	// For example:
+	// 123,456,789 (precision 3) -> 123M
+	// 12,345 (precision 4) -> 1.234k
 	@VisibleForTesting
 	static String prettifyDamageNumber(final long damage, final int maxPrecision) {
 		long targetDamage = damage;

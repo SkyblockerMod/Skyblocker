@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
@@ -9,6 +10,7 @@ import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -34,6 +36,15 @@ public class ChatCategory {
 								() -> config.chat.confirmationPromptHelper,
 								newValue -> config.chat.confirmationPromptHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Float>createBuilder()
+						.name(Component.translatable("skyblocker.config.chat.toastDuration"))
+						.description(Component.translatable("skyblocker.config.chat.toastDuration.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
+						.binding(defaults.chat.toastDisplayDuration,
+								() -> config.chat.toastDisplayDuration,
+								newValue -> config.chat.toastDisplayDuration = newValue)
+						.controller(FloatController.createBuilder().range(1f, 10f).slider(0.1f).build())
 						.build())
 
 				//Uncategorized Options
