@@ -1703,5 +1703,14 @@
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "显示没有正确名称的音效",
     "skyblocker.config.general.itemList.enableItemList.@Tooltip": "将SkyBlock物品及配方添加到受支持的物品列表模组（REI和JEI）中。",
     "skyblocker.config.general.itemList.enableRecipeBook": "启用配方书",
-    "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "将SkyBlock物品及配方添加到物品栏的配方书中。"
+    "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "将SkyBlock物品及配方添加到物品栏的配方书中。",
+    "skyblocker.config.eventNotifications.event.editReminders": "编辑提醒",
+    "skyblocker.config.eventNotifications.event.editReminders.prompt": "编辑",
+    "skyblocker.config.eventNotifications.event.editReminders.tooltip": "配置在事件发生前多久收到通知弹窗提醒！例如，如果在列表中设置“5m”和“30s”，你将在距离事件开始5分钟和30秒时各收到一次通知。",
+    "skyblocker.config.eventNotifications.event.enabled": "启用提醒",
+    "skyblocker.config.eventNotifications.screen.addReminder": "添加提醒",
+    "skyblocker.config.eventNotifications.screen.title": "编辑%s的提醒次数",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius": "路径点激活半径",
+    "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip": "你必须距离有序组中的某个路径点有多近才能将焦点切换到该路径点。",
+    "skyblocker.dungeons.croesusHelper.incompletePriceData": "（价格数据不完整）"
 }
