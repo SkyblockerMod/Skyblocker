@@ -22,6 +22,7 @@ public class SkyblockerRenderPipelines {
 			.withVertexShader(SkyblockerMod.id("core/filled_box"))
 			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
 			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.withCull(false)
 			.build());
 	public static final RenderPipeline FILLED_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls_instanced"))

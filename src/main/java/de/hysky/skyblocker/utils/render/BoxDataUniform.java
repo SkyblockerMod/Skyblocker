@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.ARGB;
 
-public class BoxDataUniform {
+public class BoxDataUniform implements AutoCloseable {
 	private static final boolean IS_LITTLE_ENDIAN = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
 	private static final int BUFFER_USAGE = GpuBuffer.USAGE_MAP_WRITE | GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER;
 	private static final int TEXELS_PER_INSTANCE = 2;
@@ -76,5 +76,10 @@ public class BoxDataUniform {
 	/// Allocates the buffer for the given number of boxes
 	private MappableRingBuffer createBuffer(int size) {
 		return new MappableRingBuffer(() -> "Box Data", BUFFER_USAGE, size);
+	}
+
+	@Override
+	public void close() {
+		this.buffer.close();
 	}
 }

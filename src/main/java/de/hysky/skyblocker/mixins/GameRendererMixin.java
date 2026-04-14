@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
+import de.hysky.skyblocker.utils.render.primitive.FilledBoxInstancedRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +19,7 @@ public class GameRendererMixin {
 
 	@Inject(method = "close", at = @At("TAIL"))
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
+		FilledBoxInstancedRenderer.INSTANCE.close();
 		Renderer.close();
 		GlowRenderer.getInstance().close();
 		GuiHelper.close();
