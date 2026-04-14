@@ -3,6 +3,24 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
+import de.hysky.skyblocker.utils.render.FrustumUtils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
+import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
+import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
+import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
+import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
+import de.hysky.skyblocker.utils.render.state.LinesRenderState;
+import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
+import de.hysky.skyblocker.utils.render.state.OutlinedCircleRenderState;
+import de.hysky.skyblocker.utils.render.state.QuadRenderState;
+import de.hysky.skyblocker.utils.render.state.SphereRenderState;
+import de.hysky.skyblocker.utils.render.state.TextRenderState;
+import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.minecraft.client.Minecraft;
@@ -24,25 +42,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
-import de.hysky.skyblocker.utils.render.FrustumUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
-import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
-import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
-import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
-import de.hysky.skyblocker.utils.render.state.LinesRenderState;
-import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
-import de.hysky.skyblocker.utils.render.state.OutlinedCircleRenderState;
-import de.hysky.skyblocker.utils.render.state.QuadRenderState;
-import de.hysky.skyblocker.utils.render.state.SphereRenderState;
-import de.hysky.skyblocker.utils.render.state.TextRenderState;
-import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
-import org.jspecify.annotations.Nullable;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
+	private static final boolean USE_INSTANCING = Debug.debugEnabled();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
@@ -429,8 +432,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.filledBoxStates != null) {
-			for (FilledBoxRenderState state : this.filledBoxStates) {
-				FilledBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
+			if (USE_INSTANCING) {
+				FilledBoxInstancedRenderer.INSTANCE.submitPrimitives(this.filledBoxStates, cameraState);
+			} else {
+				for (FilledBoxRenderState state : this.filledBoxStates) {
+					FilledBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
+				}
 			}
 		}
 

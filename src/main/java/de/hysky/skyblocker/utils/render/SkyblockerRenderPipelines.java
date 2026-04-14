@@ -5,15 +5,31 @@ import java.util.Optional;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.IrisCompatibility;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class SkyblockerRenderPipelines {
+	public static final RenderPipeline FILLED_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/filled_box"))
+			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.build());
+	public static final RenderPipeline FILLED_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/filled_box"))
+			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(Optional.empty())
+			.build());
 	/** Similar to {@link RenderPipelines#DEBUG_FILLED_BOX} */
 	public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls"))
