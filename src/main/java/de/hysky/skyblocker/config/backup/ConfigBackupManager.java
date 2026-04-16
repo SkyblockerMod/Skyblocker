@@ -38,7 +38,7 @@ public class ConfigBackupManager {
 			}
 		}, Executors.newVirtualThreadPerTaskExecutor());
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> backupConfig());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> backupConfig());
 	}
 
 	public static void backupConfig() {

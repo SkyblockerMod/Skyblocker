@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -23,9 +23,9 @@ public class TextureTextElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
+	public void extractRenderState(GuiGraphicsExtractor context, int x, int y) {
 		int offset = SkyblockerConfigManager.get().uiAndVisuals.tabHud.compactWidgets ? 2 : 4;
 		context.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
-		context.drawString(txtRend, text, x + textureWidth + PAD_L, y + offset, CommonColors.WHITE, false);
+		context.text(txtRend, text, x + textureWidth + PAD_L, y + offset, CommonColors.WHITE, false);
 	}
 }

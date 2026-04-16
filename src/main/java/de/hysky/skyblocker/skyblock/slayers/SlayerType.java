@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
 import com.mojang.serialization.Codec;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +29,7 @@ public enum SlayerType implements StringRepresentable {
 	public final EntityType<? extends Entity> mobType;
 	public final String bossName;
 	public final Identifier texture;
-	public final ItemStack dropIcon;
+	public final FlexibleItemStack dropIcon;
 	private final int[] health;
 	public final int maxLevel;
 	public final int[] xpPerTier;
@@ -37,7 +38,7 @@ public enum SlayerType implements StringRepresentable {
 	private final List<String> t4Minibosses;
 	private final List<String> t5Minibosses;
 
-	SlayerType(String name, String friendlyName, EntityType<? extends Entity> mobType, String bossName, Identifier texture, ItemStack dropIcon, int[] health, int[] xpPerTier, int[] levelMilestones, List<String> t3Minibosses, List<String> t4Minibosses, List<String> t5Minibosses) {
+	SlayerType(String name, String friendlyName, EntityType<? extends Entity> mobType, String bossName, Identifier texture, FlexibleItemStack dropIcon, int[] health, int[] xpPerTier, int[] levelMilestones, List<String> t3Minibosses, List<String> t4Minibosses, List<String> t5Minibosses) {
 		this.name = name;
 		this.friendlyName = friendlyName;
 		this.mobType = mobType;

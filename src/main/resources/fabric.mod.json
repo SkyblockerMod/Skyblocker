@@ -43,20 +43,21 @@
   ],
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.18.4",
-    "fabric-api": ">=0.140.0+1.21.11",
-	"dandelion": ">=1.0.0-alpha.14+1.21.11",
-    "yet_another_config_lib_v3": ">=3.8.1+1.21.11",
+    "fabricloader": ">=0.19.1",
+    "fabric-api": ">=0.145.3+26.1.1",
+	"dandelion": ">=1.0.0-alpha.18+26.1",
+    "yet_another_config_lib_v3": ">=3.9.2+26.1",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.1+1.21.2",
-    "minecraft": "~1.21.11",
-    "java": ">=21"
+    "hm-api": ">=1.0.3+26.1",
+    "minecraft": "~26.1",
+    "java": ">=25"
   },
   "conflicts": {
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
-    "skyblockmod": "<=1.10.7"
+    "skyblockmod": "<=1.10.7",
+	"sodium": "<=0.8.7"
   },
   "custom": {
     "modmenu": {

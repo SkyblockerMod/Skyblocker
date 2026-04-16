@@ -25,7 +25,7 @@ public class StereoHarmonyHelper extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().farming.garden.enableStereoHarmonyHelperForContest;
+		return SkyblockerConfigManager.get().farming.pestHighlighter.enableStereoHarmonyHelperForContest;
 	}
 
 	@Override

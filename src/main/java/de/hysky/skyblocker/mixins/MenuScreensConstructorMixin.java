@@ -40,8 +40,8 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 
 		switch (screenHandler) {
 			// Better party finder
-			case ChestMenu ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
-			case ChestMenu ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
+			case ChestMenu _ when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
+			case ChestMenu _ when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
 
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.screen != null) {

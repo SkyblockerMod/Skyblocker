@@ -36,13 +36,13 @@ public class DungeonGlowAdder extends MobGlowAdder {
 
 		return switch (entity) {
 			// Minibosses
-			case Player p when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Lost Adventurer") -> LOST_ADVENTURER_COLOUR;
-			case Player p when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Shadow Assassin") -> SHADOW_ASSASSIN_COLOUR;
-			case Player p when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Diamond Guy") -> ANGRY_ARCHAEOLOGIST_COLOUR;
-			case Player p when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldGlow(name) -> LividColor.getGlowColor(name);
+			case Player _ when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Lost Adventurer") -> LOST_ADVENTURER_COLOUR;
+			case Player _ when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Shadow Assassin") -> SHADOW_ASSASSIN_COLOUR;
+			case Player _ when SkyblockerConfigManager.get().dungeons.starredMobGlow && !DungeonManager.getBoss().isFloor(4) && name.equals("Diamond Guy") -> ANGRY_ARCHAEOLOGIST_COLOUR;
+			case Player _ when entity.getId() == LividColor.getCorrectLividId() && LividColor.shouldGlow(name) -> LividColor.getGlowColor(name);
 
 			// Bats
-			case Bat b when SkyblockerConfigManager.get().dungeons.starredMobGlow -> STARRED_COLOUR;
+			case Bat _ when SkyblockerConfigManager.get().dungeons.starredMobGlow -> STARRED_COLOUR;
 
 			// Fel Heads
 			case ArmorStand as when SkyblockerConfigManager.get().dungeons.starredMobGlow && as.isMarker() && as.hasItemInSlot(EquipmentSlot.HEAD) && ItemUtils.getHeadTexture(as.getItemBySlot(EquipmentSlot.HEAD)).equals(HeadTextures.FEL) -> ENDERMAN_EYE_COLOUR;
@@ -57,10 +57,10 @@ public class DungeonGlowAdder extends MobGlowAdder {
 			}
 
 			// Armor Stands
-			case ArmorStand as -> 0;
+			case ArmorStand _ -> 0;
 
 			// Regular Mobs
-			case Entity e when SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity) -> STARRED_COLOUR;
+			case Entity _ when SkyblockerConfigManager.get().dungeons.starredMobGlow && isStarred(entity) -> STARRED_COLOUR;
 
 			//Class-based glow
 			//This goes after regular mobs to ensure starred player entities like dreadlords have the glow applied

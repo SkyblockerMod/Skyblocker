@@ -1,40 +1,60 @@
 package de.hysky.skyblocker.utils.render;
 
+import java.util.Optional;
+
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.IrisCompatibility;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class SkyblockerRenderPipelines {
+	public static final RenderPipeline FILLED_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/filled_box"))
+			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.build());
+	public static final RenderPipeline FILLED_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/filled_box"))
+			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(Optional.empty())
+			.build());
 	/** Similar to {@link RenderPipelines#DEBUG_FILLED_BOX} */
 	public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls"))
-			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+			.withDepthStencilState(Optional.empty())
 			.build());
 	/** Similar to {@link RenderPipelines#LINES} */
 	public static final RenderPipeline LINES_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/lines_through_walls"))
-			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+			.withDepthStencilState(Optional.empty())
 			.build());
 	/** Similar to {@link RenderPipelines#DEBUG_QUADS}  */
 	public static final RenderPipeline QUADS_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_quads_through_walls"))
-			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+			.withDepthStencilState(Optional.empty())
 			.withCull(false)
 			.build());
 	/** Similar to {@link RenderPipelines#GUI_TEXTURED} */
 	public static final RenderPipeline TEXTURE = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/texture"))
+			.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
 			.withCull(false)
 			.build());
 	public static final RenderPipeline TEXTURE_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/texture_through_walls"))
-			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+			.withDepthStencilState(Optional.empty())
 			.withCull(false)
 			.build());
 	public static final RenderPipeline CYLINDER = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
@@ -67,6 +87,8 @@ public class SkyblockerRenderPipelines {
 	public static void init() {
 		Renderer.excludePipelineFromBatching(CYLINDER);
 		Renderer.excludePipelineFromBatching(CIRCLE);
+		Renderer.excludePipelineFromBatching(LINES_THROUGH_WALLS);
+		Renderer.excludePipelineFromBatching(RenderPipelines.LINES);
 		IrisCompatibility.assignPipelines();
 	}
 }

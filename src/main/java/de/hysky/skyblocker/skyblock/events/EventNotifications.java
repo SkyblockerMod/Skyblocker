@@ -11,18 +11,17 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 
@@ -40,21 +39,22 @@ public class EventNotifications {
 	public static final String JACOBS = "Jacob's Farming Contest";
 	public static final String MAYOR_JERRY = "Mayor Jerry";
 
-	public static final IntArrayList DEFAULT_REMINDERS = new IntArrayList(IntList.of(60, 60 * 5));
-	public static final Map<String, ItemStack> eventIcons = Map.ofEntries(
-			Map.entry("Dark Auction", new ItemStack(Items.NETHER_BRICK)),
-			Map.entry("Bonus Fishing Festival", new ItemStack(Items.FISHING_ROD)),
-			Map.entry("Bonus Mining Fiesta", new ItemStack(Items.IRON_PICKAXE)),
-			Map.entry(JACOBS, new ItemStack(Items.IRON_HOE)),
-			Map.entry("New Year Celebration", new ItemStack(Items.CAKE)),
-			Map.entry("Election Over!", new ItemStack(Items.JUKEBOX)),
-			Map.entry("Election Booth Opens", new ItemStack(Items.JUKEBOX)),
-			Map.entry(MAYOR_JERRY, Items.VILLAGER_SPAWN_EGG.getDefaultInstance()),
-			Map.entry("Spooky Festival", new ItemStack(Items.JACK_O_LANTERN)),
-			Map.entry("Season of Jerry", new ItemStack(Items.SNOWBALL)),
-			Map.entry("Jerry's Workshop Opens", new ItemStack(Items.SNOW_BLOCK)),
-			Map.entry("Traveling Zoo", new ItemStack(Items.HAY_BLOCK)) // change to the custom head one day
+	public static final EventNotificationsConfig.EventConfig DEFAULT_REMINDERS = new EventNotificationsConfig.EventConfig();
+	public static final Map<String, FlexibleItemStack> eventIcons = Map.ofEntries(
+			Map.entry("Dark Auction", new FlexibleItemStack(Items.NETHER_BRICK)),
+			Map.entry("Bonus Fishing Festival", new FlexibleItemStack(Items.FISHING_ROD)),
+			Map.entry("Bonus Mining Fiesta", new FlexibleItemStack(Items.IRON_PICKAXE)),
+			Map.entry(JACOBS, new FlexibleItemStack(Items.IRON_HOE)),
+			Map.entry("New Year Celebration", new FlexibleItemStack(Items.CAKE)),
+			Map.entry("Election Over!", new FlexibleItemStack(Items.JUKEBOX)),
+			Map.entry("Election Booth Opens", new FlexibleItemStack(Items.JUKEBOX)),
+			Map.entry(MAYOR_JERRY, new FlexibleItemStack(Items.VILLAGER_SPAWN_EGG)),
+			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
+			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
+			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
+			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
+	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
 	private static long currentTime = System.currentTimeMillis() / 1000;
 
 	@Init
@@ -64,23 +64,35 @@ public class EventNotifications {
 	}
 
 	public static LiteralArgumentBuilder<FabricClientCommandSource> debugToasts() {
-		return ClientCommandManager.literal("toasts").then(
-				ClientCommandManager.argument("time", IntegerArgumentType.integer(0))
-						.then(ClientCommandManager.argument("jacob", BoolArgumentType.bool()).executes(context -> {
-											long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
-											if (context.getArgument("jacob", Boolean.class)) {
-												Minecraft.getInstance().getToastManager().addToast(
-														new JacobEventToast(time, "Jacob's farming contest", List.of("Cactus", "Cocoa Beans", "Pumpkin"))
-												);
-											} else {
-												Minecraft.getInstance().getToastManager().addToast(
-														new EventToast(time, "Jacob's or something idk", new ItemStack(Items.PAPER))
-												);
-											}
-											return 0;
-										}
-								)
+		return ClientCommands.literal("toasts").then(
+				ClientCommands.argument("time", IntegerArgumentType.integer(0)).then(
+						ClientCommands.argument("duration", IntegerArgumentType.integer(0)).then(
+								ClientCommands.argument("jacob", BoolArgumentType.bool()).executes(context -> {
+									long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
+									int duration = context.getArgument("duration", int.class);
+									if (context.getArgument("jacob", Boolean.class)) {
+										Minecraft.getInstance().getToastManager().addToast(
+												new JacobEventToast(
+														time,
+														time + duration,
+														"Jacob's farming contest",
+														List.of("Cactus", "Cocoa Beans", "Pumpkin")
+												)
+										);
+									} else {
+										Minecraft.getInstance().getToastManager().addToast(
+												new EventToast(
+														time,
+														time + duration,
+														"Jacob's or something idk",
+														FALLBACK_ICON
+												)
+										);
+									}
+									return 0;
+								})
 						)
+				)
 		);
 	}
 
@@ -108,7 +120,7 @@ public class EventNotifications {
 			List<SkyblockEvent> parsedEvents = SkyblockEvent.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getPartialOrThrow();
 			for (SkyblockEvent event : parsedEvents) {
 				if (event.start() + event.duration() < currentTime) continue;
-				events.computeIfAbsent(event.event(), s -> new LinkedList<>()).add(event);
+				events.computeIfAbsent(event.event(), _ -> new LinkedList<>()).add(event);
 			}
 
 			for (Map.Entry<String, LinkedList<SkyblockEvent>> entry : events.entrySet()) {
@@ -118,7 +130,7 @@ public class EventNotifications {
 
 			SkyblockerConfigManager.update(config -> {
 				for (String s : events.keySet()) {
-					config.eventNotifications.eventsReminderTimes.computeIfAbsent(s, s1 -> DEFAULT_REMINDERS);
+					config.eventNotifications.events.computeIfAbsent(s, _ -> DEFAULT_REMINDERS);
 				}
 			});
 		}).exceptionally(EventNotifications::itBorked);
@@ -144,28 +156,37 @@ public class EventNotifications {
 				skyblockEvent = nextEvents.peekFirst();
 				if (skyblockEvent == null) continue;
 			}
+			if (!criterionMet()) continue;
 			String eventName = entry.getKey();
-			// Cannot be changed to fast util due to casting issues
-			List<Integer> reminderTimes = SkyblockerConfigManager.get().eventNotifications.eventsReminderTimes.getOrDefault(eventName, DEFAULT_REMINDERS);
-			if (reminderTimes.isEmpty()) continue;
+			EventNotificationsConfig.EventConfig config = SkyblockerConfigManager.get().eventNotifications.events.getOrDefault(eventName, DEFAULT_REMINDERS);
+			if (!config.enabled) continue;
 
-			for (int reminderTime : reminderTimes) {
-				if (criterionMet() && currentTime + reminderTime < skyblockEvent.start() && newTime + reminderTime >= skyblockEvent.start()) {
-					Minecraft instance = Minecraft.getInstance();
-					if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
-						instance.getToastManager().addToast(
-								new JacobEventToast(skyblockEvent.start(), eventName, skyblockEvent.extras().left().get())
-						);
-					} else {
-						instance.getToastManager().addToast(
-								new EventToast(skyblockEvent.start(), eventName, eventIcons.getOrDefault(eventName, new ItemStack(Items.PAPER)))
-						);
-					}
-					SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
-					if (soundEvent != null)
-						instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
-					break;
+			for (int reminderTime : config.reminderTimes) {
+				// Only show notification if last time we ticked was before the event, and we are now after the event start
+				if (newTime + reminderTime < skyblockEvent.start() || currentTime + reminderTime >= skyblockEvent.start()) continue;
+				Minecraft instance = Minecraft.getInstance();
+				if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
+					instance.getToastManager().addToast(
+							new JacobEventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									skyblockEvent.extras().left().get()
+							)
+					);
+				} else {
+					instance.getToastManager().addToast(
+							new EventToast(
+									skyblockEvent.start(),
+									skyblockEvent.start() + skyblockEvent.duration(),
+									eventName,
+									eventIcons.getOrDefault(eventName, FALLBACK_ICON)
+							)
+					);
 				}
+				SoundEvent soundEvent = SkyblockerConfigManager.get().eventNotifications.reminderSound.getSoundEvent();
+				if (soundEvent != null) instance.getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
+				break;
 			}
 		}
 		currentTime = newTime;

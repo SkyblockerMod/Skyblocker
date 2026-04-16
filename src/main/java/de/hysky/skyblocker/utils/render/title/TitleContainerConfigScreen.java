@@ -15,7 +15,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -68,13 +68,13 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
-		super.renderWidget(context, widgets, delta);
+	protected void extractRenderState(GuiGraphicsExtractor context, List<AbstractWidget> widgets, float delta) {
+		super.extractRenderState(context, widgets, delta);
 		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
-		context.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
+		context.centeredText(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
+		context.centeredText(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
+		context.centeredText(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
+		context.centeredText(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
 
 		int selectionWidth = getSelectionWidth();
 		int x1 = switch (alignment) {
@@ -86,10 +86,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 		int x2 = x1 + selectionWidth;
 		int y2 = y1 + getSelectionHeight();
 
-		context.hLine(x1, x2, y1, Color.RED.getRGB());
-		context.hLine(x1, x2, y2, Color.RED.getRGB());
-		context.vLine(x1, y1, y2, Color.RED.getRGB());
-		context.vLine(x2, y1, y2, Color.RED.getRGB());
+		context.horizontalLine(x1, x2, y1, Color.RED.getRGB());
+		context.horizontalLine(x1, x2, y2, Color.RED.getRGB());
+		context.verticalLine(x1, y1, y2, Color.RED.getRGB());
+		context.verticalLine(x2, y1, y2, Color.RED.getRGB());
 	}
 
 	private void updateWidgetDimensions() {

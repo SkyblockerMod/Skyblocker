@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -37,7 +37,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (posProgress < current.getOffset()) {
 			posProgress += delta * 5;
 			if (posProgress > current.getOffset()) posProgress = current.getOffset();
@@ -47,8 +47,8 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 		}
 
 
-		context.pose().pushMatrix();
-		context.pose().translate(getX(), getY());
+		graphics.pose().pushMatrix();
+		graphics.pose().translate(getX(), getY());
 
 		int x = current.isVertical() ? 0 : Math.round(posProgress);
 		int y = current.isVertical() ? Math.round(posProgress) : 0;
@@ -56,13 +56,13 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 		int optionWidth = current.getOptionSize()[0];
 		int optionHeight = current.getOptionSize()[1];
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, getWidth(), getHeight());
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, getWidth(), getHeight());
 		if (isHovered()) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, optionWidth, optionHeight);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, optionWidth, optionHeight);
 		} else {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, optionWidth, optionHeight);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, optionWidth, optionHeight);
 		}
-		context.pose().popMatrix();
+		graphics.pose().popMatrix();
 	}
 
 	@Override

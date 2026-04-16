@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class EntityRenderDispatcherMixin {
 
 	@ModifyReturnValue(method = "shouldRender", at = @At("RETURN"))
-	private <E extends Entity> boolean skyblocker$shouldRender(boolean original, @Local(argsOnly = true) E entity) {
+	private <E extends Entity> boolean skyblocker$shouldRender(boolean original, @Local(name = "entity") E entity) {
 		// Don't render Sven Pup's Nametag
 		if ((Utils.isInHub() || Utils.isInPark()) && SkyblockerConfigManager.get().slayers.wolfSlayer.hideSvenPupNametag && entity instanceof ArmorStand armorStand && armorStand.getCustomName() instanceof Component nameTag && nameTag.getString().contains("Sven Pup")) return false;
 

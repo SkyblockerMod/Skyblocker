@@ -6,9 +6,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -26,32 +26,32 @@ public class RenderHelper {
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
-		WorldRenderEvents.BEFORE_ENTITIES.register(RenderHelper::submitVanillaSubmittables);
-		WorldRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
+		LevelRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
+		LevelRenderEvents.COLLECT_SUBMITS.register(RenderHelper::submitVanillaSubmittables);
+		LevelRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
 	}
 
-	private static void startExtraction(WorldExtractionContext context) {
+	private static void startExtraction(LevelExtractionContext context) {
 		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerPrimitiveCollection");
-		collector = new PrimitiveCollectorImpl(context.worldState(), context.frustum());
-		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
+		collector = new PrimitiveCollectorImpl(context.levelState(), context.levelState().cameraRenderState.cullFrustum);
+		LevelRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
 		profiler.pop();
 	}
 
-	private static void submitVanillaSubmittables(WorldRenderContext context) {
+	private static void submitVanillaSubmittables(LevelRenderContext context) {
 		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerSubmitVanillaSubmittables");
-		collector.dispatchVanillaSubmittables(context.worldState(), context.commandQueue());
+		collector.dispatchVanillaSubmittables(context.levelState(), context.submitNodeCollector());
 		profiler.pop();
 	}
 
-	private static void executeDraws(WorldRenderContext context) {
+	private static void executeDraws(LevelRenderContext context) {
 		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("skyblockerSubmitPrimitives");
-		collector.dispatchPrimitivesToRenderers(context.worldState().cameraRenderState);
+		collector.dispatchPrimitivesToRenderers(context.levelState().cameraRenderState);
 		collector = null;
 		profiler.pop();
 

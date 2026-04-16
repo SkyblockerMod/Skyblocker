@@ -19,7 +19,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -62,8 +62,8 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Waypoints {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
@@ -82,9 +82,9 @@ public class Waypoints {
 	public static void init() {
 		loadWaypoints();
 		ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
-		WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
 		ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
 	}
 
@@ -120,7 +120,7 @@ public class Waypoints {
 		try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
 			List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
 			waypointGroups.forEach(Waypoints::putWaypointGroup);
-		} catch (NoSuchFileException ignored) {
+		} catch (NoSuchFileException _) {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
 		}
@@ -132,7 +132,7 @@ public class Waypoints {
 			}
 			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
 			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
-		} catch (NoSuchFileException | FileAlreadyExistsException ignored) {
+		} catch (NoSuchFileException | FileAlreadyExistsException _) {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
 		}
@@ -208,7 +208,7 @@ public class Waypoints {
 		JsonArray waypointGroupsJson;
 		try {
 			waypointGroupsJson = SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonObject.class).getAsJsonArray("categories");
-		} catch (JsonSyntaxException e) {
+		} catch (JsonSyntaxException _) {
 			// Handle the case where there is only a single json list of waypoints and no group data.
 			JsonObject waypointGroupJson = new JsonObject();
 			waypointGroupJson.addProperty("name", "New Group");

@@ -5,16 +5,17 @@ import com.google.common.collect.MultimapBuilder;
 import com.mojang.blaze3d.platform.cursor.CursorType;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.StringWidget;
@@ -72,7 +73,7 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 	protected final void lateInit() {
 		layout.visitWidgets(this::addRenderableWidget);
 		// Not using layout due to dynamic height.
-		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island, (isOpen) -> {}));
+		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island, _ -> {}));
 		addRenderableOnly(popupContainer);
 		repositionElements();
 	}
@@ -152,10 +153,10 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 		private final AbstractButton closeButton;
 
 		PopupContainer() {
-			super(0, 0, 0, 0, Component.empty());
+			super(0, 0, 0, 0, Component.empty(), AbstractScrollArea.defaultSettings(8));
 			this.closeButton = new ImageButton(14, 14, new WidgetSprites(
 					Identifier.withDefaultNamespace("widget/cross_button"), Identifier.withDefaultNamespace("widget/cross_button_highlighted")),
-					b -> visible = false,
+					_ -> visible = false,
 					Component.empty()
 					);
 		}
@@ -208,16 +209,16 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 			// Set the cursor to default to prevent widgets from below taking over the shape when they cannot be interacted with
 			if (this.isHovered()) {
 				context.requestCursor(CursorType.DEFAULT);
 			}
 
 			context.fill(getX(), getY(), getRight(), getBottom(), ARGB.color(0.6f, 0));
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), CommonColors.WHITE);
+			GuiHelper.border(context, getX(), getY(), getWidth(), getHeight(), CommonColors.WHITE);
 			for (AbstractWidget child : children) {
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
 			if (!isFocused() &&
 					(mouseX <= getX() - 50 || mouseX >= getRight() + 50 || mouseY <= getY() - 50 || mouseY >= getBottom() + 50)) visible = false;

@@ -26,7 +26,7 @@ public class DangerWarning {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(DangerWarning::updateIndicator, 5);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	private static void updateIndicator() {

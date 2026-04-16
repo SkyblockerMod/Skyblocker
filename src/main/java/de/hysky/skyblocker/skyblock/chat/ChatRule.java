@@ -9,6 +9,7 @@ import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.CollectionUtils;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -28,7 +29,6 @@ import java.util.regex.PatternSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
@@ -258,11 +258,11 @@ public class ChatRule {
 
 		try {
 			this.pattern = Pattern.compile(filterText);
-		} catch (PatternSyntaxException ex) {
+		} catch (PatternSyntaxException _) {
 			this.enabled = false;
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null) return;
-			client.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)), false);
+			client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.chat.chatRules.invalidRegex", this.name)));
 		}
 	}
 
@@ -358,30 +358,34 @@ public class ChatRule {
 			Matcher m = matcher.get();
 			m.reset();
 			if (!m.find()) return replaceMessage; // shouldn't happen but you never know
-			m.appendReplacement(sb, replaceMessage);
+			try {
+				m.appendReplacement(sb, replaceMessage);
+			} catch (IndexOutOfBoundsException | IllegalArgumentException _) {
+				return replaceMessage;
+			}
 			return sb.substring(m.start());
 		}
 	}
 
 	static class ToastMessage {
 		static final Codec<ToastMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				ItemStack.OPTIONAL_CODEC.optionalFieldOf("icon", ItemStack.EMPTY).forGetter(o -> o.icon),
+				FlexibleItemStack.CODEC.optionalFieldOf("icon").forGetter(o -> o.icon),
 				Codec.STRING.fieldOf("message").forGetter(o -> o.message),
 				Codec.LONG.fieldOf("displayDuration").forGetter(o -> o.displayDuration)
 		).apply(instance, ToastMessage::new));
 
-		ItemStack icon;
+		Optional<FlexibleItemStack> icon;
 		String message;
 		long displayDuration;
 
-		ToastMessage(ItemStack icon, String message, long displayDuration) {
+		ToastMessage(Optional<FlexibleItemStack> icon, String message, long displayDuration) {
 			this.message = message;
 			this.icon = icon;
 			this.displayDuration = displayDuration;
 		}
 
 		ToastMessage() {
-			this(new ItemStack(Items.PAINTING), "", 1000);
+			this(Optional.of(new FlexibleItemStack(Items.PAINTING)), "", 1000);
 		}
 
 		@Override

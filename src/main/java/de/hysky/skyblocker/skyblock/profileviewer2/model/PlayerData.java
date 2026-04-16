@@ -68,8 +68,20 @@ public class PlayerData {
 		return this.experience.getOrDefault("SKILL_" + skill.name(), 0.0d);
 	}
 
-	public LevelInfo getSkillLevel(Skill skill) {
-		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill);
+	public LevelInfo getSkillLevel(Skill skill, ProfileMember member) {
+		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
+	}
+
+	public float getSkillAverage(ProfileMember member) {
+		float average = 0;
+
+		for (Skill skill : Skill.CONVENTIONAL_SKILLS) {
+			average += this.getSkillLevel(skill, member).level();
+		}
+
+		average /= Skill.CONVENTIONAL_SKILLS.size();
+
+		return average;
 	}
 
 	/**

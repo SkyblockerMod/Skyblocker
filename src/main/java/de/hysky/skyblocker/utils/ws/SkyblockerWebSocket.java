@@ -50,7 +50,7 @@ public class SkyblockerWebSocket {
 		});
 		// Make a best effort to send a message to the WS indicating the game & connection will close.
 		// The delivery of this message is not guaranteed since this will not block the game from closing.
-		ClientLifecycleEvents.CLIENT_STOPPING.register(_minecraft -> closeSocket());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> closeSocket());
 	}
 
 	private static CompletableFuture<Void> setupSocket() {

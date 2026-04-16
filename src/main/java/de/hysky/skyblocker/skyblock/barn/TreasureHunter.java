@@ -33,7 +33,7 @@ public class TreasureHunter extends ChatPatternListener {
 		String hint = matcher.group(1);
 		String location = locations.get(hint);
 		if (location == null) return false;
-		client.player.displayClientMessage(Component.nullToEmpty("§e[NPC] Treasure Hunter§f: Go mine around " + location), false);
+		client.player.sendSystemMessage(Component.nullToEmpty("§e[NPC] Treasure Hunter§f: Go mine around " + location));
 		requestWaypoint(location);
 		return true;
 	}
@@ -45,7 +45,7 @@ public class TreasureHunter extends ChatPatternListener {
 						.withClickEvent(new ClickEvent.RunCommand(command.trim()))
 				)
 		);
-		Minecraft.getInstance().player.displayClientMessage(requestMessage, false);
+		Minecraft.getInstance().player.sendSystemMessage(requestMessage);
 	}
 
 	static {

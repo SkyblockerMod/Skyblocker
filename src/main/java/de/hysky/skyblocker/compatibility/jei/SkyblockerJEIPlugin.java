@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility.jei;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -11,6 +12,7 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import mezz.jei.api.IModPlugin;
@@ -29,7 +31,6 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
@@ -48,9 +49,10 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
+		@SuppressWarnings("unused")
 		SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
-		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack)).map(ItemStack::getItem).distinct().forEach(item ->
-		registration.registerSubtypeInterpreter(item, (stack, context) -> ItemStackComponentizationFixer.componentsAsString(stack))
+		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack.getStackOrThrow())).map(FlexibleItemStack::getStackOrThrow).distinct().forEach(item ->
+		registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
 				);
 	}
 
@@ -75,7 +77,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
+		registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems().stream().filter(Predicate.not(FlexibleItemStack::isEmpty)).map(FlexibleItemStack::getStackOrThrow).toList());
 		registration.addRecipes(this.skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockCraftingRecipe.class::isInstance).map(SkyblockCraftingRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockForgeRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockForgeRecipe.class::isInstance).map(SkyblockForgeRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockNpcShopRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockNpcShopRecipe.class::isInstance).map(SkyblockNpcShopRecipe.class::cast).toList());
@@ -93,7 +95,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
 			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		}
