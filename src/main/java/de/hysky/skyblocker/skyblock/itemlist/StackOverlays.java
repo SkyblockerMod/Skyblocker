@@ -33,7 +33,7 @@ public class StackOverlays {
 	private static Map<@NEUId String, ItemOverlayFile> overlays = Map.of();
 
 	@Init
-	protected static void init() {
+	public static void init() {
 		NEURepoManager.runAsyncAfterLoad(() -> overlays = NEURepoManager.getStackOverlays(DATA_VERSION));
 	}
 
