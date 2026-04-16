@@ -61,7 +61,7 @@ public class RareDropSpecialEffects {
 			case "Manti-core" -> "MANTI_CORE";
 			case "Minos Relic" -> "MINOS_RELIC";
 			case "Shimmering Wool" -> "SHIMMERING_WOOL";
-			
+
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";
