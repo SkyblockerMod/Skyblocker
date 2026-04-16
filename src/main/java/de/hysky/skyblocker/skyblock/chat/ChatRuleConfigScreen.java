@@ -41,6 +41,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.StringDecomposer;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -117,6 +118,7 @@ public class ChatRuleConfigScreen extends Screen {
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3);
 		EditBox filterInput = contentAdder.addChild(new EditBox(font, getWidth(3), 20, Component.empty()), 3);
 		filterInput.setMaxLength(1024);
+		filterInput.addFormatter(createRenderTextProvider(filterInput::getValue, true));
 		filterInput.setValue(chatRule.getFilter());
 		filterInput.setResponder(chatRule::setFilter);
 		filterInput.setHint(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
@@ -127,18 +129,21 @@ public class ChatRuleConfigScreen extends Screen {
 		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
 				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
-		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
-		filtersRow2.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
+		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
 						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
+		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIncludeFormatting())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"), (_, value) -> chatRule.setIncludeFormatting(value)));
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
+		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
 
 		// ==== Outputs
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3, content.newCellSettings().paddingTop(4 + GRID_SPACING));
@@ -308,8 +313,16 @@ public class ChatRuleConfigScreen extends Screen {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
-	private static EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
+
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
+		return createRenderTextProvider(fullTextSupplier, false);
+	}
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier, boolean onlyIfFormatted) {
 		return (s, start) -> visitor -> {
+			if (onlyIfFormatted && (!chatRule.getIncludeFormatting() || chatRule.getRegex())) {
+				return StringDecomposer.iterate(fullTextSupplier.get(), Style.EMPTY, visitor);
+			}
+
 			String fullText = fullTextSupplier.get();
 			char prefix = fullText.contains("§") ? '§' : '&';
 			Style style = Style.EMPTY;
