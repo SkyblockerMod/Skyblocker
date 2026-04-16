@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+(?<item>.+?)(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
 
 	@Init
 	public static void init() {
