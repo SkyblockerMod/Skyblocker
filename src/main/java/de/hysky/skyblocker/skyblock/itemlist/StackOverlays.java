@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegistryUtils;
@@ -32,9 +31,8 @@ public class StackOverlays {
 
 	private static Map<@NEUId String, ItemOverlayFile> overlays = Map.of();
 
-	@Init
-	public static void init() {
-		NEURepoManager.runAsyncAfterLoad(() -> overlays = NEURepoManager.getStackOverlays(DATA_VERSION));
+	protected static void loadOverlays() {
+		overlays = NEURepoManager.getStackOverlays(DATA_VERSION);
 	}
 
 	/**

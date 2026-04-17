@@ -103,6 +103,7 @@ public class ItemRepository {
 		itemsMap.clear();
 		recipes.clear();
 
+		StackOverlays.loadOverlays();
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
 		StackOverlays.cleanUpOverlays();
 		items.sort(Comparator.<FlexibleItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
