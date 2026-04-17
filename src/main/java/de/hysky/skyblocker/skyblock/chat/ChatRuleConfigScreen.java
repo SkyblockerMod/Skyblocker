@@ -279,7 +279,7 @@ public class ChatRuleConfigScreen extends Screen {
 		itemInput.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip")));
 		itemInput.setValue(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)) : "minecraft:painting");
 
-		if (minecraft.player == null) {
+		if (minecraft.level == null) {
 			itemInput.setEditable(false);
 			preview.active = false;
 			Tooltip tooltip = Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit"));
