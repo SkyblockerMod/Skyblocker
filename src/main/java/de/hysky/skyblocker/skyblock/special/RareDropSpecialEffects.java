@@ -56,7 +56,7 @@ public class RareDropSpecialEffects {
 	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 			//Mythological Ritual
-			case "Enchanted Book (Chimera I)" -> "ENCHANTMENT_ULTIMATE_CHIMERA";
+			case "Enchanted Book (Chimera I)" -> "ENCHANTED_BOOK";
 			case "Fateful Stinger" -> "FATEFUL_STINGER";
 			case "Manti-core" -> "MANTI_CORE";
 			case "Minos Relic" -> "MINOS_RELIC";
