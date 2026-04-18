@@ -122,6 +122,7 @@
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.duration.@Tooltip": "How long the toast stays on screen.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon": "Toast Icon:",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip": "Input the item to use as an icon, in the same format as the /give command.",
+  "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit": "Item editing is disabled until you join a world!",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "Click to open the SkyBlock item selector.",
   "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "True",
 
