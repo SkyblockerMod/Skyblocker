@@ -442,8 +442,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.outlinedBoxStates != null) {
-			for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
-				OutlinedBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
+			if (USE_INSTANCING) {
+				OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(this.outlinedBoxStates, cameraState);
+			} else {
+				for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
+					OutlinedBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
+				}
 			}
 		}
 
