@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import java.nio.file.Files;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
@@ -10,6 +11,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.util.NEUId;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
@@ -20,19 +22,25 @@ import net.minecraft.world.item.ItemStack;
  * Handles applying "overlays" to modern {@code ItemStack}s from the NEU Repository. Overlays are already in the modern components
  * format according to the data version of the given directory which matches the vanilla data version number. This system allows the
  * NEU Repository to provide support for modern items while maintaining backwards compatibility with 1.8 and older modern releases (say 1.21.1).
- *
+ * <p>
  * Note that overlays do not contain all the original components, lore and custom name are notably left out for ease of maintenance.
  */
 public class StackOverlays {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().dataVersion().version();
 
+	private static Map<@NEUId String, ItemOverlayFile> overlays = Map.of();
+
+	protected static void loadOverlays() {
+		overlays = NEURepoManager.getStackOverlays(DATA_VERSION);
+	}
+
 	/**
 	 * Applies the necessary overlay for the {@code stack} if applicable.
 	 */
 	protected static void applyOverlay(NEUItem neuItem, ItemStack stack) {
 		try {
-			ItemOverlayFile overlayFile = NEURepoManager.getStackOverlays(DATA_VERSION).get(neuItem.getSkyblockItemId());
+			ItemOverlayFile overlayFile = overlays.get(neuItem.getSkyblockItemId());
 
 			//The returned file is null if it does not exist
 			if (overlayFile != null) {
@@ -52,6 +60,10 @@ public class StackOverlays {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Stack Overlays] Failed to apply stack overlay! Item: {}", neuItem.getSkyblockItemId(), e);
 		}
+	}
+
+	protected static void cleanUpOverlays() {
+		overlays = Map.of();
 	}
 
 	private static void logParseError(NEUItem neuItem, String message) {
