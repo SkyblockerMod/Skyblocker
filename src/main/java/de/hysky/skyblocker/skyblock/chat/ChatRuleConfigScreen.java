@@ -41,7 +41,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.StringDecomposer;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -318,29 +317,31 @@ public class ChatRuleConfigScreen extends Screen {
 		return createRenderTextProvider(fullTextSupplier, false);
 	}
 	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier, boolean onlyIfFormatted) {
-		return (s, start) -> visitor -> {
+		return (s, start) -> {
 			if (onlyIfFormatted && (!chatRule.getIncludeFormatting() || chatRule.getRegex())) {
-				return StringDecomposer.iterate(fullTextSupplier.get(), Style.EMPTY, visitor);
+				return null;
 			}
 
-			String fullText = fullTextSupplier.get();
-			char prefix = fullText.contains("§") ? '§' : '&';
-			Style style = Style.EMPTY;
-			for (int i = 0; i < fullText.length(); i++) {
-				if (fullText.charAt(i) == prefix) {
-					if (i + 1 < fullText.length()) {
-						ChatFormatting formatting = ChatFormatting.getByCode(fullText.charAt(i + 1));
-						if (formatting != null) {
-							style = formatting == ChatFormatting.RESET ? Style.EMPTY : style.applyLegacyFormat(formatting);
+			return visitor -> {
+				String fullText = fullTextSupplier.get();
+				char prefix = fullText.contains("§") ? '§' : '&';
+				Style style = Style.EMPTY;
+				for (int i = 0; i < fullText.length(); i++) {
+					if (fullText.charAt(i) == prefix) {
+						if (i + 1 < fullText.length()) {
+							ChatFormatting formatting = ChatFormatting.getByCode(fullText.charAt(i + 1));
+							if (formatting != null) {
+								style = formatting == ChatFormatting.RESET ? Style.EMPTY : style.applyLegacyFormat(formatting);
+							}
 						}
 					}
+					int codePoint = fullText.codePointAt(i);
+					if (i >= start && i < start + s.length()) {
+						visitor.accept(i, style, codePoint);
+					}
 				}
-				int codePoint = fullText.codePointAt(i);
-				if (i >= start && i < start + s.length()) {
-					visitor.accept(i, style, codePoint);
-				}
-			}
-			return true;
+				return true;
+			};
 		};
 	}
 
