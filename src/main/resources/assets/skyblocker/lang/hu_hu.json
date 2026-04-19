@@ -1711,5 +1711,10 @@
     "skyblocker.config.eventNotifications.screen.title": "%s Idejeinek Szerkesztése",
     "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius": "Helyjelölő Aktiválási Hatósugár",
     "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip": "Mennyire kell közel lenni egy rendezett csoport helyjelölőlőjéhez, hogy arra válts.",
-    "skyblocker.dungeons.croesusHelper.incompletePriceData": "(Nem Teljes Ár-adatok)"
+    "skyblocker.dungeons.croesusHelper.incompletePriceData": "(Nem Teljes Ár-adatok)",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit": "A tárgyak szerkesztése nem elérhető ameddig nem csatlakozol egy világhoz!",
+    "skyblocker.config.chat.filter.hideSpiritSceptre": "Spirit Sceptre Üzenet Elrejtése",
+    "skyblocker.config.farming.farmingHud.coins": "Összesített Óránkénti Profit Mutatása",
+    "skyblocker.config.farming.farmingHud.counter": "Számláló & Növények per Perc Mutatása",
+    "skyblocker.config.farming.farmingHud.experience": "Farming Skill Haladás Mutatása"
 }
