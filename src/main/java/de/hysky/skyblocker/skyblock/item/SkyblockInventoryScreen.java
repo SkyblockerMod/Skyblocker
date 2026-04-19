@@ -188,14 +188,6 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
-		super.extractSlot(graphics, slot, mouseX, mouseY);
-		if (slot instanceof EquipmentSlot && !slot.hasItem()) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
-		}
-	}
-
-	@Override
 	public @Nullable ItemStack getFocusedItem() {
 		return hoveredItem;
 	}
@@ -234,6 +226,11 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		@Override
 		public boolean mayPlace(ItemStack stack) {
 			return false;
+		}
+
+		@Override
+		public @Nullable Identifier getNoItemIcon() {
+			return EMPTY_SLOT;
 		}
 	}
 }
