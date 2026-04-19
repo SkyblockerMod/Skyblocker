@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.CommonColors;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
