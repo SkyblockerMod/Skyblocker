@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
@@ -35,6 +36,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -45,6 +47,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +61,10 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int COLUMN_WIDTH = 105;
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
-	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
-	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
-	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
+	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;	// Link to helpful learning & testing website for regex w/ multilingual support.
+	private static final Component REGEX_LINK = Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink").withStyle(
+			style -> style.withUnderlined(true).withClickEvent(new ClickEvent.OpenUrl(URI.create("https://regex101.com/")))
+	);
 
 	private final Map<@Nullable SoundEvent, Component> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
 		map.put(SoundEvents.NOTE_BLOCK_PLING.value(), Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").withStyle(ChatFormatting.YELLOW));
@@ -124,16 +128,31 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
+		filtersRow1.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex", REGEX_LINK),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip"),
+				getWidth(1.5f),
+				HorizontalAlignment.CENTER,
+				chatRule::setRegex,
+				chatRule.getRegex()
+		));
+		filtersRow1.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip"),
+				getWidth(1.5f),
+				HorizontalAlignment.RIGHT,
+				chatRule::setIgnoreCase,
+				chatRule.getIgnoreCase()
+		));
 		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip"),
+				getWidth(1.5f),
+				HorizontalAlignment.CENTER,
+				chatRule::setPartialMatch,
+				chatRule.getPartialMatch()
+		));
 		filtersRow2.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
 						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
@@ -146,12 +165,17 @@ public class ChatRuleConfigScreen extends Screen {
 
 		LinearLayout buttons = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 
-		buttons.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getHideMessage())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (_, value) -> {
+		buttons.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip"),
+				getWidth(1.5f),
+				HorizontalAlignment.LEFT,
+				value -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
-				}));
+				},
+				chatRule.getHideMessage()
+		));
 
 		// Sound
 		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.
@@ -306,6 +330,31 @@ public class ChatRuleConfigScreen extends Screen {
 
 	private static String getItemString(ItemStack stack) {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
+	}
+
+	private enum HorizontalAlignment {
+		LEFT,
+		CENTER,
+		RIGHT
+	}
+
+	private FrameLayout buildCheckbox(Component text, Component tooltip, int width, HorizontalAlignment align, Consumer<Boolean> setter, boolean selected) {
+		FrameLayout frame = new FrameLayout().setMinWidth(width);
+
+		switch (align) {
+			case LEFT -> frame.defaultChildLayoutSetting().alignHorizontallyLeft();
+			case CENTER -> frame.defaultChildLayoutSetting().alignHorizontallyCenter();
+			case RIGHT -> frame.defaultChildLayoutSetting().alignHorizontallyRight();
+		}
+
+		frame.addChild(Checkbox.builder(text, font)
+				.selected(selected)
+				.onValueChange((_, value) -> setter.accept(value))
+				.tooltip(Tooltip.create(tooltip))
+				.maxWidth(width)
+				.build());
+
+		return frame;
 	}
 
 	private static EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {

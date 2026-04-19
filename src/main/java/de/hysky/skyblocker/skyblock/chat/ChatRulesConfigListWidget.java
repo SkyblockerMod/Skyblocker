@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.chat;
 
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import java.awt.Color;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -115,6 +116,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		private final ChatRule chatRule;
 
 		// Widgets
+		private final StringWidget nameWidget;
 		private final List<? extends GuiEventListener> children;
 		private final LinearLayout layout;
 
@@ -143,11 +145,19 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 			this.chatRuleIndex = chatRuleIndex;
 			this.chatRule = ChatRulesHandler.CHAT_RULE_LIST.getData().get(chatRuleIndex);
 
+			nameWidget = new StringWidget(Component.literal(chatRule.getName()), minecraft.font);
+			nameWidget.setMaxWidth(110, StringWidget.TextOverflow.SCROLLING);
 			layout = new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL);
-			layout.defaultCellSetting().paddingRight(10);
-			layout.defaultCellSetting().paddingTop(3);
+			layout.defaultCellSetting().paddingRight(10).paddingTop(3).alignHorizontallyCenter();
 
-			Button enabledButton = layout.addChild(Button.builder(enabledButtonText(), this::toggleEnabled).size(50, 20).build());
+			Checkbox enabledCheck = layout.addChild(Checkbox.builder(Component.empty(), minecraft.font)
+					.selected(chatRule.getEnabled())
+					.onValueChange((_, value) -> {
+						hasChanged = true;
+						chatRule.setEnabled(value);
+					})
+					.build());
+			enabledCheck.setWidth(50);
 
 			Button openConfigButton = layout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule"), _ -> minecraft.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
 
@@ -155,21 +165,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 				minecraft.setScreen(new ConfirmScreen(this::deleteEntry, Component.translatable("skyblocker.config.chat.chatRules.screen.deleteQuestion"), Component.translatable("skyblocker.config.chat.chatRules.screen.deleteWarning", chatRule.getName()), Component.translatable("selectServer.deleteButton"), CommonComponents.GUI_CANCEL))
 			).size(50, 20).build());
 
-			children = List.of(enabledButton, openConfigButton, deleteButton);
-		}
-
-		private Component enabledButtonText() {
-			if (chatRule.getEnabled()) {
-				return Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.true").withColor(Color.GREEN.getRGB());
-			} else {
-				return Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.false").withColor(Color.RED.getRGB());
-			}
-		}
-
-		private void toggleEnabled(Button button) {
-			hasChanged = true;
-			chatRule.setEnabled(!chatRule.getEnabled());
-			button.setMessage(enabledButtonText());
+			children = List.of(enabledCheck, openConfigButton, deleteButton);
 		}
 
 		private void deleteEntry(boolean confirmedAction) {
@@ -184,10 +180,12 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			// Text
+			nameWidget.setX(getX() + 10);
+			nameWidget.setY(getY() + 8);
+			nameWidget.extractRenderState(graphics, mouseX, mouseY, a);
 			// Widgets
 			layout.visitWidgets(child -> child.extractRenderState(graphics, mouseX, mouseY, a));
-			// Text
-			graphics.centeredText(minecraft.font, chatRule.getName(), getX() + 60, this.getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override
