@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
+import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
@@ -84,10 +86,9 @@ public class ItemRepository {
 			client.execute(() -> {
 				client.getConnection().handleUpdateRecipes(packet);
 
-				// TODO (26.1): Re-enable when JEI updates.
-				/*if (JEICompatibility.JEI_LOADED) {
+				if (JEICompatibility.JEI_LOADED) {
 					SkyblockerJEIPlugin.trickJEIIntoLoadingRecipes();
-				}*/
+				}
 			});
 		} catch (Exception e) {
 			LOGGER.info("[Skyblocker Item Repo] recipe sync error", e);
@@ -102,7 +103,9 @@ public class ItemRepository {
 		itemsMap.clear();
 		recipes.clear();
 
+		StackOverlays.loadOverlays();
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
+		StackOverlays.cleanUpOverlays();
 		items.sort(Comparator.<FlexibleItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
 				.thenComparingInt(stack -> stack.getSkyblockId().length())
 				.thenComparing(FlexibleItemStack::getSkyblockId)

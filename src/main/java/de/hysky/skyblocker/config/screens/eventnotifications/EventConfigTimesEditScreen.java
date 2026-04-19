@@ -112,10 +112,10 @@ public class EventConfigTimesEditScreen extends Screen {
 		}
 
 		@Override
-		public void extractContent(GuiGraphicsExtractor guiGraphics, int i, int j, boolean bl, float f) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			entryLayout.setPosition(getContentRight() - entryLayout.getWidth(), getContentY());
 			for (AbstractWidget widget : widgets) {
-				widget.extractRenderState(guiGraphics, i, j, f);
+				widget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 		}
 
