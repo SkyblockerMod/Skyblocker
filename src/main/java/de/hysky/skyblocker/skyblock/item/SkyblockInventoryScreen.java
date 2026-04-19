@@ -136,14 +136,12 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		return super.mouseClicked(click, doubled);
 	}
 
-	/**
-	 * Draws the equipment slots in the foreground layer after vanilla slots are drawn
-	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#render(GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
-	 */
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+	protected void extractSlots(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+		super.extractSlots(graphics, mouseX, mouseY);
+
 		for (Slot equipmentSlot : equipmentSlots) {
-			boolean hovered = isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
+			boolean hovered = hoveredSlot == null && isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
 			if (hovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreenAccessor.getSLOT_HIGHLIGHT_BACK_SPRITE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
