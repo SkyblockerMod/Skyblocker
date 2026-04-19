@@ -15,6 +15,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.function.Consumer;
+import java.util.function.Function;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -89,9 +91,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public boolean visible = true;
 	public boolean enabled = true;
 
-	private Object value = "???";
-	private @Nullable Object max = "???";
-	private @Nullable Object overflow = "???";
+	private @Nullable Integer value = null;
+	private @Nullable Integer max = null;
+	private @Nullable Integer overflow = null;
+	protected @Nullable Function<Integer, String> toDisplay = null;
 
 	private int renderX = 0;
 	private int renderY = 0;
@@ -149,8 +152,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 	}
 
-	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-		this.value = text;
+	public void updateValues(float fill, float overflowFill, int value, @Nullable Integer max, @Nullable Integer overflow) {
+		this.value = value;
 		this.fill = Math.clamp(fill, 0, 1);
 		this.overflowFill = Math.clamp(overflowFill, 0, 1);
 		this.max = max;
@@ -158,7 +161,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	public void updateWithResource(StatusBarTracker.Resource resource) {
-		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
+		this.updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
 	}
 
 	public void extractText(GuiGraphicsExtractor graphics) {
@@ -166,7 +169,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		Font textRenderer = Minecraft.getInstance().font;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
-		String stringValue = this.value.toString();
+		String stringValue = value == null ? "???" : toDisplay == null ? String.valueOf(overflow == null || showOverflow ? value : value + overflow) : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
 		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
 		if (hasMax() && showMax && max != null) {
@@ -439,6 +442,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 		public ManaStatusBar(StatusBarType type) {
 			super(type);
+			this.toDisplay = mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString();
 		}
 
 		@Override
@@ -455,30 +459,23 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
 		}
-
-		@Override
-		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
-		}
 	}
 
 	public static class ExperienceStatusBar extends StatusBar {
 		private static final Identifier CLOCK_ICON = SkyblockerMod.id("bars/icons/rift_time");
 		public ExperienceStatusBar(StatusBarType type) {
 			super(type);
+			this.toDisplay = time -> {
+				if (Utils.isInTheRift()) {
+					return time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
+				}
+				return time.toString();
+			};
 		}
 
 		@Override
 		protected Identifier getIcon() {
 			return Utils.isInTheRift() ? CLOCK_ICON : super.getIcon();
-		}
-
-		@Override
-		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-			if (Utils.isInTheRift() && text instanceof Integer time) {
-				text = time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
-			}
-			super.updateValues(fill, overflowFill, text, max, overflow);
 		}
 	}
 
