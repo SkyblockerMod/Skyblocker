@@ -55,7 +55,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 			moreCraftsButton.setTooltip(Tooltip.create(Component.literal("More Crafts")));
 			this.addRenderableWidget(moreCraftsButton);
 		}
-		assert (minecraft != null ? minecraft.player : null) != null;
+		assert minecraft.player != null;
 		this.addWidget(this.recipeBook);
 		this.setInitialFocus(this.recipeBook);
 		this.titleLabelX = 29;

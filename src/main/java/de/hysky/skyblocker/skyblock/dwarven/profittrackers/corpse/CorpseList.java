@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.apache.commons.text.WordUtils;
 import org.jspecify.annotations.Nullable;
@@ -12,39 +13,35 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 
-public class CorpseList extends ContainerObjectSelectionList<CorpseList.AbstractEntry> {
+public class CorpseList extends ContainerObjectSelectionList<RewardList.AbstractEntry> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorpseList.class);
 	private static final int BORDER_COLOR = 0xFF6C7086;
 	private static final int INNER_MARGIN = 2;
 
-	public CorpseList(Minecraft client, int width, int height, int y, int entryHeight, List<CorpseLoot> lootList) {
-		super(client, width, height, y, entryHeight);
+	public CorpseList(Minecraft client, int width, int height, int entryHeight, List<CorpseLoot> lootList) {
+		super(client, width, height, 0, entryHeight);
 		if (lootList.isEmpty()) {
 			addEmptyEntry();
 			addEmptyEntry();
 			addEmptyEntry();
-			addEntry(new CorpseList.SingleEntry(Component.literal("Your corpse history list is empty :(").withStyle(ChatFormatting.RED), false));
+			addEntry(new RewardList.SingleEntry(Component.literal("Your corpse history list is empty :(").withStyle(ChatFormatting.RED), false));
 			return;
 		}
 
 		for (int i = 0; i < lootList.size(); i++) {
 			CorpseLoot loot = lootList.get(i);
 			CorpseType type = loot.corpseType();
-			addEntry(new CorpseList.SingleEntry(Component.literal(WordUtils.capitalizeFully(type.name()) + " Corpse").withStyle(type.color)));
-			//TODO: Make this use the Formatters class instead when it's added
-			addEntry(new CorpseList.SingleEntry(Component.literal(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.ofInstant(loot.timestamp(), ZoneId.systemDefault()))).withStyle(ChatFormatting.LIGHT_PURPLE)));
+			addEntry(new RewardList.SingleEntry(Component.literal(WordUtils.capitalizeFully(type.name()) + " Corpse").withStyle(type.color)));
+			addEntry(new RewardList.SingleEntry(Component.literal(Formatters.DATE_FORMATTER.format(LocalDateTime.ofInstant(loot.timestamp(), ZoneId.systemDefault()))).withStyle(ChatFormatting.LIGHT_PURPLE)));
 
 			List<Reward> entries = loot.rewards();
 			for (Reward reward : entries) {
@@ -60,7 +57,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 			}
 
 			if (loot.isPriceDataComplete()) addEntry(new CorpseList.MultiEntry(loot.profit()));
-			else addEntry(new CorpseList.SingleEntry(Component.literal("Price data incomplete, can't calculate profit").withStyle(ChatFormatting.RED)));
+			else addEntry(new RewardList.SingleEntry(Component.literal("Price data incomplete, can't calculate profit").withStyle(ChatFormatting.RED)));
 
 			if (i < lootList.size() - 1) {
 				addEmptyEntry();
@@ -92,65 +89,24 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 	}
 
 	private void addEmptyEntry() {
-		addEntry(new EmptyEntry());
+		addEntry(new RewardList.EmptyEntry());
 	}
 
 	@Override
 	public int getRowWidth() {
-		return 500;
+		return Math.min(500, getWidth() - 24);
 	}
 
-	public abstract static class AbstractEntry extends ContainerObjectSelectionList.Entry<AbstractEntry> {
-		protected List<AbstractWidget> children;
-
-		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {}
-
-		@Override
-		public List<? extends NarratableEntry> narratables() {
-			return children;
-		}
-
-		@Override
-		public List<? extends GuiEventListener> children() {
-			return children;
-		}
-	}
-
-	// As a separator between entries
-	public static class EmptyEntry extends AbstractEntry {
-		public EmptyEntry() {
-			children = List.of();
-		}
-	}
-
-	// For a single line of text, allows for a border to be drawn or not
-	public static class SingleEntry extends AbstractEntry {
-		private boolean drawBorder = true;
-
-		public SingleEntry(Component text) {
-			children = List.of(new StringWidget(text, Minecraft.getInstance().font));
-		}
-
-		public SingleEntry(Component text, boolean drawBorder) {
-			this(text);
-			this.drawBorder = drawBorder;
-		}
-
-		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
-			if (drawBorder) GuiHelper.border(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
-			for (var child : children) {
-				child.setX(this.getX() + INNER_MARGIN);
-				child.setY(this.getY() + INNER_MARGIN);
-				child.setWidth(this.getWidth() - 2 * INNER_MARGIN);
-				child.extractRenderState(graphics, mouseX, mouseY, a);
-			}
+	@Override
+	public void refreshScrollAmount() {
+		super.refreshScrollAmount();
+		for (var entry : this.children()) {
+			entry.repositionElements(entry.getX(), entry.getY(), this.width, this.height);
 		}
 	}
 
 	// The main grid structure
-	public static class MultiEntry extends AbstractEntry {
+	public static class MultiEntry extends RewardList.AbstractEntry {
 		protected @Nullable StringWidget itemName;
 		protected @Nullable StringWidget amount = null;
 		protected @Nullable StringWidget totalPrice;
@@ -159,7 +115,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 		// For the items
 		public MultiEntry(Component itemName, int amount, double pricePerUnit) {
 			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font);
-			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
+			this.amount = new StringWidget(Component.literal("x" + Formatters.INTEGER_NUMBERS.format(amount)).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
 			this.totalPrice = new StringWidget(Component.literal(NumberFormat.getInstance().format(amount * pricePerUnit) + " Coins").withStyle(ChatFormatting.GOLD), Minecraft.getInstance().font);
 			this.pricePerUnit = new StringWidget(Component.literal(NumberFormat.getInstance().format(pricePerUnit) + " each").withStyle(ChatFormatting.GRAY), Minecraft.getInstance().font);
 			children = List.of(this.itemName, this.amount, this.totalPrice, this.pricePerUnit);
@@ -168,7 +124,7 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 		// For the items
 		public MultiEntry(Component itemName, int amount) {
 			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font);
-			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
+			this.amount = new StringWidget(Component.literal("x" + Formatters.INTEGER_NUMBERS.format(amount)).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
 			children = List.of(this.itemName, this.amount);
 		}
 
@@ -204,26 +160,34 @@ public class CorpseList extends ContainerObjectSelectionList<CorpseList.Abstract
 
 			int entryY = y + INNER_MARGIN;
 			if (itemName != null) {
-				itemName.setX(x + INNER_MARGIN);
 				itemName.setY(entryY);
 				itemName.setMaxWidth(entryWidth / 3 - 2 * INNER_MARGIN, StringWidget.TextOverflow.SCROLLING);
 				itemName.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (amount != null) {
-				position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, entryY);
+				amount.setY(entryY);
 				amount.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (totalPrice != null) {
-				position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
+				totalPrice.setY(entryY);
 				totalPrice.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (pricePerUnit != null) {
-				position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
+				pricePerUnit.setY(entryY);
 				pricePerUnit.extractRenderState(graphics, mouseX, mouseY, a);
 			}
+		}
+
+		@Override
+		public void repositionElements(int x, int y, int width, int entryHeight) {
+			if (itemName != null) itemName.setX(x + INNER_MARGIN);
+			int entryWidth = getWidth();
+			if (amount != null) position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, y);
+			if (totalPrice != null) position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, y);
+			if (pricePerUnit != null) position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, y);
 		}
 
 		private static void position(StringWidget widget, int start, int width, int y) {

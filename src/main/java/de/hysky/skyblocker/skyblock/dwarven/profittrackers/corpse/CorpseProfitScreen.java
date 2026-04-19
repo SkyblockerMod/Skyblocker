@@ -2,18 +2,20 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+
 import java.text.NumberFormat;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
 public class CorpseProfitScreen extends Screen {
@@ -26,6 +28,9 @@ public class CorpseProfitScreen extends Screen {
 	private final DoubleBooleanPair totalProfit = calculateTotalProfit(rewardsList);
 	private boolean summaryView;
 
+	private @Nullable HeaderAndFooterLayout layout;
+	private @Nullable ContainerObjectSelectionList<?> selectionList;
+
 	public CorpseProfitScreen(Screen parent) {
 		this(parent, true);
 	}
@@ -37,14 +42,20 @@ public class CorpseProfitScreen extends Screen {
 	}
 
 	@Override
-	protected void init() {
-		assert minecraft != null;
-		addRenderableOnly((context, _, _, _) -> {
-			context.centeredText(minecraft.font, Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
-		});
+	protected void repositionElements() {
+		if (layout == null || selectionList == null) return;
+		layout.arrangeElements();
+		selectionList.setSize(layout.getWidth(), layout.getContentHeight());
+		selectionList.setPosition(layout.getX(), layout.getHeaderHeight());
+		selectionList.refreshScrollAmount();
+	}
 
-		if (summaryView) addRenderableWidget(getRewardList());
-		else addRenderableWidget(getCorpseList());
+	@Override
+	protected void init() {
+		layout = new HeaderAndFooterLayout(this, 25, 45);
+		layout.addTitleHeader(Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), this.minecraft.font);
+		selectionList = summaryView ? getRewardList() : getCorpseList();
+		layout.addToContents(selectionList);
 
 		GridLayout gridWidget = new GridLayout();
 		gridWidget.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
@@ -60,9 +71,10 @@ public class CorpseProfitScreen extends Screen {
 		Component buttonText = summaryView ? Component.translatable("skyblocker.corpseTracker.historyView") : Component.translatable("skyblocker.corpseTracker.summaryView");
 		adder.addChild(Button.builder(buttonText, this::changeView).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
-		gridWidget.arrangeElements();
-		FrameLayout.centerInRectangle(gridWidget, 0, this.height - 64, this.width, 64);
-		gridWidget.visitWidgets(this::addRenderableWidget);
+
+		layout.addToFooter(gridWidget);
+		repositionElements();
+		layout.visitWidgets(this::addRenderableWidget);
 	}
 
 	// Rebuilds the screen with the new view, the main difference being which list is displayed
@@ -73,12 +85,12 @@ public class CorpseProfitScreen extends Screen {
 
 	// Lazy init
 	private CorpseList getCorpseList() {
-		return corpseList == null ? corpseList = new CorpseList(Minecraft.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : corpseList;
+		return corpseList == null ? corpseList = new CorpseList(Minecraft.getInstance(), width, height - 96, ENTRY_HEIGHT, rewardsList) : corpseList;
 	}
 
 	// Lazy init
 	private RewardList getRewardList() {
-		return rewardList == null ? rewardList = new RewardList(Minecraft.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : rewardList;
+		return rewardList == null ? rewardList = new RewardList(Minecraft.getInstance(), width, height - 96, 0, ENTRY_HEIGHT, rewardsList) : rewardList;
 	}
 
 	private static DoubleBooleanPair calculateTotalProfit(List<CorpseLoot> list) {
@@ -93,7 +105,6 @@ public class CorpseProfitScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(parent);
 	}
 }

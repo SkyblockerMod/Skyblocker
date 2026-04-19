@@ -266,15 +266,26 @@ public class ChatRuleConfigScreen extends Screen {
 		contentAdder.addChild(new ToggleableLayoutWidget(itemInput, toastOptionsPredicate));
 		itemInput.setResponder(itemData -> {
 			ItemStack parsedStack = ItemStackComponentizationFixer.fromItemString(itemData, 1);
-			if (parsedStack.isEmpty()) parsedStack = INVALID_ITEM.getStackOrThrow();
+			if (parsedStack.isEmpty()) parsedStack = INVALID_ITEM.getStack();
+			if (parsedStack == null) return;
+
 			FlexibleItemStack stack = new FlexibleItemStack(parsedStack);
-			preview.stack = stack.getStackOrThrow();
+			preview.stack = stack.getStackOrEmpty();
+			if (preview.stack.isEmpty()) return;
 			ChatRule.ToastMessage message = chatRule.getToastMessage();
 			if (message == null) return;
 			message.icon = Optional.of(stack);
 		});
 		itemInput.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.@Tooltip")));
 		itemInput.setValue(chatRule.getToastMessage() != null ? getItemString(chatRule.getToastMessage().icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)) : "minecraft:painting");
+
+		if (minecraft.level == null) {
+			itemInput.setEditable(false);
+			preview.active = false;
+			Tooltip tooltip = Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit"));
+			itemInput.setTooltip(tooltip);
+			preview.setTooltip(tooltip);
+		}
 
 		// Duration slider
 		RangedSliderWidget sliderWidget = RangedSliderWidget.builder()
@@ -340,10 +351,8 @@ public class ChatRuleConfigScreen extends Screen {
 	 */
 	@Override
 	public void onClose() {
-		if (minecraft != null) {
-			save();
-			minecraft.setScreen(parent);
-		}
+		save();
+		minecraft.setScreen(parent);
 	}
 
 	private void save() {

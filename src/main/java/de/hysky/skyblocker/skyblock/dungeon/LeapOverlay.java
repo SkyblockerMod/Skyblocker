@@ -165,7 +165,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 
 	@Override
 	public void removed() {
-		if (this.minecraft != null && this.minecraft.player != null) {
+		if (this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 			this.handler.removeSlotListener(this);
 		}
@@ -186,7 +186,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			if (LeapOverlay.this.hovered == null) return;
 
-			assert minecraft != null && minecraft.player != null && minecraft.gameMode != null;
+			assert minecraft.player != null && minecraft.gameMode != null;
 			references.stream()
 					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
 					.findAny()
