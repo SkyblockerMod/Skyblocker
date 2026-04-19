@@ -140,7 +140,7 @@ public class ChatRuleConfigScreen extends Screen {
 		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
 				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
 				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
 
