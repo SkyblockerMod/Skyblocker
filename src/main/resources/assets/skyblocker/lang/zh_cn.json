@@ -1712,5 +1712,10 @@
     "skyblocker.config.eventNotifications.screen.title": "编辑%s的提醒次数",
     "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius": "路径点激活半径",
     "skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip": "你必须距离有序组中的某个路径点有多近才能将焦点切换到该路径点。",
-    "skyblocker.dungeons.croesusHelper.incompletePriceData": "（价格数据不完整）"
+    "skyblocker.dungeons.croesusHelper.incompletePriceData": "（价格数据不完整）",
+    "skyblocker.config.chat.filter.hideSpiritSceptre": "隐藏Spirit Sceptre消息",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit": "在进入世界之前，项目编辑将被禁用！",
+    "skyblocker.config.farming.farmingHud.coins": "显示计算后的每小时利润",
+    "skyblocker.config.farming.farmingHud.counter": "显示计数器和每分钟作物",
+    "skyblocker.config.farming.farmingHud.experience": "显示农耕技能进度"
 }
