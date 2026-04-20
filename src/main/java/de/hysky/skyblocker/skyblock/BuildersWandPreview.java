@@ -103,8 +103,8 @@ public class BuildersWandPreview {
 		BlockPos.MutableBlockPos pos = startPos.mutable();
 
 		Direction dir = hitResult.getDirection().getOpposite();
-		// Adjust direction based on if we hit the top/bottom face (then we use client.player.getDirection() instead)
-		if (dir == Direction.UP || dir == Direction.DOWN) {
+		// Adjust direction based on if we hit the top/bottom face (then we use client.player.getDirection() instead). Side checks are exclusive to sneaking (delete) only.
+		if (dir == Direction.UP || dir == Direction.DOWN || !isSneaking) {
 			dir = client.player.getDirection();
 		}
 
