@@ -181,6 +181,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook"))
 								.description(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_3_0)
 								.binding(defaults.general.itemList.enableRecipeBook,
 										() -> config.general.itemList.enableRecipeBook,
 										newValue -> config.general.itemList.enableRecipeBook = newValue)

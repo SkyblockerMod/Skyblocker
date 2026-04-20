@@ -123,7 +123,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
-		if (this.minecraft != null && this.minecraft.player != null && this.hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
+		if (this.minecraft.player != null && this.hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 
 			// Wiki lookup

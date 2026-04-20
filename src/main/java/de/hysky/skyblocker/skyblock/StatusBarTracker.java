@@ -33,7 +33,7 @@ public class StatusBarTracker {
 	private static final Pattern HEALTH_STATUS = Pattern.compile("(?<health>[\\d,]+)/(?<max>[\\d,]+)❤(?<healing>\\+([\\d,]+)[▁-▆])?");
 	private static final Pattern HEALING = Pattern.compile("(?:§[\\da-z])*❤");
 	private static final Pattern DEFENSE_STATUS = Pattern.compile("(?<defense>[\\d,]+)❈ Defense");
-	private static final Pattern MANA_USE = Pattern.compile("-(?:[\\d,]+) Mana \\(.*?\\)");
+	private static final Pattern MANA_USE = Pattern.compile("-([\\d,]+) Mana \\(.*?\\)");
 	private static final Pattern MANA_STATUS = Pattern.compile("(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|(?<overflow>[\\d,]+)ʬ)");
 
 	private static final Minecraft client = Minecraft.getInstance();
@@ -42,6 +42,7 @@ public class StatusBarTracker {
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
+	private static int absorption = 0;
 
 	private static int ticks;
 	private static int lastManaTick;
@@ -83,7 +84,7 @@ public class StatusBarTracker {
 	private static void tick() {
 		if (client.player == null || !Utils.isOnSkyblock()) return;
 		ticks++;
-		updateHealth(health.value, health.max, health.overflow);
+		updateHealth(health.value, health.max);
 		updateSpeed();
 		updateAir();
 		if (ticks - lastManaTick > 0 && (ticks - lastManaTick) % 20 == 0) {
@@ -195,16 +196,24 @@ public class StatusBarTracker {
 	private static void updateHealth(Matcher matcher) {
 		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
 		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
-		updateHealth(health, max, Math.max(0, health - max));
+
+		if (Debug.isTestEnvironment() || client.player == null || client.player.getHealth() == client.player.getMaxHealth()) {
+			// If at full HP or in test environment, then use simple absorption math.
+			absorption = Math.max(0, health - max);
+		} else {
+			// Otherwise approximate absorption based on player health.
+			absorption = (int) (health - (client.player.getHealth() * max / client.player.getMaxHealth()));
+		}
+
+		updateHealth(health, max);
 	}
 
-	private static void updateHealth(int value, int max, int overflow) {
+	private static void updateHealth(int value, int max) {
 		// Client doesn't exist in test environment.
 		if (!Debug.isTestEnvironment() && client.player != null) {
 			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
-			overflow = (int) (client.player.getAbsorptionAmount() * max / client.player.getMaxHealth());
 		}
-		health = new Resource(Math.min(value, max), max, Math.min(overflow, max));
+		health = new Resource(Math.min(value, max), max, absorption);
 	}
 
 	private static void updateMana(Matcher m) {

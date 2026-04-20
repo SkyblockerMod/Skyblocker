@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
+import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -69,11 +71,11 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 				addEntry(new MultiEntry(itemName, reward.amount(), reward.pricePerUnit()));
 			}
 		}
-		addEntry(new SingleEntry(Component.empty())); // Just an empty line to separate the items from the keys
+		addEntry(new EmptyEntry()); // Just an empty line to separate the items from the keys
 		for (var entry : keyAmounts.reference2IntEntrySet()) {
 			addEntry(new MultiEntry(entry.getKey(), entry.getIntValue()));
 		}
-		addEntry(new SingleEntry(Component.empty())); // Just an empty line to separate the keys from the total profit
+		addEntry(new EmptyEntry()); // Just an empty line to separate the keys from the total profit
 		addEntry(new MultiEntry(profit));
 	}
 
@@ -95,7 +97,15 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 
 	@Override
 	public int getRowWidth() {
-		return 500;
+		return Math.min(500, getWidth() - 24);
+	}
+
+	@Override
+	public void refreshScrollAmount() {
+		super.refreshScrollAmount();
+		for (var entry : this.children()) {
+			entry.repositionElements(entry.getX(), entry.getY(), this.width, this.height);
+		}
 	}
 
 	abstract static class AbstractEntry extends ContainerObjectSelectionList.Entry<AbstractEntry> {
@@ -103,6 +113,8 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {}
+
+		public void repositionElements(int x, int y, int width, int height) {}
 
 		@Override
 		public List<? extends NarratableEntry> narratables() {
@@ -116,21 +128,21 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 	}
 
 	// As a separator between entries
-	private static class EmptyEntry extends AbstractEntry {
-		private EmptyEntry() {
+	protected static class EmptyEntry extends AbstractEntry {
+		public EmptyEntry() {
 			children = List.of();
 		}
 	}
 
 	// For a single line of text, allows for a border to be drawn or not
-	private static class SingleEntry extends AbstractEntry {
+	protected static class SingleEntry extends AbstractEntry {
 		private boolean drawBorder = true;
 
-		private SingleEntry(Component text) {
-			children = List.of(new StringWidget(text, Minecraft.getInstance().font)/*.alignCenter()*/);
+		protected SingleEntry(Component text) {
+			children = List.of(new StringWidget(text, Minecraft.getInstance().font));
 		}
 
-		private SingleEntry(Component text, boolean drawBorder) {
+		protected SingleEntry(Component text, boolean drawBorder) {
 			this(text);
 			this.drawBorder = drawBorder;
 		}
@@ -139,25 +151,30 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			if (drawBorder) GuiHelper.border(graphics, this.getX(), this.getY(), this.getWidth(), this.getHeight() + 1, BORDER_COLOR);
 			for (var child : children) {
-				child.setX(this.getX() + INNER_MARGIN);
-				child.setY(this.getY() + INNER_MARGIN);
-				child.setWidth(this.getWidth() - 2 * INNER_MARGIN);
+				child.setY(getY() + INNER_MARGIN);
 				child.extractRenderState(graphics, mouseX, mouseY, a);
 			}
+		}
+
+		@Override
+		public void repositionElements(int x, int y, int width, int height) {
+			AbstractWidget child = children.getFirst();
+			child.setX(x + INNER_MARGIN + (getWidth() - child.getWidth()) / 2);
+			child.setY(getY() + INNER_MARGIN);
 		}
 	}
 
 	// Represents a multi-column line of entry, with fixed width columns
-	private static class MultiEntry extends AbstractEntry {
+	protected static class MultiEntry extends AbstractEntry {
 		protected @Nullable StringWidget itemName;
 		protected @Nullable StringWidget amount;
 		protected @Nullable StringWidget totalPrice;
 		protected @Nullable StringWidget pricePerUnit = null;
 
 		// For the items
-		private MultiEntry(Component itemName, int amount, double pricePerUnit) {
-			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font)/*.alignLeft()*/;
-			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font)/*.alignCenter()*/;
+		protected MultiEntry(Component itemName, int amount, double pricePerUnit) {
+			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font);
+			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
 			this.totalPrice = new StringWidget(Component.literal(NumberFormat.getInstance().format(amount * pricePerUnit) + " Coins").withStyle(ChatFormatting.GOLD), Minecraft.getInstance().font);
 			if (amount > 1) { // Only show the price per unit if there's more than 1 item, otherwise it's equal to the total price anyway and is redundant.
 				this.pricePerUnit = new StringWidget(Component.literal(NumberFormat.getInstance().format(pricePerUnit) + " each").withStyle(ChatFormatting.GRAY), Minecraft.getInstance().font);
@@ -166,23 +183,23 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 		}
 
 		// For the items
-		private MultiEntry(Component itemName, int amount) {
-			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font)/*.alignLeft()*/;
-			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font)/*.alignCenter()*/;
+		protected MultiEntry(Component itemName, int amount) {
+			this.itemName = new StringWidget(itemName, Minecraft.getInstance().font);
+			this.amount = new StringWidget(Component.literal("x" + Formatters.INTEGER_NUMBERS.format(amount)).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
 			children = List.of(this.itemName, this.amount);
 		}
 
 		// For the total profit line
-		private MultiEntry(double profit) {
-			this.itemName = new StringWidget(Component.literal("Total Profit").withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD), Minecraft.getInstance().font)/*.alignLeft()*/;
+		protected MultiEntry(double profit) {
+			this.itemName = new StringWidget(Component.literal("Total Profit").withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD), Minecraft.getInstance().font);
 			this.totalPrice = new StringWidget(Component.literal(NumberFormat.getInstance().format(profit) + " Coins").withStyle(profit > 0 ? ChatFormatting.GREEN : ChatFormatting.RED), Minecraft.getInstance().font);
 			children = List.of(this.itemName, this.totalPrice);
 		}
 
 		// For the keys
-		private MultiEntry(CorpseType corpseType, int amount) {
-			this.itemName = new StringWidget(Component.literal(WordUtils.capitalizeFully(corpseType.name()) + " Corpse Key Cost").withStyle(corpseType.color), Minecraft.getInstance().font)/*.alignLeft()*/;
-			this.amount = new StringWidget(Component.literal("x" + amount).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font)/*.alignCenter()*/;
+		protected MultiEntry(CorpseType corpseType, int amount) {
+			this.itemName = new StringWidget(Component.literal(WordUtils.capitalizeFully(corpseType.name()) + " Corpse Key Cost").withStyle(corpseType.color), Minecraft.getInstance().font);
+			this.amount = new StringWidget(Component.literal("x" + Formatters.INTEGER_NUMBERS.format(amount)).withStyle(ChatFormatting.AQUA), Minecraft.getInstance().font);
 			double pricePerKey = corpseType.getKeyPrice();
 			// Gotta make do with weird formatting until we have actual formatters
 			String priceString = (pricePerKey > 0 ? "-" + NumberFormat.getInstance().format(pricePerKey * amount) : 0) + " Coins";
@@ -210,26 +227,34 @@ public class RewardList extends ContainerObjectSelectionList<RewardList.Abstract
 
 			int entryY = y + INNER_MARGIN;
 			if (itemName != null) {
-				itemName.setX(x + INNER_MARGIN);
 				itemName.setY(entryY);
 				itemName.setMaxWidth(entryWidth / 3 - 2 * INNER_MARGIN, StringWidget.TextOverflow.SCROLLING);
 				itemName.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (amount != null) {
-				position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, entryY);
+				amount.setY(entryY);
 				amount.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (totalPrice != null) {
-				position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
+				totalPrice.setY(entryY);
 				totalPrice.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 
 			if (pricePerUnit != null) {
-				position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, entryY);
+				pricePerUnit.setY(entryY);
 				pricePerUnit.extractRenderState(graphics, mouseX, mouseY, a);
 			}
+		}
+
+		@Override
+		public void repositionElements(int x, int y, int width, int entryHeight) {
+			if (itemName != null) itemName.setX(x + INNER_MARGIN);
+			int entryWidth = getWidth();
+			if (amount != null) position(amount, x + entryWidth / 3 + INNER_MARGIN, entryWidth / 6 - 2 * INNER_MARGIN, y);
+			if (totalPrice != null) position(totalPrice, x + entryWidth / 2 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, y);
+			if (pricePerUnit != null) position(pricePerUnit, x + 3 * entryWidth / 4 + INNER_MARGIN, entryWidth / 4 - 2 * INNER_MARGIN, y);
 		}
 
 		private static void position(StringWidget widget, int start, int width, int y) {

@@ -358,7 +358,11 @@ public class ChatRule {
 			Matcher m = matcher.get();
 			m.reset();
 			if (!m.find()) return replaceMessage; // shouldn't happen but you never know
-			m.appendReplacement(sb, replaceMessage);
+			try {
+				m.appendReplacement(sb, replaceMessage);
+			} catch (IndexOutOfBoundsException | IllegalArgumentException _) {
+				return replaceMessage;
+			}
 			return sb.substring(m.start());
 		}
 	}
