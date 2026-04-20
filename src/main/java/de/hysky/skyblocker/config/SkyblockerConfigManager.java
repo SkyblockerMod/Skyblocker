@@ -86,7 +86,11 @@ public class SkyblockerConfigManager {
 		dataFix(CONFIG_FILE, CONFIG_DIR.resolve("skyblocker.json.old"));
 
 		CONFIG_MANAGER.load();
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+				.then(configLiteral("config"))
+				.then(configLiteral("options"))
+				.then(ConfigCommands.registerConfigEntries(literal("configExecute")))
+		));
 		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
 				Screens.getWidgets(screen).add(Button
@@ -171,8 +175,7 @@ public class SkyblockerConfigManager {
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
 		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(argument("search", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("search", String.class)))))
-				.then(ConfigCommands.registerConfigEntries(literal("execute")));
+				.then(argument("search", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("search", String.class)))));
 	}
 
 	/**
