@@ -46,7 +46,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.screen != null) {
 					String lowerCase = client.screen.getTitle().getString().toLowerCase(Locale.ENGLISH);
-					if (lowerCase.contains("group builder")) return;
+					if (lowerCase.contains("group builder") || lowerCase.equals("training dummy")) return;
 				}
 
 				if (PartyFinderScreen.isInKuudraPartyFinder) return;

@@ -80,6 +80,13 @@ public class ChatCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideSpiritSceptre"))
+								.binding(defaults.chat.hideSpiritSceptre,
+										() -> config.chat.hideSpiritSceptre,
+										newValue -> config.chat.hideSpiritSceptre = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideMoltenWave"))
 								.binding(defaults.chat.hideMoltenWave,
 										() -> config.chat.hideMoltenWave,

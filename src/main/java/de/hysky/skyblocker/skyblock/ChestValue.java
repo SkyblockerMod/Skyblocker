@@ -63,6 +63,49 @@ public class ChestValue {
 			"Infernal Kuudra Key", "KUUDRA_INFERNAL_TIER_KEY"
 			);
 	/**
+	 * Items that never have price data because no one is buying them.
+	 */
+	public static final Set<String> WORTHLESS_ITEMS = Set.of(
+			"DUNGEON_DISC_1",
+			"DUNGEON_DISC_2",
+			"DUNGEON_DISC_3",
+			"DUNGEON_DISC_4",
+			"DUNGEON_DISC_5",
+			"MAXOR_THE_FISH",
+			"STORM_THE_FISH",
+			"GOLDOR_THE_FISH",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_1",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_2",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_3",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_4",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_5",
+			"ENCHANTMENT_ULTIMATE_COMBO_1",
+			"ENCHANTMENT_ULTIMATE_COMBO_2",
+			"ENCHANTMENT_ULTIMATE_COMBO_3",
+			"ENCHANTMENT_ULTIMATE_COMBO_4",
+			"ENCHANTMENT_ULTIMATE_COMBO_5",
+			"ENCHANTMENT_ULTIMATE_BANK_1",
+			"ENCHANTMENT_ULTIMATE_BANK_2",
+			"ENCHANTMENT_ULTIMATE_BANK_3",
+			"ENCHANTMENT_ULTIMATE_BANK_4",
+			"ENCHANTMENT_ULTIMATE_BANK_5",
+			"ENCHANTMENT_ULTIMATE_JERRY_1",
+			"ENCHANTMENT_ULTIMATE_JERRY_2",
+			"ENCHANTMENT_ULTIMATE_JERRY_3",
+			"ENCHANTMENT_ULTIMATE_JERRY_4",
+			"ENCHANTMENT_ULTIMATE_JERRY_5",
+			"ENCHANTMENT_FEATHER_FALLING_6",
+			"ENCHANTMENT_FEATHER_FALLING_7",
+			"ENCHANTMENT_FEATHER_FALLING_8",
+			"ENCHANTMENT_FEATHER_FALLING_9",
+			"ENCHANTMENT_FEATHER_FALLING_10",
+			"ENCHANTMENT_INFINITE_QUIVER_6",
+			"ENCHANTMENT_INFINITE_QUIVER_7",
+			"ENCHANTMENT_INFINITE_QUIVER_8",
+			"ENCHANTMENT_INFINITE_QUIVER_9",
+			"ENCHANTMENT_INFINITE_QUIVER_10"
+	);
+	/**
 	 * Pattern to match the essence count from Croesus tooltips or the chest menus.
 	 *
 	 * <p>Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
@@ -143,11 +186,13 @@ public class ChestValue {
 				//Regular item price
 				// Implicitly excludes the "Reroll Shard" item in Kuudra chests which is a Wheel of Fate from the profit calculation
 				if (!skyblockApiId.isEmpty() && !(name.contains("Essence") || name.contains("Shard"))) {
-					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
+					if (!WORTHLESS_ITEMS.contains(skyblockApiId)) {
+						DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
 
-					//Add the item price to the profit
-					profit += priceData.leftDouble() * stack.getCount();
-					hasIncompleteData |= !priceData.rightBoolean();
+						//Add the item price to the profit
+						profit += priceData.leftDouble() * stack.getCount();
+						hasIncompleteData |= !priceData.rightBoolean();
+					}
 
 					continue;
 				}

@@ -17,6 +17,8 @@ public class ChatConfig {
 
 	public ChatFilterResult hideImplosion = ChatFilterResult.PASS;
 
+	public ChatFilterResult hideSpiritSceptre = ChatFilterResult.PASS;
+
 	public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideAds = ChatFilterResult.PASS;
