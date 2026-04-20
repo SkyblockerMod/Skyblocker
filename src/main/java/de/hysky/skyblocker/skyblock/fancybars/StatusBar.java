@@ -94,7 +94,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	private @Nullable Integer value = null;
 	private @Nullable Integer max = null;
 	private @Nullable Integer overflow = null;
-	protected @Nullable Function<Integer, String> toDisplay = null;
+	private final Function<Integer, String> toDisplay;
 
 	private int renderX = 0;
 	private int renderY = 0;
@@ -107,10 +107,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public boolean showOverflow = false;
 
 	public StatusBar(StatusBarType type) {
+		this(type, String::valueOf);
+	}
+
+	public StatusBar(StatusBarType type, Function<Integer, String> toDisplay) {
 		this.icon = SkyblockerMod.id("bars/icons/" + type.getSerializedName());
 		this.colors = type.getColors();
 		this.textColor = type.getTextColor();
 		this.type = type;
+		this.toDisplay = toDisplay;
 	}
 
 	protected int transparency(int color) {
@@ -169,7 +174,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		Font textRenderer = Minecraft.getInstance().font;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
-		String stringValue = value == null ? "???" : toDisplay == null ? String.valueOf(overflow == null || showOverflow ? value : value + overflow) : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
+		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
 		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
 
 		if (hasMax() && showMax && max != null) {
@@ -177,7 +182,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		if (hasOverflow() && showOverflow && overflow != null) {
 			MutableComponent literal = Component.literal(" + ").withStyle(style -> style.withColor(colors[1].getRGB()));
-			literal.append(overflow.toString());
+			literal.append(toDisplay.apply(overflow));
 			text.append(literal);
 		}
 
@@ -441,8 +446,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public static class ManaStatusBar extends StatusBar {
 
 		public ManaStatusBar(StatusBarType type) {
-			super(type);
-			this.toDisplay = mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString();
+			super(type, mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString());
 		}
 
 		@Override
@@ -464,13 +468,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public static class ExperienceStatusBar extends StatusBar {
 		private static final Identifier CLOCK_ICON = SkyblockerMod.id("bars/icons/rift_time");
 		public ExperienceStatusBar(StatusBarType type) {
-			super(type);
-			this.toDisplay = time -> {
+			super(type, time -> {
 				if (Utils.isInTheRift()) {
 					return time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
 				}
 				return time.toString();
-			};
+			});
 		}
 
 		@Override
