@@ -14,7 +14,7 @@ public class OptionsMixin {
 	@ModifyReturnValue(method = "dataFix", at = @At("TAIL"))
 	private CompoundTag updateSkyblockerKeybinds(CompoundTag nbt) {
 		skyblocker$update("wikiLookup.official", nbt);
-		skyblocker$update("wikiLookup.independent", nbt);
+		skyblocker$update("wikiLookup.fandom", nbt);
 		skyblocker$migrate("wikiLookup.fandom", "wikiLookup.independent", nbt);
 		skyblocker$update("hotbarSlotLock", nbt);
 		skyblocker$update("itemPriceLookup", nbt);
@@ -34,7 +34,6 @@ public class OptionsMixin {
 		if (nbt.contains(newEntry)) return;
 
 		Tag element = nbt.get("key_key.skyblocker." + oldKey);
-		if (element == null) element = nbt.get("key_key." + oldKey);
 		if (element != null) nbt.put(newEntry, element);
 	}
 }
