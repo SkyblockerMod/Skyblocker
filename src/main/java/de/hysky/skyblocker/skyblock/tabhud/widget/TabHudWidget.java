@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.utils.Location;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
@@ -16,8 +16,8 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	private final List<Element> cachedElements = new ArrayList<>();
 
 
-	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue) {
-		super(title, colorValue, hypixelWidgetName.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", ""));
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Information information) {
+		super(title, colorValue, information);
 		this.hypixelWidgetName = hypixelWidgetName;
 	}
 
@@ -38,44 +38,6 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	public void updateFromTab(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
 		cachedElements.clear();
 		updateContent(lines, playerListEntries);
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final boolean shouldRender(Location location) {
-		return false;
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final Set<Location> availableLocations() {
-		return Set.of();
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final void setEnabledIn(Location location, boolean enabled) {}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final boolean isEnabledIn(Location location) {
-		return false;
 	}
 
 	/**

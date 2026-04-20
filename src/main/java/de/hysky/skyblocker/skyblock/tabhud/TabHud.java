@@ -39,4 +39,8 @@ public class TabHud {
 	public static boolean shouldRenderVanilla() {
 		return defaultTgl.isDown() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
 	}
+
+	public static float getScaleFactor() {
+		return SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
+	}
 }

@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
@@ -37,8 +36,6 @@ public abstract class ElementBasedWidget extends HudWidget {
 
 	private final ArrayList<Element> elements = new ArrayList<>();
 
-	private int prevW = 0, prevH = 0;
-
 	public static final int BORDER_SZE_N = txtRend.lineHeight + 2;
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
@@ -55,10 +52,9 @@ public abstract class ElementBasedWidget extends HudWidget {
 	 *
 	 * @param title      title
 	 * @param colorValue the colour
-	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public ElementBasedWidget(Component title, @Nullable Integer colorValue, String internalID) {
-		super(internalID);
+	public ElementBasedWidget(Component title, @Nullable Integer colorValue, Information information) {
+		super(information);
 		this.title = title;
 		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
 	}
@@ -116,34 +112,34 @@ public abstract class ElementBasedWidget extends HudWidget {
 	}
 
 	@Override
-	public final void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+	public final void extractRenderState(GuiGraphicsExtractor context, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
-			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
-			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
-			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
+			context.fill(1, 0, w - 1, h, textBackgroundColor);
+			context.fill(0, 1, 1, h - 1, textBackgroundColor);
+			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
 		}
 
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.text(txtRend, title, x + 8, y + 2, this.color, false);
+		context.text(txtRend, title, 8, 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.extractHorizontalLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.extractHorizontalLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.extractHorizontalLine(context, x + 2, y + h - 2, w - 4);
+			this.extractHorizontalLine(context, 2, 1 + strHeightHalf, 4);
+			this.extractHorizontalLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.extractHorizontalLine(context, 2, h - 2, w - 4);
 
-			this.extractVerticalLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.extractVerticalLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, 1, 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
-		int yOffs = y + BORDER_SZE_N;
+		int yOffs = BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.extractRenderState(context, x + BORDER_SZE_W, yOffs);
+			c.extractRenderState(context, BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
@@ -167,10 +163,6 @@ public abstract class ElementBasedWidget extends HudWidget {
 
 		// min width is dependent on title
 		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.width(title) + 4 + 4 + 1);
-		// update the positions so it doesn't wait for the next tick or something
-		if (h != prevH || w != prevW) ScreenBuilder.markDirty();
-		prevW = w;
-		prevH = h;
 	}
 
 	private void extractHorizontalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {

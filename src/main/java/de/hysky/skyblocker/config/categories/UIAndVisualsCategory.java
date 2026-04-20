@@ -13,7 +13,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
@@ -367,7 +367,7 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
 										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
 								.build())
-						.option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+						.option(Option.<LayerBuilder.DefaultPositioner>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
 								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
 										() -> config.uiAndVisuals.tabHud.defaultPositioning,

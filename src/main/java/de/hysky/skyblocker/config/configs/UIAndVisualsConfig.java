@@ -2,7 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -192,7 +192,7 @@ public class UIAndVisualsConfig {
 
 		public boolean effectsFromFooter = false;
 
-		public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+		public LayerBuilder.DefaultPositioner defaultPositioning = LayerBuilder.DefaultPositioner.CENTERED;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;

@@ -4,10 +4,10 @@ import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.DungeonsTabPlaceholder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -180,7 +180,7 @@ public class PreviewTab implements Tab {
 			locationDropdown.setWidth(RIGHT_SIDE_WIDTH - 5);
 			locationDropdown.setPosition(tabArea.right() - locationDropdown.getWidth() - 2, startY);
 			locationDropdown.setMaxHeight(Math.min(180, tabArea.height() - 20));
-			startY += DropdownWidget.ENTRY_HEIGHT + 4 + 10;
+			startY += locationDropdown.entryHeight + 4 + 10;
 		}
 
 		for (int i = 0; i < layerButtons.length; i++) {
@@ -251,7 +251,7 @@ public class PreviewTab implements Tab {
 	}
 
 	public void updateWidgets() {
-		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
+		LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		updatePlayerListFromPreview();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		screenBuilder.updateWidgetLists(true);
@@ -269,7 +269,7 @@ public class PreviewTab implements Tab {
 		widgetOptions.clearWidgets();
 		if (hudWidget == null) return;
 		if (locationDropdown.isOpen()) locationDropdown.mouseClicked(new MouseButtonEvent(locationDropdown.getX(), locationDropdown.getY(), new MouseButtonInfo(0, 0)), false);
-		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
+		LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 		PositionRule positionRule = screenBuilder.getPositionRule(hudWidget.getInternalID());
 		int width = widgetOptions.getWidth() - 6;
 
@@ -312,7 +312,7 @@ public class PreviewTab implements Tab {
 			String ye = "Layer: " + positionRule.screenLayer().toString();
 
 			widgetOptions.addWidget(Button.builder(Component.literal(ye), button -> {
-				ScreenBuilder builder = WidgetManager.getScreenBuilder(getCurrentLocation());
+				LayerBuilder builder = WidgetManager.getScreenBuilder(getCurrentLocation());
 				PositionRule rule = builder.getPositionRuleOrDefault(hudWidget.getInternalID());
 				WidgetManager.ScreenLayer newLayer = EnumUtils.cycle(rule.screenLayer());
 
@@ -337,7 +337,7 @@ public class PreviewTab implements Tab {
 			HudWidget parent;
 			if (positionRule.parent().equals("screen")) {
 				parentName = Component.literal("Screen");
-			} else if ((parent = WidgetManager.widgetInstances.get(positionRule.parent())) == null) {
+			} else if ((parent = WidgetManager.WIDGET_INSTANCES.get(positionRule.parent())) == null) {
 				parentName = Component.literal("Unloaded Widget");
 			} else {
 				parentName = parent.getDisplayName();
@@ -525,7 +525,7 @@ public class PreviewTab implements Tab {
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			HudWidget affectedWidget = previewWidget.selectedWidget;
 			if (hoveredPoint != null && affectedWidget != null) {
-				ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
+				LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(getCurrentLocation());
 				String internalID = affectedWidget.getInternalID();
 				PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(internalID);
 				// Get the x, y of the parent's point

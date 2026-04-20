@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,12 +52,21 @@ public class WidgetManager {
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-	private static final Map<Location, ScreenBuilder> BUILDER_MAP = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(Function.identity(), ScreenBuilder::new)));
+	private static final Map<ScreenId, ScreenBuilder> BUILDER_MAP = new HashMap<>();
 
-	public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
+	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
-	public static ScreenBuilder getScreenBuilder(Location location) {
-		return BUILDER_MAP.get(location);
+	public static ScreenBuilder getScreenBuilder(ScreenId screenId) {
+		return BUILDER_MAP.get(screenId);
+	}
+
+	// TODO or placeholder
+	public static HudWidget getWidget(String id) {
+		return WIDGET_INSTANCES.get(id);
+	}
+
+	public static List<HudWidget> getWidgetsAvailableIn(ScreenId location) {
+		return WIDGET_INSTANCES.values().stream().filter(w -> w.getInformation().available().test(location)).toList();
 	}
 
 	// we probably want this to run pretty early?
@@ -97,32 +107,34 @@ public class WidgetManager {
 
 	/**
 	 * Top level render method.
-	 * Calls the appropriate ScreenBuilder with the screen's dimensions
+	 * Calls the appropriate LayerBuilder with the screen's dimensions
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
 	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
-		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
+		ScreenBuilder screenBuilder = getScreenBuilder(ScreenIds.ofLocation(Utils.getLocation()));
+		ScreenLayer layer;
 		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
 			if (TabHud.toggleSecondary.isDown()) {
-				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
+				layer = ScreenLayer.SECONDARY_TAB;
 			} else {
-				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
+				layer = ScreenLayer.MAIN_TAB;
 			}
 		} else if (hud) {
-			screenBuilder.run(context, w, h, ScreenLayer.HUD);
-		}
+			layer = ScreenLayer.HUD;
+		} else return;
+		screenBuilder.get(layer).extractRenderStates(context, w, h, false);
 	}
 
 	public static void loadConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
 			JsonObject positions = object.getAsJsonObject("positions");
-			for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
+			for (Map.Entry<Location, LayerBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 				Location location = builderEntry.getKey();
-				ScreenBuilder screenBuilder = builderEntry.getValue();
+				LayerBuilder screenBuilder = builderEntry.getValue();
 				if (positions.has(location.id())) {
 					JsonObject locationObject = positions.getAsJsonObject(location.id());
 					for (Map.Entry<String, JsonElement> entry : locationObject.entrySet()) {
@@ -143,9 +155,9 @@ public class WidgetManager {
 	public static void saveConfig() {
 		JsonObject output = new JsonObject();
 		JsonObject positions = new JsonObject();
-		for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
+		for (Map.Entry<Location, LayerBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 			Location location = builderEntry.getKey();
-			ScreenBuilder screenBuilder = builderEntry.getValue();
+			LayerBuilder screenBuilder = builderEntry.getValue();
 			JsonObject locationObject = new JsonObject();
 			screenBuilder.forEachPositionRuleEntry((s, positionRule) -> locationObject.add(s, PositionRule.CODEC.encodeStart(JsonOps.INSTANCE, positionRule).getOrThrow()));
 			if (locationObject.isEmpty()) continue;
@@ -160,39 +172,6 @@ public class WidgetManager {
 		}
 	}
 
-	// All non-tab HUDs should have a position rule initialised here, because they don't have an auto positioning
-	private static void fillDefaultConfig() {
-		ScreenBuilder screenBuilder = getScreenBuilder(Location.THE_END);
-		screenBuilder.setPositionRule(
-				"hud_end",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
-		);
-
-		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
-			screenBuilder = getScreenBuilder(loc);
-			screenBuilder.setPositionRule(
-					CommsWidget.ID,
-					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
-			);
-			screenBuilder.setPositionRule(
-					"powders",
-					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
-			);
-		}
-
-		screenBuilder = getScreenBuilder(Location.DUNGEON);
-		screenBuilder.setPositionRule(
-				"Dungeon Splits",
-				new PositionRule(
-						"screen",
-						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
-						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
-						5,
-						0,
-						WidgetManager.ScreenLayer.HUD)
-		);
-	}
-
 
 	/**
 	 * Filled at compile item with ASM.
@@ -205,7 +184,7 @@ public class WidgetManager {
 	 * Do not change the signature unless you know what you're doing.
 	 */
 	public static void addWidgetInstance(HudWidget widget) {
-		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
+		HudWidget put = WIDGET_INSTANCES.put(widget.getInternalID(), widget);
 		if (widget instanceof TabHudWidget tabHudWidget) {
 			PlayerListManager.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
 		}

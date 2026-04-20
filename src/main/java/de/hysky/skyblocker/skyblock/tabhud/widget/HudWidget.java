@@ -1,87 +1,35 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+
 import java.util.Objects;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
+import java.util.function.Predicate;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
-public abstract class HudWidget extends AbstractWidget {
-	/**
-	 * Single constant set for representing all possible locations for a {@code HudWidget} to prevent unnecessarily
-	 * recreating this set many times over (not the best for efficiency).
-	 */
-	protected static final Set<Location> ALL_LOCATIONS = Set.of(Location.values());
-	private final String internalID;
+public abstract class HudWidget implements LayoutElement {
+	protected int w = 0, h = 0;
+	protected int x = 0, y = 0;
+	private final Information information;
 
 
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
-	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
+	 * @param information the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public HudWidget(String internalID) {
-		this.internalID = internalID;
+	public HudWidget(Information information) {
+		this.information = information;
 	}
 
 
-	/**
-	 * Whether the widget should render in this location. Using this instead of rendering nothing will
-	 * allow "child" widgets to take this one's spot when not rendered. <br><br>
-	 * {@link de.hysky.skyblocker.utils.Utils#getLocation()} should not be used unless you know what you're doing.
-	 * (might not be true anymore, need testing still c: )
-	 *
-	 * @param location the location
-	 * @return true if the widget should render in the specified location
-	 */
-	public boolean shouldRender(Location location) {
-		return isEnabledIn(location);
-	}
+	public abstract void extractRenderState(GuiGraphicsExtractor graphics, float delta);
+	public abstract void extractConfigRenderState(GuiGraphicsExtractor graphics, float delta);
 
-	/**
-	 * @return the locations where this widget can be enabled/disabled in the widgets configuration screen
-	 */
-	public abstract Set<Location> availableLocations();
-
-	public abstract void setEnabledIn(Location location, boolean enabled);
-
-	/**
-	 * @param location the location
-	 * @return if the widget is enabled in this location in general. If this is true, this widget will be shown
-	 * as enabled in the WidgetsConfigScreen and will render in the preview tab regardless if {@link #shouldRender(Location)}
-	 * is true or not.
-	 */
-	public abstract boolean isEnabledIn(Location location);
-
-	/**
-	 * Perform all your logic here. Or in the {@link #renderWidget(GuiGraphics, int, int, float)} method if you feel like it.
-	 * But this will be called much less often. See usages of it.
-	 *
-	 * @see #shouldUpdateBeforeRendering()
-	 */
-	public abstract void update();
-
-	/**
-	 * Returns true if the update method should be called right before rendering.
-	 *
-	 * @return true if it should update
-	 */
-	public boolean shouldUpdateBeforeRendering() {
-		return false;
-	}
-
-	protected abstract void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
-
-	public final void extractRenderState(GuiGraphicsExtractor graphics) {
-		extractRenderState(graphics, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
-	}
-
-	@Override
-	public final void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		extractWidgetRenderState(graphics, mouseX, mouseY, delta);
-	}
 
 	/**
 	 * @param object the other HudWidget
@@ -98,36 +46,68 @@ public abstract class HudWidget extends AbstractWidget {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(internalID);
+		return getInternalID().hashCode();
 	}
 
 	public String getInternalID() {
-		return internalID;
+		return information.id();
 	}
 
-	public Component getDisplayName() {
-		return Component.nullToEmpty(getInternalID());
+	public final Information getInformation() {
+		return information;
 	}
 
-	// Positioner shenanigans
-
-	private boolean positioned = false;
-	private boolean visible = false;
-
-
-	public final boolean isPositioned() {
-		return positioned;
+	public final int getX() {
+		return this.x;
 	}
 
-	public final void setPositioned(boolean positioned) {
-		this.positioned = positioned;
+	public final void setX(int x) {
+		this.x = x;
 	}
 
-	public final boolean isVisible() {
-		return visible;
+	public final int getY() {
+		return this.y;
 	}
 
-	public final void setVisible(boolean visible) {
-		this.visible = visible;
+	public final void setY(int y) {
+		this.y = y;
+	}
+
+	public final int getWidth() {
+		return this.w;
+	}
+
+	public final int getHeight() {
+		return this.h;
+	}
+
+	public final boolean isMouseOver(double mouseX, double mouseY) {
+		// FIXME scaled
+		return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
+	}
+
+	public boolean shouldRender() {
+		return true;
+	}
+
+	/**
+	 * @param id          the id for the config file
+	 * @param displayName the name that will be shown in the config screen
+	 * @param available   in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
+	 */
+	public record Information(String id, Component displayName, Predicate<ScreenId> available) {
+		/**
+		 * Shorter constructor that makes the widget available everywhere
+		 *
+		 * @see Information#Information(String, Component, Predicate)
+		 */
+		public Information(String id, Component displayName) {
+			this(id, displayName, _ -> true);
+		}
+
+		public Information(String id, Component displayName, Set<Location> allowedLocations) {
+			this(id, displayName, screenId -> screenId instanceof ScreenId.Loc(Location location) && allowedLocations.contains(location));
+		}
+
 	}
 }

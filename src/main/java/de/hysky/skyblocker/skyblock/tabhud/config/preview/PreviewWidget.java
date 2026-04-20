@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -64,7 +64,7 @@ public class PreviewWidget extends AbstractWidget {
 		scaledScreenWidth = tab.parent.width / scale;
 		scaledScreenHeight = tab.parent.height / scale;
 
-		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+		LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 		GuiHelper.border(graphics, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
 		graphics.enableScissor(getX(), getY(), getRight(), getBottom());
 		Matrix3x2fStack matrices = graphics.pose();
@@ -200,7 +200,7 @@ public class PreviewWidget extends AbstractWidget {
 		// TODO releasing a widget outside of the area causes weird behavior, might wanna look into that
 		// Update positioning real
 		if (selectedWidget != null && selectedOriginalPos != null) {
-			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+			LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (oldRule == null) oldRule = PositionRule.DEFAULT;
 			int relativeX = selectedWidget.getX() - selectedOriginalPos.x();
@@ -240,7 +240,7 @@ public class PreviewWidget extends AbstractWidget {
 			}
 			return true;
 		}
-		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+		LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 		if (pickParent && selectedWidget != null) {
 			if (selectedWidget.equals(hoveredWidget)) {
 				// Restore the button text, but don't do anything.
@@ -290,7 +290,7 @@ public class PreviewWidget extends AbstractWidget {
 				case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
 				case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
 			}
-			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
+			LayerBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());
 
 			screenBuilder.setPositionRule(selectedWidget.getInternalID(), new PositionRule(
