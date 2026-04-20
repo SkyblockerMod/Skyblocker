@@ -428,7 +428,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
 								.description(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.fandomWikiLookup.getTranslatedKeyMessage()))
+										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
 								.binding(defaults.general.wikiLookup.enableWikiLookup,
 										() -> config.general.wikiLookup.enableWikiLookup,
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)

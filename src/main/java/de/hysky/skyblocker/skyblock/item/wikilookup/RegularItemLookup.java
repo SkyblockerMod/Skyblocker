@@ -29,6 +29,6 @@ public class RegularItemLookup implements WikiLookup {
 	private static void noArticleFound(Player player, boolean useOfficial) {
 		player.displayClientMessage(Constants.PREFIX.get().append(useOfficial ?
 				Component.translatable("skyblocker.wikiLookup.noArticleFound.official") :
-				Component.translatable("skyblocker.wikiLookup.noArticleFound.fandom")), false);
+				Component.translatable("skyblocker.wikiLookup.noArticleFound.independent")), false);
 	}
 }
