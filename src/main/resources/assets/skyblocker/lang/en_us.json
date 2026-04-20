@@ -23,12 +23,12 @@
 
   "skyblocker.accessoryHelper.afterSelling": "%s after selling %s",
   "skyblocker.accessoryHelper.allTiers": "Show all tiers",
-  "skyblocker.accessoryHelper.independent": "(Hold shift for independent)",
   "skyblocker.accessoryHelper.filter": "Filter",
   "skyblocker.accessoryHelper.filter.ALL": "All",
   "skyblocker.accessoryHelper.filter.MISSING": "Missing",
   "skyblocker.accessoryHelper.filter.UPGRADES": "Upgrades",
   "skyblocker.accessoryHelper.highestTierOnly": "Show highest tier only",
+  "skyblocker.accessoryHelper.independent": "(Hold shift for independent)",
   "skyblocker.accessoryHelper.openWiki": "Click to open on the wiki!",
   "skyblocker.accessoryHelper.recombobulate": "Recombobulate a %s accessory.",
 
