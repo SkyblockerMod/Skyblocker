@@ -93,7 +93,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		}).build());
 
 		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
-		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.fandom"), false, itemStack, player));
+		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.independent"), false, itemStack, player));
 
 		layoutWidget.visitWidgets(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
 		layoutWidget.arrangeElements();

@@ -338,7 +338,7 @@
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Bật Làm nổi bật Lushlilac",
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Bật Làm nổi bật Sea Lumies",
     "key.skyblocker.wikiLookup.official": "Tra cứu Wiki Hypixel",
-    "key.skyblocker.wikiLookup.fandom": "Tra cứu Wiki Fandom",
+    "key.skyblocker.wikiLookup.independent": "Tra cứu Wiki Fandom",
     "skyblocker.api.cache.HIT": "Dữ liệu này đã được lưu trong bộ nhớ đệm\nVào %s giây trước.",
     "skyblocker.config.general.shortcuts.config": "Tùy Chỉnh Lối Tắt...",
     "skyblocker.config.general.shortcuts.enableCommandShortcuts": "Bật Lối Tắt Lệnh",

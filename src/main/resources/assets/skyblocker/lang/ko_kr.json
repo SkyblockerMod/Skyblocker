@@ -144,7 +144,7 @@
     "skyblocker.config.crimsonIsle.kuudra.pearlWaypoints": "엔더 진주 웨이포인트",
     "skyblocker.config.dungeons.devices": "디바이스 솔버(F7/M7)",
     "skyblocker.config.dungeons.classBasedPlayerGlow": "클래스별 플레이어 발광",
-    "key.skyblocker.wikiLookup.fandom": "팬덤(비공식) 위키 검색",
+    "key.skyblocker.wikiLookup.independent": "팬덤(비공식) 위키 검색",
     "skyblocker.config.dungeons.classBasedPlayerGlow.@Tooltip": "팀원들의 발광 색을 랭크 대신 클래스로 바꿉니다.",
     "skyblocker.config.dungeons.goldorWaypoints.waypointType": "태스크 웨이포인트 종류",
     "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "에센스 포함",

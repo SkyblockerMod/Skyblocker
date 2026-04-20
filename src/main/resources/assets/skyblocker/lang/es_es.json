@@ -157,7 +157,7 @@
     "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "Cuando esté activado, si has usado una Kismet, el precio de esta será extraído del beneficio",
     "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessageThreshold": "Puntaje de envío del mensaje de criptas",
     "key.skyblocker.wikiLookup.official": "Búsqueda en la Wiki de Hypixel",
-    "key.skyblocker.wikiLookup.fandom": "Búsqueda en la Wiki del Fandom",
+    "key.skyblocker.wikiLookup.independent": "Búsqueda en la Wiki del Fandom",
     "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "Color de pérdida",
     "skyblocker.config.dungeons.hideSoulweaverSkulls": "Ocultar las calaveras del Soulweaver",
     "skyblocker.config.dungeons.livid.enableLividColorBoundingBox": "Activa el contorno de color para Livid",

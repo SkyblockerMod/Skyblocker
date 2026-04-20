@@ -14,7 +14,7 @@
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.@Tooltip": "Оберіть круглий або квадратний стиль фону!",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Стиль фону предмета",
     "key.skyblocker.wikiLookup.official": "Огляд у вікі Hypixel",
-    "key.skyblocker.wikiLookup.fandom": "Огляд у вікі Fandom",
+    "key.skyblocker.wikiLookup.independent": "Огляд у вікі Fandom",
     "text.skyblocker.quit_config_sure": "Ви впевнені, що хочете вийти з налаштування конфігурації? Зміни не будуть збережені!",
     "text.skyblocker.clickToSend": "[Натисніть, щоб відправити в чат]",
     "text.skyblocker.clickToSend.@Tooltip": "Натисніть, щоб відправити це в чат.",

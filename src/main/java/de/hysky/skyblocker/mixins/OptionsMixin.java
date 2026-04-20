@@ -14,7 +14,7 @@ public class OptionsMixin {
 	@ModifyReturnValue(method = "dataFix", at = @At("TAIL"))
 	private CompoundTag updateSkyblockerKeybinds(CompoundTag nbt) {
 		skyblocker$update("wikiLookup.official", nbt);
-		skyblocker$update("wikiLookup.fandom", nbt);
+		skyblocker$update("wikiLookup.independent", nbt);
 		skyblocker$update("hotbarSlotLock", nbt);
 		skyblocker$update("itemPriceLookup", nbt);
 		skyblocker$update("itemProtection", nbt);

@@ -114,7 +114,7 @@
     "argument.color.hex.invalidString": "Hex değeri tam olarak 6 karakter uzunluğunda olmalı, %s karakter bulundu.",
     "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]",
     "key.skyblocker.wikiLookup.official": "Hypixel Wiki'sinde arat",
-    "key.skyblocker.wikiLookup.fandom": "Fandom Wiki'sinde arat",
+    "key.skyblocker.wikiLookup.independent": "Fandom Wiki'sinde arat",
     "text.skyblocker.confirm": "Onayla",
     "text.skyblocker.reset": "Sıfırla",
     "text.skyblocker.config": "Ayarları Aç...",
