@@ -49,7 +49,7 @@ class WidgetSpritesFallback implements FallbackedTexture<WidgetSprites> {
 			Identifier fallbackIdentifier = identifierFunction.apply(fallback);
 			for (int i = 0; i < textures.size(); i++) {
 				IdentifierTexture identifierTexture = textures.get(i);
-				if (identifierTexture.texture == identifier && identifierTexture.fallback == fallbackIdentifier) {
+				if (identifierTexture.texture.equals(identifier) && identifierTexture.fallback.equals(fallbackIdentifier)) {
 					textures.add(identifierTexture);
 					return;
 				}

@@ -26,7 +26,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 			SkyblockerMod.id("textures/gui/container/skyblock_crafting_table.png"),
 			Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png"));
 	private static final FallbackedTexture<Identifier> MIRRORVERSE_TEXTURE = FallbackedTexture.ofTexture(
-			SkyblockerMod.id("textures/gui/container/skyblock_crafting_table.png"),
+			SkyblockerMod.id("textures/gui/container/skyblock_crafting_table_mirroverse.png"),
 			Identifier.withDefaultNamespace("textures/gui/container/crafting_table.png"));
 	protected static final WidgetSprites MORE_CRAFTS_TEXTURES = new WidgetSprites(
 			SkyblockerMod.id("quick_craft/more_button"),

@@ -25,7 +25,7 @@ public class CategoryTabWidget extends SideTabButtonWidget {
 		if (sprite == null) return (SPRITES[index] = FallbackedTexture.ofWidgetSprites(
 				new WidgetSprites(
 						SkyblockerMod.id("auctions_gui/category_tab_" + (index + 1)),
-						SkyblockerMod.id("auctions_gui/category_tab_selected" + (index + 1))
+						SkyblockerMod.id("auctions_gui/category_tab_selected_" + (index + 1))
 				),
 				RecipeBookTabButton.SPRITES)).get();
 		return sprite.get();
