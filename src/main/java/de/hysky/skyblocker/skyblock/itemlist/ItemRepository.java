@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
 import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.RecipeItemStackCache;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
@@ -113,6 +114,7 @@ public class ItemRepository {
 		itemsImported = true;
 
 		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
+		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
 		afterImportTasks.forEach(task -> {
