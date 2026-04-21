@@ -175,7 +175,7 @@ public class ItemRepository {
 	}
 
 	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {

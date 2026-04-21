@@ -399,7 +399,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private static class Source implements MagicPowerSource {
 			private static final Component smoothLine = LineSmoothener.createSmoothLine();
 			private static final Component wikiLine = Component.translatable("skyblocker.accessoryHelper.openWiki").withStyle(ChatFormatting.YELLOW);
-			private static final Component fandomLine = Component.translatable("skyblocker.accessoryHelper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+			private static final Component independentLine = Component.translatable("skyblocker.accessoryHelper.independent").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
 			private final @Nullable List<FormattedCharSequence> afterSelling;
@@ -444,7 +444,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				tooltip.add(fandomLine.getVisualOrderText());
+				tooltip.add(independentLine.getVisualOrderText());
 				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
