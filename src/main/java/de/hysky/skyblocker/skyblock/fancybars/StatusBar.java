@@ -175,7 +175,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
 		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
-		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
+		Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
+		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(displayColor.getRGB()));
 
 		if (hasMax() && showMax && max != null) {
 			text.append("/").append(max.toString());
@@ -196,7 +197,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		int y = this.renderY - 3;
 
-		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
+		int color = transparency(displayColor.getRGB());
 		int outlineColor = transparency(CommonColors.BLACK);
 
 		GuiHelper.outlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
