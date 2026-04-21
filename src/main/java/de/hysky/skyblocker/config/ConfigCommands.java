@@ -14,13 +14,13 @@ import net.minecraft.network.chat.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ConfigCommands {
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _ctx) ->
 				dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 						.then(ConfigCommands.registerConfigEntries(literal("configExecute"))))
 		);
@@ -60,7 +60,7 @@ public class ConfigCommands {
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerBooleanConfigEntry(Field field, Object object, String name) {
 		return literal(name).then(argument("value", BoolArgumentType.bool()).executes(context -> {
-			SkyblockerConfigManager.update(_ -> {
+			SkyblockerConfigManager.update(_config -> {
 				try {
 					boolean value = BoolArgumentType.getBool(context, "value");
 					field.setBoolean(object, value);
@@ -71,7 +71,7 @@ public class ConfigCommands {
 			});
 			return Command.SINGLE_SUCCESS;
 		})).then(literal("toggle").executes(context -> {
-			SkyblockerConfigManager.update(_ -> {
+			SkyblockerConfigManager.update(_config -> {
 				try {
 					boolean toggled = !field.getBoolean(object);
 					field.setBoolean(object, toggled);
