@@ -115,7 +115,7 @@ public class DisableAll {
 			Class<?> type = field.getType();
 			if (type.isEnum()) {
 				Field[] declaredFields = type.getDeclaredFields();
-				if (declaredFields.length == 0) return;
+				if (declaredFields.length == 0) continue;
 				Optional<Field> option = Arrays.stream(declaredFields).filter(f -> f.getAnnotation(EnumDisabledValue.class) != null).findFirst();
 				if (option.isEmpty()) continue;
 				field.set(target, option.get().get(type));
