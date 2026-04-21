@@ -3,7 +3,10 @@ package de.hysky.skyblocker.config;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Constants;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -15,7 +18,15 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class ConfigCommands {
-	static LiteralArgumentBuilder<FabricClientCommandSource> registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
+	@Init
+	public static void init() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+						.then(ConfigCommands.registerConfigEntries(literal("configExecute"))))
+		);
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> registerConfigEntries(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
 		try {
 			return registerConfigEntries(builder, SkyblockerConfigManager.getUnpatched());
 		} catch (Exception e) {

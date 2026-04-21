@@ -89,7 +89,6 @@ public class SkyblockerConfigManager {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(configLiteral("config"))
 				.then(configLiteral("options"))
-				.then(ConfigCommands.registerConfigEntries(literal("configExecute")))
 		));
 		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
