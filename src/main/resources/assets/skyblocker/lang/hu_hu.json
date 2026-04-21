@@ -1469,7 +1469,7 @@
     "skyblocker.config.general.backup.restore": "Visszaállítás",
     "skyblocker.config.general.backup.title": "Biztonsági Mentések Beállítása",
     "skyblocker.config.general.shortcuts.enableKeyBindingShortcuts.@Tooltip": "Gyorsbillentyűk, amik billentyű nyomására futtatnak parancsot. Szerkeszd a gyorsbillentyűket a \"/skyblocker shortcuts\" paranccsal. A gyorsbillentyűknek bekapcsolva kell lenniük, hogy ez működjön.",
-    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Megnyitja a wiki bejegyzését a rámutatott tárgynak.\n\n'%s' a hivatalos wiki megnyitásához.\n'%s' a Fandom wiki megnyitásához.",
+    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Megnyitja a wiki bejegyzését a rámutatott tárgynak.\n\n'%s' a hivatalos Hypixel wiki megnyitásához.\n'%s' a közösségi wiki megnyitásához.",
     "skyblocker.config.general.updateNotifications.updateChannel.channel.RELEASE": "Stabil Kiadás",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombi Kilövés (Shootout) Segítő",
     "skyblocker.config.helpers.chocolateFactory": "Csokoládégyár",
@@ -1713,5 +1713,8 @@
     "skyblocker.config.chat.filter.hideSpiritSceptre": "Spirit Sceptre Üzenet Elrejtése",
     "skyblocker.config.farming.farmingHud.coins": "Összesített Óránkénti Profit Mutatása",
     "skyblocker.config.farming.farmingHud.counter": "Számláló & Növények per Perc Mutatása",
-    "skyblocker.config.farming.farmingHud.experience": "Farming Skill Haladás Mutatása"
+    "skyblocker.config.farming.farmingHud.experience": "Farming Skill Haladás Mutatása",
+    "key.skyblocker.wikiLookup.independent": "Keresés a Közösségi Wikin (Angol)",
+    "skyblocker.accessoryHelper.independent": "(Nyomd a shiftet a közösségihez)",
+    "skyblocker.wikiLookup.noArticleFound.independent": "Nem sikerült közösségi wiki bejegyzést találni ehhez a tárgyhoz..."
 }
