@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import net.minecraft.client.resources.language.I18n;
 
 import java.awt.Color;
@@ -138,6 +139,7 @@ public class MiningConfig {
 	}
 
 	public enum CommissionWaypointMode {
+		@EnumDisabledValue
 		OFF, DWARVEN, GLACITE, BOTH;
 
 		@Override
