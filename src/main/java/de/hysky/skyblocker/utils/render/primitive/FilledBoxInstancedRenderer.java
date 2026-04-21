@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 
-public final class FilledBoxInstancedRenderer {
+public final class FilledBoxInstancedRenderer implements AutoCloseable {
 	public static final FilledBoxInstancedRenderer INSTANCE = new FilledBoxInstancedRenderer();
 	private static final AABB UNIT_BOX = new AABB(BlockPos.ZERO);
 	private final BoxDataUniform normalBoxData = new BoxDataUniform();
@@ -84,5 +84,11 @@ public final class FilledBoxInstancedRenderer {
 		buffer.addVertex(maxX, minY, maxZ);
 		buffer.addVertex(maxX, minY, minZ);
 		buffer.addVertex(minX, minY, minZ);
+	}
+
+	@Override
+	public void close() {
+		this.normalBoxData.close();
+		this.throughWallsBoxData.close();
 	}
 }

@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -23,7 +25,9 @@ import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 public class OverlayScreen extends Screen {
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	protected static final Identifier DELETE_ICON_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/pending_invite/reject.png");
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
+	private static final FallbackedTexture<Identifier> BACKGROUND_TEXTURE = FallbackedTexture.ofGuiSprite(
+			SkyblockerMod.id("search_overlay/background"),
+			Identifier.withDefaultNamespace("social_interactions/background"));
 	private static final int rowHeight = 20;
 	private static final int specialButtonSize = rowHeight;
 	private EditBox searchField;
@@ -219,7 +223,7 @@ public class OverlayScreen extends Screen {
 		if (historyButtons.length > 0) { //add space for history label if it could exist
 			maxHeight += (int) (rowHeight * 0.75);
 		}
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE.get(), searchField.getX() - 8, searchField.getY() - 8, (int) (this.width * 0.4) + 16, maxHeight + 16);
 	}
 
 	/**

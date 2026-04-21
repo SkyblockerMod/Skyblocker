@@ -69,7 +69,7 @@ public class QuickNavigationCategory {
 								newValue -> button.doubleClick = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				.option(ButtonOption.createBuilder()
+				.optionIf(Minecraft.getInstance().level != null, ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"))
 						.description(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))
 						.action(screen -> Minecraft.getInstance().setScreen(new ItemSelectionPopup(screen, item -> {

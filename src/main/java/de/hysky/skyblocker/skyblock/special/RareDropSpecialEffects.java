@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+(?<item>.+?)(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
 
 	@Init
 	public static void init() {
@@ -55,6 +55,13 @@ public class RareDropSpecialEffects {
 
 	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
+			//Mythological Ritual
+			case "Enchanted Book (Chimera I)" -> "ULTIMATE_CHIMERA;1";
+			case "Fateful Stinger" -> "FATEFUL_STINGER";
+			case "Manti-core" -> "MANTI_CORE";
+			case "Minos Relic" -> "MINOS_RELIC";
+			case "Shimmering Wool" -> "SHIMMERING_WOOL";
+
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";
@@ -75,6 +82,7 @@ public class RareDropSpecialEffects {
 			case "High Class Archfiend Dice" -> "HIGH_CLASS_ARCHFIEND_DICE";
 
 			//Fishing
+			case "Pocket-sized Igloo " -> "POCKET_SIZED_IGLOO";
 			case "Radioactive Vial" -> "RADIOACTIVE_VIAL";
 			case "Tiki Mask" -> "TIKI_MASK";
 			case "Titanoboa Shed" -> "TITANOBOA_SHED";

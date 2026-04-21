@@ -22,6 +22,7 @@ public class SkyblockerRenderPipelines {
 			.withVertexShader(SkyblockerMod.id("core/filled_box"))
 			.withUniform("BoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
 			.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+			.withCull(false)
 			.build());
 	public static final RenderPipeline FILLED_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls_instanced"))
@@ -33,6 +34,19 @@ public class SkyblockerRenderPipelines {
 	/** Similar to {@link RenderPipelines#DEBUG_FILLED_BOX} */
 	public static final RenderPipeline FILLED_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
 			.withLocation(SkyblockerMod.id("pipeline/debug_filled_box_through_walls"))
+			.withDepthStencilState(Optional.empty())
+			.build());
+	public static final RenderPipeline OUTLINED_BOX_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/outlined_box_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/outlined_box"))
+			.withUniform("OutlinedBoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(SkyblockerVertexFormats.POSITION_NORMAL, VertexFormat.Mode.LINES)
+			.build());
+	public static final RenderPipeline OUTLINED_BOX_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withLocation(SkyblockerMod.id("pipeline/outlined_box_through_walls_instanced"))
+			.withVertexShader(SkyblockerMod.id("core/outlined_box"))
+			.withUniform("OutlinedBoxData", UniformType.TEXEL_BUFFER, TextureFormat.SKYBLOCKER$RGBA32F)
+			.withVertexFormat(SkyblockerVertexFormats.POSITION_NORMAL, VertexFormat.Mode.LINES)
 			.withDepthStencilState(Optional.empty())
 			.build());
 	/** Similar to {@link RenderPipelines#LINES} */

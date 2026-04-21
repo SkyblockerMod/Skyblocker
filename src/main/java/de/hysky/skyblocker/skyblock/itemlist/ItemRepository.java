@@ -103,7 +103,9 @@ public class ItemRepository {
 		itemsMap.clear();
 		recipes.clear();
 
+		StackOverlays.loadOverlays();
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
+		StackOverlays.cleanUpOverlays();
 		items.sort(Comparator.<FlexibleItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
 				.thenComparingInt(stack -> stack.getSkyblockId().length())
 				.thenComparing(FlexibleItemStack::getSkyblockId)
@@ -173,7 +175,7 @@ public class ItemRepository {
 	}
 
 	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
