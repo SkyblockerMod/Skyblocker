@@ -84,7 +84,7 @@ public class CatPicture {
 
 		Vec3 lookAngle = player.getLookAngle();
 		Vec3 eyePosition = player.getEyePosition();
-		if (renderPosition != null && renderPosition.subtract(eyePosition).normalize().dot(lookAngle) > 0.3) return; // is looking at kitty
+		if (renderPosition != null && renderPosition.subtract(eyePosition).normalize().dot(lookAngle) > 0.0) return; // is looking at kitty
 
 		Vec3 randomVector = new Vec3(RANDOM.nextDouble(-1, 1), RANDOM.nextDouble(-0.2, 0.2), RANDOM.nextDouble(-1, 1));
 		if (lookAngle.dot(randomVector) > -0.1) randomVector = randomVector.scale(-1); // make sure it is behind the player
