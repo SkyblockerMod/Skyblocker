@@ -179,7 +179,7 @@ public class SkyblockerConfigManager {
 
 	/**
 	 * Returns {@code true} if the given class represents one of our config
-	 * classes. This prevents {@link de.hysky.skyblocker.DisableAll#disableBooleans(Object)} from touching
+	 * classes. This prevents {@link de.hysky.skyblocker.DisableAll#disableEntries(Object)} from touching
 	 * unrelated objects from other mods.
 	 */
 	@SuppressWarnings("JavadocReference")
