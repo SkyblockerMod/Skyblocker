@@ -22,8 +22,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static de.hysky.skyblocker.config.SkyblockerConfigManager.isConfigClass;
-
 /**
  * Command helper for disabling every configurable feature.
  */
@@ -101,7 +99,7 @@ public class DisableAll {
 						m.put(entry.getKey(), Boolean.FALSE);
 					}
 				}
-			} else if (value != null && isConfigClass(type)) {
+			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
 				disableBooleans(value);
 			}
 		}
@@ -119,7 +117,7 @@ public class DisableAll {
 				Optional<Field> option = Arrays.stream(declaredFields).filter(f -> f.getAnnotation(EnumDisabledValue.class) != null).findFirst();
 				if (option.isEmpty()) continue;
 				field.set(target, option.get().get(type));
-			} else if (value != null && isConfigClass(type)) {
+			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
 				disableEnum(value);
 			}
 		}
