@@ -44,6 +44,7 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +194,7 @@ public class Utils {
 		return location;
 	}
 
-	// Used in tests for location-specific branches
+	@VisibleForTesting
 	public static void setTestLocation(Location located) {
 		location = located;
 	}
