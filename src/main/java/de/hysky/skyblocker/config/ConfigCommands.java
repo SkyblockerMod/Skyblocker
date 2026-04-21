@@ -54,13 +54,17 @@ public class ConfigCommands {
 		return builder;
 	}
 
+	private static Component formatValue(boolean bl) {
+		return Component.literal(Boolean.toString(bl)).withStyle(bl ? ChatFormatting.GREEN : ChatFormatting.RED);
+	}
+
 	private static LiteralArgumentBuilder<FabricClientCommandSource> registerBooleanConfigEntry(Field field, Object object, String name) {
 		return literal(name).then(argument("value", BoolArgumentType.bool()).executes(context -> {
 			SkyblockerConfigManager.update(_ -> {
 				try {
 					boolean value = BoolArgumentType.getBool(context, "value");
 					field.setBoolean(object, value);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, value).withStyle(ChatFormatting.GREEN)));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, formatValue(value))));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
@@ -71,7 +75,7 @@ public class ConfigCommands {
 				try {
 					boolean toggled = !field.getBoolean(object);
 					field.setBoolean(object, toggled);
-					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, toggled).withStyle(ChatFormatting.GREEN)));
+					context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.set", name, formatValue(toggled))));
 				} catch (IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
@@ -79,7 +83,7 @@ public class ConfigCommands {
 			return Command.SINGLE_SUCCESS;
 		})).executes(context -> {
 			try {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.query", name, field.getBoolean(object)).withStyle(ChatFormatting.GREEN)));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.commands.query", name, formatValue(field.getBoolean(object)))));
 			} catch (IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}
