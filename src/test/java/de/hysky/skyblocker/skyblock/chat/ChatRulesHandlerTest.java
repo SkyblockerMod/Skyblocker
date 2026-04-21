@@ -45,9 +45,20 @@ class ChatRulesHandlerTest {
 		pressure.append(Component.literal(" fainted from pressure").withStyle(ChatFormatting.GRAY));
 		pressure.append(Component.literal(".").withStyle(ChatFormatting.GRAY));
 
+		// yes, even this one... wtf hypixel
+		MutableComponent spacer = Component.empty().withStyle(style -> style.withItalic(false));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_BLUE));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_AQUA));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_AQUA));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+
 		Assertions.assertEquals("&eNew buff&r: &fGain &a+5% &2∮ Sweep&f.", TextTransformer.toLegacy(newBuff));
 		Assertions.assertEquals("&fWatchdog has banned &c&l5,565&f players in the last 7 days.", TextTransformer.toLegacy(watchdog));
 		Assertions.assertEquals("&c ☠ &aNOT_LEGEND_&7 fainted from pressure.", TextTransformer.toLegacy(pressure));
+		Assertions.assertEquals("      &8 ", TextTransformer.toLegacy(spacer));
 	}
 
 	@Test

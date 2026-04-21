@@ -67,14 +67,15 @@ public class TextTransformer {
 	}
 
 	private static String removeRedundantCodes(String message) {
-		final var result = new StringBuilder();
+		String result = message;
 		Matcher redundant = REDUNDANT_COLOR_REGEX.matcher(message);
 
 		while (redundant.find()) {
-			redundant.appendReplacement(result, "$1&$2");
+			result = redundant.replaceAll("$1&$2");
+			redundant.reset(result);
 		}
 
-		return redundant.appendTail(result).toString();
+		return result;
 	}
 
 	/**
