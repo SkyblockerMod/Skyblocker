@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.ConfigNullFieldsFix;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -96,23 +95,9 @@ public class DisableAll {
 						m.put(entry.getKey(), Boolean.FALSE);
 					}
 				}
-			} else if (value != null && isConfigClass(type)) {
+			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
 				disableBooleans(value);
 			}
 		}
-	}
-
-	/**
-	 * Returns {@code true} if the given class represents one of our config
-	 * classes. This prevents {@link #disableBooleans(Object)} from touching
-	 * unrelated objects from other mods.
-	 */
-	private static boolean isConfigClass(Class<?> clazz) {
-		return !clazz.isPrimitive()
-				&& !clazz.isEnum()
-				&& !clazz.isRecord()
-				&& !clazz.equals(String.class)
-				&& !Number.class.isAssignableFrom(clazz)
-				&& clazz.getPackageName().startsWith(ConfigNullFieldsFix.CONFIGS_PACKAGE);
 	}
 }
