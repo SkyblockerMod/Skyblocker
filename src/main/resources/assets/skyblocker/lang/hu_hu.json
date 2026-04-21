@@ -1716,5 +1716,7 @@
     "skyblocker.config.farming.farmingHud.experience": "Farming Skill Haladás Mutatása",
     "key.skyblocker.wikiLookup.independent": "Keresés a Közösségi Wikin (Angol)",
     "skyblocker.accessoryHelper.independent": "(Nyomd a shiftet a közösségihez)",
-    "skyblocker.wikiLookup.noArticleFound.independent": "Nem sikerült közösségi wiki bejegyzést találni ehhez a tárgyhoz..."
+    "skyblocker.wikiLookup.noArticleFound.independent": "Nem sikerült közösségi wiki bejegyzést találni ehhez a tárgyhoz...",
+    "skyblocker.config.commands.query": "'%s' beállítás jelenlegi értéke: %s.",
+    "skyblocker.config.commands.set": "'%s' beállítás értéke megváltoztatva erre: %s."
 }
