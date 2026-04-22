@@ -307,7 +307,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 						return;
 					}
 				}
-
 			}
 
 			case ChestMenu genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
