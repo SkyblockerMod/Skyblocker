@@ -4,11 +4,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -26,7 +23,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -126,9 +122,6 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	public SkyblockInventoryScreen(Player player) {
 		super(player);
-		if (ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Component.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenEquipmentQuickNavSkyblocker" : "InventoryScreenEquipmentSkyblocker"));
-		}
 		SimpleContainer inventory = new SimpleContainer(Utils.isInTheRift() ? equipment_rift : equipment);
 		for (int i = 0; i < 4; i++) {
 			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
@@ -146,14 +139,12 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		return super.mouseClicked(click, doubled);
 	}
 
-	/**
-	 * Draws the equipment slots in the foreground layer after vanilla slots are drawn
-	 * in {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen#extractRenderState(GuiGraphicsExtractor, int, int, float)} (GuiGraphics, int, int, float) HandledScreen#render(DrawContext, int, int, float)}.
-	 */
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+	protected void extractSlots(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+		super.extractSlots(graphics, mouseX, mouseY);
+
 		for (Slot equipmentSlot : equipmentSlots) {
-			boolean hovered = isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
+			boolean hovered = hoveredSlot == null && isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, mouseX, mouseY);
 
 			if (hovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreenAccessor.getSLOT_HIGHLIGHT_BACK_SPRITE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 
@@ -201,14 +192,6 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	@Override
-	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
-		super.extractSlot(graphics, slot, mouseX, mouseY);
-		if (slot instanceof EquipmentSlot && !slot.hasItem()) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EMPTY_SLOT, slot.x, slot.y, 16, 16);
-		}
-	}
-
-	@Override
 	public @Nullable ItemStack getFocusedItem() {
 		return hoveredItem;
 	}
@@ -247,6 +230,11 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		@Override
 		public boolean mayPlace(ItemStack stack) {
 			return false;
+		}
+
+		@Override
+		public @Nullable Identifier getNoItemIcon() {
+			return EMPTY_SLOT;
 		}
 	}
 }
