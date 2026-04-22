@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  */
 public class TextTransformer {
 	private static final Pattern REDUNDANT_COLOR_REGEX = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
+	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\s+");
 	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
 	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> c.getColor() != null).collect(Collectors.toUnmodifiableMap(ChatFormatting::getColor, ChatFormatting::getChar));
 	private static final List<Map.Entry<Predicate<Style>, Character>> PREDICATE_FORMAT_LIST = List.of(
@@ -91,8 +92,15 @@ public class TextTransformer {
 		final var previous = new AtomicReference<>(Style.EMPTY);
 
 		component.visit((style, string) -> {
-			result.append(getCodes(style, previous.get()));
-			result.append(string.replace('§', '&'));
+			// don't bother styling whitespace
+			if (ALL_WHITESPACE.matcher(string).matches()) {
+				result.append(string);
+			} else {
+				result.append(getCodes(style, previous.get()));
+				result.append(string.replace('§', '&'));
+
+			}
+
 			previous.set(style);
 
 			return Optional.empty();
