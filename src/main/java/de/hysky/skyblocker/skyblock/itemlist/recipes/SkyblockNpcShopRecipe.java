@@ -82,6 +82,7 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	}
 
 	boolean shouldOffsetArrow() {
+		if (!shouldSplit()) return false;
 		int size = inputs.size();
 		return size % 2 == 1 || size >= 8;
 	}
