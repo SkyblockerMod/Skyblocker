@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUIngredient;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -59,8 +60,7 @@ public interface SkyblockRecipe {
 		} else {
 			// Create a fallback stack, cache it, and return it if nothing else worked
 			LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", id);
-			computedStack = new FlexibleItemStack(Items.BARRIER);
-			computedStack.set(DataComponents.ITEM_NAME, Component.literal(id));
+			computedStack = ItemUtils.getNamedPlaceholder(id);
 		}
 
 		// Cache the computed item stack for this ingredient and return it
