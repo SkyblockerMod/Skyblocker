@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
@@ -39,7 +40,7 @@ import org.jspecify.annotations.Nullable;
 public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Font TEXT_RENDERER = CLIENT.font;
-	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/recipe_book.png");
+	private static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("background");
 	public static final int BACKGROUND_WIDTH = 147;
 	public static final int BACKGROUND_HEIGHT = 160;
 	public static final int SPACING = 2;
@@ -195,7 +196,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Render the background texture for the widget
-		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		searchField.extractRenderState(graphics, mouseX, mouseY, a);
 
 		if (this.sortButton.active) {
