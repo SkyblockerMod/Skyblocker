@@ -196,7 +196,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Render the background texture for the widget
-		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), 1.0f, 1.0f, getWidth(), getHeight(), 256, 256 - 10);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		searchField.extractRenderState(graphics, mouseX, mouseY, a);
 
 		if (this.sortButton.active) {
