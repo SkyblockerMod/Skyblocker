@@ -599,6 +599,7 @@
   "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "Displays the age of evolving items and how long they will take to evolve.",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "Displays the type of exotic below the item's name if an armor piece is exotic.",
+  "skyblocker.config.general.itemTooltip.enableGeorgePrice": "Enable George Pet Sell Price",
   "skyblocker.config.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "skyblocker.config.general.itemTooltip.enableMotesPrice": "Enable Motes Price",
   "skyblocker.config.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",

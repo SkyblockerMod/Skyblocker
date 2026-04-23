@@ -344,6 +344,13 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableGeorgePrice"))
+								.binding(defaults.general.itemTooltip.enableGeorgePrice,
+										() -> config.general.itemTooltip.enableGeorgePrice,
+										newValue -> config.general.itemTooltip.enableGeorgePrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
