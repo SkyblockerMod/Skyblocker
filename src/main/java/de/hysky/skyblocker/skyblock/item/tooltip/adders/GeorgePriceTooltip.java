@@ -14,17 +14,13 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Adds a George sell price tooltip line to pet items.
- *
- * <p>George is an NPC in SkyBlock who buys pets at fixed prices based on pet type and rarity.
+ * <p>
+ * George is an NPC in SkyBlock who buys pets at fixed prices based on pet type and rarity.
  * This tooltip adder displays the applicable George price so players can quickly evaluate
  * whether selling to George is worthwhile compared to the Bazaar or Auction House.
- *
- * <p>Price data is fetched from {@code https://hysky.de/api/georgeprices} and stored in
- * {@link TooltipInfoType#GEORGE}. Keys in that dataset follow the format
- * {@code RARITY_PETNAME} (e.g. {@code EPIC_SQUID}, {@code LEGENDARY_WOLF}).
- *
- * <p>Pet item stacks expose their Skyblock API ID via {@code getSkyblockApiId()} in the format
- * {@code LVL_1_RARITY_PETNAME}. The {@code LVL_1_} prefix is stripped before the lookup.
+ * <p>
+ * Price data is fetched from {@code https://hysky.de/api/georgeprices} and stored in
+ * {@link TooltipInfoType#GEORGE}.
  *
  * @see TooltipInfoType#GEORGE
  * @see NpcPriceTooltip
@@ -52,7 +48,7 @@ public class GeorgePriceTooltip extends SimpleTooltipAdder {
 	 *
 	 * <p>The method early-returns without adding a line if:
 	 * <ul>
-	 *   <li>the item is not a pet (Skyblock API ID does not start with {@code LVL_1_})</li>
+	 *   <li>the item is not a pet</li>
 	 *   <li>the George price dataset has not yet been downloaded</li>
 	 *   <li>the pet has no entry in the George price dataset</li>
 	 * </ul>
