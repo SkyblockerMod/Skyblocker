@@ -1718,5 +1718,8 @@
     "skyblocker.accessoryHelper.independent": "(Nyomd a shiftet a közösségihez)",
     "skyblocker.wikiLookup.noArticleFound.independent": "Nem sikerült közösségi wiki bejegyzést találni ehhez a tárgyhoz...",
     "skyblocker.config.commands.query": "'%s' beállítás jelenlegi értéke: %s.",
-    "skyblocker.config.commands.set": "'%s' beállítás értéke megváltoztatva erre: %s."
+    "skyblocker.config.commands.set": "'%s' beállítás értéke megváltoztatva erre: %s.",
+    "skyblocker.config.general.itemTooltip.enableGeorgePrice": "George Pet Eladási Ár Engedélyezése",
+    "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "McGrubber Stacks Automatikus Felismerése",
+    "skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip": "Felismeri a McGrubber staceket (pl. egy Orb üzenetből) és automatikusan kijavítja az alábbi stack számot."
 }
