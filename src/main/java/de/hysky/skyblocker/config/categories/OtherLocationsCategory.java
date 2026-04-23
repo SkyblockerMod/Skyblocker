@@ -101,6 +101,14 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.rift.highlightFoundEnigmaSouls = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber"))
+								.description(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip"))
+								.binding(defaults.otherLocations.rift.autoDetectMcGrubber,
+										() -> config.otherLocations.rift.autoDetectMcGrubber,
+										newValue -> config.otherLocations.rift.autoDetectMcGrubber = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.rift.mcGrubberStacks"))
 								.description(Component.translatable("skyblocker.config.otherLocations.rift.mcGrubberStacks.@Tooltip"))
