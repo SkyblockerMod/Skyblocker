@@ -344,6 +344,13 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableGeorgePrice"))
+								.binding(defaults.general.itemTooltip.enableGeorgePrice,
+										() -> config.general.itemTooltip.enableGeorgePrice,
+										newValue -> config.general.itemTooltip.enableGeorgePrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
@@ -428,7 +435,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
 								.description(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.fandomWikiLookup.getTranslatedKeyMessage()))
+										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
 								.binding(defaults.general.wikiLookup.enableWikiLookup,
 										() -> config.general.wikiLookup.enableWikiLookup,
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)

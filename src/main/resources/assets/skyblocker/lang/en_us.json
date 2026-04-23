@@ -18,17 +18,17 @@
   "key.skyblocker.slottext": "Slot Text",
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
   "key.skyblocker.valueBreadownPopup": "Open Value Breakdown Popup",
-  "key.skyblocker.wikiLookup.fandom": "Fandom Wiki Lookup",
+  "key.skyblocker.wikiLookup.independent": "Independent Wiki Lookup",
   "key.skyblocker.wikiLookup.official": "Hypixel Wiki Lookup",
 
   "skyblocker.accessoryHelper.afterSelling": "%s after selling %s",
   "skyblocker.accessoryHelper.allTiers": "Show all tiers",
-  "skyblocker.accessoryHelper.fandom": "(Hold shift for Fandom)",
   "skyblocker.accessoryHelper.filter": "Filter",
   "skyblocker.accessoryHelper.filter.ALL": "All",
   "skyblocker.accessoryHelper.filter.MISSING": "Missing",
   "skyblocker.accessoryHelper.filter.UPGRADES": "Upgrades",
   "skyblocker.accessoryHelper.highestTierOnly": "Show highest tier only",
+  "skyblocker.accessoryHelper.independent": "(Hold shift for independent)",
   "skyblocker.accessoryHelper.openWiki": "Click to open on the wiki!",
   "skyblocker.accessoryHelper.recombobulate": "Recombobulate a %s accessory.",
 
@@ -164,6 +164,9 @@
 
   "skyblocker.config.chat.toastDuration": "Toast Display Duration",
   "skyblocker.config.chat.toastDuration.@Tooltip": "How long in seconds should the toast display for filters set to \"Show toast\".",
+
+  "skyblocker.config.commands.query": "Option '%s' is currently set to %s.",
+  "skyblocker.config.commands.set": "Option '%s' is now set to %s.",
 
   "skyblocker.config.crimsonIsle": "Crimson Isle",
 
@@ -597,6 +600,7 @@
   "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "Displays the age of evolving items and how long they will take to evolve.",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip.@Tooltip": "Displays the type of exotic below the item's name if an armor piece is exotic.",
+  "skyblocker.config.general.itemTooltip.enableGeorgePrice": "Enable George Pet Sell Price",
   "skyblocker.config.general.itemTooltip.enableLowestBIN": "Enable Lowest BIN Price",
   "skyblocker.config.general.itemTooltip.enableMotesPrice": "Enable Motes Price",
   "skyblocker.config.general.itemTooltip.enableMotesPrice.@Tooltip": "Displays the Motes sell price of an item while in The Rift.",
@@ -654,7 +658,7 @@
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
-  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item.\n\nUse '%s' for the official Hypixel wiki.\nUse '%s' for the Fandom wiki.",
+  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item.\n\nUse '%s' for the official Hypixel wiki.\nUse '%s' for the independent wiki.",
 
   "skyblocker.config.helpers": "Helpers",
 
@@ -995,6 +999,8 @@
   "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "Only counts melee kills!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
+  "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "Autodetect McGrubber Stacks",
+  "skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip": "Detects McGrubber stacks (e.g. from Orb pickup messages) and adjusts the stack count below automatically.",
   "skyblocker.config.otherLocations.rift.blobbercystGlow": "Blobbercyst Glow",
   "skyblocker.config.otherLocations.rift.blobbercystGlow.@Tooltip": "Applies the glowing effect to the Blobbercysts from the BACTE fight.",
   "skyblocker.config.otherLocations.rift.enigmaSoulWaypoints": "Enable Enigma Soul Waypoints",
@@ -1955,7 +1961,7 @@
 
   "skyblocker.webSocket.receivedCrystalsWaypoint": "Received a waypoint to %s from the Skyblocker WebSocket.",
 
-  "skyblocker.wikiLookup.noArticleFound.fandom": "Unable to locate a Fandom wiki article for this item...",
+  "skyblocker.wikiLookup.noArticleFound.independent": "Unable to locate an independent wiki article for this item...",
   "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
 
   "text.skyblocker.clickToSend": "[Click To Send In Chat]",

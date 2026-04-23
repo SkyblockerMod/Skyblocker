@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -108,6 +109,7 @@ public class HelperConfig {
 		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
 
 		public enum FishingHookDisplay {
+			@EnumDisabledValue
 			OFF,
 			CROSSHAIR,
 			HUD;

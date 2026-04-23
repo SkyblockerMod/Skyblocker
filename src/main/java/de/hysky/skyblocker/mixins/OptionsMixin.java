@@ -15,6 +15,7 @@ public class OptionsMixin {
 	private CompoundTag updateSkyblockerKeybinds(CompoundTag nbt) {
 		skyblocker$update("wikiLookup.official", nbt);
 		skyblocker$update("wikiLookup.fandom", nbt);
+		skyblocker$migrate("wikiLookup.fandom", "wikiLookup.independent", nbt);
 		skyblocker$update("hotbarSlotLock", nbt);
 		skyblocker$update("itemPriceLookup", nbt);
 		skyblocker$update("itemProtection", nbt);
@@ -25,5 +26,14 @@ public class OptionsMixin {
 	private void skyblocker$update(String key, CompoundTag nbt) {
 		Tag element = nbt.get("key_key." + key);
 		if (element != null && !nbt.contains("key_key.skyblocker." + key)) nbt.put("key_key.skyblocker." + key, element);
+	}
+
+	@Unique
+	private void skyblocker$migrate(String oldKey, String newKey, CompoundTag nbt) {
+		String newEntry = "key_key.skyblocker." + newKey;
+		if (nbt.contains(newEntry)) return;
+
+		Tag element = nbt.get("key_key.skyblocker." + oldKey);
+		if (element != null) nbt.put(newEntry, element);
 	}
 }
