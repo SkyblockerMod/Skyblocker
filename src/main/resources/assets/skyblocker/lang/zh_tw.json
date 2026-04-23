@@ -142,7 +142,7 @@
     "skyblocker.tips.tip": "§a提示：%s\n",
     "skyblocker.tips.shortcuts": "使用 /skyblocker shortcuts 建立和編輯指令和訊息快捷方式。",
     "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "獲得稀有的地下城戰利品時顯示特殊視覺效果！",
-    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "滑鼠指針懸停於物品上，\n\n按%s鍵打開Hypixel官方wiki中的條目;\n按%s鍵打開Fandom wiki中的條目。",
+    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "滑鼠指針懸停於物品上，\n\n按%s鍵打開Hypixel官方wiki中的條目;\n按%s鍵打開Hypixel社群wiki中的條目。",
     "skyblocker.config.dungeons.livid.enableLividColorGlow.@Tooltip": "為F5/M5的真Livid啟用發光效果。",
     "skyblocker.config.dungeons.livid.enableLividColorText": "在聊天欄中發送Livid顏色",
     "skyblocker.config.dungeons.livid.enableLividColorGlow": "啟用Livid高亮",
@@ -1120,7 +1120,7 @@
     "skyblocker.config.general.searchOverlay.deleteTooltip": "移除歷史條目",
     "skyblocker.dungeons.puzzle.waterboard.waterFound": "水流必須關閉，否則會幹擾謎題助手。關閉水流並等水流乾，然後重置謎題助手。",
     "skyblocker.waypoints.newGroup": "新建路徑點分組",
-    "key.skyblocker.wikiLookup.official": "Hypixel Wiki查詢",
+    "key.skyblocker.wikiLookup.official": "查詢Hypixel官方Wiki",
     "skyblocker.config.helpers.jerry.sendJerryTimerMessage": "Jerry生成冷卻結束！",
     "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "啟用海怪追蹤器",
     "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "僅當囤魚時顯示",
@@ -1713,5 +1713,9 @@
     "skyblocker.config.chat.filter.hideSpiritSceptre": "隱藏Spirit Sceptre訊息",
     "skyblocker.config.farming.farmingHud.coins": "顯示計算後的每小時利潤",
     "skyblocker.config.farming.farmingHud.counter": "顯示計數器和每分鐘作物",
-    "skyblocker.config.farming.farmingHud.experience": "顯示農耕技能進度"
+    "skyblocker.config.farming.farmingHud.experience": "顯示農耕技能進度",
+    "key.skyblocker.wikiLookup.independent": "查詢Hypixel社群wiki",
+    "skyblocker.accessoryHelper.independent": "（按住Shift查詢社群wiki）",
+    "skyblocker.config.general.itemTooltip.enableGeorgePrice": "啟用George寵物售價",
+    "skyblocker.wikiLookup.noArticleFound.independent": "無法在Hypixel社群wiki中找到該物品的條目…"
 }
