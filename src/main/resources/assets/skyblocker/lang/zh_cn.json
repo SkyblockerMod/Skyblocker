@@ -130,7 +130,7 @@
     "skyblocker.config.dungeons.secretWaypoints.waypointType": "路径点类型",
     "text.skyblocker.open": "打开",
     "skyblocker.config.general.wikiLookup.enableWikiLookup": "启用wiki查阅功能",
-    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品上，\n\n按%s键打开Hypixel官方wiki中的条目;\n按%s键打开Fandom wiki中的条目。",
+    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "指针悬停于物品上，\n\n按%s键打开Hypixel官方wiki中的条目;\n按%s键打开Hypixel社群wiki中的条目。",
     "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual助手",
     "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "启用Mythological Ritual助手",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints": "启用珍珠路径点",
@@ -1166,7 +1166,7 @@
     "skyblocker.wikiLookup.noArticleFound.official": "无法在Hypixel官方wiki中找到该物品的条目…",
     "skyblocker.dungeons.puzzle.waterboard.waterFound": "水流必须关闭，否则会干扰谜题助手。关闭水流并等水流干，然后重置谜题助手。",
     "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "门处于无法识别的状态。请确保恰好有三扇门处于关闭状态，然后重置谜题助手。",
-    "key.skyblocker.wikiLookup.official": "Hypixel Wiki查询",
+    "key.skyblocker.wikiLookup.official": "查询Hypixel官方Wiki",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "关",
     "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "启用海怪追踪器",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.CROSSHAIR": "十字准星",
@@ -1714,5 +1714,9 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit": "在进入世界之前，项目编辑将被禁用！",
     "skyblocker.config.farming.farmingHud.coins": "显示计算后的每小时利润",
     "skyblocker.config.farming.farmingHud.counter": "显示计数器和每分钟作物",
-    "skyblocker.config.farming.farmingHud.experience": "显示农耕技能进度"
+    "skyblocker.config.farming.farmingHud.experience": "显示农耕技能进度",
+    "key.skyblocker.wikiLookup.independent": "查询Hypixel社群wiki",
+    "skyblocker.accessoryHelper.independent": "（按住Shift查询社群wiki）",
+    "skyblocker.config.general.itemTooltip.enableGeorgePrice": "启用George宠物售价",
+    "skyblocker.wikiLookup.noArticleFound.independent": "无法在Hypixel社群wiki中找到该物品的条目…"
 }
