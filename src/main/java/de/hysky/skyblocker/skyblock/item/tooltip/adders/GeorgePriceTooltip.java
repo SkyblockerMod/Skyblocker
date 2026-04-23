@@ -71,7 +71,7 @@ public class GeorgePriceTooltip extends SimpleTooltipAdder {
 		double price = TooltipInfoType.GEORGE.getData().getOrDefault(stack.getNeuName(), -1.0);
 		if (price < 0) return;
 
-		lines.add(Component.literal(String.format("%-21s", "George Sell Price:"))
+		lines.add(Component.literal(String.format("%-21s", "Pet Sell Price:"))
 				.withStyle(ChatFormatting.YELLOW)
 				.append(ItemTooltip.getCoinsMessage(price, 1)));
 	}
