@@ -68,6 +68,7 @@ public class MayorUtils {
 				mayor = Mayor.EMPTY;
 				minister = Minister.EMPTY;
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}, (int) (millisUntilNextMayorChange / 50));
 		});
 	}
