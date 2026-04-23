@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import java.util.Locale;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements SkyblockRecipe {
@@ -19,9 +19,9 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	private static final int ARROW_LENGTH = 24;
 	private static final int ARROW_PADDING = 3;
 
-	private final ItemStack npcShop;
-	private final List<ItemStack> inputs;
-	private final ItemStack output;
+	private final FlexibleItemStack npcShop;
+	private final List<FlexibleItemStack> inputs;
+	private final FlexibleItemStack output;
 
 	public SkyblockNpcShopRecipe(NEUNpcShopRecipe shopRecipe) {
 		npcShop = ItemRepository.getItemStack(shopRecipe.getIsSoldBy().getSkyblockItemId());
@@ -42,13 +42,12 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	 * <p>
 	 * Recipes greater than 3 items are split into 2 rows evenly.
 	 * If the input size is odd, it is offset further so those items do not overlap with the arrow.
-	 * There are currently no recipes with > 7 items.
 	 */
 	private int getCenterX(int width) {
 		int centerX = width / 2;
 		int size = inputs.size();
 		centerX += Math.min(getRowSize(), 3) * SLOT_SIZE / 2 - SLOT_SIZE / 2;
-		if (size > 1 && size % 2 == 1) centerX -= SLOT_SIZE / 2;
+		if (size > 1 && shouldOffsetArrow()) centerX -= SLOT_SIZE / 2;
 		return centerX;
 	}
 
@@ -82,11 +81,17 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 		return slots;
 	}
 
+	boolean shouldOffsetArrow() {
+		if (!shouldSplit()) return false;
+		int size = inputs.size();
+		return size % 2 == 1 || size >= 8;
+	}
+
 	@Override
 	public List<RecipeSlot> getOutputSlots(int width, int height) {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
-		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
+		if (shouldOffsetArrow()) centerX += SLOT_SIZE;
 		return List.of(new RecipeSlot(centerX + ARROW_LENGTH / 2 + ARROW_PADDING, centerY, output));
 	}
 
@@ -94,21 +99,21 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 	public @Nullable ScreenPosition getArrowLocation(int width, int height) {
 		int centerX = getCenterX(width);
 		int centerY = height / 2;
-		if (inputs.size() == 7 || inputs.size() == 8) centerX += SLOT_SIZE;
+		if (shouldOffsetArrow()) centerX += SLOT_SIZE;
 		return new ScreenPosition(centerX - ARROW_LENGTH / 2 - 1, centerY);
 	}
 
-	public ItemStack getNpcItem() {
+	public FlexibleItemStack getNpcItem() {
 		return npcShop;
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public List<FlexibleItemStack> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<ItemStack> getOutputs() {
+	public List<FlexibleItemStack> getOutputs() {
 		return Collections.singletonList(output);
 	}
 
@@ -124,6 +129,6 @@ public class SkyblockNpcShopRecipe implements SkyblockRecipe {
 
 	@Override
 	public Identifier getRecipeIdentifier() {
-		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.count());
 	}
 }

@@ -4,10 +4,12 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
 import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.RecipeItemStackCache;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
@@ -42,8 +44,8 @@ import net.minecraft.world.item.crafting.SelectableRecipe;
 public class ItemRepository {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(ItemRepository.class);
 
-	private static final List<ItemStack> items = new ArrayList<>();
-	private static final Map<String, ItemStack> itemsMap = new HashMap<>();
+	private static final List<FlexibleItemStack> items = new ArrayList<>();
+	private static final Map<String, FlexibleItemStack> itemsMap = new HashMap<>();
 	private static final List<SkyblockRecipe> recipes = new ArrayList<>();
 	private static final HashMap<String, @NEUId String> bazaarStocks = new HashMap<>();
 	/**
@@ -102,14 +104,17 @@ public class ItemRepository {
 		itemsMap.clear();
 		recipes.clear();
 
+		StackOverlays.loadOverlays();
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
-		items.sort(Comparator.<ItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
+		StackOverlays.cleanUpOverlays();
+		items.sort(Comparator.<FlexibleItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
 				.thenComparingInt(stack -> stack.getSkyblockId().length())
-				.thenComparing(ItemStack::getSkyblockId)
+				.thenComparing(FlexibleItemStack::getSkyblockId)
 		);
 		itemsImported = true;
 
 		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
+		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
 		afterImportTasks.forEach(task -> {
@@ -130,7 +135,7 @@ public class ItemRepository {
 
 	private static void loadItem(NEUItem item) {
 		try {
-			ItemStack stack = ItemStackBuilder.fromNEUItem(item);
+			FlexibleItemStack stack = ItemStackBuilder.fromNEUItem(item);
 			StackOverlays.applyOverlay(item, stack);
 
 			if (stack.is(Items.ENCHANTED_BOOK) && stack.getSkyblockId().contains(";")) {
@@ -172,7 +177,7 @@ public class ItemRepository {
 	}
 
 	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
@@ -183,11 +188,11 @@ public class ItemRepository {
 		return filesImported;
 	}
 
-	public static List<ItemStack> getItems() {
+	public static List<FlexibleItemStack> getItems() {
 		return itemsImported ? items : List.of();
 	}
 
-	public static Stream<ItemStack> getItemsStream() {
+	public static Stream<FlexibleItemStack> getItemsStream() {
 		return itemsImported ? items.stream() : Stream.empty();
 	}
 
@@ -199,20 +204,20 @@ public class ItemRepository {
 	/**
 	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
-	public static @Nullable ItemStack getItemStack(String neuId) {
+	public static @Nullable FlexibleItemStack getItemStack(String neuId) {
 		return itemsImported ? itemsMap.get(neuId) : null;
 	}
 
 	@Contract("_, !null -> !null")
-	public static ItemStack getItemStack(String neuId, ItemStack defaultStack) {
-		ItemStack stack = getItemStack(neuId);
+	public static FlexibleItemStack getItemStack(String neuId, FlexibleItemStack defaultStack) {
+		FlexibleItemStack stack = getItemStack(neuId);
 		return stack != null ? stack : defaultStack;
 	}
 
 	/**
 	 * @param neuId the NEU item id gotten through {@link NEUItem#getSkyblockItemId()} or {@link ItemStack#getNeuName()}.
 	 */
-	public static Supplier<ItemStack> getItemStackSupplier(String neuId) {
+	public static Supplier<FlexibleItemStack> getItemStackSupplier(String neuId) {
 		return () -> itemsMap.get(neuId);
 	}
 

@@ -71,7 +71,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	}
 
 	@Inject(method = "handleSetEntityData", at = @At("TAIL"))
-	private void skyblocker$onEntityTrackerUpdate(ClientboundSetEntityDataPacket packet, CallbackInfo ci, @Local Entity entity) {
+	private void skyblocker$onEntityTrackerUpdate(ClientboundSetEntityDataPacket packet, CallbackInfo ci, @Local(name = "entity") Entity entity) {
 		if (!(entity instanceof ArmorStand armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
@@ -112,7 +112,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	}
 
 	@Inject(method = "handleTakeItemEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/item/ItemEntity;getItem()Lnet/minecraft/world/item/ItemStack;"))
-	private void skyblocker$onItemPickup(ClientboundTakeItemEntityPacket packet, CallbackInfo ci, @Local ItemEntity itemEntity) {
+	private void skyblocker$onItemPickup(ClientboundTakeItemEntityPacket packet, CallbackInfo ci, @Local(name = "itemEntity") ItemEntity itemEntity) {
 		DungeonManager.onItemPickup(itemEntity);
 	}
 
@@ -122,7 +122,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	}
 
 	@ModifyExpressionValue(method = "handleEntityEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientboundEntityEventPacket;getEntity(Lnet/minecraft/world/level/Level;)Lnet/minecraft/world/entity/Entity;"))
-	private Entity skyblocker$onEntityDeath(Entity entity, @Local(argsOnly = true) ClientboundEntityEventPacket packet) {
+	private Entity skyblocker$onEntityDeath(Entity entity, @Local(name = "packet") ClientboundEntityEventPacket packet) {
 		if (packet.getEventId() == EntityEvent.DEATH) {
 			DungeonScore.handleEntityDeath(entity);
 			TheEnd.onEntityDeath(entity);

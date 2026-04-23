@@ -10,7 +10,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -34,6 +34,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
@@ -46,8 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class MythologicalRitual {
 	private static final Pattern GRIFFIN_BURROW_DUG = Pattern.compile("(?<message>You dug out a Griffin Burrow!|You finished the Griffin burrow chain!) \\((?<index>\\d+)/(?<length>\\d+)\\)");
@@ -62,14 +63,14 @@ public class MythologicalRitual {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(MythologicalRitual::extractRendering);
 		AttackBlockCallback.EVENT.register(MythologicalRitual::onAttackBlock);
 		UseBlockCallback.EVENT.register(MythologicalRitual::onUseBlock);
 		UseItemCallback.EVENT.register(MythologicalRitual::onUseItem);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MythologicalRitual::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
-				.then(literal("clearGriffinBurrows").executes(context -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("diana")
+				.then(literal("clearGriffinBurrows").executes(_ -> {
 					reset();
 					return Command.SINGLE_SUCCESS;
 				}))
@@ -93,7 +94,7 @@ public class MythologicalRitual {
 				case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DUST.equals(type) -> handleNextBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.getCount() == 2 -> handleEchoBurrowParticle(packet);
-				case null, default -> {}
+				default -> {}
 			}
 		}
 	}
@@ -119,7 +120,13 @@ public class MythologicalRitual {
 	 */
 	private static void handleNextBurrowParticle(ClientboundLevelParticlesPacket packet) {
 		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
-		GriffinBurrow burrow = griffinBurrows.get(pos.below(2));
+		BlockPos burrowPos;
+		if (Minecraft.getInstance().level != null) {
+			burrowPos = Minecraft.getInstance().level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos);
+		} else {
+			burrowPos = pos.below(2);
+		}
+		GriffinBurrow burrow = griffinBurrows.get(burrowPos);
 		if (burrow == null) {
 			return;
 		}
@@ -150,6 +157,8 @@ public class MythologicalRitual {
 		if (System.currentTimeMillis() > lastEchoTime + 10_000) {
 			return;
 		}
+		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.getX(), packet.getY() - 0.25, packet.getZ())).isAir()) return;
+
 		if (previousBurrow.echoBurrowDirection == null) {
 			previousBurrow.echoBurrowDirection = new Vec3[2];
 		}
@@ -287,12 +296,12 @@ public class MythologicalRitual {
 		 */
 		private TriState confirmed = TriState.FALSE;
 		private final SimpleRegression regression = new SimpleRegression();
-		private @Nullable Vec3[] nextBurrowLine;
+		private Vec3 @Nullable[] nextBurrowLine;
 		/**
 		 * The positions of the last two echo burrow particles.
 		 */
-		private @Nullable Vec3[] echoBurrowDirection;
-		private @Nullable Vec3[] echoBurrowLine;
+		private @Nullable Vec3 @Nullable[] echoBurrowDirection;
+		private Vec3 @Nullable[] echoBurrowLine;
 		private @Nullable BlockPos nextBurrowEstimatedPos;
 		/**
 		 * The line in the direction of the next burrow estimated by the previous burrow particles.

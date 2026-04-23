@@ -72,6 +72,18 @@ public class PlayerData {
 		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
 	}
 
+	public float getSkillAverage(ProfileMember member) {
+		float average = 0;
+
+		for (Skill skill : Skill.CONVENTIONAL_SKILLS) {
+			average += this.getSkillLevel(skill, member).level();
+		}
+
+		average /= Skill.CONVENTIONAL_SKILLS.size();
+
+		return average;
+	}
+
 	/**
 	 * Gets the highest contiguously unlocked minion tier. It is still possible to craft a higher tier minion by trading with other players.
 	 *

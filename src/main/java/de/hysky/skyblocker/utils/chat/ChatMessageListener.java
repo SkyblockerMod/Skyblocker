@@ -19,6 +19,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.SpiritSceptreFilter;
 import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
@@ -44,7 +45,7 @@ public interface ChatMessageListener {
 	 * An event called when a game message is received. Register your listeners in {@link ChatMessageListener#init()}.
 	 */
 	Event<ChatMessageListener> EVENT = EventFactory.createArrayBacked(ChatMessageListener.class,
-			(listeners) -> (message, asString) -> {
+			listeners -> (message, asString) -> {
 				for (ChatMessageListener listener : listeners) {
 					ChatFilterResult result = listener.onMessage(message, asString);
 					if (result != ChatFilterResult.PASS) return result;
@@ -76,6 +77,7 @@ public interface ChatMessageListener {
 				new ComboFilter(),
 				new HealFilter(),
 				new ImplosionFilter(),
+				new SpiritSceptreFilter(),
 				new MoltenWaveFilter(),
 				new TeleportPadFilter(),
 				new AutopetFilter(),
@@ -111,7 +113,7 @@ public interface ChatMessageListener {
 					LocalPlayer player = Minecraft.getInstance().player;
 
 					if (player != null) {
-						player.displayClientMessage(message, true);
+						player.sendOverlayMessage(message);
 
 						return false;
 					}

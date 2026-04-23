@@ -7,9 +7,11 @@ import java.util.Optional;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
-import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
-import net.minecraft.commands.arguments.item.ItemParser.ItemResult;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,20 +34,30 @@ public class ItemStackComponentizationFixer {
 	private static final int ITEM_COMPONENTS_DATA_VERSION = 4325;
 
 	public static ItemStack fixUpItem(CompoundTag nbt) {
-		Dynamic<Tag> dynamic = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic<>(Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+		Dynamic<Tag> dynamic = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic<>(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
 
 		return ItemStack.CODEC.parse(dynamic).getOrThrow();
+	}
+
+	public static FlexibleItemStack fixUpFlexibleItem(CompoundTag nbt) {
+		Dynamic<Tag> dynamic = DataFixers.getDataFixer().update(References.ITEM_STACK, new Dynamic<>(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), nbt), ITEM_NBT_DATA_VERSION, ITEM_COMPONENTS_DATA_VERSION);
+
+		return FlexibleItemStack.CODEC.parse(dynamic).getOrThrow();
+	}
+
+	public static String componentsAsString(ItemStack stack) {
+		return componentsAsString(stack.getComponentsPatch());
 	}
 
 	/**
 	 * Modified version of {@link net.minecraft.commands.arguments.item.ItemInput#serialize(net.minecraft.core.HolderLookup.Provider)} to only care about changed components.
 	 *
-	 * @return The {@link ItemStack}'s components as a string which is in the format that the {@code /give} command accepts.
+	 * @return The components as a string in the format that the {@code /give} command accepts.
 	 */
-	public static String componentsAsString(ItemStack stack) {
-		RegistryOps<Tag> nbtRegistryOps = Utils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
+	public static String componentsAsString(DataComponentPatch components) {
+		RegistryOps<Tag> nbtRegistryOps = RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 
-		return Arrays.toString(stack.getComponentsPatch().entrySet().stream().map(entry -> {
+		return Arrays.toString(components.entrySet().stream().map(entry -> {
 			DataComponentType<?> componentType = entry.getKey();
 			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
 			if (componentId == null) return null;
@@ -61,17 +73,17 @@ public class ItemStackComponentizationFixer {
 	}
 
 	public static ItemStack fromItemString(String itemString, int count) {
-		ItemParser reader = new ItemParser(Utils.getRegistryWrapperLookup());
+		ItemParser reader = new ItemParser(RegistryUtils.getRegistryWrapperLookup());
 
 		try {
-			ItemResult result = reader.parse(new StringReader(itemString));
+			ItemInput result = reader.parse(new StringReader(itemString));
 			ItemStack stack = new ItemStack(result.item(), count);
 
 			//Vanilla skips validation with /give so we will too
 			stack.applyComponents(result.components());
 
 			return stack;
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		return ItemStack.EMPTY;
 	}

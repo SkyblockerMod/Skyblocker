@@ -10,7 +10,7 @@ public class ServerTickCounter {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static void onServerTick(ClientboundPingPacket packet) {

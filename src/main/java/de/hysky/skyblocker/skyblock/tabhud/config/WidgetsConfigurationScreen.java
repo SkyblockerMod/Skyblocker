@@ -17,8 +17,8 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -95,8 +95,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 */
 	@Init
 	public static void initCommands() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("hud").executes(_ -> {
 				openWidgetsConfigScreen(null);
 				return Command.SINGLE_SUCCESS;
 			})));
@@ -188,7 +188,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	protected void repositionElements() {
 		if (this.tabNavigation != null) {
-			this.tabNavigation.setWidth(this.width);
+			this.tabNavigation.updateWidth(this.width);
 			this.tabNavigation.arrangeElements();
 			int i = this.tabNavigation.getRectangle().bottom();
 			ScreenRectangle screenRect = new ScreenRectangle(0, i, this.width, this.height - i - 5);
@@ -346,6 +346,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			onLocationChanged.accept(location);
 		},
 				locations.contains(currentLocation) ? currentLocation : Location.HUB,
-				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
+				isOpen -> previewTab.locationDropdownOpened(isOpen));
 	}
 }

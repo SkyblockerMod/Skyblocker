@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,7 +29,7 @@ public class LegacyAttributeBackground extends ColoredItemBackground<Integer> {
 	}
 
 	@Override
-	protected void draw(GuiGraphics context, int x, int y, Integer color) {
+	protected void extract(GuiGraphicsExtractor context, int x, int y, Integer color) {
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16, color);
 	}
 }

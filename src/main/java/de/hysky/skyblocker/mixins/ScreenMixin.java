@@ -42,7 +42,7 @@ public class ScreenMixin {
 		}
 	}
 
-	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideReconfiguringScreen(CallbackInfo ci) {
 		if ((Object) this instanceof ServerReconfigScreen && Utils.isOnHypixel()) ci.cancel();
 	}

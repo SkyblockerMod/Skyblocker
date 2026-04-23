@@ -99,7 +99,7 @@ public class Scheduler {
 	 * @return the command
 	 */
 	public static Command<FabricClientCommandSource> queueOpenScreenCommand(Supplier<Screen> screenSupplier) {
-		return context -> queueOpenScreen(screenSupplier.get());
+		return _ -> queueOpenScreen(screenSupplier.get());
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Scheduler {
 	 * @return the command
 	 */
 	public static Command<FabricClientCommandSource> queueOpenScreenCommand(Screen screen) {
-		return context -> queueOpenScreen(screen);
+		return _ -> queueOpenScreen(screen);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class Scheduler {
 			for (int i = 0; i < currentTickTasks.size(); i++) {
 				Runnable task = currentTickTasks.get(i);
 				if (!runTask(task)) {
-					tasks.computeIfAbsent(currentTick + 1, key -> new ArrayList<>()).add(task);
+					tasks.computeIfAbsent(currentTick + 1, _ -> new ArrayList<>()).add(task);
 				}
 			}
 			tasks.remove(currentTick);

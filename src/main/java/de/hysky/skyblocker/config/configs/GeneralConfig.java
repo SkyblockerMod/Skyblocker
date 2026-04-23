@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -90,6 +91,8 @@ public class GeneralConfig {
 	}
 
 	public static class ItemList {
+		public boolean enableRecipeBook = true;
+
 		public boolean enableItemList = true;
 
 		public boolean enableCollapsibleEntries = true;
@@ -141,7 +144,9 @@ public class GeneralConfig {
 	}
 
 	public enum Craft {
-		SELL_ORDER, BUY_ORDER, OFF;
+		SELL_ORDER, BUY_ORDER,
+		@EnumDisabledValue
+		OFF;
 
 		@Override
 		public String toString() {

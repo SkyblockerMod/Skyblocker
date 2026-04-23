@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import net.minecraft.client.resources.language.I18n;
 
 import java.awt.Color;
@@ -138,6 +139,7 @@ public class MiningConfig {
 	}
 
 	public enum CommissionWaypointMode {
+		@EnumDisabledValue
 		OFF, DWARVEN, GLACITE, BOTH;
 
 		@Override
@@ -175,8 +177,14 @@ public class MiningConfig {
 	 */
 	@Deprecated
 	public enum DwarvenHudStyle {
-		SIMPLE, FANCY, CLASSIC;
+		@Deprecated
+		SIMPLE,
+		@Deprecated
+		FANCY,
+		@Deprecated
+		CLASSIC;
 
+		@Deprecated
 		@Override
 		public String toString() {
 			return switch (this) {

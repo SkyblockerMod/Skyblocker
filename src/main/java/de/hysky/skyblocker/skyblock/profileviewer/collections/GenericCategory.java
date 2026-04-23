@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -19,7 +20,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -58,10 +59,10 @@ public class GenericCategory implements ProfileViewerPage {
 		JsonObject playerCollection = pProfile.getAsJsonObject("collection");
 
 		for (Collection collection : collectionsData.get(this.category)) {
-			ItemStack itemStack = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-'));
-			itemStack = itemStack == null ? Ico.BARRIER.copy() : itemStack.copy();
+			FlexibleItemStack flexible = ItemRepository.getItemStack(ICON_TRANSLATION.getOrDefault(collection.id(), collection.id()).replace(':', '-'));
+			ItemStack itemStack = flexible == null ? Ico.BARRIER.getStackOrThrow().copy() : flexible.getStackOrThrow().copy();
 
-			if (itemStack.getItem().getName().getString().equals("Barrier")) {
+			if (itemStack.getItem().getName(itemStack).getString().equals("Barrier")) {
 				itemStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(collection.id()));
 				System.out.println(collection);
 				System.out.println(this.category);
@@ -108,16 +109,16 @@ public class GenericCategory implements ProfileViewerPage {
 
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		Component categoryTitle = Component.literal(category.charAt(0) + category.substring(1).toLowerCase(Locale.ENGLISH) + " Collections").withStyle(ChatFormatting.BOLD);
-		context.drawString(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
+		graphics.text(textRenderer, categoryTitle, rootX + 88 - (textRenderer.width(categoryTitle) / 2), rootY, Color.DARK_GRAY.getRGB(), false);
 
 		for (int i = 0; i < collections.size(); i++) {
 			int x = rootX + 2 + (i % COLUMNS) * COLUMN_GAP;
 			int y = rootY + 19 + (i / COLUMNS) * ROW_GAP;
 
-			context.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 3, y - 3, 0, 0, 22, 22, 22, 22);
-			context.renderItem(collections.get(i), x, y);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, x - 3, y - 3, 0, 0, 22, 22, 22, 22);
+			graphics.item(collections.get(i), x, y);
 
 			ItemStack itemStack = collections.get(i);
 			List<Component> lore = itemStack.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines();
@@ -130,7 +131,7 @@ public class GenericCategory implements ProfileViewerPage {
 						Color colour = itemStack.hasFoil() ? Color.MAGENTA : Color.darkGray;
 						//DO NOT CHANGE THIS METHOD CALL! Aaron's Mod mixes in here to provide chroma text for max collections
 						//and changing the method called here will break that! Consult Aaron before making any changes :)
-						context.drawString(textRenderer, Component.literal(RomanNumerals.decimalToRoman(cTier)), x + 9 - (textRenderer.width(RomanNumerals.decimalToRoman(cTier)) / 2), y + 21, colour.getRGB(), false);
+						graphics.text(textRenderer, Component.literal(RomanNumerals.decimalToRoman(cTier)), x + 9 - (textRenderer.width(RomanNumerals.decimalToRoman(cTier)) / 2), y + 21, colour.getRGB(), false);
 					}
 					break;
 				}
@@ -138,7 +139,7 @@ public class GenericCategory implements ProfileViewerPage {
 
 			if (mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16) {
 				List<Component> tooltip = collections.get(i).getTooltipLines(Item.TooltipContext.EMPTY, Minecraft.getInstance().player, TooltipFlag.NORMAL);
-				context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+				graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 			}
 		}
 	}

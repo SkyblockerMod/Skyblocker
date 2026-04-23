@@ -20,12 +20,12 @@ import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -72,9 +72,9 @@ public class SkyblockerCreditsScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-					.then(ClientCommandManager.literal("credits")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+					.then(ClientCommands.literal("credits")
 							.executes(Scheduler.queueOpenScreenCommand(() -> new SkyblockerCreditsScreen(null)))));
 		});
 	}
@@ -251,9 +251,9 @@ public class SkyblockerCreditsScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
-		this.renderVignette(graphics);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		this.extractVignette(graphics);
 
 		this.scroll = Math.max(0f, this.scroll + a * this.scrollSpeed);
 		int logoX = this.width / 2 - 128;
@@ -264,7 +264,7 @@ public class SkyblockerCreditsScreen extends Screen {
 		graphics.pose().translate(0f, yOffs);
 		graphics.nextStratum();
 
-		this.renderLogo(graphics, this.width, logoY);
+		this.extractLogo(graphics, this.width, logoY);
 		int yPos = logoY + 100;
 
 		for (int i = 0; i < this.lines.size(); i++) {
@@ -280,9 +280,9 @@ public class SkyblockerCreditsScreen extends Screen {
 				FormattedCharSequence line = this.lines.get(i);
 
 				if (this.centredLines.contains(i)) {
-					graphics.drawCenteredString(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
+					graphics.centeredText(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
 				} else {
-					graphics.drawString(this.font, line, logoX, yPos, CommonColors.WHITE);
+					graphics.text(this.font, line, logoX, yPos, CommonColors.WHITE);
 				}
 			}
 
@@ -292,19 +292,19 @@ public class SkyblockerCreditsScreen extends Screen {
 		graphics.pose().popMatrix();
 	}
 
-	private void renderVignette(GuiGraphics graphics) {
+	private void extractVignette(GuiGraphicsExtractor graphics) {
 		graphics.blit(RenderPipelines.VIGNETTE, VIGNETTE, 0, 0, 0f, 0f, this.width, this.height, this.width, this.height);
 	}
 
-	private void renderLogo(GuiGraphics graphics, int width, int heightOffset) {
+	private void extractLogo(GuiGraphicsExtractor graphics, int width, int heightOffset) {
 		int logoX = width / 2 - 128;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, logoX, heightOffset, 0f, 0f, 256, 64, 256, 64, CommonColors.WHITE);
 	}
 
 	@Override
-	protected void renderMenuBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+	protected void extractMenuBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
 		float v = this.scroll * 0.5f;
-		Screen.renderMenuBackgroundTexture(graphics, Screen.MENU_BACKGROUND, 0, 0, 0f, v, width, height);
+		Screen.extractMenuBackgroundTexture(graphics, Screen.MENU_BACKGROUND, 0, 0, 0f, v, width, height);
 	}
 
 	@Override

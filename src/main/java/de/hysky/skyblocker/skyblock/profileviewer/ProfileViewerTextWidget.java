@@ -13,7 +13,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,7 @@ public class ProfileViewerTextWidget {
 			this.SKYBLOCK_LEVEL = playerProfile.getAsJsonObject("leveling").get("experience").getAsInt() / 100;
 			this.PURSE = playerProfile.getAsJsonObject("currencies").get("coin_purse").getAsDouble();
 			this.BANK = hypixelProfile.getAsJsonObject("banking").get("balance").getAsDouble();
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		this.NETWORTH = PURSE + BANK + getItemsNetworth(playerProfile);
 		this.MAGICAL_POWER = getMagicalPower(playerProfile);
@@ -100,7 +100,7 @@ public class ProfileViewerTextWidget {
 					accessories.put(name, item.getSkyblockRarity().getMP());
 				}
 			}
-		} catch (Exception ignored) {
+		} catch (Exception _) {
 			return -1;
 		}
 
@@ -161,7 +161,7 @@ public class ProfileViewerTextWidget {
 			for (ItemStack stack : new PetsInventoryItemLoader().loadItems(playerProfile)) {
 				value += addItemNetworth(top, stack);
 			}
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 
 		List<ItemValue> list = new ArrayList<>(top);
 		list.sort(Comparator.comparingDouble(ItemValue::price).reversed());
@@ -183,31 +183,31 @@ public class ProfileViewerTextWidget {
 		return p;
 	}
 
-	public void render(GuiGraphics context, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, Font textRenderer, int root_x, int root_y, int mouseX, int mouseY) {
 		// Profile Icon
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.scale(0.75f, 0.75f);
 		int rootAdjustedX = (int) ((root_x) / 0.75f);
 		int rootAdjustedY = (int) ((root_y) / 0.75f);
-		context.renderItem(Ico.PAINTING, rootAdjustedX, rootAdjustedY + 8);
+		graphics.item(Ico.PAINTING.getStackOrThrow(), rootAdjustedX, rootAdjustedY + 8);
 		matrices.popMatrix();
 
-		context.drawString(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
-		context.drawString(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
+		graphics.text(textRenderer, "§n" + PROFILE_NAME, root_x + 14, root_y + 7, CommonColors.WHITE, true);
+		graphics.text(textRenderer, "§aLevel:§r " + SKYBLOCK_LEVEL, root_x + 2, root_y + 9 + ROW_GAP, CommonColors.WHITE, true);
+		graphics.text(textRenderer, "§6Purse:§r " + ProfileViewerUtils.numLetterFormat(PURSE), root_x + 2, root_y + 8 + ROW_GAP * 2, CommonColors.WHITE, true);
+		graphics.text(textRenderer, "§6Bank:§r " + ProfileViewerUtils.numLetterFormat(BANK), root_x + 2, root_y + 7 + ROW_GAP * 3, CommonColors.WHITE, true);
 		String nwString = "§6NW:§r " + ProfileViewerUtils.numLetterFormat(NETWORTH);
 
 		int nwX = root_x + 2;
 		int nwY = root_y + 7 + ROW_GAP * 4;
-		context.drawString(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
+		graphics.text(textRenderer, nwString, nwX, nwY, CommonColors.WHITE, true);
 		if (mouseX >= nwX && mouseX <= nwX + textRenderer.width(nwString)
 				&& mouseY >= nwY && mouseY <= nwY + textRenderer.lineHeight) {
-			context.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(textRenderer, networthTooltip, mouseX, mouseY);
 		}
 
-		context.drawString(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
+		graphics.text(textRenderer, "§6MP:§r " + MAGICAL_POWER, root_x + 2, root_y + 7 + ROW_GAP * 5, CommonColors.WHITE, true);
 	}
 
 	private record ItemValue(String name, double price) {}

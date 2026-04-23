@@ -3,12 +3,12 @@ package de.hysky.skyblocker.skyblock.special;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+(?<item>.+?)(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
 
 	@Init
 	public static void init() {
@@ -45,15 +45,23 @@ public class RareDropSpecialEffects {
 	}
 
 	private static void triggerDropEffect(String itemName) {
-		ItemStack stack = getStackFromName(itemName);
-		if (stack != null && !stack.isEmpty()) {
+		FlexibleItemStack stack = getStackFromName(itemName);
+
+		if (stack != null && stack.getStack() != null && !stack.getStack().isEmpty()) {
 			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.SCRAPE, 30);
-			CLIENT.gameRenderer.displayItemActivation(stack);
+			CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
 		}
 	}
 
-	private static @Nullable ItemStack getStackFromName(String itemName) {
+	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
+			//Mythological Ritual
+			case "Enchanted Book (Chimera I)" -> "ULTIMATE_CHIMERA;1";
+			case "Fateful Stinger" -> "FATEFUL_STINGER";
+			case "Manti-core" -> "MANTI_CORE";
+			case "Minos Relic" -> "MINOS_RELIC";
+			case "Shimmering Wool" -> "SHIMMERING_WOOL";
+
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";
@@ -74,6 +82,7 @@ public class RareDropSpecialEffects {
 			case "High Class Archfiend Dice" -> "HIGH_CLASS_ARCHFIEND_DICE";
 
 			//Fishing
+			case "Pocket-sized Igloo " -> "POCKET_SIZED_IGLOO";
 			case "Radioactive Vial" -> "RADIOACTIVE_VIAL";
 			case "Tiki Mask" -> "TIKI_MASK";
 			case "Titanoboa Shed" -> "TITANOBOA_SHED";

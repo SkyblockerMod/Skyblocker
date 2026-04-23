@@ -6,8 +6,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
@@ -34,12 +34,12 @@ public class ChatPositionShare {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(
-					ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
+					ClientCommands.literal("skyblocker").then(ClientCommands.literal("sharePosition").executes(context -> sharePlayerPosition(context.getSource())))
 					);
 			dispatcher.register(
-					ClientCommandManager.literal("skyblocker").then(ClientCommandManager.literal("shareCoords").executes(context -> sharePlayerPosition(context.getSource())))
+					ClientCommands.literal("skyblocker").then(ClientCommands.literal("shareCoords").executes(context -> sharePlayerPosition(context.getSource())))
 					);
 		});
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatPositionShare::onMessage);
@@ -91,6 +91,6 @@ public class ChatPositionShare {
 		if (!area.isEmpty()) {
 			requestMessage = requestMessage.append(" at ").append(Component.literal(area).withStyle(ChatFormatting.AQUA));
 		}
-		Minecraft.getInstance().player.displayClientMessage(requestMessage, false);
+		Minecraft.getInstance().player.sendSystemMessage(requestMessage);
 	}
 }
