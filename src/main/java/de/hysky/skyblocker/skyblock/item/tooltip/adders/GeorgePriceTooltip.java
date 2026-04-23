@@ -49,6 +49,7 @@ public class GeorgePriceTooltip extends SimpleTooltipAdder {
 	 * <p>The method early-returns without adding a line if:
 	 * <ul>
 	 *   <li>the item is not a pet</li>
+	 *   <li>the pet is not level 1</li>
 	 *   <li>the George price dataset has not yet been downloaded</li>
 	 *   <li>the pet has no entry in the George price dataset</li>
 	 * </ul>
@@ -59,7 +60,8 @@ public class GeorgePriceTooltip extends SimpleTooltipAdder {
 	 */
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
-		if (!stack.getSkyblockId().equals("PET")) return;
+		if (stack.getPetInfo().isEmpty()) return;
+		if (stack.getPetInfo().exp() > 0) return;
 
 		if (TooltipInfoType.GEORGE.getData() == null) {
 			ItemTooltip.nullWarning();
