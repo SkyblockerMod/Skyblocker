@@ -104,6 +104,7 @@ public class OtherLocationsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber"))
 								.description(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.otherLocations.rift.autoDetectMcGrubber,
 										() -> config.otherLocations.rift.autoDetectMcGrubber,
 										newValue -> config.otherLocations.rift.autoDetectMcGrubber = newValue)
