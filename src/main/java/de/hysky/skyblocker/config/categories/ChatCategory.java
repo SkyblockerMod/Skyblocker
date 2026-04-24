@@ -81,6 +81,7 @@ public class ChatCategory {
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideSpiritSceptre"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.chat.hideSpiritSceptre,
 										() -> config.chat.hideSpiritSceptre,
 										newValue -> config.chat.hideSpiritSceptre = newValue)

@@ -40,6 +40,7 @@ public class FarmingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.counter"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.farming.farmingHud.counter,
 										() -> config.farming.farmingHud.counter,
 										newValue -> config.farming.farmingHud.counter = newValue)
@@ -47,6 +48,7 @@ public class FarmingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.coins"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.farming.farmingHud.coins,
 										() -> config.farming.farmingHud.coins,
 										newValue -> config.farming.farmingHud.coins = newValue)
@@ -62,6 +64,7 @@ public class FarmingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.farming.farmingHud.experience,
 										() -> config.farming.farmingHud.experience,
 										newValue -> config.farming.farmingHud.experience = newValue)
