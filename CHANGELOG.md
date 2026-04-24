@@ -18,19 +18,17 @@
 * Optimize stack overlay application
 * Optimize recipe ingredients
 * Fix NEU Repo stack overlays not applying on Windows computers
-* Fix worthless items being included in chest profit calculation
-* Fix REI NPC Shop recipe result arrow position
-* Fix Magic Find drop pattern for special effects
+* Fix worthless items making Chest Profit Calculations show as Incomplete
+* Fix REI NPC Shop recipe positioning issues
+* Fix Magic Find drop pattern for Special Effects
 * Fix Builder's Wand/Ruler Preview incorrectly handling directions
 * Fix rare Network Protocol Error with Action Bar parsing
-* Fix /call autocomplete bugs
+* Fix /call autocomplete for some NPCs
 * Fix Call Mismyla triggering inside of Glacite Mineshafts
 * Fix various Chat Rules bugs
 * Fix Corpse Profit screen bugs
-* Fix reward tracker screen bugs
 * Fix Fancy Party Finder confusion with the Training Dummy screen
-* Fix Quick Navigation item selector being usable outside a world
-* Fix mayor perks being persisting shortly after an election ends
+* Fix mayor perks being persisted shortly after the election ends
 
 ## What's Changed
 * Stop Removing Spaces for Contact Names in CallAutocomplete by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2306
