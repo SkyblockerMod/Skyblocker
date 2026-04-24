@@ -346,6 +346,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableGeorgePrice"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.general.itemTooltip.enableGeorgePrice,
 										() -> config.general.itemTooltip.enableGeorgePrice,
 										newValue -> config.general.itemTooltip.enableGeorgePrice = newValue)
