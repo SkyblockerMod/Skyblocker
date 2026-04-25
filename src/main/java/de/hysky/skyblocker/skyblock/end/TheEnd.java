@@ -12,15 +12,19 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -113,6 +117,14 @@ public class TheEnd {
 		} else if (END_STONE_PROTECTOR_RISES.matcher(text).matches()) {
 			if (currentProtectorLocation == null) checkAllProtectorLocations();
 			stage = 5;
+
+			// Visual and auditory ping for his emergence
+			TitleContainer.addTitleAndPlaySound(new Title(Component.literal("END STONE PROTECTOR").withStyle(ChatFormatting.RED, ChatFormatting.BOLD)), 60);
+
+			// Secondary ping sound
+			if (CLIENT.player != null) {
+				CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 1.0f, 1.2f);
+			}
 		} else if (END_STONE_PROTECTOR_FIGHT_STARTS.matcher(text).matches()) {
 			resetLocation();
 		} else if (SPECIAL_ZEALOT_SPAWNED.matcher(text).matches()) {
