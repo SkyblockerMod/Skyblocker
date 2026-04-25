@@ -22,12 +22,18 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StatusBarTracker {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Pattern STATUS_PATTERN = Pattern.compile("(?<status>.+?)(?: {2,}|$)");
 	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("(?:[\\d,]+m)?[\\d,]+sф Left");
 	private static final Pattern HEALTH_STATUS = Pattern.compile("(?<health>[\\d,]+)/(?<max>[\\d,]+)❤(?<healing>\\+([\\d,]+)[▁-▆])?");
@@ -36,7 +42,7 @@ public class StatusBarTracker {
 	private static final Pattern MANA_USE = Pattern.compile("-([\\d,]+) Mana \\(.*?\\)");
 	private static final Pattern MANA_STATUS = Pattern.compile("(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|(?<overflow>[\\d,]+)ʬ)");
 
-	private static final Minecraft client = Minecraft.getInstance();
+	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
@@ -82,7 +88,7 @@ public class StatusBarTracker {
 	}
 
 	private static void tick() {
-		if (client.player == null || !Utils.isOnSkyblock()) return;
+		if (MINECRAFT.player == null || !Utils.isOnSkyblock()) return;
 		ticks++;
 		updateHealth(health.value, health.max);
 		updateSpeed();
@@ -94,8 +100,8 @@ public class StatusBarTracker {
 
 	@SuppressWarnings("SameReturnValue")
 	private static InteractionResult interactItem(Player player, Level world, InteractionHand hand) {
-		if (client.player == null) return InteractionResult.PASS;
-		ItemStack handStack = client.player.getMainHandItem();
+		if (MINECRAFT.player == null) return InteractionResult.PASS;
+		ItemStack handStack = MINECRAFT.player.getMainHandItem();
 		int manaCost = 0;
 		for (ItemAbility ability : handStack.skyblocker$getAbilities()) {
 			if (ability.activation().isRightClick()) {
@@ -118,16 +124,26 @@ public class StatusBarTracker {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		if (FancyStatusBars.isEnabled()) {
-			return Component.nullToEmpty(update(text.getString(), SkyblockerConfigManager.get().chat.hideMana));
-		} else {
-			//still update values for other parts of the mod to use
-			update(text.getString(), SkyblockerConfigManager.get().chat.hideMana);
-			return text;
+
+		String stringified = text.getString();
+
+		try {
+			if (FancyStatusBars.isEnabled()) {
+				return Component.nullToEmpty(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
+			} else {
+				// Still update values for other parts of the mod to use
+				update(stringified, SkyblockerConfigManager.get().chat.hideMana);
+			}
+		} catch (Exception e) {
+			String stripped = ChatFormatting.stripFormatting(stringified);
+			LOGGER.error("[Skyblocker Status Bar Tracker] Failed to update status bars! Content: '{}'", stripped, e);
 		}
+
+		return text;
 	}
 
-	public static @Nullable String update(String actionBar, boolean filterManaUse) {
+	@VisibleForTesting
+	protected static @Nullable String update(String actionBar, boolean filterManaUse) {
 		Matcher statuses = STATUS_PATTERN.matcher(actionBar);
 		var output = new StringBuilder();
 
@@ -197,12 +213,12 @@ public class StatusBarTracker {
 		int health = RegexUtils.parseIntFromMatcher(matcher, "health");
 		int max = RegexUtils.parseIntFromMatcher(matcher, "max");
 
-		if (Debug.isTestEnvironment() || client.player == null || client.player.getHealth() == client.player.getMaxHealth()) {
+		if (Debug.isTestEnvironment() || MINECRAFT.player == null || MINECRAFT.player.getHealth() == MINECRAFT.player.getMaxHealth()) {
 			// If at full HP or in test environment, then use simple absorption math.
 			absorption = Math.max(0, health - max);
 		} else {
 			// Otherwise approximate absorption based on player health.
-			absorption = (int) (health - (client.player.getHealth() * max / client.player.getMaxHealth()));
+			absorption = (int) (health - (MINECRAFT.player.getHealth() * max / MINECRAFT.player.getMaxHealth()));
 		}
 
 		updateHealth(health, max);
@@ -210,8 +226,8 @@ public class StatusBarTracker {
 
 	private static void updateHealth(int value, int max) {
 		// Client doesn't exist in test environment.
-		if (!Debug.isTestEnvironment() && client.player != null) {
-			value = (int) (client.player.getHealth() * max / client.player.getMaxHealth());
+		if (!Debug.isTestEnvironment() && MINECRAFT.player != null) {
+			value = (int) (MINECRAFT.player.getHealth() * max / MINECRAFT.player.getMaxHealth());
 		}
 		health = new Resource(Math.min(value, max), max, absorption);
 	}
@@ -228,13 +244,13 @@ public class StatusBarTracker {
 
 	private static void updateSpeed() {
 		// Black cat and racing helm are untested - I don't have the money to test atm, but no reason why they shouldn't work
-		assert client.player != null;
-		int value = (int) (client.player.isSprinting() ? (client.player.getSpeed() / 1.3f) * 1000 : client.player.getSpeed() * 1000);
+		assert MINECRAFT.player != null;
+		int value = (int) (MINECRAFT.player.isSprinting() ? (MINECRAFT.player.getSpeed() / 1.3f) * 1000 : MINECRAFT.player.getSpeed() * 1000);
 		int max = 400; // hardcoded limit (except for with cactus knife, black cat, snail, racing helm, young drag)
-		if (client.player.getMainHandItem().getHoverName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
+		if (MINECRAFT.player.getMainHandItem().getHoverName().getString().contains("Cactus Knife") && Utils.getLocation() == Location.GARDEN) {
 			max = 500;
 		}
-		Iterable<ItemStack> armor = ItemUtils.getArmor(client.player);
+		Iterable<ItemStack> armor = ItemUtils.getArmor(MINECRAFT.player);
 		int youngDragCount = 0;
 		for (ItemStack armorPiece : armor) {
 			if (armorPiece.getHoverName().getString().contains("Racing Helmet")) {
@@ -259,9 +275,9 @@ public class StatusBarTracker {
 	}
 
 	private static void updateAir() {
-		assert client.player != null;
-		int max = client.player.getMaxAirSupply();
-		int value = Math.clamp(client.player.getAirSupply(), 0, max);
+		assert MINECRAFT.player != null;
+		int max = MINECRAFT.player.getMaxAirSupply();
+		int value = Math.clamp(MINECRAFT.player.getAirSupply(), 0, max);
 		air = new Resource(value, max, 0);
 	}
 

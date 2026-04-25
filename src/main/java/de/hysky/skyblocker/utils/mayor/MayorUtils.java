@@ -63,6 +63,13 @@ public class MayorUtils {
 		RenderHelper.runOnRenderThread(() -> {
 			// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
 			Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
+			// Reset the instances as soon as the new mayor is elected to prevent Paul's +10 score from being applied when its not actually active (within the extra 5 minutes above)
+			Scheduler.INSTANCE.schedule(() -> {
+				mayor = Mayor.EMPTY;
+				minister = Minister.EMPTY;
+				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
+				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+			}, (int) (millisUntilNextMayorChange / 50));
 		});
 	}
 

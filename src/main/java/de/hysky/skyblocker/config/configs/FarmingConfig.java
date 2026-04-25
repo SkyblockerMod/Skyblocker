@@ -44,7 +44,13 @@ public class FarmingConfig {
 	public static class FarmingHud {
 		public boolean enabled = true;
 
+		public boolean counter = true;
+
+		public boolean coins = true;
+
 		public Type type = Type.BOTH;
+
+		public boolean experience = true;
 	}
 
 	public enum Type {
