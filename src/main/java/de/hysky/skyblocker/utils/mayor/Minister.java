@@ -17,7 +17,7 @@ public record Minister(String key, String name, Perk perk) {
 	public static final Codec<Minister> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("key").forGetter(Minister::key),
 			Codec.STRING.fieldOf("name").forGetter(Minister::name),
-			Perk.CODEC.fieldOf("perk").forGetter(Minister::perk)
+			Perk.CODEC.optionalFieldOf("perk", Perk.EMPTY).forGetter(Minister::perk)
 			).apply(instance, Minister::new));
 
 	/**
