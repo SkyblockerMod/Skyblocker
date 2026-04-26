@@ -34,8 +34,9 @@ public class WaypointsOptionScreen extends Screen {
 		UIAndVisualsConfig.Waypoints temp;
 		try {
 			temp = WAYPOINTS.get().clone();
-		} catch (CloneNotSupportedException _) {
+		} catch (CloneNotSupportedException e) {
 			temp = WAYPOINTS.get();
+			Waypoints.LOGGER.error("[Skyblocker Waypoints] Could not clone waypoints config for options screen. Issues may arise.", e);
 		}
 		waypoints = temp;
 	}
