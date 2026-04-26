@@ -32,6 +32,7 @@ public interface TooltipInfoType {
 	DataTooltipInfoType<Map<String, String>> MUSEUM = ofData("https://hysky.de/api/museum", Codec.unboundedMap(Codec.STRING, Codec.STRING), true, Map::containsKey, itemTooltip -> itemTooltip.enableMuseumInfo);
 	DataTooltipInfoType<Map<String, String>> COLOR = ofData("https://hysky.de/api/color", Codec.unboundedMap(Codec.STRING, Codec.STRING), true, Map::containsKey, itemTooltip -> itemTooltip.enableExoticTooltip);
 	DataTooltipInfoType<Map<String, Accessory>> ACCESSORIES = ofData("https://hysky.de/api/accessories", Accessory.MAP_CODEC, true, Map::containsKey, itemTooltip -> itemTooltip.enableAccessoriesHelper, AccessoriesHelper::refreshData);
+	DataTooltipInfoType<Object2DoubleMap<String>> GEORGE = ofData("https://hysky.de/api/georgeprices", CodecUtils.object2DoubleMapCodec(Codec.STRING), true, Object2DoubleMap::containsKey, itemTooltip -> itemTooltip.enableGeorgePrice);
 	TooltipInfoType ESTIMATED_ITEM_VALUE = ofSimple(itemTooltip -> itemTooltip.enableEstimatedItemValue);
 
 	/**

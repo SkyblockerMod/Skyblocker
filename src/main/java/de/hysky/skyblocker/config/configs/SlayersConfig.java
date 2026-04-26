@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.minecraft.client.resources.language.I18n;
 
@@ -15,6 +16,7 @@ public class SlayersConfig {
 	public boolean displayBossbar = true;
 
 	public enum HighlightSlayerEntities {
+		@EnumDisabledValue
 		OFF, GLOW, HITBOX;
 
 		@Override
@@ -113,6 +115,7 @@ public class SlayersConfig {
 		public ChatFilterResult hideHellionShield = ChatFilterResult.PASS;
 
 		public enum FirePillar {
+			@EnumDisabledValue
 			OFF,
 			VISUAL,
 			SOUND_AND_VISUAL;

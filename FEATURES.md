@@ -302,6 +302,7 @@
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
     - *NPC Sell Prices*
+    - *George Sell Prices*
     - *Motes Prices*
     - *Bazaar (average, lowest bin)*
     - *Auction House*
@@ -362,6 +363,7 @@
     - *Sky Mall*
     - *Lottery*
     - *Dungeonbreaker*
+    - *Spirit Sceptre*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
@@ -397,7 +399,7 @@
 - **Item Protection**
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
+- **Wiki Lookup:** Press F1 (Independent) or F4 (Official) to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**

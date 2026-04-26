@@ -1,3 +1,77 @@
+# Release 6.4.0
+
+## Highlight
+* Add Farming HUD customization options
+* Add support for the new [Independent Wiki](https://hypixelskyblock.minecraft.wiki)
+* Add George NPC Sell Price Tooltip
+* Add a system to override some vanilla textures used in Skyblocker UIs
+  * If you are a resource pack creator and want to use this come see us in the Discord for more info.
+* Add JEI compatibility back
+* Add Spirit Sceptre chat filter
+* Add Lava Skull 1x1 for dungeons room matching
+* Add Binghoe as a recognized farming tool
+* Add new items to rare drop special effects
+* Add commands to toggle config options
+* Add enum option support for Disable All
+* Add automatic detection for McGrubber stacks
+* Optimize world rendering buffer creation
+* Optimize stack overlay application
+* Optimize recipe ingredients
+* Fix NEU Repo stack overlays not applying on Windows computers
+* Fix worthless items making Chest Profit Calculations show as Incomplete
+* Fix REI NPC Shop recipe positioning issues
+* Fix Magic Find drop pattern for Special Effects
+* Fix Builder's Wand/Ruler Preview incorrectly handling directions
+* Fix rare Network Protocol Error with Action Bar parsing
+* Fix /call autocomplete for some NPCs
+* Fix Call Mismyla triggering inside of Glacite Mineshafts
+* Fix various Chat Rules bugs
+* Fix Corpse Profit screen bugs
+* Fix Fancy Party Finder confusion with the Training Dummy screen
+* Fix mayor perks being persisted shortly after the election ends
+
+## What's Changed
+* Stop Removing Spaces for Contact Names in CallAutocomplete by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2306
+* Add Lava Skull 1x1 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2305
+* Add Binghoe to Farming Tools by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2304
+* Minor Chat Rule Fixes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2311
+* Remove useless `this.minecraft != null` checks/assertions by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2314
+* Fix Powder Filter Config Screen Title Being Off-Center by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2317
+* Fix Corpse Profit Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2316
+* Exclude some worthless items from chest profit by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2318
+* Bump Repo Parser version by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2326
+* Fix Magic Find Drop Pattern by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2321
+* Add toggleable options for Farming HUD contents by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2296
+* Reduce Stack Overlay Loading Performance Impact by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2328
+* Fix Fancy Party Finder Error with Training Dummy by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2330
+* Hide QuickNav Item Select if Outside of a World by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2323
+* Fix Chat Rule Screen Breaking Outside of a World by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2322
+* Added option to hide Spirit Sceptre messages by @EGGPEA in https://github.com/SkyblockerMod/Skyblocker/pull/2320
+* Update RareDropSpecialEffects.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2325
+* Don't Show Call Mismyla Message in Glacite Mineshafts by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2332
+* feat: Switch to moved independent wiki by @Eejit43 in https://github.com/SkyblockerMod/Skyblocker/pull/2338
+* Use VisibleForTesting annotation by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2342
+* Config Commands by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2051
+* textures with fallback by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2093
+* Prioritize Independent Wiki in REI Skyblock Info Display by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2340
+* Support Enum Options in Disable All by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2324
+* #2288 Builder's Ruler Fix by @TheTerrariaGuy in https://github.com/SkyblockerMod/Skyblocker/pull/2343
+* stalker cat by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2300
+* Fix Museum Overlay Background by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2344
+* Fix REI NPC Shop Recipe Offset by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2345
+* Improve Compatibility with FSR by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2336
+* Auto-detect McGrubber stacks by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2212
+* Add George Pet sell price tooltip by @WilliamTTran in https://github.com/SkyblockerMod/Skyblocker/pull/2239
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2303
+
+## New Contributors
+* @EGGPEA made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2320
+* @Eejit43 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2338
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.3.0+26.1.1...v6.4.0+26.1.2
+
+___
+
 # Release 6.3.0
 
 ## Highlight

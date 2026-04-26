@@ -42,7 +42,7 @@ public final class DisableAllPopup {
 			try {
 				SkyblockerConfigManager.update(config -> {
 					try {
-						DisableAll.disableBooleans(config);
+						DisableAll.disableEntries(config);
 					} catch (IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}

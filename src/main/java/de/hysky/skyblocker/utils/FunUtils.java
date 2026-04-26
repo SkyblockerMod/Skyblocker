@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import de.hysky.skyblocker.skyblock.CatPicture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
@@ -56,5 +57,11 @@ public class FunUtils {
 			component.append(Component.literal(String.valueOf(c)).withColor(ARGB.srgbLerp(progress, startColor, endColor)).withStyle(style -> style.withObfuscated(obfuscated)));
 		}
 		return component;
+	}
+
+	public static void recipeBookEasterEgg(String search) {
+		if (search.equals("hestalks")) {
+			CatPicture.recipeBook();
+		}
 	}
 }

@@ -90,7 +90,17 @@ public class ItemTooltip {
 				sentNullWarning = false;
 			}
 
-			CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE, TooltipInfoType.MOTES, TooltipInfoType.MUSEUM, TooltipInfoType.COLOR, TooltipInfoType.ACCESSORIES)
+			CompletableFuture.allOf(Stream.of(
+							TooltipInfoType.NPC,
+							TooltipInfoType.BAZAAR,
+							TooltipInfoType.LOWEST_BINS,
+							TooltipInfoType.ONE_DAY_AVERAGE,
+							TooltipInfoType.THREE_DAY_AVERAGE,
+							TooltipInfoType.MOTES,
+							TooltipInfoType.MUSEUM,
+							TooltipInfoType.COLOR,
+							TooltipInfoType.ACCESSORIES,
+							TooltipInfoType.GEORGE)
 					.map(DataTooltipInfoType.class::cast)
 					.map(DataTooltipInfoType::downloadIfEnabled)
 					.toArray(CompletableFuture[]::new)
