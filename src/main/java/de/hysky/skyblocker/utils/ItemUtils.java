@@ -415,7 +415,7 @@ public final class ItemUtils {
 
 	public static boolean hasCustomDurability(ItemStack stack) {
 		CompoundTag customData = getCustomData(stack);
-		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getStringOr(ID, "").equals("PICKONIMBUS"));
+		return !customData.isEmpty() && (customData.contains("drill_fuel") || stack.getSkyblockId().equals("PICKONIMBUS"));
 	}
 
 	public static @Nullable IntIntPair getDurability(ItemStack stack) {
