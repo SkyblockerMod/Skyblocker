@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
@@ -95,8 +94,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase(Locale.ENGLISH).contains("craft item") -> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.containerMenu = skyblockCraftingTableScreenHandler;
-				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(),
-						ResourcePackCompatibility.options.renameCraftingTable().orElse(false) ? Component.literal("CraftingTableSkyblocker") : Component.literal("Craft Item")));
+				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Component.literal("Craft Item")));
 				ci.cancel();
 			}
 

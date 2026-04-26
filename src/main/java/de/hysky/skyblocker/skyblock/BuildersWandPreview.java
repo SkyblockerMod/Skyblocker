@@ -101,10 +101,17 @@ public class BuildersWandPreview {
 		else startBlock = client.level.getBlockState(startPos).getBlock();
 
 		BlockPos.MutableBlockPos pos = startPos.mutable();
+
+		Direction dir = hitResult.getDirection().getOpposite();
+		// Adjust direction based on if we hit the top/bottom face (then we use client.player.getDirection() instead). Side checks are exclusive to sneaking (delete) only.
+		if (dir == Direction.UP || dir == Direction.DOWN || !isSneaking) {
+			dir = client.player.getDirection();
+		}
+
 		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
 			if (isSneaking) collector.submitFilledBox(pos.immutable(), RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
 			else extractBlockPreview(collector, pos.immutable(), Blocks.DIRT.defaultBlockState());
-			pos.move(client.player.getDirection());
+			pos.move(dir);
 		}
 	}
 

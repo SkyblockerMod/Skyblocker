@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUIngredient;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -26,25 +27,46 @@ public interface SkyblockRecipe {
 	static FlexibleItemStack getItemStack(NEUIngredient input) {
 		if (input == NEUIngredient.SENTINEL_EMPTY) return FlexibleItemStack.EMPTY;
 
-		FlexibleItemStack stack = ItemRepository.getItemStack(input.getItemId());
-		if (stack != null) {
-			int amount = (int) input.getAmount();
-			FlexibleItemStack copy = stack.copyWithCount(amount);
-			if (amount > 1) copy.set(DataComponents.MAX_STACK_SIZE, amount);
-			return copy;
-		} else if (input.getItemId().equals("SKYBLOCK_COIN")) {
-			FlexibleItemStack itemStack = new FlexibleItemStack(Items.GOLD_NUGGET);
-			itemStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
-			itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-			String format = NUMBER_FORMAT.format(input.getAmount());
-			itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(format).withStyle(ChatFormatting.GOLD).withStyle(style -> style.withItalic(false)).append(Component.literal(" coins")))));
-			return itemStack;
+		String id = input.getItemId();
+		int amount = (int) input.getAmount();
+		String cacheKey = RecipeItemStackCache.getCacheKey(id, amount);
+		FlexibleItemStack cachedStack = RecipeItemStackCache.CACHE.get(cacheKey);
+
+		// Short-circuit with the cached stack when it exists
+		if (cachedStack != null) {
+			return cachedStack;
 		}
 
-		LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", input.getItemId());
-		FlexibleItemStack fallbackStack = new FlexibleItemStack(Items.BARRIER);
-		fallbackStack.set(DataComponents.ITEM_NAME, Component.literal(input.getItemId()));
-		return fallbackStack;
+		FlexibleItemStack baseStack = ItemRepository.getItemStack(id);
+		FlexibleItemStack computedStack = null;
+
+		if (baseStack != null) {
+			// If the amount of the ingredient matches the base stack then use that
+			if (amount == baseStack.count()) {
+				computedStack = baseStack;
+			} else {
+				// Copy the base stack with the correct amount
+				computedStack = baseStack.copyWithCount(amount);
+				if (amount > 1) {
+					computedStack.set(DataComponents.MAX_STACK_SIZE, amount);
+				}
+			}
+		} else if (id.equals("SKYBLOCK_COIN")) {
+			computedStack = new FlexibleItemStack(Items.GOLD_NUGGET);
+			computedStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
+			computedStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+			String format = NUMBER_FORMAT.format(amount);
+			computedStack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(format).withStyle(ChatFormatting.GOLD).withStyle(style -> style.withItalic(false)).append(Component.literal(" coins")))));
+		} else {
+			// Create a fallback stack, cache it, and return it if nothing else worked
+			LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", id);
+			computedStack = ItemUtils.getNamedPlaceholder(id);
+		}
+
+		// Cache the computed item stack for this ingredient and return it
+		RecipeItemStackCache.CACHE.put(cacheKey, computedStack);
+
+		return computedStack;
 	}
 
 	/**
