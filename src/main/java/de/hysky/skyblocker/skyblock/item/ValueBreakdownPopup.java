@@ -5,6 +5,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.TextTransformer;
@@ -79,7 +80,8 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 						if (neuId == null) return Component.literal(s);
 						NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 						if (neuItem == null) return Component.literal(s);
-						return TextTransformer.fromLegacy(neuItem.getLore().getFirst());
+						String enchantName = EnchantedBookUtils.getEnchantNameFromLore(neuItem.getLore());
+						return TextTransformer.fromLegacy(enchantName);
 					}
 			)),
 			Map.entry(Calculation.Type.SKIN, new BasicSingleAppender(
