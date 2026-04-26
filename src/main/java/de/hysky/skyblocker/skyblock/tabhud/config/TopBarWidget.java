@@ -2,14 +2,12 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.google.common.collect.Lists;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -27,16 +25,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
 class TopBarWidget extends AbstractContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int HEIGHT = 15;
-	private final CustomDropdownWidget<Location> locationDropdown;
+	private final CustomDropdownWidget<ScreenId> locationDropdown;
 	private final CustomDropdownWidget<WidgetManager.ScreenLayer> screenLayerDropdown;
 	private final Layout layout;
 	private final List<AbstractWidget> widgets;
 
 	TopBarWidget(int width, WidgetsConfigurationScreen parent) {
-		super(0, 0, width, HEIGHT, Component.literal("hi"));
+		super(0, 0, width, HEIGHT, Component.literal("hi"), defaultSettings(0));
 
 		layout = new Layout();
 
@@ -51,12 +54,10 @@ class TopBarWidget extends AbstractContainerWidget {
 		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);
 
-		List<Location> locations = Lists.newArrayList(Location.values());
-		// move UNKNOWN to be first
-		locations.remove(Location.UNKNOWN);
-		locations.addFirst(Location.UNKNOWN);
-		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
-		locationDropdown.setFormatter(location -> location == Location.UNKNOWN ? Component.translatable("skyblocker.config.hud.location.everywhere").withStyle(ChatFormatting.YELLOW) : Component.literal(location.toString()));
+		List<ScreenId> locations = Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).map(ScreenIds::ofLocation).toList();
+		locations.addFirst(ScreenIds.EVERYWHERE);
+		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, ScreenIds.ofCurrentLocation());
+		locationDropdown.setFormatter(ScreenId::displayName);
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 
 		LinearLayout dropdownsLayout = LinearLayout.horizontal().spacing(2);
@@ -116,11 +117,6 @@ class TopBarWidget extends AbstractContainerWidget {
 
 	@Override
 	protected int contentHeight() {
-		return 0;
-	}
-
-	@Override
-	protected double scrollRate() {
 		return 0;
 	}
 

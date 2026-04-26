@@ -69,7 +69,7 @@ public class LayerBuilder {
 	}
 
 	public void serializeConfig() {
-		Map<String, WidgetConfig.Meta> metas = config.getWidgetMeta();
+		Map<String, WidgetConfig.Meta> metas = config.getWidgetMetaMap();
 		config.widgets.clear();
 		for (PositionedWidget widget : widgets) {
 			WidgetConfig.Meta meta = metas.get(widget.widget.getInternalID());

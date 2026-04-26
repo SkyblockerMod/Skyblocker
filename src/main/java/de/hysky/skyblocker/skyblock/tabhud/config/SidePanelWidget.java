@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -38,7 +39,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 	private int animationEnd = 0;
 	private boolean isOpen = false;
 
-	private @Nullable HudWidget hudWidget;
+	private @Nullable PositionedWidget hudWidget;
 
 	SidePanelWidget(int width, int height) {
 		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Component.literal("Side Panel"), defaultSettings(5));
@@ -90,18 +91,18 @@ class SidePanelWidget extends AbstractContainerWidget {
 		isOpen = true;
 	}
 
-	public void open(HudWidget hudWidget, WidgetConfig config, boolean rightSide, int x) {
+	public void open(PositionedWidget hudWidget, WidgetsConfigurationScreen config, boolean rightSide, int x) {
 		this.hudWidget = hudWidget;
 		layout = LinearLayout.vertical().spacing(5);
 		layout.defaultCellSetting().alignHorizontallyCenter();
 		optionWidgets.clear();
-		/*add(new StringWidget(0, 15, hudWidget.getInformation().displayName().copy().withStyle(ChatFormatting.UNDERLINE), client.font) {
+		add(new StringWidget(0, 15, hudWidget.widget.getInformation().displayName().copy().withStyle(ChatFormatting.UNDERLINE), client.font) {
 			@Override
 			public void setWidth(int width) {
 				setMaxWidth(width, TextOverflow.SCROLLING);
 			}
 		});
-		add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> config.removeWidget(hudWidget)).build());
+		add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> config.removeWidget(hudWidget.widget)).build());
 		layout.addChild(SpacerElement.height(10));
 
 		// Per screen options
@@ -124,18 +125,11 @@ class SidePanelWidget extends AbstractContainerWidget {
 
 		layout.addChild(SpacerElement.height(10));
 
-		// Normal options
-		List<WidgetOption<?>> options = new ArrayList<>();
-		hudWidget.getOptions(options);
-		for (WidgetOption<?> option : options) {
-			add(option.createNewWidget(config));
-		}
-
 		// Position everything
 		for (AbstractWidget widget : optionWidgets) {
 			widget.setWidth(getWidth() - SCROLLBAR_AREA);
 		}
-		if (textWidget != null) textWidget.setMaxWidth(getWidth() - SCROLLBAR_AREA);*/
+		if (textWidget != null) textWidget.setMaxWidth(getWidth() - SCROLLBAR_AREA);
 
 		layout.setPosition(getX(), getY() - (int) scrollAmount());
 		layout.arrangeElements();
@@ -198,7 +192,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
 
-	public @Nullable HudWidget getHudWidget() {
+	public @Nullable PositionedWidget getHudWidget() {
 		return hudWidget;
 	}
 

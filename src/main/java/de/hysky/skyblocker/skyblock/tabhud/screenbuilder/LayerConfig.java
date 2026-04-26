@@ -52,7 +52,7 @@ public class LayerConfig {
 		return parentConfig;
 	}
 
-	public Map<String, WidgetConfig.Meta> getWidgetMeta() {
+	public Map<String, WidgetConfig.Meta> getWidgetMetaMap() {
 		Map<String, WidgetConfig.Meta> widgets = new HashMap<>();
 		visit(((id, widgetConfig, screenId) -> widgets.compute(id, (_, m) -> {
 			if (m == null && widgetConfig.config().isEmpty()) return null;

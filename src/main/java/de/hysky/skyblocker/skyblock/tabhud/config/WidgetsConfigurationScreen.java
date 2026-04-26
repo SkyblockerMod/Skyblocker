@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
@@ -43,7 +44,7 @@ import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
+public class WidgetsConfigurationScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	@Init
@@ -60,6 +61,7 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
 	private final ScreenBuilder screenBuilder = new ScreenBuilder();
+	private ScreenConfig screenConfig;
 	private LayerBuilder builder;
 
 	private SidePanelWidget sidePanelWidget;
@@ -81,7 +83,8 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 		super(Component.literal("Widgets Config Screen"));
 		currentLocation = ScreenIds.ofCurrentLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
-		screenBuilder.setConfig(WidgetManager.getScreenConfig(currentLocation));
+		screenConfig = WidgetManager.getScreenConfig(currentLocation);
+		screenBuilder.setConfig(screenConfig);
 		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
 		builder.updateTab();
@@ -90,7 +93,8 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	public void setCurrentLocation(ScreenId newLocation) {
 		builder.serializeConfig();
 		this.currentLocation = newLocation;
-		screenBuilder.setConfig(WidgetManager.getScreenConfig(currentLocation));
+		screenConfig = WidgetManager.getScreenConfig(currentLocation);
+		screenBuilder.setConfig(screenConfig);
 		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
 		builder.updateTab();
@@ -376,7 +380,7 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	private void openSidePanel() {
 		if (selectedWidget == null) return;
 		boolean rightSide = selectedWidget.widget.getX() + selectedWidget.widget.getWidth() / 2 < getScreenWidth() / 2;
-		sidePanelWidget.open(selectedWidget.widget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
+		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
 	}
 
 	@Override
@@ -408,19 +412,16 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
 	}
 
-	@Override
 	public void notifyWidget() {
 		// FIXME
 		//if (selectedWidget != null) selectedWidget.optionsChanged();
 	}
 
-	@Override
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
 		sidePanelWidget.close();
 	}
 
-	@Override
 	public void removeWidget(HudWidget widget) {
 		builder.remove(widget);
 		// FIXME
@@ -448,7 +449,6 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 		builder.updatePositions(getScreenWidth(), getScreenHeight());
 	}
 
-	@Override
 	public HudWidget getEditedWidget() {
 		if (selectedWidget == null) {
 			LOGGER.warn("Trying to edit selected widget but nothing is selected?", new Throwable());
@@ -457,17 +457,14 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 		return selectedWidget.widget;
 	}
 
-	@Override
 	public int getScreenWidth() {
 		return (int) (width / TabHud.getScaleFactor());
 	}
 
-	@Override
 	public int getScreenHeight() {
 		return (int) (height / TabHud.getScaleFactor());
 	}
 
-	@Override
 	public void openPopup(Function<Screen, Screen> popupCreator) {
 		minecraft.setScreen(popupCreator.apply(this));
 	}
