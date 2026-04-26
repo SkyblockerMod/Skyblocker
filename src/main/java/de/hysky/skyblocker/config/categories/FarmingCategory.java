@@ -168,7 +168,36 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				.build();
 
+				// Greenhouse
+				.group(OptionGroup.createBuilder()
+				.name(Component.translatable("skyblocker.config.farming.greenhouse"))
+				.collapsed(true)
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePasteEnabled"))
+						.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePasteEnabled.@Tooltip"))
+						.binding(defaults.farming.greenhouse.greenhousePaste,
+								() -> config.farming.visitorHelper.enabled,
+								newValue -> config.farming.visitorHelper.enabled = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly"))
+						.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly.@Tooltip"))
+						.binding(defaults.farming.visitorHelper.showInGardenOnly,
+								() -> config.farming.visitorHelper.showInGardenOnly,
+								newValue -> config.farming.visitorHelper.showInGardenOnly = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks"))
+						.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip"))
+						.binding(defaults.farming.visitorHelper.showInStacks,
+								() -> config.farming.visitorHelper.showInStacks,
+								newValue -> config.farming.visitorHelper.showInStacks = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.build())
+				.build();
 	}
 }
