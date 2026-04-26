@@ -26,10 +26,19 @@ public class WaypointsOptionScreen extends Screen {
 
 	private final Screen parent;
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
+	private final UIAndVisualsConfig.Waypoints waypoints;
 
 	protected WaypointsOptionScreen(Screen parent) {
 		super(Component.translatable("skyblocker.waypoints.waypointsOptions"));
 		this.parent = parent;
+		UIAndVisualsConfig.Waypoints temp;
+		try {
+			temp = WAYPOINTS.get().clone();
+		} catch (CloneNotSupportedException e) {
+			temp = WAYPOINTS.get();
+			Waypoints.LOGGER.error("[Skyblocker Waypoints] Could not clone waypoints config for options screen. Issues may arise.", e);
+		}
+		waypoints = temp;
 	}
 
 	@Override
@@ -38,7 +47,6 @@ public class WaypointsOptionScreen extends Screen {
 		GridLayout grid = new GridLayout().spacing(2);
 		layout.addToContents(grid);
 		GridLayout.RowHelper adder = grid.createRowHelper(2);
-		UIAndVisualsConfig.Waypoints waypoints = WAYPOINTS.get();
 		adder.addChild(CycleButton
 				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.renderLine)
 				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (_, value) -> waypoints.renderLine = value)
@@ -98,6 +106,6 @@ public class WaypointsOptionScreen extends Screen {
 	@Override
 	public void onClose() {
 		minecraft.setScreen(parent);
-		SkyblockerConfigManager.update(_ -> {});
+		SkyblockerConfigManager.update(config -> config.uiAndVisuals.waypoints = waypoints);
 	}
 }
