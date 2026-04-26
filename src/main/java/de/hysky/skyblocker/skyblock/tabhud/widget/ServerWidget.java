@@ -4,14 +4,14 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.List;
-import java.util.Locale;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.Locale;
 
 // this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
@@ -26,10 +26,9 @@ public class ServerWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		this.addComponent(Elements.iconTextComponent(Ico.MAP, Component.literal("Area: ").append(lines.getFirst().copy().withStyle(ChatFormatting.DARK_AQUA))));
-		for (int i = 1; i < lines.size(); i++) {
-			Component text = lines.get(i);
+	public void updateContent(PlayerListManager.Widget widget) {
+		this.addComponent(Elements.iconTextComponent(Ico.MAP, Component.literal("Area: ").append(widget.detail().copy().withStyle(ChatFormatting.DARK_AQUA))));
+		for (Component text : widget.lines()) {
 			String string = text.getString();
 			switch (string.toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("server") -> this.addSimpleIcoText(Ico.NTAG, "Server ID:", ChatFormatting.GRAY, string.split(":", 2)[1]);

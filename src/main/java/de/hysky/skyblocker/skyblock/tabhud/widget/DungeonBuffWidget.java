@@ -3,13 +3,13 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 // this widget shows a list of obtained dungeon buffs
 @RegisterWidget
@@ -19,11 +19,11 @@ public class DungeonBuffWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("dungeon_buffs", Component.literal("Dungeon Buffs"), Location.DUNGEON));
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 
 		String footertext = PlayerListManager.getFooter();
 

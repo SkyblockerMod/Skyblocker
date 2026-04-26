@@ -9,15 +9,19 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 
 public class LayerConfig {
+	public static final LayerConfig DUMMY = new LayerConfig();
 
 	public @Nullable FancyTab fancyTab;
 	public Map<String, WidgetConfig> widgets;
+	private LayerConfig.@Nullable Identified parent;
 
 	public LayerConfig(@Nullable FancyTab fancyTab, Map<String, WidgetConfig> widgets) {
 		this.fancyTab = fancyTab;
@@ -28,6 +32,42 @@ public class LayerConfig {
 		this(null, new Object2ObjectOpenHashMap<>());
 	}
 
+	public void setParent(LayerConfig.@Nullable Identified parent) {
+		this.parent = parent;
+	}
+
+	public void visit(LayerBuilder.Visitor visitor) {
+		if (parent != null) {
+			parent.config().visit((s, w, screenId) -> visitor.visit(s, w, screenId != null ? screenId : parent.id()));
+		}
+		for (Map.Entry<String, WidgetConfig> entry : widgets.entrySet()) {
+			visitor.visit(entry.getKey(), entry.getValue(), null);
+		}
+	}
+
+	public LayerConfig getFullConfig() {
+		LayerConfig parentConfig = new LayerConfig();
+		visit((id, widgetConfig, _) -> parentConfig.widgets.put(id, widgetConfig));
+		parentConfig.fancyTab = fancyTab;
+		return parentConfig;
+	}
+
+	public Map<String, WidgetConfig.Meta> getWidgetMeta() {
+		Map<String, WidgetConfig.Meta> widgets = new HashMap<>();
+		visit(((id, widgetConfig, screenId) -> widgets.compute(id, (_, m) -> {
+			if (m == null && widgetConfig.config().isEmpty()) return null;
+			return new WidgetConfig.Meta(
+					Optional.ofNullable(m).flatMap(WidgetConfig.Meta::inheritedFrom),
+					Optional.ofNullable(screenId),
+					widgetConfig
+			);
+		})));
+		return widgets;
+	}
+
+	public @Nullable FancyTab fancyTab() {
+		return fancyTab == null && parent != null ? parent.config().fancyTab() : fancyTab;
+	}
 
 	public static class FancyTab {
 		public boolean enabled;
@@ -71,4 +111,6 @@ public class LayerConfig {
 			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
+
+	public record Identified(ScreenId id, LayerConfig config) {}
 }

@@ -8,7 +8,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,43 +18,23 @@ import net.minecraft.util.CommonColors;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 @RegisterWidget
 public class TerminalHud extends ElementBasedWidget {
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
 	private static final Supplier<DungeonsConfig.TerminalHud> CONFIG = () -> SkyblockerConfigManager.get().dungeons.terminalHud;
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	public static TerminalHud INSTANCE;
 
 	public TerminalHud() {
 		super(FunUtils.shouldEnableFun() ? Component.literal("P3 Guide") : Component.literal("Goldor Tasks"),
-				CommonColors.RED, "terminal_hud");
+				CommonColors.RED, new Information("terminal_hud", Component.literal("Terminal HUD"), Location.DUNGEON));
 		INSTANCE = this;
 		Scheduler.INSTANCE.scheduleCyclic(this::updateFromScheduler, 50);
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.update(config -> config.dungeons.terminalHud.enableTerminalHud = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return false;
-		return CONFIG.get().enableTerminalHud;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		if (!super.shouldRender(location)) return false;
+	public boolean shouldRender() {
 		return GoldorWaypointsManager.isActive();
 	}
 
@@ -80,7 +59,7 @@ public class TerminalHud extends ElementBasedWidget {
 
 	public void updateFromScheduler() {
 		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
-		if (!GoldorWaypointsManager.isActive() || !shouldRender(Utils.getLocation())) return;
+		if (!GoldorWaypointsManager.isActive() || !shouldRender()) return;
 		update();
 	}
 
@@ -145,10 +124,5 @@ public class TerminalHud extends ElementBasedWidget {
 
 			addComponent(new PlainTextElement(displayText));
 		}
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Goldor Tasks");
 	}
 }

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -12,6 +14,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +34,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -62,12 +65,14 @@ public class PlayerListManager {
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
 	private static @Nullable String footer;
-	static final Map<String, TabListWidget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
+	static final Map<String, Widget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
+
 	private static final Set<Runnable> TAB_LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
+	private static final Multimap<String, Consumer<Widget>> TAB_WIDGET_LISTENERS = MultimapBuilder.hashKeys().arrayListValues().build();
 	private static final Set<Runnable> FOOTER_LISTENERS = new ObjectOpenHashSet<>();
 	static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
 
-	public static @Nullable TabListWidget getListWidget(String name) {
+	public static PlayerListManager.@Nullable Widget getListWidget(String name) {
 		return WIDGET_MAP.get(name);
 	}
 
@@ -96,6 +101,10 @@ public class PlayerListManager {
 
 	public static void registerFooterListener(Runnable listener) {
 		FOOTER_LISTENERS.add(listener);
+	}
+
+	public static void registerTabWidgetListener(String widgetName, Consumer<Widget> listener) {
+		TAB_WIDGET_LISTENERS.put(widgetName, listener);
 	}
 
 	public static void tryUpdateList() {
@@ -154,7 +163,7 @@ public class PlayerListManager {
 				// Check if info, if it is, dip out
 				if (infoColumnPredicate.test(string)) {
 					playersDone = true;
-					WIDGET_MAP.put(hypixelWidgetName.right(), new TabListWidget(Component.empty(), contents, playerListEntries));
+					WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(Component.empty(), contents, playerListEntries));
 					contents.clear();
 					playerListEntries.clear();
 					continue;
@@ -165,7 +174,7 @@ public class PlayerListManager {
 				// Now check for : because of the farming contest ACTIVE
 				// Check for mining event minutes CUZ THEY FUCKING FORGOT THE SPACE iefzeoifzeoifomezhif
 				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase(Locale.ENGLISH).startsWith("ends in"))) {
-					if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new TabListWidget(sideThing, contents, playerListEntries));
+					if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
 
 					sideThing = Component.empty();
 					contents.clear();
@@ -188,9 +197,10 @@ public class PlayerListManager {
 			playerListEntries.add(playerListEntry);
 		}
 
-		if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new TabListWidget(sideThing, contents, playerListEntries));
+		if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
 
 		TAB_LISTENERS.forEach(Runnable::run);
+		WIDGET_MAP.forEach((key, value) -> TAB_WIDGET_LISTENERS.get(key).forEach(c -> c.accept(value)));
 	}
 
 	private static Component trim(Component text) {
@@ -408,8 +418,8 @@ public class PlayerListManager {
 		}
 
 		@Override
-		protected void updateContent(List<Component> lines) {
-			for (Component line : lines) {
+		protected void updateContent(Widget widget) {
+			for (Component line : widget.lines()) {
 				addComponent(new PlainTextElement(line));
 			}
 		}
@@ -420,8 +430,9 @@ public class PlayerListManager {
 	 * @param lines             The different lines, trimmed.
 	 * @param playerListEntries The player list entries, unprocessed. If detail is present, the whole line is included as the first line in the list.
 	 */
-	public record TabListWidget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
-		public TabListWidget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
+	public record Widget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
+		public static final Widget EMPTY = new Widget(Component.empty(), List.of(), List.of());
+		public Widget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
 			this.detail = detail.copy();
 			this.lines = lines.stream().map(Component::copy).collect(Collectors.toList());
 			this.playerListEntries = List.copyOf(playerListEntries);

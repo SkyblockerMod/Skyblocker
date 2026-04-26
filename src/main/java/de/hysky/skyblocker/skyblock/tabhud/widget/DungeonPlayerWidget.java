@@ -8,12 +8,13 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-
-import java.util.List;
-import java.util.regex.Matcher;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.List;
+import java.util.regex.Matcher;
 
 // this widget shows info about a player in the current dungeon group
 public class DungeonPlayerWidget extends TabHudWidget {
@@ -24,12 +25,12 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
 		this.player = player;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {

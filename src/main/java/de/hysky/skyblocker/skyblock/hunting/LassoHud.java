@@ -1,15 +1,11 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-
-import java.util.Objects;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -19,11 +15,12 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 @RegisterWidget
 public class LassoHud extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
-	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
 
 	private static @Nullable LassoHud instance;
 	private static int percentage = 0;
@@ -38,13 +35,13 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "Lasso HUD");
+		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_lasso", Component.literal("Lasso HUD"), Location.GALATEA));
 		instance = this;
 	}
 
 	public static void onEntityUpdate(ArmorStand entity) {
 		//check to see if close to end of players lasso
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
+		if (!WidgetManager.isWidgetInCurrentLayer(getInstance()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
 
 		//see if it's the name we are looking for
 		Component name = entity.getCustomName();
@@ -58,7 +55,7 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public static void onEntityAttach(ClientboundSetEntityLinkPacket packet) {
-		if (!getInstance().isEnabledIn(Utils.getLocation()) || CLIENT.level == null) return;
+		if (!WidgetManager.isWidgetInCurrentLayer(getInstance()) || CLIENT.level == null) return;
 		//see if lasso is coming from this player
 		if (CLIENT.level.getEntity(packet.getDestId()) instanceof Player player) {
 			if (player.equals(CLIENT.player)) {
@@ -98,29 +95,12 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
+	public boolean shouldRender() {
 		//forget entity if it has died
 		if (lassoEntity != null && !lassoEntity.isAlive()) {
 			lassoEntity = null;
 		}
 
-		return percentage != -1 && lassoEntity != null && super.shouldRender(location);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATION;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATION.contains(location)) return;
-		SkyblockerConfigManager.update(config -> config.hunting.lassoHud.enabled = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		if (!AVAILABLE_LOCATION.contains(location)) return false;
-		return SkyblockerConfigManager.get().hunting.lassoHud.enabled;
+		return percentage != -1 && lassoEntity != null;
 	}
 }

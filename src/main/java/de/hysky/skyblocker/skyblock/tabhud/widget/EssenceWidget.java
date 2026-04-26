@@ -2,14 +2,15 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.List;
-import java.util.Locale;
-
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.Locale;
 
 // this widget shows your dungeon essences (dungeon hub only)
 @RegisterWidget
@@ -19,12 +20,12 @@ public class EssenceWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public EssenceWidget() {
-		super("Essence", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Essence", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DUNGEON_HUB);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		for (Component line : lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
+		for (Component line : widget.lines()) {
 			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
 				case String s when s.contains("wither") -> this.addComponent(Elements.iconTextComponent(Ico.WITHER, line));
 				case String s when s.contains("spider") -> this.addComponent(Elements.iconTextComponent(Ico.STRING, line));

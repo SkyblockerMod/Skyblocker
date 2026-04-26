@@ -11,7 +11,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.SeparatorElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -27,7 +26,6 @@ import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +47,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedSackCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
-		super(Component.literal("Items"), ChatFormatting.AQUA.getColor(), "Item Pickup");
+		super(Component.literal("Items"), ChatFormatting.AQUA.getColor(), new Information("item_pickup", Component.literal("Item Pickup")));
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
@@ -205,30 +203,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public boolean shouldRender(Location location) {
-		if (super.shouldRender(location)) {
-			//render if enabled
-			if (SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled) {
-				//render if there are items in history
-				return !addedCount.isEmpty() || !removedCount.isEmpty() || !addedSackCount.isEmpty() || !removedSackCount.isEmpty();
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return ALL_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.update(config -> config.uiAndVisuals.itemPickup.enabled = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.enabled;
+	public boolean shouldRender() {
+		return !addedCount.isEmpty() || !removedCount.isEmpty() || !addedSackCount.isEmpty() || !removedSackCount.isEmpty();
 	}
 
 	/**

@@ -2,13 +2,14 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.List;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
@@ -23,9 +24,9 @@ public class ForgeWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		boolean b = lines.getFirst().getString().trim().startsWith("(");
-		for (int i = b ? 1 : 0, slot = 1; i < lines.size(); i++, slot++) {
+	public void updateContent(PlayerListManager.Widget widget) {
+		List<Component> lines = widget.lines();
+		for (int i = 0, slot = 1; i < lines.size(); i++, slot++) {
 			String trim = lines.get(i).getString().trim();
 
 			Element c;

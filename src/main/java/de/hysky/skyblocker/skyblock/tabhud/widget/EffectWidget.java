@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
@@ -26,23 +27,23 @@ public class EffectWidget extends TabHudWidget {
 
 	public EffectWidget() {
 		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		PlayerListManager.registerFooterListener(() -> {
+			if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter && WidgetManager.isWidgetInCurrentLayer(this)) update();
+		});
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-
-		if (lines.isEmpty())
-			fetchFromFooter();
-		else
-			fetchFromWidget(lines);
+	public void updateContent(PlayerListManager.Widget widget) {
+		String string = widget.detail().getString().replaceAll("[()]", "");
+		addComponent(new PlainTextElement(Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(Component.literal(" effect(s) active").withStyle(ChatFormatting.WHITE))));
+		for (Component line : widget.lines()) {
+			addComponent(new PlainTextElement(line));
+		}
 	}
 
-	private void fetchFromWidget(List<Component> lines) {
-		String string = lines.getFirst().getString().replaceAll("[()]", "");
-		addComponent(new PlainTextElement(Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(Component.literal(" effect(s) active").withStyle(ChatFormatting.WHITE))));
-		for (int i = 1; i < lines.size(); i++) {
-			addComponent(new PlainTextElement(lines.get(i)));
-		}
+	@Override
+	protected void updateContentMissing() {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) fetchFromFooter();
 	}
 
 	private void fetchFromFooter() {

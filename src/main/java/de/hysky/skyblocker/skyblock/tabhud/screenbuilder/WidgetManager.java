@@ -13,7 +13,6 @@ import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
@@ -27,21 +26,16 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -52,12 +46,14 @@ public class WidgetManager {
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-	private static final Map<ScreenId, ScreenBuilder> BUILDER_MAP = new HashMap<>();
+	private static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
+
+	private static Map<ScreenId, ScreenConfig> SCREEN_CONFIGS = new HashMap<>();
 
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
-	public static ScreenBuilder getScreenBuilder(ScreenId screenId) {
-		return BUILDER_MAP.get(screenId);
+	public static ScreenConfig getScreenConfig(ScreenId screenId) {
+		return SCREEN_CONFIGS.get(screenId);
 	}
 
 	// TODO or placeholder
@@ -65,9 +61,16 @@ public class WidgetManager {
 		return WIDGET_INSTANCES.get(id);
 	}
 
+	public static boolean isWidgetInCurrentLayer(HudWidget widget) {
+		return true; // TODO
+	}
+
 	public static List<HudWidget> getWidgetsAvailableIn(ScreenId location) {
 		return WIDGET_INSTANCES.values().stream().filter(w -> w.getInformation().available().test(location)).toList();
 	}
+
+	private static @Nullable Location currentLocation;
+	private static @Nullable ScreenLayer currentLayer;
 
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
@@ -113,7 +116,6 @@ public class WidgetManager {
 	 */
 	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
-		ScreenBuilder screenBuilder = getScreenBuilder(ScreenIds.ofLocation(Utils.getLocation()));
 		ScreenLayer layer;
 		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
@@ -125,7 +127,17 @@ public class WidgetManager {
 		} else if (hud) {
 			layer = ScreenLayer.HUD;
 		} else return;
-		screenBuilder.get(layer).extractRenderStates(context, w, h, false);
+		Location location = Utils.getLocation();
+		if (currentLocation != location) {
+			currentLocation = location;
+			SCREEN_BUILDER.setConfig(SCREEN_CONFIGS.get(ScreenIds.ofLocation(location)));
+			currentLayer = null; // force second condition to trigger
+		}
+		if (currentLayer != layer) {
+			currentLayer = layer;
+			SCREEN_BUILDER.get(layer).update();
+		}
+		SCREEN_BUILDER.get(currentLayer).extractRenderStates(context, w, h, false);
 	}
 
 	public static void loadConfig() {
@@ -153,7 +165,7 @@ public class WidgetManager {
 	}
 
 	public static void saveConfig() {
-		JsonObject output = new JsonObject();
+		/*JsonObject output = new JsonObject();
 		JsonObject positions = new JsonObject();
 		for (Map.Entry<Location, LayerBuilder> builderEntry : BUILDER_MAP.entrySet()) {
 			Location location = builderEntry.getKey();
@@ -169,7 +181,7 @@ public class WidgetManager {
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
-		}
+		}*/
 	}
 
 

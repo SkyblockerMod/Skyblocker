@@ -13,7 +13,6 @@ import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,55 +22,20 @@ import java.util.Set;
 
 public class LayerBuilder {
 
-	private final @Nullable IdentifiedLayerBuilder parent;
-	private final LayerConfig config;
+	private LayerConfig config = LayerConfig.DUMMY;
 	private final Set<PositionedWidget> widgets = new ObjectOpenHashSet<>();
 	private final List<PositionedWidget> hudWidgets = new LinkedList<>();
 	private final List<PositionedWidget> tabWidgets = new LinkedList<>();
 
 	private int positionsHash = 0;
 
-	public LayerBuilder(LayerConfig config, @Nullable IdentifiedLayerBuilder parent) {
-		this.parent = parent;
+	public void setConfig(LayerConfig config) {
 		this.config = config;
-	}
-
-	public void visit(Visitor visitor) {
-		if (parent != null) {
-			parent.builder().visit((s, w, screenId) -> visitor.visit(s, w, screenId != null ? screenId : parent.id()));
-		}
-		for (Map.Entry<String, WidgetConfig> entry : config.widgets.entrySet()) {
-			visitor.visit(entry.getKey(), entry.getValue(), null);
-		}
-	}
-
-	private LayerConfig.@Nullable FancyTab fancyTab() {
-		return config.fancyTab == null && parent != null ? parent.builder().fancyTab() : config.fancyTab;
-	}
-
-	public LayerConfig getFullConfig() {
-		LayerConfig parentConfig = new LayerConfig();
-		visit((id, widgetConfig, _) -> parentConfig.widgets.put(id, widgetConfig));
-		parentConfig.fancyTab = fancyTab();
-		return parentConfig;
-	}
-
-	public Map<String, WidgetConfig.Meta> getWidgetMeta() {
-		Map<String, WidgetConfig.Meta> widgets = new HashMap<>();
-		visit(((id, widgetConfig, screenId) -> widgets.compute(id, (_, m) -> {
-			if (m == null && widgetConfig.config().isEmpty()) return null;
-			return new WidgetConfig.Meta(
-					Optional.ofNullable(m).flatMap(WidgetConfig.Meta::inheritedFrom),
-					Optional.ofNullable(screenId),
-					widgetConfig
-			);
-		})));
-		return widgets;
 	}
 
 	public void update() {
 		hudWidgets.clear();
-		for (Map.Entry<String, WidgetConfig> entry : getFullConfig().widgets.entrySet()) {
+		for (Map.Entry<String, WidgetConfig> entry : config.getFullConfig().widgets.entrySet()) {
 			if (entry.getValue().position().isEmpty()) continue;
 			HudWidget hudWidget = WidgetManager.getWidget(entry.getKey());
 			hudWidgets.add(new PositionedWidget(hudWidget, entry.getValue().position().get()));
@@ -81,7 +45,7 @@ public class LayerBuilder {
 	}
 
 	public void updateTab() {
-		LayerConfig.FancyTab fancyTab = fancyTab();
+		LayerConfig.FancyTab fancyTab = config.fancyTab();
 		if (fancyTab == null || !fancyTab.enabled) return;
 		Profiler.get().push("skyblocker:updateTabWidgetsList");
 		Set<String> currentWidgets = PlayerListManager.getCurrentWidgets();
@@ -105,7 +69,7 @@ public class LayerBuilder {
 	}
 
 	public void serializeConfig() {
-		Map<String, WidgetConfig.Meta> metas = getWidgetMeta();
+		Map<String, WidgetConfig.Meta> metas = config.getWidgetMeta();
 		config.widgets.clear();
 		for (PositionedWidget widget : widgets) {
 			WidgetConfig.Meta meta = metas.get(widget.widget.getInternalID());
@@ -173,7 +137,7 @@ public class LayerBuilder {
 
 	public void updatePositions(int screenWidth, int screenHeight) {
 		updatePositions(widgets.stream().filter(p -> !p.fromTab).toList(), screenWidth, screenHeight);
-		LayerConfig fullConfig = getFullConfig();
+		LayerConfig fullConfig = config.getFullConfig();
 		if (fullConfig.fancyTab != null && fullConfig.fancyTab.enabled) {
 			WidgetPositioner positioner = fullConfig.fancyTab.positioner.getNewPositioner(0.9f, screenHeight);
 			List<HudWidget> tabWidgets = widgets.stream().filter(p -> p.fromTab).map(p -> p.widget).toList();

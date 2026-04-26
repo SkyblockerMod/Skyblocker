@@ -4,8 +4,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import java.util.List;
-
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,11 +18,11 @@ public class DungeonDownedWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Downed", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
 			this.addComponent(Elements.iconTextComponent());

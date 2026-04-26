@@ -15,14 +15,13 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
-
-import java.util.Objects;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 @RegisterWidget
 public class FishingHudWidget extends ElementBasedWidget {
@@ -36,7 +35,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "hud_fishing");
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_fishing", Component.literal("Fishing HUD")));
 		instance = this;
 	}
 
@@ -46,25 +45,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return ALL_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.update(config -> config.helpers.fishing.enableFishingHud = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().helpers.fishing.enableFishingHud;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		if (!super.shouldRender(location)) {
-			return false;
-		}
+	public boolean shouldRender() {
 		// sea creature tracker
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
@@ -120,11 +101,6 @@ public class FishingHudWidget extends ElementBasedWidget {
 			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", rodReelTimer.equals("!!!") ? ChatFormatting.RED : ChatFormatting.YELLOW, rodReelTimer);
 		}
 
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Fishing Hud");
 	}
 
 	private static boolean isBarnFishing() {

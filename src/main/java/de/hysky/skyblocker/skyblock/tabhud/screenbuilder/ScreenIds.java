@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ScreenIds {
+public final class ScreenIds {
 	private static final Map<Location, ScreenId> LOCATIONS = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(
 			Function.identity(),
 			ScreenId.Loc::new

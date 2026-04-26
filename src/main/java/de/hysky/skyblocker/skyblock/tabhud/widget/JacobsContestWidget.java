@@ -3,18 +3,18 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Map.entry;
 
@@ -45,12 +45,12 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		for (Component line : lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
+		for (Component line : widget.lines()) {
 			String string = line.getString();
 			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Elements.iconTextComponent(Ico.CLOCK, line));
 			else {

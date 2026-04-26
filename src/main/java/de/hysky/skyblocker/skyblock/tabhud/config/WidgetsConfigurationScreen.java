@@ -6,14 +6,15 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -58,6 +59,7 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	private ScreenId currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
+	private final ScreenBuilder screenBuilder = new ScreenBuilder();
 	private LayerBuilder builder;
 
 	private SidePanelWidget sidePanelWidget;
@@ -77,9 +79,10 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 
 	public WidgetsConfigurationScreen() {
 		super(Component.literal("Widgets Config Screen"));
-		currentLocation = ScreenIds.ofLocation(Utils.getLocation());
+		currentLocation = ScreenIds.ofCurrentLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
-		builder = WidgetManager.getScreenBuilder(currentLocation).get(currentScreenLayer);
+		screenBuilder.setConfig(WidgetManager.getScreenConfig(currentLocation));
+		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
 		builder.updateTab();
 	}
@@ -87,7 +90,8 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	public void setCurrentLocation(ScreenId newLocation) {
 		builder.serializeConfig();
 		this.currentLocation = newLocation;
-		builder = WidgetManager.getScreenBuilder(newLocation).get(currentScreenLayer);
+		screenBuilder.setConfig(WidgetManager.getScreenConfig(currentLocation));
+		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
 		builder.updateTab();
 	}
@@ -95,7 +99,7 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
 		builder.serializeConfig();
 		this.currentScreenLayer = newScreenLayer;
-		builder = WidgetManager.getScreenBuilder(currentLocation).get(newScreenLayer);
+		builder = screenBuilder.get(newScreenLayer);
 		builder.update();
 		builder.updateTab();
 	}
@@ -388,10 +392,6 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	@Override
 	public void removed() {
 		builder.serializeConfig();
-		builder.update();
-		if (currentLocation == ScreenIds.EVERYWHERE) {
-			WidgetManager.getScreenBuilder(ScreenIds.ofCurrentLocation()).get(WidgetManager.ScreenLayer.HUD).update();
-		}
 	}
 
 	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
@@ -452,7 +452,7 @@ public class WidgetsConfigurationScreen extends Screen implements WidgetConfig {
 	public HudWidget getEditedWidget() {
 		if (selectedWidget == null) {
 			LOGGER.warn("Trying to edit selected widget but nothing is selected?", new Throwable());
-			return new PlaceholderWidget("unknown"); // this shouldn't cause issues
+			return new CommsWidget(); // this shouldn't cause issues FIXME THIS IS STUPID
 		}
 		return selectedWidget.widget;
 	}

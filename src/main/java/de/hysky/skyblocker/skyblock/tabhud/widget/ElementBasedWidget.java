@@ -8,17 +8,17 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Abstract base class for a element based Widget.
@@ -85,6 +85,10 @@ public abstract class ElementBasedWidget extends HudWidget {
 
 	public abstract void updateContent();
 
+	public boolean shouldUpdateBeforeRendering() {
+		return false;
+	}
+
 	/**
 	 * Shorthand function for simple elements.
 	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
@@ -113,6 +117,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 
 	@Override
 	public final void extractRenderState(GuiGraphicsExtractor context, float delta) {
+		if (shouldUpdateBeforeRendering()) update();
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -142,6 +147,11 @@ public abstract class ElementBasedWidget extends HudWidget {
 			c.extractRenderState(context, BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
+	}
+
+	@Override
+	public void extractConfigRenderState(GuiGraphicsExtractor graphics, float delta) {
+		extractRenderState(graphics, delta); // TODO
 	}
 
 	/**

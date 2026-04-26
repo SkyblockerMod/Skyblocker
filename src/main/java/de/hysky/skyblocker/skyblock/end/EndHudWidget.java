@@ -18,12 +18,10 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Set;
 
 @RegisterWidget
 public class EndHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("The End").withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
 
 	private static @Nullable EndHudWidget instance = null;
 
@@ -31,29 +29,13 @@ public class EndHudWidget extends ElementBasedWidget {
 	private static final FlexibleItemStack POPPY = Util.make(new FlexibleItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
-		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), "hud_end");
+		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_end", Component.literal("End Hud"), Location.THE_END));
 		instance = this;
 		this.update();
 	}
 
 	public static EndHudWidget getInstance() {
 		return Objects.requireNonNull(instance, "EndHudWidget not initialized");
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.update(config -> config.otherLocations.end.hudEnabled = enabled);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
 	}
 
 	@Override
@@ -83,10 +65,5 @@ public class EndHudWidget extends ElementBasedWidget {
 				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
 			}
 		}
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("End Hud");
 	}
 }

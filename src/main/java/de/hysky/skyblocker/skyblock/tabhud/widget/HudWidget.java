@@ -2,14 +2,17 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.utils.Location;
-
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
+
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public abstract class HudWidget implements LayoutElement {
 	protected int w = 0, h = 0;
@@ -30,13 +33,16 @@ public abstract class HudWidget implements LayoutElement {
 	public abstract void extractRenderState(GuiGraphicsExtractor graphics, float delta);
 	public abstract void extractConfigRenderState(GuiGraphicsExtractor graphics, float delta);
 
+	public boolean shouldRender() {
+		return true;
+	}
 
 	/**
 	 * @param object the other HudWidget
 	 * @return true if they are the same instance or the internal id is the same.
 	 */
 	@Override
-	public boolean equals(Object object) {
+	public final boolean equals(Object object) {
 		if (this == object) return true;
 		if (object == null || getClass() != object.getClass()) return false;
 
@@ -45,11 +51,11 @@ public abstract class HudWidget implements LayoutElement {
 	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return getInternalID().hashCode();
 	}
 
-	public String getInternalID() {
+	public final String getInternalID() {
 		return information.id();
 	}
 
@@ -86,9 +92,8 @@ public abstract class HudWidget implements LayoutElement {
 		return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
 	}
 
-	public boolean shouldRender() {
-		return true;
-	}
+	@Override
+	public final void visitWidgets(Consumer<AbstractWidget> widgetVisitor) {}
 
 	/**
 	 * @param id          the id for the config file
@@ -109,5 +114,17 @@ public abstract class HudWidget implements LayoutElement {
 			this(id, displayName, screenId -> screenId instanceof ScreenId.Loc(Location location) && allowedLocations.contains(location));
 		}
 
+		public Information(String id, Component displayName, Location allowedLocation) {
+			this(id, displayName, EnumSet.of(allowedLocation));
+		}
+
+		public Information(String id, Component displayName, Location allowedLocation, Location... allowedLocations) {
+			this(id, displayName, EnumSet.of(allowedLocation, allowedLocations));
+		}
+
+	}
+
+	public static String nameToId(String name) {
+		return name.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", "");
 	}
 }

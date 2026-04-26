@@ -3,15 +3,16 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,15 +42,15 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
 		Matcher matcher = Pattern.compile("").matcher(""); // Placeholder pattern and input to construct a matcher that can be reused
 		long msAfterLastUpdate = Util.getMillis() - lastUpdate;
 
-		for (Component line : lines) {
+		for (Component line : widget.lines()) {
 			switch (matcher.reset(line.getString())) {
 				case Matcher m when m.usePattern(MITHRIL_PATTERN).matches() -> {
 					int mithril = parseAmount(m);

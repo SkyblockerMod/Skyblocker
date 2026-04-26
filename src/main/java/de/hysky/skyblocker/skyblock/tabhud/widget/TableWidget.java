@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
-import java.util.List;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.CommonColors;
+
+import java.util.List;
 
 /**
  * Generic widget that arranges rows of components in equal width columns.
@@ -16,23 +16,11 @@ public abstract class TableWidget extends ElementBasedWidget {
 	private final int lineColor;
 	private final boolean drawLines;
 
-	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, int lineColor, boolean drawLines) {
-		super(title, colorValue, internalId);
+	protected TableWidget(MutableComponent title, int colorValue, int columns, int lineColor, boolean drawLines, Information information) {
+		super(title, colorValue, information);
 		this.columns = columns;
 		this.lineColor = lineColor;
 		this.drawLines = drawLines;
-	}
-
-	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, int lineColor) {
-		this(title, colorValue, internalId, columns, lineColor, true);
-	}
-
-	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns, boolean drawLines) {
-		this(title, colorValue, internalId, columns, CommonColors.WHITE, drawLines);
-	}
-
-	protected TableWidget(MutableComponent title, int colorValue, String internalId, int columns) {
-		this(title, colorValue, internalId, columns, CommonColors.WHITE, true);
 	}
 
 	/**

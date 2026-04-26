@@ -1,15 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.utils.Location;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;
@@ -19,6 +18,25 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Information information) {
 		super(title, colorValue, information);
 		this.hypixelWidgetName = hypixelWidgetName;
+		registerAutoUpdate();
+	}
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue) {
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy()));
+	}
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Location location) {
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy(), location));
+	}
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Location location, Location... otherLocations) {
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy(), location, otherLocations));
+	}
+
+	protected void registerAutoUpdate() {
+		PlayerListManager.registerTabListener(() -> {
+			if (WidgetManager.isWidgetInCurrentLayer(this)) update();
+		});
 	}
 
 	public String getHypixelWidgetName() {
@@ -26,30 +44,13 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal(getHypixelWidgetName());
-	}
-
-	@Override
 	public void updateContent() {
-		cachedElements.forEach(super::addComponent);
+		PlayerListManager.Widget widget = PlayerListManager.getListWidget(hypixelWidgetName);
+		if (widget != null) updateContent(widget);
+		else updateContentMissing();
 	}
 
-	public void updateFromTab(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
-		cachedElements.clear();
-		updateContent(lines, playerListEntries);
-	}
-
-	/**
-	 * Same as {@link #updateContent(List)} but only override if you need access to {@code playerListEntries}.
-	 *
-	 * @param playerListEntries the player list entries, which should match the lines.
-	 *                          Null in dungeons.
-	 * @see #updateContent(List)
-	 */
-	protected void updateContent(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
-		updateContent(lines);
-	}
+	protected void updateContentMissing() {} // TODO
 
 	/**
 	 * Updates the content from the hypixel widget's lines
@@ -57,11 +58,6 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
 	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
 	 */
-	protected abstract void updateContent(List<Component> lines);
-
-	@Override
-	public final void addComponent(Element c) {
-		cachedElements.add(c);
-	}
+	protected abstract void updateContent(PlayerListManager.Widget widget);
 
 }
