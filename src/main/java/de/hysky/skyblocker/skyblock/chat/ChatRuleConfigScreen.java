@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
@@ -10,7 +11,9 @@ import de.hysky.skyblocker.utils.render.gui.SoundSelectionPopup;
 import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -21,6 +24,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -61,7 +65,8 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int COLUMN_WIDTH = 105;
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
-	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;	// Link to helpful learning & testing website for regex w/ multilingual support.
+	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
+	// Link to helpful learning & testing website for regex w/ multilingual support.
 	private static final Component REGEX_LINK = Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink").withStyle(
 			style -> style.withUnderlined(true).withClickEvent(new ClickEvent.OpenUrl(URI.create("https://regex101.com/")))
 	);
@@ -132,7 +137,7 @@ public class ChatRuleConfigScreen extends Screen {
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex", REGEX_LINK),
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip"),
 				getWidth(1.5f),
-				HorizontalAlignment.CENTER,
+				TextAlignment.CENTER,
 				chatRule::setRegex,
 				chatRule.getRegex()
 		));
@@ -140,7 +145,7 @@ public class ChatRuleConfigScreen extends Screen {
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"),
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip"),
 				getWidth(1.5f),
-				HorizontalAlignment.RIGHT,
+				TextAlignment.RIGHT,
 				chatRule::setIgnoreCase,
 				chatRule.getIgnoreCase()
 		));
@@ -149,7 +154,7 @@ public class ChatRuleConfigScreen extends Screen {
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"),
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip"),
 				getWidth(1.5f),
-				HorizontalAlignment.CENTER,
+				TextAlignment.CENTER,
 				chatRule::setPartialMatch,
 				chatRule.getPartialMatch()
 		));
@@ -169,7 +174,7 @@ public class ChatRuleConfigScreen extends Screen {
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"),
 				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip"),
 				getWidth(1.5f),
-				HorizontalAlignment.LEFT,
+				TextAlignment.LEFT,
 				value -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
@@ -332,13 +337,7 @@ public class ChatRuleConfigScreen extends Screen {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
-	private enum HorizontalAlignment {
-		LEFT,
-		CENTER,
-		RIGHT
-	}
-
-	private FrameLayout buildCheckbox(Component text, Component tooltip, int width, HorizontalAlignment align, Consumer<Boolean> setter, boolean selected) {
+	private FrameLayout buildCheckbox(Component text, Component tooltip, int width, TextAlignment align, Consumer<Boolean> setter, boolean selected) {
 		FrameLayout frame = new FrameLayout().setMinWidth(width);
 
 		switch (align) {
@@ -393,6 +392,27 @@ public class ChatRuleConfigScreen extends Screen {
 	@Override
 	protected void repositionElements() {
 		layout.arrangeElements();
+	}
+
+	// Handle click events for checkbox messages
+	@Override
+	public boolean mouseClicked(final MouseButtonEvent event, final boolean doubleClick) {
+		Optional<GuiEventListener> child = getChildAt(event.x(), event.y());
+		// Enter all containers until non-container is reached.
+		while (child.isPresent() && child.get() instanceof ContainerEventHandler container) {
+			child = container.getChildAt(event.x(), event.y());
+		}
+		if (child.isPresent() && child.get() instanceof Checkbox check) {
+			ActiveTextCollector.ClickableStyleFinder finder = (new ActiveTextCollector.ClickableStyleFinder(font, (int) event.x(), (int) event.y()))
+					.includeInsertions(false);
+			((CheckboxAccessor) check).getTextWidget().visitLines(finder);
+			final Style style = finder.result();
+			if (style != null) {
+				defaultHandleClickEvent(style.getClickEvent(), minecraft, this);
+				return true;
+			}
+		}
+		return super.mouseClicked(event, doubleClick);
 	}
 
 	/**
