@@ -2,7 +2,6 @@ package de.hysky.skyblocker.utils.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.Minecraft;
@@ -61,7 +60,7 @@ public class SkullRenderer {
 
 		submitNodeCollector.submitCustomGeometry(matrices, renderType, (matricesEntry, buffer) -> {
 			float ox = -0.5f;
-			float oy = 0f;
+			float oy = 0.02f;
 			float oz = -0.5f;
 
 			renderHeadLayer(

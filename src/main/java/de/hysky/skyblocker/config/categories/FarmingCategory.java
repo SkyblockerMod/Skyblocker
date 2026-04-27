@@ -174,27 +174,19 @@ public class FarmingCategory {
 				.name(Component.translatable("skyblocker.config.farming.greenhouse"))
 				.collapsed(true)
 				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePasteEnabled"))
-						.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePasteEnabled.@Tooltip"))
+						.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled"))
+						.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip"))
 						.binding(defaults.farming.greenhouse.greenhousePaste,
-								() -> config.farming.visitorHelper.enabled,
-								newValue -> config.farming.visitorHelper.enabled = newValue)
+								() -> config.farming.greenhouse.greenhousePaste,
+								newValue -> config.farming.greenhouse.greenhousePaste = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly"))
-						.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInGardenOnly.@Tooltip"))
-						.binding(defaults.farming.visitorHelper.showInGardenOnly,
-								() -> config.farming.visitorHelper.showInGardenOnly,
-								newValue -> config.farming.visitorHelper.showInGardenOnly = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks"))
-						.description(Component.translatable("skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip"))
-						.binding(defaults.farming.visitorHelper.showInStacks,
-								() -> config.farming.visitorHelper.showInStacks,
-								newValue -> config.farming.visitorHelper.showInStacks = newValue)
+						.name(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled"))
+						.description(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip"))
+						.binding(defaults.farming.greenhouse.showMutationSlot,
+								() -> config.farming.greenhouse.showMutationSlot,
+								newValue -> config.farming.greenhouse.showMutationSlot = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.build())

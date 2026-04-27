@@ -61,7 +61,7 @@ public class LZURISafeBase64Decoder {
 		switch (next) {
 			case 0 -> c = String.valueOf((char) data.readBits(input, 8));
 			case 1 -> c = String.valueOf((char) data.readBits(input, 16));
-			case 2 -> {return "";}
+			case 2 -> { return ""; }
 			default -> throw new IllegalStateException("Invalid LZ string");
 		}
 

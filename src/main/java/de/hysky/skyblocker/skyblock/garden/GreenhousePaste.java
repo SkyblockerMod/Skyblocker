@@ -3,12 +3,11 @@ package de.hysky.skyblocker.skyblock.garden;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -16,41 +15,22 @@ import de.hysky.skyblocker.utils.LZURISafeBase64Decoder;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.SkullRenderer;
-import de.hysky.skyblocker.utils.render.primitive.BlockHologramRenderer;
-import de.hysky.skyblocker.utils.render.primitive.OutlinedBoxInstancedRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.PlayerSkinRenderCache;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,8 +38,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class GreenhousePaste {
 	private static Minecraft client = Minecraft.getInstance();
-	private static final int PREVIEW_COLOR_ARGB = 0x62FFFFFF; // 38% opacity white
-
+	private static final int PREVIEW_COLOR_ARGB = 0x62FFFFFF; // 38% opacity
+	private static final float PREVIEW_ALPHA = 0.38f; // for block holograms
+	private static final long BLOCK_CHANGE_RATE_LIMIT_MS = 150;
 	/*
 		For normal greenhouse, the grid is 10x10. Each cell can be empty (0) or contain a crop (1-40).
 		For target greenhouse, the grid is also 10x10. Each cell can be ignored (-1) or empty (0) contain a crop (1-40).
@@ -70,12 +51,14 @@ public class GreenhousePaste {
 	private static int[][] greenhouse = new int[10][10];
 	private static int[][] targetGreenhouse = new int[10][10];
 	private static BlockPos greenhouseCorner = null;
+	private static long lastBlockChangeTimeMs;
 
 	static {
 		// Create crops once and store them in both maps
+		// TODO - verfiy armorstand names and name from website
 		Crop[] crops = {
 			new Crop("Ashwreath", "ashwreath", 1, HeadTextures.ASHWREATH),
-			new Crop("Choconut","choconut", 2, HeadTextures.CHOCONUT),
+			new Crop("Choconut", "choconut", 2, HeadTextures.CHOCONUT),
 			new Crop("Dustgrain", "dustgrain", 3, HeadTextures.DUSTGRAIN),
 			new Crop("Gloomgourd", "gloomgourd", 4, HeadTextures.GLOOMGOURD),
 			new Crop("Lonelily", "lonelily", 5, HeadTextures.LONELILY),
@@ -127,14 +110,13 @@ public class GreenhousePaste {
 			new Crop("Red Mushroom", "redmushroom", 49, Blocks.RED_MUSHROOM),
 			new Crop("Wheat Seeds", "wheat", 50, Blocks.WHEAT),
 			new Crop("Carrot", "carrot", 51, Blocks.CARROTS),
-
 			new Crop("Potato", "potato", 52, Blocks.POTATOES),
 			new Crop("Nether Wart", "netherwart", 53, Blocks.NETHER_WART),
 			new Crop("Sugar Cane", "sugarcane", 54, Blocks.SUGAR_CANE),
 
 			// Misc
 			new Crop("Dead Plant", "deadplant", 55, Blocks.DEAD_BUSH),
-			new Crop("Fire", "fire", 56, Blocks.DEAD_BUSH),
+			new Crop("Fire", "fire", 56, Blocks.FIRE),
 			new Crop("Fermento", "fermento", 57, HeadTextures.FERMENTO),
 		};
 
@@ -142,7 +124,7 @@ public class GreenhousePaste {
 		for (Crop crop : crops) {
 			CROP_ID_MAP.put(crop.name, crop);
 			CROP_BY_INT.put(crop.id, crop);
-			if (crop.isHead && HeadTextures.SPECIAL_CROPS.contains(crop.headSkin)){
+			if (crop.isHead && HeadTextures.SPECIAL_CROPS.contains(crop.headSkin)) {
 				CROP_BY_HEAD_TEXTURE_HASH.put(crop.headSkin, crop);
 			}
 		}
@@ -151,9 +133,9 @@ public class GreenhousePaste {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("greenhousepaste").executes(context -> runGreenhousePaste()))
-				.then(literal("greenhousepasteremove").executes(context -> runGreenhousePasteRemove()))
-						.then(literal("greenhousedebug").executes(context -> {
+				.then(literal("greenhousepaste").executes(_ -> runGreenhousePaste()))
+				.then(literal("greenhousepasteremove").executes(_ -> runGreenhousePasteRemove()))
+						.then(literal("greenhousedebug").executes(_ -> {
 							debugPrintGreenhouses();
 							return Command.SINGLE_SUCCESS;
 						}))));
@@ -166,13 +148,17 @@ public class GreenhousePaste {
 
 		PlayerBlockBreakEvents.AFTER.register((_, _, pos, _, _) -> onBlockChange(pos));
 
+		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> {
+			onBlockChange(hitResult.getBlockPos());
+			return net.minecraft.world.InteractionResult.PASS;
+		});
 
 		// Initialize greenhouse arrays
 		removePreview();
 	}
 
 	// If armor stand crops are changed
-	public static void onEntityChange(Entity e){
+	public static void onEntityChange(Entity e) {
 		if (greenhouseCorner == null) return;
 		if (greenhouseCorner.getX() - 1 > e.getX() ||
 				greenhouseCorner.getX() + 11 < e.getX() ||
@@ -182,12 +168,17 @@ public class GreenhousePaste {
 	}
 
 	// If non armor stand crops are changed
-	public static void onBlockChange(BlockPos pos){
+	public static void onBlockChange(BlockPos pos) {
 		if (greenhouseCorner == null) return;
 		if (greenhouseCorner.getX() - 1 >= pos.getX() ||
 				greenhouseCorner.getX() + 11 <= pos.getX() ||
 				greenhouseCorner.getZ() - 1 >= pos.getZ() ||
 				greenhouseCorner.getZ() + 11 <= pos.getZ()) return;
+
+		long currentTimeMs = System.currentTimeMillis();
+		if (currentTimeMs - lastBlockChangeTimeMs < BLOCK_CHANGE_RATE_LIMIT_MS) return;
+		lastBlockChangeTimeMs = currentTimeMs;
+
 		locateGreenhouse();
 	}
 
@@ -215,6 +206,7 @@ public class GreenhousePaste {
 	}
 
 	public static void loadFromLink() {
+		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		String clipboard = client.keyboardHandler.getClipboard();
 		String[] parts = clipboard.split("\\?layout=");
 		String encoded = parts.length > 1 ? parts[1] : clipboard;
@@ -315,7 +307,7 @@ public class GreenhousePaste {
 	}
 
 	/**
-	 * Imports a greenhouse layout from an LZ-encoded string.
+	 * Imports the greenhouse layout from an LZ-encoded string.
 	 * The string is decompressed and parsed as a JSON array.
 	 * Each entry is [x, y, "crop_name", value].
 	 */
@@ -336,9 +328,11 @@ public class GreenhousePaste {
 				int x = entry.get(0).getAsInt();
 				int y = entry.get(1).getAsInt();
 				String cropName = entry.get(2).getAsString();
-				int value = entry.get(3).getAsInt(); // 0 = desired, 1 = place, in the website
-				if (value == 0) continue;
-				if ("Dead Plants".equalsIgnoreCase(cropName) || "Dead Plant".equalsIgnoreCase(cropName)) continue;
+				int value = entry.get(3).getAsInt(); // 0 = desired mutation, 1 = place, accoridng to the website
+				if (value == 0) {
+					targetGreenhouse[x][y] = 0; // Desired mutation spot should be empty
+					continue;
+				}
 
 				Crop crop = CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
@@ -353,6 +347,7 @@ public class GreenhousePaste {
 	}
 
 	public static void renderPreview(PrimitiveCollector collector) {
+		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (greenhouseCorner == null) return;
 
 		for (int x = 0; x < 10; x++) {
@@ -361,47 +356,51 @@ public class GreenhousePaste {
 				int targetCropId = targetGreenhouse[x][y];
 				if (targetCropId == -1) continue;
 
-				// Already correct
 				int currentCropId = greenhouse[x][y];
+				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY() + 1, greenhouseCorner.getZ() + y);
+
+				// Mutation spots target empty blocks; render indicator and skip crop lookup.
+				if (targetCropId == 0) {
+					if (currentCropId == 0) {
+						if (SkyblockerConfigManager.get().farming.greenhouse.showMutationSlot) // oh my days
+							collector.submitOutlinedBox(
+									new net.minecraft.world.phys.AABB(
+											pos.getX(), pos.getY() - 0.05, pos.getZ(),
+											pos.getX() + 1, pos.getY() + 0.1, pos.getZ() + 1
+									),
+									new float[]{0f, 1f, 0f},
+									0.2f,
+									3f,
+									false
+							);
+					} else {
+						collector.submitOutlinedBox(
+								new net.minecraft.world.phys.AABB(pos),
+								new float[]{1f, 0f, 0f},
+								0.5f,
+								4f,
+								true
+						);
+					}
+					continue;
+				}
+
+				// Already correct
 				if (currentCropId == targetCropId) continue;
 
 				Crop targetCrop = CROP_BY_INT.get(targetCropId);
-				if (targetCrop == null || targetCrop.headSkin == null || targetCrop.headSkin.isBlank()) continue;
+				if (targetCrop == null) continue;
 
-				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY() + 1, greenhouseCorner.getZ() + y);
-
-				if (greenhouse[x][y] != 0) {
-					OutlinedBoxRenderState state = new OutlinedBoxRenderState();
-					state.minX = pos.getX();
-					state.minY = pos.getY();
-					state.minZ = pos.getZ();
-					state.maxX = pos.getX() + 1;
-					state.maxY = pos.getY() + 1;
-					state.maxZ = pos.getZ() + 1;
-					state.colourComponents = new float[]{1f, 0f, 0f}; // Red
-					state.alpha = 0.5f;
-					state.lineWidth = 2f;
-					state.throughWalls = true;
-
-					OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(
-							List.of(state),
-							PrimitiveCollectorImpl.getWorldState(collector).cameraRenderState
-					);
+				if (currentCropId != 0) { // Undesired spot that is not empty
+					collector.submitOutlinedBox(new net.minecraft.world.phys.AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
 				} else if (targetCrop.isHead) {
 					SkullRenderer.submitSkull(collector, pos, targetCrop.displayStack, PREVIEW_COLOR_ARGB);
 				} else {
-					BlockHologramRenderer.INSTANCE.submitPrimitives(new BlockHologramRenderState() {{
-						this.pos = pos;
-						this.state = targetCrop.cropBlock.defaultBlockState();
-						this.alpha = PREVIEW_COLOR_ARGB;
-						this.altModelBlockRenderer = null;
-					 }}, PrimitiveCollectorImpl.getWorldState(collector).cameraRenderState);
+					collector.submitBlockHologram(pos, targetCrop.cropBlock.defaultBlockState(), PREVIEW_ALPHA);
 				}
 			}
 		}
 	}
-
-	//	private record SkullPreviewState(BlockPos pos, FlexibleItemStack skull, int argb) {}
 
 	public static class Crop {
 		private final String name;
@@ -447,6 +446,7 @@ public class GreenhousePaste {
 	}
 
 	private static void printGrid(int[][] grid) {
+		StringBuilder all = new StringBuilder();
 		for (int z = 0; z < 10; z++) {
 			StringBuilder row = new StringBuilder();
 
@@ -460,11 +460,9 @@ public class GreenhousePaste {
 					row.append(String.format("%2d ", val));
 				}
 			}
-
-			client.player.sendSystemMessage(Component.literal(row.toString()));
+			all.append(row).append("\n");
 		}
+		client.player.sendSystemMessage(Component.literal(all.toString()));
 	}
-
-
 
 }

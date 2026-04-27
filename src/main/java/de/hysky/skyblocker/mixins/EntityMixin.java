@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -81,7 +80,7 @@ public abstract class EntityMixin implements SkyblockerEntity {
 		}
 
 		// literal voodoo magic
-		Entity entity = (Entity)(Object)this;
+		Entity entity = (Entity) (Object) this;
 		GreenhousePaste.onEntityChange(entity);
 	}
 }

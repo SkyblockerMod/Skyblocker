@@ -465,6 +465,12 @@
   "skyblocker.config.farming.farmingHud.type.BOTH": "Both",
   "skyblocker.config.farming.farmingHud.type.NPC": "NPC",
 
+  "skyblocker.config.farming.greenhouse": "Greenhouse",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "Paste SkyMutations Plot",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Click the \"link\" button on the website, then run /skyblocker greenhousepaste to paste the plot layout into your greenhouse!",
+  "skyblocker.config.farming.greenhouse.showMutationSlot.enabled": "Show Mutation Slot",
+  "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "Highlights the mutation slot (green) when pasting a layout.",
+
   "skyblocker.config.farming.mouseLock": "Mouse Lock",
   "skyblocker.config.farming.mouseLock.lockMouseGround": "Lock only when on the ground",
   "skyblocker.config.farming.mouseLock.lockMouseTool": "Lock when holding a farming tool",

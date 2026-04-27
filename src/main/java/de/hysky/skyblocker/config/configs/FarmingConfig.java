@@ -18,9 +18,9 @@ public class FarmingConfig {
 	public static class Greenhouse {
 		public boolean enabled = true;
 
-		public boolean showInGardenOnly = true;
-
 		public boolean greenhousePaste = true;
+
+		public boolean showMutationSlot = true;
 	}
 
 	public static class PestHighlighter {
