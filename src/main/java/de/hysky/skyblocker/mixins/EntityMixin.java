@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.injected.SkyblockerEntity;
+import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.LazerTimer;
 import de.hysky.skyblocker.utils.Utils;
@@ -20,6 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -77,5 +79,9 @@ public abstract class EntityMixin implements SkyblockerEntity {
 			}
 			SlayerManager.BossFight.remove();
 		}
+
+		// literal voodoo magic
+		Entity entity = (Entity)(Object)this;
+		GreenhousePaste.onEntityChange(entity);
 	}
 }

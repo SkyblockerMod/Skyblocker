@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
 public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHologramRenderState> {
-	protected static final BlockHologramRenderer INSTANCE = new BlockHologramRenderer();
+	public static final BlockHologramRenderer INSTANCE = new BlockHologramRenderer();
 	@SuppressWarnings("unused")
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 
