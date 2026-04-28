@@ -42,6 +42,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
 	public static final Int2IntMap GARDEN_PLOT_TO_SLOT = Int2IntMap.ofEntries(
+			Int2IntMap.entry(0, 12), // The Barn
 			Int2IntMap.entry(1, 7),
 			Int2IntMap.entry(2, 11),
 			Int2IntMap.entry(3, 13),
