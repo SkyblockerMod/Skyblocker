@@ -7,7 +7,7 @@ import net.minecraft.world.item.Items;
 public class HuntingMenu extends BasicMenu {
 
 	public HuntingMenu() {
-		super("hunting toolkit ➜ selection", "huntingToolkit");
+		super("hunting toolkit", "huntingToolkit");
 	}
 
 	@Override
