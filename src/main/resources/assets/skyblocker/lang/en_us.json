@@ -1280,6 +1280,7 @@
   "skyblocker.config.uiAndVisuals.radialMenu.hideButton": "Hide",
   "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "Show normal inventory view",
   "skyblocker.config.uiAndVisuals.radialMenu.huntingToolkit": "Hunting Toolkit",
+	"skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "Farming Toolkit",
   "skyblocker.config.uiAndVisuals.radialMenu.sacks": "Sacks",
   "skyblocker.config.uiAndVisuals.radialMenu.storage": "Storage",
   "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "Show Tooltips Without Shift",
