@@ -36,9 +36,9 @@ public class DungeonServerWidget extends TabHudWidget {
 
 		Matcher m = PlayerListManager.regexAt(44, SECRET_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.progressComponent());
+			this.addElement(Elements.progressComponent());
 		} else {
-			this.addComponent(Elements.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
+			this.addElement(Elements.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
 					ChatFormatting.DARK_PURPLE.getColor()));
 		}

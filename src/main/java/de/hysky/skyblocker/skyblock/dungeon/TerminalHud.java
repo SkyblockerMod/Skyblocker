@@ -72,18 +72,18 @@ public class TerminalHud extends ElementBasedWidget {
 			}
 			if (CONFIG.get().showTerminals) {
 				for (int i = 0; i < 5; i++) {
-					addComponent(new PlainTextElement(Component.literal("Terminal #" + (i + 1)).append(status)));
+					addElement(new PlainTextElement(Component.literal("Terminal #" + (i + 1)).append(status)));
 				}
 			}
 			if (CONFIG.get().showDevice) {
-				addComponent(new PlainTextElement(Component.literal("Device").append(status)));
+				addElement(new PlainTextElement(Component.literal("Device").append(status)));
 			}
 			if (CONFIG.get().showLevers) {
-				addComponent(new PlainTextElement(Component.literal("Lever").append(status)));
-				addComponent(new PlainTextElement(Component.literal("Lever").append(status)));
+				addElement(new PlainTextElement(Component.literal("Lever").append(status)));
+				addElement(new PlainTextElement(Component.literal("Lever").append(status)));
 			}
 			if (CONFIG.get().showGate) {
-				addComponent(new PlainTextElement(Component.literal("Gate").append(status)));
+				addElement(new PlainTextElement(Component.literal("Gate").append(status)));
 			}
 			return;
 		}
@@ -107,7 +107,7 @@ public class TerminalHud extends ElementBasedWidget {
 				displayText = waypoint.name;
 			}
 
-			addComponent(new PlainTextElement(displayText));
+			addElement(new PlainTextElement(displayText));
 		}
 
 		if (CONFIG.get().showGate && GoldorWaypointsManager.getCurrentPhase() < 3) {
@@ -122,7 +122,7 @@ public class TerminalHud extends ElementBasedWidget {
 				}
 			}
 
-			addComponent(new PlainTextElement(displayText));
+			addElement(new PlainTextElement(displayText));
 		}
 	}
 }

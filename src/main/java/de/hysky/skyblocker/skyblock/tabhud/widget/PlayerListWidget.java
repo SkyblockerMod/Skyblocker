@@ -20,9 +20,9 @@ public class PlayerListWidget extends TabHudWidget {
 	@Override
 	protected void updateContent(PlayerListManager.Widget widget) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting == UIAndVisualsConfig.NameSorting.DEFAULT) {
-			widget.playerListEntries().forEach(playerListEntry -> addComponent(new PlayerElement(playerListEntry)));
+			widget.playerListEntries().forEach(playerListEntry -> addElement(new PlayerElement(playerListEntry)));
 		} else {
-			widget.playerListEntries().stream().sorted(SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting.comparator).forEach(playerListEntry -> addComponent(new PlayerElement(playerListEntry)));
+			widget.playerListEntries().stream().sorted(SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting.comparator).forEach(playerListEntry -> addElement(new PlayerElement(playerListEntry)));
 		}
 	}
 }

@@ -48,7 +48,7 @@ public class PetWidget extends TabHudWidget {
 			if (string.contains("[") && string.contains("]")) {
 				String[] split = string.split("]", 2);
 				if (split.length < 2) {
-					addComponent(new PlainTextElement(line));
+					addElement(new PlainTextElement(line));
 					continue;
 				}
 
@@ -57,9 +57,9 @@ public class PetWidget extends TabHudWidget {
 					this.icon = PET_ICON_CACHE.getUnchecked(petName);
 					this.prevString = petName;
 				}
-				addComponent(Elements.iconTextComponent(this.icon, line));
+				addElement(Elements.iconTextComponent(this.icon, line));
 
-			} else addComponent(new PlainTextElement(line));
+			} else addElement(new PlainTextElement(line));
 		}
 	}
 

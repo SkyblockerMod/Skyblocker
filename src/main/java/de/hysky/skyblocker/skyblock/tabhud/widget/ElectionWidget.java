@@ -53,10 +53,10 @@ public class ElectionWidget extends TabHudWidget {
 
 		if (status.contains("Over!")) {
 			// election is over
-			this.addComponent(Elements.iconTextComponent(Ico.BARRIER, EL_OVER));
+			this.addElement(Elements.iconTextComponent(Ico.BARRIER, EL_OVER));
 
 			for (int i = 1; i < lines.size(); i++) {
-				this.addComponent(new PlainTextElement(lines.get(i)));
+				this.addElement(new PlainTextElement(lines.get(i)));
 			}
 
 		} else {
@@ -71,8 +71,8 @@ public class ElectionWidget extends TabHudWidget {
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
 					Component candidate = Component.literal(mayorname).withStyle(COLS[i - 1]);
-					this.addComponent(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i - 1].getColor()));
-				} else this.addComponent(new PlainTextElement(lines.get(i)));
+					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i - 1].getColor()));
+				} else this.addElement(new PlainTextElement(lines.get(i)));
 			}
 		}
 	}

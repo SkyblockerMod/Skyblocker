@@ -29,11 +29,11 @@ public class ComposterWidget extends TabHudWidget {
 
 		for (Component line : widget.lines()) {
 			switch (line.getString().toLowerCase(Locale.ENGLISH)) {
-				case String s when s.contains("organic") -> this.addComponent(Elements.iconTextComponent(Ico.SAPLING, line));
-				case String s when s.contains("fuel") -> this.addComponent(Elements.iconTextComponent(Ico.FURNACE, line));
-				case String s when s.contains("time") -> this.addComponent(Elements.iconTextComponent(Ico.CLOCK, line));
-				case String s when s.contains("stored") -> this.addComponent(Elements.iconTextComponent(Ico.COMPOSTER, line));
-				default -> this.addComponent(new PlainTextElement(line));
+				case String s when s.contains("organic") -> this.addElement(Elements.iconTextComponent(Ico.SAPLING, line));
+				case String s when s.contains("fuel") -> this.addElement(Elements.iconTextComponent(Ico.FURNACE, line));
+				case String s when s.contains("time") -> this.addElement(Elements.iconTextComponent(Ico.CLOCK, line));
+				case String s when s.contains("stored") -> this.addElement(Elements.iconTextComponent(Ico.COMPOSTER, line));
+				default -> this.addElement(new PlainTextElement(line));
 			}
 		}
 	}

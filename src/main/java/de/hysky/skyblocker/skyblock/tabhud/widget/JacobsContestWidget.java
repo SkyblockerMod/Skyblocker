@@ -52,7 +52,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	public void updateContent(PlayerListManager.Widget widget) {
 		for (Component line : widget.lines()) {
 			String string = line.getString();
-			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Elements.iconTextComponent(Ico.CLOCK, line));
+			if (string.endsWith("left") || string.contains("Starts")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, line));
 			else {
 				Matcher matcher = CROP_PATTERN.matcher(string);
 				if (matcher.matches()) {
@@ -61,9 +61,9 @@ public class JacobsContestWidget extends TabHudWidget {
 					MutableComponent cropText = Component.empty().append(crop);
 					if (matcher.group("fortune").equals("☘")) cropText.append(Component.literal(" ☘").withStyle(ChatFormatting.GOLD));
 
-					this.addComponent(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
-					if (percentage != null) this.addComponent(new PlainTextElement(Component.literal(percentage)));
-				} else this.addComponent(new PlainTextElement(line));
+					this.addElement(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
+					if (percentage != null) this.addElement(new PlainTextElement(Component.literal(percentage)));
+				} else this.addElement(new PlainTextElement(line));
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.CenteredWidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.TopAlignedWidgetPositioner;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -9,7 +10,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -18,10 +19,20 @@ import java.util.function.BiFunction;
 
 public class LayerConfig {
 	public static final LayerConfig DUMMY = new LayerConfig();
+	public static final Codec<LayerConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			FancyTab.CODEC.optionalFieldOf("fancyTab").forGetter(c -> Optional.ofNullable(c.fancyTab)),
+			Codec.unboundedMap(Codec.STRING, WidgetConfig.CODEC).fieldOf("widgets").forGetter(c -> c.widgets)
+	).apply(instance, LayerConfig::new));
 
 	public @Nullable FancyTab fancyTab;
 	public Map<String, WidgetConfig> widgets;
 	private LayerConfig.@Nullable Identified parent;
+
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public LayerConfig(Optional<FancyTab> fancyTab, Map<String, WidgetConfig> widgetConfigs) {
+		this.fancyTab = fancyTab.orElse(null);
+		this.widgets = widgetConfigs;
+	}
 
 	public LayerConfig(@Nullable FancyTab fancyTab, Map<String, WidgetConfig> widgets) {
 		this.fancyTab = fancyTab;
@@ -29,7 +40,7 @@ public class LayerConfig {
 	}
 
 	public LayerConfig() {
-		this(null, new Object2ObjectOpenHashMap<>());
+		this(Optional.empty(), new Object2ObjectOpenHashMap<>());
 	}
 
 	public void setParent(LayerConfig.@Nullable Identified parent) {
@@ -52,17 +63,24 @@ public class LayerConfig {
 		return parentConfig;
 	}
 
-	public Map<String, WidgetConfig.Meta> getWidgetMetaMap() {
-		Map<String, WidgetConfig.Meta> widgets = new HashMap<>();
-		visit(((id, widgetConfig, screenId) -> widgets.compute(id, (_, m) -> {
-			if (m == null && widgetConfig.config().isEmpty()) return null;
-			return new WidgetConfig.Meta(
-					Optional.ofNullable(m).flatMap(WidgetConfig.Meta::inheritedFrom),
-					Optional.ofNullable(screenId),
-					widgetConfig
-			);
-		})));
-		return widgets;
+	public WidgetConfig.@Nullable Meta getMeta(String id) {
+		WidgetConfig.Meta parentMeta = null;
+		if (parent != null) {
+			parentMeta = parent.config.getMeta(id);
+		}
+		if (parentMeta != null) {
+			// mark it as inherited from the parent
+			parentMeta = new WidgetConfig.Meta(parentMeta.overrides(), parentMeta.inheritedFrom().or(() -> Optional.of(parent.id)), parentMeta.widgetConfig());
+		}
+		if (widgets.containsKey(id)) {
+			if (parentMeta != null) {
+				// this config is overriding it.
+				return new WidgetConfig.Meta(parentMeta.inheritedFrom(), Optional.empty(), widgets.get(id));
+			} else {
+				return new WidgetConfig.Meta(Optional.empty(), Optional.empty(), widgets.get(id));
+			}
+		}
+		return parentMeta;
 	}
 
 	public @Nullable FancyTab fancyTab() {
@@ -70,6 +88,13 @@ public class LayerConfig {
 	}
 
 	public static class FancyTab {
+		public static final Codec<FancyTab> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.BOOL.fieldOf("enabled").forGetter(c -> c.enabled),
+				Positioner.CODEC.optionalFieldOf("positioner", Positioner.CENTERED).forGetter(c -> c.positioner),
+				Codec.STRING.listOf().optionalFieldOf("hidden_widgets", List.of())
+						.xmap(ObjectArraySet::new, List::copyOf)
+						.forGetter(c -> c.hiddenWidgets)
+		).apply(instance, FancyTab::new));
 		public boolean enabled;
 		public Positioner positioner;
 		public ObjectArraySet<String> hiddenWidgets;

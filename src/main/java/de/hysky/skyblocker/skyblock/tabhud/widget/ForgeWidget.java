@@ -64,7 +64,7 @@ public class ForgeWidget extends TabHudWidget {
 					}
 				}
 			}
-			this.addComponent(c);
+			this.addElement(c);
 		}
 	}
 }

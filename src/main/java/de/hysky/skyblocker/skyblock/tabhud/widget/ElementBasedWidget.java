@@ -1,14 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
@@ -18,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +23,7 @@ import java.util.List;
  * Their size is dependent on the elements inside,
  * the position may be changed after construction.
  */
-public abstract class ElementBasedWidget extends HudWidget {
+public abstract class ElementBasedWidget extends HudWidget implements ElementCollector {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final Font txtRend = Minecraft.getInstance().font;
@@ -35,6 +32,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	private static final List<Element> ERROR_ELEMENTS = List.of(new PlainTextElement(Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
 	private final ArrayList<Element> elements = new ArrayList<>();
+	private List<Element> configElements;
 
 	public static final int BORDER_SZE_N = txtRend.lineHeight + 2;
 	public static final int BORDER_SZE_S = 4;
@@ -47,6 +45,8 @@ public abstract class ElementBasedWidget extends HudWidget {
 	private final int color;
 	private final Component title;
 
+	private boolean lastRenderedConfig = false;
+
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
@@ -57,11 +57,13 @@ public abstract class ElementBasedWidget extends HudWidget {
 		super(information);
 		this.title = title;
 		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
+		configElements = List.of(new PlainTextElement(title.plainCopy()));
 	}
 
-	public void addComponent(Element c) {
+	public <T extends Element> T addElement(T c) {
 		c.setParent(this);
 		this.elements.add(c);
+		return c;
 	}
 
 	public final boolean isEmpty() {
@@ -80,44 +82,45 @@ public abstract class ElementBasedWidget extends HudWidget {
 			this.elements.clear();
 			this.elements.addAll(ERROR_ELEMENTS);
 		}
-		this.pack();
+		this.pack(elements);
+	}
+
+	protected final void updateConfig() {
+		ElementCollection collector = new ElementCollection();
+		updateConfigContent(collector);
+		if (!collector.getElements().isEmpty()) {
+			configElements = collector.getElements();
+		}
 	}
 
 	public abstract void updateContent();
+
+	protected void updateConfigContent(ElementCollector collector) {}
 
 	public boolean shouldUpdateBeforeRendering() {
 		return false;
 	}
 
-	/**
-	 * Shorthand function for simple elements.
-	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
-	 * added as such:
-	 * [ico] [string] [textB.formatted(fmt)]
-	 */
-	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, int idx) {
-		Component txt = simpleEntryText(idx, string, fmt);
-		this.addComponent(Elements.iconTextComponent(ico, txt));
-	}
-
-	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, String content) {
-		Component txt = simpleEntryText(content, string, fmt);
-		this.addComponent(Elements.iconTextComponent(ico, txt));
-	}
-
-	public final void addSimpleIconTranslatableText(@Nullable FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
-		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Elements.iconTextComponent(icon, text));
-	}
-
-	public final void addSimpleIconTranslatableText(FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
-		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Elements.iconTextComponent(icon, text));
+	@Override
+	protected final void extractWidgetRenderState(GuiGraphicsExtractor context, float delta) {
+		if (shouldUpdateBeforeRendering()) update();
+		if (lastRenderedConfig) {
+			lastRenderedConfig = false;
+			pack(elements);
+		}
+		extractInternal(context, elements);
 	}
 
 	@Override
-	public final void extractRenderState(GuiGraphicsExtractor context, float delta) {
-		if (shouldUpdateBeforeRendering()) update();
+	protected void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+		if (!lastRenderedConfig) {
+			lastRenderedConfig = true;
+			pack(configElements);
+		}
+		extractInternal(graphics, configElements);
+	}
+
+	private void extractInternal(GuiGraphicsExtractor context, Collection<Element> elements) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -149,17 +152,12 @@ public abstract class ElementBasedWidget extends HudWidget {
 		}
 	}
 
-	@Override
-	public void extractConfigRenderState(GuiGraphicsExtractor graphics, float delta) {
-		extractRenderState(graphics, delta); // TODO
-	}
-
 	/**
 	 * Calculate the size of this widget.
 	 * <b>Must be called before returning from the widget constructor and after all
 	 * elements are added!</b>
 	 */
-	private void pack() {
+	private void pack(Collection<Element> elements) {
 		h = 0;
 		w = 0;
 		for (Element c : elements) {
@@ -183,40 +181,4 @@ public abstract class ElementBasedWidget extends HudWidget {
 		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
-	/**
-	 * If the entry at idx has the format "[textA]: [textB]", the following is
-	 * returned:
-	 * [entryName] [textB.formatted(contentFmt)]
-	 */
-	public static @Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
-
-		String src = PlayerListManager.strAt(idx);
-
-		if (src == null) {
-			return null;
-		}
-
-		int cidx = src.indexOf(':');
-		if (cidx == -1) {
-			return null;
-		}
-
-		src = src.substring(src.indexOf(':') + 1);
-		return simpleEntryText(src, entryName, contentFmt);
 	}
-
-	/**
-	 * @return [entryName] [entryContent.formatted(contentFmt)]
-	 */
-	public static Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
-		return Component.literal(entryName).append(Component.literal(entryContent).withStyle(contentFmt));
-	}
-
-	public static Component simpleEntryTranslatableText(String translationKey, String content, ChatFormatting contentFormatting) {
-		return Component.translatable(translationKey, Component.literal(content).withStyle(contentFormatting));
-	}
-
-	public static Component simpleEntryTranslatableText(String translationKey, Component content, ChatFormatting contentFormatting) {
-		return Component.translatable(translationKey, content.copy().withStyle(contentFormatting));
-	}
-}

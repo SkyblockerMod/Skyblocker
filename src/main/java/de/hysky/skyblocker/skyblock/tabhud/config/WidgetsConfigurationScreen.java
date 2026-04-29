@@ -4,17 +4,15 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -60,9 +58,9 @@ public class WidgetsConfigurationScreen extends Screen {
 	private ScreenId currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
-	private final ScreenBuilder screenBuilder = new ScreenBuilder();
+	private final ConfigScreenBuilder screenBuilder = new ConfigScreenBuilder();
 	private ScreenConfig screenConfig;
-	private LayerBuilder builder;
+	private ConfigLayerBuilder builder;
 
 	private SidePanelWidget sidePanelWidget;
 	private AddWidgetWidget addWidgetWidget;
@@ -111,7 +109,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		sidePanelWidget = new SidePanelWidget(width / 4, height);
+		sidePanelWidget = new SidePanelWidget(width / 4, height, this);
 		addWidgetWidget = new AddWidgetWidget(minecraft, this::addWidget);
 		topBarWidget = new TopBarWidget(width, this);
 		addWidget(addWidgetWidget);
@@ -169,7 +167,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		hoveredWidget = null;
 		double scaledMouseX = mouseX / scale;
 		double scaledMouseY = mouseY / scale;
-		for (PositionedWidget hudWidget : builder.getWidgets()) {
+		for (PositionedWidget hudWidget : builder.getRendered()) {
 			if (hudWidget.widget.isMouseOver(scaledMouseX, scaledMouseY)) {
 				hoveredWidget = hudWidget;
 				break;
@@ -221,7 +219,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
 
 				int distanceToCursor = Integer.MAX_VALUE;
-				for (PositionedWidget positionedWidget : builder.getWidgets()) {
+				for (PositionedWidget positionedWidget : builder.getRendered()) {
 					if (positionedWidget == selectedWidget) continue;
 					if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
 					ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
@@ -264,14 +262,13 @@ public class WidgetsConfigurationScreen extends Screen {
 				}
 			}
 			ScreenPosition startPosition = WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
-			PositionRule newRule = new PositionRule(
+			selectedWidget.rule = new PositionRule(
 					Optional.ofNullable(newParent),
 					parentPoint,
 					thisPoint,
 					relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.widget.getWidth() * thisPoint.horizontalPoint().getPercentage())),
 					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.widget.getHeight() * thisPoint.verticalPoint().getPercentage()))
 			);
-			selectedWidget.rule = newRule;
 			updateBuilderPositions();
 			ScreenRectangle sidePanel = new ScreenRectangle(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight());
 			ScreenRectangle selected = new ScreenRectangle(selectedWidget.widget.getX(), selectedWidget.widget.getY(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
@@ -313,7 +310,7 @@ public class WidgetsConfigurationScreen extends Screen {
 			selectedWidget = null;
 			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
-				availableWidgets.removeAll(builder.getWidgets().stream().map(w -> w.widget).toList()); // remove already present widgets
+				availableWidgets.removeAll(builder.getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
@@ -358,14 +355,13 @@ public class WidgetsConfigurationScreen extends Screen {
 
 			if (move) {
 				PositionRule oldRule = selectedWidget.rule;
-				PositionRule newRule = new PositionRule(
+				selectedWidget.rule = new PositionRule(
 						oldRule.parent(),
 						oldRule.parentPoint(),
 						oldRule.thisPoint(),
 						oldRule.relativeX() + x,
 						oldRule.relativeY() + y
 				);
-				selectedWidget.rule = newRule;
 				updateBuilderPositions();
 				return true;
 			}
@@ -380,13 +376,13 @@ public class WidgetsConfigurationScreen extends Screen {
 	private void openSidePanel() {
 		if (selectedWidget == null) return;
 		boolean rightSide = selectedWidget.widget.getX() + selectedWidget.widget.getWidth() / 2 < getScreenWidth() / 2;
-		sidePanelWidget.open(selectedWidget, this, rightSide, rightSide ? width - sidePanelWidget.getWidth() : 0);
+		sidePanelWidget.open(selectedWidget, rightSide, builder.getMeta(selectedWidget.widget.getInternalID()));
 	}
 
 	@Override
 	public void tick() {
 		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
-		for (PositionedWidget widget : builder.getWidgets()) {
+		for (PositionedWidget widget : builder.getRendered()) {
 			if (widget.widget.getRectangle().intersects(new ScreenRectangle(0, 0, getScreenWidth(), getScreenHeight())) || widget.rule.parent().isPresent()) continue;
 			widget.rule = PositionRule.DEFAULT;
 			updateBuilderPositions();
@@ -396,6 +392,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	@Override
 	public void removed() {
 		builder.serializeConfig();
+		WidgetManager.SCREEN_BUILDER.hud().update();
 	}
 
 	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
@@ -410,11 +407,6 @@ public class WidgetsConfigurationScreen extends Screen {
 		int offsetX = side.getAxis() == ScreenAxis.HORIZONTAL ? (side.isPositive() ? -extraX : -5) : 0;
 		int offsetY = side.getAxis() == ScreenAxis.VERTICAL ? (side.isPositive() ? -extraY : -5) : 0;
 		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
-	}
-
-	public void notifyWidget() {
-		// FIXME
-		//if (selectedWidget != null) selectedWidget.optionsChanged();
 	}
 
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself) {
@@ -452,7 +444,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	public HudWidget getEditedWidget() {
 		if (selectedWidget == null) {
 			LOGGER.warn("Trying to edit selected widget but nothing is selected?", new Throwable());
-			return new CommsWidget(); // this shouldn't cause issues FIXME THIS IS STUPID
+			return new PlaceholderWidget(""); // this shouldn't cause issues
 		}
 		return selectedWidget.widget;
 	}

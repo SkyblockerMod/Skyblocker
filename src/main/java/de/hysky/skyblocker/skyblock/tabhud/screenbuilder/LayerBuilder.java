@@ -1,31 +1,34 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.JsonValueInput;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.profiling.Profiler;
 import org.joml.Matrix3x2fStack;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 
 public class LayerBuilder {
+	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private LayerConfig config = LayerConfig.DUMMY;
-	private final Set<PositionedWidget> widgets = new ObjectOpenHashSet<>();
-	private final List<PositionedWidget> hudWidgets = new LinkedList<>();
-	private final List<PositionedWidget> tabWidgets = new LinkedList<>();
+	protected LayerConfig config = LayerConfig.DUMMY;
+	protected final Set<PositionedWidget> rendered = new ObjectOpenHashSet<>();
+	protected final List<PositionedWidget> widgets = new LinkedList<>();
+	protected final List<PositionedWidget> tabWidgets = new LinkedList<>();
 
 	private int positionsHash = 0;
 
@@ -34,12 +37,15 @@ public class LayerBuilder {
 	}
 
 	public void update() {
-		hudWidgets.clear();
+		widgets.clear();
 		for (Map.Entry<String, WidgetConfig> entry : config.getFullConfig().widgets.entrySet()) {
+			if (entry.getValue().config().isEmpty()) continue;
+			HudWidget hudWidget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+				hudWidget.load(new JsonValueInput(reporter, entry.getValue().config().get()));
+			}
 			if (entry.getValue().position().isEmpty()) continue;
-			HudWidget hudWidget = WidgetManager.getWidget(entry.getKey());
-			hudWidgets.add(new PositionedWidget(hudWidget, entry.getValue().position().get()));
-			// TODO apply config to widget
+			widgets.add(new PositionedWidget(hudWidget, entry.getValue().position().get()));
 		}
 		merge();
 	}
@@ -68,24 +74,10 @@ public class LayerBuilder {
 		Profiler.get().pop();
 	}
 
-	public void serializeConfig() {
-		Map<String, WidgetConfig.Meta> metas = config.getWidgetMetaMap();
-		config.widgets.clear();
-		for (PositionedWidget widget : widgets) {
-			WidgetConfig.Meta meta = metas.get(widget.widget.getInternalID());
-			if (meta.inheritedFrom().isPresent()) continue;
-			config.widgets.put(widget.widget.getInternalID(), new WidgetConfig(
-					// FIXME instead of checking if it's empty maybe add a "removed" boolean to meta?
-					meta.widgetConfig().config().isEmpty() ? Optional.empty() : Optional.of(new JsonObject()), // TODO get config from widget
-					widget.fromTab ? Optional.empty() : Optional.of(widget.rule)
-			));
-		}
-	}
-
-	private void merge() {
-		widgets.clear();
-		widgets.addAll(hudWidgets);
-		widgets.addAll(tabWidgets);
+	protected void merge() {
+		rendered.clear();
+		rendered.addAll(widgets);
+		rendered.addAll(tabWidgets);
 	}
 
 
@@ -93,7 +85,7 @@ public class LayerBuilder {
 		Profiler.get().push("skyblocker:renderHud");
 		int hash = Integer.hashCode(screenWidth);
 		hash = hash * 31 + Integer.hashCode(screenHeight);
-		for (PositionedWidget widget : widgets) {
+		for (PositionedWidget widget : rendered) {
 			boolean shouldRender = widget.widget.shouldRender() || config;
 			widget.visible = shouldRender;
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
@@ -106,41 +98,27 @@ public class LayerBuilder {
 		}
 		Matrix3x2fStack pose = graphics.pose();
 		float delta = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks();
-		for (PositionedWidget widget : widgets) {
+		for (PositionedWidget widget : rendered) {
 			if (!widget.visible && !config) continue;
 			pose.pushMatrix();
 			pose.translate(widget.widget.getX(), widget.widget.getY());
-			if (config) widget.widget.extractConfigRenderState(graphics, delta);
+			if (config) widget.widget.extractRenderStateForConfig(graphics, delta);
 			else widget.widget.extractRenderState(graphics, delta);
 			pose.popMatrix();
 		}
 		Profiler.get().pop();
 	}
 
-
-
-	public PositionedWidget add(HudWidget hudWidget) {
-		config.widgets.put(hudWidget.getInternalID(), new WidgetConfig(new JsonObject(), PositionRule.DEFAULT));
-		PositionedWidget positionedWidget = new PositionedWidget(hudWidget, PositionRule.DEFAULT);
-		widgets.add(positionedWidget);
-		return positionedWidget;
-	}
-
-	public void remove(HudWidget widget) {
-		config.widgets.put(widget.getInternalID(), new WidgetConfig(Optional.empty(), Optional.empty()));
-		widgets.removeIf(w -> w.widget.equals(widget));
-	}
-
-	public Collection<PositionedWidget> getWidgets() {
-		return widgets;
+	public Collection<PositionedWidget> getRendered() {
+		return rendered;
 	}
 
 	public void updatePositions(int screenWidth, int screenHeight) {
-		updatePositions(widgets.stream().filter(p -> !p.fromTab).toList(), screenWidth, screenHeight);
+		updatePositions(rendered.stream().filter(p -> !p.fromTab).toList(), screenWidth, screenHeight);
 		LayerConfig fullConfig = config.getFullConfig();
 		if (fullConfig.fancyTab != null && fullConfig.fancyTab.enabled) {
 			WidgetPositioner positioner = fullConfig.fancyTab.positioner.getNewPositioner(0.9f, screenHeight);
-			List<HudWidget> tabWidgets = widgets.stream().filter(p -> p.fromTab).map(p -> p.widget).toList();
+			List<HudWidget> tabWidgets = rendered.stream().filter(p -> p.fromTab).map(p -> p.widget).toList();
 			tabWidgets.forEach(positioner::positionWidget);
 			Vector2i dimensions = positioner.finalizePositioning();
 			int x = (screenWidth - dimensions.x) / 2;

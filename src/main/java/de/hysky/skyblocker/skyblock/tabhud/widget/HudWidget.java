@@ -1,7 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import com.google.gson.JsonObject;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.JsonValueInput;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -17,6 +22,7 @@ import java.util.function.Predicate;
 public abstract class HudWidget implements LayoutElement {
 	protected int w = 0, h = 0;
 	protected int x = 0, y = 0;
+	protected float scale = 1;
 	private final Information information;
 
 
@@ -30,11 +36,44 @@ public abstract class HudWidget implements LayoutElement {
 	}
 
 
-	public abstract void extractRenderState(GuiGraphicsExtractor graphics, float delta);
-	public abstract void extractConfigRenderState(GuiGraphicsExtractor graphics, float delta);
+	protected abstract void extractWidgetRenderState(GuiGraphicsExtractor graphics, float delta);
+
+	protected abstract void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta);
+
+	public final void extractRenderState(GuiGraphicsExtractor graphics, float delta) {
+		graphics.pose().pushMatrix();
+		graphics.pose().scale(scale);
+		extractWidgetRenderState(graphics, delta);
+		graphics.pose().popMatrix();
+	}
+
+	public final void extractRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+		graphics.pose().pushMatrix();
+		graphics.pose().scale(scale);
+		extractWidgetRenderStateForConfig(graphics, delta);
+		graphics.pose().popMatrix();
+	}
 
 	public boolean shouldRender() {
 		return true;
+	}
+
+	public void load(JsonValueInput input) {
+		scale = input.readFloatOr("scale", 1);
+	}
+
+	public void save(JsonObject output) {
+		output.addProperty("scale", scale);
+	}
+
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		collector.addWidget(RangedSliderWidget.builder()
+				.defaultValue(scale)
+				.optionFormatter(Component.literal("Scale"), Formatters.FLOAT_NUMBERS)
+				.minMax(0.1, 5)
+				.step(0.1)
+				.callback(d -> scale = (float) d)
+				.build());
 	}
 
 	/**
@@ -80,11 +119,11 @@ public abstract class HudWidget implements LayoutElement {
 	}
 
 	public final int getWidth() {
-		return this.w;
+		return Math.round(this.w * scale);
 	}
 
 	public final int getHeight() {
-		return this.h;
+		return Math.round(this.h * scale);
 	}
 
 	public final boolean isMouseOver(double mouseX, double mouseY) {

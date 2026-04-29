@@ -78,4 +78,3 @@ class ToggleButtonWidget extends AbstractButton {
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }
-

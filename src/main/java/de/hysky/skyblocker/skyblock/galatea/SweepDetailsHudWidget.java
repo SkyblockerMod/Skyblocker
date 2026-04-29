@@ -53,9 +53,9 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		if (CLIENT.player == null || CLIENT.screen instanceof WidgetsConfigurationScreen) {
-			addComponent(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
+			addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
 			return;
 		}
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
@@ -66,13 +66,13 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new FlexibleItemStack(Items.STONE_AXE));
 				default -> Ico.RED_CONCRETE;
 			};
-			addComponent(Elements.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
+			addElement(Elements.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));
 			return;
 		}
 
 		FlexibleItemStack logItem = LOG_TO_ITEM.getOrDefault(SweepDetailsListener.lastTreeType, Ico.RED_CONCRETE);
-		addComponent(Elements.iconTextComponent(logItem, Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
+		addElement(Elements.iconTextComponent(logItem, Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", SweepDetailsListener.lastTreeType)));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", SweepDetailsListener.toughness)));
 
 		Component sweepAmount;
 		if (SweepDetailsListener.maxSweep > SweepDetailsListener.lastSweep) {
@@ -82,17 +82,17 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 		} else {
 			sweepAmount = Component.literal(Formatters.DOUBLE_NUMBERS.format(SweepDetailsListener.maxSweep)).withColor(CommonColors.GREEN);
 		}
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", sweepAmount)));
 
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.logs", Component.literal(SweepDetailsListener.logs).withColor(CommonColors.GREEN))));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.logs", Component.literal(SweepDetailsListener.logs).withColor(CommonColors.GREEN))));
 
 		if (SweepDetailsListener.axePenalty) {
-			addComponent(Elements.iconTextComponent(Ico.BARRIER, Component.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
+			addElement(Elements.iconTextComponent(Ico.BARRIER, Component.translatable("skyblocker.galatea.hud.sweepDetails.throwPenalty", SweepDetailsListener.axePenaltyAmount + "%")));
 		}
 
 		if (SweepDetailsListener.stylePenalty) {
-			addComponent(Elements.iconTextComponent(Ico.BARRIER, Component.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
+			addElement(Elements.iconTextComponent(Ico.BARRIER, Component.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
 		}
 	}
 

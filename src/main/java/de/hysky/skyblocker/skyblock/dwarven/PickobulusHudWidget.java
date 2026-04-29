@@ -39,17 +39,17 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 	public void updateContent() {
 		Component errorMessage = PickobulusHelper.getErrorMessage();
 		if (errorMessage != null) {
-			addComponent(new PlainTextElement(errorMessage));
+			addElement(new PlainTextElement(errorMessage));
 			return;
 		}
 
-		addComponent(new PlainTextElement(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
+		addElement(new PlainTextElement(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
 
 		int[] drops = PickobulusHelper.getDrops();
 		for (PickobulusHelper.MiningDrop drop : PickobulusHelper.MiningDrop.values()) {
 			int count = drops[drop.ordinal()];
 			if (count > 0) {
-				addComponent(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
+				addElement(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
 			}
 		}
 	}

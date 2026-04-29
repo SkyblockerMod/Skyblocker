@@ -65,9 +65,9 @@ class GlobalOptionsScreen extends Screen {
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
 				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (_, value) -> conf.compactWidgets = value)
 		);
-		body.addChild(CycleButton.booleanBuilder(YES, NO, conf.tabHudEnabled)
+		body.addChild(CycleButton.booleanBuilder(YES, NO, conf.enableFancyWidgetsList)
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (_, value) -> conf.tabHudEnabled = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (_, value) -> conf.enableFancyWidgetsList = value)
 		);
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();

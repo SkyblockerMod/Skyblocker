@@ -23,14 +23,14 @@ public class ProfileWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
-		this.addComponent(Elements.iconTextComponent(Ico.SIGN, Component.literal("Profile: ").append(widget.detail())));
+		this.addElement(Elements.iconTextComponent(Ico.SIGN, Component.literal("Profile: ").append(widget.detail())));
 		for (Component text : widget.lines()) {
 			switch (text.getString().toLowerCase(Locale.ENGLISH)) {
-				case String s when s.contains("bank") -> this.addComponent(Elements.iconTextComponent(Ico.GOLD, text));
-				case String s when s.contains("interest") -> this.addComponent(Elements.iconTextComponent(Ico.CLOCK, text));
-				case String s when s.contains("pet") -> this.addComponent(Elements.iconTextComponent(Ico.BONE, text));
-				case String s when s.contains("sb level") -> this.addComponent(Elements.iconTextComponent(Ico.EXPERIENCE_BOTTLE, text));
-				default -> this.addComponent(new PlainTextElement(text));
+				case String s when s.contains("bank") -> this.addElement(Elements.iconTextComponent(Ico.GOLD, text));
+				case String s when s.contains("interest") -> this.addElement(Elements.iconTextComponent(Ico.CLOCK, text));
+				case String s when s.contains("pet") -> this.addElement(Elements.iconTextComponent(Ico.BONE, text));
+				case String s when s.contains("sb level") -> this.addElement(Elements.iconTextComponent(Ico.EXPERIENCE_BOTTLE, text));
+				default -> this.addElement(new PlainTextElement(text));
 			}
 		}
 

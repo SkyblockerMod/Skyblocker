@@ -1,8 +1,8 @@
-package de.hysky.skyblocker.skyblock.tabhud.config;
+package de.hysky.skyblocker.skyblock.tabhud.config.list;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.WidgetsListEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetsListSlotEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -27,7 +27,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	final int SELECT_COLOR = 0x761111FF;
 	final int MOVE_COLOR = 0x76FF3333;
 
-	private final WidgetsListTab parent;
+	private final WidgetsListScreen parent;
 	private @Nullable Button backButton;
 	private boolean rightUpArrowHovered = false;
 	private boolean rightDownArrowHovered = false;
@@ -39,7 +39,7 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 	public static int maxPosition = -1;
 	public static boolean isOnSecondPage = false;
 
-	public WidgetsElementList(WidgetsListTab parent, Minecraft minecraftClient, int width, int height, int y) {
+	public WidgetsElementList(WidgetsListScreen parent, Minecraft minecraftClient, int width, int height, int y) {
 		super(minecraftClient, width, height, y, 32);
 		this.parent = parent;
 	}
@@ -141,10 +141,6 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 				.sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
 				.map(Map.Entry::getValue)
 				.forEach(this::addEntry);
-		if (!parent.getCustomWidgetEntries().isEmpty() && parent.shouldShowCustomWidgetEntries()) {
-			if (!children().isEmpty()) addEntry(new SeparatorEntry());
-			parent.getCustomWidgetEntries().forEach(this::addEntry);
-		}
 	}
 
 	@Override

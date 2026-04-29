@@ -87,10 +87,10 @@ public class LassoHud extends ElementBasedWidget {
 	public void updateContent() {
 		//if 0 percent now otherwise wait
 		if (percentage == 0) {
-			addComponent(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
+			addElement(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
 			return;
 		}
-		addComponent(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
+		addElement(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
 
 	}
 

@@ -99,10 +99,10 @@ public class MinionWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
-		addComponent(new PlainTextElement(widget.detail().copy().append(Component.literal(" minions"))));
+		addElement(new PlainTextElement(widget.detail().copy().append(Component.literal(" minions"))));
 		for (Component line : widget.lines()) {
 			String string = line.getString();
-			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextElement(line.copy().withStyle(ChatFormatting.GRAY)));
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addElement(new PlainTextElement(line.copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
 	}
@@ -127,7 +127,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Component.literal(stat).withStyle(format));
 
-			this.addComponent(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
+			this.addElement(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
 }

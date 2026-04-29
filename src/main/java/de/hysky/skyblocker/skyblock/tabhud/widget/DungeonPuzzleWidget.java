@@ -51,11 +51,11 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 					.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(Component.literal(m.group("status")).withStyle(statcol, ChatFormatting.BOLD))
 					.append(Component.literal("]").withStyle(ChatFormatting.GRAY));
-			this.addComponent(Elements.iconTextComponent(Ico.SIGN, t));
+			this.addElement(Elements.iconTextComponent(Ico.SIGN, t));
 			pos++;
 		}
 		if (pos == 48) {
-			this.addComponent(Elements.iconTextComponent(Ico.BARRIER, Component.literal("No puzzles!").withStyle(ChatFormatting.GRAY)));
+			this.addElement(Elements.iconTextComponent(Ico.BARRIER, Component.literal("No puzzles!").withStyle(ChatFormatting.GRAY)));
 		}
 	}
 }

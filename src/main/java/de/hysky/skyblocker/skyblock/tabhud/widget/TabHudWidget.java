@@ -19,6 +19,7 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 		super(title, colorValue, information);
 		this.hypixelWidgetName = hypixelWidgetName;
 		registerAutoUpdate();
+		PlayerListManager.addHandledTabWidget(hypixelWidgetName, this);
 	}
 
 	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue) {

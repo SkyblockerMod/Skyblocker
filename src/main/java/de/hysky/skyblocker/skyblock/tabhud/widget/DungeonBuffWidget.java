@@ -28,7 +28,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String footertext = PlayerListManager.getFooter();
 
 		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
+			this.addElement(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -36,7 +36,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 		String[] lines = interesting.split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
+			this.addElement(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -51,7 +51,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addElement(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
 		}
 
 	}

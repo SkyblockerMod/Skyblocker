@@ -50,7 +50,7 @@ public class SkillsWidget extends TabHudWidget {
 			} else {
 				progress = new PlainTextElement(line);
 			}
-			this.addComponent(progress);
+			this.addElement(progress);
 		}
 	}
 }

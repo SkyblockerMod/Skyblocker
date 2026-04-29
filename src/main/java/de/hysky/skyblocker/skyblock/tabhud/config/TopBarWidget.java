@@ -1,13 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import com.google.common.collect.Lists;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -54,7 +51,7 @@ class TopBarWidget extends AbstractContainerWidget {
 		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);
 
-		List<ScreenId> locations = Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).map(ScreenIds::ofLocation).toList();
+		List<ScreenId> locations = new ArrayList<>(Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).map(ScreenIds::ofLocation).toList());
 		locations.addFirst(ScreenIds.EVERYWHERE);
 		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, ScreenIds.ofCurrentLocation());
 		locationDropdown.setFormatter(ScreenId::displayName);

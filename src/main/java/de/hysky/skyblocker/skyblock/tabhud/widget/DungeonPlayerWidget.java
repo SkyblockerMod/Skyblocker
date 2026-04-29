@@ -35,17 +35,17 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 		if (PlayerListManager.strAt(start) == null) {
 			int idx = player - 1;
-			this.addComponent(Elements.iconTextComponent(Ico.SIGN, Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
+			this.addElement(Elements.iconTextComponent(Ico.SIGN, Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 		Matcher m = PlayerListManager.regexAt(start, DungeonPlayerManager.PLAYER_TAB_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.iconTextComponent());
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 		} else {
 
 			Component name = Component.literal("Name: ").append(Component.literal(m.group("name")).withStyle(ChatFormatting.YELLOW));
-			this.addComponent(new PlayerElement(PlayerListManager.getRaw(start), name));
+			this.addElement(new PlayerElement(PlayerListManager.getRaw(start), name));
 
 			String cl = m.group("class");
 			String level = m.group("level");
@@ -53,7 +53,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 			if (level == null) {
 				PlainTextElement ptc = new PlainTextElement(
 						Component.literal("Player is dead").withStyle(ChatFormatting.RED));
-				this.addComponent(ptc);
+				this.addElement(ptc);
 			} else {
 				DungeonClass dungeonClass = DungeonClass.from(cl);
 
@@ -65,7 +65,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 				}
 
 				Component clazz = Component.literal("Class: ").append(Component.literal(cl).withStyle(clf));
-				this.addComponent(Elements.iconTextComponent(cli, clazz));
+				this.addElement(Elements.iconTextComponent(cli, clazz));
 			}
 		}
 

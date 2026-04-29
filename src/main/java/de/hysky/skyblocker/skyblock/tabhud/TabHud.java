@@ -4,13 +4,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 public class TabHud {
@@ -31,7 +30,7 @@ public class TabHud {
 						SkyblockerMod.KEYBINDING_CATEGORY));
 
 		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, hudElement -> {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) return hudElement;
+			if (!Utils.isOnSkyblock() || TabHud.shouldRenderVanilla() || !WidgetManager.hasFancyTab()) return hudElement;
 			return (_, _) -> {};
 		});
 	}

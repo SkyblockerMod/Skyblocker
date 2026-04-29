@@ -44,25 +44,25 @@ public class EndHudWidget extends ElementBasedWidget {
 		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
 			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
 			assert endStats != null; // remove warning, even though it can't be null...
-			addComponent(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
+			addElement(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
 			String avg = endStats.eyes() == 0 ? "???" : Formatters.DOUBLE_NUMBERS.format((float) endStats.totalZealotKills() / endStats.eyes());
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 
 		// Endstone protector
 		if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
-			addComponent(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
+			addElement(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
 			if (TheEnd.stage == 5) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
 			}
 			if (TheEnd.currentProtectorLocation == null) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
 			}
 		}
 	}

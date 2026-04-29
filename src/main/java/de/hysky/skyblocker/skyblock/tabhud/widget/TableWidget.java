@@ -56,6 +56,6 @@ public abstract class TableWidget extends ElementBasedWidget {
 				table.setRowBorder(y, row.borderColor);
 			}
 		}
-		addComponent(table);
+		addElement(table);
 	}
 }

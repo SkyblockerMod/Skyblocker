@@ -324,12 +324,12 @@ public class DungeonSplitsWidget extends TableWidget {
 			loadFloorSplits();
 		}
 
-		addComponent(new PlainTextElement(Component.literal("Floor: " + floor)));
+		addElement(new PlainTextElement(Component.literal("Floor: " + floor)));
 
 		super.updateContent();
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
-		addComponent(new PlainTextElement(Component.literal(formatTime(now)).withStyle(timerColor)));
+		addElement(new PlainTextElement(Component.literal(formatTime(now)).withStyle(timerColor)));
 	}
 
 	@Override

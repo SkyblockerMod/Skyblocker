@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-public final class ScreenBuilder {
+public class ScreenBuilder {
 	private final LayerBuilder hud;
 	private final LayerBuilder tab;
 	private final LayerBuilder secondaryTab;
@@ -18,7 +18,7 @@ public final class ScreenBuilder {
 
 	public LayerBuilder get(WidgetManager.ScreenLayer layer) {
 		return switch (layer) {
-			case HUD, DEFAULT -> hud;
+			case HUD -> hud;
 			case MAIN_TAB -> tab;
 			case SECONDARY_TAB -> secondaryTab;
 		};
@@ -38,5 +38,8 @@ public final class ScreenBuilder {
 
 	public void setConfig(ScreenConfig config) {
 		this.config = config;
+		hud.setConfig(config.hud());
+		tab.setConfig(config.tab());
+		secondaryTab.setConfig(config.secondaryTab());
 	}
 }

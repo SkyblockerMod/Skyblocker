@@ -41,11 +41,11 @@ public class FireSaleWidget extends TabHudWidget {
 				float total = Float.parseFloat(m.group("total")) * 1000;
 				Component prgressTxt = Component.literal(String.format("%s/%.0f", avail, total));
 				float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-				this.addComponent(Elements.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
+				this.addElement(Elements.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
 			} else if (text.getString().toLowerCase(Locale.ENGLISH) instanceof String s && (s.contains("starts") || s.contains("starting"))) {
-				this.addComponent(Elements.iconTextComponent(Ico.CLOCK, text));
+				this.addElement(Elements.iconTextComponent(Ico.CLOCK, text));
 			} else {
-				this.addComponent(new PlainTextElement(text));
+				this.addElement(new PlainTextElement(text));
 			}
 		}
 	}

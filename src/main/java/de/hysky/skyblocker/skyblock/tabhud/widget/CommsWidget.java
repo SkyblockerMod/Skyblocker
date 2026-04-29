@@ -37,7 +37,7 @@ public class CommsWidget extends TabHudWidget {
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
 		if (widget.lines().isEmpty()) {
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 			return;
 		}
 		for (Component line : widget.lines()) {
@@ -60,7 +60,7 @@ public class CommsWidget extends TabHudWidget {
 					}
 					element = Elements.progressComponent(Ico.BOOK, Component.nullToEmpty(name), percent);
 				}
-				this.addComponent(element);
+				this.addElement(element);
 			}
 		}
 	}

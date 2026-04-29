@@ -7,16 +7,11 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
-import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
-import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.controllers.ColourController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class ForagingCategory {
@@ -83,11 +78,6 @@ public class ForagingCategory {
 										() -> config.foraging.galatea.enableTreeBreakProgress,
 										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(ButtonOption.createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
-								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))

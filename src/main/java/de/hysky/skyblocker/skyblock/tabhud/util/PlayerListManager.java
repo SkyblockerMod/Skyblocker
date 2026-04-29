@@ -420,7 +420,7 @@ public class PlayerListManager {
 		@Override
 		protected void updateContent(Widget widget) {
 			for (Component line : widget.lines()) {
-				addComponent(new PlainTextElement(line));
+				addElement(new PlainTextElement(line));
 			}
 		}
 	}

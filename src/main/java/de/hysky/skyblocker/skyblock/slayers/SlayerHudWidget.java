@@ -51,9 +51,9 @@ public class SlayerHudWidget extends ElementBasedWidget {
 			SlayerTier slayerTier = SlayerTier.V;
 
 			Component slayerName = Component.literal(slayerType.bossName + " " + slayerTier).withStyle(slayerTier.color);
-			addComponent(new TextureTextElement(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
+			addElement(new TextureTextElement(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, "100,000/400,000");
-			addComponent(Elements.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal("200").withStyle(ChatFormatting.LIGHT_PURPLE))));
+			addElement(Elements.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal("200").withStyle(ChatFormatting.LIGHT_PURPLE))));
 			return;
 		}
 
@@ -66,17 +66,17 @@ public class SlayerHudWidget extends ElementBasedWidget {
 		int bossesNeeded = slayerQuest.bossesNeeded;
 
 		Component slayerName = Component.literal(slayerType.bossName + " " + slayerTier).withStyle(slayerTier.color);
-		addComponent(new TextureTextElement(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
+		addElement(new TextureTextElement(slayerName, slayerType.texture, TEXTURE_SIZE, TEXTURE_SIZE));
 
 		if (level == slayerType.maxLevel) {
-			addComponent(Elements.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Component.literal("XP: ").append(Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
+			addElement(Elements.iconTextComponent(Ico.EXPERIENCE_BOTTLE, Component.literal("XP: ").append(Component.translatable("skyblocker.slayer.hud.levelMaxed").withStyle(ChatFormatting.GREEN))));
 		} else if (level >= 0) {
 			int nextMilestone = slayerType.levelMilestones[level];
 			int currentXP = nextMilestone - slayerQuest.xpRemaining;
 			addSimpleIcoText(Ico.EXPERIENCE_BOTTLE, "XP: ", ChatFormatting.LIGHT_PURPLE, Formatters.INTEGER_NUMBERS.format(currentXP) + "/" + Formatters.INTEGER_NUMBERS.format(nextMilestone));
 
 			if (bossesNeeded > 0) {
-				addComponent(Elements.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
+				addElement(Elements.iconTextComponent(Ico.NETHER_STAR, Component.translatable("skyblocker.slayer.hud.levelUpIn", Component.literal(Formatters.INTEGER_NUMBERS.format(bossesNeeded)).withStyle(ChatFormatting.LIGHT_PURPLE))));
 			}
 		}
 	}

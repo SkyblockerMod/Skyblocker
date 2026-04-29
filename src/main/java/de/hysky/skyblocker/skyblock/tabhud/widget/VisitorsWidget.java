@@ -20,14 +20,14 @@ public class VisitorsWidget extends TabHudWidget {
 	@Override
 	protected void updateContent(PlayerListManager.Widget widget) {
 		String string = widget.detail().getString().replaceAll("[()]", "");
-		addComponent(new PlainTextElement(
+		addElement(new PlainTextElement(
 						Component.literal(string).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD).append(
 								Component.literal(" visitor(s)").withStyle(ChatFormatting.WHITE))
 				)
 		);
 
 		for (Component line : widget.lines()) {
-			addComponent(new PlainTextElement(line));
+			addElement(new PlainTextElement(line));
 		}
 	}
 }
