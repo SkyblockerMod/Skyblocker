@@ -28,7 +28,7 @@ public class EffectWidget extends TabHudWidget {
 	public EffectWidget() {
 		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
 		PlayerListManager.registerFooterListener(() -> {
-			if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter && WidgetManager.isWidgetInCurrentLayer(this)) update();
+			if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter && WidgetManager.isWidgetInCurrentScreen(this)) update();
 		});
 	}
 

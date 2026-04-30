@@ -26,6 +26,7 @@ public class LayerBuilder {
 
 	protected LayerConfig config = LayerConfig.DUMMY;
 	protected final Set<PositionedWidget> rendered = new ObjectOpenHashSet<>();
+	protected final Set<HudWidget> renderedWidgets = new ObjectOpenHashSet<>();
 	protected final List<PositionedWidget> widgets = new LinkedList<>();
 	protected final List<PositionedWidget> tabWidgets = new LinkedList<>();
 
@@ -76,8 +77,14 @@ public class LayerBuilder {
 
 	protected void merge() {
 		rendered.clear();
+		renderedWidgets.clear();
 		rendered.addAll(widgets);
 		rendered.addAll(tabWidgets);
+		rendered.stream().map(w -> w.widget).forEach(renderedWidgets::add);
+	}
+
+	public boolean contains(HudWidget widget) {
+		return renderedWidgets.contains(widget);
 	}
 
 

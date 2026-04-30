@@ -36,7 +36,7 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 
 	protected void registerAutoUpdate() {
 		PlayerListManager.registerTabListener(() -> {
-			if (WidgetManager.isWidgetInCurrentLayer(this)) update();
+			if (WidgetManager.isWidgetInCurrentScreen(this)) update();
 		});
 	}
 

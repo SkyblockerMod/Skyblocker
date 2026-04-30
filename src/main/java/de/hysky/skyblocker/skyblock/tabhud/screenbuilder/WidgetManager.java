@@ -80,13 +80,16 @@ public class WidgetManager {
 		return fancyTab != null && fancyTab.enabled;
 	}
 
-	// TODO or placeholder
 	public static HudWidget getWidgetOrPlaceholder(String id) {
 		return WIDGET_INSTANCES.computeIfAbsent(id, PlaceholderWidget::new);
 	}
 
+	public static boolean isWidgetInCurrentScreen(HudWidget widget) {
+		return SCREEN_BUILDER.contains(widget);
+	}
+
 	public static boolean isWidgetInCurrentLayer(HudWidget widget) {
-		return true; // TODO
+		return currentLayer != null && SCREEN_BUILDER.get(currentLayer).contains(widget);
 	}
 
 	public static List<HudWidget> getWidgetsAvailableIn(Location location) {

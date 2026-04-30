@@ -41,7 +41,7 @@ public class LassoHud extends ElementBasedWidget {
 
 	public static void onEntityUpdate(ArmorStand entity) {
 		//check to see if close to end of players lasso
-		if (!WidgetManager.isWidgetInCurrentLayer(getInstance()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
+		if (!WidgetManager.isWidgetInCurrentScreen(getInstance()) || lassoEntity == null || entity.distanceToSqr(lassoEntity) > 16) return;
 
 		//see if it's the name we are looking for
 		Component name = entity.getCustomName();
@@ -55,7 +55,7 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public static void onEntityAttach(ClientboundSetEntityLinkPacket packet) {
-		if (!WidgetManager.isWidgetInCurrentLayer(getInstance()) || CLIENT.level == null) return;
+		if (!WidgetManager.isWidgetInCurrentScreen(getInstance()) || CLIENT.level == null) return;
 		//see if lasso is coming from this player
 		if (CLIENT.level.getEntity(packet.getDestId()) instanceof Player player) {
 			if (player.equals(CLIENT.player)) {

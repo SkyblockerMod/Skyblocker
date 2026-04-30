@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+
 public class ScreenBuilder {
 	private final LayerBuilder hud;
 	private final LayerBuilder tab;
@@ -41,5 +43,9 @@ public class ScreenBuilder {
 		hud.setConfig(config.hud());
 		tab.setConfig(config.tab());
 		secondaryTab.setConfig(config.secondaryTab());
+	}
+
+	public boolean contains(HudWidget widget) {
+		return hud.contains(widget) || tab.contains(widget) || secondaryTab.contains(widget);
 	}
 }
