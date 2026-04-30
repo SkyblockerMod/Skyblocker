@@ -52,7 +52,6 @@ class TopBarWidget extends AbstractContainerWidget {
 		layout.add(leftButtons);
 
 		List<ScreenId> locations = new ArrayList<>(Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).map(ScreenIds::ofLocation).toList());
-		locations.addFirst(ScreenIds.EVERYWHERE);
 		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, ScreenIds.ofCurrentLocation());
 		locationDropdown.setFormatter(ScreenId::displayName);
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);

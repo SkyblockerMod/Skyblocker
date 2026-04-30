@@ -5,7 +5,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Arrays;
@@ -31,13 +30,6 @@ public final class ScreenIds {
 	static ScreenId[] getScreenIds() {
 		return SCREEN_IDS.toArray(ScreenId[]::new);
 	}
-
-	private static ScreenId register(ScreenId screenId) {
-		SCREEN_IDS.add(screenId);
-		return screenId;
-	}
-
-	public static final ScreenId EVERYWHERE = register(new ScreenId.Named("everywhere", Component.literal("Everywhere")));
 
 	public static ScreenId ofLocation(Location location) {
 		return LOCATIONS.get(location);

@@ -26,7 +26,6 @@ public class LayerConfig {
 
 	public @Nullable FancyTab fancyTab;
 	public Map<String, WidgetConfig> widgets;
-	private LayerConfig.@Nullable Identified parent;
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	public LayerConfig(Optional<FancyTab> fancyTab, Map<String, WidgetConfig> widgetConfigs) {
@@ -42,48 +41,8 @@ public class LayerConfig {
 		this(Optional.empty(), new Object2ObjectOpenHashMap<>());
 	}
 
-	public void setParent(LayerConfig.@Nullable Identified parent) {
-		this.parent = parent;
-	}
-
-	public void visit(LayerBuilder.Visitor visitor) {
-		if (parent != null) {
-			parent.config().visit((s, w, screenId) -> visitor.visit(s, w, screenId != null ? screenId : parent.id()));
-		}
-		for (Map.Entry<String, WidgetConfig> entry : widgets.entrySet()) {
-			visitor.visit(entry.getKey(), entry.getValue(), null);
-		}
-	}
-
-	public LayerConfig getFullConfig() {
-		LayerConfig parentConfig = new LayerConfig();
-		visit((id, widgetConfig, _) -> parentConfig.widgets.put(id, widgetConfig));
-		parentConfig.fancyTab = fancyTab;
-		return parentConfig;
-	}
-
-	public WidgetConfig.@Nullable Meta getMeta(String id) {
-		WidgetConfig.Meta parentMeta = null;
-		if (parent != null) {
-			parentMeta = parent.config.getMeta(id);
-		}
-		if (parentMeta != null) {
-			// mark it as inherited from the parent
-			parentMeta = new WidgetConfig.Meta(parentMeta.overrides(), parentMeta.inheritedFrom().or(() -> Optional.of(parent.id)), parentMeta.widgetConfig());
-		}
-		if (widgets.containsKey(id)) {
-			if (parentMeta != null) {
-				// this config is overriding it.
-				return new WidgetConfig.Meta(parentMeta.inheritedFrom(), Optional.empty(), widgets.get(id));
-			} else {
-				return new WidgetConfig.Meta(Optional.empty(), Optional.empty(), widgets.get(id));
-			}
-		}
-		return parentMeta;
-	}
-
 	public @Nullable FancyTab fancyTab() {
-		return fancyTab == null && parent != null ? parent.config().fancyTab() : fancyTab;
+		return fancyTab;
 	}
 
 	public static class FancyTab {
@@ -135,6 +94,4 @@ public class LayerConfig {
 			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
-
-	public record Identified(ScreenId id, LayerConfig config) {}
 }

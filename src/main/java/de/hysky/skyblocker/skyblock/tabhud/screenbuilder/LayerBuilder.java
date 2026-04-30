@@ -12,7 +12,6 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.profiling.Profiler;
 import org.joml.Matrix3x2fStack;
 import org.joml.Vector2i;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -39,7 +38,7 @@ public class LayerBuilder {
 	public void update() {
 		positionsHash = 0;
 		widgets.clear();
-		for (Map.Entry<String, WidgetConfig> entry : config.getFullConfig().widgets.entrySet()) {
+		for (Map.Entry<String, WidgetConfig> entry : config.widgets.entrySet()) {
 			if (entry.getValue().config().isEmpty()) continue;
 			HudWidget hudWidget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
@@ -116,9 +115,8 @@ public class LayerBuilder {
 
 	public void updatePositions(int screenWidth, int screenHeight) {
 		updatePositions(rendered.stream().filter(p -> !p.fromTab).toList(), screenWidth, screenHeight);
-		LayerConfig fullConfig = config.getFullConfig();
-		if (fullConfig.fancyTab != null && fullConfig.fancyTab.enabled) {
-			WidgetPositioner positioner = fullConfig.fancyTab.positioner.getNewPositioner(0.9f, screenHeight);
+		if (config.fancyTab != null && config.fancyTab.enabled) {
+			WidgetPositioner positioner = config.fancyTab.positioner.getNewPositioner(0.9f, screenHeight);
 			List<HudWidget> tabWidgets = rendered.stream().filter(p -> p.fromTab).map(p -> p.widget).toList();
 			tabWidgets.forEach(positioner::positionWidget);
 			Vector2i dimensions = positioner.finalizePositioning();
@@ -142,9 +140,5 @@ public class LayerBuilder {
 			);
 		}
 		Profiler.get().pop();
-	}
-
-	public interface Visitor {
-		void visit(String id, WidgetConfig widgetConfig, @Nullable ScreenId screenId);
 	}
 }

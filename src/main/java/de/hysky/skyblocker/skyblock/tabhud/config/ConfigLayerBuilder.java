@@ -6,7 +6,6 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -59,10 +58,6 @@ public class ConfigLayerBuilder extends LayerBuilder {
 
 	public Map<String, PositionedWidget> getIdToWidget() {
 		return idToWidget;
-	}
-
-	public WidgetConfig.@Nullable Meta getMeta(String id) {
-		return config.getMeta(id);
 	}
 
 	@Override

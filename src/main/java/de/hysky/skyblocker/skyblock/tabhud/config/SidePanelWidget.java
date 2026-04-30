@@ -2,14 +2,12 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -94,7 +92,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 		isOpen = true;
 	}
 
-	public void open(PositionedWidget hudWidget, boolean rightSide, WidgetConfig.@Nullable Meta meta) {
+	public void open(PositionedWidget hudWidget, boolean rightSide) {
 		this.hudWidget = hudWidget;
 		layout = LinearLayout.vertical().spacing(5);
 		layout.defaultCellSetting().alignHorizontallyCenter();
@@ -109,12 +107,6 @@ class SidePanelWidget extends AbstractContainerWidget {
 		layout.addChild(SpacerElement.height(10));
 
 		int availableWidth = getWidth() - SCROLLBAR_AREA;
-		if (meta != null) {
-			meta.inheritedFrom().ifPresent(id -> add(new MultiLineTextWidget(Component.literal("Inherited from: ").append(id.displayName()), client.font)).setMaxWidth(availableWidth));
-			meta.overrides().ifPresent(id -> add(new MultiLineTextWidget(Component.literal("Overrides a widget in: ").append(id.displayName()), client.font)).setMaxWidth(availableWidth));
-		} else {
-			add(new MultiLineTextWidget(Component.literal("This isn't handled well yet :p"), client.font)).setMaxWidth(availableWidth); // TODO
-		}
 
 		add(new PositionRuleWidget(config, hudWidget));
 		layout.addChild(SpacerElement.height(10));

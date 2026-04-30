@@ -18,12 +18,6 @@ public record WidgetConfig(Optional<JsonObject> config, Optional<PositionRule> p
 		this(Optional.of(config), Optional.of(position));
 	}
 
-	public record Meta(Optional<ScreenId> overrides, Optional<ScreenId> inheritedFrom, WidgetConfig widgetConfig) {
-		public Meta getWithInheritedFrom(ScreenId screenId) {
-			return new Meta(overrides, Optional.of(inheritedFrom.orElse(screenId)), widgetConfig);
-		}
-	}
-
 	public static WidgetConfig disabled() {
 		return new WidgetConfig(Optional.empty(), Optional.empty());
 	}

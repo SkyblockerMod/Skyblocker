@@ -376,7 +376,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	private void openSidePanel() {
 		if (selectedWidget == null) return;
 		boolean rightSide = selectedWidget.widget.getX() + selectedWidget.widget.getWidth() / 2 < getScreenWidth() / 2;
-		sidePanelWidget.open(selectedWidget, rightSide, builder.getMeta(selectedWidget.widget.getInternalID()));
+		sidePanelWidget.open(selectedWidget, rightSide);
 	}
 
 	@Override
