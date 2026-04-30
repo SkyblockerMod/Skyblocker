@@ -195,7 +195,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		if (super.mouseDragged(click, deltaX, deltaY)) return true;
 		double mouseX = click.x();
 		double mouseY = click.y();
-		if (selectedWidget != null && dragRelative != null) {
+		if (selectedWidget != null && !selectedWidget.fromTab && dragRelative != null) {
 			PositionRule oldRule = selectedWidget.rule;
 			mouseX /= TabHud.getScaleFactor();
 			mouseY /= TabHud.getScaleFactor();
@@ -322,10 +322,10 @@ public class WidgetsConfigurationScreen extends Screen {
 		}
 		mouseX /= TabHud.getScaleFactor();
 		mouseY /= TabHud.getScaleFactor();
-		dragRelative = new ScreenPosition((int) (mouseX - selectedWidget.widget.getX()), (int) (mouseY - selectedWidget.widget.getY()));
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getHudWidget()))) {
+		if (!selectedWidget.fromTab) dragRelative = new ScreenPosition((int) (mouseX - selectedWidget.widget.getX()), (int) (mouseY - selectedWidget.widget.getY()));
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getPositionedWidget()))) {
 			openSidePanel();
-		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getHudWidget())) {
+		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getPositionedWidget())) {
 			openSidePanel();
 		}
 		return true;

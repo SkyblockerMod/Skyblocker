@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -39,7 +40,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 
 	private final WidgetsConfigurationScreen config;
 
-	private @Nullable PositionedWidget hudWidget;
+	private @Nullable PositionedWidget positionedWidget;
 
 	SidePanelWidget(int width, int height, WidgetsConfigurationScreen config) {
 		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Component.literal("Side Panel"), defaultSettings(5));
@@ -92,27 +93,32 @@ class SidePanelWidget extends AbstractContainerWidget {
 		isOpen = true;
 	}
 
-	public void open(PositionedWidget hudWidget, boolean rightSide) {
-		this.hudWidget = hudWidget;
+	public void open(PositionedWidget positionedWidget, boolean rightSide) {
+		this.positionedWidget = positionedWidget;
+		HudWidget hudWidget = positionedWidget.widget;
 		layout = LinearLayout.vertical().spacing(5);
 		layout.defaultCellSetting().alignHorizontallyCenter();
 		optionWidgets.clear();
-		add(new StringWidget(0, 15, hudWidget.widget.getInformation().displayName().copy().withStyle(ChatFormatting.UNDERLINE), client.font) {
+		add(new StringWidget(0, 15, hudWidget.getInformation().displayName().copy().withStyle(ChatFormatting.UNDERLINE), client.font) {
 			@Override
 			public void setWidth(int width) {
 				setMaxWidth(width, TextOverflow.SCROLLING);
 			}
 		});
-		add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> config.removeWidget(hudWidget.widget)).build());
-		layout.addChild(SpacerElement.height(10));
+		if (!positionedWidget.fromTab) {
+			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> config.removeWidget(hudWidget)).build());
+			layout.addChild(SpacerElement.height(10));
+		}
 
 		int availableWidth = getWidth() - SCROLLBAR_AREA;
 
-		add(new PositionRuleWidget(config, hudWidget));
-		layout.addChild(SpacerElement.height(10));
+		if (!positionedWidget.fromTab) {
+			add(new PositionRuleWidget(config, positionedWidget));
+			layout.addChild(SpacerElement.height(10));
+		}
 
 		List<AbstractWidget> collector = new ArrayList<>();
-		hudWidget.widget.getOptionWidgets(new OptionWidgetCollector(collector));
+		hudWidget.getOptionWidgets(new OptionWidgetCollector(collector));
 		collector.forEach(this::add);
 
 		layout.addChild(SpacerElement.height(10));
@@ -184,8 +190,8 @@ class SidePanelWidget extends AbstractContainerWidget {
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
 
-	public @Nullable PositionedWidget getHudWidget() {
-		return hudWidget;
+	public @Nullable PositionedWidget getPositionedWidget() {
+		return positionedWidget;
 	}
 
 	private <T extends AbstractWidget> T add(T widget) {
