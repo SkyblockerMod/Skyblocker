@@ -940,7 +940,7 @@
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
-	"skyblocker.config.mining.glacite.solveFossilMuncher": "Solve Fossil Muncher",
+  "skyblocker.config.mining.glacite.solveFossilMuncher": "Solve Fossil Muncher",
 
   "skyblocker.config.mining.pickobulusHelper": "Pickobulus Helper",
   "skyblocker.config.mining.pickobulusHelper.enable": "Enable Pickobulus Helper",
