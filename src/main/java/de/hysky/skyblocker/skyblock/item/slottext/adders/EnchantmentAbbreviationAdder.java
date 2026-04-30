@@ -200,7 +200,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_soul_eater", "SE");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_sunset", "SU");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_swarm", "SW");
-		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("the_one", "TO");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_the_one", "TO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_jerry", "UJ");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wise", "UW");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wisdom", "W");

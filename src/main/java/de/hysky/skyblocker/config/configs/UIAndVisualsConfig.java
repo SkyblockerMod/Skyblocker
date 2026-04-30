@@ -234,15 +234,11 @@ public class UIAndVisualsConfig {
 	}
 
 	public enum NameSorting {
-		DEFAULT,
+		DEFAULT((_, _) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
 		public final Comparator<PlayerInfo> comparator;
-
-		NameSorting() {
-			this(null);
-		}
 
 		NameSorting(Comparator<PlayerInfo> comparator) {
 			this.comparator = comparator;
@@ -321,7 +317,7 @@ public class UIAndVisualsConfig {
 		LAYER1, LAYER2, RIGHT, NONE
 	}
 
-	public static class Waypoints implements Cloneable {
+	public static class Waypoints {
 		public boolean enableWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
@@ -339,13 +335,6 @@ public class UIAndVisualsConfig {
 		public float waypointActivationRadius = 2f;
 
 		public boolean enableChatWaypoints = true;
-
-		@Override
-		public Waypoints clone() throws CloneNotSupportedException {
-			Waypoints copy = (Waypoints) super.clone();
-			copy.lineColor = new Color(lineColor.getRed(), lineColor.getGreen(), lineColor.getBlue(), lineColor.getAlpha());
-			return copy;
-		}
 	}
 
 	public static class TeleportOverlay {
