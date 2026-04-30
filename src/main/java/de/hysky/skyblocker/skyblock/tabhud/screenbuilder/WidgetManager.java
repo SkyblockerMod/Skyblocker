@@ -20,10 +20,12 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -62,7 +64,7 @@ public class WidgetManager {
 	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
 
 	private static Map<ScreenId, ScreenConfig> SCREEN_CONFIGS = new HashMap<>();
-	private static final Codec<Map<ScreenId, ScreenConfig>> CONFIG_CODEC = Codec.unboundedMap(ScreenIds.CODEC, ScreenConfig.CODEC).fieldOf("widgets").codec();
+	private static final Codec<Map<ScreenId, ScreenConfig>> CONFIG_CODEC = CodecUtils.mutableOptional(Codec.unboundedMap(ScreenIds.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).codec();
 
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 

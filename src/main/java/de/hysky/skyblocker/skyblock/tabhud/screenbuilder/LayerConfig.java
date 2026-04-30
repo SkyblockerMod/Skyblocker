@@ -30,13 +30,12 @@ public class LayerConfig {
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	public LayerConfig(Optional<FancyTab> fancyTab, Map<String, WidgetConfig> widgetConfigs) {
-		this.fancyTab = fancyTab.orElse(null);
-		this.widgets = widgetConfigs;
+		this(fancyTab.orElse(null), widgetConfigs);
 	}
 
 	public LayerConfig(@Nullable FancyTab fancyTab, Map<String, WidgetConfig> widgets) {
 		this.fancyTab = fancyTab;
-		this.widgets = widgets;
+		this.widgets = new Object2ObjectOpenHashMap<>(widgets);
 	}
 
 	public LayerConfig() {
