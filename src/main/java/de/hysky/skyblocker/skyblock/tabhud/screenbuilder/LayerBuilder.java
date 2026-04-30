@@ -37,6 +37,7 @@ public class LayerBuilder {
 	}
 
 	public void update() {
+		positionsHash = 0;
 		widgets.clear();
 		for (Map.Entry<String, WidgetConfig> entry : config.getFullConfig().widgets.entrySet()) {
 			if (entry.getValue().config().isEmpty()) continue;
