@@ -100,6 +100,6 @@ public class WaypointsOptionScreen extends Screen {
 	@Override
 	public void onClose() {
 		minecraft.setScreen(parent);
-		SkyblockerConfigManager.update(_ -> {});
+		SkyblockerConfigManager.update(_config -> {});
 	}
 }

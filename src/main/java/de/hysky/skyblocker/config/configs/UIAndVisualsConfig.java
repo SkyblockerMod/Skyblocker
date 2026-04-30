@@ -234,7 +234,7 @@ public class UIAndVisualsConfig {
 	}
 
 	public enum NameSorting {
-		DEFAULT((_, _) -> 0),
+		DEFAULT((_a, _b) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
