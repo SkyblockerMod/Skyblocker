@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.JsonValueInput;
 import de.hysky.skyblocker.utils.Location;
@@ -139,7 +138,7 @@ public abstract class HudWidget implements LayoutElement {
 	 * @param displayName the name that will be shown in the config screen
 	 * @param available   in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
 	 */
-	public record Information(String id, Component displayName, Predicate<ScreenId> available) {
+	public record Information(String id, Component displayName, Predicate<Location> available) {
 		/**
 		 * Shorter constructor that makes the widget available everywhere
 		 *
@@ -150,7 +149,7 @@ public abstract class HudWidget implements LayoutElement {
 		}
 
 		public Information(String id, Component displayName, Set<Location> allowedLocations) {
-			this(id, displayName, screenId -> screenId instanceof ScreenId.Loc(Location location) && allowedLocations.contains(location));
+			this(id, displayName, allowedLocations::contains);
 		}
 
 		public Information(String id, Component displayName, Location allowedLocation) {

@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -30,7 +29,7 @@ import java.util.function.Consumer;
 class TopBarWidget extends AbstractContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
 	private static final int HEIGHT = 15;
-	private final CustomDropdownWidget<ScreenId> locationDropdown;
+	private final CustomDropdownWidget<Location> locationDropdown;
 	private final CustomDropdownWidget<WidgetManager.ScreenLayer> screenLayerDropdown;
 	private final Layout layout;
 	private final List<AbstractWidget> widgets;
@@ -51,9 +50,9 @@ class TopBarWidget extends AbstractContainerWidget {
 		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);
 
-		List<ScreenId> locations = new ArrayList<>(Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).map(ScreenIds::ofLocation).toList());
-		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, ScreenIds.ofCurrentLocation());
-		locationDropdown.setFormatter(ScreenId::displayName);
+		List<Location> locations = new ArrayList<>(Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).toList());
+		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
+		locationDropdown.setFormatter(l -> Component.literal(l.toString()));
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 
 		LinearLayout dropdownsLayout = LinearLayout.horizontal().spacing(2);

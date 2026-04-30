@@ -6,14 +6,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenId;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenIds;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -55,7 +54,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	/**
 	 * The currently edited location. {@link Location#UNKNOWN} if editing the global skyblock screen.
 	 */
-	private ScreenId currentLocation;
+	private Location currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
 	private final ConfigScreenBuilder screenBuilder = new ConfigScreenBuilder();
@@ -79,7 +78,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	public WidgetsConfigurationScreen() {
 		super(Component.literal("Widgets Config Screen"));
-		currentLocation = ScreenIds.ofCurrentLocation();
+		currentLocation = Utils.getLocation();
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);
 		screenBuilder.setConfig(screenConfig);
@@ -88,7 +87,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		builder.updateTab();
 	}
 
-	public void setCurrentLocation(ScreenId newLocation) {
+	public void setCurrentLocation(Location newLocation) {
 		builder.serializeConfig();
 		this.currentLocation = newLocation;
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);

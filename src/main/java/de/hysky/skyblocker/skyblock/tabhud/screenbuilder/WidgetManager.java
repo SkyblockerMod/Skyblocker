@@ -63,20 +63,20 @@ public class WidgetManager {
 
 	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
 
-	private static Map<ScreenId, ScreenConfig> SCREEN_CONFIGS = new HashMap<>();
-	private static final Codec<Map<ScreenId, ScreenConfig>> CONFIG_CODEC = CodecUtils.mutableOptional(Codec.unboundedMap(ScreenIds.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).codec();
+	private static Map<Location, ScreenConfig> SCREEN_CONFIGS = new HashMap<>();
+	private static final Codec<Map<Location, ScreenConfig>> CONFIG_CODEC = CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).codec();
 
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
 	private static boolean showOldVersionMessage = false;
 
-	public static ScreenConfig getScreenConfig(ScreenId screenId) {
+	public static ScreenConfig getScreenConfig(Location screenId) {
 		return SCREEN_CONFIGS.computeIfAbsent(screenId, _ -> new ScreenConfig());
 	}
 
 	public static boolean hasFancyTab() {
 		if (currentLocation == null || currentLayer == null) return false;
-		LayerConfig.FancyTab fancyTab = getScreenConfig(ScreenIds.ofLocation(currentLocation)).get(currentLayer).fancyTab();
+		LayerConfig.FancyTab fancyTab = getScreenConfig(currentLocation).get(currentLayer).fancyTab();
 		return fancyTab != null && fancyTab.enabled;
 	}
 
@@ -89,7 +89,7 @@ public class WidgetManager {
 		return true; // TODO
 	}
 
-	public static List<HudWidget> getWidgetsAvailableIn(ScreenId location) {
+	public static List<HudWidget> getWidgetsAvailableIn(Location location) {
 		return WIDGET_INSTANCES.values().stream().filter(w -> w.getInformation().available().test(location)).toList();
 	}
 
@@ -166,7 +166,7 @@ public class WidgetManager {
 		Location location = Utils.getLocation();
 		if (currentLocation != location) {
 			currentLocation = location;
-			SCREEN_BUILDER.setConfig(getScreenConfig(ScreenIds.ofLocation(location)));
+			SCREEN_BUILDER.setConfig(getScreenConfig(currentLocation));
 			currentLayer = null; // force second condition to trigger
 		}
 		if (currentLayer != layer) {
@@ -229,13 +229,13 @@ public class WidgetManager {
 					0,
 					2
 			);
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.DWARVEN_MINES)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.DWARVEN_MINES));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.serializeConfig();
 
 
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.CRYSTAL_HOLLOWS)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.CRYSTAL_HOLLOWS));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.add(getWidgetOrPlaceholder("hud_crystals"), new PositionRule(
@@ -247,7 +247,7 @@ public class WidgetManager {
 			));
 			hud.serializeConfig();
 
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.GLACITE_MINESHAFTS)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.GLACITE_MINESHAFTS));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.serializeConfig();
@@ -255,13 +255,13 @@ public class WidgetManager {
 			// Sweep details
 			HudWidget sweepDetails = getWidgetOrPlaceholder("sweep_details");
 			for (Location location : SweepDetailsHudWidget.LOCATIONS) {
-				configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(location)));
+				configScreenBuilder.setConfig(getScreenConfig(location));
 				hud.add(sweepDetails);
 				hud.serializeConfig();
 			}
 
 			// Galatea
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.GALATEA)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
 			hud.add(getWidgetOrPlaceholder("hud_treeprogress"), new PositionRule(
 					"sweep_details",
 					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
@@ -272,16 +272,16 @@ public class WidgetManager {
 			hud.serializeConfig();
 
 			// Garden
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.GARDEN)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
 			hud.add(getWidgetOrPlaceholder("hud_farming"));
 			hud.serializeConfig();
 
 			// The end
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.THE_END)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.THE_END));
 			hud.add(getWidgetOrPlaceholder("hud_end"));
 			hud.serializeConfig();
 
-			configScreenBuilder.setConfig(getScreenConfig(ScreenIds.ofLocation(Location.DUNGEON)));
+			configScreenBuilder.setConfig(getScreenConfig(Location.DUNGEON));
 			hud.add(getWidgetOrPlaceholder("dungeon_splits"), new PositionRule(
 					Optional.empty(),
 					new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
