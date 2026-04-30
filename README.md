@@ -314,7 +314,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *HOTM*
     - *HOTF*
     - *Bestiary*
-    - *Hunting Toolkit Indicator*
+    - *Farming/Hunting Toolkit Indicator*
     - *Garden Chip Level*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
