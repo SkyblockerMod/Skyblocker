@@ -564,6 +564,7 @@ public class Utils {
 			} else if (message.startsWith(PROFILE_ID_PREFIX)) {
 				String prevProfileId = profileId;
 				profileId = message.substring(PROFILE_ID_PREFIX.length());
+				if (Utils.getEnvironment().equals(Environment.BETA)) profileId += "-alpha";
 				profileIdRequest++;
 
 				if (!prevProfileId.equals(profileId)) {
