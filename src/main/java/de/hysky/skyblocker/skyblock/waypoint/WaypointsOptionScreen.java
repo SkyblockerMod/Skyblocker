@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 import java.awt.Color;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.StringWidget;
@@ -22,23 +22,12 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 public class WaypointsOptionScreen extends Screen {
-	private static final Supplier<UIAndVisualsConfig.Waypoints> WAYPOINTS = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints;
-
 	private final Screen parent;
 	private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
-	private final UIAndVisualsConfig.Waypoints waypoints;
 
 	protected WaypointsOptionScreen(Screen parent) {
 		super(Component.translatable("skyblocker.waypoints.waypointsOptions"));
 		this.parent = parent;
-		UIAndVisualsConfig.Waypoints temp;
-		try {
-			temp = WAYPOINTS.get().clone();
-		} catch (CloneNotSupportedException e) {
-			temp = WAYPOINTS.get();
-			Waypoints.LOGGER.error("[Skyblocker Waypoints] Could not clone waypoints config for options screen. Issues may arise.", e);
-		}
-		waypoints = temp;
 	}
 
 	@Override
@@ -47,33 +36,34 @@ public class WaypointsOptionScreen extends Screen {
 		GridLayout grid = new GridLayout().spacing(2);
 		layout.addToContents(grid);
 		GridLayout.RowHelper adder = grid.createRowHelper(2);
+		UIAndVisualsConfig.Waypoints waypointsReadOnly = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
 		adder.addChild(CycleButton
-				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.renderLine)
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (button, value) -> waypoints.renderLine = value)
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypointsReadOnly.renderLine)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.renderLine"), (button, value) -> updateConfig(waypoints -> waypoints.renderLine = value))
 		);
 		adder.addChild(CycleButton
-				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.allowSkippingWaypoints)
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypointsReadOnly.allowSkippingWaypoints)
 				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"), (button, value) -> waypoints.allowSkippingWaypoints = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowSkippingWaypoints"), (button, value) -> updateConfig(waypoints -> waypoints.allowSkippingWaypoints = value))
 		);
 		adder.addChild(CycleButton
-				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypoints.allowGoingBackwards)
+				.booleanBuilder(CommonComponents.GUI_YES, CommonComponents.OPTION_OFF, waypointsReadOnly.allowGoingBackwards)
 				.withTooltip(ignored -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"), (button, value) -> waypoints.allowGoingBackwards = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.allowGoingBackwards"), (button, value) -> updateConfig(waypoints -> waypoints.allowGoingBackwards = value))
 		);
 		adder.addChild(RangedSliderWidget.builder()
 				.optionFormatter(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.lineWidth"), Formatters.FLOAT_NUMBERS)
-				.callback(value -> waypoints.lineWidth = (float) value)
+				.callback(value -> updateConfig(waypoints -> waypoints.lineWidth = (float) value))
 				.minMax(1, 15)
-						.defaultValue(waypoints.lineWidth)
+						.defaultValue(waypointsReadOnly.lineWidth)
 				.step(0.5)
 				.build()
 		);
 		adder.addChild(RangedSliderWidget.builder()
 				.optionFormatter(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius"), Formatters.FLOAT_NUMBERS)
-				.callback(value -> waypoints.waypointActivationRadius = (float) value)
+				.callback(value -> updateConfig(waypoints -> waypoints.waypointActivationRadius = (float) value))
 				.minMax(1, 10)
-				.defaultValue(waypoints.waypointActivationRadius)
+				.defaultValue(waypointsReadOnly.waypointActivationRadius)
 				.step(0.5)
 				.build()).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointActivationRadius.@Tooltip")));
 		adder.addChild(SpacerElement.width(0));
@@ -84,18 +74,22 @@ public class WaypointsOptionScreen extends Screen {
 		ARGBTextInput argbTextInput = colorLayout.addChild(new ARGBTextInput(0, 0, font, true, true));
 		colorPickerWidget.setOnColorChange((color, mouseRelease) -> {
 			argbTextInput.setARGBColor(color);
-			if (mouseRelease) waypoints.lineColor = new Color(color, true);
+			if (mouseRelease) updateConfig(waypoints -> waypoints.lineColor = new Color(color, true));
 		});
 		argbTextInput.setOnChange(color -> {
 			colorPickerWidget.setARGBColor(color);
-			waypoints.lineColor = new Color(color, true);
+			updateConfig(waypoints -> waypoints.lineColor = new Color(color, true));
 		});
-		colorPickerWidget.setARGBColor(waypoints.lineColor.getRGB());
-		argbTextInput.setARGBColor(waypoints.lineColor.getRGB());
+		colorPickerWidget.setARGBColor(waypointsReadOnly.lineColor.getRGB());
+		argbTextInput.setARGBColor(waypointsReadOnly.lineColor.getRGB());
 		layout.addToHeader(new StringWidget(getTitle(), font));
 		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, b -> onClose()).build());
 		repositionElements();
 		layout.visitWidgets(this::addRenderableWidget);
+	}
+
+	private void updateConfig(Consumer<UIAndVisualsConfig.Waypoints> consumer) {
+		SkyblockerConfigManager.updateOnly(config -> consumer.accept(config.uiAndVisuals.waypoints));
 	}
 
 	@Override
@@ -106,6 +100,6 @@ public class WaypointsOptionScreen extends Screen {
 	@Override
 	public void onClose() {
 		minecraft.setScreen(parent);
-		SkyblockerConfigManager.update(config -> config.uiAndVisuals.waypoints = waypoints);
+		SkyblockerConfigManager.update(_ -> {});
 	}
 }
