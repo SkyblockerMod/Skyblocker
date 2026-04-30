@@ -148,7 +148,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 			nameWidget = new StringWidget(Component.literal(chatRule.getName()), minecraft.font);
 			nameWidget.setMaxWidth(110, StringWidget.TextOverflow.SCROLLING);
 			layout = new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL);
-			layout.defaultCellSetting().paddingRight(10).paddingTop(3).alignHorizontallyCenter();
+			layout.defaultCellSetting().paddingRight(10).paddingTop(3);
 
 			Checkbox enabledCheck = layout.addChild(Checkbox.builder(Component.empty(), minecraft.font)
 					.selected(chatRule.getEnabled())
@@ -156,8 +156,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 						hasChanged = true;
 						chatRule.setEnabled(value);
 					})
-					.build());
-			enabledCheck.setWidth(50);
+					.build(), s -> s.padding(16, 4, 23, 0));
 
 			Button openConfigButton = layout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule"), _ -> minecraft.setScreen(new ChatRuleConfigScreen(screen, chatRuleIndex))).size(50, 20).tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.editRule.@Tooltip"))).build());
 
