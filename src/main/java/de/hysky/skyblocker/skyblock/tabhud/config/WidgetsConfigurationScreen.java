@@ -448,6 +448,10 @@ public class WidgetsConfigurationScreen extends Screen {
 		return selectedWidget.widget;
 	}
 
+	public WidgetManager.ScreenLayer getCurrentScreenLayer() {
+		return currentScreenLayer;
+	}
+
 	public int getScreenWidth() {
 		return (int) (width / TabHud.getScaleFactor());
 	}

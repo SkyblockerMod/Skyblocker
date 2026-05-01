@@ -1,8 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -10,6 +15,7 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
@@ -20,7 +26,9 @@ import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 class SidePanelWidget extends AbstractContainerWidget {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");
@@ -38,14 +46,14 @@ class SidePanelWidget extends AbstractContainerWidget {
 	private int animationEnd = 0;
 	private boolean isOpen = false;
 
-	private final WidgetsConfigurationScreen config;
+	private final WidgetsConfigurationScreen configScreen;
 
 	private @Nullable PositionedWidget positionedWidget;
 
-	SidePanelWidget(int width, int height, WidgetsConfigurationScreen config) {
+	SidePanelWidget(int width, int height, WidgetsConfigurationScreen configScreen) {
 		super(0, TOP_MARGIN, width, height - TOP_MARGIN, Component.literal("Side Panel"), defaultSettings(5));
 		visible = false;
-		this.config = config;
+		this.configScreen = configScreen;
 	}
 
 	@Override
@@ -106,14 +114,36 @@ class SidePanelWidget extends AbstractContainerWidget {
 			}
 		});
 		if (!positionedWidget.fromTab) {
-			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> config.removeWidget(hudWidget)).build());
-			layout.addChild(SpacerElement.height(10));
+			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(hudWidget)).build());
 		}
+
+		add(Button.builder(Component.literal("Apply Everywhere"), _ -> Arrays.stream(Location.values())
+				.filter(loc -> loc != Location.UNKNOWN)
+				.map(WidgetManager::getScreenConfig)
+				.flatMap(ScreenConfig::allLayers)
+				.forEach(layerConfig -> {
+					JsonObject configJson = new JsonObject();
+					hudWidget.save(configJson);
+					layerConfig.widgets.computeIfPresent(hudWidget.getInternalID(), (_, config) -> new WidgetConfig(Optional.of(configJson), config.position()));
+				})).tooltip(Tooltip.create(Component.literal("Applies the options of this widget to all other instances everywhere"))).build());
+
+		add(Button.builder(Component.literal("Copy Everywhere"), _ -> Arrays.stream(Location.values())
+				.filter(loc -> loc != Location.UNKNOWN)
+				.filter(loc -> hudWidget.getInformation().available().test(loc))
+				.map(WidgetManager::getScreenConfig)
+				.map(c -> c.get(configScreen.getCurrentScreenLayer()))
+				.forEach(layerConfig -> {
+					JsonObject configJson = new JsonObject();
+					hudWidget.save(configJson);
+					layerConfig.widgets.put(hudWidget.getInternalID(), new WidgetConfig(configJson, positionedWidget.rule));
+				})).tooltip(Tooltip.create(Component.literal("Copies this widget to all locations on the same layer"))).build());
+
+		layout.addChild(SpacerElement.height(10));
 
 		int availableWidth = getWidth() - SCROLLBAR_AREA;
 
 		if (!positionedWidget.fromTab) {
-			add(new PositionRuleWidget(config, positionedWidget));
+			add(new PositionRuleWidget(configScreen, positionedWidget));
 			layout.addChild(SpacerElement.height(10));
 		}
 
@@ -130,7 +160,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 
 		layout.setPosition(getX(), getY() - (int) scrollAmount());
 		layout.arrangeElements();
-		int openX = rightSide ? config.width - getWidth() : 0;
+		int openX = rightSide ? configScreen.width - getWidth() : 0;
 		if (isOpen() && (openX != targetX || rightSide != this.rightSide)) {
 			isOpen = false;
 		}

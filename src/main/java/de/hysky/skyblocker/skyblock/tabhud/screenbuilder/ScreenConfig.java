@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.stream.Stream;
+
 public class ScreenConfig {
 	public static final ScreenConfig DUMMY = new ScreenConfig(new LayerConfig(), new LayerConfig(), new LayerConfig());
 	public static final Codec<ScreenConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -43,5 +45,9 @@ public class ScreenConfig {
 
 	public LayerConfig secondaryTab() {
 		return secondaryTab;
+	}
+
+	public Stream<LayerConfig> allLayers() {
+		return Stream.of(hud, tab, secondaryTab);
 	}
 }
