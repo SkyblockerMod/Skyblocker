@@ -1,7 +1,8 @@
 # Release 6.4.1
 
 ## Highlight
-* Move to new and improved LBIN Average API
+* Move to new and improved Lowest BIN Average Price API
+  * Item value calculations now use Lowest BIN average prices
 * Add Farming Toolkit support for Toolkit Indicator and Radial Menus
 * Add new enchantment abbreviations
 * Fix missing enchantment abbreviation for The One
