@@ -28,11 +28,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -53,23 +55,29 @@ public class GreenhousePaste {
 	private static BlockPos greenhouseCorner = null;
 	private static long lastBlockChangeTimeMs;
 
+	// Special ignores
+	private static final Set<String> IGNORE_NAMES = Set.of(
+			"PlantboyRoots", // visually identical to plantboyadvance, but does not have a head texture, so ignore it in detection
+			"godseedPillar"  // gotseedpillar is part of the godseed crop, but does not have a head texture, so ignore it in detection
+	);
+
 	static {
 		// Create crops once and store them in both maps
 		// TODO - verfiy armorstand names and name from website
 		Crop[] crops = {
 			new Crop("Ashwreath", "ashwreath", 1, HeadTextures.ASHWREATH),
-			new Crop("Choconut", "choconut", 2, HeadTextures.CHOCONUT),
-			new Crop("Dustgrain", "dustgrain", 3, HeadTextures.DUSTGRAIN),
-			new Crop("Gloomgourd", "gloomgourd", 4, HeadTextures.GLOOMGOURD),
-			new Crop("Lonelily", "lonelily", 5, HeadTextures.LONELILY),
-			new Crop("Scourroot", "scourroot", 6, HeadTextures.SCOURROOT),
+			new Crop("Choconut", "Choconut", 2, HeadTextures.CHOCONUT),
+			new Crop("Dustgrain", "Dustgrain", 3, HeadTextures.DUSTGRAIN),
+			new Crop("Gloomgourd", "Gloomgourd", 4, HeadTextures.GLOOMGOURD),
+			new Crop("Lonelily", "Lonelilly", 5, HeadTextures.LONELILY),
+			new Crop("Scourroot", "Scourroot", 6, HeadTextures.SCOURROOT),
 			new Crop("Shadevine", "shadevine", 7, HeadTextures.SHADEVINE),
-			new Crop("Veilshroom", "veilshroom", 8, HeadTextures.VEILSHROOM),
-			new Crop("Witherbloom", "witherbloom", 9, HeadTextures.WITHERBLOOM),
-			new Crop("Chocoberry", "chocoberry", 10, HeadTextures.CHOCOBERRY),
-			new Crop("Cindershade", "cindershade", 11, HeadTextures.CINDERSHADE),
-			new Crop("Coalroot", "coalroot", 12, HeadTextures.COALROOT),
-			new Crop("Creambloom", "creambloom", 13, HeadTextures.CREAMBLOOM),
+			new Crop("Veilshroom", "Veilshroom", 8, HeadTextures.VEILSHROOM),
+			new Crop("Witherbloom", "Witherbloom", 9, HeadTextures.WITHERBLOOM),
+			new Crop("Chocoberry", "Chocoberry", 10, HeadTextures.CHOCOBERRY),
+			new Crop("Cindershade", "Cindershade", 11, HeadTextures.CINDERSHADE),
+			new Crop("Coalroot", "Coalroot", 12, HeadTextures.COALROOT),
+			new Crop("Creambloom", "Creambloom", 13, HeadTextures.CREAMBLOOM),
 			new Crop("Duskbloom", "duskbloom", 14, HeadTextures.DUSKBLOOM),
 			new Crop("Thornshade", "thornshade", 15, HeadTextures.THORNSHADE),
 			new Crop("Blastberry", "blastberry", 16, HeadTextures.BLASTBERRY),
@@ -79,10 +87,10 @@ public class GreenhousePaste {
 			new Crop("Fleshtrap", "fleshtrap", 20, HeadTextures.FLESHTRAP),
 			new Crop("Magic Jellybean", "magicjellybean", 21, HeadTextures.MAGIC_JELLYBEAN),
 			new Crop("Noctilume", "noctilume", 22, HeadTextures.NOCTILUME),
-			new Crop("Snoozling", "snoozling", 23, HeadTextures.SNOOZLING),
+			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING), // requires special handling
 			new Crop("Soggybud", "soggybud", 24, HeadTextures.SOGGYBUD),
-			new Crop("Chorus Fruit", "chorusfruit", 25, HeadTextures.CHORUS_FRUIT),
-			new Crop("PlantBoy Advance", "plantboyadvance", 26, HeadTextures.PLANTBOY_ADVANCE),
+			new Crop("Chorus Fruit", "chorusFruit", 25, HeadTextures.CHORUS_FRUIT),
+			new Crop("PlantBoy Advance", "Plantboy", 26, HeadTextures.PLANTBOY_ADVANCE), // plantboyroot is also a thing. also is 2x2, so adjust accordingly
 			new Crop("Puffercloud", "puffercloud", 27, HeadTextures.PUFFERCLOUD),
 			new Crop("Shellfruit", "shellfruit", 28, HeadTextures.SHELLFRUIT),
 			new Crop("Startlevine", "startlevine", 29, HeadTextures.STARTLEVINE),
@@ -93,10 +101,10 @@ public class GreenhousePaste {
 			new Crop("All In Aloe", "allinaloe", 34, HeadTextures.ALL_IN_ALOE),
 			new Crop("Devourer", "devourer", 35, HeadTextures.DEVOURER),
 			new Crop("Glasscorn", "glasscorn", 36, HeadTextures.GLASSCORN),
-			new Crop("Godseed", "godseed", 37, HeadTextures.GODSEED),
-			new Crop("Jerryflower", "jerryflower", 38, HeadTextures.JERRYFLOWER),
+			new Crop("Godseed", "godseed", 37, HeadTextures.GODSEED), // also has godseedpillar 's around it
+			new Crop("Jerryflower", "jerryseed", 38, HeadTextures.JERRYFLOWER), // weird naming??
 			new Crop("Phantomleaf", "phantomleaf", 39, HeadTextures.PHANTOMLEAF),
-			new Crop("Timestalk", "timestalk", 40, HeadTextures.TIMESTALK),
+			new Crop("Timestalk", "timestalk", 40, HeadTextures.TIMESTALK), // verify
 
 			// Crops
 			new Crop("Cocoa Beans", "coco", 41, HeadTextures.COCOA_BEANS),
@@ -106,8 +114,8 @@ public class GreenhousePaste {
 			new Crop("Cactus", "cactus", 45, HeadTextures.CACTUS),
 			new Crop("Melon Seeds", "melon", 46, HeadTextures.MELON),
 			new Crop("Pumpkin Seeds", "pumpkin", 47, HeadTextures.PUMPKIN),
-			new Crop("Brown Mushroom", "brownmushroom", 48, Blocks.BROWN_MUSHROOM),
-			new Crop("Red Mushroom", "redmushroom", 49, Blocks.RED_MUSHROOM),
+			new Crop("Brown Mushroom", "brownmushroom", 48, HeadTextures.BROWN_MUSHROOM), // TODO: make mushrooms interchangeable, also replace with head texture
+			new Crop("Red Mushroom", "redmushroom", 49, HeadTextures.RED_MUSHROOM),
 			new Crop("Wheat Seeds", "wheat", 50, Blocks.WHEAT),
 			new Crop("Carrot", "carrot", 51, Blocks.CARROTS),
 			new Crop("Potato", "potato", 52, Blocks.POTATOES),
@@ -117,14 +125,19 @@ public class GreenhousePaste {
 			// Misc
 			new Crop("Dead Plant", "deadplant", 55, Blocks.DEAD_BUSH),
 			new Crop("Fire", "fire", 56, Blocks.FIRE),
-			new Crop("Fermento", "fermento", 57, HeadTextures.FERMENTO),
+
+			// Special crops
+			new Crop("Helianthus", "helianthus", 57, HeadTextures.HELIANTHUS),
+			new Crop("Fermento", "fermento", 58, HeadTextures.FERMENTO),
+			new Crop("Squash", "squash", 59, HeadTextures.SQUASH),
+			new Crop("Cropie", "cropie", 60, HeadTextures.CROPIE),
 		};
 
 		// Populate both maps
 		for (Crop crop : crops) {
 			CROP_ID_MAP.put(crop.name, crop);
 			CROP_BY_INT.put(crop.id, crop);
-			if (crop.isHead && HeadTextures.SPECIAL_CROPS.contains(crop.headSkin)) {
+			if (crop.isHead) {
 				CROP_BY_HEAD_TEXTURE_HASH.put(crop.headSkin, crop);
 			}
 		}
@@ -275,23 +288,30 @@ public class GreenhousePaste {
 		// Determine crop ID based on the name of armor stand, should also detect non head crops
 		for (net.minecraft.world.entity.Entity entity : level.getEntities(null, detectionBox)) {
 			if (!(entity instanceof net.minecraft.world.entity.decoration.ArmorStand armorStand)) continue;
-			String name = armorStand.getCustomName() != null ? armorStand.getCustomName().getString() : "n/a";
+
+			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
+			if (head.isEmpty()) continue;
+
+			Component nameComponent = head.getHoverName();
+			String name = nameComponent.getString();
+
+			if (IGNORE_NAMES.contains(name)) return 0; // Make blocks are ignored too
+
 			for (Crop crop : CROP_ID_MAP.values()) {
 				if (name.contains(crop.armorStandName)) {
 					return crop.id;
 				}
 			}
 
-			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
-			if (head.isEmpty()) continue;
-
+			// Detection by texture for the special crops
 			Optional<String> texture = ItemUtils.getHeadTextureOptional(head);
 			if (texture.isEmpty()) continue;
 
-			Crop cropByTexture = CROP_BY_HEAD_TEXTURE_HASH.get(texture);
-			if (cropByTexture != null) {
-				return cropByTexture.id;
-			}
+			Crop cropByTexture = CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
+			if (cropByTexture == null) continue;
+			if (!HeadTextures.SPECIAL_CROPS.contains(cropByTexture.headSkin)) continue;
+
+			return cropByTexture.id;
 		}
 
 		// If no armor stand found, fallback to checking block type (for non-head crops)
@@ -388,6 +408,10 @@ public class GreenhousePaste {
 				// Already correct
 				if (currentCropId == targetCropId) continue;
 
+				if (currentCropId == 49 || currentCropId == 48) { // Mushrooms are interchangeable, so ignore if its the wrong mushroom
+					if (targetCropId == 48 || targetCropId == 49) continue;
+				}
+
 				Crop targetCrop = CROP_BY_INT.get(targetCropId);
 				if (targetCrop == null) continue;
 
@@ -396,7 +420,11 @@ public class GreenhousePaste {
 				} else if (targetCrop.isHead) {
 					SkullRenderer.submitSkull(collector, pos, targetCrop.displayStack, PREVIEW_COLOR_ARGB);
 				} else {
-					collector.submitBlockHologram(pos, targetCrop.cropBlock.defaultBlockState(), PREVIEW_ALPHA);
+					BlockState blockState = targetCrop.cropBlock.defaultBlockState();
+					if (targetCrop.cropBlock instanceof CropBlock) {
+						blockState = ((CropBlock) targetCrop.cropBlock).defaultBlockState().setValue(CropBlock.AGE, 7);
+					}
+					collector.submitBlockHologram(pos, blockState, PREVIEW_ALPHA);
 				}
 			}
 		}
