@@ -24,7 +24,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Labels
-        - Can show either the Room Name, Secrets Found, or Both
+      - Can show either the Room Name, Secrets Found, or Both
     - Hidable room checkmarks
     - Configurable outline and background blur
 - **Score Calculation**
@@ -84,7 +84,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
-- **Rare Room Alerts** 
+- **Rare Room Alerts**
     - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
@@ -217,7 +217,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Slayer HUD
     - Bossbars
     - Boss Kill Time
-        - Personal Bests
+      - Personal Bests
     - Boss and MiniBoss spawn alerts
     - Mute Blaze, Wolf, Spider, and Enderman sounds
     - Slayer Boss and Mini-Boss Highlighting
@@ -238,7 +238,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Mouse Locking** 
+- **Mouse Locking**
     - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
     - Option to separately highlight pests for the active Stereo Harmony vinyl.
@@ -320,6 +320,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
     - *NPC Sell Prices*
+    - *George Sell Prices*
     - *Motes Prices*
     - *Bazaar (average, lowest bin)*
     - *Auction House*
@@ -335,7 +336,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Bazaar Reorder Helper*
     - *Evolution Item Progress*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector
+    - Item Selector 
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
@@ -380,6 +381,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Sky Mall*
     - *Lottery*
     - *Dungeonbreaker*
+    - *Spirit Sceptre*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
@@ -415,7 +417,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Item Protection**
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
+- **Wiki Lookup:** Press F1 (Independent) or F4 (Official) to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**
@@ -434,7 +436,6 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Config Backups**
 - **Iris shader support**
 - **Block Break Prediction**
-
 
 </details>
 
