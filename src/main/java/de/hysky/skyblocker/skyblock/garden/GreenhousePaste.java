@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -57,8 +58,8 @@ public class GreenhousePaste {
 
 	// Special ignores
 	private static final Set<String> IGNORE_NAMES = Set.of(
-			"PlantboyRoots", // visually identical to plantboyadvance, but does not have a head texture, so ignore it in detection
-			"godseedPillar"  // gotseedpillar is part of the godseed crop, but does not have a head texture, so ignore it in detection
+			"PlantboyRoots",
+			"godseedPillar"
 	);
 
 	static {
@@ -87,7 +88,7 @@ public class GreenhousePaste {
 			new Crop("Fleshtrap", "fleshtrap", 20, HeadTextures.FLESHTRAP),
 			new Crop("Magic Jellybean", "magicjellybean", 21, HeadTextures.MAGIC_JELLYBEAN),
 			new Crop("Noctilume", "noctilume", 22, HeadTextures.NOCTILUME),
-			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING), // requires special handling
+			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING), // requires special handling, only look for head
 			new Crop("Soggybud", "soggybud", 24, HeadTextures.SOGGYBUD),
 			new Crop("Chorus Fruit", "chorusFruit", 25, HeadTextures.CHORUS_FRUIT),
 			new Crop("PlantBoy Advance", "Plantboy", 26, HeadTextures.PLANTBOY_ADVANCE), // plantboyroot is also a thing. also is 2x2, so adjust accordingly
@@ -276,6 +277,7 @@ public class GreenhousePaste {
 				greenhouse[x][y] = cropId;
 			}
 		}
+		adjustForSpecialCrops();
 	}
 
 	private static int getCropIdAtPosition(net.minecraft.world.level.Level level, BlockPos pos) {
@@ -324,6 +326,89 @@ public class GreenhousePaste {
 		}
 
 		return 0;
+	}
+
+	private static void adjustForSpecialCrops() {
+		// Special handling for Plantboy (2x2 crop)
+		for (int x = 0; x < 9; x++) {
+			for (int y = 0; y < 9; y++) {
+				adjustForPlantBoy(x, y);
+				adjustForSnoozling(x, y);
+				adjustForGodseed(x, y);
+			}
+		}
+	}
+
+	private static void adjustForPlantBoy(int x, int y) {
+		if (greenhouse[x][y] != 26) return;
+
+		BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY(), greenhouseCorner.getZ() + y); // sorry for cursed notation
+		net.minecraft.world.phys.AABB detectionBox = new net.minecraft.world.phys.AABB(
+				pos.getX(), pos.getY(), pos.getZ(),
+				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
+		);
+
+		ArmorStand foundArmorStand = null;
+		// Determine crop ID based on the name of armor stand, should also detect non head crops
+		for (Entity entity : client.level.getEntities(null, detectionBox)) {
+			if (!(entity instanceof ArmorStand armorStand)) continue;
+
+			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
+			if (head.isEmpty()) continue;
+
+			Component nameComponent = head.getHoverName();
+			String name = nameComponent.getString();
+			if (name.contains("Plantboy") && !name.contains("Advance")) {
+				foundArmorStand = armorStand;
+				break;
+			}
+		}
+
+		if (foundArmorStand == null) return;
+
+		// Stragtegy: since the plantboy is in the middle of the 2x2, we offset by a bit to get the bottom left corner
+		foundArmorStand.position().add(-0.2, 0, -0.2);
+
+		BlockPos bottomLeft = new BlockPos((int) Math.floor(foundArmorStand.getX()), (int) Math.floor(foundArmorStand.getY()), (int) Math.floor(foundArmorStand.getZ()));
+
+		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
+		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
+		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
+		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
+	}
+
+	private static void adjustForSnoozling(int x, int y) {
+		if (greenhouse[x][y] != 23) return;
+		try {
+			greenhouse[x-1][y] = 23;
+			greenhouse[x+1][y] = 23;
+
+			greenhouse[x-1][y-1] = 23;
+			greenhouse[x][y-1] = 23;
+			greenhouse[x+1][y-1] = 23;
+
+			greenhouse[x-1][y-2] = 23;
+			greenhouse[x][y-2] = 23;
+			greenhouse[x+1][y-2] = 23;
+		}
+		catch (ArrayIndexOutOfBoundsException _) { }
+	}
+
+	private static void adjustForGodseed(int x, int y) {
+		if (greenhouse[x][y] != 37) return;
+		try {
+			greenhouse[x-1][y] = 37;
+			greenhouse[x+1][y] = 37;
+
+			greenhouse[x-1][y-1] = 37;
+			greenhouse[x][y-1] = 37;
+			greenhouse[x+1][y-1] = 37;
+
+			greenhouse[x-1][y+1] = 37;
+			greenhouse[x][y+1] = 37;
+			greenhouse[x+1][y+1] = 37;
+		}
+		catch (ArrayIndexOutOfBoundsException _) { }
 	}
 
 	/**
@@ -459,7 +544,6 @@ public class GreenhousePaste {
 			this.displayStack = null;
 		}
 	}
-
 
 	// DEBUG
 
