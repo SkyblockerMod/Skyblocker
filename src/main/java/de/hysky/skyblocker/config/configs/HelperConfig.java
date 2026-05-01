@@ -11,8 +11,6 @@ import net.minecraft.client.resources.language.I18n;
 public class HelperConfig {
 	public boolean enableNewYearCakesHelper = true;
 
-	public boolean enableTastyCheeseHighlight = true;
-
 	public boolean enableBitsTooltip = true;
 
 	public boolean enableWardrobeHelper = true;
