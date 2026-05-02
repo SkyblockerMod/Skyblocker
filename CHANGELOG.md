@@ -1,3 +1,30 @@
+# Release 6.4.1
+
+## Highlight
+* Move to new and improved Lowest BIN Average Price API
+  * Item value calculations now use Lowest BIN average prices
+* Add Farming Toolkit support for Toolkit Indicator and Radial Menus
+* Add new enchantment abbreviations
+* Fix missing enchantment abbreviation for The One
+* Fix enchantment names in Item Value Breakdown Popup
+* Fix Hunting Toolkit Indicator not working
+* Fix waypoint saving bugs
+
+## What's Changed
+* Fix Enchant Names in Value Breakdown Popup by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2351
+* Waypoint fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2352
+* 0.24.4 by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2356
+* Toolkit Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2357
+* Update enchantment abbreviations for Harvest Feast by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/2358
+* Fix "The One" Abbreviation by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/2360
+* average lowestbin by @LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2363
+* Update unpatched config directly and fix name sorting warning by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2354
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2359
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.4.0+26.1.2...v6.4.1+26.1.2
+
+___
+
 # Release 6.4.0
 
 ## Highlight
