@@ -282,10 +282,10 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult().getStackOrThrow()));
 				}
 				case CenteredRecipe centeredRecipe -> {
-					recipeIcon = centeredRecipe.getIcon();
+					recipeIcon = centeredRecipe.getIcon().getStackOrThrow();
 
 					if (centeredRecipe.getRepresentative() != null) {
-						recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(centeredRecipe.getRepresentative().getOrThrow()));
+						recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(centeredRecipe.getRepresentative().getStackOrThrow()));
 					}
 
 					int slotsPerRow = 3;

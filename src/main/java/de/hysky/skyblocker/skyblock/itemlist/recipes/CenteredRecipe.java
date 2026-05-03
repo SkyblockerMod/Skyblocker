@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public interface CenteredRecipe extends SkyblockRecipe {
 	/**
 	 * Input items are displayed in 1 or 2 rows depending on the recipe size.
 	 */
-	static List<SkyblockRecipe.RecipeSlot> arrangeInputs(int width, int height, @Nullable ItemStack centeredItem, List<ItemStack> inputs) {
+	static List<SkyblockRecipe.RecipeSlot> arrangeInputs(int width, int height, @Nullable FlexibleItemStack centeredItem, List<FlexibleItemStack> inputs) {
 		List<SkyblockRecipe.RecipeSlot> slots = new ArrayList<>();
 		if (centeredItem != null)
 			slots.add(new SkyblockRecipe.RecipeSlot((width - SLOT_SIZE) / 2, SLOT_SIZE / 2, centeredItem));
@@ -74,7 +74,7 @@ public interface CenteredRecipe extends SkyblockRecipe {
 		return shouldSplit(size) && (size % 2 == 1 || size >= 8);
 	}
 
-	static List<SkyblockRecipe.RecipeSlot> arrangeOutputs(int width, int height, boolean offsetY, int inputSize, ItemStack output) {
+	static List<SkyblockRecipe.RecipeSlot> arrangeOutputs(int width, int height, boolean offsetY, int inputSize, FlexibleItemStack output) {
 		int centerX = getCenterX(width, inputSize);
 		int centerY = getCenterY(height, offsetY);
 		if (shouldOffsetArrow(inputSize)) centerX += SLOT_SIZE;
@@ -90,7 +90,7 @@ public interface CenteredRecipe extends SkyblockRecipe {
 		return new ScreenPosition(centerX - ARROW_LENGTH / 2 - 1, centerY - 1);
 	}
 
-	ItemStack getIcon();
+	FlexibleItemStack getIcon();
 
-	@Nullable ItemStack getRepresentative();
+	@Nullable FlexibleItemStack getRepresentative();
 }
