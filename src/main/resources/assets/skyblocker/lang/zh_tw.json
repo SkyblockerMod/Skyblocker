@@ -1543,8 +1543,8 @@
     "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "此顯示效果是/stats界面的快取，並非實時更新。\n槽位是可點擊的，等效於/stats指令。",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError2": "數字文本不能以分隔符開頭",
     "skyblocker.config.uiAndVisuals.inputCalculator.invalidNumberError3": "數字文本不能包含前導小數點",
-    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "狩獵工具包指示器",
-    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "為狩獵工具包中的工具顯示紅色標記。",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "工具包指示器",
+    "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator.@Tooltip": "為工具包中的工具顯示紅色標記。",
     "skyblocker.config.dungeons.terminalHud.determineInProgressStatus": "啟用「進行中」狀態",
     "skyblocker.config.dungeons.terminalHud.enabled": "啟用",
     "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "顯示已完成的終端",
@@ -1717,5 +1717,6 @@
     "key.skyblocker.wikiLookup.independent": "查詢Hypixel社群wiki",
     "skyblocker.accessoryHelper.independent": "（按住Shift查詢社群wiki）",
     "skyblocker.config.general.itemTooltip.enableGeorgePrice": "啟用George寵物售價",
-    "skyblocker.wikiLookup.noArticleFound.independent": "無法在Hypixel社群wiki中找到該物品的條目…"
+    "skyblocker.wikiLookup.noArticleFound.independent": "無法在Hypixel社群wiki中找到該物品的條目…",
+    "skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "農耕工具包"
 }

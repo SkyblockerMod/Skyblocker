@@ -368,10 +368,17 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * @see #getItemPrice(String, boolean)
+	 * @see #getItemPrice(String, boolean, boolean)
 	 */
 	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
 		return getItemPrice(skyblockApiId, false);
+	}
+
+	/**
+	 * @see #getItemPrice(String, boolean, boolean)
+	 */
+	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice)  {
+		return getItemPrice(skyblockApiId, useBazaarBuyPrice, false);
 	}
 
 	/**
@@ -380,20 +387,25 @@ public final class ItemUtils {
 	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
 	 * and the {@code right boolean} indicating if the price was based on complete data.
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
+	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice, boolean useAuctionAverage) {
 		Object2ObjectMap<String, BazaarProduct> bazaarPrices = TooltipInfoType.BAZAAR.getData();
+		Object2DoubleMap<String> threeDayAveragePrices = TooltipInfoType.THREE_DAY_AVERAGE.getData();
 		Object2DoubleMap<String> lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
-		if (skyblockApiId == null || skyblockApiId.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
+		if (skyblockApiId == null || skyblockApiId.isEmpty()) return DoubleBooleanPair.of(0, false);
 
-		if (bazaarPrices.containsKey(skyblockApiId)) {
+		if (bazaarPrices != null && bazaarPrices.containsKey(skyblockApiId)) {
 			BazaarProduct product = bazaarPrices.get(skyblockApiId);
 			OptionalDouble price = useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
 
 			return DoubleBooleanPair.of(price.orElse(0d), price.isPresent());
 		}
 
-		if (lowestBinPrices.containsKey(skyblockApiId)) {
+		if (useAuctionAverage && threeDayAveragePrices != null && threeDayAveragePrices.containsKey(skyblockApiId)) {
+			return DoubleBooleanPair.of(threeDayAveragePrices.getDouble(skyblockApiId), true);
+		}
+
+		if (lowestBinPrices != null && lowestBinPrices.containsKey(skyblockApiId)) {
 			return DoubleBooleanPair.of(lowestBinPrices.getDouble(skyblockApiId), true);
 		}
 

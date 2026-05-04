@@ -22,7 +22,7 @@ public class HuntingToolkitIndicatorAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		String joinedTooltip = String.join("", stack.skyblocker$getLoreStrings());
-		if (joinedTooltip.contains("Part of the Hunting Toolkit!")) {
+		if (joinedTooltip.contains("Part of a Toolkit!")) {
 			return SlotText.topLeftList(Component.literal("❒").withColor(0xFFFF5555));
 		}
 
