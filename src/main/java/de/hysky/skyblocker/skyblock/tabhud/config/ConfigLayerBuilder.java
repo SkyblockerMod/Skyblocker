@@ -28,13 +28,11 @@ public class ConfigLayerBuilder extends LayerBuilder {
 			widget.widget.save(conf);
 			return new WidgetConfig(Optional.of(conf), widget.fromTab ? Optional.empty() : Optional.of(widget.rule));
 		});
-		if (config.fancyTab != null && config.fancyTab.enabled) {
-			for (PositionedWidget widget : tabWidgets) {
-				if (config.widgets.containsKey(widget.widget.getInternalID())) continue;
-				JsonObject conf = new JsonObject();
-				widget.widget.save(conf);
-				config.widgets.put(widget.widget.getInternalID(), new WidgetConfig(Optional.of(conf), Optional.empty()));
-			}
+		for (PositionedWidget widget : tabWidgets) {
+			if (config.widgets.containsKey(widget.widget.getInternalID())) continue;
+			JsonObject conf = new JsonObject();
+			widget.widget.save(conf);
+			config.widgets.put(widget.widget.getInternalID(), new WidgetConfig(Optional.of(conf), Optional.empty()));
 		}
 	}
 

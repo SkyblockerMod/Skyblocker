@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
@@ -297,6 +298,14 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
+								.binding(defaults.uiAndVisuals.tabHud.enableFancyTab,
+										() -> config.uiAndVisuals.tabHud.enableFancyTab,
+										newValue -> config.uiAndVisuals.tabHud.enableFancyTab = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
 								.binding(defaults.uiAndVisuals.tabHud.enableFancyWidgetsList,
 										() -> config.uiAndVisuals.tabHud.enableFancyWidgetsList,
 										newValue -> config.uiAndVisuals.tabHud.enableFancyWidgetsList = newValue)
@@ -367,6 +376,14 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
 										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
 								.build())
+						.option(Option.<LayerConfig.Positioner>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
+								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
+										() -> config.uiAndVisuals.tabHud.defaultPositioning,
+										newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build()
+						)
 						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))

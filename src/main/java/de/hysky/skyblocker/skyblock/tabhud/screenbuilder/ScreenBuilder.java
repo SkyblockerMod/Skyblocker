@@ -38,6 +38,14 @@ public class ScreenBuilder {
 		return secondaryTab;
 	}
 
+	public void updateFancyTab() {
+		tab.updateTab(config.hiddenTabWidgets);
+	}
+
+	public void clearFancyTab() {
+		tab.clearTab();
+	}
+
 	public void setConfig(ScreenConfig config) {
 		this.config = config;
 		hud.setConfig(config.hud());

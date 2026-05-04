@@ -2,7 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class ScreenConfig {
@@ -16,6 +18,7 @@ public class ScreenConfig {
 	private final LayerConfig hud;
 	private final LayerConfig tab;
 	private final LayerConfig secondaryTab;
+	public final Set<String> hiddenTabWidgets = new ObjectOpenHashSet<>();
 
 	public ScreenConfig(LayerConfig hud, LayerConfig tab, LayerConfig secondaryTab) {
 		this.hud = hud;

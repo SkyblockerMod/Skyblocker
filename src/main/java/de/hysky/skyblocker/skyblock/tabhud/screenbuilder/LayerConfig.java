@@ -25,7 +25,7 @@ public class LayerConfig {
 	).apply(instance, LayerConfig::new));
 
 	public @Nullable FancyTab fancyTab;
-	public Map<String, WidgetConfig> widgets;
+	public final Map<String, WidgetConfig> widgets;
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	public LayerConfig(Optional<FancyTab> fancyTab, Map<String, WidgetConfig> widgetConfigs) {

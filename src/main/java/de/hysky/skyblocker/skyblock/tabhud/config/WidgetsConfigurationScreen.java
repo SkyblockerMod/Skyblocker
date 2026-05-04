@@ -84,7 +84,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
-		builder.updateTab();
+		screenBuilder.updateFancyTab();
 	}
 
 	public void setCurrentLocation(Location newLocation) {
@@ -94,7 +94,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		builder = screenBuilder.get(currentScreenLayer);
 		builder.update();
-		builder.updateTab();
+		screenBuilder.updateFancyTab();
 	}
 
 	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
@@ -102,7 +102,6 @@ public class WidgetsConfigurationScreen extends Screen {
 		this.currentScreenLayer = newScreenLayer;
 		builder = screenBuilder.get(newScreenLayer);
 		builder.update();
-		builder.updateTab();
 	}
 
 	@Override
@@ -452,6 +451,14 @@ public class WidgetsConfigurationScreen extends Screen {
 		return currentScreenLayer;
 	}
 
+	public Location getCurrentLocation() {
+		return currentLocation;
+	}
+
+	public ScreenConfig getScreenConfig() {
+		return screenConfig;
+	}
+
 	public int getScreenWidth() {
 		return (int) (width / TabHud.getScaleFactor());
 	}
@@ -460,7 +467,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		return (int) (height / TabHud.getScaleFactor());
 	}
 
-	public void openPopup(Function<Screen, Screen> popupCreator) {
+	public void openPopup(Function<WidgetsConfigurationScreen, Screen> popupCreator) {
 		minecraft.setScreen(popupCreator.apply(this));
 	}
 

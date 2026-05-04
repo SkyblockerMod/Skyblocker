@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.ConfigLayerBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.ConfigScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
@@ -69,15 +70,14 @@ public class WidgetManager {
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
 	private static boolean showOldVersionMessage = false;
+	private static boolean hasFancyTab = false;
 
 	public static ScreenConfig getScreenConfig(Location screenId) {
 		return SCREEN_CONFIGS.computeIfAbsent(screenId, _ -> new ScreenConfig());
 	}
 
 	public static boolean hasFancyTab() {
-		if (currentLocation == null || currentLayer == null) return false;
-		LayerConfig.FancyTab fancyTab = getScreenConfig(currentLocation).get(currentLayer).fancyTab();
-		return fancyTab != null && fancyTab.enabled;
+		return hasFancyTab;
 	}
 
 	public static HudWidget getWidgetOrPlaceholder(String id) {
@@ -111,6 +111,7 @@ public class WidgetManager {
 			}
 			loadConfig();
 
+			PlayerListManager.registerTabListener(WidgetManager::onPlayerListUpdate);
 		});
 
 		SkyblockEvents.JOIN.register(() -> {
@@ -145,6 +146,16 @@ public class WidgetManager {
 		matrices.scale(scale, scale);
 		WidgetManager.extractRenderState(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
+	}
+
+	public static void onPlayerListUpdate() {
+		boolean fancyTab = SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableFancyTab;
+		if (!fancyTab && hasFancyTab) {
+			SCREEN_BUILDER.clearFancyTab();
+		} else if (fancyTab) {
+			SCREEN_BUILDER.updateFancyTab();
+			hasFancyTab = true;
+		}
 	}
 
 	/**

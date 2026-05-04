@@ -176,6 +176,8 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class TabHudConf {
+		public boolean enableFancyTab = true;
+
 		public boolean enableFancyWidgetsList = true;
 
 		public int tabHudScale = 100;
@@ -192,8 +194,7 @@ public class UIAndVisualsConfig {
 
 		public boolean effectsFromFooter = false;
 
-		@Deprecated
-		public transient LayerConfig.Positioner defaultPositioning = LayerConfig.Positioner.CENTERED;
+		public LayerConfig.Positioner defaultPositioning = LayerConfig.Positioner.CENTERED;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;

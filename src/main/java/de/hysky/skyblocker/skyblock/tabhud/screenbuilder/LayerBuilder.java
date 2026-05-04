@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+// I would like to remove the tab logic from the hud layer by making it a subclass but that's already taken by ConfigLayerBuilder
 public class LayerBuilder {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -51,16 +52,19 @@ public class LayerBuilder {
 		merge();
 	}
 
-	public void updateTab() {
-		LayerConfig.FancyTab fancyTab = config.fancyTab();
-		if (fancyTab == null || !fancyTab.enabled) return;
+	public void clearTab() {
+		tabWidgets.clear();
+		merge();
+	}
+
+	public void updateTab(Collection<String> ignoredWidgets) {
 		Profiler.get().push("skyblocker:updateTabWidgetsList");
 		Set<String> currentWidgets = PlayerListManager.getCurrentWidgets();
 		List<PositionedWidget> newTabWidgets = new LinkedList<>();
 		for (String s : currentWidgets) {
 			HudWidget widget = PlayerListManager.getTabWidget(s);
 			if (widget == null) continue;
-			if (fancyTab.hiddenWidgets.contains(widget.getInternalID())) continue;
+			if (ignoredWidgets.contains(widget.getInternalID())) continue;
 			PositionedWidget e = new PositionedWidget(widget, PositionRule.DEFAULT);
 			e.fromTab = true;
 			newTabWidgets.add(e);
@@ -122,8 +126,8 @@ public class LayerBuilder {
 
 	public void updatePositions(int screenWidth, int screenHeight) {
 		updatePositions(rendered.stream().filter(p -> !p.fromTab).toList(), screenWidth, screenHeight);
-		if (config.fancyTab != null && config.fancyTab.enabled) {
-			WidgetPositioner positioner = config.fancyTab.positioner.getNewPositioner(0.9f, screenHeight);
+		if (!tabWidgets.isEmpty()) {
+			WidgetPositioner positioner = SkyblockerConfigManager.get().uiAndVisuals.tabHud.defaultPositioning.getNewPositioner(0.9f, screenHeight);
 			List<HudWidget> tabWidgets = rendered.stream().filter(p -> p.fromTab).map(p -> p.widget).toList();
 			tabWidgets.forEach(positioner::positionWidget);
 			Vector2i dimensions = positioner.finalizePositioning();
