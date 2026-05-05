@@ -58,6 +58,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		this.title = title;
 		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
 		configElements = List.of(new PlainTextElement(title.plainCopy()));
+		pack(elements); // initial pack to limit weird rendering artifacts
 	}
 
 	public <T extends Element> T addElement(T c) {
@@ -82,7 +83,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 			this.elements.clear();
 			this.elements.addAll(ERROR_ELEMENTS);
 		}
-		this.pack(elements);
+		if (!lastRenderedConfig) this.pack(elements);
 	}
 
 	protected final void updateConfig() {
@@ -93,9 +94,19 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		}
 	}
 
+	@Override
+	public void onConfigChanged() {
+		super.onConfigChanged();
+		updateConfig();
+	}
+
 	public abstract void updateContent();
 
-	protected void updateConfigContent(ElementCollector collector) {}
+	protected void updateConfigContent(ElementCollector collector) {
+		// very basic default impl
+		update();
+		elements.forEach(collector::addElement);
+	}
 
 	public boolean shouldUpdateBeforeRendering() {
 		return false;
@@ -181,4 +192,4 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
-	}
+}

@@ -59,6 +59,12 @@ public class ConfigLayerBuilder extends LayerBuilder {
 	}
 
 	@Override
+	public void update() {
+		super.update();
+		renderedWidgets.forEach(HudWidget::onConfigChanged);
+	}
+
+	@Override
 	protected void merge() {
 		super.merge();
 		idToWidget = rendered.stream().collect(Collectors.toMap(w -> w.widget.getInternalID(), Function.identity()));

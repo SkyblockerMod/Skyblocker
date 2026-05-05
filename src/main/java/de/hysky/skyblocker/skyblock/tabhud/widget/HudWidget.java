@@ -75,6 +75,8 @@ public abstract class HudWidget implements LayoutElement {
 				.build());
 	}
 
+	public void onConfigChanged() {}
+
 	/**
 	 * @param object the other HudWidget
 	 * @return true if they are the same instance or the internal id is the same.
