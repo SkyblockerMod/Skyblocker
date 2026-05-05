@@ -211,9 +211,9 @@ public final class ItemUtils {
 				}
 			}
 			case "POTION" -> {
-				String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
-				String extended = customData.contains("extended") ? "_EXTENDED" : "";
-				String splash = customData.contains("splash") ? "_SPLASH" : "";
+				String enhanced = customData.getBooleanOr("enhanced", false) ? "_ENHANCED" : "";
+				String extended = customData.getBooleanOr("extended", false) ? "_EXTENDED" : "";
+				String splash = customData.getBooleanOr("splash", false) ? "_SPLASH" : "";
 				if (customData.contains("potion") && customData.contains("potion_level")) {
 					return (customData.getStringOr("potion", "") + "_" + id + "_" + customData.getIntOr("potion_level", 0)
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
