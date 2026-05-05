@@ -328,7 +328,7 @@ public final class ItemUtils {
 	}
 
 	public static @NEUId String getNeuIdFromApiId(String apiId) {
-		// Convert API ID to NEU ID for Pets
+		// Pets
 		if (apiId.startsWith("LVL_")) {
 			String[] parts = apiId.split("_", 4);
 			if (parts.length != 4) return apiId;
@@ -336,6 +336,16 @@ public final class ItemUtils {
 			//noinspection OptionalIsPresent
 			if (rarity.isEmpty()) return apiId;
 			return parts[3] + ";" + rarity.get().ordinal() + "+" + parts[1];
+		}
+
+		// Potions
+		if (apiId.contains("_POTION_")) {
+			String[] parts = apiId.split("_POTION_", 2);
+			if (parts.length != 2) return apiId;
+			String potionName = parts[0];
+			parts = parts[1].split("_", 2);
+			String potionLevel = parts[0];
+			return "POTION_" + potionName + ";" + potionLevel;
 		}
 
 		return apiId;
