@@ -10,7 +10,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
@@ -45,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -178,15 +176,7 @@ public class SearchOverManager {
 
 			for (Object2DoubleMap.Entry<String> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().object2DoubleEntrySet()) {
 				String id = entry.getKey();
-				// Convert API ID to NEU ID for Pets
-				if (id.startsWith("LVL_1_")) {
-					id = id.substring(6);
-					var parts = id.split("_", 2);
-					if (parts.length != 2) continue;
-					Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(parts[0]);
-					if (rarity.isEmpty()) continue;
-					id = parts[1] + ";" + rarity.get().ordinal();
-				}
+				id = ItemUtils.getNeuIdFromApiId(id);
 				//look up in NEU repo.
 				id = id.split("[+-]")[0];
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);

@@ -24,6 +24,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -324,6 +325,20 @@ public final class ItemUtils {
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			default -> id.replace(":", "-");
 		};
+	}
+
+	public static @NEUId String getNeuIdFromApiId(String apiId) {
+		// Convert API ID to NEU ID for Pets
+		if (apiId.startsWith("LVL_")) {
+			String[] parts = apiId.split("_", 4);
+			if (parts.length != 4) return apiId;
+			Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(parts[2]);
+			//noinspection OptionalIsPresent
+			if (rarity.isEmpty()) return apiId;
+			return parts[3] + ";" + rarity.get().ordinal() + "+" + parts[1];
+		}
+
+		return apiId;
 	}
 
 	/**
