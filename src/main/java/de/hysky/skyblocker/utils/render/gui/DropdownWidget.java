@@ -144,7 +144,6 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 	@Override
 	public void setHeight(int height) {
 		super.setHeight(height);
-		dropdownList.setHeight(height - headerHeight);
 	}
 
 	@Override
