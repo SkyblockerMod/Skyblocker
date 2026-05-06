@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -71,6 +72,7 @@ public class SearchOverManager {
 	private static HashSet<String> bazaarItems = new HashSet<>();
 	private static HashSet<String> auctionItems = new HashSet<>();
 	private static HashSet<String> auctionPets = new HashSet<>();
+	private static HashSet<String> level200Pets = new HashSet<>();
 	private static HashSet<String> starableItems = new HashSet<>();
 	private static HashMap<String, String> namesToNeuId = new HashMap<>();
 
@@ -124,6 +126,7 @@ public class SearchOverManager {
 		HashSet<String> bazaarItems = new HashSet<>();
 		HashSet<String> auctionItems = new HashSet<>();
 		HashSet<String> auctionPets = new HashSet<>();
+		HashSet<String> level200Pets = new HashSet<>();
 		HashSet<String> starableItems = new HashSet<>();
 		HashMap<String, String> namesToNeuId = new HashMap<>();
 
@@ -176,15 +179,21 @@ public class SearchOverManager {
 
 			for (Object2DoubleMap.Entry<String> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().object2DoubleEntrySet()) {
 				String id = entry.getKey();
+				id = ItemUtils.getNeuIdFromApiId(id);
 				//look up in NEU repo.
-				id = id.split("[+-]")[0];
+				String[] parts = id.split("[+-]");
+				id = parts[0];
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
 					String name = ChatFormatting.stripFormatting(neuItem.getDisplayName());
 					//add names that are pets to the list of pets to work with the lvl 100 button
 					if (name != null && name.startsWith(PET_NAME_START)) {
 						name = name.replace(PET_NAME_START, "");
-						auctionPets.add(name.toLowerCase(Locale.ENGLISH));
+						String petName = name.toLowerCase(Locale.ENGLISH);
+						auctionPets.add(petName);
+						if (parts.length >= 2 && parts[1].equals("200")) {
+							level200Pets.add(petName);
+						}
 					}
 					//if it has essence cost add to starable items
 					if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
@@ -201,6 +210,7 @@ public class SearchOverManager {
 		SearchOverManager.bazaarItems = bazaarItems;
 		SearchOverManager.auctionItems = auctionItems;
 		SearchOverManager.auctionPets = auctionPets;
+		SearchOverManager.level200Pets = level200Pets;
 		SearchOverManager.starableItems = starableItems;
 		SearchOverManager.namesToNeuId = namesToNeuId;
 	}
@@ -445,11 +455,8 @@ public class SearchOverManager {
 		if (maxPetLevel) {
 			String lcSearch = search.toLowerCase(Locale.ENGLISH);
 			if (auctionPets.contains(lcSearch)) {
-				if (lcSearch.endsWith("dragon") && !lcSearch.startsWith("ender")) {
-					search = "[Lvl 200] " + search;
-				} else {
-					search = "[Lvl 100] " + search;
-				}
+				int maxLevel = level200Pets.contains(lcSearch) ? 200 : 100;
+				search = "[Lvl %d] %s".formatted(maxLevel, search);
 			}
 		} else {
 			// still filter for only pets

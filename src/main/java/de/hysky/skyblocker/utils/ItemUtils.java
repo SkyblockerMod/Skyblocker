@@ -24,6 +24,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.LongBooleanPair;
@@ -210,9 +211,9 @@ public final class ItemUtils {
 				}
 			}
 			case "POTION" -> {
-				String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
-				String extended = customData.contains("extended") ? "_EXTENDED" : "";
-				String splash = customData.contains("splash") ? "_SPLASH" : "";
+				String enhanced = customData.getBooleanOr("enhanced", false) ? "_ENHANCED" : "";
+				String extended = customData.getBooleanOr("extended", false) ? "_EXTENDED" : "";
+				String splash = customData.getBooleanOr("splash", false) ? "_SPLASH" : "";
 				if (customData.contains("potion") && customData.contains("potion_level")) {
 					return (customData.getStringOr("potion", "") + "_" + id + "_" + customData.getIntOr("potion_level", 0)
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
@@ -324,6 +325,30 @@ public final class ItemUtils {
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			default -> id.replace(":", "-");
 		};
+	}
+
+	public static @NEUId String getNeuIdFromApiId(String apiId) {
+		// Pets
+		if (apiId.startsWith("LVL_")) {
+			String[] parts = apiId.split("_", 4);
+			if (parts.length != 4) return apiId;
+			Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(parts[2]);
+			//noinspection OptionalIsPresent
+			if (rarity.isEmpty()) return apiId;
+			return parts[3] + ";" + rarity.get().ordinal() + "+" + parts[1];
+		}
+
+		// Potions
+		if (apiId.contains("_POTION_")) {
+			String[] parts = apiId.split("_POTION_", 2);
+			if (parts.length != 2) return apiId;
+			String potionName = parts[0];
+			parts = parts[1].split("_", 2);
+			String potionLevel = parts[0];
+			return "POTION_" + potionName + ";" + potionLevel;
+		}
+
+		return apiId;
 	}
 
 	/**
