@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -36,6 +37,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 	private SkyblockForgeRecipeCategory skyblockForgeRecipeCategory;
 	private SkyblockNpcShopRecipeCategory skyblockNpcShopRecipeCategory;
+	private SkyblockKatUpgradeRecipeCategory skyblockKatUpgradeRecipe;
 
 	public static void trickJEIIntoLoadingRecipes() {
 		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
@@ -64,6 +66,9 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
 		this.skyblockNpcShopRecipeCategory = new SkyblockNpcShopRecipeCategory(registration.getJeiHelpers().getGuiHelper());
 		registration.addRecipeCategories(this.skyblockNpcShopRecipeCategory);
+
+		this.skyblockKatUpgradeRecipe = new SkyblockKatUpgradeRecipeCategory(registration.getJeiHelpers().getGuiHelper());
+		registration.addRecipeCategories(this.skyblockKatUpgradeRecipe);
 	}
 
 	@Override
@@ -79,6 +84,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		registration.addRecipes(this.skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockCraftingRecipe.class::isInstance).map(SkyblockCraftingRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockForgeRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockForgeRecipe.class::isInstance).map(SkyblockForgeRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockNpcShopRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockNpcShopRecipe.class::isInstance).map(SkyblockNpcShopRecipe.class::cast).toList());
+		registration.addRecipes(this.skyblockKatUpgradeRecipe.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockKatUpgradeRecipe.class::isInstance).map(SkyblockKatUpgradeRecipe.class::cast).toList());
 	}
 
 	private static class GenericContainerHandler implements IGuiContainerHandler<ContainerScreen> {

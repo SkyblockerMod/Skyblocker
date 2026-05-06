@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 // Note that you must register your own custom recipe type with JEI, you cannot use any types/recipe classes from Vanilla or it will not work!
-public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRecipe> extends AbstractRecipeCategory<T> permits SkyblockCraftingRecipeCategory, SkyblockForgeRecipeCategory, SkyblockNpcShopRecipeCategory {
+public abstract sealed class AbstractSkyblockRecipeCategory<T extends SkyblockRecipe> extends AbstractRecipeCategory<T> permits SkyblockCraftingRecipeCategory, SkyblockForgeRecipeCategory, SkyblockKatUpgradeRecipeCategory, SkyblockNpcShopRecipeCategory {
 	protected final IGuiHelper guiHelper;
 	protected final ICraftingGridHelper craftingGridHelper;
 
