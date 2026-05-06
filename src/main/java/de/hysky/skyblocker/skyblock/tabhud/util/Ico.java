@@ -96,4 +96,6 @@ public class Ico {
 	public static final ItemStack MADDOX_BATPHONE = ItemUtils.createSkull(HeadTextures.MADDOX_BATPHONE);
 	public static final ItemStack LEAD = Items.LEAD.getDefaultInstance();
 	public static final ItemStack HOPPER = Items.HOPPER.getDefaultInstance();
+	public static final ItemStack NAUTILUS_SHELL = Items.NAUTILUS_SHELL.getDefaultInstance();
+	public static final ItemStack FLOWERING_AZALEA_LEAVES = Items.FLOWERING_AZALEA_LEAVES.getDefaultInstance();
 }
