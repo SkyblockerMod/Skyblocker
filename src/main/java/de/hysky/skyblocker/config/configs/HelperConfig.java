@@ -23,6 +23,8 @@ public class HelperConfig {
 
 	public boolean enableAccessoriesHelperWidget = true;
 
+	public boolean enable9fNetworkHelper = true;
+
 	public BuildersWand buildersWand = new BuildersWand();
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();

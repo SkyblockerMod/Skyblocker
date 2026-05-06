@@ -690,6 +690,9 @@
   "skyblocker.config.helpers.chocolateFactory.straySound": "Stray Rabbit Sound",
   "skyblocker.config.helpers.chocolateFactory.straySound.@Tooltip": "Repeatedly plays a ding while a stray rabbit is present. If it is golden, the sound will be more frequent and different.",
 
+  "skyblocker.config.helpers.enable9fNetworkHelper": "Enable 9f™ Network Relay Helper",
+  "skyblocker.config.helpers.enable9fNetworkHelper.@Tooltip": "Finds the correct order for each relay & highlights bombs.",
+
   "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Enable Accessory Helper Widget",
   "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Displays a list of missing accessories and ways of increasing MP in the accessory bag. Requires \"Accessories Helper Tooltip\" to be enabled.",
 

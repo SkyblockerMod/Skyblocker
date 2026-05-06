@@ -94,6 +94,15 @@ public class HelperCategory {
 								newValue -> config.helpers.enableAccessoriesHelperWidget = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// 9f Network Relay Helper
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.enable9fNetworkHelper"))
+						.description(Component.translatable("skyblocker.config.helpers.enable9fNetworkHelper.@Tooltip"))
+						.binding(defaults.helpers.enable9fNetworkHelper,
+								() -> config.helpers.enable9fNetworkHelper,
+								newValue -> config.helpers.enable9fNetworkHelper = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				// Builder's Wand and Ruler Preview
 				.group(OptionGroup.createBuilder()

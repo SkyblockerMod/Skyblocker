@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.slottext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.NineFTMSolver;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -94,6 +95,7 @@ public class SlotTextManager {
 			new BestiaryLevelAdder(),
 			new HuntingToolkitIndicatorAdder(),
 			new ChipLevelAdder(),
+			NineFTMSolver.INSTANCE,
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
 	private static final KeyMapping keyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
