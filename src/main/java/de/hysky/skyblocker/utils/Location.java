@@ -39,6 +39,7 @@ public enum Location implements StringRepresentable {
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
 	GALATEA("foraging_2", "Galatea", true),
+	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll", true),
 	/**
 	 * Unknown Skyblock location
 	 */
