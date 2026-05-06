@@ -281,7 +281,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 					recipeSlotButtons.add(this.resultButtons.get(14).setDisplayStack(forgeRecipe.getResult()));
 				}
 				case CenteredRecipe centeredRecipe -> {
-					recipeIcon = centeredRecipe.getIcon().getStackOrThrow();
+					recipeIcon = centeredRecipe.getIcon();
 
 					if (centeredRecipe.getRepresentative() != null) {
 						recipeSlotButtons.add(this.resultButtons.get(8).setDisplayStack(centeredRecipe.getRepresentative()));

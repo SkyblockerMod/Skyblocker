@@ -29,10 +29,10 @@ public final class SkyblockKatUpgradeRecipeCategory extends AbstractSkyblockReci
 		int itemX = 61 + ((recipeArrow.getWidth() - ITEM_SIZE) / 2);
 		int itemY = arrowYOffset - ITEM_SIZE - NPC_ITEM_PADDING;
 		if (recipe.getRepresentative() == null) return;
-		graphics.item(recipe.getRepresentative().getStackOrThrow(), itemX, itemY);
+		graphics.item(recipe.getRepresentative(), itemX, itemY);
 
 		if (GuiHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
-			this.drawTooltip(graphics, recipe.getRepresentative().getStackOrThrow().getHoverName(), mouseX, mouseY);
+			this.drawTooltip(graphics, recipe.getRepresentative().getHoverName(), mouseX, mouseY);
 		}
 	}
 }

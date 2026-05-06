@@ -82,7 +82,7 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 			Matrix3x2fStack matrices = context.pose();
 			matrices.pushMatrix();
 			matrices.translate(bounds.getX(), bounds.getY());
-			recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
+			recipe.extractRenderState(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
 			matrices.popMatrix();
 		}));
 		ScreenPosition arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());

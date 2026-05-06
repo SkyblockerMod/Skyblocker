@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.itemlist.recipes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.SkyblockTime;
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
@@ -13,6 +12,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ import java.util.Locale;
 
 public class SkyblockKatUpgradeRecipe implements CenteredRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_kat_upgrade");
-	public static @Nullable FlexibleItemStack katIcon = null;
+	public static @Nullable ItemStack katIcon = null;
 
-	private final FlexibleItemStack basePet;
-	private final List<FlexibleItemStack> inputs;
-	private final FlexibleItemStack upgradedPet;
+	private final ItemStack basePet;
+	private final List<ItemStack> inputs;
+	private final ItemStack upgradedPet;
 
 	private final Component upgradeTime;
 
@@ -57,12 +57,12 @@ public class SkyblockKatUpgradeRecipe implements CenteredRecipe {
 	}
 
 	@Override
-	public List<FlexibleItemStack> getInputs() {
+	public List<ItemStack> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<FlexibleItemStack> getOutputs() {
+	public List<ItemStack> getOutputs() {
 		return List.of(upgradedPet);
 	}
 
@@ -89,12 +89,12 @@ public class SkyblockKatUpgradeRecipe implements CenteredRecipe {
 	}
 
 	@Override
-	public FlexibleItemStack getIcon() {
+	public ItemStack getIcon() {
 		return Ico.BONE;
 	}
 
 	@Override
-	public @Nullable FlexibleItemStack getRepresentative() {
+	public @Nullable ItemStack getRepresentative() {
 		return katIcon;
 	}
 }
