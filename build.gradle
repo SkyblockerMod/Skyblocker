@@ -262,6 +262,7 @@ test {
 spotless {
 	java {
 		removeUnusedImports()
+		importOrder('java', 'javax', '', 'de.hysky')
 		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 		endWithNewline()
