@@ -35,6 +35,14 @@ public class HelperCategory {
 								newValue -> config.helpers.enableNewYearCakesHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.enableTastyCheeseHighlight"))
+						.description(Component.translatable("skyblocker.config.helpers.enableTastyCheeseHighlight.@Tooltip"))
+						.binding(defaults.helpers.enableTastyCheeseHighlight,
+								() -> config.helpers.enableTastyCheeseHighlight,
+								newValue -> config.helpers.enableTastyCheeseHighlight = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				// Bits Helper
 				.option(Option.<Boolean>createBuilder()
@@ -386,6 +394,7 @@ public class HelperCategory {
 								.build())
 						.build())
 
+				// Carnival
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.carnival"))
 						.collapsed(true)
