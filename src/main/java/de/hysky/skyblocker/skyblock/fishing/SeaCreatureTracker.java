@@ -164,8 +164,6 @@ public class SeaCreatureTracker {
 	 */
 	protected static int getSeaCreatureCap() {
 		return switch (Utils.getLocation()) {
-			case CRYSTAL_HOLLOWS -> 20;
-			case CRIMSON_ISLE -> 5;
 			default -> SkyblockerConfigManager.get().helpers.fishing.seaCreatureCap;
 		};
 	}

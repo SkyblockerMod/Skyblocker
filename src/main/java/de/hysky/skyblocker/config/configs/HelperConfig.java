@@ -100,7 +100,7 @@ public class HelperConfig {
 
 		public boolean seaCreatureTimerNotification = true;
 
-		public int seaCreatureCap = 30;
+		public int seaCreatureCap = 10;
 
 		public boolean seaCreatureCapNotification = true;
 
