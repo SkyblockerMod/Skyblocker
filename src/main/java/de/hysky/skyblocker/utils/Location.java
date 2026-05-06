@@ -11,19 +11,19 @@ import net.minecraft.util.StringRepresentable;
 public enum Location implements StringRepresentable {
 	PRIVATE_ISLAND("dynamic", "Private Island"),
 	GARDEN("garden", "Garden"),
-	HUB("hub", "Hub", true),
-	THE_FARMING_ISLAND("farming_1", "The Farming Islands", true),
-	THE_PARK("foraging_1", "The Park", true),
-	SPIDERS_DEN("combat_1", "Spider's Den", true),
+	HUB("hub", "Hub"),
+	THE_FARMING_ISLAND("farming_1", "The Farming Islands"),
+	THE_PARK("foraging_1", "The Park"),
+	SPIDERS_DEN("combat_1", "Spider's Den"),
 	@Deprecated BLAZING_FORTRESS("combat_2", "Blazing Fortress"),
-	THE_END("combat_3", "The End", true),
-	CRIMSON_ISLE("crimson_isle", "Crimson Isle", true),
-	GOLD_MINE("mining_1", "Gold Mine", true),
+	THE_END("combat_3", "The End"),
+	CRIMSON_ISLE("crimson_isle", "Crimson Isle"),
+	GOLD_MINE("mining_1", "Gold Mine"),
 	DEEP_CAVERNS("mining_2", "Deep Caverns"),
 	DWARVEN_MINES("mining_3", "Dwarven Mines"),
 	BACKWATER_BAYOU("fishing_1", "Backwater Bayou"),
 	DUNGEON_HUB("dungeon_hub", "Dungeon Hub"),
-	WINTER_ISLAND("winter", "Jerry's Workshop", true),
+	WINTER_ISLAND("winter", "Jerry's Workshop"),
 	THE_RIFT("rift", "The Rift"),
 	DARK_AUCTION("dark_auction", "Dark Auction"),
 	CRYSTAL_HOLLOWS("crystal_hollows", "Crystal Hollows"),
@@ -38,8 +38,8 @@ public enum Location implements StringRepresentable {
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
-	GALATEA("foraging_2", "Galatea", true),
-	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll", true),
+	GALATEA("foraging_2", "Galatea"),
+	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll"),
 	/**
 	 * Unknown Skyblock location
 	 */
@@ -56,30 +56,12 @@ public enum Location implements StringRepresentable {
 	private final String friendlyName;
 
 	/**
-	 * if the location is based on a modern server (not 1.8.9)
-	 */
-	private final boolean modern;
-
-	/**
 	 * @param id           location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @param friendlyName friendly name from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 */
 	Location(String id, String friendlyName) {
 		this.id = id;
 		this.friendlyName = friendlyName;
-		this.modern = false;
-	}
-
-	/**
-	 * Alternative constructor to have the option of setting the location to modern.
-	 *
-	 * @param id     location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
-	 * @param modern the location is 1.21+ server
-	 */
-	Location(String id, String friendlyName, boolean modern) {
-		this.id = id;
-		this.friendlyName = friendlyName;
-		this.modern = modern;
 	}
 
 	/**
@@ -87,10 +69,6 @@ public enum Location implements StringRepresentable {
 	 */
 	public String id() {
 		return this.id;
-	}
-
-	public boolean isModern() {
-		return this.modern;
 	}
 
 	@Override
