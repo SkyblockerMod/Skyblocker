@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import java.util.regex.Matcher;
@@ -26,6 +28,7 @@ public class CallMismyla extends ChatPatternListener {
 	protected boolean onMatch(Component message, Matcher matcher) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return false;
+		if (Utils.getLocation().equals(Location.GLACITE_MINESHAFTS)) return false;
 
 		MutableComponent callMessage = Constants.PREFIX.get().append(Component.translatable("skyblocker.config.mining.callMismyla.message"));
 		callMessage.withStyle(style ->

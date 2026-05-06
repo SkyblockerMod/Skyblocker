@@ -163,8 +163,10 @@ public class WaypointGroup {
 		for (int i = 0; i < waypoints.size(); i++) {
 			NamedWaypoint waypoint = waypoints.get(i);
 			UIAndVisualsConfig.Waypoints config = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
-			boolean notBackwards = config.allowGoingBackwards || i > currentIndex;
-			boolean notSkipping = config.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			int nextIndex = (currentIndex + 1) % waypoints.size();
+			int previousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			boolean notBackwards = config.allowGoingBackwards || i == nextIndex;
+			boolean notSkipping = config.allowSkippingWaypoints || i == nextIndex || i == previousIndex;
 			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), config.waypointActivationRadius)) {
 				currentIndex = i;
 			}

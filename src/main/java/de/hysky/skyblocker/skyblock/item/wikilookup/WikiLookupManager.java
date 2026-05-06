@@ -28,7 +28,7 @@ public final class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static KeyMapping officialWikiLookup;
-	public static KeyMapping fandomWikiLookup;
+	public static KeyMapping independentWikiLookup;
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
 			VisitorLookup.INSTANCE,
@@ -48,8 +48,8 @@ public final class WikiLookupManager {
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
-		fandomWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.skyblocker.wikiLookup.fandom",
+		independentWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.skyblocker.wikiLookup.independent",
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_F1,
 				SkyblockerMod.KEYBINDING_CATEGORY
@@ -58,13 +58,13 @@ public final class WikiLookupManager {
 
 	public static String getKeysText() {
 		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getTranslatedKeyMessage().getString();
-		String fandom = fandomWikiLookup.isUnbound() ? null : fandomWikiLookup.getTranslatedKeyMessage().getString();
+		String independent = independentWikiLookup.isUnbound() ? null : independentWikiLookup.getTranslatedKeyMessage().getString();
 
-		if (official == null && fandom == null) return "";
-		if (official == null) return fandom.toUpperCase(Locale.ENGLISH);
-		if (fandom == null) return official.toUpperCase(Locale.ENGLISH);
+		if (official == null && independent == null) return "";
+		if (official == null) return independent.toUpperCase(Locale.ENGLISH);
+		if (independent == null) return official.toUpperCase(Locale.ENGLISH);
 
-		return (official + "/" + fandom).toUpperCase(Locale.ENGLISH);
+		return (official + "/" + independent).toUpperCase(Locale.ENGLISH);
 	}
 
 	public static boolean handleWikiLookup(Either<Slot, ItemStack> either, Player player, KeyEvent input) {
@@ -74,7 +74,7 @@ public final class WikiLookupManager {
 	public static boolean handleWikiLookup(@Nullable String title, Either<Slot, ItemStack> either, Player player, KeyEvent input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
 			boolean official = officialWikiLookup.matches(input);
-			if (official || fandomWikiLookup.matches(input)) {
+			if (official || independentWikiLookup.matches(input)) {
 				openWiki(title, either, player, official);
 				return true;
 			}

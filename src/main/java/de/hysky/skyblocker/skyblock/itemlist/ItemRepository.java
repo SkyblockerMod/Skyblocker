@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
 import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.RecipeItemStackCache;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
@@ -103,7 +104,9 @@ public class ItemRepository {
 		itemsMap.clear();
 		recipes.clear();
 
+		StackOverlays.loadOverlays();
 		NEURepoManager.forEachItem(ItemRepository::loadItem);
+		StackOverlays.cleanUpOverlays();
 		items.sort(Comparator.<FlexibleItemStack, String>comparing(stack -> stack.getSkyblockId().replaceAll(".\\d+$", ""))
 				.thenComparingInt(stack -> stack.getSkyblockId().length())
 				.thenComparing(FlexibleItemStack::getSkyblockId)
@@ -111,6 +114,7 @@ public class ItemRepository {
 		itemsImported = true;
 
 		NEURepoManager.forEachItem(ItemRepository::loadRecipes);
+		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
 		afterImportTasks.forEach(task -> {
@@ -173,7 +177,7 @@ public class ItemRepository {
 	}
 
 	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixel-skyblock.fandom.com";
+		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {

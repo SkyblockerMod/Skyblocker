@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
 import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
@@ -80,7 +79,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private String search = "";
 
 	public AuctionBrowserScreen(AuctionHouseScreenHandler handler, Inventory inventory) {
-		super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Component.literal("AuctionBrowserSkyblocker") : Component.literal("Auctions Browser"), 187);
+		super(handler, inventory, Component.literal("Auctions Browser"), 187);
 		this.titleLabelX = 999;
 	}
 
@@ -108,7 +107,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 		if (categoryTabWidgets.isEmpty())
 			for (int i = 0; i < 6; i++) {
-				CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot);
+				CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot, i);
 				categoryTabWidgets.add(categoryTabWidget);
 				addWidget(categoryTabWidget); // This method only makes it clickable, does not add it to the drawables list
 				// manually rendered in the render method to have it not render behind the durability bars
