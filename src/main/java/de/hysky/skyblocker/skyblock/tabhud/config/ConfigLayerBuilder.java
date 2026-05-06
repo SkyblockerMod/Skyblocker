@@ -49,8 +49,14 @@ public class ConfigLayerBuilder extends LayerBuilder {
 	}
 
 	public void remove(HudWidget widget) {
-		config.widgets.put(widget.getInternalID(), WidgetConfig.disabled());
+		config.widgets.remove(widget.getInternalID());
 		widgets.removeIf(w -> w.widget.equals(widget));
+		merge();
+	}
+
+	public void remove(PositionedWidget widget) {
+		config.widgets.remove(widget.widget.getInternalID());
+		widgets.remove(widget);
 		merge();
 	}
 

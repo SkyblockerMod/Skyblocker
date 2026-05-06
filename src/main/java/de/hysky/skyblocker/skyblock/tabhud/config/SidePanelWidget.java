@@ -114,7 +114,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 			}
 		});
 		if (!positionedWidget.fromTab) {
-			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(hudWidget)).build());
+			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(positionedWidget)).build());
 		}
 
 		add(Button.builder(Component.literal("Apply Everywhere"), _ -> Arrays.stream(Location.values())

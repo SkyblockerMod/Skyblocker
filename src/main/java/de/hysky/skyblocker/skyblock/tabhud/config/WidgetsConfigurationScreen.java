@@ -364,7 +364,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				return true;
 			}
 			if (keyInput.key() == GLFW.GLFW_KEY_DELETE) {
-				removeWidget(selectedWidget.widget);
+				removeWidget(selectedWidget);
 				return true;
 			}
 		}
@@ -412,24 +412,23 @@ public class WidgetsConfigurationScreen extends Screen {
 		sidePanelWidget.close();
 	}
 
-	public void removeWidget(HudWidget widget) {
+	public void removeWidget(PositionedWidget widget) {
 		builder.remove(widget);
-		// FIXME
-		/*PositionRule deleted = widget.getPositionRule();
-		for (PositionedWidget positionedWidget : builder.getWidgets()) {
+		PositionRule deleted = widget.rule;
+		for (PositionedWidget positionedWidget : builder.getRendered()) {
 			PositionRule rule = positionedWidget.rule;
 			if (rule.parent().isEmpty()) continue;
-			if (rule.parent().get().equals(widget.getInternalID())) {
-				positionedWidget.setPositionRule(new PositionRule(
+			if (rule.parent().get().equals(widget.widget.getInternalID())) {
+				positionedWidget.rule = new PositionRule(
 						deleted.parent(),
 						deleted.parentPoint(),
 						rule.thisPoint(),
 						deleted.relativeX() + rule.relativeX(),
 						deleted.relativeY() + rule.relativeY()
-				));
+				);
 			}
-		}*/
-		if (selectedWidget != null && selectedWidget.widget == widget) {
+		}
+		if (selectedWidget == widget) {
 			sidePanelWidget.close();
 			selectedWidget = null;
 		}
