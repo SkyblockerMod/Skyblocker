@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
 
 public class Room implements Tickable, Renderable {
 	public static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
-	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
+	private static final Pattern SECRETS = Pattern.compile("(\\d{1,2})/(\\d{1,2}) Secrets");
 	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
