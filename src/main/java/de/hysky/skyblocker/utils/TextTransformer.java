@@ -6,13 +6,108 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
  *
  * @author AzureAaron
  */
 public class TextTransformer {
+	private static final Pattern REDUNDANT_COLOR_REGEX = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
+	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\s+");
 	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
+	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> c.getColor() != null).collect(Collectors.toUnmodifiableMap(ChatFormatting::getColor, ChatFormatting::getChar));
+	private static final List<Map.Entry<Predicate<Style>, Character>> PREDICATE_FORMAT_LIST = List.of(
+			Map.entry(Style::isBold, 'l'),
+			Map.entry(Style::isItalic, 'o'),
+			Map.entry(Style::isObfuscated, 'k'),
+			Map.entry(Style::isUnderlined, 'n'),
+			Map.entry(Style::isStrikethrough, 'm')
+	);
+
+	private static String getCodes(Style style, Style previous) {
+		final var codes = new StringJoiner("&", "&", "").setEmptyValue("");
+		boolean hasReset = false;
+		final boolean needsReset = previous.getColor() != null && style.getColor() == null ||
+				PREDICATE_FORMAT_LIST.stream().anyMatch(x -> x.getKey().test(previous) && !x.getKey().test(style));
+
+		if (needsReset && style.getColor() == null) {
+			codes.add("r");
+			hasReset = true;
+		} else if (style.getColor() != null && (needsReset || !Objects.equals(previous.getColor(), style.getColor()))) {
+			final Character code = HEX_TO_CODES.get(style.getColor().getValue());
+
+			if (code == null) {
+				// Adds non-standard hex colors as &#RRGGBB
+				codes.add(style.getColor().formatValue());
+			} else {
+				codes.add("" + code);
+			}
+
+			hasReset = true;
+		}
+
+		final boolean alreadyReset = hasReset;
+		PREDICATE_FORMAT_LIST.stream()
+				.filter(x -> x.getKey().test(style) && (alreadyReset || !x.getKey().test(previous)))
+				.map(Map.Entry::getValue)
+				.forEach(c -> codes.add("" + c));
+
+		return codes.toString();
+	}
+
+	private static String removeRedundantCodes(String message) {
+		String result = message;
+		Matcher redundant = REDUNDANT_COLOR_REGEX.matcher(message);
+
+		while (redundant.find()) {
+			result = redundant.replaceAll("$1&$2");
+			redundant.reset(result);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Converts message components to strings containing legacy formatting codes.
+	 *
+	 * @author LJNeon
+	 *
+	 * @param component The chat component to be transformed
+	 * @return A string matching the exact formatting of the input component
+	 */
+	public static String toLegacy(Component component) {
+		final var result = new StringBuilder();
+		final var previous = new AtomicReference<>(Style.EMPTY);
+
+		component.visit((style, string) -> {
+			// don't bother styling whitespace
+			if (ALL_WHITESPACE.matcher(string).matches()) {
+				result.append(string);
+			} else {
+				result.append(getCodes(style, previous.get()));
+				result.append(string.replace('§', '&'));
+
+			}
+
+			previous.set(style);
+
+			return Optional.empty();
+		}, Style.EMPTY);
+
+		return removeRedundantCodes(result.toString());
+	}
 
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.

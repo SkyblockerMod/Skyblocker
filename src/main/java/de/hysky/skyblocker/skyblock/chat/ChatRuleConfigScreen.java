@@ -114,6 +114,7 @@ public class ChatRuleConfigScreen extends Screen {
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3);
 		EditBox filterInput = contentAdder.addChild(new EditBox(font, getWidth(3), 20, Component.empty()), 3);
 		filterInput.setMaxLength(1024);
+		filterInput.addFormatter(createRenderTextProvider(filterInput::getValue, true));
 		filterInput.setValue(chatRule.getFilter());
 		filterInput.setResponder(chatRule::setFilter);
 		filterInput.setHint(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.filter").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
@@ -122,20 +123,23 @@ public class ChatRuleConfigScreen extends Screen {
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (button, value) -> chatRule.setRegex(value)));
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (button, value) -> chatRule.setIgnoreCase(value)));
-		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(b -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (button, value) -> chatRule.setPartialMatch(value)));
-		filtersRow2.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
-						widget -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
+				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
+		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
+						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
+		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIncludeFormatting())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"), (_, value) -> chatRule.setIncludeFormatting(value)));
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
+		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
+				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
 
 		// ==== Outputs
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3, content.newCellSettings().paddingTop(4 + GRID_SPACING));
@@ -294,26 +298,36 @@ public class ChatRuleConfigScreen extends Screen {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
-	private static EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
-		return (s, start) -> visitor -> {
-			String fullText = fullTextSupplier.get();
-			char prefix = fullText.contains("§") ? '§' : '&';
-			Style style = Style.EMPTY;
-			for (int i = 0; i < fullText.length(); i++) {
-				if (fullText.charAt(i) == prefix) {
-					if (i + 1 < fullText.length()) {
-						ChatFormatting formatting = ChatFormatting.getByCode(fullText.charAt(i + 1));
-						if (formatting != null) {
-							style = formatting == ChatFormatting.RESET ? Style.EMPTY : style.applyLegacyFormat(formatting);
+
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
+		return createRenderTextProvider(fullTextSupplier, false);
+	}
+	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier, boolean onlyIfFormatted) {
+		return (s, start) -> {
+			if (onlyIfFormatted && (!chatRule.getIncludeFormatting() || chatRule.getRegex())) {
+				return null;
+			}
+
+			return visitor -> {
+				String fullText = fullTextSupplier.get();
+				char prefix = fullText.contains("§") ? '§' : '&';
+				Style style = Style.EMPTY;
+				for (int i = 0; i < fullText.length(); i++) {
+					if (fullText.charAt(i) == prefix) {
+						if (i + 1 < fullText.length()) {
+							ChatFormatting formatting = ChatFormatting.getByCode(fullText.charAt(i + 1));
+							if (formatting != null) {
+								style = formatting == ChatFormatting.RESET ? Style.EMPTY : style.applyLegacyFormat(formatting);
+							}
 						}
 					}
+					int codePoint = fullText.codePointAt(i);
+					if (i >= start && i < start + s.length()) {
+						visitor.accept(i, style, codePoint);
+					}
 				}
-				int codePoint = fullText.codePointAt(i);
-				if (i >= start && i < start + s.length()) {
-					visitor.accept(i, style, codePoint);
-				}
-			}
-			return true;
+				return true;
+			};
 		};
 	}
 
