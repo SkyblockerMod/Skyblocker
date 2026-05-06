@@ -51,6 +51,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 		return SkyblockerConfigManager.get().farming.pestHighlighter.enabled && Utils.isInGarden();
 	}
 
+	public boolean contestEnabled() {
+		return  SkyblockerConfigManager.get().farming.pestHighlighter.contestHighlighter;
+	}
+
 	/**
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
@@ -62,7 +66,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	private static void update() {
 		// Check if scoreboard text contains no 'Jacob's Contest' should be enough
 		// Detecting chat to clear CURRENT_CROP_CONTEST is not a good solution because of a scoreboard has delayed update rate
-		if (!INSTANCE.isEnabled() || Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
+		if (!INSTANCE.isEnabled() || !INSTANCE.contestEnabled() || Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
 			CurrentJacobCrop.CURRENT_CROP_CONTEST = null;
 			return;
 		}
