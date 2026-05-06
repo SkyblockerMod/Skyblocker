@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -24,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 public class ItemTooltip {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ItemTooltip.class.getName());
 	private static final Minecraft client = Minecraft.getInstance();
-	public static final java.util.function.Supplier<GeneralConfig.ItemTooltip> config = () -> SkyblockerConfigManager.get().general.itemTooltip;
+	public static final Supplier<GeneralConfig.ItemTooltip> config = () -> SkyblockerConfigManager.get().general.itemTooltip;
 	private static volatile boolean sentNullWarning = false;
 
 	/**

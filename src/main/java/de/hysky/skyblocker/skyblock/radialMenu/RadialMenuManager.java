@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.radialMenu.menus.BagsMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.BankMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.BoosterCookieMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.CollectionsMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.menus.FarmingToolkit;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.FastTravelMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.HuntingMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.ProfileManagementMenu;
@@ -28,6 +29,7 @@ public class RadialMenuManager {
 			new CollectionsMenu(),
 			new FastTravelMenu(),
 			new HuntingMenu(),
+			new FarmingToolkit(),
 			new ProfileManagementMenu(),
 			new SackOfSacksMenu(),
 			new SacksMenu(),
