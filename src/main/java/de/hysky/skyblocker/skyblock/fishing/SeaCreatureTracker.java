@@ -4,7 +4,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.SkyblockTime;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -93,7 +92,7 @@ public class SeaCreatureTracker {
 	 */
 	private static void checkCapNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureCapNotification) return;
-		if (seaCreatureCount() == getSeaCreatureCap()) {
+		if (seaCreatureCount() == 10) {
 			TitleContainer.addTitle(new Title(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification").withStyle(ChatFormatting.RED)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
@@ -155,17 +154,6 @@ public class SeaCreatureTracker {
 
 	protected static int seaCreatureCount() {
 		return seaCreatures.size();
-	}
-
-	/**
-	 * Finds max sea creatures based on current location
-	 *
-	 * @return current sea creature cap
-	 */
-	protected static int getSeaCreatureCap() {
-		return switch (Utils.getLocation()) {
-			default -> SkyblockerConfigManager.get().helpers.fishing.seaCreatureCap;
-		};
 	}
 
 	record LiveSeaCreature(SeaCreature seaCreature, Entity entity, Long spawnTime) {}
