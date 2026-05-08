@@ -12,6 +12,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * An editable layer builder for config purposes
+ */
 public class ConfigLayerBuilder extends LayerBuilder {
 
 	private Map<String, PositionedWidget> idToWidget = Map.of();

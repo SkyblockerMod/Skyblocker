@@ -137,7 +137,7 @@ class GlobalOptionsScreen extends Screen {
 				);
 			}
 			content.arrangeElements();
-			int maxHeight = Math.min(200, height - 50);
+			int maxHeight = Math.min(200, height - 150);
 			ScrollableLayout scrollable = new ScrollableLayout(minecraft, content, maxHeight);
 			scrollable.setMaxHeight(maxHeight);
 			scrollable.setMinWidth(150);

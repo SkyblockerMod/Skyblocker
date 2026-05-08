@@ -4,8 +4,10 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -18,6 +20,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenPosition;
@@ -25,6 +28,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.joml.Matrix3x2f;
@@ -36,8 +40,10 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -428,9 +434,58 @@ public class WidgetsConfigurationScreen extends Screen {
 				);
 			}
 		}
+		Location location = getCurrentLocation();
+		Optional<Set<Location>> locationsWithCopies = WidgetManager.getCopyTracker()
+				.get(currentScreenLayer)
+				.get(widget.widget.getInternalID())
+				.flatMap(sets -> sets.whereHas(location));
+		locationsWithCopies.ifPresent(set -> openPopup(screen ->
+				new PopupScreen.Builder(screen, Component.literal("Delete Copies"))
+						.addMessage(Component.literal("Do you want to delete copies of this widget in other locations?"))
+						.addButton(CommonComponents.GUI_YES, popup -> {
+							set.clear();
+							removeCopies(set, widget.widget.getInternalID());
+							popup.onClose();
+						})
+						.addButton(CommonComponents.GUI_NO, popup -> {
+							set.remove(location);
+							popup.onClose();
+						})
+						.build()
+		));
 		if (selectedWidget == widget) {
 			sidePanelWidget.close();
 			selectedWidget = null;
+		}
+	}
+
+	private void removeCopies(Set<Location> locations, String widgetId) {
+		for (Location location : locations) {
+			LayerConfig config = WidgetManager.getScreenConfig(location).get(currentScreenLayer);
+			WidgetConfig deletedConfig = config.widgets.remove(widgetId);
+			if (deletedConfig == null) continue;
+			// fix up widgets that had the deleted one as parent
+			for (Map.Entry<String, WidgetConfig> entry : config.widgets.entrySet()) {
+				WidgetConfig widgetConfig = entry.getValue();
+				Optional<PositionRule> posOpt = widgetConfig.position();
+				if (posOpt.isEmpty()) continue;
+				PositionRule rule = posOpt.get();
+				if (rule.parent().filter(widgetId::equals).isEmpty()) continue;
+				PositionRule newRule;
+				if (deletedConfig.position().isPresent()) {
+					PositionRule oldPosition = deletedConfig.position().get();
+					newRule = new PositionRule(
+							oldPosition.parent(),
+							oldPosition.parentPoint(),
+							oldPosition.thisPoint(),
+							oldPosition.relativeX() + rule.relativeX(),
+							oldPosition.relativeY() + rule.relativeY()
+					);
+				} else {
+					newRule = PositionRule.DEFAULT;
+				}
+				entry.setValue(new WidgetConfig(widgetConfig.config(), Optional.of(newRule)));
+			}
 		}
 	}
 

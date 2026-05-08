@@ -22,7 +22,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -50,8 +49,7 @@ class TopBarWidget extends AbstractContainerWidget {
 		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);
 
-		List<Location> locations = new ArrayList<>(Arrays.stream(Location.values()).filter(l -> l != Location.UNKNOWN).toList());
-		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, locations, parent::setCurrentLocation, Utils.getLocation());
+		locationDropdown = new CustomDropdownWidget<>(width / 2 - 100 - 5, 0, 100, 200, List.copyOf(WidgetManager.ALLOWED_LOCATIONS), parent::setCurrentLocation, Utils.getLocation());
 		locationDropdown.setFormatter(l -> Component.literal(l.toString()));
 		screenLayerDropdown = new CustomDropdownWidget<>(width / 2 + 5, 0, 100, 200, List.of(WidgetManager.ScreenLayer.values()), parent::setCurrentScreenLayer, WidgetManager.ScreenLayer.HUD);
 

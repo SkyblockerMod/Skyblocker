@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -46,14 +47,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WidgetManager {
+	@SuppressWarnings("deprecation")
+	public static final Set<Location> ALLOWED_LOCATIONS = Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.BLAZING_FORTRESS)));
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
@@ -64,8 +70,7 @@ public class WidgetManager {
 
 	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
 
-	private static Map<Location, ScreenConfig> SCREEN_CONFIGS = new HashMap<>();
-	private static final Codec<Map<Location, ScreenConfig>> CONFIG_CODEC = CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).codec();
+	private static Config CONFIG = new Config();
 
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
@@ -73,7 +78,11 @@ public class WidgetManager {
 	private static boolean hasFancyTab = false;
 
 	public static ScreenConfig getScreenConfig(Location screenId) {
-		return SCREEN_CONFIGS.computeIfAbsent(screenId, _ -> new ScreenConfig());
+		return CONFIG.screenConfigs().computeIfAbsent(screenId, _ -> new ScreenConfig());
+	}
+
+	public static CopyTracker getCopyTracker() {
+		return CONFIG.copyTracker();
 	}
 
 	public static boolean hasFancyTab() {
@@ -202,7 +211,7 @@ public class WidgetManager {
 				return;
 			}
 			if (object.get(VERSION_KEY).isJsonPrimitive()) fillDefaultConfig(object.get(VERSION_KEY).getAsInt());
-			SCREEN_CONFIGS = CONFIG_CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
+			CONFIG = Config.CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
 				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
 				showErrorToast();
@@ -228,6 +237,9 @@ public class WidgetManager {
 
 			HudWidget commissions = getWidgetOrPlaceholder("commissions");
 			HudWidget powders = getWidgetOrPlaceholder("powders");
+			EnumSet<Location> miningLocations = EnumSet.of(Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS);
+			getCopyTracker().hud().getOrCreate(commissions.getInternalID()).track(miningLocations);
+			getCopyTracker().hud().getOrCreate(powders.getInternalID()).track(miningLocations);
 
 			PositionRule commsRule = new PositionRule(
 					Optional.empty(),
@@ -273,6 +285,7 @@ public class WidgetManager {
 				hud.add(sweepDetails);
 				hud.serializeConfig();
 			}
+			getCopyTracker().hud().getOrCreate(sweepDetails.getInternalID()).track(SweepDetailsHudWidget.LOCATIONS);
 
 			// Galatea
 			configScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
@@ -309,7 +322,7 @@ public class WidgetManager {
 
 	public static void saveConfig() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			JsonElement element = CONFIG_CODEC.encodeStart(JsonOps.INSTANCE, SCREEN_CONFIGS).getOrThrow();
+			JsonElement element = Config.CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow();
 			element.getAsJsonObject().addProperty(VERSION_KEY, VERSION);
 			SkyblockerMod.GSON.toJson(element, writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
@@ -356,6 +369,17 @@ public class WidgetManager {
 		@Override
 		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
+		}
+	}
+
+	public record Config(Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker) {
+		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
+				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker)
+		).apply(instance, Config::new));
+
+		public Config() {
+			this(new Object2ObjectOpenHashMap<>(), new CopyTracker());
 		}
 	}
 }
