@@ -1105,5 +1105,7 @@
     "skyblocker.config.slayer.highlightBosses": "Подсветка босса",
     "skyblocker.slayer.slainTime": "Slayer убит за %s!",
     "skyblocker.tips.configSearch": "Вы можете искать настройки по всему конфигу при помощи поля поиска на экране настроек.",
-    "skyblocker.tips.configureNewFeatures": "Настройте новые функции этого обновления при помощи /skyblocker config %s."
+    "skyblocker.tips.configureNewFeatures": "Настройте новые функции этого обновления при помощи /skyblocker config %s.",
+    "skyblocker.slayer.bossSpawnAlert": "Появился босс!",
+    "skyblocker.slayer.miniBossSpawnAlert": "Мини-босс"
 }
