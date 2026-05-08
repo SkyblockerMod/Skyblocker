@@ -50,9 +50,10 @@ public class JacobsContestWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
+		if (widget.detail().getString().contains("left")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, widget.detail()));
 		for (Component line : widget.lines()) {
 			String string = line.getString();
-			if (string.endsWith("left") || string.contains("Starts")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, line));
+			if (string.contains("Starts")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, line));
 			else {
 				Matcher matcher = CROP_PATTERN.matcher(string);
 				if (matcher.matches()) {

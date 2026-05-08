@@ -49,29 +49,29 @@ public class ElectionWidget extends TabHudWidget {
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
 		List<Component> lines = widget.lines();
-		String status = lines.getFirst().getString();
+		String status = widget.detail().getString();
 
 		if (status.contains("Over!")) {
 			// election is over
 			this.addElement(Elements.iconTextComponent(Ico.BARRIER, EL_OVER));
 
-			for (int i = 1; i < lines.size(); i++) {
-				this.addElement(new PlainTextElement(lines.get(i)));
+			for (Component line : lines) {
+				this.addElement(new PlainTextElement(line));
 			}
 
 		} else {
 			// election is going on
 			this.addSimpleIcoText(Ico.CLOCK, "Ends in: ", ChatFormatting.GOLD, lines.getFirst().getString().trim());
 
-			for (int i = 1; i < lines.size(); i++) {
+			for (int i = 0; i < lines.size(); i++) {
 				String string = lines.get(i).getString();
 				Matcher m = VOTE_PATTERN.matcher(string);
 				if (m.matches()) {
 					String mayorname = m.group("mayor");
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
-					Component candidate = Component.literal(mayorname).withStyle(COLS[i - 1]);
-					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i - 1].getColor()));
+					Component candidate = Component.literal(mayorname).withStyle(COLS[i]);
+					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i].getColor()));
 				} else this.addElement(new PlainTextElement(lines.get(i)));
 			}
 		}
