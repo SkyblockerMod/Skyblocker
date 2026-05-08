@@ -23,10 +23,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 class GlobalOptionsScreen extends Screen {
-	private final Supplier<UIAndVisualsConfig.TabHudConf> CONFIG = () -> SkyblockerConfigManager.get().uiAndVisuals.tabHud;
 	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")
@@ -49,7 +48,7 @@ class GlobalOptionsScreen extends Screen {
 		GridLayout.RowHelper globalOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
 		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 
-		UIAndVisualsConfig.TabHudConf conf = CONFIG.get();
+		UIAndVisualsConfig.TabHudConf conf = SkyblockerConfigManager.get().uiAndVisuals.tabHud;
 		globalOptions.addChild(CycleButton.builder(style -> Component.translatable(style.toString()), conf.style)
 						.withValues(UIAndVisualsConfig.TabHudStyle.values())
 						.withTooltip(_ -> STYLE_TOOLTIP)
@@ -59,26 +58,26 @@ class GlobalOptionsScreen extends Screen {
 								Button.DEFAULT_WIDTH * 2 + 2,
 								Button.DEFAULT_HEIGHT,
 								Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style"),
-								(_, value) -> conf.style = value),
+								(_, value) -> updateConfig(config -> config.style = value)),
 				2);
 		globalOptions.addChild(RangedSliderWidget.builder()
 				.optionFormatter(Component.translatable("skyblocker.config.hud.globalScale"), d -> Component.literal(Formatters.INTEGER_NUMBERS.format(d) + '%'))
 				.defaultValue(conf.tabHudScale)
 				.step(1)
 				.minMax(10, 200)
-				.callback(d -> conf.tabHudScale = (int) Math.round(d))
+				.callback(d -> updateConfig(config -> config.tabHudScale = (int) Math.round(d)))
 				.build());
 		// TODO turn these two into per widget things maybe?
 		globalOptions.addChild(CycleButton.booleanBuilder(YES, NO, conf.displayIcons)
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"), (_, value) -> conf.displayIcons = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.displayIcons"), (_, value) -> updateConfig(config -> config.displayIcons = value))
 		);
 		globalOptions.addChild(CycleButton.booleanBuilder(YES, NO, conf.compactWidgets)
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (_, value) -> conf.compactWidgets = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (_, value) -> updateConfig(config -> config.compactWidgets = value))
 		);
 		globalOptions.addChild(CycleButton.booleanBuilder(YES, NO, conf.enableFancyWidgetsList)
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (_, value) -> conf.enableFancyWidgetsList = value)
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (_, value) -> updateConfig(config -> config.enableFancyWidgetsList = value))
 		);
 
 		body.addChild(new StringWidget(Component.literal(parent.getCurrentLocation() + "'s options"), font));
@@ -89,6 +88,10 @@ class GlobalOptionsScreen extends Screen {
 		repositionElements();
 	}
 
+	private void updateConfig(Consumer<UIAndVisualsConfig.TabHudConf> consumer) {
+		SkyblockerConfigManager.updateOnly(config -> consumer.accept(config.uiAndVisuals.tabHud));
+	}
+
 	@Override
 	protected void repositionElements() {
 		layout.arrangeElements();
@@ -97,13 +100,8 @@ class GlobalOptionsScreen extends Screen {
 
 	@Override
 	public void onClose() {
+		SkyblockerConfigManager.update(_ -> {});
 		minecraft.setScreen(parent);
-	}
-
-	@Override
-	public void removed() {
-		super.removed();
-		SkyblockerConfigManager.update(_ -> {}); // FIXME
 	}
 
 	private static class HiddenWidgetsPopup extends AbstractPopupScreen {
