@@ -564,6 +564,8 @@
   "skyblocker.config.general.itemList.filter.items": "Items",
   "skyblocker.config.general.itemList.filter.mayors": "Mayors",
   "skyblocker.config.general.itemList.filter.npcs": "NPCs",
+	"skyblocker.config.general.itemList.filter.attributes": "Attribute Shards",
+	"skyblocker.config.general.itemList.filter.tools": "Tools",
 
   "skyblocker.config.general.itemProtection": "Item Protection",
   "skyblocker.config.general.itemProtection.displayChatNotification": "Display Chat Notifications",

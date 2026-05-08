@@ -16,6 +16,10 @@ public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 
 	// Basically a negation on everything else.
 	ITEMS(query -> !ENTITIES.test(query) && !NPCS.test(query) && !MAYORS.test(query),
+			SkyblockerMod.id("textures/gui/filter/items.png")),
+	ATTRIBUTES(query -> query.endsWith("shard") && !query.contains("prismarine"),
+			SkyblockerMod.id("textures/gui/filter/attributes_shards.png")),
+	TOOLS(query -> query.endsWith("axe") || query.endsWith("pickaxe") || query.contains("drill") || query.contains("Fuel Tank") || query.contains("goblin omelette") || query.contains("starfall seasoning") || query.contains("tungsten regulator") || query.contains("mk.") || query.endsWith("hoe") || query.startsWith("Hoe") || query.contains("Spore Harvester") || query.contains("Thornleaf Scythe") && !query.contains("Enchanted Book") && !query.contains("Drill Motor"),
 			SkyblockerMod.id("textures/gui/filter/items.png"));
 
 	private	final Predicate<String> matchingPredicate;
