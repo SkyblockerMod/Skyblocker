@@ -35,6 +35,8 @@ public class EssenceWidget extends TabHudWidget {
 				case String s when s.contains("diamond") -> this.addElement(Elements.iconTextComponent(Ico.DIAMOND, line));
 				case String s when s.contains("ice") -> this.addElement(Elements.iconTextComponent(Ico.ICE, line));
 				case String s when s.contains("crimson") -> this.addElement(Elements.iconTextComponent(Ico.REDSTONE, line));
+				case String s when s.contains("forest") -> this.addElement(Elements.iconTextComponent(Ico.FLOWERING_AZALEA_LEAVES, line));
+				case String s when s.contains("fossil") -> this.addElement(Elements.iconTextComponent(Ico.NAUTILUS_SHELL, line));
 				default -> this.addElement(new PlainTextElement(line));
 			}
 		}

@@ -7,6 +7,7 @@ import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.RecipeItemStackCache;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -15,6 +16,7 @@ import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import io.github.moulberry.repo.data.NEUNpcShopRecipe;
 import io.github.moulberry.repo.data.NEURecipe;
 import io.github.moulberry.repo.util.NEUId;
@@ -233,11 +235,12 @@ public class ItemRepository {
 		return NEURepoManager.getUsages().getOrDefault(stack.getNeuName(), Set.of()).stream().map(ItemRepository::toSkyblockRecipe).filter(Objects::nonNull);
 	}
 
-	private static SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
+	private static @Nullable SkyblockRecipe toSkyblockRecipe(NEURecipe neuRecipe) {
 		return switch (neuRecipe) {
 			case NEUCraftingRecipe craftingRecipe -> new SkyblockCraftingRecipe(craftingRecipe);
 			case NEUForgeRecipe forgeRecipe -> new SkyblockForgeRecipe(forgeRecipe);
 			case NEUNpcShopRecipe shopRecipe -> new SkyblockNpcShopRecipe(shopRecipe);
+			case NEUKatUpgradeRecipe katUpgradeRecipe -> new SkyblockKatUpgradeRecipe(katUpgradeRecipe);
 			case null, default -> null;
 		};
 	}
