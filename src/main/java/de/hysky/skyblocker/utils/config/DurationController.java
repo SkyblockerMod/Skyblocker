@@ -18,9 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DurationController extends IntegerControllerImpl {
-	private static final Pattern secondsPattern = Pattern.compile("(^|\\s)(\\d+)s(\\s|$)");
-	private static final Pattern minutesPattern = Pattern.compile("(^|\\s)(\\d+)m(\\s|$)");
-	private static final Pattern hoursPattern = Pattern.compile("(^|\\s)(\\d+)h(\\s|$)");
+	private static final Pattern SECONDS_PATTERN = Pattern.compile("(^|\\s)(\\d+)s(\\s|$)");
+	private static final Pattern MINUTES_PATTERN = Pattern.compile("(^|\\s)(\\d+)m(\\s|$)");
+	private static final Pattern HOURS_PATTERN = Pattern.compile("(^|\\s)(\\d+)h(\\s|$)");
 
 	public DurationController() {
 		super(0, Integer.MAX_VALUE, 1, false);
@@ -30,12 +30,11 @@ public class DurationController extends IntegerControllerImpl {
 	private static String toString(int duration) {
 		return SkyblockTime.formatTime(duration).getString();
 	}
-
 	@SuppressWarnings("unused")
-	private static int fromString(String value) {
-		Matcher hoursMatcher = hoursPattern.matcher(value);
-		Matcher minutesMatcher = minutesPattern.matcher(value);
-		Matcher secondsMatcher = secondsPattern.matcher(value);
+	public static int fromString(String value) {
+		Matcher hoursMatcher = HOURS_PATTERN.matcher(value);
+		Matcher minutesMatcher = MINUTES_PATTERN.matcher(value);
+		Matcher secondsMatcher = SECONDS_PATTERN.matcher(value);
 
 		int result = 0;
 		if (hoursMatcher.find()) {
@@ -51,10 +50,10 @@ public class DurationController extends IntegerControllerImpl {
 	}
 
 	@SuppressWarnings("unused")
-	private static boolean isValid(String s) {
-		Matcher hoursMatcher = hoursPattern.matcher(s);
-		Matcher minutesMatcher = minutesPattern.matcher(s);
-		Matcher secondsMatcher = secondsPattern.matcher(s);
+	public static boolean isValid(String s) {
+		Matcher hoursMatcher = HOURS_PATTERN.matcher(s);
+		Matcher minutesMatcher = MINUTES_PATTERN.matcher(s);
+		Matcher secondsMatcher = SECONDS_PATTERN.matcher(s);
 
 		int hoursCount = 0;
 		while (hoursMatcher.find()) hoursCount++;
@@ -65,9 +64,9 @@ public class DurationController extends IntegerControllerImpl {
 
 		if (hoursCount == 0 && minutesCount == 0 && secondsCount == 0) return false;
 		if (hoursCount > 1 || minutesCount > 1 || secondsCount > 1) return false;
-		s = s.replaceAll(hoursPattern.pattern(), "");
-		s = s.replaceAll(minutesPattern.pattern(), "");
-		s = s.replaceAll(secondsPattern.pattern(), "");
+		s = s.replaceAll(HOURS_PATTERN.pattern(), "");
+		s = s.replaceAll(MINUTES_PATTERN.pattern(), "");
+		s = s.replaceAll(SECONDS_PATTERN.pattern(), "");
 		return s.isBlank();
 	}
 

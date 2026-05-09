@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
+import java.util.List;
+
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
@@ -18,6 +20,8 @@ public enum Skill {
 	SOCIAL("Social", 25, Ico.EMERALD),
 	TAMING("Taming", 50, 60, Ico.SPAWN_EGG);
 
+	/// The main skills that count towards skill average.
+	public static final List<Skill> CONVENTIONAL_SKILLS = List.of(ALCHEMY, CARPENTRY, COMBAT, ENCHANTING, FARMING, FISHING, FORAGING, HUNTING, MINING, TAMING);
 	private final String name;
 	private final int baseCap;
 	private final int absoluteCap;

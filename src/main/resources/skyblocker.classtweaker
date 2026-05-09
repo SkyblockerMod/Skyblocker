@@ -1,4 +1,4 @@
-classTweaker v1 official
+classTweaker v2 official
 
 # Command Argument Types
 accessible	field	net/minecraft/commands/arguments/coordinates/BlockPosArgument	EXAMPLES	Ljava/util/Collection;
@@ -46,3 +46,6 @@ inject-interface	net/minecraft/client/renderer/LevelRenderer	de/hysky/skyblocker
 inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ItemSubmit	de/hysky/skyblocker/injected/CustomGlowState
 inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ModelPartSubmit	de/hysky/skyblocker/injected/CustomGlowState
 inject-interface	net/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit	de/hysky/skyblocker/injected/CustomGlowState
+
+# Texel Buffers
+extend-enum com/mojang/blaze3d/textures/TextureFormat SKYBLOCKER$RGBA32F

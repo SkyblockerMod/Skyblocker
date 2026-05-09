@@ -28,8 +28,12 @@ public class IrisCompatibility {
 	 */
 	public static void assignPipelines() {
 		if (IRIS_ENABLED) {
+			assignPipeline(SkyblockerRenderPipelines.FILLED_INSTANCED, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED, "BASIC");
 			assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_INSTANCED, "LINES");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_THROUGH_WALLS_INSTANCED, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.TEXTURE, "TEXTURED");

@@ -71,6 +71,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -111,6 +113,8 @@ jobs:
           java-version: '25'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
 
       - name: Run client gametest with Xvfb
         uses: modmuss50/xvfb-action@v1

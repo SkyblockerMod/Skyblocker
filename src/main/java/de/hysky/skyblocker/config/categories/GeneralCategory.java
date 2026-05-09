@@ -181,6 +181,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook"))
 								.description(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_3_0)
 								.binding(defaults.general.itemList.enableRecipeBook,
 										() -> config.general.itemList.enableRecipeBook,
 										newValue -> config.general.itemList.enableRecipeBook = newValue)
@@ -343,6 +344,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableGeorgePrice"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
+								.binding(defaults.general.itemTooltip.enableGeorgePrice,
+										() -> config.general.itemTooltip.enableGeorgePrice,
+										newValue -> config.general.itemTooltip.enableGeorgePrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
@@ -427,7 +436,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
 								.description(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.fandomWikiLookup.getTranslatedKeyMessage()))
+										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
 								.binding(defaults.general.wikiLookup.enableWikiLookup,
 										() -> config.general.wikiLookup.enableWikiLookup,
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)

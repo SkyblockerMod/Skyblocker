@@ -51,6 +51,7 @@ public class ItemUtilsTest {
 		return FlexibleItemStack.CODEC.parse(fixed).getOrThrow();
 	}
 
+	@SuppressWarnings("deprecation")
 	@BeforeAll
 	public static void setup() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -63,6 +64,7 @@ public class ItemUtilsTest {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@AfterAll
 	public static void unbindComponents() {
 		for (Item item : USED_ITEMS) {

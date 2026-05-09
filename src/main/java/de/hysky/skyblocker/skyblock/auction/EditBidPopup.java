@@ -65,7 +65,6 @@ public class EditBidPopup extends AbstractPopupScreen {
 	}
 
 	private boolean isStringGood(String s) {
-		assert this.minecraft != null;
 		return this.minecraft.font.width(minimumBid) <= this.signBlockEntity.getMaxTextLineWidth();
 	}
 
@@ -100,7 +99,6 @@ public class EditBidPopup extends AbstractPopupScreen {
 	@Override
 	public void onClose() {
 		if (!packetSent) sendPacket("");
-		assert this.minecraft != null;
 		this.minecraft.setScreen(null);
 	}
 

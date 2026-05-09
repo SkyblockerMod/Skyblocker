@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.DungeonQualityTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EstimatedItemValueTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EvolvingItemProgressTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.GeorgePriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.HuntingBoxPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
@@ -61,21 +62,22 @@ public class TooltipManager {
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new EvolvingItemProgressTooltip(0),
 			new NpcPriceTooltip(1),
-			new BazaarPriceTooltip(2),
-			new LBinTooltip(3),
-			new AvgBinTooltip(4),
-			new EssenceShopPrice(5),
-			new CraftPriceTooltip(6),
-			new EstimatedItemValueTooltip(7),
-			new DungeonQualityTooltip(8),
-			new MotesTooltip(9),
-			new ObtainedDateTooltip(10),
-			new MuseumTooltip(11),
-			new ColorTooltip(12),
-			new AccessoryTooltip(13),
-			new DateCalculatorTooltip(14),
-			new HuntingBoxPriceTooltip(15),
-			CroesusProfit.INSTANCE, // priority = 16
+			new GeorgePriceTooltip(2),
+			new BazaarPriceTooltip(3),
+			new LBinTooltip(4),
+			new AvgBinTooltip(5),
+			new EssenceShopPrice(6),
+			new CraftPriceTooltip(7),
+			new EstimatedItemValueTooltip(8),
+			new DungeonQualityTooltip(9),
+			new MotesTooltip(10),
+			new ObtainedDateTooltip(11),
+			new MuseumTooltip(12),
+			new ColorTooltip(13),
+			new AccessoryTooltip(14),
+			new DateCalculatorTooltip(15),
+			new HuntingBoxPriceTooltip(16),
+			CroesusProfit.INSTANCE, // priority = 17
 	};
 	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 

@@ -27,7 +27,6 @@ public class ChatRuleLocationConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		assert minecraft != null;
 		addRenderableOnly((context, _, _, _) -> {
 			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
 			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - minecraft.font.lineHeight), CommonColors.WHITE);
@@ -65,7 +64,6 @@ public class ChatRuleLocationConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(parent);
 	}
 }

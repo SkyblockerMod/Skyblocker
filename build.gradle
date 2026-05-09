@@ -165,7 +165,7 @@ dependencies {
 	//localRuntime "dev.emi:emi-fabric:${project.emi_version}"
 
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
-	//compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+	compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 	//runtimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
@@ -211,7 +211,6 @@ sourceSets {
 	main {
 		java {
 			exclude("**/compatibility/rei/**")
-			exclude("**/compatibility/jei/**")
 			exclude("**/compatibility/emi/**")
 		}
 	}
@@ -300,7 +299,7 @@ spotless {
 				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
 				/^(  "skyblocker\.config(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
 				'$1\n\n'
-		final List<String> excludeCategories = ["debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
+		final List<String> excludeCategories = ["commands", "debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
 		final String excludeCategoriesLookahead = /(?!(?:${excludeCategories.join('|')})(?=[."]))/
 		replaceRegex \
 				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",

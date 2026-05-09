@@ -6,6 +6,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -46,7 +47,9 @@ import java.util.concurrent.Executors;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
-	protected static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
+	protected static final FallbackedTexture<Identifier> BACKGROUND_TEXTURE = FallbackedTexture.ofGuiSprite(
+			SkyblockerMod.id("party_finder/background"),
+			Identifier.withDefaultNamespace("social_interactions/background"));
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	protected static final Component SEARCH_TEXT = Component.translatable("gui.socialInteractions.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
 	public static boolean isInKuudraPartyFinder = false;
@@ -284,12 +287,11 @@ public class PartyFinderScreen extends Screen {
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		this.extractTransparentBackground(graphics);
 		int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE.get(), partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
 	}
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		if (currentPage != Page.SIGN)
 			this.minecraft.player.closeContainer();
@@ -397,7 +399,6 @@ public class PartyFinderScreen extends Screen {
 				if (slot.index > (handler.getRowCount() - 1) * 9 - 1 || !slot.hasItem()) continue;
 				ItemStack stack = slot.getItem();
 				if (stack.is(Items.PLAYER_HEAD)) {
-					assert this.minecraft != null;
 					parties.add(new PartyEntry(stack.getHoverName(), ItemUtils.getLore(stack), this, slot.index));
 				} else if (stack.is(Items.ARROW) && stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
 					prevPageSlotId = slot.index;
@@ -425,12 +426,10 @@ public class PartyFinderScreen extends Screen {
 			} else if (slot.getItem().is(Items.BOOKSHELF)) {
 				deListSlotId = slot.index;
 			} else if (slot.getItem().is(Items.PLAYER_HEAD)) {
-				assert this.minecraft != null;
 				yourPartyStack = slot.getItem();
 			}
 		}
 
-		assert minecraft != null;
 		String playerName = minecraft.getUser().getName();
 
 		// It's possible for the party to show up in the search results before it does next to the delist button.
@@ -470,7 +469,6 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	public void abort() {
-		assert this.minecraft != null;
 		if (currentPage == Page.SIGN) {
 			assert this.minecraft.player != null;
 			this.minecraft.player.openTextEdit(sign, signFront);
@@ -481,7 +479,6 @@ public class PartyFinderScreen extends Screen {
 
 	@Override
 	public void removed() {
-		assert this.minecraft != null;
 		if (this.minecraft.player == null || aborted || currentPage == Page.SIGN) {
 			return;
 		}
@@ -493,7 +490,7 @@ public class PartyFinderScreen extends Screen {
 		super.tick();
 		// Slight delay to make sure all slots are received, because they are most of the time sent one at a time
 		if (dirty && System.currentTimeMillis() - dirtiedTime > 60) update();
-		assert this.minecraft != null && this.minecraft.player != null;
+		assert this.minecraft.player != null;
 		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved() && currentPage != Page.SIGN) {
 			this.minecraft.player.closeContainer();
 		}
@@ -509,7 +506,6 @@ public class PartyFinderScreen extends Screen {
 
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
-		assert minecraft != null;
 		assert minecraft.gameMode != null;
 		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, 0, ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
@@ -520,7 +516,6 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	public Minecraft getClient() {
-		assert this.minecraft != null;
 		return this.minecraft;
 	}
 

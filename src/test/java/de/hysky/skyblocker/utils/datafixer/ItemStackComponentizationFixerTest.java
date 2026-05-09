@@ -33,6 +33,7 @@ public class ItemStackComponentizationFixerTest {
 		item.set(DataComponents.ENCHANTMENTS, builder.toImmutable());
 	});
 
+	@SuppressWarnings("deprecation")
 	@BeforeAll
 	public static void setup() {
 		SharedConstants.tryDetectVersion();
@@ -41,6 +42,7 @@ public class ItemStackComponentizationFixerTest {
 		Items.DIAMOND_SWORD.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
 	}
 
+	@SuppressWarnings("deprecation")
 	@AfterAll
 	public static void cleanUp() {
 		//noinspection deprecation,DataFlowIssue
