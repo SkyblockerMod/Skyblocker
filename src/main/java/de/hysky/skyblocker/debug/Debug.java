@@ -86,6 +86,8 @@ public class Debug {
 						.then(dumpActionBar())
 						.then(auditMixins())
 						.then(prefixTest())
+						.then(apiId())
+						.then(neuName())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -210,6 +212,22 @@ public class Debug {
 		return literal("prefixTest")
 				.executes(context -> {
 					context.getSource().sendFeedback(Constants.PREFIX.get());
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> apiId() {
+		return literal("apiId")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get().append("Item API ID: " + context.getSource().getPlayer().getMainHandItem().getSkyblockApiId()));
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> neuName() {
+		return literal("neuName")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get().append("Item NEU Name: " + context.getSource().getPlayer().getMainHandItem().getNeuName()));
 					return Command.SINGLE_SUCCESS;
 				});
 	}
