@@ -4,6 +4,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
@@ -14,12 +17,12 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
 import org.jspecify.annotations.Nullable;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class AuctionBazaarAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> ahsNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> ahsearchNode;
-	public static @Nullable LiteralCommandNode<FabricClientCommandSource> bzsNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> bzNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> bazaarNode;
 
@@ -28,10 +31,14 @@ public class AuctionBazaarAutocomplete {
 		NEURepoManager.runAsyncAfterLoad(AuctionBazaarAutocomplete::createNodes);
 	}
 
+	// since /bzs is only client-side it needs separate handling
+	public static CompletableFuture<Suggestions> suggestBzs(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) {
+		return SharedSuggestionProvider.suggest(SearchOverManager.getBazaarItems(), builder);
+	}
+
 	private static void createNodes() {
 		ahsNode = createNode("ahs", SearchOverManager::getAuctionItems);
 		ahsearchNode = createNode("ahsearch", SearchOverManager::getAuctionItems);
-		bzsNode = createNode("bzs", SearchOverManager::getBazaarItems);
 		bzNode = createNode("bz", SearchOverManager::getBazaarItems);
 		bazaarNode = createNode("bazaar", SearchOverManager::getBazaarItems);
 	}

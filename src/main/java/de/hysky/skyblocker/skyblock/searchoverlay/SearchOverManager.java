@@ -10,6 +10,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.skyblock.AuctionBazaarAutocomplete;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
@@ -19,6 +20,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
@@ -89,17 +91,30 @@ public class SearchOverManager {
 
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
-			dispatcher.register(literal("ahsearch").executes(_ -> startCommand(true, "")));
-			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
+			dispatcher.register(literal("ahs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("ahsearch")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("bzs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(false, "")));
 
-			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
+			dispatcher.register(literal("ahs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
-			dispatcher.register(literal("ahsearch").then(argument("item", StringArgumentType.greedyString())
+			dispatcher.register(literal("ahsearch")
+					.requires(_ -> Utils.isOnSkyblock())
+					.then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
-			dispatcher.register(literal("bzs").then(argument("item", StringArgumentType.greedyString())
+			dispatcher.register(literal("bzs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.then(argument("item", StringArgumentType.greedyString())
+					.suggests(AuctionBazaarAutocomplete::suggestBzs)
 					.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
 					)));
 		}

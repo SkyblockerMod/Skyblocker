@@ -37,7 +37,6 @@ public class ClientboundCommandsPacketMixin {
 				case String s when s.equals("call") && CallAutocomplete.commandNode != null -> CallAutocomplete.commandNode;
 				case String s when s.equals("ahs") && AuctionBazaarAutocomplete.ahsNode != null -> AuctionBazaarAutocomplete.ahsNode;
 				case String s when s.equals("ahsearch") && AuctionBazaarAutocomplete.ahsearchNode != null -> AuctionBazaarAutocomplete.ahsearchNode;
-				case String s when s.equals("bzs") && AuctionBazaarAutocomplete.bzsNode != null -> AuctionBazaarAutocomplete.bzsNode;
 				case String s when s.equals("bz") && AuctionBazaarAutocomplete.bzNode != null -> AuctionBazaarAutocomplete.bzNode;
 				case String s when s.equals("bazaar") && AuctionBazaarAutocomplete.bazaarNode != null -> AuctionBazaarAutocomplete.bazaarNode;
 				case String s when s.equals("chapter") && ChaptersAutocomplete.singularCommandNode != null -> ChaptersAutocomplete.singularCommandNode;
