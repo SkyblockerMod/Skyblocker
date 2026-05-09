@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class SeaCreatureTracker {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
-
+	public static final int SEA_CREATURE_CAP = 10;
 	private static final SequencedMap<Entity, LiveSeaCreature> seaCreatures = new LinkedHashMap<>();
 	private static SeaCreature lastCatch;
 	private static boolean doubleHook = false;
@@ -92,7 +92,7 @@ public class SeaCreatureTracker {
 	 */
 	private static void checkCapNotification() {
 		if (!SkyblockerConfigManager.get().helpers.fishing.seaCreatureCapNotification) return;
-		if (seaCreatureCount() == 10) {
+		if (seaCreatureCount() == SEA_CREATURE_CAP) {
 			TitleContainer.addTitle(new Title(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.notification").withStyle(ChatFormatting.RED)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
@@ -141,7 +141,6 @@ public class SeaCreatureTracker {
 	protected static Boolean isCreaturesAlive() {
 		return !seaCreatures.isEmpty();
 	}
-
 
 	protected static ObjectFloatPair<Component> getTimerText(long currentTime) {
 		long maxTime = SkyblockerConfigManager.get().helpers.fishing.timerLength * 1000L;
