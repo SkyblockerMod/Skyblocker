@@ -90,9 +90,13 @@ public class SearchOverManager {
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
 			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("ahsearch").executes(_ -> startCommand(true, "")));
 			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
 
 			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
+					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
+					)));
+			dispatcher.register(literal("ahsearch").then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
 			dispatcher.register(literal("bzs").then(argument("item", StringArgumentType.greedyString())
@@ -213,6 +217,14 @@ public class SearchOverManager {
 		SearchOverManager.level200Pets = level200Pets;
 		SearchOverManager.starableItems = starableItems;
 		SearchOverManager.namesToNeuId = namesToNeuId;
+	}
+
+	public static HashSet<String> getBazaarItems() {
+		return bazaarItems;
+	}
+
+	public static HashSet<String> getAuctionItems() {
+		return auctionItems;
 	}
 
 	/**
