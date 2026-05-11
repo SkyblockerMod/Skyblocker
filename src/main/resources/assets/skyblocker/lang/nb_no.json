@@ -250,5 +250,20 @@
     "skyblocker.waypoints.new": "Nytt Veipunkt",
     "skyblocker.waypoints.throughWalls": "Vis Gjennom Vegger",
     "skyblocker.waypoints.shareWaypoints": "Del Veipunkter",
-    "skyblocker.waypoints.importOptions.sortWaypoints": "Sorter veipunkter"
+    "skyblocker.waypoints.importOptions.sortWaypoints": "Sorter veipunkter",
+    "skyblocker.utils.render.gui.soundSelectionPopup.advanced": "Avansert",
+    "skyblocker.tips.next": "Neste Tips",
+    "skyblocker.tips.previous": "Forrige Tips",
+    "skyblocker.museum.hud.alreadyDonatedItem": "Donerte Gjennstanden",
+    "skyblocker.museum.hud.filter.weapons": "Våpen",
+    "skyblocker.museum.hud.unknownPrice": "Ukjent",
+    "skyblocker.garden.hud.mouseLocked": "Mus låst.",
+    "skyblocker.inventorySearch.clickHereToSearch": "Klikk her for å søke.",
+    "skyblocker.fancyAuctionHouse.changeProfile": "Bytt Profil",
+    "skyblocker.farming.farmingHud.noData": "Ingen Data",
+    "skyblocker.dungeons.terminalHud.completeStatus": "Fullstendig",
+    "skyblocker.config.mining.commissionWaypoints.useColor": "Farget Veipunkter",
+    "skyblocker.config.mining.crystalsWaypoints.enabled": "Aktiverte Veipunkter",
+    "skyblocker.config.mining.dwarvenHud.enabledPowder": "Aktiver Pulver",
+    "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Fant Fossil. "
 }
