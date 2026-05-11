@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 import org.jspecify.annotations.Nullable;
 
-
 public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;
 	private @Nullable OptionDropdownWidget floorSelector;
