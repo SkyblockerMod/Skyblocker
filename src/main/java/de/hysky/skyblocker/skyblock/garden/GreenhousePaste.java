@@ -17,9 +17,7 @@ import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.SkullRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -150,7 +148,7 @@ public class GreenhousePaste {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("greenhousepaste").executes(_ -> runGreenhousePaste()))
 				.then(literal("greenhousepasteremove").executes(_ -> runGreenhousePasteRemove()))
-//						.then(literal("greenhousedebug").executes(_ -> {
+//						.then(literal("greenhousedebug").executes(_ -> { // for debug purposes
 //							debugPrintGreenhouses();
 //							return Command.SINGLE_SUCCESS;
 //						}))
