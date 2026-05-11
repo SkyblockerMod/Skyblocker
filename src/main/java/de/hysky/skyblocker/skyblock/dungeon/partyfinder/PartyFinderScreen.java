@@ -376,6 +376,7 @@ public class PartyFinderScreen extends Screen {
 		waitingForServer = false;
 		String titleText = name.getString();
 		if (titleText.contains("Party Finder")) {
+			checkIfKuudra();
 			updatePartyFinderPage();
 		} else {
 			if (currentPage != Page.SETTINGS) setCurrentPage(Page.SETTINGS);
@@ -383,6 +384,15 @@ public class PartyFinderScreen extends Screen {
 				abort();
 			}
 		}
+	}
+
+	private void checkIfKuudra() {
+		if (handler.slots.size() < 54) return;
+		ItemStack stack = handler.slots.get(45).getItem();
+		if (stack.isEmpty()) return;
+
+		isInKuudraPartyFinder = stack.skyblocker$getLoreStrings().stream().anyMatch(s -> s.contains("Kuudra"));
+		if (isInKuudraPartyFinder) abort();
 	}
 
 	@SuppressWarnings("deprecation")
