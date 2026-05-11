@@ -494,9 +494,9 @@ public class GreenhousePaste {
 	}
 
 	public static void rotatePreview(boolean left) {
-		/**
-		 * x,y -> y, 9-x (left rotation, since an axis is reversed)
-		 * x,y -> 9-y, x (right rotation)
+		/*
+			x,y -> y, 9-x (left rotation, since an axis is reversed)
+			x,y -> 9-y, x (right rotation)
 		*/
 		if (left) {
 			int[][] newTarget = new int[10][10];
