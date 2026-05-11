@@ -66,6 +66,15 @@ public class GreenhousePaste {
 						.then(literal("greenhouse")
 								.then(literal("paste").executes(_ -> runGreenhousePaste()))
 								.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
+								.then(literal("rotate").then(
+										literal("right").executes(_ -> runRotateRight())
+								)
+								.then(
+										literal("left").executes(_ -> runRotateLeft())
+								))
+								.then(
+										literal("mirror").executes(_ -> runMirror())
+								))
 //								.then(literal("debug").executes(_ -> { // for debug purposes
 //									debugPrintGreenhouses();
 //									return Command.SINGLE_SUCCESS;
@@ -73,7 +82,7 @@ public class GreenhousePaste {
 						)
 				)
 
-		));
+		);
 
 		// Register render callback
 		LevelRenderExtractionCallback.EVENT.register(collector -> {
@@ -123,6 +132,21 @@ public class GreenhousePaste {
 		if (client.player == null) return Command.SINGLE_SUCCESS;
 		removePreview();
 		client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Greenhouse preview removed.").withStyle(ChatFormatting.GREEN)));
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runRotateRight() {
+		rotatePreview(false);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runRotateLeft() {
+		rotatePreview(true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runMirror() {
+		mirrorPreview();
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -384,14 +408,14 @@ public class GreenhousePaste {
 				String cropName = entry.get(2).getAsString();
 				int value = entry.get(3).getAsInt(); // 0 = desired mutation, 1 = place, accoridng to the website
 				if (value == 0) {
-					targetGreenhouse[x][y] = 0; // Desired mutation spot should be empty
+					targetGreenhouse[9 - x][y] = 0; // Desired mutation spot should be empty
 					continue;
 				}
 
 				GreenhouseCrops.Crop crop = CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
 				if (x >= 0 && x < 10 && y >= 0 && y < 10) {
-					targetGreenhouse[x][y] = crop.id;
+					targetGreenhouse[9 - x][y] = crop.id;
 				}
 			}
 		} catch (Exception _) {
@@ -469,6 +493,41 @@ public class GreenhousePaste {
 		}
 	}
 
+	public static void rotatePreview(boolean left) {
+		/**
+		 * x,y -> y, 9-x (left rotation, since an axis is reversed)
+		 * x,y -> 9-y, x (right rotation)
+		*/
+		if (left) {
+			int[][] newTarget = new int[10][10];
+			for (int x = 0; x < 10; x++) {
+				for (int y = 0; y < 10; y++) {
+					newTarget[y][9 - x] = targetGreenhouse[x][y];
+				}
+			}
+			targetGreenhouse = newTarget;
+			return;
+		}
+
+		int[][] newTarget = new int[10][10];
+		for (int x = 0; x < 10; x++) {
+			for (int y = 0; y < 10; y++) {
+				newTarget[9 - y][x] = targetGreenhouse[x][y];
+			}
+		}
+		targetGreenhouse = newTarget;
+	}
+
+	public static void mirrorPreview() {
+		// x,y -> 9-x, y
+		int[][] newTarget = new int[10][10];
+		for (int x = 0; x < 10; x++) {
+			for (int y = 0; y < 10; y++) {
+				newTarget[9 - x][y] = targetGreenhouse[x][y];
+			}
+		}
+		targetGreenhouse = newTarget;
+	}
 
 	// DEBUG
 
