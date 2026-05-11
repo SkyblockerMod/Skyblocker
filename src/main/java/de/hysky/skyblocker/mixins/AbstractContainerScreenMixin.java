@@ -339,12 +339,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 
 		// Search - darken non-matching slots
-		if (InventorySearch.isSearching()) {
-			if (InventorySearch.slotMatches(slot)) {
-				graphics.fill(slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, 0x0_FAF5F5);
-			} else {
-				graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0xB0_000000);
-			}
+		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
+			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0xB0_000000);
 		}
 	}
 
