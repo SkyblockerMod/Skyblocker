@@ -7,9 +7,9 @@ import com.mojang.brigadier.Command;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.LZURISafeBase64Decoder;
 import de.hysky.skyblocker.utils.Utils;
@@ -17,21 +17,19 @@ import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.SkullRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -47,9 +45,9 @@ public class GreenhousePaste {
 		For normal greenhouse, the grid is 10x10. Each cell can be empty (0) or contain a crop (1-40).
 		For target greenhouse, the grid is also 10x10. Each cell can be ignored (-1) or empty (0) contain a crop (1-40).
 	*/
-	private static final Map<String, Crop> CROP_ID_MAP = new HashMap<>();
-	private static final Map<Integer, Crop> CROP_BY_INT = new HashMap<>();
-	private static final Map<String, Crop> CROP_BY_HEAD_TEXTURE_HASH = new HashMap<>();
+	private static final Map<String, GreenhouseCrops.Crop> CROP_ID_MAP = GreenhouseCrops.CROP_ID_MAP;
+	private static final Map<Integer, GreenhouseCrops.Crop> CROP_BY_INT = GreenhouseCrops.CROP_BY_INT;
+	private static final Map<String, GreenhouseCrops.Crop> CROP_BY_HEAD_TEXTURE_HASH = GreenhouseCrops.CROP_BY_HEAD_TEXTURE_HASH;
 	private static int[][] greenhouse = new int[10][10];
 	private static int[][] targetGreenhouse = new int[10][10];
 	private static BlockPos greenhouseCorner = null;
@@ -61,97 +59,20 @@ public class GreenhousePaste {
 			"godseedPillar"
 	);
 
-	static {
-		// Create crops once and store them in both maps
-		// TODO - verfiy armorstand names and name from website
-		Crop[] crops = {
-			new Crop("Ashwreath", "ashwreath", 1, HeadTextures.ASHWREATH),
-			new Crop("Choconut", "Choconut", 2, HeadTextures.CHOCONUT),
-			new Crop("Dustgrain", "Dustgrain", 3, HeadTextures.DUSTGRAIN),
-			new Crop("Gloomgourd", "Gloomgourd", 4, HeadTextures.GLOOMGOURD),
-			new Crop("Lonelily", "Lonelilly", 5, HeadTextures.LONELILY),
-			new Crop("Scourroot", "Scourroot", 6, HeadTextures.SCOURROOT),
-			new Crop("Shadevine", "shadevine", 7, HeadTextures.SHADEVINE),
-			new Crop("Veilshroom", "Veilshroom", 8, HeadTextures.VEILSHROOM),
-			new Crop("Witherbloom", "Witherbloom", 9, HeadTextures.WITHERBLOOM),
-			new Crop("Chocoberry", "Chocoberry", 10, HeadTextures.CHOCOBERRY),
-			new Crop("Cindershade", "Cindershade", 11, HeadTextures.CINDERSHADE),
-			new Crop("Coalroot", "Coalroot", 12, HeadTextures.COALROOT),
-			new Crop("Creambloom", "Creambloom", 13, HeadTextures.CREAMBLOOM),
-			new Crop("Duskbloom", "duskbloom", 14, HeadTextures.DUSKBLOOM),
-			new Crop("Thornshade", "thornshade", 15, HeadTextures.THORNSHADE),
-			new Crop("Blastberry", "blastberry", 16, HeadTextures.BLASTBERRY),
-			new Crop("Cheesebite", "cheesebite", 17, HeadTextures.CHEESEBITE),
-			new Crop("Chloronite", "chloronite", 18, HeadTextures.CHLORONITE),
-			new Crop("Do Not Eat Shroom", "donoteatshroom", 19, HeadTextures.DO_NOT_EAT_SHROOM),
-			new Crop("Fleshtrap", "fleshtrap", 20, HeadTextures.FLESHTRAP),
-			new Crop("Magic Jellybean", "magicjellybean", 21, HeadTextures.MAGIC_JELLYBEAN),
-			new Crop("Noctilume", "noctilume", 22, HeadTextures.NOCTILUME),
-			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING), // requires special handling, only look for head
-			new Crop("Soggybud", "soggybud", 24, HeadTextures.SOGGYBUD),
-			new Crop("Chorus Fruit", "chorusFruit", 25, HeadTextures.CHORUS_FRUIT),
-			new Crop("PlantBoy Advance", "Plantboy", 26, HeadTextures.PLANTBOY_ADVANCE), // plantboyroot is also a thing. also is 2x2, so adjust accordingly
-			new Crop("Puffercloud", "puffercloud", 27, HeadTextures.PUFFERCLOUD),
-			new Crop("Shellfruit", "shellfruit", 28, HeadTextures.SHELLFRUIT),
-			new Crop("Startlevine", "startlevine", 29, HeadTextures.STARTLEVINE),
-			new Crop("Stoplight Petal", "stoplightpetal", 30, HeadTextures.STOPLIGHT_PETAL),
-			new Crop("Thunderling", "thunderling", 31, HeadTextures.THUNDERLING),
-			new Crop("Turtlellini", "turtlellini", 32, HeadTextures.TURTLELLINI),
-			new Crop("Zombud", "zombud", 33, HeadTextures.ZOMBUD),
-			new Crop("All In Aloe", "allinaloe", 34, HeadTextures.ALL_IN_ALOE),
-			new Crop("Devourer", "devourer", 35, HeadTextures.DEVOURER),
-			new Crop("Glasscorn", "glasscorn", 36, HeadTextures.GLASSCORN),
-			new Crop("Godseed", "godseed", 37, HeadTextures.GODSEED), // also has godseedpillar 's around it
-			new Crop("Jerryflower", "jerryseed", 38, HeadTextures.JERRYFLOWER), // weird naming??
-			new Crop("Phantomleaf", "phantomleaf", 39, HeadTextures.PHANTOMLEAF),
-			new Crop("Timestalk", "timestalk", 40, HeadTextures.TIMESTALK), // verify
-
-			// Crops
-			new Crop("Cocoa Beans", "coco", 41, HeadTextures.COCOA_BEANS),
-			new Crop("Wild Rose", "wildrose", 42, HeadTextures.WILD_ROSE),
-			new Crop("Moonflower", "moonflower", 43, HeadTextures.MOONFLOWER),
-			new Crop("Sunflower", "sunflower", 44, HeadTextures.SUNFLOWER),
-			new Crop("Cactus", "cactus", 45, HeadTextures.CACTUS),
-			new Crop("Melon Seeds", "melon", 46, HeadTextures.MELON),
-			new Crop("Pumpkin Seeds", "pumpkin", 47, HeadTextures.PUMPKIN),
-			new Crop("Brown Mushroom", "brownmushroom", 48, HeadTextures.BROWN_MUSHROOM), // TODO: make mushrooms interchangeable, also replace with head texture
-			new Crop("Red Mushroom", "redmushroom", 49, HeadTextures.RED_MUSHROOM),
-			new Crop("Wheat Seeds", "wheat", 50, Blocks.WHEAT),
-			new Crop("Carrot", "carrot", 51, Blocks.CARROTS),
-			new Crop("Potato", "potato", 52, Blocks.POTATOES),
-			new Crop("Nether Wart", "netherwart", 53, Blocks.NETHER_WART),
-			new Crop("Sugar Cane", "sugarcane", 54, Blocks.SUGAR_CANE),
-
-			// Misc
-			new Crop("Dead Plant", "deadplant", 55, Blocks.DEAD_BUSH),
-			new Crop("Fire", "fire", 56, Blocks.FIRE),
-
-			// Special crops
-			new Crop("Helianthus", "helianthus", 57, HeadTextures.HELIANTHUS),
-			new Crop("Fermento", "fermento", 58, HeadTextures.FERMENTO),
-			new Crop("Squash", "squash", 59, HeadTextures.SQUASH),
-			new Crop("Cropie", "cropie", 60, HeadTextures.CROPIE),
-		};
-
-		// Populate both maps
-		for (Crop crop : crops) {
-			CROP_ID_MAP.put(crop.name, crop);
-			CROP_BY_INT.put(crop.id, crop);
-			if (crop.isHead) {
-				CROP_BY_HEAD_TEXTURE_HASH.put(crop.headSkin, crop);
-			}
-		}
-	}
-
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("greenhousepaste").executes(_ -> runGreenhousePaste()))
-				.then(literal("greenhousepasteremove").executes(_ -> runGreenhousePasteRemove()))
-//						.then(literal("greenhousedebug").executes(_ -> { // for debug purposes
-//							debugPrintGreenhouses();
-//							return Command.SINGLE_SUCCESS;
-//						}))
+				.then(literal("garden")
+						.then(literal("greenhouse")
+								.then(literal("paste").executes(_ -> runGreenhousePaste()))
+								.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
+//								.then(literal("debug").executes(_ -> { // for debug purposes
+//									debugPrintGreenhouses();
+//									return Command.SINGLE_SUCCESS;
+//								}))
+						)
+				)
+
 		));
 
 		// Register render callback
@@ -160,8 +81,9 @@ public class GreenhousePaste {
 			renderPreview(collector);
 		});
 
-		PlayerBlockBreakEvents.AFTER.register((_, _, pos, _, _) -> onBlockChange(pos));
+		ClientPlayerBlockBreakEvents.AFTER.register((_, _, pos, _) -> onBlockChange(pos));
 
+		WorldEvents.BLOCK_STATE_UPDATE.register((pos, _, _) -> onBlockChange(pos));
 		// Initialize greenhouse arrays
 		removePreview();
 	}
@@ -326,7 +248,7 @@ public class GreenhousePaste {
 
 			if (IGNORE_NAMES.contains(name)) return 0; // Make blocks are ignored too
 
-			for (Crop crop : CROP_ID_MAP.values()) {
+			for (GreenhouseCrops.Crop crop : CROP_ID_MAP.values()) {
 				if (name.contains(crop.armorStandName)) {
 					return crop.id;
 				}
@@ -336,7 +258,7 @@ public class GreenhousePaste {
 			Optional<String> texture = ItemUtils.getHeadTextureOptional(head);
 			if (texture.isEmpty()) continue;
 
-			Crop cropByTexture = CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
+			GreenhouseCrops.Crop cropByTexture = CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
 			if (cropByTexture == null) continue;
 			if (!HeadTextures.SPECIAL_CROPS.contains(cropByTexture.headSkin)) continue;
 
@@ -346,7 +268,7 @@ public class GreenhousePaste {
 		// If no armor stand found, fallback to checking block type (for non-head crops)
 		BlockState state = level.getBlockState(pos.above());
 		Block block = state.getBlock();
-		for (Crop crop : CROP_ID_MAP.values()) {
+		for (GreenhouseCrops.Crop crop : CROP_ID_MAP.values()) {
 			if (!crop.isHead && crop.cropBlock.equals(block)) {
 				return crop.id;
 			}
@@ -466,7 +388,7 @@ public class GreenhousePaste {
 					continue;
 				}
 
-				Crop crop = CROP_ID_MAP.get(cropName);
+				GreenhouseCrops.Crop crop = CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
 				if (x >= 0 && x < 10 && y >= 0 && y < 10) {
 					targetGreenhouse[x][y] = crop.id;
@@ -529,7 +451,7 @@ public class GreenhousePaste {
 					if (targetCropId == 48 || targetCropId == 49) continue;
 				}
 
-				Crop targetCrop = CROP_BY_INT.get(targetCropId);
+				GreenhouseCrops.Crop targetCrop = CROP_BY_INT.get(targetCropId);
 				if (targetCrop == null) continue;
 
 				if (currentCropId != 0) { // Undesired spot that is not empty
@@ -547,35 +469,6 @@ public class GreenhousePaste {
 		}
 	}
 
-	public static class Crop {
-		private final String name;
-		private final String armorStandName;
-		private final int id;
-		private final String headSkin;
-		private final boolean isHead;
-		private final Block cropBlock;
-		private final FlexibleItemStack displayStack;
-
-		public Crop(String name, String armorStandName, int id, String headSkin) {
-			this.name = name;
-			this.armorStandName = armorStandName;
-			this.id = id;
-			this.isHead = true;
-			this.headSkin = headSkin;
-			this.displayStack = ItemUtils.createSkull(headSkin);
-			this.cropBlock = null;
-		}
-
-		public Crop(String name, String armorStandName, int id, Block cropBlock) {
-			this.name = name;
-			this.armorStandName = armorStandName;
-			this.id = id;
-			this.isHead = false;
-			this.cropBlock = cropBlock;
-			this.headSkin = null;
-			this.displayStack = null;
-		}
-	}
 
 	// DEBUG
 

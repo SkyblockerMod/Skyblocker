@@ -83,8 +83,8 @@ public class SkullRenderer {
 	}
 
 	private static void renderHeadLayer(
-			com.mojang.blaze3d.vertex.VertexConsumer buffer,
-			com.mojang.blaze3d.vertex.PoseStack.Pose matricesEntry,
+			VertexConsumer buffer,
+			PoseStack.Pose matricesEntry,
 			int argb,
 			float x0,
 			float y0,
