@@ -14,6 +14,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -140,12 +141,45 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	 * - BOTH: higher of NPC or bazaar price
 	 */
 	private Component getPriceText(String cropItemId, float cropsPerMinute) {
-		DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
-		double bazaarPrice = itemBazaarPrice.leftDouble();
-		boolean hasBazaarData = itemBazaarPrice.rightBoolean();
+		double bazaarPrice;
+		boolean hasBazaarData;
+		double itemNpcPrice;
 
-		// Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
-		double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE;
+		// Cultivating counter also includes wheat seeds
+		// The wheat to seed ratio is about 2/3
+		// So wheat is about 40% of the counter, while seeds are 60%
+		if (cropItemId.equals("WHEAT")) {
+			final double seedsRatio = 0.6;
+			final double wheatRatio = 0.4;
+
+			OptionalDouble seedsBazaarPrice;
+			OptionalDouble seedsNpcPrice;
+			if (SkyblockerConfigManager.get().farming.farmingHud.includeSeedsPrice) {
+				DoubleBooleanPair temp = ItemUtils.getItemPrice("SEEDS");
+				if (temp.rightBoolean()) seedsBazaarPrice = OptionalDouble.of(temp.leftDouble());
+				else seedsBazaarPrice = OptionalDouble.empty();
+				seedsNpcPrice = TooltipInfoType.NPC.hasOrNullWarning("SEEDS") ?
+						OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble("SEEDS")) :
+						OptionalDouble.empty();
+			} else {
+				seedsBazaarPrice = OptionalDouble.of(0);
+				seedsNpcPrice = OptionalDouble.of(0);
+			}
+			DoubleBooleanPair wheatPrice = ItemUtils.getItemPrice("WHEAT");
+			hasBazaarData = seedsBazaarPrice.isPresent() && wheatPrice.rightBoolean();
+			if (hasBazaarData) bazaarPrice = wheatPrice.leftDouble() * wheatRatio + seedsBazaarPrice.getAsDouble() * seedsRatio;
+			else bazaarPrice = 0;
+			itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning("WHEAT") && seedsNpcPrice.isPresent() ?
+					seedsNpcPrice.getAsDouble() * seedsRatio + TooltipInfoType.NPC.getData().getDouble("WHEAT") * wheatRatio :
+					Double.MIN_VALUE;
+		} else {
+			DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
+			bazaarPrice = itemBazaarPrice.leftDouble();
+			hasBazaarData = itemBazaarPrice.rightBoolean();
+
+			// Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
+			itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE;
+		}
 
 		double priceToUse = 0;
 		Component sourceLabel = null;

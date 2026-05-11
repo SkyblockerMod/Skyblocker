@@ -70,6 +70,14 @@ public class FarmingCategory {
 										newValue -> config.farming.farmingHud.experience = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
+								.description(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice.@Tooltip"))
+								.binding(defaults.farming.farmingHud.includeSeedsPrice,
+										() -> config.farming.farmingHud.includeSeedsPrice,
+										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 				// Pest Highlighter
 				.group(OptionGroup.createBuilder()

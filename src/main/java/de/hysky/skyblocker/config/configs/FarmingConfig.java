@@ -51,6 +51,8 @@ public class FarmingConfig {
 		public Type type = Type.BOTH;
 
 		public boolean experience = true;
+
+		public boolean includeSeedsPrice = false;
 	}
 
 	public enum Type {
