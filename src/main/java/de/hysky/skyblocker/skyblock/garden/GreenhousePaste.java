@@ -17,6 +17,7 @@ import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.SkullRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
@@ -149,10 +150,11 @@ public class GreenhousePaste {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("greenhousepaste").executes(_ -> runGreenhousePaste()))
 				.then(literal("greenhousepasteremove").executes(_ -> runGreenhousePasteRemove()))
-						.then(literal("greenhousedebug").executes(_ -> {
-							debugPrintGreenhouses();
-							return Command.SINGLE_SUCCESS;
-						}))));
+//						.then(literal("greenhousedebug").executes(_ -> {
+//							debugPrintGreenhouses();
+//							return Command.SINGLE_SUCCESS;
+//						}))
+		));
 
 		// Register render callback
 		LevelRenderExtractionCallback.EVENT.register(collector -> {
@@ -161,11 +163,6 @@ public class GreenhousePaste {
 		});
 
 		PlayerBlockBreakEvents.AFTER.register((_, _, pos, _, _) -> onBlockChange(pos));
-
-		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> {
-			onBlockChange(hitResult.getBlockPos());
-			return net.minecraft.world.InteractionResult.PASS;
-		});
 
 		// Initialize greenhouse arrays
 		removePreview();
@@ -221,6 +218,7 @@ public class GreenhousePaste {
 
 	public static void loadFromLink() {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
+		if (!isInGreenhouse()) return;
 		String clipboard = client.keyboardHandler.getClipboard();
 		String[] parts = clipboard.split("\\?layout=");
 		String encoded = parts.length > 1 ? parts[1] : clipboard;
@@ -247,6 +245,38 @@ public class GreenhousePaste {
 		locateGreenhouse();
 	}
 
+	public static boolean isInGreenhouse() {
+		BlockPos playerPos = client.player.blockPosition();
+		BlockPos plotPos = playerPos.offset(240, 0, 240);
+
+		plotPos = new BlockPos(
+				((int) (plotPos.getX() / 96.0) * 96) - 240,
+				60,
+				((int) (plotPos.getZ() / 96.0) * 96) - 240
+		);
+
+		BlockPos plotOtherCorner = new BlockPos(plotPos.getX() + 96, 90, plotPos.getZ() + 96);
+
+		net.minecraft.world.phys.AABB detectionBox = new net.minecraft.world.phys.AABB(
+				plotPos.getX(), plotPos.getY(), plotPos.getZ(),
+				plotOtherCorner.getX(), plotOtherCorner.getY(), plotOtherCorner.getZ()
+		);
+
+		for (net.minecraft.world.entity.Entity entity : client.level.getEntities(null, detectionBox)) {
+			Component custom = entity.getCustomName();
+
+			if (custom != null && custom.getString().contains("Carpenter")) {
+				return true;
+			}
+		}
+
+		client.player.sendSystemMessage(
+				Constants.PREFIX.get()
+						.append(Component.literal("You are not in a greenhouse.").withStyle(ChatFormatting.RED))
+		);
+		return false;
+	}
+
 	// Get info of current greenhouse
 	public static void locateGreenhouse() {
 		BlockPos playerPos = client.player.blockPosition();
@@ -269,7 +299,6 @@ public class GreenhousePaste {
 		greenhouseCorner = new BlockPos(plotPos.getX() + 43, 73, plotPos.getZ() + 43);
 
 		// Load current greenhouse state into array
-		// im poor so i dont have all greenhouse skins, so TODO: verify Y level does not vary for different skins
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, 73, greenhouseCorner.getZ() + y);
@@ -454,6 +483,11 @@ public class GreenhousePaste {
 	public static void renderPreview(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (greenhouseCorner == null) return;
+		// Only render if player is within greenhouse plot
+		if (client.player.getX() < greenhouseCorner.getX() - 43 || client.player.getX() > greenhouseCorner.getX() + 53 ||
+				client.player.getZ() < greenhouseCorner.getZ() - 43 || client.player.getZ() > greenhouseCorner.getZ() + 53) {
+			return;
+		}
 
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
