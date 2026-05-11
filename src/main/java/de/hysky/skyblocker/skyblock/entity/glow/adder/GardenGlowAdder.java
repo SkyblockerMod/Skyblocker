@@ -52,7 +52,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	}
 
 	public boolean contestEnabled() {
-		return  SkyblockerConfigManager.get().farming.pestHighlighter.contestHighlighter;
+		return SkyblockerConfigManager.get().farming.pestHighlighter.contestHighlighter && !StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	private static void update() {
 		// Check if scoreboard text contains no 'Jacob's Contest' should be enough
 		// Detecting chat to clear CURRENT_CROP_CONTEST is not a good solution because of a scoreboard has delayed update rate
-		if (!INSTANCE.isEnabled() || !INSTANCE.contestEnabled() || Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
+		if (!INSTANCE.isEnabled() || Utils.STRING_SCOREBOARD.stream().noneMatch(s -> s.contains("Jacob's Contest"))) {
 			CurrentJacobCrop.CURRENT_CROP_CONTEST = null;
 			return;
 		}
@@ -88,7 +88,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	 * Matches the armor stand head with current collected crop during Jacob's Contest.
 	 */
 	public static boolean doesPestMatchCurrentContest(ArmorStand entity) {
-		if (StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
+		if (!INSTANCE.contestEnabled()) {
 			return false;
 		}
 
@@ -108,7 +108,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 		String vinyl = VacuumCache.getVinyl();
 
 		// Only applies outside of Jacob's Contests
-		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl.isEmpty()) {
+		if (INSTANCE.contestEnabled() || vinyl.isEmpty()) {
 			return false;
 		}
 
