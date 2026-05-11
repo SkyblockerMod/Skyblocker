@@ -29,15 +29,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class GreenhousePaste {
-	private static Minecraft client = Minecraft.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final int PREVIEW_COLOR_ARGB = 0x62FFFFFF; // 38% opacity
 	private static final float PREVIEW_ALPHA = 0.38f; // for block holograms
 	private static final long BLOCK_CHANGE_RATE_LIMIT_MS = 150;
@@ -45,12 +45,11 @@ public class GreenhousePaste {
 		For normal greenhouse, the grid is 10x10. Each cell can be empty (0) or contain a crop (1-40).
 		For target greenhouse, the grid is also 10x10. Each cell can be ignored (-1) or empty (0) contain a crop (1-40).
 	*/
-	private static final Map<String, GreenhouseCrops.Crop> CROP_ID_MAP = GreenhouseCrops.CROP_ID_MAP;
-	private static final Map<Integer, GreenhouseCrops.Crop> CROP_BY_INT = GreenhouseCrops.CROP_BY_INT;
-	private static final Map<String, GreenhouseCrops.Crop> CROP_BY_HEAD_TEXTURE_HASH = GreenhouseCrops.CROP_BY_HEAD_TEXTURE_HASH;
 	private static int[][] greenhouse = new int[10][10];
 	private static int[][] targetGreenhouse = new int[10][10];
+	@Nullable
 	private static BlockPos greenhouseCorner = null;
+
 	private static long lastBlockChangeTimeMs;
 
 	// Special ignores
@@ -108,7 +107,7 @@ public class GreenhousePaste {
 	}
 
 	// If non armor stand crops are changed
-	public static void onBlockChange(BlockPos pos) {
+	private static void onBlockChange(BlockPos pos) {
 		if (greenhouseCorner == null) return;
 		if (greenhouseCorner.getX() - 1 >= pos.getX() ||
 				greenhouseCorner.getX() + 11 <= pos.getX() ||
@@ -123,15 +122,15 @@ public class GreenhousePaste {
 	}
 
 	private static int runGreenhousePaste() {
-		if (client.player == null) return Command.SINGLE_SUCCESS;
+		if (CLIENT.player == null) return Command.SINGLE_SUCCESS;
 		loadFromLink();
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int runGreenhousePasteRemove() {
-		if (client.player == null) return Command.SINGLE_SUCCESS;
+		if (CLIENT.player == null) return Command.SINGLE_SUCCESS;
 		removePreview();
-		client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Greenhouse preview removed.").withStyle(ChatFormatting.GREEN)));
+		CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Greenhouse preview removed.").withStyle(ChatFormatting.GREEN)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -163,7 +162,7 @@ public class GreenhousePaste {
 	public static void loadFromLink() {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		String clipboard = client.keyboardHandler.getClipboard();
+		String clipboard = CLIENT.keyboardHandler.getClipboard();
 		String[] parts = clipboard.split("\\?layout=");
 		String encoded = parts.length > 1 ? parts[1] : clipboard;
 
@@ -171,7 +170,7 @@ public class GreenhousePaste {
 
 		boolean success = importGreenhouse(encoded);
 		if (!success) {
-			client.player.sendSystemMessage(
+			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
 							.append(Component.literal("Failed to load greenhouse layout from clipboard. Extracted content: ")
 									.withStyle(ChatFormatting.RED))
@@ -181,7 +180,7 @@ public class GreenhousePaste {
 			return;
 		}
 
-		client.player.sendSystemMessage(
+		CLIENT.player.sendSystemMessage(
 				Constants.PREFIX.get()
 						.append(Component.literal("Greenhouse loaded successfully!")
 								.withStyle(ChatFormatting.GREEN)));
@@ -190,7 +189,7 @@ public class GreenhousePaste {
 	}
 
 	public static boolean isInGreenhouse() {
-		BlockPos playerPos = client.player.blockPosition();
+		BlockPos playerPos = CLIENT.player.blockPosition();
 		BlockPos plotPos = playerPos.offset(240, 0, 240);
 
 		plotPos = new BlockPos(
@@ -206,7 +205,7 @@ public class GreenhousePaste {
 				plotOtherCorner.getX(), plotOtherCorner.getY(), plotOtherCorner.getZ()
 		);
 
-		for (net.minecraft.world.entity.Entity entity : client.level.getEntities(null, detectionBox)) {
+		for (net.minecraft.world.entity.Entity entity : CLIENT.level.getEntities(null, detectionBox)) {
 			Component custom = entity.getCustomName();
 
 			if (custom != null && custom.getString().contains("Carpenter")) {
@@ -214,7 +213,7 @@ public class GreenhousePaste {
 			}
 		}
 
-		client.player.sendSystemMessage(
+		CLIENT.player.sendSystemMessage(
 				Constants.PREFIX.get()
 						.append(Component.literal("You are not in a greenhouse.").withStyle(ChatFormatting.RED))
 		);
@@ -223,7 +222,7 @@ public class GreenhousePaste {
 
 	// Get info of current greenhouse
 	public static void locateGreenhouse() {
-		BlockPos playerPos = client.player.blockPosition();
+		BlockPos playerPos = CLIENT.player.blockPosition();
 		/*
 			Math:
 			- plot is 96x96 on 5x5 grid
@@ -246,7 +245,7 @@ public class GreenhousePaste {
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, 73, greenhouseCorner.getZ() + y);
-				int cropId = getCropIdAtPosition(client.level, pos);
+				int cropId = getCropIdAtPosition(CLIENT.level, pos);
 				greenhouse[x][y] = cropId;
 			}
 		}
@@ -272,7 +271,7 @@ public class GreenhousePaste {
 
 			if (IGNORE_NAMES.contains(name)) return 0; // Make blocks are ignored too
 
-			for (GreenhouseCrops.Crop crop : CROP_ID_MAP.values()) {
+			for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
 				if (name.contains(crop.armorStandName)) {
 					return crop.id;
 				}
@@ -282,7 +281,7 @@ public class GreenhousePaste {
 			Optional<String> texture = ItemUtils.getHeadTextureOptional(head);
 			if (texture.isEmpty()) continue;
 
-			GreenhouseCrops.Crop cropByTexture = CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
+			GreenhouseCrops.Crop cropByTexture = GreenhouseCrops.CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
 			if (cropByTexture == null) continue;
 			if (!HeadTextures.SPECIAL_CROPS.contains(cropByTexture.headSkin)) continue;
 
@@ -292,7 +291,7 @@ public class GreenhousePaste {
 		// If no armor stand found, fallback to checking block type (for non-head crops)
 		BlockState state = level.getBlockState(pos.above());
 		Block block = state.getBlock();
-		for (GreenhouseCrops.Crop crop : CROP_ID_MAP.values()) {
+		for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
 			if (!crop.isHead && crop.cropBlock.equals(block)) {
 				return crop.id;
 			}
@@ -323,7 +322,7 @@ public class GreenhousePaste {
 
 		ArmorStand foundArmorStand = null;
 		// Determine crop ID based on the name of armor stand, should also detect non head crops
-		for (Entity entity : client.level.getEntities(null, detectionBox)) {
+		for (Entity entity : CLIENT.level.getEntities(null, detectionBox)) {
 			if (!(entity instanceof ArmorStand armorStand)) continue;
 
 			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
@@ -412,7 +411,7 @@ public class GreenhousePaste {
 					continue;
 				}
 
-				GreenhouseCrops.Crop crop = CROP_ID_MAP.get(cropName);
+				GreenhouseCrops.Crop crop = GreenhouseCrops.CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
 				if (x >= 0 && x < 10 && y >= 0 && y < 10) {
 					targetGreenhouse[9 - x][y] = crop.id;
@@ -428,8 +427,8 @@ public class GreenhousePaste {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (greenhouseCorner == null) return;
 		// Only render if player is within greenhouse plot
-		if (client.player.getX() < greenhouseCorner.getX() - 43 || client.player.getX() > greenhouseCorner.getX() + 53 ||
-				client.player.getZ() < greenhouseCorner.getZ() - 43 || client.player.getZ() > greenhouseCorner.getZ() + 53) {
+		if (CLIENT.player.getX() < greenhouseCorner.getX() - 43 || CLIENT.player.getX() > greenhouseCorner.getX() + 53 ||
+				CLIENT.player.getZ() < greenhouseCorner.getZ() - 43 || CLIENT.player.getZ() > greenhouseCorner.getZ() + 53) {
 			return;
 		}
 
@@ -475,7 +474,7 @@ public class GreenhousePaste {
 					if (targetCropId == 48 || targetCropId == 49) continue;
 				}
 
-				GreenhouseCrops.Crop targetCrop = CROP_BY_INT.get(targetCropId);
+				GreenhouseCrops.Crop targetCrop = GreenhouseCrops.CROP_BY_INT.get(targetCropId);
 				if (targetCrop == null) continue;
 
 				if (currentCropId != 0) { // Undesired spot that is not empty
@@ -485,7 +484,7 @@ public class GreenhousePaste {
 				} else {
 					BlockState blockState = targetCrop.cropBlock.defaultBlockState();
 					if (targetCrop.cropBlock instanceof CropBlock) {
-						blockState = ((CropBlock) targetCrop.cropBlock).defaultBlockState().setValue(CropBlock.AGE, 7);
+						blockState = targetCrop.cropBlock.defaultBlockState().setValue(CropBlock.AGE, 7);
 					}
 					collector.submitBlockHologram(pos, blockState, PREVIEW_ALPHA);
 				}
@@ -532,12 +531,12 @@ public class GreenhousePaste {
 	// DEBUG
 
 	private static void debugPrintGreenhouses() {
-		if (client.player == null) return;
+		if (CLIENT.player == null) return;
 
-		client.player.sendSystemMessage(Component.literal("=== CURRENT GREENHOUSE ===").withStyle(ChatFormatting.YELLOW));
+		CLIENT.player.sendSystemMessage(Component.literal("=== CURRENT GREENHOUSE ===").withStyle(ChatFormatting.YELLOW));
 		printGrid(greenhouse);
 
-		client.player.sendSystemMessage(Component.literal("=== TARGET GREENHOUSE ===").withStyle(ChatFormatting.AQUA));
+		CLIENT.player.sendSystemMessage(Component.literal("=== TARGET GREENHOUSE ===").withStyle(ChatFormatting.AQUA));
 		printGrid(targetGreenhouse);
 	}
 
@@ -558,7 +557,7 @@ public class GreenhousePaste {
 			}
 			all.append(row).append("\n");
 		}
-		client.player.sendSystemMessage(Component.literal(all.toString()));
+		CLIENT.player.sendSystemMessage(Component.literal(all.toString()));
 	}
 
 }

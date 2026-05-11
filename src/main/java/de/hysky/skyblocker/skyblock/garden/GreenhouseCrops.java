@@ -5,6 +5,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,9 +102,14 @@ public final class GreenhouseCrops {
 		public final String name;
 		public final String armorStandName;
 		public final int id;
-		public final String headSkin;
 		public final boolean isHead;
+
+		@Nullable
 		public final Block cropBlock;
+
+		@Nullable
+		public final String headSkin;
+		@Nullable
 		public final FlexibleItemStack displayStack;
 
 		public Crop(String name, String armorStandName, int id, String headSkin) {

@@ -516,12 +516,4 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	private record VanillaSubmittable<S>(S state, VanillaRenderer<S> renderer) {}
-
-	public static LevelRenderState getWorldState(PrimitiveCollector collector) {
-		if (collector instanceof PrimitiveCollectorImpl impl) {
-			return impl.worldState;
-		} else {
-			throw new IllegalArgumentException("Expected a PrimitiveCollectorImpl!");
-		}
-	}
 }
