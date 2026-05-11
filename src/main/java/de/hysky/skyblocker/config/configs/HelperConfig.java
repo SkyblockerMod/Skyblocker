@@ -101,7 +101,7 @@ public class HelperConfig {
 		public boolean seaCreatureTimerNotification = true;
 
 		@Deprecated
-		public transient int SEA_CREATURE_CAP;
+		public transient int seaCreatureCap;
 
 		public boolean seaCreatureCapNotification = true;
 
