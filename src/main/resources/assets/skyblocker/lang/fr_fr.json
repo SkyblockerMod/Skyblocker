@@ -649,6 +649,8 @@
     "skyblocker.config.general.itemList.filter.items": "Objets",
     "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "Ordre d’achat",
     "skyblocker.config.general.itemList.filter.all": "Tout",
+	"skyblocker.config.general.itemList.filter.attributes": "Attribute Shards",
+	"skyblocker.config.general.itemList.filter.tools": "Outils",
     "skyblocker.config.farming": "Agriculture",
     "skyblocker.config.farming.visitorHelper": "Assistant des visiteurs",
     "skyblocker.config.foraging.galatea": "Galatea",
