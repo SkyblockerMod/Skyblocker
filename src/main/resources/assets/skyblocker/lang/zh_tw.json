@@ -1666,7 +1666,7 @@
     "skyblocker.config.farming.pestHighlighter.vinylHighlighter": "Stereo Harmony Vinyl突顯",
     "skyblocker.config.farming.pestHighlighter.enabled.@Tooltip": "使花園中的所有害蟲發光以便你可以輕鬆看見它們！ :D",
     "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick": "傳送後關閉物品欄",
-    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "在Jacob的競賽之外，以藍色突顯來自Stereo Harmony vinyls的害蟲。\n需要啟用害蟲突顯！",
+    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "以藍色突顯來自Stereo Harmony vinyls的害蟲。\n需要啟用害蟲突顯！",
     "skyblocker.config.farming.plotsWidget": "花園地塊小部件",
     "skyblocker.config.farming.plotsWidget.enabled": "啟用花園地塊小部件",
     "skyblocker.config.farming.plotsWidget.enabled.@Tooltip": "在花園時，在物品欄右側顯示一個小部件。\n\n小部件能讓你在地塊之間快速傳送。突出顯示有害蟲的地塊。 （需要啟用害蟲小部件並在Tab中可見！）\n\n右鍵點擊小部件中的地塊可以自訂地塊的圖標。",
