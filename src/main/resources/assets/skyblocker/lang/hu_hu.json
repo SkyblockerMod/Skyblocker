@@ -1668,7 +1668,7 @@
     "skyblocker.config.farming.pestHighlighter.vinylHighlighter": "Stereó Harmónia Lemez Kiemelő",
     "skyblocker.config.farming.plotsWidget": "Garden Plotok Widget",
     "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick": "Felszerelés Bezárása Teleportáláskor",
-    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "A Stereo Harmony Kártevők kéken csillognak ha nincs aktív Jacob verseny.\nEhhez a Kártevő Kiemelőnek bekapcsolva kell lennie!",
+    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "A Stereo Harmony Kártevők kéken csillognak.\nEhhez a Kártevő Kiemelőnek bekapcsolva kell lennie!",
     "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick.@Tooltip": "Beállítja, hogy a felszerelés automatikusan záródjon be, ha egy plotra teleportálsz a Garden Plotok Widget-el.",
     "skyblocker.config.farming.plotsWidget.enabled": "Garden Plotok Widget Engedélyezése",
     "skyblocker.config.farming.visitorHelper.enabled": "Látogatók Segítő Engedélyezése",
@@ -1725,5 +1725,8 @@
     "skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "Farming Eszközkészlet",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting": "Formázás Megtartása",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip": "A formázó karakterek meg legyenek tartva, vagy ki legyenek vágva?",
-    "emi.category.skyblocker.skyblock_kat_upgrade": "Kat Fejlesztés (SkyBlock)"
+    "emi.category.skyblocker.skyblock_kat_upgrade": "Kat Fejlesztés (SkyBlock)",
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob Verseny Kiemelő",
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "A jelenlegi Jacob Verseny Kártevői zölden csillognak. (felülírva a Stereo Harmony Kiemelést)\nA Kártevőkiemelőnek engedélyezve kell lennie!",
+    "text.skyblocker.supportUs": "Támogass Minket"
 }
