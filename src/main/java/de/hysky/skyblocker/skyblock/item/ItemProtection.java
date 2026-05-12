@@ -47,8 +47,14 @@ public class ItemProtection {
 
 	public static boolean isItemProtected(ItemStack stack) {
 		if (stack == null) return false;
-		String itemUuid = stack.getUuid();
-		return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
+		else {
+			String itemUuid = stack.getUuid();
+			if (!itemUuid.isEmpty()) return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
+			else {
+				String SkyblockId = stack.getSkyblockId();
+				return SkyblockerConfigManager.get().general.protectedItems.contains(SkyblockId);
+			}
+		}
 	}
 
 	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -59,20 +65,26 @@ public class ItemProtection {
 
 	private static int protectMyItem(FabricClientCommandSource source) {
 		ItemStack heldItem = source.getPlayer().getMainHandItem();
+		String itemUuid = heldItem.getUuid();
+		String skyblockId = heldItem.getSkyblockId();
 
 		if (Utils.isOnSkyblock()) {
-			String itemUuid = heldItem.getUuid();
-
 			if (!itemUuid.isEmpty()) {
 				if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
 					SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
-					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())));
+					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.uniqueAdded", heldItem.getHoverName())));
 				} else {
 					SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
-					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())));
+					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.uniqueRemoved", heldItem.getHoverName())));
 				}
 			} else {
-				source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
+				if (!SkyblockerConfigManager.get().general.protectedItems.contains(skyblockId)) {
+					SkyblockerConfigManager.update(config -> config.general.protectedItems.add(skyblockId));
+					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.genericAdded", heldItem.getHoverName())));
+				} else {
+					SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(skyblockId));
+					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.genericRemoved", heldItem.getHoverName())));
+				}
 			}
 		} else {
 			source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")));
@@ -89,31 +101,40 @@ public class ItemProtection {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")), false);
+			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")),false);
 			return;
 		}
-
 		if (heldItem.isEmpty()) {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")), false);
+			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")),false);
 			return;
 		}
 
 		String itemUuid = heldItem.getUuid();
+		String skyblockId = heldItem.getSkyblockId();
 		if (!itemUuid.isEmpty()) {
-
 			if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
 				if (notifyConfiguration) {
-					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())), false);
+					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.uniqueAdded", heldItem.getHoverName())),false);
 				}
 			} else {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
 				if (notifyConfiguration) {
-					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())), false);
+					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.uniqueRemoved", heldItem.getHoverName())),false);
 				}
 			}
 		} else {
-			playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")), false);
+			if (!SkyblockerConfigManager.get().general.protectedItems.contains(skyblockId)) {
+				SkyblockerConfigManager.update(config -> config.general.protectedItems.add(skyblockId));
+				if (notifyConfiguration) {
+					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.genericAdded", heldItem.getHoverName())),false);
+				}
+			} else {
+				SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(skyblockId));
+				if (notifyConfiguration) {
+					playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.genericRemoved", heldItem.getHoverName())),false);
+				}
+			}
 		}
 	}
 
@@ -133,9 +154,12 @@ public class ItemProtection {
 		}
 		if (entity instanceof ItemFrame itemFrame && itemFrame.getItem().isEmpty()) {
 			if (isItemProtected(playerEntity.getItemInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().getSelectedSlot())) {
+				playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.triggered")),false);
+
 				return InteractionResult.FAIL;
 			}
 		}
 		return InteractionResult.PASS;
 	}
 }
+
