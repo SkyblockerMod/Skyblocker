@@ -259,6 +259,13 @@ public final class ItemUtils {
 					};
 				}
 
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().equals("Attribute Menu")) {
+					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
+					if (attribute != null) return attribute.apiId();
+					return id;
+				}
+
 				if (itemStack instanceof ItemStack realStack && itemStack.has(DataComponents.CUSTOM_NAME)) {
 					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					// Enchanted Books in the Bazaar
