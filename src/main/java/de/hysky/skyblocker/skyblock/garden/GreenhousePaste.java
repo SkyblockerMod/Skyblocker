@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -130,7 +131,7 @@ public class GreenhousePaste {
 	private static int runGreenhousePasteRemove() {
 		if (CLIENT.player == null) return Command.SINGLE_SUCCESS;
 		removePreview();
-		CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Greenhouse preview removed.").withStyle(ChatFormatting.GREEN)));
+		CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.unload").withStyle(ChatFormatting.GREEN)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -172,7 +173,7 @@ public class GreenhousePaste {
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
-							.append(Component.literal("Failed to load greenhouse layout from clipboard. Extracted content: ")
+							.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.loadFail")
 									.withStyle(ChatFormatting.RED))
 							.append(Component.literal(encoded)
 									.withStyle(ChatFormatting.GRAY))
@@ -182,7 +183,7 @@ public class GreenhousePaste {
 
 		CLIENT.player.sendSystemMessage(
 				Constants.PREFIX.get()
-						.append(Component.literal("Greenhouse loaded successfully!")
+						.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess")
 								.withStyle(ChatFormatting.GREEN)));
 
 		locateGreenhouse();
@@ -200,7 +201,7 @@ public class GreenhousePaste {
 
 		BlockPos plotOtherCorner = new BlockPos(plotPos.getX() + 96, 90, plotPos.getZ() + 96);
 
-		net.minecraft.world.phys.AABB detectionBox = new net.minecraft.world.phys.AABB(
+		AABB detectionBox = new AABB(
 				plotPos.getX(), plotPos.getY(), plotPos.getZ(),
 				plotOtherCorner.getX(), plotOtherCorner.getY(), plotOtherCorner.getZ()
 		);
@@ -215,7 +216,7 @@ public class GreenhousePaste {
 
 		CLIENT.player.sendSystemMessage(
 				Constants.PREFIX.get()
-						.append(Component.literal("You are not in a greenhouse.").withStyle(ChatFormatting.RED))
+						.append(Component.literal("skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse").withStyle(ChatFormatting.RED))
 		);
 		return false;
 	}
@@ -254,7 +255,7 @@ public class GreenhousePaste {
 
 	private static int getCropIdAtPosition(net.minecraft.world.level.Level level, BlockPos pos) {
 		// Scan a 1x5x1 column
-		net.minecraft.world.phys.AABB detectionBox = new net.minecraft.world.phys.AABB(
+		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
 				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
 		);
@@ -272,8 +273,8 @@ public class GreenhousePaste {
 			if (IGNORE_NAMES.contains(name)) return 0; // Make blocks are ignored too
 
 			for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
-				if (name.contains(crop.armorStandName)) {
-					return crop.id;
+				if (name.contains(crop.armorStandName())) {
+					return crop.id();
 				}
 			}
 
@@ -283,17 +284,17 @@ public class GreenhousePaste {
 
 			GreenhouseCrops.Crop cropByTexture = GreenhouseCrops.CROP_BY_HEAD_TEXTURE_HASH.get(texture.get());
 			if (cropByTexture == null) continue;
-			if (!HeadTextures.SPECIAL_CROPS.contains(cropByTexture.headSkin)) continue;
+			if (!HeadTextures.SPECIAL_CROPS.contains(cropByTexture.headSkin())) continue;
 
-			return cropByTexture.id;
+			return cropByTexture.id();
 		}
 
 		// If no armor stand found, fallback to checking block type (for non-head crops)
 		BlockState state = level.getBlockState(pos.above());
 		Block block = state.getBlock();
 		for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
-			if (!crop.isHead && crop.cropBlock.equals(block)) {
-				return crop.id;
+			if (!crop.isHead() && crop.cropBlock().equals(block)) {
+				return crop.id();
 			}
 		}
 
@@ -315,7 +316,7 @@ public class GreenhousePaste {
 		if (greenhouse[x][y] != 26) return;
 
 		BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY(), greenhouseCorner.getZ() + y); // sorry for cursed notation
-		net.minecraft.world.phys.AABB detectionBox = new net.minecraft.world.phys.AABB(
+		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
 				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
 		);
@@ -414,7 +415,7 @@ public class GreenhousePaste {
 				GreenhouseCrops.Crop crop = GreenhouseCrops.CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
 				if (x >= 0 && x < 10 && y >= 0 && y < 10) {
-					targetGreenhouse[9 - x][y] = crop.id;
+					targetGreenhouse[9 - x][y] = crop.id();
 				}
 			}
 		} catch (Exception _) {
@@ -446,7 +447,7 @@ public class GreenhousePaste {
 					if (currentCropId == 0) {
 						if (SkyblockerConfigManager.get().farming.greenhouse.showMutationSlot) // oh my days
 							collector.submitOutlinedBox(
-									new net.minecraft.world.phys.AABB(
+									new AABB(
 											pos.getX(), pos.getY() - 0.05, pos.getZ(),
 											pos.getX() + 1, pos.getY() + 0.1, pos.getZ() + 1
 									),
@@ -457,7 +458,7 @@ public class GreenhousePaste {
 							);
 					} else {
 						collector.submitOutlinedBox(
-								new net.minecraft.world.phys.AABB(pos),
+								new AABB(pos),
 								new float[]{1f, 0f, 0f},
 								0.5f,
 								4f,
@@ -478,13 +479,13 @@ public class GreenhousePaste {
 				if (targetCrop == null) continue;
 
 				if (currentCropId != 0) { // Undesired spot that is not empty
-					collector.submitOutlinedBox(new net.minecraft.world.phys.AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
-				} else if (targetCrop.isHead) {
-					SkullRenderer.submitSkull(collector, pos, targetCrop.displayStack, PREVIEW_COLOR_ARGB);
+					collector.submitOutlinedBox(new AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
+				} else if (targetCrop.isHead()) {
+					SkullRenderer.submitSkull(collector, pos, targetCrop.displayStack(), PREVIEW_COLOR_ARGB);
 				} else {
-					BlockState blockState = targetCrop.cropBlock.defaultBlockState();
-					if (targetCrop.cropBlock instanceof CropBlock) {
-						blockState = targetCrop.cropBlock.defaultBlockState().setValue(CropBlock.AGE, 7);
+					BlockState blockState = targetCrop.cropBlock().defaultBlockState();
+					if (targetCrop.cropBlock() instanceof CropBlock) {
+						blockState = targetCrop.cropBlock().defaultBlockState().setValue(CropBlock.AGE, 7);
 					}
 					collector.submitBlockHologram(pos, blockState, PREVIEW_ALPHA);
 				}

@@ -7,13 +7,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public final class GreenhouseCrops {
-	public static final Map<String, Crop> CROP_ID_MAP = new HashMap<>();
-	public static final Map<Integer, Crop> CROP_BY_INT = new HashMap<>();
-	public static final Map<String, Crop> CROP_BY_HEAD_TEXTURE_HASH = new HashMap<>();
+	public static final Map<String, Crop> CROP_ID_MAP;
+	public static final Map<Integer, Crop> CROP_BY_INT;
+	public static final Map<String, Crop> CROP_BY_HEAD_TEXTURE_HASH;
 
 	private GreenhouseCrops() {
 	}
@@ -88,48 +88,26 @@ public final class GreenhouseCrops {
 			new Crop("Cropie", "cropie", 60, HeadTextures.CROPIE),
 		};
 
-		// Populate both maps
-		for (Crop crop : crops) {
-			CROP_ID_MAP.put(crop.name, crop);
-			CROP_BY_INT.put(crop.id, crop);
-			if (crop.isHead) {
-				CROP_BY_HEAD_TEXTURE_HASH.put(crop.headSkin, crop);
-			}
-		}
+		CROP_ID_MAP = Map.ofEntries(Stream.of(crops).map(c -> Map.entry(c.name(), c)).toArray(Map.Entry[]::new));
+		CROP_BY_INT = Map.ofEntries(Stream.of(crops).map(c -> Map.entry(c.id(), c)).toArray(Map.Entry[]::new));
+		CROP_BY_HEAD_TEXTURE_HASH = Map.ofEntries(Stream.of(crops).filter(Crop::isHead).map(c -> Map.entry(c.headSkin(), c)).toArray(Map.Entry[]::new));
 	}
 
-	public static class Crop {
-		public final String name;
-		public final String armorStandName;
-		public final int id;
-		public final boolean isHead;
-
-		@Nullable
-		public final Block cropBlock;
-
-		@Nullable
-		public final String headSkin;
-		@Nullable
-		public final FlexibleItemStack displayStack;
-
+	public record Crop(
+		String name,
+		String armorStandName,
+		int id,
+		boolean isHead,
+		@Nullable Block cropBlock,
+		@Nullable String headSkin,
+		@Nullable FlexibleItemStack displayStack
+	) {
 		public Crop(String name, String armorStandName, int id, String headSkin) {
-			this.name = name;
-			this.armorStandName = armorStandName;
-			this.id = id;
-			this.isHead = true;
-			this.headSkin = headSkin;
-			this.displayStack = ItemUtils.createSkull(headSkin);
-			this.cropBlock = null;
+			this(name, armorStandName, id, true, null, headSkin, ItemUtils.createSkull(headSkin));
 		}
 
 		public Crop(String name, String armorStandName, int id, Block cropBlock) {
-			this.name = name;
-			this.armorStandName = armorStandName;
-			this.id = id;
-			this.isHead = false;
-			this.cropBlock = cropBlock;
-			this.headSkin = null;
-			this.displayStack = null;
+			this(name, armorStandName, id, false, cropBlock, null, null);
 		}
 	}
 }

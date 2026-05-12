@@ -467,7 +467,11 @@
 
   "skyblocker.config.farming.greenhouse": "Greenhouse",
   "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "Paste SkyMutations Plot",
-  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Click the \"link\" button on the website, then run /skyblocker greenhousepaste to paste the plot layout into your greenhouse!",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Click the \"link\" button on the website, then run /skyblocker garden greenhouse paste to paste the plot layout into your greenhouse!",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Failed to load greenhouse layout from clipboard. Extracted content: ",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess": "Greenhouse loaded successfully!",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "You are not in a greenhouse.",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.unload": "Greenhouse preview removed.",
   "skyblocker.config.farming.greenhouse.showMutationSlot.enabled": "Show Mutation Slot",
   "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "Highlights the mutation slot (green) when pasting a layout.",
 
