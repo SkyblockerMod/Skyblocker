@@ -415,7 +415,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
+			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0xB0_000000);
 		}
 	}
 
