@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -253,7 +254,7 @@ public class GreenhousePaste {
 		adjustForSpecialCrops();
 	}
 
-	private static int getCropIdAtPosition(net.minecraft.world.level.Level level, BlockPos pos) {
+	private static int getCropIdAtPosition(Level level, BlockPos pos) {
 		// Scan a 1x5x1 column
 		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
