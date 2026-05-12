@@ -1672,7 +1672,7 @@
     "skyblocker.config.farming.pestHighlighter.stereoHarmony": "启用Stereo Harmony助手",
     "skyblocker.config.farming.pestHighlighter.enabled.@Tooltip": "使花园中的所有害虫发光以便你能轻松看见它们！:D",
     "skyblocker.config.farming.plotsWidget": "花园地块小部件",
-    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "在Jacob的竞赛之外，以蓝色高亮来自Stereo Harmony vinyls的害虫。\n需要启用害虫高亮！",
+    "skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip": "以蓝色高亮来自Stereo Harmony vinyls的害虫。\n需要启用害虫高亮！",
     "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick.@Tooltip": "使用花园地块小部件传送到地块之后是否自动关闭物品栏。",
     "skyblocker.config.farming.plotsWidget.enabled": "启用花园地块小部件",
     "skyblocker.config.farming.plotsWidget.closeScreenOnPlotClick": "传送后关闭物品栏",
