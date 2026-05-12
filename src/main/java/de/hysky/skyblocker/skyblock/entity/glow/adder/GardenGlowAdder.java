@@ -51,6 +51,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 		return SkyblockerConfigManager.get().farming.pestHighlighter.enabled && Utils.isInGarden();
 	}
 
+	public boolean contestEnabled() {
+		return SkyblockerConfigManager.get().farming.pestHighlighter.contestHighlighter && !StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST);
+	}
+
 	/**
 	 * Compares the armor items of an armor stand to the Pest head texture to determine if it is a Pest head.
 	 */
@@ -84,7 +88,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	 * Matches the armor stand head with current collected crop during Jacob's Contest.
 	 */
 	public static boolean doesPestMatchCurrentContest(ArmorStand entity) {
-		if (StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
+		if (!INSTANCE.contestEnabled()) {
 			return false;
 		}
 
@@ -104,7 +108,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 		String vinyl = VacuumCache.getVinyl();
 
 		// Only applies outside of Jacob's Contests
-		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl.isEmpty()) {
+		if (INSTANCE.contestEnabled() || vinyl.isEmpty()) {
 			return false;
 		}
 
