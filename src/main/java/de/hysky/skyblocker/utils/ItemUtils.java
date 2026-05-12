@@ -260,7 +260,7 @@ public final class ItemUtils {
 				}
 
 				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().equals("Attribute Menu")) {
-					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					Component stackName = itemStack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
 					if (attribute != null) return attribute.apiId();
 					return id;
