@@ -28,7 +28,7 @@ import net.minecraft.util.FormattedCharSequence;
 public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
 	private static final int BUTTON_WIDTH = 210;
-	private static final int HALF_BUTTON_WIDTH = 101; //Same as (210 - 8) / 2
+	private static final int HALF_BUTTON_WIDTH = (BUTTON_WIDTH - SPACING) / 2;
 	private static final Component TITLE;
 	private static final Identifier ICON;
 	private static final Component CONFIGURATION_TEXT = Component.translatable("text.skyblocker.config");
@@ -38,6 +38,8 @@ public class SkyblockerScreen extends Screen {
 	private static final Component TRANSLATE_TEXT = Component.translatable("text.skyblocker.translate");
 	private static final Component MODRINTH_TEXT = Component.translatable("text.skyblocker.modrinth");
 	private static final Component DISCORD_TEXT = Component.translatable("text.skyblocker.discord");
+	private static final Component SUPPORT_US_TEXT = Component.translatable("text.skyblocker.supportUs");
+	private static final Component CREDITS_TEXT = Component.translatable("credits_and_attribution.button.credits");
 	private HeaderAndFooterLayout layout;
 	private MultiLineTextWidget tip;
 
@@ -79,6 +81,8 @@ public class SkyblockerScreen extends Screen {
 		adder.addChild(Button.builder(TRANSLATE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://translate.hysky.de/")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(MODRINTH_TEXT, ConfirmLinkScreen.confirmLink(this, "https://modrinth.com/mod/skyblocker-liap")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(DISCORD_TEXT, ConfirmLinkScreen.confirmLink(this, "https://discord.gg/aNNJHQykck")).width(HALF_BUTTON_WIDTH).build());
+		adder.addChild(Button.builder(SUPPORT_US_TEXT, ConfirmLinkScreen.confirmLink(this, "https://hysky.de/skyblocker/team")).width(HALF_BUTTON_WIDTH).build());
+		adder.addChild(Button.builder(CREDITS_TEXT, _ -> this.minecraft.setScreen(new SkyblockerCreditsScreen(this))).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).width(BUTTON_WIDTH).build(), 2);
 
 		GridLayout footerGridWidget = this.layout.addToFooter(new GridLayout()).spacing(SPACING).rowSpacing(0);
