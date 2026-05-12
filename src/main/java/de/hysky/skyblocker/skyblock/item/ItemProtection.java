@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png");
+	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/item_protection.png"); //Idk how to reference either the fancy display or the classic one.
 	public static KeyMapping itemProtection;
 
 	@Init
@@ -154,8 +154,7 @@ public class ItemProtection {
 		}
 		if (entity instanceof ItemFrame itemFrame && itemFrame.getItem().isEmpty()) {
 			if (isItemProtected(playerEntity.getItemInHand(hand)) || HotbarSlotLock.isLocked(playerEntity.getInventory().getSelectedSlot())) {
-				playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.triggered")),false);
-
+				playerEntity.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.triggered")),true);
 				return InteractionResult.FAIL;
 			}
 		}
