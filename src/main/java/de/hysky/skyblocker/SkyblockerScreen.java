@@ -67,10 +67,11 @@ public class SkyblockerScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.layout = new HeaderAndFooterLayout(this, 50, 100);
+		this.layout = new HeaderAndFooterLayout(this, height < 250 ? 48 : 64, 64);
 		this.layout.addToHeader(new IconTextWidget(this.getTitle(), this.font, ICON));
 
 		GridLayout gridWidget = this.layout.addToContents(new GridLayout()).spacing(SPACING);
+		if (height < 300) gridWidget = gridWidget.rowSpacing(4);
 		gridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
@@ -85,18 +86,18 @@ public class SkyblockerScreen extends Screen {
 		adder.addChild(Button.builder(CREDITS_TEXT, _ -> this.minecraft.setScreen(new SkyblockerCreditsScreen(this))).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).width(BUTTON_WIDTH).build(), 2);
 
-		GridLayout footerGridWidget = this.layout.addToFooter(new GridLayout()).spacing(SPACING).rowSpacing(0);
+		GridLayout footerGridWidget = this.layout.addToFooter(new GridLayout()).columnSpacing(SPACING).rowSpacing(0);
 		footerGridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper footerAdder = footerGridWidget.createRowHelper(2);
-		footerAdder.addChild(tip = new MultiLineTextWidget(Tips.nextTip(), this.font).setCentered(true).setMaxWidth((int) (this.width * 0.7)), 2);
+		footerAdder.addChild(tip = new MultiLineTextWidget(Tips.nextTip(), this.font).setCentered(true).setMaxWidth((int) (this.width * 0.8)), 2);
 		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.previous"), _ -> {
 			tip.setMessage(Tips.previousTip());
 			layout.arrangeElements();
-		}).build());
+		}).width(HALF_BUTTON_WIDTH).build());
 		footerAdder.addChild(Button.builder(Component.translatable("skyblocker.tips.next"), _ -> {
 			tip.setMessage(Tips.nextTip());
 			layout.arrangeElements();
-		}).build());
+		}).width(HALF_BUTTON_WIDTH).build());
 
 		this.layout.arrangeElements();
 		this.layout.visitWidgets(this::addRenderableWidget);
@@ -118,10 +119,12 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	private static class IconTextWidget extends StringWidget {
+		private static final int ICON_SIZE = 32;
+		private static final int SPACING = 2;
 		private final Identifier icon;
 
 		IconTextWidget(Component message, Font textRenderer, Identifier icon) {
-			super(message, textRenderer);
+			super(textRenderer.width(message) + ICON_SIZE + SPACING, ICON_SIZE, message, textRenderer);
 			this.icon = icon;
 		}
 
@@ -134,15 +137,15 @@ public class SkyblockerScreen extends Screen {
 			int textWidth = textRenderer.width(text);
 			float horizontalAlignment = 0.5f; // default
 			//17 = (32 + 2) / 2 • 32 + 2 is the width of the icon + spacing between icon and text
-			int x = this.getX() + 17 + Math.round(horizontalAlignment * (float) (width - textWidth));
+			int x = this.getX() + (ICON_SIZE + SPACING) / 2 + Math.round(horizontalAlignment * (float) (width - textWidth));
 			int y = this.getY() + (this.getHeight() - textRenderer.lineHeight) / 2;
 			FormattedCharSequence orderedText = textWidth > width ? this.trim(text, width) : text.getVisualOrderText();
 
-			int iconX = x - 34;
+			int iconX = x - ICON_SIZE - SPACING;
 			int iconY = y - 13;
 
 			graphics.text(textRenderer, orderedText, x, y, CommonColors.WHITE);
-			graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, 32, 32, 32, 32);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon, iconX, iconY, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
 		}
 
 		private FormattedCharSequence trim(Component text, int width) {
