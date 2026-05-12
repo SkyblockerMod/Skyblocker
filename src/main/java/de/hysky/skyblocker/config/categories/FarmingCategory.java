@@ -84,6 +84,14 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip"))
+								.binding(defaults.farming.pestHighlighter.contestHighlighter,
+										() -> config.farming.pestHighlighter.contestHighlighter,
+										newValue -> config.farming.pestHighlighter.contestHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter"))
 								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.vinylHighlighter.@Tooltip"))
 								.tags(CommonTags.ADDED_IN_6_2_0)

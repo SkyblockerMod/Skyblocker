@@ -18,6 +18,8 @@ public class FarmingConfig {
 
 		public boolean vinylHighlighter = true;
 
+		public boolean contestHighlighter = true;
+
 		public boolean enableStereoHarmonyHelperForContest = true;
 	}
 
