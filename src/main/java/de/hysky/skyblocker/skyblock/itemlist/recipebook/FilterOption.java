@@ -15,10 +15,6 @@ public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 	MAYORS(query -> query.endsWith("(mayor)") || query.endsWith("(retired mayor)"), SkyblockerMod.id("textures/gui/filter/mayors.png")),
 
 	// Basically a negation on everything else.
-	ATTRIBUTES(query -> query.endsWith("shard") && !query.contains("prismarine"),
-			SkyblockerMod.id("textures/gui/filter/attributes_shards.png")),
-	TOOLS(query -> query.endsWith("axe") || query.endsWith("pickaxe") || query.contains("drill") || query.contains("fuel tank") || query.contains("goblin omelette") || query.contains("starfall seasoning") || query.contains("tungsten regulator") || query.contains("mk.") || query.endsWith("hoe") || query.startsWith("hoe") || query.contains("spore harvester") || query.contains("thornleaf scythe") || query.contains("farming toolkit") || query.contains("hunting toolkit") && !query.contains("drill motor"),
-			SkyblockerMod.id("textures/gui/filter/items.png")),
 	ITEMS(query -> !ENTITIES.test(query) && !NPCS.test(query) && !MAYORS.test(query),
 			SkyblockerMod.id("textures/gui/filter/items.png"));
 
