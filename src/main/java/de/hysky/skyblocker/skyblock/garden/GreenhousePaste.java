@@ -216,7 +216,7 @@ public class GreenhousePaste {
 
 		CLIENT.player.sendSystemMessage(
 				Constants.PREFIX.get()
-						.append(Component.literal("skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse").withStyle(ChatFormatting.RED))
+						.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse").withStyle(ChatFormatting.RED))
 		);
 		return false;
 	}
