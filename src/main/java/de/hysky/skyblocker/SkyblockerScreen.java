@@ -67,11 +67,13 @@ public class SkyblockerScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.layout = new HeaderAndFooterLayout(this, height < 250 ? 48 : 64, 64);
+		// Slightly larger footer than header to move body content higher
+		// because the body content is positioned at footer height + 30 for some reason
+		this.layout = new HeaderAndFooterLayout(this, height < 280 ? 48 : 64, height < 280 ? 64 : 100);
 		this.layout.addToHeader(new IconTextWidget(this.getTitle(), this.font, ICON));
 
 		GridLayout gridWidget = this.layout.addToContents(new GridLayout()).spacing(SPACING);
-		if (height < 300) gridWidget = gridWidget.rowSpacing(4);
+		if (height < 320) gridWidget = gridWidget.rowSpacing(4); // 320 is default height at gui scale 3
 		gridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
@@ -124,7 +126,7 @@ public class SkyblockerScreen extends Screen {
 		private final Identifier icon;
 
 		IconTextWidget(Component message, Font textRenderer, Identifier icon) {
-			super(textRenderer.width(message) + ICON_SIZE + SPACING, ICON_SIZE, message, textRenderer);
+			super(textRenderer.width(message.getVisualOrderText()) + ICON_SIZE + SPACING, ICON_SIZE, message, textRenderer);
 			this.icon = icon;
 		}
 
@@ -134,7 +136,7 @@ public class SkyblockerScreen extends Screen {
 			Font textRenderer = this.getFont();
 
 			int width = this.getWidth();
-			int textWidth = textRenderer.width(text);
+			int textWidth = textRenderer.width(text.getVisualOrderText());
 			float horizontalAlignment = 0.5f; // default
 			//17 = (32 + 2) / 2 • 32 + 2 is the width of the icon + spacing between icon and text
 			int x = this.getX() + (ICON_SIZE + SPACING) / 2 + Math.round(horizontalAlignment * (float) (width - textWidth));
