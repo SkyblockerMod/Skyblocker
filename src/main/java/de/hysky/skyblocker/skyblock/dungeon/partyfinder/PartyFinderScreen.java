@@ -136,12 +136,11 @@ public class PartyFinderScreen extends Screen {
 				}
 			}, Executors.newVirtualThreadPerTaskExecutor());
 		});
-		ClientSendMessageEvents.ALLOW_COMMAND.register(command -> {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return true;
+		ClientSendMessageEvents.COMMAND.register(command -> {
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;
 			command = command.toLowerCase(Locale.ENGLISH);
-			if (!command.startsWith("join")) return true;
+			if (!command.startsWith("join")) return;
 			isInKuudraPartyFinder = command.startsWith("joinkuudra") || command.startsWith("joininstance kuudra_");
-			return true;
 		});
 	}
 
