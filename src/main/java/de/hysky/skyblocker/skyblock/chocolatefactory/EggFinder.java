@@ -53,6 +53,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	private static final Pattern EGG_FOUND_PATTERN = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner|Brunch|Déjeuner|Supper) Egg");
+	private static final Pattern NO_EGGS_PATTERN = Pattern.compile("^There are no hidden Chocolate Rabbit Eggs nearby! Try again later!$");
 	private static final Set<Location> LOCATIONS = Set.of(
 			Location.BACKWATER_BAYOU, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS,
 			Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.GALATEA, Location.GOLD_MINE, Location.HUB,
@@ -162,7 +163,18 @@ public class EggFinder {
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (overlay || !isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
-		Matcher matcher = EGG_FOUND_PATTERN.matcher(text.getString());
+		Matcher matcher = NO_EGGS_PATTERN.matcher(text.getString());
+		if (matcher.matches()) {
+			for (EggType type : EggType.entries) {
+				Egg egg = type.egg;
+				if (egg == null) continue;
+				type.collected = true;
+				egg.setFound();
+			}
+			return true;
+		}
+
+		matcher.usePattern(EGG_FOUND_PATTERN);
 		if (!matcher.find()) return true;
 
 		try {
