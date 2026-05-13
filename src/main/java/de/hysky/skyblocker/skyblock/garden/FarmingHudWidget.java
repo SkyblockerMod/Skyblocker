@@ -67,6 +67,8 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			Map.entry("COCO_CHOPPER_3", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", ""),
+			Map.entry("BASIC_GARDENING_AXE", ""),
+			Map.entry("ADVANCED_GARDENING_AXE", ""),
 			Map.entry("BINGHOE", "")
 	);
 	private static @Nullable FarmingHudWidget instance = null;
