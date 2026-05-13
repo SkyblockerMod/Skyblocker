@@ -4,9 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.Constants;
@@ -17,6 +19,7 @@ import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.SkullRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -35,7 +38,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
-
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class GreenhousePaste {
@@ -62,28 +64,26 @@ public class GreenhousePaste {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("garden")
-						.then(literal("greenhouse")
-								.then(literal("paste").executes(_ -> runGreenhousePaste()))
-								.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
-								.then(literal("rotate").then(
-										literal("right").executes(_ -> runRotateRight())
-								)
-								.then(
-										literal("left").executes(_ -> runRotateLeft())
-								))
-								.then(
-										literal("mirror").executes(_ -> runMirror())
-								))
-//								.then(literal("debug").executes(_ -> { // for debug purposes
-//									debugPrintGreenhouses();
-//									return Command.SINGLE_SUCCESS;
-//								}))
-						)
-				)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			LiteralArgumentBuilder<FabricClientCommandSource> greenhouseCommands = literal("greenhouse")
+					.then(literal("paste").executes(ctx -> runGreenhousePaste()))
+					.then(literal("endPaste").executes(ctx -> runGreenhousePasteRemove()))
+					.then(literal("rotate")
+							.then(literal("right").executes(ctx -> runRotateRight()))
+							.then(literal("left").executes(ctx -> runRotateLeft())))
+					.then(literal("mirror").executes(ctx -> runMirror()));
 
-		);
+			if (Debug.debugEnabled()) {
+				greenhouseCommands.then(literal("debug").executes(ctx -> {
+					debugPrintGreenhouses();
+					return Command.SINGLE_SUCCESS;
+				}));
+			}
+
+			dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+					.then(literal("garden")
+							.then(greenhouseCommands)));
+		});
 
 		// Register render callback
 		LevelRenderExtractionCallback.EVENT.register(collector -> {

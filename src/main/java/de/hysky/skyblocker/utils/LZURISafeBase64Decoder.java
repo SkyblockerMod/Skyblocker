@@ -4,50 +4,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LZURISafeBase64Decoder {
-	public static String decodeLZString(String input) {
-		if (input == null || input.isEmpty()) return "";
+	private static final String KEY_STR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
 
-		final String keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
+	private int val;
+	private int position = 32;
+	private int index = 1;
+	private final String input;
 
-		class Data {
-			int val;
-			int position = 32;
-			int index = 1;
+	private LZURISafeBase64Decoder(String input) {
+		this.input = input;
+		this.val = KEY_STR.indexOf(input.charAt(0));
+	}
 
-			Data(String input) {
-				this.val = keyStr.indexOf(input.charAt(0));
-			}
+	private int readBit() {
+		int resb = val & position;
+		position >>= 1;
 
-			int readBit(String input) {
-				int resb = val & position;
-				position >>= 1;
-
-				if (position == 0) {
-					position = 32;
-					if (index < input.length()) {
-						val = keyStr.indexOf(input.charAt(index++));
-					}
-				}
-
-				return resb > 0 ? 1 : 0;
-			}
-
-			int readBits(String input, int numBits) {
-				int bits = 0;
-				int maxpower = 1 << numBits;
-				int power = 1;
-
-				while (power != maxpower) {
-					bits |= readBit(input) * power;
-					power <<= 1;
-				}
-
-				return bits;
+		if (position == 0) {
+			position = 32;
+			if (index < input.length()) {
+				val = KEY_STR.indexOf(input.charAt(index++));
 			}
 		}
 
-		Data data = new Data(input);
+		return resb > 0 ? 1 : 0;
+	}
 
+	private int readBits(int numBits) {
+		int bits = 0;
+		int maxpower = 1 << numBits;
+		int power = 1;
+
+		while (power != maxpower) {
+			bits |= readBit() * power;
+			power <<= 1;
+		}
+
+		return bits;
+	}
+
+	public static String decodeLZString(String input) {
+		if (input == null || input.isEmpty()) return "";
+		return new LZURISafeBase64Decoder(input).decode();
+	}
+
+	private String decode() {
 		List<String> dictionary = new ArrayList<>();
 		for (int i = 0; i < 3; i++) dictionary.add("");
 
@@ -55,12 +56,12 @@ public class LZURISafeBase64Decoder {
 		int dictSize = 4;
 		int numBits = 3;
 
-		int next = data.readBits(input, 2);
+		int next = readBits(2);
 		String c;
 
 		switch (next) {
-			case 0 -> c = String.valueOf((char) data.readBits(input, 8));
-			case 1 -> c = String.valueOf((char) data.readBits(input, 16));
+			case 0 -> c = String.valueOf((char) readBits(8));
+			case 1 -> c = String.valueOf((char) readBits(16));
 			case 2 -> { return ""; }
 			default -> throw new IllegalStateException("Invalid LZ string");
 		}
@@ -70,19 +71,19 @@ public class LZURISafeBase64Decoder {
 		StringBuilder result = new StringBuilder(c);
 
 		while (true) {
-			if (data.index > input.length()) return result.toString();
+			if (index > input.length()) return result.toString();
 
-			int cc = data.readBits(input, numBits);
+			int cc = readBits(numBits);
 			String entry;
 
 			switch (cc) {
 				case 0 -> {
-					dictionary.add(String.valueOf((char) data.readBits(input, 8)));
+					dictionary.add(String.valueOf((char) readBits(8)));
 					cc = dictSize++;
 					enlargeIn--;
 				}
 				case 1 -> {
-					dictionary.add(String.valueOf((char) data.readBits(input, 16)));
+					dictionary.add(String.valueOf((char) readBits(16)));
 					cc = dictSize++;
 					enlargeIn--;
 				}
