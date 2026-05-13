@@ -202,8 +202,9 @@ public class GeneralConfig {
 		public boolean protectValuableConsumables = true;
 	}
 
+	///TODO Add an option for no icon at all
 	public enum SlotLockStyle {
-		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
+		CLASSIC(SkyblockerMod.id("textures/gui/classic_slot_lock.png")),
 		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
 
 		public final Identifier tex;
