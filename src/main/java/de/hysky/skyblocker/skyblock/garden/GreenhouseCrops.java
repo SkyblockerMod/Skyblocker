@@ -78,7 +78,7 @@ public final class GreenhouseCrops {
 			new Crop("Sugar Cane", "sugarcane", 54, Blocks.SUGAR_CANE),
 
 			// Misc
-			new Crop("Dead Plant", "deadplant", 55, Blocks.DEAD_BUSH),
+			new Crop("Dead Plants", "deadplant", 55, Blocks.DEAD_BUSH),
 			new Crop("Fire", "fire", 56, Blocks.FIRE),
 
 			// Special crops

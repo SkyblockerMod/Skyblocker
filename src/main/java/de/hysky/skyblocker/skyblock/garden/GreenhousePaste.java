@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.garden;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -16,22 +17,29 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.LZURISafeBase64Decoder;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.SkullRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.object.skull.SkullModelBase;
+import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
@@ -42,8 +50,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class GreenhousePaste {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final int PREVIEW_COLOR_ARGB = 0x62FFFFFF; // 38% opacity
-	private static final float PREVIEW_ALPHA = 0.38f; // for block holograms
+	private static final float PREVIEW_ALPHA = 0.6f;
+	private static final float PREVIEW_TINT = 0.4f;
 	private static final long BLOCK_CHANGE_RATE_LIMIT_MS = 150;
 	/*
 		For normal greenhouse, the grid is 10x10. Each cell can be empty (0) or contain a crop (1-40).
@@ -64,17 +72,17 @@ public class GreenhousePaste {
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			LiteralArgumentBuilder<FabricClientCommandSource> greenhouseCommands = literal("greenhouse")
-					.then(literal("paste").executes(ctx -> runGreenhousePaste()))
-					.then(literal("endPaste").executes(ctx -> runGreenhousePasteRemove()))
+					.then(literal("paste").executes(_ -> runGreenhousePaste()))
+					.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
 					.then(literal("rotate")
-							.then(literal("right").executes(ctx -> runRotateRight()))
-							.then(literal("left").executes(ctx -> runRotateLeft())))
-					.then(literal("mirror").executes(ctx -> runMirror()));
+							.then(literal("right").executes(_ -> runRotateRight()))
+							.then(literal("left").executes(_ -> runRotateLeft())))
+					.then(literal("mirror").executes(_ -> runMirror()));
 
 			if (Debug.debugEnabled()) {
-				greenhouseCommands.then(literal("debug").executes(ctx -> {
+				greenhouseCommands.then(literal("debug").executes(_ -> {
 					debugPrintGreenhouses();
 					return Command.SINGLE_SUCCESS;
 				}));
@@ -482,7 +490,49 @@ public class GreenhousePaste {
 				if (currentCropId != 0) { // Undesired spot that is not empty
 					collector.submitOutlinedBox(new AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
 				} else if (targetCrop.isHead()) {
-					SkullRenderer.submitSkull(collector, pos, targetCrop.displayStack(), PREVIEW_COLOR_ARGB);
+					ItemStack stack = targetCrop.displayStack().getStack();
+					ResolvableProfile profile = stack.get(DataComponents.PROFILE);
+					if (profile == null) continue;
+
+					SkullModelBase model = SkullBlockRenderer.createModel(
+							CLIENT.getEntityModels(),
+							SkullBlock.Types.PLAYER
+					);
+					if (model == null) continue;
+
+					RenderType renderType = CLIENT.playerSkinRenderCache()
+							.getOrDefault(profile)
+							.renderType();
+
+					collector.submitVanilla(
+							null,
+							(_, worldState, submitNodeCollector) -> {
+								PoseStack matrices = new PoseStack();
+
+								matrices.translate(
+										pos.getX() - worldState.cameraRenderState.pos.x,
+										pos.getY() - worldState.cameraRenderState.pos.y,
+										pos.getZ() - worldState.cameraRenderState.pos.z
+								);
+
+								matrices.mulPose(SkullBlockRenderer.TRANSFORMATIONS.freeTransformations(0));
+
+								SkullModelBase.State skullState = new SkullModelBase.State();
+								skullState.animationPos = 0.0f;
+								model.setupAnim(skullState);
+
+								submitNodeCollector.submitModel(
+										model,
+										skullState,
+										matrices,
+										renderType,
+										LightCoordsUtil.FULL_BRIGHT,
+										OverlayTexture.pack(PREVIEW_TINT, false),
+										0,
+										null
+								);
+							}
+					);
 				} else {
 					BlockState blockState = targetCrop.cropBlock().defaultBlockState();
 					if (targetCrop.cropBlock() instanceof CropBlock) {
@@ -493,6 +543,8 @@ public class GreenhousePaste {
 			}
 		}
 	}
+
+	private record HeadPreviewState(BlockPos pos, ResolvableProfile profile) {}
 
 	public static void rotatePreview(boolean left) {
 		/*
