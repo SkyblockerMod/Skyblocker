@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	///TO-DO fix image reference for fancy of classic display
+	//TO-DO fix image reference for fancy of classic display
 	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/classic_item_protected.png");
 	public static KeyMapping itemProtection;
 
