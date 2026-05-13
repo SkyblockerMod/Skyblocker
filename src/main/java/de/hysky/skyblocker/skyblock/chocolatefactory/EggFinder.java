@@ -91,7 +91,7 @@ public class EggFinder {
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
 					.executes(context -> {
 						EggType eggType = context.getArgument("eggType", EggType.class);
-						if (eggType == null || eggType.egg == null) {
+						if (eggType.egg == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").withStyle(style -> style.withColor(ChatFormatting.RED))));
 							return Command.SINGLE_SUCCESS;
 						}
@@ -199,6 +199,7 @@ public class EggFinder {
 			eggType.egg = new Egg(entities.getFirst().blockPosition().above(2), eggType);
 			eggType.egg.setFound();
 			eggType.sendEggMessage();
+			//noinspection DataFlowIssue
 			if (eggType.egg.equals(eggType.prevEgg)) {
 				LOGGER.info("[Skyblocker Egg Finder] Not sharing this egg to the WebSocket - matches previous location");
 				return true;
