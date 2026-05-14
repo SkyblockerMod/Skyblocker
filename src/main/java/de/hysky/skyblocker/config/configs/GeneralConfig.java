@@ -9,8 +9,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -203,6 +201,7 @@ public class GeneralConfig {
 	}
 
 	public enum SlotLockStyle {
+		NONE(SkyblockerMod.id("textures/gui/blank_item_protected")),
 		CLASSIC(SkyblockerMod.id("textures/gui/classic_item_protected.png")),
 		FANCY(SkyblockerMod.id("textures/gui/fancy_item_protected.png"));
 

@@ -17,6 +17,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
@@ -31,7 +32,11 @@ import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class ItemProtection {
-	//TO-DO fix image reference for fancy of classic display
+
+	public Identifier grabTexture() {
+		return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(SkyblockerConfigManager.get().general.itemProtection.slotLockStyle.tex).atlasLocation();
+	}
+
 	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("textures/gui/classic_item_protected.png");
 	public static KeyMapping itemProtection;
 
@@ -162,4 +167,3 @@ public class ItemProtection {
 		return InteractionResult.PASS;
 	}
 }
-
