@@ -12,6 +12,8 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
