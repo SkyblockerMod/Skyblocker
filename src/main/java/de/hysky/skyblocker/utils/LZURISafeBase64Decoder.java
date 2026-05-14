@@ -36,6 +36,7 @@ public class LZURISafeBase64Decoder {
 	public static String decodeLZString(String input) {
 		if (input == null || input.isEmpty()) return "";
 
+		// state[0]: val, state[1]: position, state[2]: index
 		int[] state = { KEY_STR.indexOf(input.charAt(0)), 32, 1 };
 
 		List<String> dictionary = new ArrayList<>();
