@@ -14,7 +14,7 @@ import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.LZURISafeBase64Decoder;
+import de.hysky.skyblocker.utils.LZString;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -400,7 +400,7 @@ public class GreenhousePaste {
 	 */
 	public static boolean importGreenhouse(String encoded) {
 		try {
-			String jsonString = LZURISafeBase64Decoder.decodeLZString(encoded);
+			String jsonString = LZString.decompressFromEncodedURIComponent(encoded);
 			JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
 
 			for (int x = 0; x < 10; x++) {
