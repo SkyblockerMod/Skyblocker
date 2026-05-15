@@ -53,6 +53,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	private static final Pattern EGG_FOUND_PATTERN = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner|Brunch|Déjeuner|Supper) Egg");
+	private static final Pattern NO_EGGS_PATTERN = Pattern.compile("^There are no hidden Chocolate Rabbit Eggs nearby! Try again later!$");
 	private static final Set<Location> LOCATIONS = Set.of(
 			Location.BACKWATER_BAYOU, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS,
 			Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.GALATEA, Location.GOLD_MINE, Location.HUB,
@@ -90,7 +91,7 @@ public class EggFinder {
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
 					.executes(context -> {
 						EggType eggType = context.getArgument("eggType", EggType.class);
-						if (eggType == null || eggType.egg == null) {
+						if (eggType.egg == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").withStyle(style -> style.withColor(ChatFormatting.RED))));
 							return Command.SINGLE_SUCCESS;
 						}
@@ -162,7 +163,18 @@ public class EggFinder {
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (overlay || !isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
-		Matcher matcher = EGG_FOUND_PATTERN.matcher(text.getString());
+		Matcher matcher = NO_EGGS_PATTERN.matcher(text.getString());
+		if (matcher.matches()) {
+			for (EggType type : EggType.entries) {
+				Egg egg = type.egg;
+				if (egg == null) continue;
+				type.collected = true;
+				egg.setFound();
+			}
+			return true;
+		}
+
+		matcher.usePattern(EGG_FOUND_PATTERN);
 		if (!matcher.find()) return true;
 
 		try {
@@ -187,6 +199,7 @@ public class EggFinder {
 			eggType.egg = new Egg(entities.getFirst().blockPosition().above(2), eggType);
 			eggType.egg.setFound();
 			eggType.sendEggMessage();
+			//noinspection DataFlowIssue
 			if (eggType.egg.equals(eggType.prevEgg)) {
 				LOGGER.info("[Skyblocker Egg Finder] Not sharing this egg to the WebSocket - matches previous location");
 				return true;
