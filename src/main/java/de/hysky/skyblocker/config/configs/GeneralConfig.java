@@ -9,11 +9,11 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -203,8 +203,9 @@ public class GeneralConfig {
 	}
 
 	public enum SlotLockStyle {
-		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
-		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
+		NONE(SkyblockerMod.id("textures/gui/blank_item_protected")),
+		CLASSIC(SkyblockerMod.id("textures/gui/classic_item_protected.png")),
+		FANCY(SkyblockerMod.id("textures/gui/fancy_item_protected.png"));
 
 		public final Identifier tex;
 
