@@ -516,7 +516,7 @@
     "skyblocker.itemProtection.noItemUuid": "§cЧтобы защитить предмет необходимо, чтобы вы держали предмет, у которого есть uuid!",
     "skyblocker.tips.fancyTabExtraInfo": "А вы знали, что дополнительную информацию в нашем красивом TAB меню можно увидеть по нажатию клавиш N или M?",
     "skyblocker.tips.helpCommand": "Используйте команду /skyblocker help, чтобы найти парочку крутых фич!",
-    "skyblocker.tips.discordRichPresence": "Используйте статус дискорд, чтобы показать вашим друзьям, насколько вы заряжены на игру!",
+    "skyblocker.tips.discordRichPresence": "Используйте статус Discord, чтобы показать вашим друзьям, насколько вы заряжены на игру!",
     "skyblocker.itemProtection.unableToProtect": "§cНевозможно защитить этот предмет : Вы на скайблоке А предмет в руках.",
     "skyblocker.itemProtection.removed": "§fВаш %s теперь §nне защищен§f :( - §lНе потеряйте его!",
     "skyblocker.tips.enabled": "§aСоветы включены.",
@@ -1148,5 +1148,16 @@
     "skyblocker.config.dungeons.map.showRoomLabels": "Показывать метки комнат",
     "skyblocker.config.dungeons.rareRoomAlert": "Уведомление о редких комнатах",
     "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Показывать ник игрока ближайшего к заданию.",
-    "skyblocker.config.dungeons.terminalHud.enabled": "Включено"
+    "skyblocker.config.dungeons.terminalHud.enabled": "Включено",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting": "Включая форматирование",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip": "Оставлять или отсекать форматирование символов.",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom": "Пользовательский",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.search.@Tooltip": "Искать больше звуков",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.icon.unableToEdit": "Редактирование предмета отключено пока вы не подключены к миру!",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "Нажмите что бы открыть выбор предметов SkyBlock.",
+    "skyblocker.config.chat.filter.hideSpiritSceptre": "Скрыть сообщение Spirit Sceptre",
+    "skyblocker.config.dungeons.devices.solveTargetPractice": "Решать Target Practice",
+    "skyblocker.config.dungeons.map.hideCheckmarks": "Скрыть пометки",
+    "skyblocker.config.dungeons.map.hideCheckmarks.@Tooltip": "Скрывает пометки для комнат с метками. Требуется включённое \"Показывать метки комнат\".",
+    "skyblocker.config.dungeons.map.roomLabelType": "Текст меток комнат"
 }
