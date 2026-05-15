@@ -348,19 +348,19 @@ public class ChatRuleConfigScreen extends Screen {
 
 	private FrameLayout buildCheckbox(Component text, Component tooltip, int width, TextAlignment align, Consumer<Boolean> setter, boolean selected) {
 		FrameLayout frame = new FrameLayout().setMinWidth(width);
+		Checkbox box = Checkbox.builder(text, font)
+				.selected(selected)
+				.onValueChange((_, value) -> setter.accept(value))
+				.maxWidth(width)
+				.build();
 
 		switch (align) {
 			case LEFT -> frame.defaultChildLayoutSetting().alignHorizontallyLeft();
 			case CENTER -> frame.defaultChildLayoutSetting().alignHorizontallyCenter();
 			case RIGHT -> frame.defaultChildLayoutSetting().alignHorizontallyRight();
 		}
-
-		frame.addChild(Checkbox.builder(text, font)
-				.selected(selected)
-				.onValueChange((_, value) -> setter.accept(value))
-				.tooltip(Tooltip.create(tooltip))
-				.maxWidth(width)
-				.build());
+		box.setTooltip(Tooltip.create(tooltip));
+		frame.addChild(box);
 
 		return frame;
 	}
@@ -427,7 +427,8 @@ public class ChatRuleConfigScreen extends Screen {
 					.includeInsertions(false);
 			((CheckboxAccessor) check).getTextWidget().visitLines(finder);
 			final Style style = finder.result();
-			if (style != null) {
+			// unnecessary null check on click event to suppress warning
+			if (style != null && style.getClickEvent() != null) {
 				defaultHandleClickEvent(style.getClickEvent(), minecraft, this);
 				return true;
 			}

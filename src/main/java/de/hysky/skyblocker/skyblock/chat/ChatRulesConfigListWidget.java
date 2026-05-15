@@ -123,6 +123,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		@Override
 		public void setX(int x) {
 			super.setX(x);
+			nameWidget.setX(x + 10);
 			layout.setX(x + 125);
 			layout.arrangeElements();
 		}
@@ -130,6 +131,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		@Override
 		public void setY(int y) {
 			super.setY(y);
+			nameWidget.setY(y + 8);
 			layout.setY(y);
 			layout.arrangeElements();
 		}
@@ -180,8 +182,6 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			// Text
-			nameWidget.setX(getX() + 10);
-			nameWidget.setY(getY() + 8);
 			nameWidget.extractRenderState(graphics, mouseX, mouseY, a);
 			// Widgets
 			layout.visitWidgets(child -> child.extractRenderState(graphics, mouseX, mouseY, a));
