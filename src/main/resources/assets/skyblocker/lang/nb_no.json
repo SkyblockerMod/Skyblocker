@@ -1,6 +1,6 @@
 {
     "skyblocker.config.title": "Skyblocker-innstillinger",
-    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver barer",
+    "skyblocker.config.uiAndVisuals.bars.enableBars": "Aktiver Barer",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Vis forhåndsvisning av ryggsekk uten å holde Shift nede",
     "skyblocker.config.general.itemTooltip": "Verktøytips for Gjenstad",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Aktiver NPC-pris",
@@ -24,7 +24,7 @@
     "skyblocker.config.quickNav.enableQuickNav": "Aktiver hurtignavigering",
     "key.skyblocker.hotbarSlotLock": "Slot lås (Hotbar)",
     "skyblocker.config.general": "Generelt",
-    "skyblocker.config.uiAndVisuals.bars": "Helse, mana, forsvar og XP-barer",
+    "skyblocker.config.uiAndVisuals.bars": "Helse, Mana, Forsvar og XP-barer",
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Du kan velge hvor mange dager med gjennomsnittspris som skal være",
     "skyblocker.itemTooltip.nullMessage": "§cVareprisinformasjon på verktøytips fornyes om maks 60 sekunder. Hvis ikke, sjekk latest.log",
     "skyblocker.config.general.itemList.enableItemList": "Aktiver kompatibilitet med gjenstandliste",
@@ -265,5 +265,8 @@
     "skyblocker.config.mining.commissionWaypoints.useColor": "Farget Veipunkter",
     "skyblocker.config.mining.crystalsWaypoints.enabled": "Aktiverte Veipunkter",
     "skyblocker.config.mining.dwarvenHud.enabledPowder": "Aktiver Pulver",
-    "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Fant Fossil. "
+    "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Fant Fossil. ",
+    "skyblocker.config.title.settings": "Innstillinger",
+    "skyblocker.config.uiAndVisuals": "UI & Visuelle Elementer",
+    "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Aktiver i Rift"
 }
