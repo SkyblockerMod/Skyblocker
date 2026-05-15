@@ -1719,5 +1719,6 @@
     "skyblocker.accessoryHelper.independent": "（按住Shift查询社群wiki）",
     "skyblocker.config.general.itemTooltip.enableGeorgePrice": "启用George宠物售价",
     "skyblocker.wikiLookup.noArticleFound.independent": "无法在Hypixel社群wiki中找到该物品的条目…",
-    "skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "农耕工具包"
+    "skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "农耕工具包",
+    "text.skyblocker.supportUs": "支持我们"
 }
