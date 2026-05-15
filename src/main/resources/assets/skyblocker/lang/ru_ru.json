@@ -1107,5 +1107,13 @@
     "skyblocker.tips.configSearch": "Вы можете искать настройки по всему конфигу при помощи поля поиска на экране настроек.",
     "skyblocker.tips.configureNewFeatures": "Настройте новые функции этого обновления при помощи /skyblocker config %s.",
     "skyblocker.slayer.bossSpawnAlert": "Появился босс!",
-    "skyblocker.slayer.miniBossSpawnAlert": "Мини-босс"
+    "skyblocker.slayer.miniBossSpawnAlert": "Мини-босс",
+    "skyblocker.bars.config.showMax": "Показывать максимум",
+    "skyblocker.config.dungeons.devices.solveTargetPractice.@Tooltip": "Подсвечивать цели красным.",
+    "skyblocker.config.dungeons.map.backgroundBlur": "Размытие фона",
+    "skyblocker.config.dungeons.map.showOutline": "Показывать Обводку",
+    "skyblocker.config.dungeons.rareRoomAlert.enabled": "Включено",
+    "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Помощник Утилизации - Подсвечивать Только Пожертвованные Предметы",
+    "skyblocker.config.eventNotifications.event.editReminders.prompt": "Редактировать",
+    "skyblocker.config.farming.farmingHud.coins": "Показывать Предполагаемый Доход в Час"
 }
