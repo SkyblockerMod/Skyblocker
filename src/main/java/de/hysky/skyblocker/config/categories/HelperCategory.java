@@ -268,14 +268,6 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip"))
-								.binding(defaults.helpers.fishing.seaCreatureCap,
-										() -> config.helpers.fishing.seaCreatureCap,
-										newValue -> config.helpers.fishing.seaCreatureCap = newValue)
-								.controller(IntegerController.createBuilder().range(1, 60).slider(1).build())
-								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification"))
 								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip"))

@@ -133,6 +133,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 				if (!memberText.startsWith(" ")) continue; // Member thingamajigs start with a space
 
 				String[] parts = memberText.split(":", 2);
+				if (parts.length != 2) continue;
 				String playerNameTrim = parts[0].trim();
 
 				if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol
