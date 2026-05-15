@@ -1115,5 +1115,8 @@
     "skyblocker.config.dungeons.rareRoomAlert.enabled": "Включено",
     "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Помощник Утилизации - Подсвечивать Только Пожертвованные Предметы",
     "skyblocker.config.eventNotifications.event.editReminders.prompt": "Редактировать",
-    "skyblocker.config.farming.farmingHud.coins": "Показывать Предполагаемый Доход в Час"
+    "skyblocker.config.farming.farmingHud.coins": "Показывать Предполагаемый Доход в Час",
+    "skyblocker.config.farming.farmingHud.counter": "Показывать Количество и Урожай в Минуту",
+    "skyblocker.config.farming.farmingHud.experience": "Показывать Прогресс Навыка Фермерства",
+    "skyblocker.config.farming.farmingHud.type": "Использовать значение цены из"
 }
