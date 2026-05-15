@@ -4,10 +4,13 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -132,6 +135,12 @@ public class PartyFinderScreen extends Screen {
 					LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
 				}
 			}, Executors.newVirtualThreadPerTaskExecutor());
+		});
+		ClientSendMessageEvents.COMMAND.register(command -> {
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;
+			command = command.toLowerCase(Locale.ENGLISH);
+			if (!command.startsWith("join")) return;
+			isInKuudraPartyFinder = command.startsWith("joinkuudra") || command.startsWith("joininstance kuudra_");
 		});
 	}
 
