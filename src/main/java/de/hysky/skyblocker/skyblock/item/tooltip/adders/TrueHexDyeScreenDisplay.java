@@ -29,17 +29,20 @@ public class TrueHexDyeScreenDisplay extends SimpleTooltipAdder {
 		String name = stack.getHoverName().getString();
 
 		if (stack.is(Items.PLAYER_HEAD) && name.endsWith("Dye")) {
-			for (Component line : lines) {
+			for (int i = 0; i < lines.size(); i++) {
+				Component line = lines.get(i);
 				Matcher matcher = HEX_PATTERN.matcher(line.getString());
 
 				if (matcher.matches()) {
 					String hex = matcher.group("hex");
+					line = line.copy();
 					List<Component> siblings = line.getSiblings();
 
 					siblings.clear();
 					siblings.add(Component.literal("Hex ").withStyle(ChatFormatting.DARK_GRAY));
 					siblings.add(Component.literal(hex).withColor(Integer.decode(hex)));
 
+					lines.set(i, line);
 					return;
 				}
 			}
