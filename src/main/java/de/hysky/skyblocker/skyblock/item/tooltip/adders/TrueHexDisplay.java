@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 
 /**
@@ -41,6 +42,6 @@ public class TrueHexDisplay extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return !SkyblockerConfigManager.get().debug.enableRepoDev;
 	}
 }

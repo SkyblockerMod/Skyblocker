@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 
 /**
@@ -47,6 +48,6 @@ public class TrueHexDyeScreenDisplay extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return !SkyblockerConfigManager.get().debug.enableRepoDev;
 	}
 }
