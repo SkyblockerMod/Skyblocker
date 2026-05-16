@@ -26,7 +26,7 @@ public class TrueHexDisplay extends SimpleTooltipAdder {
 
 		//Nice job on item id consistency Hypixel
 		if (!itemId.isEmpty() && (itemId.startsWith("DYE_") || itemId.endsWith("_DYE"))) {
-			for (int i = 0; i < lines.size(); i ++) {
+			for (int i = 0; i < lines.size(); i++) {
 				Component line = lines.get(i).copy();
 
 				//The hex part is inside the siblings
