@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -24,9 +25,17 @@ public class LBinTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String skyblockApiId = stack.getSkyblockApiId();
 
+		// PetInfo returns an empty pet if item isn't a pet
+		PetInfo petInfo = stack.getPetInfo();
+
 		// Check for whether the item exist in bazaar price data, because Skytils keeps some bazaar item data in lbin api
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-			lines.add(Component.literal(String.format("%-19s", "Lowest BIN Price:"))
+			String prefix = "Lowest BIN Price";
+			if (!petInfo.equals(PetInfo.EMPTY)) {
+				prefix += " (Lvl " + Math.max(((int) petInfo.level()/Math.max(petInfo.maxLevel(), 1)) * petInfo.maxLevel(), 1) + ")";
+			}
+			prefix += ": ";
+			lines.add(Component.literal(String.format("%-19s", prefix))
 						.withStyle(ChatFormatting.GOLD)
 						.append(ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount())));
 		}

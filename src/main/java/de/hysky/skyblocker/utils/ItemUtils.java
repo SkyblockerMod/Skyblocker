@@ -207,7 +207,7 @@ public final class ItemUtils {
 			case "PET" -> {
 				if (customData.contains("petInfo")) {
 					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
-					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
+					return (petInfo.level() == petInfo.maxLevel() ? "LVL_" + petInfo.maxLevel() + "_" : "LVL_1_") + petInfo.tier() + "_" + petInfo.type();
 				}
 			}
 			case "POTION" -> {

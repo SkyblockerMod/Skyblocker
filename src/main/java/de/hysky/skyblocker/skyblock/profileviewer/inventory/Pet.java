@@ -40,13 +40,20 @@ public class Pet {
 	private final Optional<String> skin;
 	private final Optional<ResolvableProfile> skinTexture;
 	private final int level;
+	private final int maxLevel;
 	private final double perecentageToLevel;
 	private final long levelXP;
 	private final long nextLevelXP;
 	private final FlexibleItemStack icon;
 
 	public Pet(PetInfo petData) {
-		LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
+		String typeForLevel = petData.type();
+		if (typeForLevel.equals("GOLDEN_DRAGON") || typeForLevel.equals("JADE_DRAGON") || typeForLevel.equals("ROSE_DRAGON")) {
+			typeForLevel = "PET_GREG";
+		} else {
+			typeForLevel = "PET_" + petData.tier();
+		}
+		LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(typeForLevel, (long) petData.exp());
 		this.name = petData.type();
 		this.xp = petData.exp();
 		this.heldItem = petData.item();
@@ -54,6 +61,7 @@ public class Pet {
 		this.skinTexture = calculateSkinTexture();
 		this.tier = petData.tier();
 		this.level = info.level;
+		this.maxLevel = petData.maxLevel();
 		this.perecentageToLevel = info.fill;
 		this.levelXP = info.levelXP;
 		this.nextLevelXP = info.nextLevelXP;
@@ -127,7 +135,7 @@ public class Pet {
 		// Copy to avoid mutating the original stack
 		petStack = petStack.copy();
 
-		List<Component> formattedLore = !(name.equals("GOLDEN_DRAGON") && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
+		List<Component> formattedLore = !((name.equals("GOLDEN_DRAGON") || name.equals("JADE_DRAGON") || name.equals("ROSE_DRAGON")) && level < 101) ?  processLore(item.getLore(), heldItem) : buildGoldenDragonEggLore(item.getLore());
 
 		// Calculate and display XP for level
 		Style style = Style.EMPTY.withItalic(false);
