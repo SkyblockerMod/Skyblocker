@@ -32,7 +32,8 @@ public class LBinTooltip extends SimpleTooltipAdder {
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
 			String prefix = "Lowest BIN Price";
 			if (!petInfo.equals(PetInfo.EMPTY)) {
-				prefix += " (Lvl " + Math.max(((int) petInfo.level()/Math.max(petInfo.maxLevel(), 1)) * petInfo.maxLevel(), 1) + ")";
+				// Only show lv 1 or lv max because that is what the lbin preview uses
+				prefix += " (Lvl " + (petInfo.level() == petInfo.maxLevel() ? petInfo.level() : 1) + ")";
 			}
 			prefix += ": ";
 			lines.add(Component.literal(String.format("%-19s", prefix))
