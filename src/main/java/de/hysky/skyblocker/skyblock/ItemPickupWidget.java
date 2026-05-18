@@ -153,6 +153,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				addedCount.remove(item);
 				continue;
 			}
+			if (entry.item.isEmpty()) continue;
 			addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.GREEN, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		//add negative changes
@@ -163,6 +164,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				removedCount.remove(item);
 				continue;
 			}
+			if (entry.item.isEmpty()) continue;
 			addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
 		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
