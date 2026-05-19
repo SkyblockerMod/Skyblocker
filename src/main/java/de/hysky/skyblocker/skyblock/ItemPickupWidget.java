@@ -271,6 +271,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 			return;
 		}
 
+		newStack = newStack.copy();
+
 		//if there are more items than before
 		if (countDiff > 0) {
 			//see if there is already a change for this type of item
