@@ -777,8 +777,6 @@
 
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and Auction House for the current hovered item with the F6 key.",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Enable Item Price Refresh",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and Auction House prices with the Z key.",
   "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
   "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Item Prices Refresh Failed.",
   "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Refreshed Item Prices",
