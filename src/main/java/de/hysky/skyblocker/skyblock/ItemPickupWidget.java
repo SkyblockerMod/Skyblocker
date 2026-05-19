@@ -244,6 +244,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 
 	private void updateCount(Object2ObjectOpenHashMap<String, ChangeData> map, ItemStack stack, int count) {
 		String neuId = stack.getNeuName();
+		if (neuId.isEmpty()) neuId = stack.getHoverName().toString();
 		map.compute(neuId, (_, existing) -> {
 			int existingCount = existing == null ? 0 : existing.amount;
 			return new ChangeData(stack, existingCount + count, System.currentTimeMillis());
