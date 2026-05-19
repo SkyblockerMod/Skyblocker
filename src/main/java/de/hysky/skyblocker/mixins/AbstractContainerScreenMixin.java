@@ -39,7 +39,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -410,7 +409,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getItem())) {
-			graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			ItemProtection.drawSlotIcon(graphics, slot.x, slot.y);
 		}
 
 		// Search - darken non-matching slots

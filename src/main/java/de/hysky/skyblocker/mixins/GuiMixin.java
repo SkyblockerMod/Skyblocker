@@ -62,7 +62,7 @@ public abstract class GuiMixin {
 
 			//item protection
 			if (ItemProtection.isItemProtected(player.getInventory().getNonEquipmentItems().get(index))) {
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, x, y);
 			}
 			isQuiverSlot = index == 8;
 		}

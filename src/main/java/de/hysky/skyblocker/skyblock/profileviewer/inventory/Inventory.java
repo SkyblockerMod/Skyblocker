@@ -86,7 +86,7 @@ public class Inventory implements ProfileViewerPage {
 			ItemBackgroundManager.drawBackgrounds(stack, graphics, x, y);
 
 			if (ItemProtection.isItemProtected(stack)) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, x, y);
 			}
 
 			graphics.item(stack, x, y);
