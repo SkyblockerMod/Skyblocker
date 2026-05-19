@@ -860,8 +860,6 @@
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "使用F6键在集市和拍卖行中搜索当前鼠标所指的物品。",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "启用物品价格查找",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "启用物品价格刷新",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z键刷新集市和拍卖行价格。",
     "skyblocker.config.dungeons.professor": "教授（F3/M3）",
     "skyblocker.config.slayer.bossbar": "猎手Boss栏",
     "skyblocker.config.helpers.enableWardrobeHelper": "启用衣柜助手",

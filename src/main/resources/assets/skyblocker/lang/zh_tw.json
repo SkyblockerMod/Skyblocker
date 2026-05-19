@@ -853,8 +853,6 @@
     "key.skyblocker.itemPriceLookup": "物品價格查找",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "啟用物品價格查找",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍賣行中找不到該物品",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "啟用物品價格刷新",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "使用Z鍵刷新集市和拍賣行價格。",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "正在刷新物品價格……",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "成功刷新物品價格",
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "物品價格刷新失敗。",

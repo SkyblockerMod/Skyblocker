@@ -822,8 +822,6 @@
     "skyblocker.tips.gardenMouseLock": "Заблокируйте мышь во время фарма в конфигурации Skyblocker Garden.",
     "key.skyblocker.itemPriceLookup": "Посмотреть цену предмета",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Включить поиск цены товара",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Включить обновление цены товара",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Обновлять цену предмета на Базаре и Аукционе при нажатии Z",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Обновление цен на товары...",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Обновленные цены на предметы",
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Не удалось обновить цены на предметы.",

@@ -562,8 +562,6 @@
     "skyblocker.config.helpers.jerry.enableJerryTimer": "Jerryタイマーを有効",
     "skyblocker.config.helpers.experiments.blockIncorrectClicks": "誤ったクリックをブロックする",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "バザーとオークションハウスでアイテムが見つかりませんでした",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "アイテム価格の更新を有効",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Zキーでバザーとオークションハウスの価格を更新します。",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "アイテムの価格を更新しています...",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "アイテム価格を更新しました",
     "skyblocker.config.helpers.jerry.enableJerryTimer.@Tooltip": "隠されたJerryの出現クールダウンが終了すると、チャットでメッセージを送信しサウンドを再生します。",
