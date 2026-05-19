@@ -15,7 +15,9 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -45,7 +47,11 @@ public class ItemProtection {
 		UseEntityCallback.EVENT.register(ItemProtection::onEntityInteract);
 	}
 
-	public static boolean isItemProtected(ItemStack stack) {
+	public static void drawSlotIcon(GuiGraphicsExtractor graphics, int slotX, int slotY) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slotX, slotY, 16, 16);
+	}
+
+	public static boolean isItemProtected(@Nullable ItemStack stack) {
 		if (stack == null) return false;
 		String itemUuid = stack.getUuid();
 		return SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid);
