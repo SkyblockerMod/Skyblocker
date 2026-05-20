@@ -1922,6 +1922,7 @@
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+  "skyblocker.waypoints.disabledWarning": "Waypoints are currently disabled in the config!",
   "skyblocker.waypoints.exportError": "Error Exporting Waypoints",
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.exportSuccess": "Waypoints Exported",

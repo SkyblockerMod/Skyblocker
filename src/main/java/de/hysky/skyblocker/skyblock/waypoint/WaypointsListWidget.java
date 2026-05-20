@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -208,6 +210,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 
 	void updateEntries() {
 		clearEntries();
+		checkAndAddWarning();
 		for (WaypointGroup group : waypoints) {
 			boolean collapsed = collapsedGroups.contains(group);
 			WaypointGroupEntry groupEntry = new WaypointGroupEntry(group, collapsed);
@@ -229,11 +232,40 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 	}
 
+	void checkAndAddWarning() {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
+			addEntryToTop(new WaypointsDisabledWarningEntry());
+		}
+	}
+
 	private BlockPos getDefaultPos() {
 		return minecraft.hitResult instanceof BlockHitResult blockHitResult && minecraft.hitResult.getType() == HitResult.Type.BLOCK ? blockHitResult.getBlockPos() : minecraft.player != null ? minecraft.player.blockPosition() : BlockPos.ZERO;
 	}
 
 	protected abstract static class AbstractWaypointEntry extends ContainerObjectSelectionList.Entry<AbstractWaypointEntry> {
+	}
+
+	protected class WaypointsDisabledWarningEntry extends AbstractWaypointEntry {
+		Component text = Component.translatable("skyblocker.waypoints.disabledWarning").withStyle(ChatFormatting.RED);
+		StringWidget textWidget = new StringWidget(text, minecraft.font);
+		int textSize = minecraft.font.width(text);
+		List<AbstractWidget> children = List.of(textWidget);
+
+		@Override
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			textWidget.setPosition(getX() + (getRowWidth() - textSize) / 2, getY() + (getHeight() - minecraft.font.lineHeight) / 2);
+			textWidget.extractRenderState(graphics, mouseX, mouseY, a);
+		}
+
+		@Override
+		public List<? extends GuiEventListener> children() {
+			return children;
+		}
+
+		@Override
+		public List<? extends NarratableEntry> narratables() {
+			return children;
+		}
 	}
 
 	protected class WaypointGroupEntry extends AbstractWaypointEntry {
