@@ -199,6 +199,7 @@
   "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is colored and easier to read while JSON has escaped string characters (double quotes).",
   "skyblocker.config.debug.dumpRange": "Entity Dump Range",
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
+  "skyblocker.config.debug.enableRepoDev": "Enable Repo Developer Options",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
 
   "skyblocker.config.dungeons": "Dungeons",
