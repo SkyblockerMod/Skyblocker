@@ -54,6 +54,7 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import org.jspecify.annotations.Nullable;
 
 public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsListWidget.AbstractWaypointEntry> {
 	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");
@@ -64,7 +65,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	private final AbstractWaypointsScreen<?> screen;
 	private Location island;
 	private List<WaypointGroup> waypoints;
-	private InsertPosition insertPosition = null;
+	private @Nullable InsertPosition insertPosition = null;
 	private final Set<WaypointGroup> collapsedGroups = new ReferenceOpenHashSet<>(); // use identity hash code
 
 	public WaypointsListWidget(Minecraft client, AbstractWaypointsScreen<?> screen, int width, int height, int y, int itemHeight) {
@@ -135,7 +136,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 						groupEntry = waypointGroupEntry;
 						position = 0;
 					}
-					case null, default -> {
+					default -> {
 						return;
 					}
 				}
