@@ -18,6 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.jspecify.annotations.Nullable;
+
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 import java.util.regex.Pattern;
@@ -27,7 +29,7 @@ public class SeaCreatureTracker {
 	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
 
 	private static final SequencedMap<Entity, LiveSeaCreature> seaCreatures = new LinkedHashMap<>();
-	private static SeaCreature lastCatch;
+	private static @Nullable SeaCreature lastCatch;
 	private static boolean doubleHook = false;
 
 
