@@ -19,5 +19,7 @@ public enum SeaCreatureCategory {
 	BACKWATER_BAYOU,
 	LAVA_HOTSPOT,
 	WATER_HOTSPOT,
-	GALATEA;
+	GALATEA,
+	LOTUS_ATOLL,
+	;
 }

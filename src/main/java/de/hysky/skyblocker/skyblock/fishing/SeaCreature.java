@@ -3,12 +3,10 @@ package de.hysky.skyblocker.skyblock.fishing;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 
 public enum SeaCreature {
-	NIGHT_SQUID("Night Squid", "Pitch darkness reveals a Night Squid.", SkyblockItemRarity.COMMON, SeaCreatureCategory.PARK),
 	AGARIMOO("Agarimoo", "Your Chumcap Bucket trembles, it's an Agarimoo.", SkyblockItemRarity.RARE, SeaCreatureCategory.CHUMCAP),
 	CARROT_KING("Carrot King", "Is this even a fish? It's the Carrot King!", SkyblockItemRarity.RARE, SeaCreatureCategory.CARROT),
 	SQUID("Squid", "A Squid appeared.", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER),
 	SEA_WALKER("Sea Walker", "You caught a Sea Walker.", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER),
-	SEA_GUARDIAN("Sea Guardian", "You stumbled upon a Sea Guardian.", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER),
 	SEA_ARCHER("Sea Archer", "You reeled in a Sea Archer.", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.WATER),
 	RIDER_OF_THE_DEEP("Rider of the Deep", "The Rider of the Deep has emerged.", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.WATER),
 	SEA_WITCH("Sea Witch", "It looks like you've disrupted the Sea Witch's brewing session. Watch out, she's furious!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.WATER),
@@ -55,26 +53,43 @@ public enum SeaCreature {
 	THUNDER("Thunder", "You hear a massive rumble as Thunder emerges.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_CRIMSON_ISLE),
 	LORD_JAWBUS("Lord Jawbus", "You have angered a legendary creature... Lord Jawbus has arrived.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_CRIMSON_ISLE),
 	PLHLEGBLAST("Plhlegblast", "WOAH! A Plhlegblast appeared.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.PLHLEGBLAST),
+
 	TRASH_GOBBLER("Trash Gobbler", "The Trash Gobbler is hungry for you!", SkyblockItemRarity.COMMON, SeaCreatureCategory.BACKWATER_BAYOU),
 	BANSHEE("Banshee", "The desolate wail of a Banshee breaks the silence.", SkyblockItemRarity.RARE, SeaCreatureCategory.BACKWATER_BAYOU),
 	ALLIGATOR("Alligator", "A long snout breaks the surface of the water. It's an Alligator!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.BACKWATER_BAYOU),
 	DUMPSTER_DIVER("Dumpster Diver", "A Dumpster Diver has emerged from the swamp!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.BACKWATER_BAYOU),
 	BAYOU_SLUDGE("Bayou Sludge", "A swampy mass of slime emerges, the Bayou Sludge!", SkyblockItemRarity.EPIC, SeaCreatureCategory.BACKWATER_BAYOU),
 	TITANOBOA("Titanoboa", "A massive Titanoboa surfaces. It's body stretches as far as the eye can see.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.BACKWATER_BAYOU),
+
 	RAGNAROK("Ragnarok", "The sky darkens and the air thickens. The end times are upon us: Ragnarok is here.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LAVA_HOTSPOT),
 	FIREPROOF_WITCH("Fireproof Witch", "Trouble's brewing, it's a Fireproof Witch!", SkyblockItemRarity.RARE, SeaCreatureCategory.LAVA_HOTSPOT),
 	FRIED_CHICKEN("Fried Chicken", "Smells of burning. Must be a Fried Chicken.", SkyblockItemRarity.COMMON, SeaCreatureCategory.LAVA_HOTSPOT),
 	FIERY_SCUTTLER("Fiery Scuttler", "A Fiery Scuttler inconspicuously waddles up to you, friends in tow.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.LAVA_HOTSPOT),
 	WIKI_TIKI("Wiki Tiki", "The water bubbles and froths. A massive form emerges- you have disturbed the Wiki Tiki! You shall pay the price.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.WATER_HOTSPOT),
+
 	BLUE_RINGED_OCTOPUS("Blue Ringed Octopus", "A garish set of tentacles arise. It's a Blue Ringed Octopus!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.WATER_HOTSPOT),
 	SNAPPING_TURTLE("Snapping Turtle", "A Snapping Turtle is coming your way, and it's ANGRY!", SkyblockItemRarity.RARE, SeaCreatureCategory.WATER_HOTSPOT),
 	FROG_MAN("Frog Man", "Is it a frog? Is it a man? Well, yes, sorta, IT'S FROG MAN!!!!!!", SkyblockItemRarity.COMMON, SeaCreatureCategory.WATER_HOTSPOT),
+
+	// region Galatea
 	BOGGED("Bogged", "You've hooked a Bogged!", SkyblockItemRarity.COMMON, SeaCreatureCategory.GALATEA),
 	WETWING("Wetwing", "Look! A Wetwing emerges!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.GALATEA),
 	TADGANG("Tadgang", "A gang of Liltads!", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
 	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
 	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
-	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA);
+	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
+	//endregion
+
+	//region Lotus Atoll
+	ATOLL_CROAKER("Atoll Croaker", "An inquisitive Atoll Croaker takes the bait!", SkyblockItemRarity.COMMON, SeaCreatureCategory.LOTUS_ATOLL),
+	PUDDLE_JUMPER("Puddle Jumper", "A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.LOTUS_ATOLL),
+	LOTUS_GUARDIAN("Lotus Guardian", "A Lotus Guardian emerges, ready to protect the Atoll.", SkyblockItemRarity.UNKNOWN, SeaCreatureCategory.LOTUS_ATOLL),
+	GORF("gorF", "What even is that?! A... gorF?", SkyblockItemRarity.RARE, SeaCreatureCategory.LOTUS_ATOLL),
+	FROG_PRINCE("Frog Prince", "Bow down before the Frog Prince... or pay the hefty price!", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LOTUS_ATOLL),
+	DROWNED_CAPTAIN("Drowned Captain", "A Drowned Captain takes hold of your bobber!", SkyblockItemRarity.EPIC, SeaCreatureCategory.LOTUS_ATOLL),
+	//endregion
+
+	;
 
 	final String name;
 	final String chatMessage;
