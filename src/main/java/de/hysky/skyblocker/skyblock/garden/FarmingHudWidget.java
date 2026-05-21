@@ -114,7 +114,8 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
 		if (config.coins) {
-			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
+			boolean hasReplenish = ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
+			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish));
 		}
 		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
 		if (config.experience) {
@@ -140,7 +141,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	 * - NPC: only npc price (if available)
 	 * - BOTH: higher of NPC or bazaar price
 	 */
-	private Component getPriceText(String cropItemId, float cropsPerMinute) {
+	private Component getPriceText(String cropItemId, float cropsPerMinute, boolean hasReplenish) {
 		double bazaarPrice;
 		boolean hasBazaarData;
 		double itemNpcPrice;
@@ -149,8 +150,9 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		// The wheat to seed ratio is about 2/3
 		// So wheat is about 40% of the counter, while seeds are 60%
 		if (cropItemId.equals("WHEAT")) {
-			final double seedsRatio = 0.6;
-			final double wheatRatio = 0.4;
+			// if has "replenish" enchantment, take the theoretic ratio and remove the seeds from it
+			final double seedsRatio = hasReplenish ? Math.max(cropsPerMinute * 0.6 - 60 * FarmingHud.blockBreaks(), 0) / cropsPerMinute : 0.6;
+			final double wheatRatio = 1 - seedsRatio;
 
 			OptionalDouble seedsBazaarPrice;
 			OptionalDouble seedsNpcPrice;
@@ -219,6 +221,9 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		}
 
 
+		if (hasReplenish) {
+			cropsPerMinute -= (float) (FarmingHud.blockBreaks() * 60);
+		}
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
 		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
 	}

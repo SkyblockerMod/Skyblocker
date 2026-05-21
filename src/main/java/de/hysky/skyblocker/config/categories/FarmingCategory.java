@@ -63,19 +63,18 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
+								.binding(defaults.farming.farmingHud.includeSeedsPrice,
+										() -> config.farming.farmingHud.includeSeedsPrice,
+										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
 								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.farming.farmingHud.experience,
 										() -> config.farming.farmingHud.experience,
 										newValue -> config.farming.farmingHud.experience = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
-								.description(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice.@Tooltip"))
-								.binding(defaults.farming.farmingHud.includeSeedsPrice,
-										() -> config.farming.farmingHud.includeSeedsPrice,
-										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
