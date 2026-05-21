@@ -113,9 +113,8 @@ public enum SeaCreature {
 	LAVA_BLAZE("Lava Blaze", "A Lava Blaze has surfaced from the depths!", SkyblockItemRarity.EPIC, SeaCreatureCategory.SPECIAL),
 	LAVA_PIGMAN("Lava Pigman", "A Lava Pigman arose from the depths!", SkyblockItemRarity.EPIC, SeaCreatureCategory.SPECIAL),
 	ABYSSAL_MINER("Abyssal Miner", "An Abyssal Miner breaks out of the water!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.SPECIAL),
-	PLHLEGBLAST("Plhlegblast", "WOAH! A Plhlegblast appeared.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.SPECIAL),
+	PLHLEGBLAST("Plhlegblast", "WOAH! A Plhlegblast appeared.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.SPECIAL);
 	//endregion
-	;
 
 	final String name;
 	final String chatMessage;

@@ -11,5 +11,4 @@ public enum SeaCreatureCategory {
 	SHARK,
 	HOTSPOT,
 	SPECIAL,
-	;
 }
