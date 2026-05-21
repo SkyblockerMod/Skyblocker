@@ -113,11 +113,12 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			addSimpleIcoText(cropStack, counterText, ChatFormatting.YELLOW, counterNumber);
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
+		double blockBreaks = FarmingHud.blockBreaks();
 		if (config.coins) {
 			boolean hasReplenish = ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
-			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish));
+			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish, blockBreaks));
 		}
-		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
+		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
 		if (config.experience) {
 			//noinspection DataFlowIssue
 			addComponent(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
@@ -141,17 +142,18 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	 * - NPC: only npc price (if available)
 	 * - BOTH: higher of NPC or bazaar price
 	 */
-	private Component getPriceText(String cropItemId, float cropsPerMinute, boolean hasReplenish) {
+	private Component getPriceText(String cropItemId, float cropsPerMinute, boolean hasReplenish, double blockBreaks) {
 		double bazaarPrice;
 		boolean hasBazaarData;
 		double itemNpcPrice;
 
+		double usedByReplenish = 60 * blockBreaks;
 		// Cultivating counter also includes wheat seeds
 		// The wheat to seed ratio is about 2/3
 		// So wheat is about 40% of the counter, while seeds are 60%
 		if (cropItemId.equals("WHEAT")) {
 			// if has "replenish" enchantment, take the theoretic ratio and remove the seeds from it
-			final double seedsRatio = hasReplenish ? Math.max(cropsPerMinute * 0.6 - 60 * FarmingHud.blockBreaks(), 0) / cropsPerMinute : 0.6;
+			final double seedsRatio = hasReplenish ? Math.max(cropsPerMinute * 0.6 - usedByReplenish, 0) / cropsPerMinute : 0.6;
 			final double wheatRatio = 1 - seedsRatio;
 
 			OptionalDouble seedsBazaarPrice;
@@ -164,6 +166,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 						OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble("SEEDS")) :
 						OptionalDouble.empty();
 			} else {
+				usedByReplenish = 0; // force to 0 since seeds aren't counted, it would just reduce the wheat per minute for no reason
 				seedsBazaarPrice = OptionalDouble.of(0);
 				seedsNpcPrice = OptionalDouble.of(0);
 			}
@@ -221,9 +224,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		}
 
 
-		if (hasReplenish) {
-			cropsPerMinute -= (float) (FarmingHud.blockBreaks() * 60);
-		}
+		if (hasReplenish) cropsPerMinute -= (float) (usedByReplenish);
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
 		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
 	}
