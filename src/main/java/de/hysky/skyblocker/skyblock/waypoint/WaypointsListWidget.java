@@ -252,7 +252,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		List<AbstractWidget> children = List.of(textWidget);
 
 		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			textWidget.setPosition(getX() + (getRowWidth() - textSize) / 2, getY() + (getHeight() - minecraft.font.lineHeight) / 2);
 			textWidget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
