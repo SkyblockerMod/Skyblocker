@@ -323,7 +323,7 @@
     "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Te notifica en el chat cuando ganas Skyblock XP.",
     "emi.category.skyblocker.skyblock_kat_upgrade": "Mejora de Kat (Skyblock)",
     "key.skyblocker.valueBreadownPopup": "Abrir Ventana de Valor Detallado",
-    "key.skyblocker.wikiLookup.independent": "Revisar en Wiki Independiente",
+    "key.skyblocker.wikiLookup.independent": "Busqueda en Wiki independiente",
     "skyblocker.accessoryHelper.afterSelling": "%s después de vender %s",
     "skyblocker.accessoryHelper.filter": "Filtro",
     "skyblocker.accessoryHelper.independent": "(Mantén Shift para independiente)",
