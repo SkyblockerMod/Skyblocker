@@ -1727,5 +1727,6 @@
     "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob Verseny Kiemelő",
     "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "A jelenlegi Jacob Verseny Kártevői zölden csillognak. (felülírva a Stereo Harmony Kiemelést)\nA Kártevőkiemelőnek engedélyezve kell lennie!",
     "text.skyblocker.supportUs": "Támogass Minket",
-    "skyblocker.config.debug.enableRepoDev": "Repo Fejlesztői Opciók Engedélyezése"
+    "skyblocker.config.debug.enableRepoDev": "Repo Fejlesztői Opciók Engedélyezése",
+    "skyblocker.waypoints.disabledWarning": "A helyjelölők jelenleg ki vannak kapcsolva a beállításokban!"
 }
