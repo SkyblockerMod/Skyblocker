@@ -151,6 +151,8 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 			super(0, 0, 20, 20, Component.literal(stack.getHoverName().getString()));
 			item = new ItemStack(stack.getItem());
 			item.copyFrom(DataComponents.PROFILE, stack);
+			item.copyFrom(DataComponents.ITEM_MODEL, stack);
+			item.copyFrom(DataComponents.BANNER_PATTERNS, stack);
 			String itemId = stack.getSkyblockId();
 			CompoundTag customData = new CompoundTag();
 			customData.putString(ItemUtils.ID, itemId);
