@@ -44,7 +44,7 @@ public enum SeaCreature {
 	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
 	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
 	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
-	NESSIE("Nessie", "", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.GALATEA),
+//	NESSIE("Nessie", "", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.GALATEA),
 	//endregion
 
 	//region Crimson Isle
