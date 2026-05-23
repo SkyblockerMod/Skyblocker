@@ -162,9 +162,9 @@ public class GreenhousePaste {
 	public static void removePreview() {
 		greenhouseCorner = null;
 		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				greenhouse[x][y] = 0;
-				targetGreenhouse[x][y] = -1;
+			for (int z = 0; z < 10; z++) {
+				greenhouse[x][z] = 0;
+				targetGreenhouse[x][z] = -1;
 			}
 		}
 	}
@@ -253,10 +253,10 @@ public class GreenhousePaste {
 
 		// Load current greenhouse state into array
 		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, 73, greenhouseCorner.getZ() + y);
+			for (int z = 0; z < 10; z++) {
+				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, 73, greenhouseCorner.getZ() + z);
 				int cropId = getCropIdAtPosition(CLIENT.level, pos);
-				greenhouse[x][y] = cropId;
+				greenhouse[x][z] = cropId;
 			}
 		}
 		adjustForSpecialCrops();
@@ -313,18 +313,18 @@ public class GreenhousePaste {
 	private static void adjustForSpecialCrops() {
 		// Special handling for Plantboy (2x2 crop)
 		for (int x = 0; x < 9; x++) {
-			for (int y = 0; y < 9; y++) {
-				adjustForPlantBoy(x, y);
-				adjustForSnoozling(x, y);
-				adjustForGodseed(x, y);
+			for (int z = 0; z < 9; z++) {
+				adjustForPlantBoy(x, z);
+				adjustForSnoozling(x, z);
+				adjustForGodseed(x, z);
 			}
 		}
 	}
 
-	private static void adjustForPlantBoy(int x, int y) {
-		if (greenhouse[x][y] != 26) return;
+	private static void adjustForPlantBoy(int x, int z) {
+		if (greenhouse[x][z] != 26) return;
 
-		BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY(), greenhouseCorner.getZ() + y); // sorry for cursed notation
+		BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY(), greenhouseCorner.getZ() + z); // sorry for cursed notation
 		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
 				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
@@ -359,36 +359,36 @@ public class GreenhousePaste {
 		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
 	}
 
-	private static void adjustForSnoozling(int x, int y) {
-		if (greenhouse[x][y] != 23) return;
+	private static void adjustForSnoozling(int x, int z) {
+		if (greenhouse[x][z] != 23) return;
 		try {
-			greenhouse[x-1][y] = 23;
-			greenhouse[x+1][y] = 23;
+			greenhouse[x-1][z] = 23;
+			greenhouse[x+1][z] = 23;
 
-			greenhouse[x-1][y-1] = 23;
-			greenhouse[x][y-1] = 23;
-			greenhouse[x+1][y-1] = 23;
+			greenhouse[x-1][z-1] = 23;
+			greenhouse[x][z-1] = 23;
+			greenhouse[x+1][z-1] = 23;
 
-			greenhouse[x-1][y-2] = 23;
-			greenhouse[x][y-2] = 23;
-			greenhouse[x+1][y-2] = 23;
+			greenhouse[x-1][z-2] = 23;
+			greenhouse[x][z-2] = 23;
+			greenhouse[x+1][z-2] = 23;
 		}
 		catch (ArrayIndexOutOfBoundsException _) { }
 	}
 
-	private static void adjustForGodseed(int x, int y) {
-		if (greenhouse[x][y] != 37) return;
+	private static void adjustForGodseed(int x, int z) {
+		if (greenhouse[x][z] != 37) return;
 		try {
-			greenhouse[x-1][y] = 37;
-			greenhouse[x+1][y] = 37;
+			greenhouse[x-1][z] = 37;
+			greenhouse[x+1][z] = 37;
 
-			greenhouse[x-1][y-1] = 37;
-			greenhouse[x][y-1] = 37;
-			greenhouse[x+1][y-1] = 37;
+			greenhouse[x-1][z-1] = 37;
+			greenhouse[x][z-1] = 37;
+			greenhouse[x+1][z-1] = 37;
 
-			greenhouse[x-1][y+1] = 37;
-			greenhouse[x][y+1] = 37;
-			greenhouse[x+1][y+1] = 37;
+			greenhouse[x-1][z+1] = 37;
+			greenhouse[x][z+1] = 37;
+			greenhouse[x+1][z+1] = 37;
 		}
 		catch (ArrayIndexOutOfBoundsException _) { }
 	}
@@ -404,8 +404,8 @@ public class GreenhousePaste {
 			JsonArray jsonArray = JsonParser.parseString(jsonString).getAsJsonArray();
 
 			for (int x = 0; x < 10; x++) {
-				for (int y = 0; y < 10; y++) {
-					targetGreenhouse[x][y] = -1;
+				for (int z = 0; z < 10; z++) {
+					targetGreenhouse[x][z] = -1;
 				}
 			}
 
@@ -413,18 +413,18 @@ public class GreenhousePaste {
 			for (JsonElement element : jsonArray) {
 				JsonArray entry = element.getAsJsonArray();
 				int x = entry.get(0).getAsInt();
-				int y = entry.get(1).getAsInt();
+				int z = entry.get(1).getAsInt();
 				String cropName = entry.get(2).getAsString();
 				int value = entry.get(3).getAsInt(); // 0 = desired mutation, 1 = place, accoridng to the website
 				if (value == 0) {
-					targetGreenhouse[9 - x][y] = 0; // Desired mutation spot should be empty
+					targetGreenhouse[9 - x][z] = 0; // Desired mutation spot should be empty
 					continue;
 				}
 
 				GreenhouseCrops.Crop crop = GreenhouseCrops.CROP_ID_MAP.get(cropName);
 				if (crop == null) continue;
-				if (x >= 0 && x < 10 && y >= 0 && y < 10) {
-					targetGreenhouse[9 - x][y] = crop.id();
+				if (x >= 0 && x < 10 && z >= 0 && z < 10) {
+					targetGreenhouse[9 - x][z] = crop.id();
 				}
 			}
 		} catch (Exception _) {
@@ -443,13 +443,13 @@ public class GreenhousePaste {
 		}
 
 		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
+			for (int z = 0; z < 10; z++) {
 				// Ignore cell if -1
-				int targetCropId = targetGreenhouse[x][y];
+				int targetCropId = targetGreenhouse[x][z];
 				if (targetCropId == -1) continue;
 
-				int currentCropId = greenhouse[x][y];
-				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY() + 1, greenhouseCorner.getZ() + y);
+				int currentCropId = greenhouse[x][z];
+				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY() + 1, greenhouseCorner.getZ() + z);
 
 				// Mutation spots target empty blocks; render indicator and skip crop lookup.
 				if (targetCropId == 0) {
@@ -548,14 +548,14 @@ public class GreenhousePaste {
 
 	public static void rotatePreview(boolean left) {
 		/*
-			x,y -> y, 9-x (left rotation, since an axis is reversed)
-			x,y -> 9-y, x (right rotation)
+			x,z -> z, 9-x (left rotation, since an axis is reversed)
+			x,z -> 9-z, x (right rotation)
 		*/
 		if (left) {
 			int[][] newTarget = new int[10][10];
 			for (int x = 0; x < 10; x++) {
-				for (int y = 0; y < 10; y++) {
-					newTarget[y][9 - x] = targetGreenhouse[x][y];
+				for (int z = 0; z < 10; z++) {
+					newTarget[z][9 - x] = targetGreenhouse[x][z];
 				}
 			}
 			targetGreenhouse = newTarget;
@@ -564,19 +564,19 @@ public class GreenhousePaste {
 
 		int[][] newTarget = new int[10][10];
 		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				newTarget[9 - y][x] = targetGreenhouse[x][y];
+			for (int z = 0; z < 10; z++) {
+				newTarget[9 - z][x] = targetGreenhouse[x][z];
 			}
 		}
 		targetGreenhouse = newTarget;
 	}
 
 	public static void mirrorPreview() {
-		// x,y -> 9-x, y
+		// x,z -> 9-x, z
 		int[][] newTarget = new int[10][10];
 		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				newTarget[9 - x][y] = targetGreenhouse[x][y];
+			for (int z = 0; z < 10; z++) {
+				newTarget[9 - x][z] = targetGreenhouse[x][z];
 			}
 		}
 		targetGreenhouse = newTarget;
