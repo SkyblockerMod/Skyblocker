@@ -353,7 +353,7 @@ public class GreenhousePaste {
 
 		if (foundArmorStand == null) return;
 
-		// Stragtegy: since the plantboy is in the middle of the 2x2, we offset by a bit to get the bottom left corner
+		// Strategy: since the plantboy is in the middle of the 2x2, we offset by a bit to get the bottom left corner
 		foundArmorStand.position().add(-0.2, 0, -0.2);
 
 		BlockPos bottomLeft = new BlockPos((int) Math.floor(foundArmorStand.getX()), (int) Math.floor(foundArmorStand.getY()), (int) Math.floor(foundArmorStand.getZ()));
@@ -401,7 +401,7 @@ public class GreenhousePaste {
 	/**
 	 * Imports the greenhouse layout from an LZ-encoded string.
 	 * The string is decompressed and parsed as a JSON array.
-	 * Each entry is [x, y, "crop_name", value].
+	 * Each entry is [x, z, "crop_name", value].
 	 */
 	public static boolean importGreenhouse(String encoded) {
 		try {
@@ -420,7 +420,7 @@ public class GreenhousePaste {
 				int x = entry.get(0).getAsInt();
 				int z = entry.get(1).getAsInt();
 				String cropName = entry.get(2).getAsString();
-				int value = entry.get(3).getAsInt(); // 0 = desired mutation, 1 = place, accoridng to the website
+				int value = entry.get(3).getAsInt(); // 0 = desired mutation, 1 = place, according to the website
 				if (value == 0) {
 					targetGreenhouse[9 - x][z] = 0; // Desired mutation spot should be empty
 					continue;
