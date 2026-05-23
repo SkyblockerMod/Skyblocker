@@ -59,8 +59,7 @@ public class GreenhousePaste {
 	*/
 	private static int[][] greenhouse = new int[10][10];
 	private static int[][] targetGreenhouse = new int[10][10];
-	@Nullable
-	private static BlockPos greenhouseCorner = null;
+	private static @Nullable BlockPos greenhouseCorner = null;
 
 	private static long lastBlockChangeTimeMs;
 
