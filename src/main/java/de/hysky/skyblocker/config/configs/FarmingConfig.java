@@ -18,8 +18,6 @@ public class FarmingConfig {
 	public static class Greenhouse {
 		public boolean enabled = true;
 
-		public boolean greenhousePaste = true;
-
 		public boolean showMutationSlot = true;
 	}
 

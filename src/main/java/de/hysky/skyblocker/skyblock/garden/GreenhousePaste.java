@@ -96,6 +96,7 @@ public class GreenhousePaste {
 		// Register render callback
 		LevelRenderExtractionCallback.EVENT.register(collector -> {
 			if (!Utils.isInGarden()) return;
+			if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 			renderPreview(collector);
 		});
 
@@ -108,6 +109,8 @@ public class GreenhousePaste {
 
 	// If armor stand crops are changed
 	public static void onEntityChange(Entity e) {
+		if (!Utils.isInGarden()) return;
+		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (greenhouseCorner == null) return;
 		if (greenhouseCorner.getX() - 1 > e.getX() ||
 				greenhouseCorner.getX() + 11 < e.getX() ||
@@ -118,6 +121,8 @@ public class GreenhousePaste {
 
 	// If non armor stand crops are changed
 	private static void onBlockChange(BlockPos pos) {
+		if (!Utils.isInGarden()) return;
+		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (greenhouseCorner == null) return;
 		if (greenhouseCorner.getX() - 1 >= pos.getX() ||
 				greenhouseCorner.getX() + 11 <= pos.getX() ||
@@ -324,7 +329,7 @@ public class GreenhousePaste {
 	private static void adjustForPlantBoy(int x, int z) {
 		if (greenhouse[x][z] != 26) return;
 
-		BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, greenhouseCorner.getY(), greenhouseCorner.getZ() + z); // sorry for cursed notation
+		BlockPos pos = greenhouseCorner.offset(x, 0, z);
 		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
 				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1

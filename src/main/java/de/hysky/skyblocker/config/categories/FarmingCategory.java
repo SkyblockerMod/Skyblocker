@@ -179,9 +179,9 @@ public class FarmingCategory {
 					.option(Option.<Boolean>createBuilder()
 							.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled"))
 							.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip"))
-							.binding(defaults.farming.greenhouse.greenhousePaste,
-									() -> config.farming.greenhouse.greenhousePaste,
-									newValue -> config.farming.greenhouse.greenhousePaste = newValue)
+							.binding(defaults.farming.greenhouse.enabled,
+									() -> config.farming.greenhouse.enabled,
+									newValue -> config.farming.greenhouse.enabled = newValue)
 							.controller(ConfigUtils.createBooleanController())
 							.build())
 					.option(Option.<Boolean>createBuilder()
