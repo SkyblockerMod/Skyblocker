@@ -42,10 +42,10 @@ public final class GreenhouseCrops {
 			new Crop("Fleshtrap", "fleshtrap", 20, HeadTextures.FLESHTRAP),
 			new Crop("Magic Jellybean", "magicjellybean", 21, HeadTextures.MAGIC_JELLYBEAN),
 			new Crop("Noctilume", "noctilume", 22, HeadTextures.NOCTILUME),
-			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING), // requires special handling, only look for head
+			new Crop("Snoozling", "snoozlingFlower", 23, HeadTextures.SNOOZLING),
 			new Crop("Soggybud", "soggybud", 24, HeadTextures.SOGGYBUD),
 			new Crop("Chorus Fruit", "chorusFruit", 25, HeadTextures.CHORUS_FRUIT),
-			new Crop("PlantBoy Advance", "Plantboy", 26, HeadTextures.PLANTBOY_ADVANCE), // plantboyroot is also a thing. also is 2x2, so adjust accordingly
+			new Crop("PlantBoy Advance", "Plantboy", 26, HeadTextures.PLANTBOY_ADVANCE),
 			new Crop("Puffercloud", "puffercloud", 27, HeadTextures.PUFFERCLOUD),
 			new Crop("Shellfruit", "shellfruit", 28, HeadTextures.SHELLFRUIT),
 			new Crop("Startlevine", "startlevine", 29, HeadTextures.STARTLEVINE),
@@ -56,10 +56,10 @@ public final class GreenhouseCrops {
 			new Crop("All In Aloe", "allinaloe", 34, HeadTextures.ALL_IN_ALOE),
 			new Crop("Devourer", "devourer", 35, HeadTextures.DEVOURER),
 			new Crop("Glasscorn", "glasscorn", 36, HeadTextures.GLASSCORN),
-			new Crop("Godseed", "godseed", 37, HeadTextures.GODSEED), // also has godseedpillar 's around it
-			new Crop("Jerryflower", "jerryseed", 38, HeadTextures.JERRYFLOWER), // weird naming??
+			new Crop("Godseed", "godseed", 37, HeadTextures.GODSEED),
+			new Crop("Jerryflower", "jerryseed", 38, HeadTextures.JERRYFLOWER),
 			new Crop("Phantomleaf", "phantomleaf", 39, HeadTextures.PHANTOMLEAF),
-			new Crop("Timestalk", "timestalk", 40, HeadTextures.TIMESTALK), // verify
+			new Crop("Timestalk", "timestalk", 40, HeadTextures.TIMESTALK),
 
 			// Crops
 			new Crop("Cocoa Beans", "coco", 41, HeadTextures.COCOA_BEANS),
@@ -69,7 +69,7 @@ public final class GreenhouseCrops {
 			new Crop("Cactus", "cactus", 45, HeadTextures.CACTUS),
 			new Crop("Melon Seeds", "melon", 46, HeadTextures.MELON),
 			new Crop("Pumpkin Seeds", "pumpkin", 47, HeadTextures.PUMPKIN),
-			new Crop("Brown Mushroom", "brownmushroom", 48, HeadTextures.BROWN_MUSHROOM), // TODO: make mushrooms interchangeable, also replace with head texture
+			new Crop("Brown Mushroom", "brownmushroom", 48, HeadTextures.BROWN_MUSHROOM),
 			new Crop("Red Mushroom", "redmushroom", 49, HeadTextures.RED_MUSHROOM),
 			new Crop("Wheat Seeds", "wheat", 50, Blocks.WHEAT),
 			new Crop("Carrot", "carrot", 51, Blocks.CARROTS),
