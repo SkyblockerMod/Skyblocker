@@ -220,7 +220,7 @@ public class GreenhousePaste {
 				plotOtherCorner.getX(), plotOtherCorner.getY(), plotOtherCorner.getZ()
 		);
 
-		for (net.minecraft.world.entity.Entity entity : CLIENT.level.getEntities(null, detectionBox)) {
+		for (Entity entity : CLIENT.level.getEntities(null, detectionBox)) {
 			Component custom = entity.getCustomName();
 
 			if (custom != null && custom.getString().contains("Carpenter")) {
@@ -275,8 +275,8 @@ public class GreenhousePaste {
 		);
 
 		// Determine crop ID based on the name of armor stand, should also detect non head crops
-		for (net.minecraft.world.entity.Entity entity : level.getEntities(null, detectionBox)) {
-			if (!(entity instanceof net.minecraft.world.entity.decoration.ArmorStand armorStand)) continue;
+		for (Entity entity : level.getEntities(null, detectionBox)) {
+			if (!(entity instanceof ArmorStand armorStand)) continue;
 
 			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
 			if (head.isEmpty()) continue;
