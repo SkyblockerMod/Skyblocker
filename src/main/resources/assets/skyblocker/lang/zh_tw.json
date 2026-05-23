@@ -1717,5 +1717,10 @@
     "skyblocker.config.general.itemTooltip.enableGeorgePrice": "啟用George寵物售價",
     "skyblocker.wikiLookup.noArticleFound.independent": "無法在Hypixel社群wiki中找到該物品的條目…",
     "skyblocker.config.uiAndVisuals.radialMenu.farmingToolkit": "農耕工具包",
-    "text.skyblocker.supportUs": "支持我們"
+    "text.skyblocker.supportUs": "支持我們",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting": "保留格式化代碼",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip": "是否保留格式化代碼。",
+    "skyblocker.config.commands.query": "選項“%s”目前設定為%s。",
+    "skyblocker.config.commands.set": "選項“%s”已設定為%s。",
+    "skyblocker.config.debug.enableRepoDev": "啟用倉庫開發者選項"
 }
