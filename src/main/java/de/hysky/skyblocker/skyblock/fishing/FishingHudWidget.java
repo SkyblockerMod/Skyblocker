@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 

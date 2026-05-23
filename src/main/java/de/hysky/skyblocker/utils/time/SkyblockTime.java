@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.utils;
+package de.hysky.skyblocker.utils.time;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -10,11 +10,12 @@ import net.minecraft.network.chat.MutableComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SkyblockTime {
-	private static final long SKYBLOCK_EPOCH = 1560275700000L;
+	public static final Instant SKYBLOCK_EPOCH = Instant.ofEpochMilli(1560275700000L);
 	public static final AtomicInteger skyblockYear = new AtomicInteger(0);
 	public static final AtomicReference<Season> skyblockSeason = new AtomicReference<>(Season.SPRING);
 	public static final AtomicReference<Month> skyblockMonth = new AtomicReference<>(Month.EARLY_SPRING);
@@ -76,7 +77,7 @@ public class SkyblockTime {
 	}
 
 	public static long getSkyblockMillis() {
-		return System.currentTimeMillis() - SKYBLOCK_EPOCH;
+		return System.currentTimeMillis() - SKYBLOCK_EPOCH.toEpochMilli();
 	}
 
 	private static int calculateSkyblockYear() {

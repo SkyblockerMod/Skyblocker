@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
