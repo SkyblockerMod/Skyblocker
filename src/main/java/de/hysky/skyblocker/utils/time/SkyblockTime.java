@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.apache.commons.text.WordUtils;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,8 +162,29 @@ public class SkyblockTime {
 	public enum Month {
 		EARLY_SPRING, SPRING, LATE_SPRING,
 		EARLY_SUMMER, SUMMER, LATE_SUMMER,
-		EARLY_FALL, FALL, LATE_FALL,
-		EARLY_WINTER, WINTER, LATE_WINTER
+		EARLY_AUTUMN, AUTUMN, LATE_AUTUMN,
+		EARLY_WINTER, WINTER, LATE_WINTER;
+
+		private final String name;
+
+		Month() {
+			// can't be bothered defining all of them manually
+			this.name = WordUtils.capitalizeFully(this.name().replace("_", " "));
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static @Nullable Month of(String name) {
+			for (Month month : values()) {
+				if (month.name.equalsIgnoreCase(name)) {
+					return month;
+				}
+			}
+			return null;
+		}
 	}
 
 	public interface OnHourChange {

@@ -55,4 +55,12 @@ public class SkyblockTimeTest {
 		Instant start = Instant.ofEpochSecond(TEST_EPOCH_SECONDS);
 		Assertions.assertEquals(492, start.getLong(SkyblockTimeField.YEAR));
 	}
+
+	@Test
+	public void testSkyblockEpoch() {
+		Assertions.assertEquals(1, SkyblockTime.SKYBLOCK_EPOCH.getLong(SkyblockTimeField.YEAR));
+		Assertions.assertEquals(1, SkyblockTime.SKYBLOCK_EPOCH.getLong(SkyblockTimeField.MONTH_OF_YEAR));
+		Assertions.assertEquals(1, SkyblockTime.SKYBLOCK_EPOCH.getLong(SkyblockTimeField.SEASON_OF_YEAR));
+		Assertions.assertEquals(1, SkyblockTime.SKYBLOCK_EPOCH.getLong(SkyblockTimeField.DAY_OF_MONTH));
+	}
 }
