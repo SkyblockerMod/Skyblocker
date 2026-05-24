@@ -1723,5 +1723,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting": "保留格式化代码",
     "skyblocker.config.commands.query": "选项“%s”当前设定为%s。",
     "skyblocker.config.commands.set": "选项“%s”已被设定为%s。",
-    "skyblocker.config.debug.enableRepoDev": "启用仓库开发者选项"
+    "skyblocker.config.debug.enableRepoDev": "启用仓库开发者选项",
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "以绿色高亮掉落当前Jacob's Contest作物的害虫。 （Vinyl Highlighter会被覆盖）\n需要启用害虫高亮！",
+    "skyblocker.waypoints.disabledWarning": "路径点当前已在配置中禁用！"
 }
