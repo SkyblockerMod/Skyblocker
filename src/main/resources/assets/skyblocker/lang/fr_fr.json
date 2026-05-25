@@ -506,7 +506,7 @@
     "skyblocker.config.dungeons.classBasedPlayerGlow": "Surbrillance du Joueur Basée sur sa Classe",
     "skyblocker.config.dungeons.doorHighlight.doorHighlightType.@Tooltip": "Surbrillance : N'affiche qu'une surbrillance.\n\nSurbrillance avec Contour : Affiche à la fois une surbrillance et un contour.\n\nContour : Affiche uniquement un contour.",
     "skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip": "Afficher une notification quand le Max des Créatures Marines est atteint.",
-    "skyblocker.config.eventNotifications.monologue": "Tu peux te co en skyblock rapidement stp ? Ça serait cool parce que si tu vois ça c'est soit que ta config a été réinitialisée soit c'est la première fois que tu utilises le mod, si c'est ça merci de l'avoir choisi et j'espère que tu vas l'aimer ! Donc voila c'est ici que tu peux mettre des rappels pour les événement en skyblock et ils vont être ajoutés ici quand tu y es. Donc tu devrais de co en skyblock, voilà sinon j'espère que tu aimes le mod",
+    "skyblocker.config.eventNotifications.monologue": "tu peux te co en skyblock rapidement stp ? Ça serait cool parce que si tu vois ça c'est soit que ta config a été réinitialisée soit c'est la première fois que tu utilises le mod, si c'est ça merci de l'avoir choisi et j'espère que tu vas l'aimer ! Donc voila c'est ici que tu peux mettre des rappels pour les événement en skyblock et ils vont être ajoutés ici quand tu y es donc tu devrais de co en skyblock voilà sinon j'espère que tu aimes le mod",
     "skyblocker.tips.orderedWaypoints": "Vous pouvez importer (y compris depuis Coleweight), ajouter, supprimer, et activer/désactiver des marqueurs ordonnés avec /skyblocker waypoints. En important depuis Coleweight, tu dois aller dans Partager → Importer des Marqueurs (Soopy). Soyez sûr de les importer sur la bonne île.",
     "skyblocker.config.helpers.fishing.seaCreatureCap": "Max des Créatures Marines",
     "skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip": "Max des Créatures Marines pour la pêche à la ferme",
@@ -828,7 +828,7 @@
     "skyblocker.config.hunting.huntingBoxHelper": "Activer l'Assistant de la Hunting Box",
     "skyblocker.config.mining.commissionWaypoints.useColor": "Marqueurs Colorés",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[0]": "Désactivé : Ne pas afficher de Marqueur de Commission.",
-    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[1]": "\nDwarven : Afficher les points de repère uniquement dans les Dwarven Mines.",
+    "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[1]": "\nDwarven : Afficher les marqueurs uniquement dans les Dwarven Mines.",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[2]": "\nGlacite : Affiche les Marqueurs uniquement dans les tunnels de glacite.",
     "skyblocker.config.mining.commissionWaypoints.mode.OFF": "Inactif",
     "skyblocker.config.mining.commissionWaypoints.showBaseCamp": "Affiche un Marqueur au Camp de Glacite",
@@ -1631,7 +1631,7 @@
     "skyblocker.accessoryHelper.recombobulate": "Recombobuler un accessoire %s.",
     "skyblocker.config.mining.blockBreakPrediction": "Animation d’excavation des blocs côté « Client » (« Client » = du point de vue de votre ordinateur uniquement, rien ne se passe depuis celui du serveur)",
     "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize": "Taille de la boîte adaptative",
-    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "Adapte les dimensions des Points de Passage des Secrets pour qu’elles correspondent à celles des Essences et des Clés de Redstone.",
+    "skyblocker.config.dungeons.secretWaypoints.adaptiveBoxSize.@Tooltip": "Adapte les dimensions des Marqueurs des Secrets pour qu’elles correspondent à celles des Essences et des Clés de Redstone.",
     "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Activer l'Assistant du widget des accessoires",
     "skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip": "Affiche une liste des accessoires manquants et de moyens d’augmenter le PM dans le sac d’accessoires. Ne fonctionne que si l’Assistant des Accessoires en Info-Bulles est actif.",
     "skyblocker.updateNotifications.configureNewVersion": "Merci d’avoir installé Skyblocker %s ! %s",
@@ -1744,5 +1744,7 @@
     "skyblocker.farming.farmingHud.yaw": "Lacet (ou «Yaw») : %s",
     "skyblocker.utils.render.gui.soundSelectionPopup.advanced.@Tooltip": "Afficher des sons dont le nom n’est pas encore traduit par leur nom interne",
     "skyblocker.wikiLookup.noArticleFound.independent": "Impossible de localiser un article d’un wiki indépendant correspondant à cet objet…",
-    "text.skyblocker.supportUs": "Nous soutenir"
+    "text.skyblocker.supportUs": "Nous soutenir",
+    "skyblocker.waypoints.disabledWarning": "Les marqueurs sont désactivés dans la config !",
+    "skyblocker.config.debug.enableRepoDev": "Activer les options de développeur de répo"
 }
