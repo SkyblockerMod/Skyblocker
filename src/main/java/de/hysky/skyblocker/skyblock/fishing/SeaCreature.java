@@ -44,23 +44,23 @@ public enum SeaCreature {
 	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
 	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
 	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
-//	NESSIE("Nessie", "", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.GALATEA),
+	NESSIE("Nessie", "You've caused a disturbance in the loch. Could it be... Nessie?", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.GALATEA),
 	//endregion
 
 	//region Crimson Isle
 	FRIED_CHICKEN("Fried Chicken", "Smells of burning. Must be a Fried Chicken.", SkyblockItemRarity.COMMON, SeaCreatureCategory.CRIMSON_ISLE),
-//	VOLCANIC_SNAIL("Volcanic Snail", null, SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.CRIMSON_ISLE),
+	VOLCANIC_SNAIL("Volcanic Snail", "You feel a burning sensation as you reel in a Volcanic Snail!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.CRIMSON_ISLE),
 	FIREPROOF_WITCH("Fireproof Witch", "Trouble's brewing, it's a Fireproof Witch!", SkyblockItemRarity.RARE, SeaCreatureCategory.CRIMSON_ISLE),
 	MAGMA_SLUG("Magma Slug", "From beneath the lava appears a Magma Slug.", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.CRIMSON_ISLE),
 	MOOGMA("Moogma", "You hear a faint Moo from the lava... A Moogma appears.", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.CRIMSON_ISLE),
 	LAVA_LEECH("Lava Leech", "A small but fearsome Lava Leech emerges.", SkyblockItemRarity.RARE, SeaCreatureCategory.CRIMSON_ISLE),
 	PYROCLASTIC_WORM("Pyroclastic Worm", "You feel the heat radiating as a Pyroclastic Worm surfaces.", SkyblockItemRarity.RARE, SeaCreatureCategory.CRIMSON_ISLE),
-//	MAGMA_PILLAR("Magma Pillar", null, SkyblockItemRarity.EPIC, SeaCreatureCategory.CRIMSON_ISLE),
+	MAGMA_PILLAR("Magma Pillar", "A Magma Pillar rises from the lava.", SkyblockItemRarity.EPIC, SeaCreatureCategory.CRIMSON_ISLE),
 	LAVA_FLAME("Lava Flame", "A Lava Flame flies out from beneath the lava.", SkyblockItemRarity.RARE, SeaCreatureCategory.CRIMSON_ISLE),
 	FIRE_EEL("Fire Eel", "A Fire Eel slithers out from the depths.", SkyblockItemRarity.RARE, SeaCreatureCategory.CRIMSON_ISLE),
 	TAURUS("Taurus", "Taurus and his steed emerge.", SkyblockItemRarity.EPIC, SeaCreatureCategory.CRIMSON_ISLE),
 	THUNDER("Thunder", "You hear a massive rumble as Thunder emerges.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.CRIMSON_ISLE),
-//	FIERY_SCUTTLER("Fiery Scuttler", null, SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.CRIMSON_ISLE),
+	FIERY_SCUTTLER("Fiery Scuttler", "A Fiery Scuttler inconspicuously waddles up to you, friends in tow.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.CRIMSON_ISLE),
 	LORD_JAWBUS("Lord Jawbus", "You have angered a legendary creature... Lord Jawbus has arrived.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.CRIMSON_ISLE),
 	RAGNAROK("Ragnarok", "The sky darkens and the air thickens. The end times are upon us: Ragnarok is here.", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.CRIMSON_ISLE),
 	//endregion
@@ -75,7 +75,7 @@ public enum SeaCreature {
 	//endregion
 
 	//region Spooky
-//	JUMPIN_JACK("Jumpin' Jack", null, SkyblockItemRarity.COMMON, SeaCreatureCategory.SPOOKY),
+	JUMPIN_JACK("Jumpin' Jack", "Watch out! It's Jumpin' Jack.", SkyblockItemRarity.COMMON, SeaCreatureCategory.SPOOKY),
 	SCARECROW("Scarecrow", "Phew! It's only a Scarecrow.", SkyblockItemRarity.COMMON, SeaCreatureCategory.SPOOKY),
 	NIGHTMARE("Nightmare", "You hear trotting from beneath the waves, you caught a Nightmare.", SkyblockItemRarity.RARE, SeaCreatureCategory.SPOOKY),
 	WEREWOLF("Werewolf", "It must be a full moon, a Werewolf appears.", SkyblockItemRarity.EPIC, SeaCreatureCategory.SPOOKY),
