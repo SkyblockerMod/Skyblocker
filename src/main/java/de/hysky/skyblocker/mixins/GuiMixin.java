@@ -57,12 +57,12 @@ public abstract class GuiMixin {
 
 			// slot lock
 			if (HotbarSlotLock.isLocked(index)) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_LOCK_ICON.get(), x, y, 0, 0, 16, 16, 16, 16);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_LOCK_ICON.get(), x, y, 16, 16);
 			}
 
 			//item protection
 			if (ItemProtection.isItemProtected(player.getInventory().getNonEquipmentItems().get(index))) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, x, y, 0, 0, 16, 16, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, x, y);
 			}
 			isQuiverSlot = index == 8;
 		}

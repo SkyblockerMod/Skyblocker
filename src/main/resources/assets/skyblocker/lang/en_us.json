@@ -199,6 +199,7 @@
   "skyblocker.config.debug.dumpFormat.@Tooltip": "The format to use when dumping items. SNBT is colored and easier to read while JSON has escaped string characters (double quotes).",
   "skyblocker.config.debug.dumpRange": "Entity Dump Range",
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
+  "skyblocker.config.debug.enableRepoDev": "Enable Repo Developer Options",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
 
   "skyblocker.config.dungeons": "Dungeons",
@@ -781,8 +782,6 @@
 
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Enable Item Price Lookup",
   "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Searches the Bazaar and Auction House for the current hovered item with the F6 key.",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Enable Item Price Refresh",
-  "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Refresh the Bazaar and Auction House prices with the Z key.",
   "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Failed to find item in the Bazaar and Auction House",
   "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Item Prices Refresh Failed.",
   "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Refreshed Item Prices",
@@ -1926,6 +1925,7 @@
   "skyblocker.waypoints.config": "Waypoints Config",
   "skyblocker.waypoints.deleteQuestion": "Are you sure you want to remove this waypoint?",
   "skyblocker.waypoints.deleteWarning": "Waypoint '%s' will be lost forever! (A long time!)",
+  "skyblocker.waypoints.disabledWarning": "Waypoints are currently disabled in the config!",
   "skyblocker.waypoints.exportError": "Error Exporting Waypoints",
   "skyblocker.waypoints.exportErrorText": "Failed to export waypoints. See logs for details.",
   "skyblocker.waypoints.exportSuccess": "Waypoints Exported",

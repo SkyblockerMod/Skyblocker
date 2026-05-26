@@ -444,14 +444,6 @@ public class HelperCategory {
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip"))
-								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-										() -> config.helpers.itemPrice.enableItemPriceRefresh,
-										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())
 						.build())
 				// Great Spook Event

@@ -165,7 +165,8 @@ public class HelperConfig {
 	public static class ItemPrice {
 		public boolean enableItemPriceLookup = true;
 
-		public boolean enableItemPriceRefresh = true;
+		@Deprecated
+		public transient boolean enableItemPriceRefresh;
 	}
 
 	public static class GreatSpookEvent {
