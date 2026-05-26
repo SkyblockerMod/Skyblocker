@@ -43,6 +43,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 public class PredictiveSmoothAOTE {
@@ -52,8 +54,11 @@ public class PredictiveSmoothAOTE {
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
 	private static long startTime;
+	@Nullable
 	private static Vec3 startPos;
+	@Nullable
 	private static Vec3 cameraStartPos;
+	@Nullable
 	private static Vec3 teleportVector;
 	private static long lastPing;
 	private static long currentTeleportPing;
@@ -479,7 +484,7 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//return full distance if no collision found
-		return direction.scale(distance);
+		return direction.scale(distance).subtract(0,1,0);
 	}
 
 	/**
