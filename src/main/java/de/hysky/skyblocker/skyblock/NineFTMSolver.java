@@ -44,6 +44,7 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 
 	private boolean isInMenu = false;
 	private final Map<Identifier, Set<Float>> sounds = new HashMap<>(CHOICES, 1f);
+	private final List<Identifier> blacklist = new ArrayList<>();
 	private final Set<Integer> clicks = new LinkedHashSet<>(CHOICES, 1f);
 	private final List<Integer> solution = new ArrayList<>(CHOICES);
 	private int bombSlotId = -1;
@@ -148,6 +149,7 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 	 */
 	private void clearState() {
 		for (Set<Float> pitches : sounds.values()) pitches.clear();
+		blacklist.clear();
 		clicks.clear();
 	}
 
@@ -169,6 +171,9 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 
 		Identifier sound = packet.getSound().value().location();
 
+		// Ignore blacklisted sounds
+		if (blacklist.contains(sound)) return;
+
 		// Ignore bomb sounds if a bomb exists, otherwise process them since some relays use the same sound.
 		if (bombSlotId != -1 && sound.equals(BOMB_SOUND)) return;
 
@@ -180,10 +185,13 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 
 		// Sort choices from lowest to highest pitch & complete solution.
 		if (pitches.size() == CHOICES) {
-			// Not enough clicked slots for every pitch, so clear progress & start over. (should never happen)
+			LOGGER.info("[Skyblocker] Sound {} has {} pitches: {}!", sound, CHOICES, pitches);
+			// Not enough clicked slots for every pitch, blacklist sound and continue.
 			if (clicks.size() != CHOICES) {
-				LOGGER.error("[Skyblocker] Wrong amount of clicked slots (expected {}, actual {}), starting over.", CHOICES, clicks.size());
-				clearState();
+				LOGGER.warn("[Skyblocker] Blacklisted sound {} due to incorrect amount of clicked slots (expected {}, actual {}).", sound, CHOICES, clicks.size());
+				blacklist.add(sound);
+
+				return;
 			}
 
 			Iterator<Integer> slotIds = clicks.iterator();
