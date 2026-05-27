@@ -56,7 +56,7 @@ public class EggFinder {
 	private static final Set<Location> LOCATIONS = Set.of(
 			Location.BACKWATER_BAYOU, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS,
 			Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.GALATEA, Location.GOLD_MINE, Location.HUB,
-			Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK, Location.SPIDERS_DEN
+			Location.LOTUS_ATOLL, Location.SPIDERS_DEN, Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK
 	);
 
 	private static boolean isSpring = SkyblockTime.skyblockSeason.get() == SkyblockTime.Season.SPRING;
