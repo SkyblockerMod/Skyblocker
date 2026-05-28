@@ -87,7 +87,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		String hoverMessage = ((HoverEvent.ShowText) hoverEvent).value().getString();
 		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
 
-		Matcher matcher = CHANGE_REGEX.matcher(hoverMessage);
+		Matcher matcher = CHANGE_REGEX.matcher(ChatFormatting.stripFormatting(hoverMessage));
 		while (matcher.find()) {
 
 			ItemStack item = getItem(matcher.group(3)).getStackOrThrow();
