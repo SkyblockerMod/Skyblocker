@@ -192,14 +192,21 @@ public class SweepOverlay {
 	/**
 	 * Calculates the maximum number of logs that can be chopped based on Sweep stat and toughness.
 	 * A hard cap of {@value #MAX_WOOD_CAP} logs is enforced.
+	 * <p>
+	 * The formula is not official but rather a reverse-engineered approximation.
 	 *
 	 * @param sweepStat the player's Sweep stat
 	 * @param toughness the toughness of the log
 	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));
-		return Math.min(MAX_WOOD_CAP, logs);
+		double logs;
+		if (toughness <= 0) {
+			logs = sweepStat;
+		} else {
+			logs = 0.515 + (3.245 * Math.log(sweepStat - Math.sqrt(toughness) + 0.646)) - (1.708 * Math.log(toughness));
+		}
+		return (int) Math.ceil(Math.min(MAX_WOOD_CAP, logs));
 	}
 
 	/**
