@@ -80,7 +80,9 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 
 	private interface TimeProvider {
 		boolean test(String screenTitle);
-		Predicate<String> qualifier();
+		default Predicate<String> qualifier() {
+			return l -> l.contains("Starts in:") || l.contains(" (");
+		}
 		@Nullable Instant getStartTime(ItemStack stack, String qualifiedLine);
 	}
 
@@ -88,11 +90,6 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 		@Override
 		public boolean test(String screenTitle) {
 			return screenTitle.equals("Calendar and Events");
-		}
-
-		@Override
-		public Predicate<String> qualifier() {
-			return l -> l.contains("Starts in:") || l.contains(" (");
 		}
 
 		@Override
@@ -133,11 +130,6 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 				return true;
 			}
 			return false;
-		}
-
-		@Override
-		public Predicate<String> qualifier() {
-			return l -> l.contains("Starts in:") || l.contains(" (");
 		}
 
 		@Override

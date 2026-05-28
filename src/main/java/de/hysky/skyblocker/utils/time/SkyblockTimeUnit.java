@@ -9,10 +9,10 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 public enum SkyblockTimeUnit implements TemporalUnit {
 	HOURS(Duration.ofSeconds(50)),
 	DAYS(Duration.ofMinutes(20)),
-	MONTHS(Duration.ofMinutes(10 * 60 + 20)),
+	MONTHS(Duration.ofMinutes(20 * 31)),
 	SEASONS(Duration.ofHours(31)),
 	YEARS(Duration.ofHours(124)),
-	CENTURIES(Duration.ofHours(516 * 24 + 16));
+	CENTURIES(Duration.ofHours(124 * 100));
 
 	private final Duration duration;
 
