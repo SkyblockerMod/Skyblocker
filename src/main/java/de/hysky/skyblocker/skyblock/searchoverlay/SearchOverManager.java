@@ -433,8 +433,8 @@ public class SearchOverManager {
 		if (location == SearchLocation.AUCTION) {
 			addExtras();
 		}
-		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase(Locale.ENGLISH).contains("null")) {
+		// Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isCommand && search.toLowerCase(Locale.ENGLISH).startsWith("null")) {
 			search = "\"%s\"".formatted(search);
 		}
 		//push
