@@ -154,7 +154,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 
 			Checkbox enabledCheck = layout.addChild(Checkbox.builder(Component.empty(), minecraft.font)
 					.selected(chatRule.getEnabled())
-					.onValueChange((_, value) -> {
+					.onValueChange((_cb, value) -> {
 						hasChanged = true;
 						chatRule.setEnabled(value);
 					})
@@ -182,7 +182,7 @@ public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<Chat
 		@Override
 		public void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// Text
-			nameWidget.extractRenderState(graphics, mouseX, mouseY, a);
+			nameWidget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			// Widgets
 			layout.visitWidgets((child) -> child.extractRenderState(graphics, mouseX, mouseY, deltaTicks));
 		}

@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
@@ -100,7 +100,7 @@ public final class GreenhouseCrops {
 		boolean isHead,
 		@Nullable Block cropBlock,
 		@Nullable String headSkin,
-		@Nullable FlexibleItemStack displayStack
+		@Nullable ItemStack displayStack
 	) {
 		public Crop(String name, String armorStandName, int id, String headSkin) {
 			this(name, armorStandName, id, true, null, headSkin, ItemUtils.createSkull(headSkin));

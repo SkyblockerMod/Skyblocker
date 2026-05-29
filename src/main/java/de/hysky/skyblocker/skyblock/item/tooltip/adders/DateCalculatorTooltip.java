@@ -137,7 +137,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 			return SkyblockTime.SKYBLOCK_EPOCH
 					.with(SkyblockTimeField.YEAR, year)
 					.with(SkyblockTimeField.MONTH_OF_YEAR, month.ordinal() + 1)
-					.with(SkyblockTimeField.DAY_OF_MONTH, stack.count());
+					.with(SkyblockTimeField.DAY_OF_MONTH, stack.getCount());
 		}
 	}
 }

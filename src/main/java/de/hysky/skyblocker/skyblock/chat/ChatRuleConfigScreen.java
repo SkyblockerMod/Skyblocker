@@ -336,7 +336,7 @@ public class ChatRuleConfigScreen extends Screen {
 		FrameLayout frame = new FrameLayout().setMinWidth(width);
 		Checkbox box = Checkbox.builder(text, font)
 				.selected(selected)
-				.onValueChange((_, value) -> setter.accept(value))
+				.onValueChange((_cb, value) -> setter.accept(value))
 				.maxWidth(width)
 				.build();
 

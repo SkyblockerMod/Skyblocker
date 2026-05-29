@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public final class ChaptersAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -46,10 +46,10 @@ public final class ChaptersAutocomplete {
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {
 		return literal(command)
-				.requires(_ -> Utils.isOnSkyblock())
+				.requires(_source -> Utils.isOnSkyblock())
 				.executes(CommandUtils.noOp)
 				.then(argument("island", StringArgumentType.string())
-						.suggests((_, builder) -> SharedSuggestionProvider.suggest(locations, builder))
+						.suggests((_ctx, builder) -> SharedSuggestionProvider.suggest(locations, builder))
 						.executes(CommandUtils.noOp)
 				).build();
 	}
