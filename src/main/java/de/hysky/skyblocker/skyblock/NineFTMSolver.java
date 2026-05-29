@@ -160,6 +160,7 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 		clearState();
 		sounds.clear();
 		solution.clear();
+		bombSlotId = -1;
 	}
 
 	/**
@@ -185,10 +186,8 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 
 		// Sort choices from lowest to highest pitch & complete solution.
 		if (pitches.size() == CHOICES) {
-			LOGGER.info("[Skyblocker] Sound {} has {} pitches: {}!", sound, CHOICES, pitches);
 			// Not enough clicked slots for every pitch, blacklist sound and continue.
 			if (clicks.size() != CHOICES) {
-				LOGGER.warn("[Skyblocker] Blacklisted sound {} due to incorrect amount of clicked slots (expected {}, actual {}).", sound, CHOICES, clicks.size());
 				blacklist.add(sound);
 
 				return;
