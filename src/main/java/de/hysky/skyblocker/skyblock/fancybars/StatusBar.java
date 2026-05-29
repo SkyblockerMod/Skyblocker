@@ -175,7 +175,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
 		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
-		Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
+		//Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
+		Color displayColor = textColor == null ? colors[0] : textColor;
 		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(displayColor.getRGB()));
 
 		if (hasMax() && showMax && max != null) {
