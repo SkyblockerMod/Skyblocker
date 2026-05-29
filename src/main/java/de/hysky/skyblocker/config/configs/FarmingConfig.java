@@ -13,6 +13,14 @@ public class FarmingConfig {
 
 	public VisitorHelper visitorHelper = new VisitorHelper();
 
+	public Greenhouse greenhouse = new Greenhouse();
+
+	public static class Greenhouse {
+		public boolean enabled = true;
+
+		public boolean showMutationSlot = true;
+	}
+
 	public static class PestHighlighter {
 		public boolean enabled = true;
 
