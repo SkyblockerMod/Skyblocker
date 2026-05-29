@@ -191,8 +191,7 @@ public class GreenhousePaste {
 							.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.loadFail")
 									.withStyle(ChatFormatting.RED))
 							.append(Component.literal(encoded)
-									.withStyle(ChatFormatting.GRAY))
-					, false);
+									.withStyle(ChatFormatting.GRAY)), false);
 			return;
 		}
 
@@ -231,8 +230,7 @@ public class GreenhousePaste {
 
 		CLIENT.player.displayClientMessage(
 				Constants.PREFIX.get()
-						.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse").withStyle(ChatFormatting.RED))
-				, false);
+						.append(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse").withStyle(ChatFormatting.RED)), false);
 		return false;
 	}
 
