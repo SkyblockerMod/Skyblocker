@@ -5,6 +5,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import de.hysky.skyblocker.skyblock.CallAutocomplete;
+import de.hysky.skyblocker.skyblock.ChaptersAutocomplete;
 import de.hysky.skyblocker.skyblock.JoinInstanceAutocomplete;
 import de.hysky.skyblocker.skyblock.RngMeterAutocomplete;
 import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
@@ -33,6 +34,8 @@ public class ClientboundCommandsPacketMixin {
 				case String s when s.equals("rngmeter") && RngMeterAutocomplete.longCommand != null -> RngMeterAutocomplete.longCommand;
 				case String s when s.equals("rng") && RngMeterAutocomplete.shortCommand != null -> RngMeterAutocomplete.shortCommand;
 				case String s when s.equals("call") && CallAutocomplete.commandNode != null -> CallAutocomplete.commandNode;
+				case String s when s.equals("chapter") && ChaptersAutocomplete.singularCommandNode != null -> ChaptersAutocomplete.singularCommandNode;
+				case String s when s.equals("chapters") && ChaptersAutocomplete.pluralCommandNode != null -> ChaptersAutocomplete.pluralCommandNode;
 				default -> original;
 			};
 		}
