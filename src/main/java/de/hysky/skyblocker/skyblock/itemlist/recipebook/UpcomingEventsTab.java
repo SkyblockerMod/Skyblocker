@@ -4,7 +4,7 @@ import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import java.time.Instant;

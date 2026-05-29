@@ -63,6 +63,13 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
+								.binding(defaults.farming.farmingHud.includeSeedsPrice,
+										() -> config.farming.farmingHud.includeSeedsPrice,
+										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
 								.tags(CommonTags.ADDED_IN_6_4_0)
 								.binding(defaults.farming.farmingHud.experience,
@@ -179,7 +186,28 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				.build();
 
+				// Greenhouse
+				.group(OptionGroup.createBuilder()
+					.name(Component.translatable("skyblocker.config.farming.greenhouse"))
+					.collapsed(true)
+					.option(Option.<Boolean>createBuilder()
+							.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled"))
+							.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip"))
+							.binding(defaults.farming.greenhouse.enabled,
+									() -> config.farming.greenhouse.enabled,
+									newValue -> config.farming.greenhouse.enabled = newValue)
+							.controller(ConfigUtils.createBooleanController())
+							.build())
+					.option(Option.<Boolean>createBuilder()
+							.name(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled"))
+							.description(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip"))
+							.binding(defaults.farming.greenhouse.showMutationSlot,
+									() -> config.farming.greenhouse.showMutationSlot,
+									newValue -> config.farming.greenhouse.showMutationSlot = newValue)
+							.controller(ConfigUtils.createBooleanController())
+							.build())
+					.build())
+				.build();
 	}
 }

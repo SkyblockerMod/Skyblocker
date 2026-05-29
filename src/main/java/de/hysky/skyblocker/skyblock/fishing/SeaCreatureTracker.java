@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -17,6 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.jspecify.annotations.Nullable;
+
 import java.util.LinkedHashMap;
 import java.util.SequencedMap;
 import java.util.regex.Pattern;
@@ -26,7 +28,7 @@ public class SeaCreatureTracker {
 	private static final Pattern DOUBLE_HOOK_PATTERN = Pattern.compile("Double Hook!(?: Woot woot!)?");
 	public static final int SEA_CREATURE_CAP = 10;
 	private static final SequencedMap<Entity, LiveSeaCreature> seaCreatures = new LinkedHashMap<>();
-	private static SeaCreature lastCatch;
+	private static @Nullable SeaCreature lastCatch;
 	private static boolean doubleHook = false;
 
 
