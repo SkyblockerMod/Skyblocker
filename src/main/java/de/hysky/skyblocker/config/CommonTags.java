@@ -12,5 +12,5 @@ public final class CommonTags {
 	public static final Component ADDED_IN_6_4_0 = Component.nullToEmpty("v6.4.0");
 	public static final Component ADDED_IN_6_5_0 = Component.nullToEmpty("v6.5.0");
 
-	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_4_0;
+	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_5_0;
 }
