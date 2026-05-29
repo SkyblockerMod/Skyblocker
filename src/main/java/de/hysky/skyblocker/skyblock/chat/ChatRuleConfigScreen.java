@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
@@ -10,16 +11,20 @@ import de.hysky.skyblocker.utils.render.gui.SoundSelectionPopup;
 import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -35,6 +40,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -45,6 +51,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +66,10 @@ public class ChatRuleConfigScreen extends Screen {
 	private static final int GRID_SPACING = 2;
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	private static final FlexibleItemStack INVALID_ITEM = Ico.BARRIER;
-	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);
-	private static final Component NO_TEXT = CommonComponents.GUI_NO.copy().withStyle(ChatFormatting.RED);
+	// Link to helpful learning & testing website for regex w/ multilingual support.
+	private static final Component REGEX_LINK = Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink").withStyle(
+			style -> style.withUnderlined(true).withClickEvent(new ClickEvent.OpenUrl(URI.create("https://regex101.com/")))
+	);
 
 	private final Map<@Nullable SoundEvent, Component> soundNames = Util.make(new Object2ObjectOpenHashMap<>(), map -> {
 		map.put(SoundEvents.NOTE_BLOCK_PLING.value(), Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling").withStyle(ChatFormatting.YELLOW));
@@ -125,24 +134,44 @@ public class ChatRuleConfigScreen extends Screen {
 
 		// Filter settings
 		LinearLayout filtersRow1 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow1.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getRegex())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex"), (_, value) -> chatRule.setRegex(value)));
+		filtersRow1.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex", REGEX_LINK),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.regex.@Tooltip"),
+				getWidth(1.5f),
+				TextAlignment.CENTER,
+				chatRule::setRegex,
+				chatRule.getRegex()
+		));
 		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
 						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
 		LinearLayout filtersRow2 = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIncludeFormatting())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip")))
-				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"), (_, value) -> chatRule.setIncludeFormatting(value)));
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getPartialMatch())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip")))
-				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"), (_, value) -> chatRule.setPartialMatch(value)));
-		filtersRow2.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getIgnoreCase())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip")))
-				.create(0, 0, getWidth(1f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"), (_, value) -> chatRule.setIgnoreCase(value)));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.includeFormatting.@Tooltip"),
+				getWidth(1.25f),
+				TextAlignment.LEFT,
+				chatRule::setIncludeFormatting,
+				chatRule.getIncludeFormatting()
+		));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.partialMatch.@Tooltip"),
+				getWidth(0.75f),
+				TextAlignment.CENTER,
+				chatRule::setPartialMatch,
+				chatRule.getPartialMatch()
+		));
+		filtersRow2.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.ignoreCase.@Tooltip"),
+				getWidth(1f),
+				TextAlignment.RIGHT,
+				chatRule::setIgnoreCase,
+				chatRule.getIgnoreCase()
+		));
 
 		// ==== Outputs
 		contentAdder.addChild(new StringWidget(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.outputs").withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), font), 3, content.newCellSettings().paddingTop(4 + GRID_SPACING));
@@ -150,12 +179,17 @@ public class ChatRuleConfigScreen extends Screen {
 
 		LinearLayout buttons = contentAdder.addChild(LinearLayout.horizontal().spacing(GRID_SPACING), 3);
 
-		buttons.addChild(CycleButton.booleanBuilder(YES_TEXT, NO_TEXT, chatRule.getHideMessage())
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip")))
-				.create(0, 0, getWidth(1.5f), 20, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"), (_, value) -> {
+		buttons.addChild(buildCheckbox(
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage"),
+				Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip"),
+				getWidth(1.5f),
+				TextAlignment.LEFT,
+				value -> {
 					chatRule.setHideMessage(value);
 					recreateLayout();
-				}));
+				},
+				chatRule.getHideMessage()
+		));
 
 		// Sound
 		// In case the user has a sound not in the list added to the config. We abuse the fact that we can have alternative values.
@@ -312,6 +346,24 @@ public class ChatRuleConfigScreen extends Screen {
 		return BuiltInRegistries.ITEM.getKey(stack.getItem()) + ItemStackComponentizationFixer.componentsAsString(stack);
 	}
 
+	private FrameLayout buildCheckbox(Component text, Component tooltip, int width, TextAlignment align, Consumer<Boolean> setter, boolean selected) {
+		FrameLayout frame = new FrameLayout().setMinWidth(width);
+		Checkbox box = Checkbox.builder(text, font)
+				.selected(selected)
+				.onValueChange((_, value) -> setter.accept(value))
+				.maxWidth(width)
+				.build();
+
+		switch (align) {
+			case LEFT -> frame.defaultChildLayoutSetting().alignHorizontallyLeft();
+			case CENTER -> frame.defaultChildLayoutSetting().alignHorizontallyCenter();
+			case RIGHT -> frame.defaultChildLayoutSetting().alignHorizontallyRight();
+		}
+		box.setTooltip(Tooltip.create(tooltip));
+		frame.addChild(box);
+
+		return frame;
+	}
 
 	private EditBox.TextFormatter createRenderTextProvider(Supplier<String> fullTextSupplier) {
 		return createRenderTextProvider(fullTextSupplier, false);
@@ -358,6 +410,30 @@ public class ChatRuleConfigScreen extends Screen {
 	@Override
 	protected void repositionElements() {
 		layout.arrangeElements();
+	}
+
+	/**
+	 * Handle click events for checkbox messages
+	 */
+	@Override
+	public boolean mouseClicked(final MouseButtonEvent event, final boolean doubleClick) {
+		Optional<GuiEventListener> child = getChildAt(event.x(), event.y());
+		// Enter all containers until non-container is reached.
+		while (child.isPresent() && child.get() instanceof ContainerEventHandler container) {
+			child = container.getChildAt(event.x(), event.y());
+		}
+		if (child.isPresent() && child.get() instanceof Checkbox check) {
+			ActiveTextCollector.ClickableStyleFinder finder = (new ActiveTextCollector.ClickableStyleFinder(font, (int) event.x(), (int) event.y()))
+					.includeInsertions(false);
+			((CheckboxAccessor) check).getTextWidget().visitLines(finder);
+			final Style style = finder.result();
+			// unnecessary null check on click event to suppress warning
+			if (style != null && style.getClickEvent() != null) {
+				defaultHandleClickEvent(style.getClickEvent(), minecraft, this);
+				return true;
+			}
+		}
+		return super.mouseClicked(event, doubleClick);
 	}
 
 	/**
