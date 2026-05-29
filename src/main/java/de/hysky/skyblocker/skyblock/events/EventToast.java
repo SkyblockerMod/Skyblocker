@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.events;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

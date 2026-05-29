@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import io.github.moulberry.repo.data.NEUForgeRecipe;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
