@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 
 import com.google.gson.JsonObject;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
@@ -29,7 +30,6 @@ public class DungeonClassWidget {
 	private boolean active = false;
 
 	private static final Identifier TEXTURE = SkyblockerMod.id("textures/gui/profile_viewer/icon_data_widget.png");
-	private static final Identifier ACTIVE_TEXTURE = SkyblockerMod.id("textures/gui/item_protection.png");
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
 	private static final Identifier BAR_BACK = SkyblockerMod.id("bars/bar_back");
 
@@ -57,7 +57,7 @@ public class DungeonClassWidget {
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 26, 109, 26);
 		graphics.item(stack, x + 3, y + 5);
-		if (active) graphics.blit(RenderPipelines.GUI_TEXTURED, ACTIVE_TEXTURE, x + 3, y + 5, 0, 0, 16, 16, 16, 16);
+		if (active) ItemProtection.drawSlotIcon(graphics, x + 3, y + 5);
 
 		graphics.text(textRenderer, className + " " + classLevel.level, x + 31, y + 5, Color.WHITE.getRGB(), false);
 		Color fillColor = classLevel.level >= CLASS_CAP ? Color.MAGENTA : Color.GREEN;
