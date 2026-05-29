@@ -463,6 +463,7 @@
   "skyblocker.config.farming.farmingHud.counter": "Show Counter & Crops per Minute",
   "skyblocker.config.farming.farmingHud.enabled": "Enable Farming HUD",
   "skyblocker.config.farming.farmingHud.experience": "Show Farming Skill Progress",
+  "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Include Seeds in Wheat Hoe's Coins per Hour",
   "skyblocker.config.farming.farmingHud.type": "Use Price Value From",
   "skyblocker.config.farming.farmingHud.type.@Tooltip": "The source to use when calculating profit in the Farming HUD.\n'Both' uses the highest price.",
   "skyblocker.config.farming.farmingHud.type.BAZAAR": "Bazaar",

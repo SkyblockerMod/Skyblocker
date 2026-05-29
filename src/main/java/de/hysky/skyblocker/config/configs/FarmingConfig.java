@@ -52,6 +52,8 @@ public class FarmingConfig {
 
 		public Type type = Type.BOTH;
 
+		public boolean includeSeedsPrice = true;
+
 		public boolean experience = true;
 	}
 
