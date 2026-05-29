@@ -9,10 +9,15 @@ public class BankMenu extends RegexMenu {
 		super(".*bank.*", "bank");
 	}
 
+	/// Excludes the Banker Broadjaw Garden visitor
+	@Override
+	public boolean titleMatches(String title) {
+		return super.titleMatches(title) && !title.contains("Banker Broadjaw");
+	}
+
 	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
 		return !(item.equals(Items.BLACK_STAINED_GLASS_PANE) || item.equals(Items.GOLD_BLOCK) || item.equals(Items.REDSTONE_TORCH) || item.equals(Items.FILLED_MAP));
-
 	}
 }
