@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
@@ -23,9 +24,12 @@ public abstract class MinecraftMixin {
 	@Shadow
 	public @Nullable LocalPlayer player;
 
+	@Shadow
+	public @Nullable Screen screen;
+
 	@Inject(method = "handleKeybinds", at = @At("HEAD"))
 	public void skyblocker$handleInputEvents(CallbackInfo ci) {
-		if (Utils.isOnSkyblock()) {
+		if (player != null && screen == null && Utils.isOnSkyblock()) {
 			HotbarSlotLock.handleInputEvents(player);
 			ItemProtection.handleHotbarKeyPressed(player);
 		}

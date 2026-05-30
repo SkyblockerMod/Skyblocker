@@ -124,6 +124,7 @@ public class ItemProtection {
 	}
 
 	public static void handleHotbarKeyPressed(LocalPlayer player) {
+		if (Minecraft.getInstance().screen != null) return;
 		while (itemProtection.consumeClick()) {
 			ItemStack heldItem = player.getMainHandItem();
 			handleKeyPressed(heldItem);
