@@ -3,8 +3,12 @@
 ## Highlight
 * Add support for the Lotus Atoll
 * Add tab completions for the /chapters command
-* Add support for Kat Pet Upgrade recipes in REI
+* Add support for Kat pet upgrade recipes
 * Add Greenhouse Paste Preview
+  * Allows previewing a SkyMutations Greenhouse layout on your Garden.
+  * Copy a layout's link and run '/skyblocker garden greenhouse paste'.
+  * Rotate the layout with '/skyblocker garden greenhouse rotate (left|right)'
+  * Remove the preview with '/skyblocker garden greenhouse endPaste'.
 * Add option to include formatting in Chat Rules
 * Add support for Fossil & Forest Essence
 * Add Mouse Lock support for Garden Axes
@@ -14,6 +18,7 @@
 * Improve accuracy of Wheat Coins/hr in Farming Hud
 * Improve accuracy of Sweep Overlay
 * Improve contrast of Inventory Search highlights
+* Update Fishing HUD Sea Creatures
 * Update Sea Creature Cap
 * Fix Mouse Lock applying in The Barn
 * Fix certain items not showing properly in the Item Selection Popup
