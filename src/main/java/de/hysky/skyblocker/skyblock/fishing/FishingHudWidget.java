@@ -12,7 +12,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 
@@ -95,7 +95,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 
 			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
-			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
+			int seaCreatureCap = SeaCreatureTracker.SEA_CREATURE_CAP;
 			float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
 			addComponent(Elements.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
 			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));

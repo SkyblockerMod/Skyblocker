@@ -54,6 +54,8 @@ public class ChatRule {
 			Codec.BOOL.fieldOf("partialMatch").forGetter(ChatRule::getPartialMatch),
 			Codec.BOOL.fieldOf("regex").forGetter(ChatRule::getRegex),
 			Codec.BOOL.fieldOf("ignoreCase").forGetter(ChatRule::getIgnoreCase),
+			// Optional w/ default because this field wasn't always present.
+			Codec.BOOL.optionalFieldOf("includeFormatting", false).forGetter(ChatRule::getIncludeFormatting),
 			Codec.STRING.fieldOf("filter").forGetter(ChatRule::getFilter),
 			LOCATION_FIXING_CODEC.fieldOf("locations").forGetter(ChatRule::getValidLocations),
 			Codec.BOOL.fieldOf("hideOriginalMessage").forGetter(ChatRule::getHideMessage),
@@ -62,8 +64,8 @@ public class ChatRule {
 			AnnouncementMessage.CODEC.optionalFieldOf("announcementMessage").forGetter(ChatRule::getAnnouncementMessageOptional),
 			ToastMessage.CODEC.optionalFieldOf("toastMessage").forGetter(ChatRule::getToastMessageOptional),
 			SoundEvent.DIRECT_CODEC.optionalFieldOf("customSound").forGetter(ChatRule::getCustomSoundOptional)
-	).apply(instance, (s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3, s4, s5, toastMessage1, soundEvent) ->
-			new ChatRule(s, aBoolean, aBoolean2, aBoolean3, aBoolean4, s2, locations, aBoolean5, s3.orElse(null), s4.orElse(null), s5.orElse(null), toastMessage1.orElse(null), soundEvent.orElse(null))
+	).apply(instance, (name, enabled, isPartialMatch, isRegex, isIgnoreCase, includeFormatting, filter, validLocations, hideMessage, chatMessage, actionBarMessage, announcementMessage, toastMessage, customSound) ->
+			new ChatRule(name, enabled, isPartialMatch, isRegex, isIgnoreCase, includeFormatting, filter, validLocations, hideMessage, chatMessage.orElse(null), actionBarMessage.orElse(null), announcementMessage.orElse(null), toastMessage.orElse(null), customSound.orElse(null))
 	));
 
 	public static final Codec<List<ChatRule>> LIST_CODEC = CODEC.listOf();
@@ -76,6 +78,7 @@ public class ChatRule {
 	private boolean isPartialMatch;
 	private boolean isRegex;
 	private boolean isIgnoreCase;
+	private boolean includeFormatting;
 	private String filter;
 	private EnumSet<Location> validLocations;
 
@@ -97,6 +100,7 @@ public class ChatRule {
 		this.isPartialMatch = false;
 		this.isRegex = false;
 		this.isIgnoreCase = true;
+		this.includeFormatting = false;
 		this.filter = "";
 		this.validLocations = EnumSet.noneOf(Location.class);
 
@@ -108,12 +112,13 @@ public class ChatRule {
 		this.customSound = null;
 	}
 
-	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable AnnouncementMessage announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
+	ChatRule(String name, boolean enabled, boolean isPartialMatch, boolean isRegex, boolean isIgnoreCase, boolean includeFormatting, String filter, EnumSet<Location> validLocations, boolean hideMessage, @Nullable String chatMessage, @Nullable String actionBarMessage, @Nullable AnnouncementMessage announcementMessage, @Nullable ToastMessage toastMessage, @Nullable SoundEvent customSound) {
 		this.name = name;
 		this.enabled = enabled;
 		this.isPartialMatch = isPartialMatch;
 		this.isRegex = isRegex;
 		this.isIgnoreCase = isIgnoreCase;
+		this.includeFormatting = includeFormatting;
 		this.filter = filter;
 		this.validLocations = validLocations;
 		this.hideMessage = hideMessage;
@@ -164,6 +169,14 @@ public class ChatRule {
 	protected void setIgnoreCase(boolean ignoreCase) {
 		isIgnoreCase = ignoreCase;
 		this.pattern = null;
+	}
+
+	protected boolean getIncludeFormatting() {
+		return includeFormatting;
+	}
+
+	protected void setIncludeFormatting(boolean includeFormatting) {
+		this.includeFormatting = includeFormatting;
 	}
 
 	protected String getFilter() {
@@ -331,12 +344,12 @@ public class ChatRule {
 	@Override
 	public final boolean equals(Object o) {
 		if (!(o instanceof ChatRule chatRule)) return false;
-		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getHideMessage() == chatRule.getHideMessage() && getName().equals(chatRule.getName()) && getFilter().equals(chatRule.getFilter()) && getValidLocations().equals(chatRule.getValidLocations()) && Objects.equals(getChatMessage(), chatRule.getChatMessage()) && Objects.equals(getActionBarMessage(), chatRule.getActionBarMessage()) && Objects.equals(getAnnouncementMessage(), chatRule.getAnnouncementMessage()) && Objects.equals(getToastMessage(), chatRule.getToastMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
+		return getEnabled() == chatRule.getEnabled() && getPartialMatch() == chatRule.getPartialMatch() && getRegex() == chatRule.getRegex() && getIgnoreCase() == chatRule.getIgnoreCase() && getIncludeFormatting() == chatRule.getIncludeFormatting() && getHideMessage() == chatRule.getHideMessage() && getName().equals(chatRule.getName()) && getFilter().equals(chatRule.getFilter()) && getValidLocations().equals(chatRule.getValidLocations()) && Objects.equals(getChatMessage(), chatRule.getChatMessage()) && Objects.equals(getActionBarMessage(), chatRule.getActionBarMessage()) && Objects.equals(getAnnouncementMessage(), chatRule.getAnnouncementMessage()) && Objects.equals(getToastMessage(), chatRule.getToastMessage()) && Objects.equals(getCustomSound(), chatRule.getCustomSound());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getFilter(), getValidLocations(), getHideMessage(), getChatMessage(), getActionBarMessage(), getActionBarMessage(), getAnnouncementMessage(), getToastMessage(), getCustomSound());
+		return Objects.hash(getName(), getEnabled(), getPartialMatch(), getRegex(), getIgnoreCase(), getIncludeFormatting(), getFilter(), getValidLocations(), getHideMessage(), getChatMessage(), getActionBarMessage(), getActionBarMessage(), getAnnouncementMessage(), getToastMessage(), getCustomSound());
 	}
 
 	protected record Match(boolean matches, Optional<Matcher> matcher) {

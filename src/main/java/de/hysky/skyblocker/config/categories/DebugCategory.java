@@ -51,6 +51,13 @@ public class DebugCategory {
 								newValue -> config.debug.corpseFinderDebug = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.debug.enableRepoDev"))
+						.binding(defaults.debug.enableRepoDev,
+								() -> config.debug.enableRepoDev,
+								newValue -> config.debug.enableRepoDev = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 				.build();
 	}
 }

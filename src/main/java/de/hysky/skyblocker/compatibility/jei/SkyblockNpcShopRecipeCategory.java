@@ -28,10 +28,10 @@ public final class SkyblockNpcShopRecipeCategory extends AbstractSkyblockRecipeC
 
 		int itemX = 61 + ((recipeArrow.getWidth() - ITEM_SIZE) / 2);
 		int itemY = arrowYOffset - ITEM_SIZE - NPC_ITEM_PADDING;
-		context.item(recipe.getNpcItem().getStackOrThrow(), itemX, itemY);
+		context.item(recipe.getRepresentative().getStackOrThrow(), itemX, itemY);
 
 		if (GuiHelper.pointIsInArea(mouseX, mouseY, itemX, itemY, itemX + ITEM_SIZE, itemY + ITEM_SIZE)) {
-			this.drawTooltip(context, recipe.getNpcItem().getStackOrThrow().getHoverName(), mouseX, mouseY);
+			this.drawTooltip(context, recipe.getRepresentative().getStackOrThrow().getHoverName(), mouseX, mouseY);
 		}
 	}
 }

@@ -12,6 +12,7 @@ public abstract class RegexMenu extends BasicMenu {
 		pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	}
 
+	@Override
 	public boolean titleMatches(String title) {
 		return this.getEnabled() && this.pattern.matcher(title).matches();
 	}
