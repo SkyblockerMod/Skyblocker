@@ -64,6 +64,7 @@ public class FarmingCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
+								.tags(CommonTags.ADDED_IN_6_5_0)
 								.binding(defaults.farming.farmingHud.includeSeedsPrice,
 										() -> config.farming.farmingHud.includeSeedsPrice,
 										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
@@ -93,6 +94,7 @@ public class FarmingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter"))
 								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_0)
 								.binding(defaults.farming.pestHighlighter.contestHighlighter,
 										() -> config.farming.pestHighlighter.contestHighlighter,
 										newValue -> config.farming.pestHighlighter.contestHighlighter = newValue)
@@ -191,9 +193,11 @@ public class FarmingCategory {
 				.group(OptionGroup.createBuilder()
 					.name(Component.translatable("skyblocker.config.farming.greenhouse"))
 					.collapsed(true)
+					.tags(CommonTags.ADDED_IN_6_5_0)
 					.option(Option.<Boolean>createBuilder()
 							.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled"))
 							.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip"))
+							.tags(CommonTags.ADDED_IN_6_5_0)
 							.binding(defaults.farming.greenhouse.enabled,
 									() -> config.farming.greenhouse.enabled,
 									newValue -> config.farming.greenhouse.enabled = newValue)
@@ -202,6 +206,7 @@ public class FarmingCategory {
 					.option(Option.<Boolean>createBuilder()
 							.name(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled"))
 							.description(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip"))
+							.tags(CommonTags.ADDED_IN_6_5_0)
 							.binding(defaults.farming.greenhouse.showMutationSlot,
 									() -> config.farming.greenhouse.showMutationSlot,
 									newValue -> config.farming.greenhouse.showMutationSlot = newValue)
