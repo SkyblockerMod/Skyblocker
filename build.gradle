@@ -146,7 +146,8 @@ dependencies {
 	include implementation("net.azureaaron:dandelion:${project.dandelion_version}")
 
 	// YACL
-	include implementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+	//include implementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
+	compileOnly "dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric"
 
 	// HM API (Hypixel Mod API Library)
 	include implementation("net.azureaaron:hm-api:${project.hm_api_version}")

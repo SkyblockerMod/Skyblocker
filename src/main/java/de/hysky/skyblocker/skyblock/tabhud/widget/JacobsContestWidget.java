@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import static java.util.Map.entry;
 
@@ -45,7 +46,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Jacob's Contest", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override

@@ -56,4 +56,11 @@ public class ToggleableLayoutWidget implements Layout {
 	public int getHeight() {
 		return enabled ? widget.getHeight() : 0;
 	}
+
+	@Override
+	public void removeChildren() {
+		if (this.enabled && this.widget instanceof Layout layout) {
+			layout.removeChildren();
+		}
+	}
 }

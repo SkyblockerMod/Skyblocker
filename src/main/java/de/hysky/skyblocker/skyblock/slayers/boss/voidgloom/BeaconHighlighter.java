@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class BeaconHighlighter {
 	private static final Object2LongOpenHashMap<BlockPos> BEACONS = new Object2LongOpenHashMap<>();
@@ -72,7 +73,7 @@ public class BeaconHighlighter {
 				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;
 				if (remainingSec >= 0) {
 					Component text = Component.literal(String.format("%.1fs", remainingSec)).withStyle(ChatFormatting.AQUA);
-					collector.submitText(text, beacon.getKey().above().getCenter(), 3, true);
+					collector.submitText(text, Vec3.atCenterOf(beacon.getKey().above()), 3, true);
 				}
 			}
 		}

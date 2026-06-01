@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.awt.Color;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import com.mojang.serialization.Codec;
@@ -174,7 +174,7 @@ public class MiningLocationLabel extends DistancedNamedWaypoint {
 		LOST_PRECURSOR_CITY("Lost Precursor City", Color.CYAN, CRYSTALS_SPACER + "Sapphire Crystal"),
 		KHAZAD_DUM("Khazad-dûm", Color.YELLOW, CRYSTALS_SPACER + "Topaz Crystal"),
 		FAIRY_GROTTO("Fairy Grotto", Color.PINK, null),
-		DRAGONS_LAIR("Dragon's Lair", new Color(ChatFormatting.GOLD.getColor()), "[NPC] Golden Dragon:"),
+		DRAGONS_LAIR("Dragon's Lair", new Color(TextColor.GOLD.getValue()), "[NPC] Golden Dragon:"),
 		CORLEONE("Corleone", Color.WHITE, null),
 		KING_YOLKAR("King Yolkar", Color.RED, "[NPC] King Yolkar:"),
 		ODAWA("Odawa", Color.MAGENTA, "[NPC] Odawa:"),

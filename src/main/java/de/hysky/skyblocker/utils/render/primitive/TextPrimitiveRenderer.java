@@ -25,9 +25,9 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 
 	private static RenderPipeline getPipeline(boolean seeThrough, boolean intensity) {
 		if (seeThrough) {
-			return CAXTON_SEE_THROUGH != null ? CAXTON_SEE_THROUGH : (intensity ? RenderPipelines.TEXT_INTENSITY_SEE_THROUGH : RenderPipelines.TEXT_SEE_THROUGH);
+			return CAXTON_SEE_THROUGH != null ? CAXTON_SEE_THROUGH : (intensity ? RenderPipelines.TEXT_GRAYSCALE_SEE_THROUGH : RenderPipelines.TEXT_SEE_THROUGH);
 		} else {
-			return CAXTON_NORMAL != null ? CAXTON_NORMAL : (intensity ? RenderPipelines.TEXT_INTENSITY : RenderPipelines.TEXT);
+			return CAXTON_NORMAL != null ? CAXTON_NORMAL : (intensity ? RenderPipelines.TEXT_GRAYSCALE : RenderPipelines.TEXT);
 		}
 	}
 
@@ -55,7 +55,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 				TextureSetup textureSetup = TextureSetup.singleTextureWithLightmap(glyph.textureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
 				// This is a bit of a weird workaround to know if the intensity pipelines should be used instead of the normal ones.
 				// Normally GlyphBitmap#isColored should be used to figure that out, but we don't have access to it here
-				BufferBuilder buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_INTENSITY), textureSetup);
+				BufferBuilder buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_GRAYSCALE), textureSetup);
 
 				glyph.render(positionMatrix, buffer, LightCoordsUtil.FULL_BRIGHT, false);
 			}

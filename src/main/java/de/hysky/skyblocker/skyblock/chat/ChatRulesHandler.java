@@ -92,7 +92,7 @@ public class ChatRulesHandler {
 
 			if (rule.getToastMessage() != null) {
 				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
-				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)));
+				CLIENT.gui.toastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)));
 			}
 
 			// Play sound

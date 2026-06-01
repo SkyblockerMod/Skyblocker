@@ -273,7 +273,7 @@ public class StatusBarsConfigScreen extends Screen {
 		values.forEach(this::setup);
 		updateScreenRects();
 		this.addRenderableWidget(Button.builder(Component.literal("?"),
-						_ -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
+						_ -> minecraft.gui.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
 								.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
 								.addMessage(Component.translatable("skyblocker.bars.config.explanation"))
 								.build()))

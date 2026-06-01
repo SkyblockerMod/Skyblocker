@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vulkan.VulkanDevice;
+
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
+import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -21,8 +25,8 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
+//import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+//import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -38,15 +42,15 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
-	private static final boolean USE_INSTANCING = Debug.debugEnabled();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+	private final boolean useInstancing;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
 	private @Nullable List<VanillaSubmittable<?>> vanillaSubmittables = null;
@@ -65,6 +69,8 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
+		boolean isVulkan = ((GpuDeviceAccessor) RenderSystem.getDevice()).getBackend() instanceof VulkanDevice;
+		this.useInstancing = isVulkan || Debug.debugEnabled();
 		this.worldState = worldState;
 		this.frustum = frustum;
 	}
@@ -142,11 +148,11 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		int colour = ARGB.colorFromFloat(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().position().subtract(pos.getCenter()).horizontalDistance();
+		float length = (float) RenderHelper.getCamera().position().subtract(Vec3.atCenterOf(pos)).horizontalDistance();
 		BeaconRenderState state = new BeaconRenderState();
 		state.blockPos = pos;
 		((BlockEntityRenderStateAccessor) state).setBlockState(Blocks.BEACON.defaultBlockState());
-		state.blockEntityType = BlockEntityType.BEACON;
+		state.blockEntityType = BlockEntityTypes.BEACON;
 		state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
 		state.breakProgress = null;
 		state.animationTime = MINECRAFT.level != null ? Math.floorMod(MINECRAFT.level.getGameTime(), 40) + MINECRAFT.getDeltaTracker().getGameTimeDeltaPartialTick(true) : 0f;
@@ -432,7 +438,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.filledBoxStates != null) {
-			if (USE_INSTANCING) {
+			if (this.useInstancing) {
 				FilledBoxInstancedRenderer.INSTANCE.submitPrimitives(this.filledBoxStates, cameraState);
 			} else {
 				for (FilledBoxRenderState state : this.filledBoxStates) {
@@ -442,7 +448,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.outlinedBoxStates != null) {
-			if (USE_INSTANCING) {
+			if (this.useInstancing) {
 				OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(this.outlinedBoxStates, cameraState);
 			} else {
 				for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
@@ -475,14 +481,14 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			}
 		}
 
-		if (this.blockHologramStates != null) {
+		/*if (this.blockHologramStates != null) {
 			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.getGameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
 
 			for (BlockHologramRenderState state : this.blockHologramStates) {
 				state.altModelBlockRenderer = altModelBlockRenderer;
 				BlockHologramRenderer.INSTANCE.submitPrimitives(state, cameraState);
 			}
-		}
+		}*/
 
 		if (this.textStates != null) {
 			for (TextRenderState state : this.textStates) {

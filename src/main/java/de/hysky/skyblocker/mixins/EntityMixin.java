@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -48,14 +49,14 @@ public abstract class EntityMixin implements SkyblockerEntity {
 
 	@ModifyExpressionValue(method = "isInvisibleTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z"))
 	public boolean skyblocker$showInvisibleArmorStands(boolean isSpectator, Player player) {
-		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
+		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityTypes.ARMOR_STAND));
 	}
 
 	@ModifyReturnValue(method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z", at = @At("RETURN"))
 	private boolean modifyStartRidingReturnValue(boolean originalReturnValue, Entity entity, boolean force) {
 		if (originalReturnValue && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
-				type == EntityType.ENDERMAN &&
-				entity.getType() == EntityType.ARMOR_STAND &&
+				type == EntityTypes.ENDERMAN &&
+				entity.getType() == EntityTypes.ARMOR_STAND &&
 				SlayerManager.isSelectedBoss(uuid) &&
 				!LazerTimer.isActive()) LazerTimer.activate();
 		return originalReturnValue;
@@ -63,7 +64,7 @@ public abstract class EntityMixin implements SkyblockerEntity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
-		if (type == EntityType.ENDERMAN && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
+		if (type == EntityTypes.ENDERMAN && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
 				SlayerManager.isSelectedBoss(uuid) && LazerTimer.isActive()) LazerTimer.tick();
 	}
 

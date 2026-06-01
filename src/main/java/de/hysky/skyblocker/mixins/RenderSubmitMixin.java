@@ -5,9 +5,9 @@ import org.spongepowered.asm.mixin.Unique;
 
 import de.hysky.skyblocker.injected.CustomGlowState;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
-@Mixin(value = { SubmitNodeStorage.ItemSubmit.class, SubmitNodeStorage.ModelSubmit.class, SubmitNodeStorage.ModelPartSubmit.class })
+@Mixin(value = { ItemFeatureRenderer.Submit.class })
 public class RenderSubmitMixin implements CustomGlowState {
 	@Unique
 	private int customGlowColour = MobGlow.NO_GLOW;

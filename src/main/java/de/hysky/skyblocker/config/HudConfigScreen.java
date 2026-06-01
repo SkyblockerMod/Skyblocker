@@ -141,7 +141,7 @@ public abstract class HudConfigScreen extends Screen {
 	@Override
 	public final void onClose() {
 		SkyblockerConfigManager.update(config -> savePos(config, widgets));
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	/**

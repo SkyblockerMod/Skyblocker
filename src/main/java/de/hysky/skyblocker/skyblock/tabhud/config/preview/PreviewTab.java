@@ -33,6 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -568,5 +569,10 @@ public class PreviewTab implements Tab {
 	@Override
 	public Component getTabExtraNarration() {
 		return Component.empty();
+	}
+
+	@Override
+	public Layout getLayout() {
+		throw new UnsupportedOperationException();
 	}
 }

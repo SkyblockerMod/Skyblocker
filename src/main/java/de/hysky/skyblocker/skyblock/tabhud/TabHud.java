@@ -31,7 +31,7 @@ public class TabHud {
 						SkyblockerMod.KEYBINDING_CATEGORY));
 
 		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, hudElement -> {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) return hudElement;
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) return hudElement;
 			return (_, _) -> {};
 		});
 	}

@@ -35,8 +35,8 @@ public abstract class SynchedEntityDataMixin {
 		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification && entry.getAccessor() == EnderManAccessor.getDATA_CARRY_STATE() && entry.getValue() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.is(Blocks.BEACON) && ((Optional<?>) serializedEntry.value()).isEmpty()) {
 			Minecraft client = Minecraft.getInstance();
 			if (entity instanceof Entity entity && MobGlow.getArmorStands(entity).stream().anyMatch(armorStand -> armorStand.getName().getString().contains(client.getUser().getName()))) {
-				client.gui.setTimes(5, 20, 10);
-				client.gui.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
+				client.gui.hud.setTimes(5, 20, 10);
+				client.gui.hud.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
 				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
 			}
 		}

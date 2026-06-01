@@ -115,8 +115,8 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
-				client.gui.resetTitleTimes();
-				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.gui.hud.resetTitleTimes();
+				client.gui.hud.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -137,8 +137,8 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
-				client.gui.resetTitleTimes();
-				client.gui.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.gui.hud.resetTitleTimes();
+				client.gui.hud.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);

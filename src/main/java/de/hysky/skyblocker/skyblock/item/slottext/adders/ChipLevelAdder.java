@@ -27,7 +27,7 @@ public class ChipLevelAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (slotId < 18 || slotId > 35 || stack.is(Items.GRAY_DYE)) return List.of();
+		if (slotId < 18 || slotId > 35 || stack.is(Items.DYE.gray())) return List.of();
 
 		List<String> lore = stack.skyblocker$getLoreStrings();
 		if (lore.isEmpty()) return List.of();

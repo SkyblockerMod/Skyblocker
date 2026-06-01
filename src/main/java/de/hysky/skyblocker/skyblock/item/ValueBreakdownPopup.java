@@ -232,7 +232,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getItem());
-					if (networth.price() > 0) client.setScreen(new ValueBreakdownPopup(screen, networth));
+					if (networth.price() > 0) client.gui.setScreen(new ValueBreakdownPopup(screen, networth));
 				});
 			}
 		});

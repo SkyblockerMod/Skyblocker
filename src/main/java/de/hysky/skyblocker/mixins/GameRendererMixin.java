@@ -23,12 +23,12 @@ public class GameRendererMixin {
 		FilledBoxInstancedRenderer.INSTANCE.close();
 		OutlinedBoxInstancedRenderer.INSTANCE.close();
 		Renderer.close();
-		GlowRenderer.getInstance().close();
+		GlowRenderer.INSTANCE.close();
 		GuiHelper.close();
 		DungeonMapTexture.close();
 	}
 
-	@ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
+	@ModifyReturnValue(method = "nightVisionScale", at = @At("RETURN"))
 	private static float onGetNightVisionStrength(float original) {
 		if (original == 1.0F && Utils.isOnSkyblock()) {
 			var strength = SkyblockerConfigManager.get().uiAndVisuals.nightVisionStrength;

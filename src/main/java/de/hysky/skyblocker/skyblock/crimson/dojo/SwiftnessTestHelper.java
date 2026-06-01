@@ -14,7 +14,7 @@ public class SwiftnessTestHelper {
 	}
 
 	protected static void onBlockUpdate(BlockPos pos, BlockState state) {
-		if (state.is(Blocks.LIME_WOOL)) {
+		if (state.is(Blocks.WOOL.lime())) {
 			lastBlock = pos.immutable();
 		}
 	}

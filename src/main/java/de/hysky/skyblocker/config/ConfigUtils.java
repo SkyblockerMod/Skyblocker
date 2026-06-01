@@ -15,7 +15,7 @@ import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 
 public class ConfigUtils {
-	public static final Function<ChatFormatting, Component> FORMATTING_FORMATTER = formatting -> Component.literal(StringUtils.capitalize(formatting.getName().replaceAll("_", " ")));
+	public static final Function<ChatFormatting, Component> FORMATTING_FORMATTER = formatting -> Component.literal(StringUtils.capitalize(formatting.name().replaceAll("_", " ")));
 
 	public static BooleanController createBooleanController() {
 		return BooleanController.createBuilder()
@@ -49,7 +49,7 @@ public class ConfigUtils {
 		Minecraft client = Minecraft.getInstance();
 		return ButtonOption.createBuilder()
 				.name(Component.translatable("skyblocker.config.shortcutToKeybindsSettings"))
-				.action(screen -> client.setScreen(new KeyBindsScreen(screen, client.options)))
+				.action(screen -> client.gui.setScreen(new KeyBindsScreen(screen, client.options)))
 				.prompt(Component.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
 				.build();
 	}

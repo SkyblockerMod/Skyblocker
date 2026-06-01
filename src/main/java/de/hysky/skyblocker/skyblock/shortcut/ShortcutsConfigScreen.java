@@ -50,7 +50,7 @@ public class ShortcutsConfigScreen extends Screen {
 		buttonDelete = Button.builder(Component.translatable("selectServer.deleteButton"), _ -> {
 			if (shortcutsConfigListWidget.getSelected() instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 				scrollAmount = shortcutsConfigListWidget.scrollAmount();
-				minecraft.setScreen(new ConfirmScreen(confirmedAction -> deleteEntry(confirmedAction, shortcutEntry), Component.translatable("skyblocker.shortcuts.deleteQuestion"), Component.translatableEscape("skyblocker.shortcuts.deleteWarning", shortcutEntry), Component.translatable("selectServer.deleteButton"), CommonComponents.GUI_CANCEL));
+				minecraft.gui.setScreen(new ConfirmScreen(confirmedAction -> deleteEntry(confirmedAction, shortcutEntry), Component.translatable("skyblocker.shortcuts.deleteQuestion"), Component.translatableEscape("skyblocker.shortcuts.deleteWarning", shortcutEntry), Component.translatable("selectServer.deleteButton"), CommonComponents.GUI_CANCEL));
 			}
 		}).build();
 		adder.addChild(buttonDelete);
@@ -72,7 +72,7 @@ public class ShortcutsConfigScreen extends Screen {
 		if (confirmedAction && entry instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
 			shortcutsConfigListWidget.removeEntry(shortcutEntry);
 		}
-		minecraft.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
+		minecraft.gui.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
 		shortcutsConfigListWidget.setScrollAmount(scrollAmount);
 	}
 
@@ -108,15 +108,15 @@ public class ShortcutsConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (shortcutsConfigListWidget.hasChanges()) {
-			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
+			minecraft.gui.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
-					this.minecraft.setScreen(parent);
+					this.minecraft.gui.setScreen(parent);
 				} else {
-					minecraft.setScreen(this);
+					minecraft.gui.setScreen(this);
 				}
 			}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard"), CommonComponents.GUI_CANCEL));
 		} else {
-			this.minecraft.setScreen(parent);
+			this.minecraft.gui.setScreen(parent);
 		}
 	}
 

@@ -11,6 +11,7 @@ import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 @RegisterWidget
 public class PickobulusHudWidget extends ElementBasedWidget {
@@ -19,7 +20,7 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, ChatFormatting.BLUE.getColor(), "hud_pickobulus");
+		super(TITLE, TextColor.BLUE.getValue(), "hud_pickobulus");
 		instance = this;
 		update();
 	}

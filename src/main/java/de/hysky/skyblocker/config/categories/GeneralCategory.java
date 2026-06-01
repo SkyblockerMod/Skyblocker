@@ -34,7 +34,7 @@ public class GeneralCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(_ -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.action(_ -> Minecraft.getInstance().gui.setScreen(new SkyblockerScreen()))
 						.build())
 
 				// Disable All
@@ -83,7 +83,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.backup.manage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ConfigBackupScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ConfigBackupScreen(screen)))
 								.build())
 						.build())
 				// Speed Presets
@@ -100,7 +100,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.speedPresets.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new SpeedPresetsScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new SpeedPresetsScreen(screen)))
 								.build())
 						.build())
 
@@ -143,7 +143,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.shortcuts.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ShortcutsConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ShortcutsConfigScreen(screen)))
 								.build())
 						.build())
 

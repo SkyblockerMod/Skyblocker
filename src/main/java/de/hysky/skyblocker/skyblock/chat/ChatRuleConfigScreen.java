@@ -143,7 +143,7 @@ public class ChatRuleConfigScreen extends Screen {
 				chatRule.getRegex()
 		));
 		filtersRow1.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations"),
-						_ -> minecraft.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
+						_ -> minecraft.gui.setScreen(new ChatRuleLocationConfigScreen(this, chatRule)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locations.@Tooltip")))
 				.width(getWidth(1.5f))
 				.build());
@@ -442,7 +442,7 @@ public class ChatRuleConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		save();
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private void save() {
@@ -473,7 +473,7 @@ public class ChatRuleConfigScreen extends Screen {
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			super.onClick(click, doubled);
 			Objects.requireNonNull(minecraft);
-			minecraft.setScreen(new ItemSelectionPopup(ChatRuleConfigScreen.this, item -> {
+			minecraft.gui.setScreen(new ItemSelectionPopup(ChatRuleConfigScreen.this, item -> {
 				if (item == null) return;
 				input.setValue(getItemString(item));
 			}));
@@ -504,7 +504,7 @@ public class ChatRuleConfigScreen extends Screen {
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			super.onClick(click, doubled);
 			Objects.requireNonNull(minecraft);
-			minecraft.setScreen(new SoundSelectionPopup(ChatRuleConfigScreen.this, sound -> {
+			minecraft.gui.setScreen(new SoundSelectionPopup(ChatRuleConfigScreen.this, sound -> {
 				if (sound != null) {
 					chatRule.setCustomSound(sound);
 					soundButton.setMessage(Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom").withStyle(ChatFormatting.YELLOW));
@@ -589,6 +589,11 @@ public class ChatRuleConfigScreen extends Screen {
 		@Override
 		public void visitWidgets(Consumer<AbstractWidget> consumer) {
 			super.visitWidgets(consumer);
+		}
+
+		@Override
+		public void removeChildren() {
+			children.clear();
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 	@Override
 	public void markDirty() {
 		Minecraft client = Minecraft.getInstance();
-		if (!(client.screen instanceof ContainerScreen screen)) return;
+		if (!(client.gui.screen() instanceof ContainerScreen screen)) return;
 
 		ItemStack stack = screen.getMenu().getSlot(13).getItem();
 

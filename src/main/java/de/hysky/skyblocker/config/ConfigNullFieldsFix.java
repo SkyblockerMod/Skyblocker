@@ -16,13 +16,15 @@ public class ConfigNullFieldsFix {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public static void init() {
+		return;
+		/*
 		SkyblockerConfigManager.update(config -> {
 			try {
 				fixNullFields(config, new SkyblockerConfig());
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Config Null Fields Fixer] Failed to ensure that the config has no null fields! You may encounter crashes :(", e);
 			}
-		});
+		});*/
 	}
 
 	/**

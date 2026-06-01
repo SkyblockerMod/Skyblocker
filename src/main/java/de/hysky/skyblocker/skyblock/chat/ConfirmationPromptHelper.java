@@ -50,7 +50,7 @@ public class ConfirmationPromptHelper {
 				ScreenMouseEvents.beforeMouseClick(screen).register((_, click) -> {
 					if (hasCommand()) {
 						Minecraft client = Minecraft.getInstance();
-						if (client.screen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
+						if (client.gui.screen() instanceof ChatScreen) {	// Ignore clicks on other interactive elements
 							ActiveTextCollector.ClickableStyleFinder clickHandler = new ActiveTextCollector.ClickableStyleFinder(screen.getFont(), (int) click.x(), (int) click.y())
 									.includeInsertions(false);
 							Style clickedStyle = clickHandler.result();

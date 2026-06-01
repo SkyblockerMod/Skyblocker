@@ -91,12 +91,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							// Optional argument.
 							.then(argument("summaryView", BoolArgumentType.bool())
 								.executes(ctx -> {
-									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen, BoolArgumentType.getBool(ctx, "summaryView")));
+									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().gui.screen(), BoolArgumentType.getBool(ctx, "summaryView")));
 									return Command.SINGLE_SUCCESS;
 								})
 							)
 							.executes(ctx -> {
-								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen));
+								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().gui.screen()));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -137,12 +137,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+				Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+					Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
@@ -152,7 +152,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+					Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))

@@ -228,7 +228,7 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 		List<OptionDropdownWidget.Option> entries = new ArrayList<>();
 		for (Slot slot : handler.slots) {
 			if (slot.index > (handler.getRowCount() - 1) * 9 - 1) break;
-			if (slot.hasItem() && !slot.getItem().is(Items.BLACK_STAINED_GLASS_PANE)) {
+			if (slot.hasItem() && !slot.getItem().is(Items.STAINED_GLASS_PANE.black())) {
 				entries.add(dropdownWidget.new Option(slot.getItem().getHoverName().getString(), slot.getItem(), slot.index));
 			}
 		}

@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -14,7 +14,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -23,6 +22,7 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
 
 /**
@@ -106,7 +106,7 @@ public class PreviewWidget extends AbstractWidget {
 					selectedWidget.getY() - 1,
 					selectedWidget.getWidth() + 2,
 					selectedWidget.getHeight() + 2,
-					ChatFormatting.GREEN.getColor() | 0xFF000000);
+					TextColor.GREEN.getValue() | 0xFF000000);
 
 			PositionRule rule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (rule != null) {
@@ -137,7 +137,7 @@ public class PreviewWidget extends AbstractWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(ratio, ratio);
-		((GuiInvoker) Minecraft.getInstance().gui).extractSidebar(graphics, tab.placeHolderObjective);
+		((HudAccessor) Minecraft.getInstance().gui).extractSidebar(graphics, tab.placeHolderObjective);
 		matrices.popMatrix();
 		graphics.disableScissor();
 	}

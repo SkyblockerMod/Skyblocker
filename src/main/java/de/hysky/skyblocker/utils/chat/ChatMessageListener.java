@@ -120,7 +120,7 @@ public interface ChatMessageListener {
 				}
 
 				case TOAST -> {
-					Minecraft.getInstance().getToastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), null));
+					Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), null));
 					return false;
 				}
 

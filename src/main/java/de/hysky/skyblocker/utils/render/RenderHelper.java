@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Camera;
@@ -26,7 +27,7 @@ public class RenderHelper {
 
 	@Init
 	public static void init() {
-		LevelRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
+		LevelExtractionEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
 		LevelRenderEvents.COLLECT_SUBMITS.register(RenderHelper::submitVanillaSubmittables);
 		LevelRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
 	}
@@ -82,7 +83,7 @@ public class RenderHelper {
 	}
 
 	public static Camera getCamera() {
-		return CLIENT.gameRenderer.getMainCamera();
+		return CLIENT.gameRenderer.mainCamera();
 	}
 
 	/**

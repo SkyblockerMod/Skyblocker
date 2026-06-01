@@ -101,7 +101,7 @@ public class RoomPreviewServer {
 				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, WorldDataConfiguration.DEFAULT),
 				new WorldOptions(SAVE_NAME.hashCode(), false, false),
 				lookup -> {
-					var preset = WorldPresets.createFlatWorldDimensions(lookup);
+					var preset = WorldPresets.createTestWorldDimensions(lookup);
 					var config = new FlatLevelGeneratorSettings(Optional.empty(), lookup.lookupOrThrow(Registries.BIOME).getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("the_void"))), List.of());
 					return preset.replaceOverworldGenerator(lookup, new FlatLevelSource(config));
 				},
