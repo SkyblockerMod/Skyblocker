@@ -103,6 +103,10 @@ jobs:
 
   client_game_test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        graphics_backend: [opengl, vulkan]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -116,13 +120,13 @@ jobs:
         with:
           cache-disabled: true
 
-      - name: Run client gametest with Xvfb
-        uses: modmuss50/xvfb-action@v1
-        with:
-          run: ./gradlew runClientGametest
+      - run: sudo apt-get install -y mesa-vulkan-drivers
+      - run: echo 'preferredGraphicsBackend:"${{ matrix.graphics_backend }}"' >> run/options.txt
+      - run: ./gradlew runClientGametest
+
       - name: Upload test screenshots
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: Test Screenshots
+          name: Test Screenshots (${{ matrix.graphics_backend }})
           path: build/run/clientGameTest/screenshots
