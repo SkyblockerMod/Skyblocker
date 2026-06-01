@@ -252,11 +252,11 @@ public class Renderer {
 
 	private static void dispatchDraws() {
 		applyViewOffsetZLayering();
-		
+
 		for (Draw draw : DRAWS) {
 			draw(draw);
 		}
-		
+
 		unapplyViewOffsetZLayering();
 	}
 
