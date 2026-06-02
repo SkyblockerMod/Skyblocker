@@ -71,9 +71,9 @@ public class TrophySpecialEffects {
 			case "Sulphur Skitter" -> "SULPHUR_SKITTER_DIAMOND";
 			case "Vanille" -> "VANILLE_DIAMOND";
 			case "Volcanic Stonefish" -> "VOLCANIC_STONEFISH_DIAMOND";
-			case "Obfuscated Fish 1" -> "OBFUSCATED_FISH_1_DIAMOND";
-			case "Obfuscated Fish 2" -> "OBFUSCATED_FISH_2_DIAMOND";
-			case "Obfuscated Fish 3" -> "OBFUSCATED_FISH_3_DIAMOND";
+			case "Obfuscated-1" -> "OBFUSCATED_FISH_1_DIAMOND";
+			case "Obfuscated-2" -> "OBFUSCATED_FISH_2_DIAMOND";
+			case "Obfuscated-3" -> "OBFUSCATED_FISH_3_DIAMOND";
 
 			//Frogs
 			case "Common Frog" -> "COMMON_FROG_DIAMOND";
