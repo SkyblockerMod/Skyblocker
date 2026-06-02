@@ -617,14 +617,11 @@ public class Utils {
 	}
 
 	/**
-	 * Get players eye height from the servers point of view based on it's minecraft version
-	 *
 	 * @return offset from players pos to their eyes
 	 */
 	public static float getEyeHeight(Player player) {
-		if (player == null || !player.isShiftKeyDown()) return 1.62f;
-		//sneaking height is different depending on server
-		return getLocation().isModern() ? 1.27f : 1.54f;
+		if (!player.isShiftKeyDown()) return 1.62f;
+		return 1.27f;
 	}
 
 	/**
