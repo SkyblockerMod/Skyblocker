@@ -260,7 +260,7 @@ public final class ItemUtils {
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().endsWith("Experimentation Table RNG")) {
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Experimentation Table RNG")) {
 					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					return switch (stackName.getString()) {
 							case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
@@ -730,7 +730,7 @@ public final class ItemUtils {
 		if (currentScreen instanceof ContainerScreen container) {
 			if (container.getTitle().getString().startsWith("Superpairs")) {
 				if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
-			} else if (container.getTitle().getString().endsWith("Experimentation Table RNG")) {
+			} else if (container.getTitle().getString().contains("Experimentation Table RNG")) {
 				return OptionalInt.of(1);
 			}
 		}
