@@ -31,7 +31,7 @@ public enum SeaCreature {
 	//region Lotus Atoll
 	ATOLL_CROAKER("Atoll Croaker", "An inquisitive Atoll Croaker takes the bait!", SkyblockItemRarity.COMMON, SeaCreatureCategory.LOTUS_ATOLL),
 	PUDDLE_JUMPER("Puddle Jumper", "A Puddle Jumper is preparing for liftoff—cast your rod into it and hold on tight!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.LOTUS_ATOLL),
-	LOTUS_GUARDIAN("Lotus Guardian", "A Lotus Guardian emerges, ready to protect the Atoll.", SkyblockItemRarity.UNKNOWN, SeaCreatureCategory.LOTUS_ATOLL),
+	LOTUS_GUARDIAN("Lotus Guardian", "A Lotus Guardian emerges, ready to protect the Atoll.", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.LOTUS_ATOLL),
 	GORF("gorF", "What even is that?! A... gorF?", SkyblockItemRarity.RARE, SeaCreatureCategory.LOTUS_ATOLL),
 	FROG_PRINCE("Frog Prince", "Bow down before the Frog Prince... or pay the hefty price!", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.LOTUS_ATOLL),
 	DROWNED_CAPTAIN("Drowned Captain", "A Drowned Captain takes hold of your bobber!", SkyblockItemRarity.EPIC, SeaCreatureCategory.LOTUS_ATOLL),
