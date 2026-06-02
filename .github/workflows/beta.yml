@@ -121,7 +121,8 @@ jobs:
           cache-disabled: true
 
       - run: sudo apt-get install -y mesa-vulkan-drivers
-      - run: mkdir run && echo 'preferredGraphicsBackend:"${{ matrix.graphics_backend }}"' >> run/options.txt
+      - run: mkdir run && echo 'version:4896' >> run/options.txt
+      - run: echo 'preferredGraphicsBackend:"${{ matrix.graphics_backend }}"' >> run/options.txt
       - run: ./gradlew runClientGametest
 
       - name: Upload test screenshots
