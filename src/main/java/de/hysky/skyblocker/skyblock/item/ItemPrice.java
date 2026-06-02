@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -44,7 +45,7 @@ public class ItemPrice {
 	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl#registerKeyBinding(KeyMapping) KeyBindingRegistryImpl#registerKeybinding} and the game to crash.
 	 * </p>
 	 */
-	@SuppressWarnings("UnstableApiUsage") //For the javadoc reference.
+	@SuppressWarnings("UnstableApiUsage") //For the Javadoc reference.
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
@@ -74,8 +75,11 @@ public class ItemPrice {
 
 			// Handle Enchanted Books
 			if (itemName.equals("Enchanted Book")) {
-				itemName = stack.skyblocker$getLoreStrings().stream().findFirst().orElse("");
+				itemName = EnchantedBookUtils.getEnchantNameFromLore(stack.skyblocker$getLoreStrings());
 			}
+
+			// prevent the player from getting kicked for sending the section symbol character
+			itemName = ChatFormatting.stripFormatting(itemName);
 
 			// Search up the item in the bazaar or auction house
 			if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
