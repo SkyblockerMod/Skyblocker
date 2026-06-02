@@ -43,10 +43,10 @@ public class ItemPrice {
 	 *     This is probably due to how fabric adds key binding options to the key binding options screen.
 	 *     Since {@link #ITEM_PRICE_LOOKUP} is a static field, it is initialized lazily, which means it is only initialized when the class is accessed for the first time.
 	 *     That first time is generally when the player is already in the game and tries to use the key bindings in a handled screen, which is much later than the possible initialization period.
-	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl#registerKeyBinding(KeyMapping) KeyBindingRegistryImpl#registerKeybinding} and the game to crash.
+	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl#registerKeyMapping(KeyMapping) KeyMappingRegistryImpl#registerKeyMapping(KeyMapping)} and the game to crash.
 	 * </p>
 	 */
-	@SuppressWarnings("UnstableApiUsage") //For the javadoc reference.
+	@SuppressWarnings("UnstableApiUsage") //For the Javadoc reference.
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
