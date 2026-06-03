@@ -24,7 +24,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Labels
-      - Can show either the Room Name, Secrets Found, or Both
+        - Can show either the Room Name, Secrets Found, or Both
     - Hidable room checkmarks
     - Configurable outline and background blur
 - **Score Calculation**
@@ -217,7 +217,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Slayer HUD
     - Bossbars
     - Boss Kill Time
-      - Personal Bests
+        - Personal Bests
     - Boss and MiniBoss spawn alerts
     - Mute Blaze, Wolf, Spider, and Enderman sounds
     - Slayer Boss and Mini-Boss Highlighting
@@ -241,9 +241,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Mouse Locking**
     - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
-    - Option to separately highlight pests for the active Stereo Harmony vinyl.
+    - Highlight pests for the current Jacob's contest.
+    - Highlight pests for the active Stereo Harmony vinyl.
 - **Stereo Harmony Helper**
     - Highlights the vinyl for the current Jacob's contest
+- **Greenhouse Paste Preview**
 
 ### Visual Enhancements:
 - **Smooth AOTE**
@@ -330,13 +332,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Accessories Helper*
     - *Craft Cost*
     - *Essence Shop Price*
-    - *True HEX display for dye items*
+    - *True Hex Color for Dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
     - *Evolution Item Progress*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector 
+    - Item Selector
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
@@ -370,6 +372,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
+    - *`/chapters` command*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -408,10 +411,11 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Accessory Helper**
 
 ### Miscellaneous Features:
-- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) (1.21.11 only) and [JEI](https://modrinth.com/mod/jei/) Support**
     - Crafting
     - Forge
     - NPC Shop Recipes
+    - Kat Pet Upgrade Recipes
     - Skyblock Info
     - Collapsible Entries
 - **Item Protection**
@@ -423,7 +427,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **True Quiver Count**
 - **Chest Value**
 - **Add useful tips in chat**
-- **Suppress badlion packet warnings**
+- **Suppress Badlion packet warnings**
 - **Remove screens when switching island**
 - **Skin transparency correction**
 - **Skyblock XP Messages**
