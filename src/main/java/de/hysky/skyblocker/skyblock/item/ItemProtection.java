@@ -124,11 +124,18 @@ public class ItemProtection {
 	}
 
 	public static void handleHotbarKeyPressed(LocalPlayer player) {
-		if (Minecraft.getInstance().screen != null) return;
 		while (itemProtection.consumeClick()) {
 			ItemStack heldItem = player.getMainHandItem();
 			handleKeyPressed(heldItem);
 		}
+	}
+
+	public static boolean isPersonalStorage(String screenTitle) {
+		return screenTitle.equals("Storage") || screenTitle.startsWith("Storage (")
+				|| screenTitle.equals("Rift Storage") || screenTitle.startsWith("Rift Storage (")
+				|| screenTitle.startsWith("Ender Chest")
+				|| screenTitle.startsWith("Chest")
+				|| (screenTitle.contains("Backpack") && screenTitle.contains("(Slot #"));
 	}
 
 	private static InteractionResult onEntityInteract(Player playerEntity, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {

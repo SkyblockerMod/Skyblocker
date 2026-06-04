@@ -131,7 +131,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			//item protection
 			if (ItemProtection.itemProtection.matches(input)) {
 				ItemProtection.itemProtection.consumeClick();
-				if (this.hoveredSlot.container == this.minecraft.player.getInventory()) {
+				boolean ownItem = this.hoveredSlot.container == this.minecraft.player.getInventory()
+						|| ItemProtection.isPersonalStorage(this.getTitle().getString());
+				if (ownItem) {
 					ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
 				}
 			}
