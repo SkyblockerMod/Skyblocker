@@ -659,6 +659,8 @@
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
+  "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy Drop Effects",
+  "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a diamond Trophy Fish/Frog!",
 
   "skyblocker.config.general.speedPresets": "Speed Presets",
   "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",
