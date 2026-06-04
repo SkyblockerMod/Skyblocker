@@ -191,7 +191,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (!bitsMatcher.find()) return;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 
 			if (itemCost == 0) return;
 
@@ -317,7 +317,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (!bitsMatcher.find()) continue;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 			if (itemCost == 0 || bitsCost == 0) continue;
 
 			long coinsPerBit = Math.round(itemCost / bitsCost);
@@ -370,7 +370,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			for (Map.Entry<String, Integer> entry : category.entrySet()) {
 				String itemID = entry.getKey();
 				Integer itemBitsPrice = entry.getValue();
-				double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();
+				double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);
 				long coinsPerBit = Math.round(itemCost / itemBitsPrice);
 				results.put(itemID, coinsPerBit);
 			}
@@ -378,7 +378,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		} else if (categoryName.contains("Fuel Blocks")) {
 			String itemID = "INFERNO_FUEL_BLOCK";    // but I don't know if only 1x offer of 64x offer gets discount too
 			int[] itemBitsPrice = {75, 3600};   // if only 1x gets discount then it doesn't matter as x64 would be ALWAYS better even with it
-			double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();   // TLDR: need blaze slayer 9 players to show their prices
+			double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);   // TLDR: need blaze slayer 9 players to show their prices
 			long coinsPerBit = (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));
 			Object2LongMap<String> fuelBlockResult = new Object2LongOpenHashMap<>();
 			fuelBlockResult.put(itemID, coinsPerBit);

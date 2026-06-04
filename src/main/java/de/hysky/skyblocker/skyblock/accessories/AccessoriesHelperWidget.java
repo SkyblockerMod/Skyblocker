@@ -18,7 +18,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -204,9 +203,9 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static OptionalDouble getPrice(Accessory acc) {
 		ItemStack stack = ItemRepository.getItemStack(acc.id());
 		if (stack == null) return OptionalDouble.empty();
-		DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
+		OptionalDouble optionalPrice = ItemUtils.getItemPrice(stack);
 		double price;
-		if (optionalPrice.rightBoolean()) price = optionalPrice.firstDouble();
+		if (optionalPrice.isPresent()) price = optionalPrice.getAsDouble();
 		else price = ItemUtils.getCraftCost(stack.getNeuName());
 		if (price <= 0) return OptionalDouble.empty();
 		return OptionalDouble.of(price);
@@ -411,11 +410,11 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 						.flatMap(accStack -> {
 							OptionalDouble priceOpt = getPrice(info.accessory());
 							if (priceOpt.isEmpty()) return Optional.empty();
-							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
-							if (!price.rightBoolean()) return Optional.empty();
+							OptionalDouble price = ItemUtils.getItemPrice(accStack);
+							if (price.isEmpty()) return Optional.empty();
 							Component translatable = Component.translatable(
 									"skyblocker.accessoryHelper.afterSelling",
-									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1),
+									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.getAsDouble(), 1),
 									accStack.getHoverName());
 							return Optional.of(Minecraft.getInstance().font.split(translatable, 170));
 						})
@@ -479,8 +478,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private final List<Component> tooltip;
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", ItemStack.EMPTY);
-			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
-			double price = pair.rightBoolean() ? pair.leftDouble() : 6000000;
+			OptionalDouble opt = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
+			double price = opt.orElse(6000000);
 			int mp = rarity.recombobulate().getMP() - rarity.getMP();
 			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
 			tooltip = List.of(
