@@ -223,6 +223,7 @@ fabricApi {
 		modId = "skyblocker-test"
 		enableGameTests = false
 		eula = true
+		clearRunDirectory = false
 	}
 }
 
