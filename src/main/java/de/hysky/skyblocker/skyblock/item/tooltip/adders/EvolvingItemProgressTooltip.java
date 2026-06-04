@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class EvolvingItemProgressTooltip extends SimpleTooltipAdder {
-	final List<String> evolutionItems = List.of("DARK_CACAO_TRUFFLE", "MOBY_DUCK", "ROSEWATER_FLASK", "DISCRITE", "NEW_BOTTLE_OF_JYRRE", "TRAINING_WEIGHTS");
+	final List<String> evolutionItems = List.of("DARK_CACAO_TRUFFLE", "MOBY_DUCK", "ROSEWATER_FLASK", "NOT_VERY_MOLDY_BREAD", "DISCRITE", "NEW_BOTTLE_OF_JYRRE", "TRAINING_WEIGHTS");
 
 	public EvolvingItemProgressTooltip(int priority) {
 		super(priority);
