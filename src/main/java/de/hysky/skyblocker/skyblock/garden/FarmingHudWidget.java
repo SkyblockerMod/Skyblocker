@@ -107,15 +107,16 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
 
 		if (config.counter) {
-			String counterText = FarmingHud.counterText();
+			FarmingHud.CounterType counterType = FarmingHud.counterType();
 			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
-			if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
-			addSimpleIcoText(cropStack, counterText, ChatFormatting.YELLOW, counterNumber);
+			if (counterType == FarmingHud.CounterType.NONE) counterNumber = "";
+			addSimpleIcoText(cropStack, counterType.text, ChatFormatting.YELLOW, counterNumber);
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
 		double blockBreaks = FarmingHud.blockBreaks();
 		if (config.coins) {
-			boolean hasReplenish = ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
+			boolean hasCounter = FarmingHud.counterType() != FarmingHud.CounterType.NONE;
+			boolean hasReplenish = hasCounter && ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
 			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish, blockBreaks));
 		}
 		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
