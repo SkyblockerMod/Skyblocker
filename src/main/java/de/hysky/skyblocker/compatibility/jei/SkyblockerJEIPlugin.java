@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.compatibility.jei;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import mezz.jei.api.IModPlugin;
@@ -25,17 +28,17 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.fabric.events.JeiLifecycleEvents;
 import mezz.jei.library.ingredients.subtypes.SubtypeInterpreters;
 import mezz.jei.library.load.registration.SubtypeRegistration;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.util.math.Rect2i;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.Identifier;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
 	private SkyblockCraftingRecipeCategory skyblockCraftingRecipeCategory;
 	private SkyblockForgeRecipeCategory skyblockForgeRecipeCategory;
 	private SkyblockNpcShopRecipeCategory skyblockNpcShopRecipeCategory;
+	private SkyblockKatUpgradeRecipeCategory skyblockKatUpgradeRecipe;
 
 	public static void trickJEIIntoLoadingRecipes() {
 		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
@@ -48,9 +51,10 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
+		@SuppressWarnings("unused")
 		SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
-		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack)).map(ItemStack::getItem).distinct().forEach(item ->
-		registration.registerSubtypeInterpreter(item, (stack, context) -> ItemStackComponentizationFixer.componentsAsString(stack))
+		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack.getStackOrThrow())).map(FlexibleItemStack::getStackOrThrow).distinct().forEach(item ->
+		registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
 				);
 	}
 
@@ -64,38 +68,42 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 
 		this.skyblockNpcShopRecipeCategory = new SkyblockNpcShopRecipeCategory(registration.getJeiHelpers().getGuiHelper());
 		registration.addRecipeCategories(this.skyblockNpcShopRecipeCategory);
+
+		this.skyblockKatUpgradeRecipe = new SkyblockKatUpgradeRecipeCategory(registration.getJeiHelpers().getGuiHelper());
+		registration.addRecipeCategories(this.skyblockKatUpgradeRecipe);
 	}
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-		registration.addGuiContainerHandler(GenericContainerScreen.class, new GenericContainerHandler());
+		registration.addGuiContainerHandler(ContainerScreen.class, new GenericContainerHandler());
 		registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
 		registration.addGlobalGuiHandler(new GlobalHandler());
 	}
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems());
+		registration.getIngredientManager().addIngredientsAtRuntime(VanillaTypes.ITEM_STACK, ItemRepository.getItems().stream().filter(Predicate.not(FlexibleItemStack::isEmpty)).map(FlexibleItemStack::getStackOrThrow).toList());
 		registration.addRecipes(this.skyblockCraftingRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockCraftingRecipe.class::isInstance).map(SkyblockCraftingRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockForgeRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockForgeRecipe.class::isInstance).map(SkyblockForgeRecipe.class::cast).toList());
 		registration.addRecipes(this.skyblockNpcShopRecipeCategory.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockNpcShopRecipe.class::isInstance).map(SkyblockNpcShopRecipe.class::cast).toList());
+		registration.addRecipes(this.skyblockKatUpgradeRecipe.getRecipeType(), ItemRepository.getRecipesStream().filter(SkyblockKatUpgradeRecipe.class::isInstance).map(SkyblockKatUpgradeRecipe.class::cast).toList());
 	}
 
-	private static class GenericContainerHandler implements IGuiContainerHandler<GenericContainerScreen> {
+	private static class GenericContainerHandler implements IGuiContainerHandler<ContainerScreen> {
 		@Override
-		public List<Rect2i> getGuiExtraAreas(GenericContainerScreen containerScreen) {
+		public List<Rect2i> getGuiExtraAreas(ContainerScreen containerScreen) {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
+			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		}
 	}
 
 	private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.isInGarden()) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rect2i(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
+			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		}
 	}
 

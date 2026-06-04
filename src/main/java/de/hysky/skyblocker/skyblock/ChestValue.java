@@ -4,8 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.KuudraProfileData;
@@ -21,23 +20,22 @@ import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,13 +44,15 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
-	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Gold Chest", "Diamond Chest", "Emerald Chest", "Obsidian Chest", "Bedrock Chest");
+	// Hypixel broke dungeon chest titles to fix the kuudra ones because yeah... ;(((
+	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Wood", "Gold Chest", "Gold", "Diamond Chest", "Diamond", "Emerald Chest", "Emerald", "Obsidian Chest", "Obsidian", "Bedrock Chest", "Bedrock");
 	public static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^([0-9,]+) Coins$");
 	// Hypixel does include the word "Chest" twice in the screen titles (:
 	private static final Set<String> KUUDRA_CHESTS = Set.of("Free Chest", "Free Chest Chest", "Paid Chest", "Paid Chest Chest");
@@ -64,15 +64,58 @@ public class ChestValue {
 			"Infernal Kuudra Key", "KUUDRA_INFERNAL_TIER_KEY"
 			);
 	/**
+	 * Items that never have price data because no one is buying them.
+	 */
+	public static final Set<String> WORTHLESS_ITEMS = Set.of(
+			"DUNGEON_DISC_1",
+			"DUNGEON_DISC_2",
+			"DUNGEON_DISC_3",
+			"DUNGEON_DISC_4",
+			"DUNGEON_DISC_5",
+			"MAXOR_THE_FISH",
+			"STORM_THE_FISH",
+			"GOLDOR_THE_FISH",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_1",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_2",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_3",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_4",
+			"ENCHANTMENT_ULTIMATE_NO_PAIN_NO_GAIN_5",
+			"ENCHANTMENT_ULTIMATE_COMBO_1",
+			"ENCHANTMENT_ULTIMATE_COMBO_2",
+			"ENCHANTMENT_ULTIMATE_COMBO_3",
+			"ENCHANTMENT_ULTIMATE_COMBO_4",
+			"ENCHANTMENT_ULTIMATE_COMBO_5",
+			"ENCHANTMENT_ULTIMATE_BANK_1",
+			"ENCHANTMENT_ULTIMATE_BANK_2",
+			"ENCHANTMENT_ULTIMATE_BANK_3",
+			"ENCHANTMENT_ULTIMATE_BANK_4",
+			"ENCHANTMENT_ULTIMATE_BANK_5",
+			"ENCHANTMENT_ULTIMATE_JERRY_1",
+			"ENCHANTMENT_ULTIMATE_JERRY_2",
+			"ENCHANTMENT_ULTIMATE_JERRY_3",
+			"ENCHANTMENT_ULTIMATE_JERRY_4",
+			"ENCHANTMENT_ULTIMATE_JERRY_5",
+			"ENCHANTMENT_FEATHER_FALLING_6",
+			"ENCHANTMENT_FEATHER_FALLING_7",
+			"ENCHANTMENT_FEATHER_FALLING_8",
+			"ENCHANTMENT_FEATHER_FALLING_9",
+			"ENCHANTMENT_FEATHER_FALLING_10",
+			"ENCHANTMENT_INFINITE_QUIVER_6",
+			"ENCHANTMENT_INFINITE_QUIVER_7",
+			"ENCHANTMENT_INFINITE_QUIVER_8",
+			"ENCHANTMENT_INFINITE_QUIVER_9",
+			"ENCHANTMENT_INFINITE_QUIVER_10"
+	);
+	/**
 	 * Pattern to match the essence count from Croesus tooltips or the chest menus.
 	 *
-	 * Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
+	 * <p>Note: Essence within the Croesus tooltip won't list the amount if you only got one essence.
 	 */
 	public static final Pattern ESSENCE_PATTERN = Pattern.compile("(?<type>[A-Za-z]+) Essence(?: x(?<amount>\\d+))?");
 	/**
 	 * Pattern to match shards from the Croesus tooltips and in the chest menus.
 	 *
-	 * Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
+	 * <p>Note: Shards within the Croesus tooltip won't list the amount if you only got one shard.
 	 */
 	public static final Pattern SHARD_PATTERN = Pattern.compile("[A-Za-z ]+ Shard(?: x(?<amount>\\d+))?");
 	/** Pattern to match Kuudra Teeth. Only needed for Croesus profit. */
@@ -81,36 +124,39 @@ public class ChestValue {
 	public static final Pattern HEAVY_PEARL_PATTERN = Pattern.compile("Heavy Pearl(?: x(?<amount>\\d+))?");
 	private static final Pattern MINION_PATTERN = Pattern.compile("Minion (I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)$");
 
+	public static boolean hideChestNameLabel = false;
+
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (Utils.isOnSkyblock() && screen instanceof GenericContainerScreen genericContainerScreen) {
-				Text title = screen.getTitle();
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+			hideChestNameLabel = false;
+			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
+				Component title = screen.getTitle();
 				String titleString = title.getString();
 				RewardChestType chestType = DUNGEON_CHESTS.contains(titleString) ? RewardChestType.DUNGEON : KUUDRA_CHESTS.contains(titleString) ? RewardChestType.KUUDRA : null;
 
 				if (chestType != null) {
 					if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.enableProfitCalculator) {
-						ScreenEvents.afterTick(screen).register(ignored -> {
-							Text dungeonChestProfit = getRewardChestProfit(genericContainerScreen.getScreenHandler(), chestType);
+						ScreenEvents.afterTick(screen).register(_ -> {
+							Component dungeonChestProfit = getRewardChestProfit(genericContainerScreen.getMenu(), chestType);
 							if (dungeonChestProfit != null)
 								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
 						});
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
 					ScreenType screenType = determineScreenType(titleString);
-					Screens.getButtons(screen).add(ButtonWidget
-							.builder(Text.literal("$"), buttonWidget -> {
-								Screens.getButtons(screen).remove(buttonWidget);
-								ScreenEvents.afterTick(screen).register(ignored -> {
-									Text chestValue = getChestValue(genericContainerScreen.getScreenHandler(), screenType);
+					Screens.getWidgets(screen).add(Button
+							.builder(Component.literal("$"), buttonWidget -> {
+								Screens.getWidgets(screen).remove(buttonWidget);
+								ScreenEvents.afterTick(screen).register(_ -> {
+									Component chestValue = getChestValue(genericContainerScreen.getMenu(), screenType);
 									if (chestValue != null) {
 										addValueToContainer(genericContainerScreen, chestValue, title);
 									}
 								});
 							})
-							.dimensions(((HandledScreenAccessor) genericContainerScreen).getX() + ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth() - 16, ((HandledScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
-							.tooltip(Tooltip.of(getButtonTooltipText(screenType)))
+							.bounds(((AbstractContainerScreenAccessor) genericContainerScreen).getX() + ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((AbstractContainerScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
+							.tooltip(Tooltip.create(getButtonTooltipText(screenType)))
 							.build()
 					);
 				}
@@ -118,34 +164,36 @@ public class ChestValue {
 		});
 	}
 
-	private static @Nullable Text getRewardChestProfit(GenericContainerScreenHandler handler, RewardChestType chestType) {
+	private static @Nullable Component getRewardChestProfit(ChestMenu handler, RewardChestType chestType) {
 		try {
 			double profit = 0;
 			boolean hasIncompleteData = false, usedKismet = false;
-			List<Slot> slots = handler.slots.subList(0, handler.getRows() * 9);
+			List<Slot> slots = handler.slots.subList(0, handler.getRowCount() * 9);
 
 			//If the item stack for the "Open Reward Chest" button or the Kismet button hasn't been sent to the client yet
-			if (slots.get(31).getStack().isEmpty() || slots.get(50).getStack().isEmpty()) {
+			if (slots.get(31).getItem().isEmpty() || slots.get(50).getItem().isEmpty()) {
 				return null;
 			}
 
 			for (Slot slot : slots) {
-				ItemStack stack = slot.getStack();
+				ItemStack stack = slot.getItem();
 				if (stack.isEmpty()) {
 					continue;
 				}
 
-				String name = stack.getName().getString();
+				String name = stack.getHoverName().getString();
 				String skyblockApiId = stack.getSkyblockApiId();
 
 				//Regular item price
 				// Implicitly excludes the "Reroll Shard" item in Kuudra chests which is a Wheel of Fate from the profit calculation
 				if (!skyblockApiId.isEmpty() && !(name.contains("Essence") || name.contains("Shard"))) {
-					DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
+					if (!WORTHLESS_ITEMS.contains(skyblockApiId)) {
+						OptionalDouble priceData = ItemUtils.getItemPrice(skyblockApiId);
 
-					//Add the item price to the profit
-					profit += priceData.leftDouble() * stack.getCount();
-					hasIncompleteData |= !priceData.rightBoolean();
+						//Add the item price to the profit
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * stack.getCount();
+						else hasIncompleteData = true;
+					}
 
 					continue;
 				}
@@ -158,16 +206,16 @@ public class ChestValue {
 						String type = matcher.group("type").toUpperCase(Locale.ENGLISH);
 						// Defaults to 1 due to the comment about the regex
 						int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice("ESSENCE_" + type);
+						OptionalDouble priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 						// Apply Kuudra Pet bonus
 						if (type.equals("CRIMSON")) {
-							amount *= computeCrimsonEssenceMultiplier();
+							amount = (int) (amount * computeCrimsonEssenceMultiplier());
 						}
 
 						//Add the price of the essence to the profit
-						profit += priceData.leftDouble() * amount;
-						hasIncompleteData |= !priceData.rightBoolean();
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * amount;
+						else hasIncompleteData = true;
 
 						continue;
 					}
@@ -188,11 +236,11 @@ public class ChestValue {
 							continue;
 						}
 						String shardApiId = attribute.apiId();
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(shardApiId);
+						OptionalDouble priceData = ItemUtils.getItemPrice(shardApiId);
 
 						//Add the price of the shard to the profit
-						profit += priceData.leftDouble() * shards;
-						hasIncompleteData |= !priceData.rightBoolean();
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * shards;
+						else hasIncompleteData = true;
 
 						continue;
 					}
@@ -225,15 +273,15 @@ public class ChestValue {
 
 				//Determine if a kismet was used or not
 				if (name.contains("Reroll Chest")) {
-					usedKismet = !StringUtils.isBlank(searchLoreFor(stack, "You already rerolled a chest!"));
+					usedKismet = !StringUtils.isBlank(ItemUtils.getLoreLineContains(stack, "You already rerolled a chest!"));
 				}
 			}
 
 			if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeKismet && usedKismet) {
-				DoubleBooleanPair kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
+				OptionalDouble kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
 
-				profit -= kismetPriceData.leftDouble();
-				hasIncompleteData |= !kismetPriceData.rightBoolean();
+				if (kismetPriceData.isPresent()) profit -= kismetPriceData.getAsDouble();
+				else hasIncompleteData = true;
 			}
 
 			return getProfitText((long) profit, hasIncompleteData);
@@ -255,9 +303,8 @@ public class ChestValue {
 			case SkyblockItemRarity.EPIC, SkyblockItemRarity.LEGENDARY -> 20f;
 			default -> 10f;
 		} * (kuudraPet.level() / 100f);
-		float multiplier = (percentBonus / 100f) + 1f;
 
-		return multiplier;
+		return percentBonus / 100f + 1f;
 	}
 
 	public static DoubleBooleanPair computeKuudraKeyPrice(String kuudraKeyName) {
@@ -286,41 +333,40 @@ public class ChestValue {
 
 		double price = 0;
 		boolean hasCompleteData = true;
-		DoubleBooleanPair ingredientPriceData = ItemUtils.getItemPrice(ingredient);
-		DoubleBooleanPair netherStarPriceData = ItemUtils.getItemPrice("CORRUPTED_NETHER_STAR");
+		OptionalDouble ingredientPriceData = ItemUtils.getItemPrice(ingredient);
+		OptionalDouble netherStarPriceData = ItemUtils.getItemPrice("CORRUPTED_NETHER_STAR");
 
 		price += baseCost;
-		price += ingredientPriceData.leftDouble() * ingredientAmount;
-		price += netherStarPriceData.leftDouble() * 2;
-
-		hasCompleteData &= ingredientPriceData.rightBoolean();
-		hasCompleteData &= netherStarPriceData.rightBoolean();
+		if (ingredientPriceData.isPresent()) price += ingredientPriceData.getAsDouble() * ingredientAmount;
+		else hasCompleteData = false;
+		if (netherStarPriceData.isPresent()) price += netherStarPriceData.getAsDouble() * 2;
+		else hasCompleteData = false;
 
 		return DoubleBooleanPair.of(price, hasCompleteData);
 	}
 
-	private static @Nullable Text getChestValue(GenericContainerScreenHandler handler, @NotNull ScreenType screenType) {
+	private static @Nullable Component getChestValue(ChestMenu handler, ScreenType screenType) {
 		try {
 			double value = 0;
 			boolean hasIncompleteData = false;
 
 			List<Slot> slots = switch (screenType) {
 				case ScreenType.MINION -> getMinionSlots(handler);
-				case ScreenType.SACK -> handler.slots.subList(10, (handler.getRows() * 9) - 10); // Skip the glass pane rows so we don't have to iterate over them
-				case ScreenType.STASH -> handler.slots.subList(0, (handler.getRows() - 1) * 9); // Stash uses the bottom row for the menu, so we skip it
-				case ScreenType.OTHER -> handler.slots.subList(0, handler.getRows() * 9);
+				case ScreenType.SACK -> handler.slots.subList(10, (handler.getRowCount() * 9) - 10); // Skip the glass pane rows so we don't have to iterate over them
+				case ScreenType.STASH -> handler.slots.subList(0, (handler.getRowCount() - 1) * 9); // Stash uses the bottom row for the menu, so we skip it
+				case ScreenType.OTHER -> handler.slots.subList(0, handler.getRowCount() * 9);
 			};
 
 			for (Slot slot : slots) {
-				ItemStack stack = slot.getStack();
+				ItemStack stack = slot.getItem();
 				if (stack.isEmpty()) continue;
 
 				String coinsLine;
-				if (screenType == ScreenType.MINION && slot.id == 28 && stack.isOf(Items.HOPPER) && (coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
+				if (screenType == ScreenType.MINION && slot.index == 28 && stack.is(Items.HOPPER) && (coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
 					String source = coinsLine.split(":")[1];
 					try {
 						value += NumberFormat.getNumberInstance(java.util.Locale.US).parse(source.trim()).doubleValue();
-					} catch (ParseException e) {
+					} catch (ParseException _) {
 						LOGGER.warn("[Skyblocker] Failed to parse `{}`", source);
 					}
 					continue;
@@ -330,8 +376,8 @@ public class ChestValue {
 
 				int count = switch (screenType) {
 					case ScreenType.SACK -> {
-						List<Text> lines = ItemUtils.getLore(stack);
-						yield ItemUtils.getItemCountInSack(stack, lines, true).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
+						List<String> lines = stack.skyblocker$getLoreStrings();
+						yield ItemUtils.getItemCountInSack(stack, lines).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
 					case ScreenType.OTHER, ScreenType.MINION -> stack.getCount();
@@ -340,9 +386,9 @@ public class ChestValue {
 				if (count == 0) continue;
 
 				if (!id.isEmpty()) {
-					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);
+					OptionalDouble priceData = ItemUtils.getItemPrice(id);
 
-					if (!priceData.rightBoolean()) hasIncompleteData = true;
+					if (priceData.isEmpty()) hasIncompleteData = true;
 
 					value += NetworthCalculator.getItemNetworth(stack, count).price();
 				}
@@ -356,27 +402,19 @@ public class ChestValue {
 		return null;
 	}
 
-	private static @NotNull List<Slot> getMinionSlots(GenericContainerScreenHandler handler) {
-		return handler.slots.subList(0, handler.getRows() * 9).stream().filter(slot -> {
-			int x = slot.id % 9;
-			int y = slot.id / 9;
-			return x > 2 && x < 8 && y > 1 && y < 5 || slot.id == 28;
+	private static List<Slot> getMinionSlots(ChestMenu handler) {
+		return handler.slots.subList(0, handler.getRowCount() * 9).stream().filter(slot -> {
+			int x = slot.index % 9;
+			int y = slot.index / 9;
+			return x > 2 && x < 8 && y > 1 && y < 5 || slot.index == 28;
 		}).toList();
 	}
 
-	/**
-	 * Searches for a specific string of characters in the name and lore of an item
-	 */
-	private static String searchLoreFor(ItemStack stack, String searchString) {
-		return ItemUtils.getLoreLineIf(stack, line -> line.contains(searchString));
+	static Component getProfitText(long profit, boolean hasIncompleteData) {
+		return Component.literal((profit > 0 ? " +" : ' ') + Formatters.INTEGER_NUMBERS.format(profit) + " Coins").withStyle(getProfitColor(hasIncompleteData, profit));
 	}
 
-	static Text getProfitText(long profit, boolean hasIncompleteData) {
-		return Text.literal((profit > 0 ? " +" : ' ') + Formatters.INTEGER_NUMBERS.format(profit) + " Coins").formatted(getProfitColor(hasIncompleteData, profit));
-	}
-
-	@NotNull
-	static Formatting getProfitColor(boolean hasIncompleteData, long profit) {
+	static ChatFormatting getProfitColor(boolean hasIncompleteData, long profit) {
 		DungeonsConfig.DungeonChestProfit config = SkyblockerConfigManager.get().dungeons.dungeonChestProfit;
 		if (hasIncompleteData) return config.incompleteColor;
 		if (Math.abs(profit) < config.neutralThreshold) return config.neutralColor;
@@ -384,51 +422,48 @@ public class ChestValue {
 		return config.lossColor;
 	}
 
-	@NotNull
-	static Text getValueText(long value, boolean hasIncompleteData) {
+	static Component getValueText(long value, boolean hasIncompleteData) {
 		UIAndVisualsConfig.ChestValue config = SkyblockerConfigManager.get().uiAndVisuals.chestValue;
-		return Text.literal(' ' + Formatters.INTEGER_NUMBERS.format(value) + " Coins").formatted(hasIncompleteData ? config.incompleteColor : config.color);
+		return Component.literal(' ' + Formatters.INTEGER_NUMBERS.format(value) + " Coins").withStyle(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 
-	private static void addValueToContainer(GenericContainerScreen genericContainerScreen, Text chestValue, Text title) {
-		Screens.getButtons(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
-		int backgroundWidth = ((HandledScreenAccessor) genericContainerScreen).getBackgroundWidth();
-		int y = ((HandledScreenAccessor) genericContainerScreen).getY();
-		int x = ((HandledScreenAccessor) genericContainerScreen).getX();
-		((ScreenAccessor) genericContainerScreen).setTitle(Text.empty());
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int chestValueWidth = Math.min(textRenderer.getWidth(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.getWidth(title)));
+	private static void addValueToContainer(ContainerScreen genericContainerScreen, Component chestValue, Component title) {
+		Screens.getWidgets(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
+		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
+		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
+		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
+		hideChestNameLabel = true;
+		Font textRenderer = Minecraft.getInstance().font;
+		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));
 
-		TextWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.fontHeight, chestValue, textRenderer);
+		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.lineHeight, chestValue, textRenderer);
 		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestValueWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestValueWidget);
 
-		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.fontHeight, title.copy().fillStyle(Style.EMPTY.withColor(4210752)), textRenderer);
+		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.lineHeight, title.copy().withStyle(Style.EMPTY.withColor(4210752)), textRenderer);
 		chestTitleWidget.setPosition(x + 8, y + 6);
-		Screens.getButtons(genericContainerScreen).add(chestTitleWidget);
+		Screens.getWidgets(genericContainerScreen).add(chestTitleWidget);
 	}
 
-	@NotNull
 	private static ScreenType determineScreenType(String rawTitleString) {
-		if ("sack".contains(rawTitleString.toLowerCase(Locale.ENGLISH))) return ScreenType.SACK;
+		if (rawTitleString.toLowerCase(Locale.ENGLISH).endsWith("sack")) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
 		if ("View Stash".equalsIgnoreCase(rawTitleString)) return ScreenType.STASH;
 		return ScreenType.OTHER;
 	}
 
-	@NotNull
-	private static Text getButtonTooltipText(ScreenType screenType) {
+	private static Component getButtonTooltipText(ScreenType screenType) {
 		return switch (screenType) {
-			case ScreenType.MINION -> Text.translatable("skyblocker.containerValue.minionValue.@Tooltip");
-			case ScreenType.OTHER -> Text.translatable("skyblocker.containerValue.chestValue.@Tooltip");
-			case ScreenType.STASH -> Text.translatable("skyblocker.containerValue.stashValue.@Tooltip");
-			case ScreenType.SACK -> Text.translatable("skyblocker.containerValue.sackValue.@Tooltip");
+			case ScreenType.MINION -> Component.translatable("skyblocker.containerValue.minionValue.@Tooltip");
+			case ScreenType.OTHER -> Component.translatable("skyblocker.containerValue.chestValue.@Tooltip");
+			case ScreenType.STASH -> Component.translatable("skyblocker.containerValue.stashValue.@Tooltip");
+			case ScreenType.SACK -> Component.translatable("skyblocker.containerValue.sackValue.@Tooltip");
 		};
 	}
 
-	private static class ChestValueTextWidget extends TextWidget {
-		private ChestValueTextWidget(int width, int height, Text message, TextRenderer textRenderer) {
-			super(width, height, message.copy().fillStyle(Style.EMPTY.withShadowColor(0)), textRenderer);
+	private static class ChestValueTextWidget extends StringWidget {
+		private ChestValueTextWidget(int width, int height, Component message, Font textRenderer) {
+			super(width, height, message.copy().withStyle(Style.EMPTY.withShadowColor(0)), textRenderer);
 			setMaxWidth(getWidth(), TextOverflow.SCROLLING);
 		}
 	}

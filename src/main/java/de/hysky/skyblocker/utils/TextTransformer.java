@@ -1,12 +1,22 @@
 package de.hysky.skyblocker.utils;
 
-import org.jetbrains.annotations.NotNull;
-
 import it.unimi.dsi.fastutil.chars.CharList;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
@@ -14,7 +24,90 @@ import net.minecraft.util.Formatting;
  * @author AzureAaron
  */
 public class TextTransformer {
+	private static final Pattern REDUNDANT_COLOR_REGEX = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
+	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\s+");
 	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
+	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> c.getColor() != null).collect(Collectors.toUnmodifiableMap(ChatFormatting::getColor, ChatFormatting::getChar));
+	private static final List<Map.Entry<Predicate<Style>, Character>> PREDICATE_FORMAT_LIST = List.of(
+			Map.entry(Style::isBold, 'l'),
+			Map.entry(Style::isItalic, 'o'),
+			Map.entry(Style::isObfuscated, 'k'),
+			Map.entry(Style::isUnderlined, 'n'),
+			Map.entry(Style::isStrikethrough, 'm')
+	);
+
+	private static String getCodes(Style style, Style previous) {
+		final var codes = new StringJoiner("&", "&", "").setEmptyValue("");
+		boolean hasReset = false;
+		final boolean needsReset = previous.getColor() != null && style.getColor() == null ||
+				PREDICATE_FORMAT_LIST.stream().anyMatch(x -> x.getKey().test(previous) && !x.getKey().test(style));
+
+		if (needsReset && style.getColor() == null) {
+			codes.add("r");
+			hasReset = true;
+		} else if (style.getColor() != null && (needsReset || !Objects.equals(previous.getColor(), style.getColor()))) {
+			final Character code = HEX_TO_CODES.get(style.getColor().getValue());
+
+			if (code == null) {
+				// Adds non-standard hex colors as &#RRGGBB
+				codes.add(style.getColor().formatValue());
+			} else {
+				codes.add("" + code);
+			}
+
+			hasReset = true;
+		}
+
+		final boolean alreadyReset = hasReset;
+		PREDICATE_FORMAT_LIST.stream()
+				.filter(x -> x.getKey().test(style) && (alreadyReset || !x.getKey().test(previous)))
+				.map(Map.Entry::getValue)
+				.forEach(c -> codes.add("" + c));
+
+		return codes.toString();
+	}
+
+	private static String removeRedundantCodes(String message) {
+		String result = message;
+		Matcher redundant = REDUNDANT_COLOR_REGEX.matcher(message);
+
+		while (redundant.find()) {
+			result = redundant.replaceAll("$1&$2");
+			redundant.reset(result);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Converts message components to strings containing legacy formatting codes.
+	 *
+	 * @author LJNeon
+	 *
+	 * @param component The chat component to be transformed
+	 * @return A string matching the exact formatting of the input component
+	 */
+	public static String toLegacy(Component component) {
+		final var result = new StringBuilder();
+		final var previous = new AtomicReference<>(Style.EMPTY);
+
+		component.visit((style, string) -> {
+			// don't bother styling whitespace
+			if (ALL_WHITESPACE.matcher(string).matches()) {
+				result.append(string);
+			} else {
+				result.append(getCodes(style, previous.get()));
+				result.append(string.replace('§', '&'));
+
+			}
+
+			previous.set(style);
+
+			return Optional.empty();
+		}, Style.EMPTY);
+
+		return removeRedundantCodes(result.toString());
+	}
 
 	/**
 	 * Converts strings with section symbol/legacy formatting to MutableText objects.
@@ -22,9 +115,9 @@ public class TextTransformer {
 	 * @author AzureAaron
 	 *
 	 * @param legacy The string with legacy formatting to be transformed
-	 * @return A {@link MutableText} object matching the exact formatting of the input
+	 * @return A {@link MutableComponent} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(@NotNull String legacy) {
+	public static MutableComponent fromLegacy(String legacy) {
 		return fromLegacy(legacy, '§', true);
 	}
 
@@ -37,12 +130,12 @@ public class TextTransformer {
 	 * @param legacyPrefix The character that prefixes the legacy formatting codes (e.g., '§' or '&')
 	 * @param override Whether to override the parent style by defaulting to false instead of null for bold, italic, underline, strikethrough, and obfuscated properties.
 	 *                 This is required to be true for item name and lore texts, or else the parent style will make the name and lore texts italic.
-	 * @return A {@link MutableText} object matching the exact formatting of the input
+	 * @return A {@link MutableComponent} object matching the exact formatting of the input
 	 */
-	public static MutableText fromLegacy(@NotNull String legacy, char legacyPrefix, boolean override) {
-		MutableText newText = Text.empty();
+	public static MutableComponent fromLegacy(String legacy, char legacyPrefix, boolean override) {
+		MutableComponent newText = Component.empty();
 		StringBuilder builder = new StringBuilder();
-		Formatting formatting = null;
+		ChatFormatting formatting = null;
 		Boolean bold = override ? false : null;
 		Boolean italic = override ? false : null;
 		Boolean underline = override ? false : null;
@@ -52,11 +145,11 @@ public class TextTransformer {
 		for (int i = 0; i < legacy.length(); i++) {
 			//If we've encountered a new formatting code then append the text from the previous "sequence" and reset state
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix && FORMAT_CODES.contains(Character.toLowerCase(legacy.charAt(i))) && !builder.isEmpty()) {
-				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
+				newText.append(Component.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)
 						.withBold(bold)
 						.withItalic(italic)
-						.withUnderline(underline)
+						.withUnderlined(underline)
 						.withStrikethrough(strikethrough)
 						.withObfuscated(obfuscated)));
 
@@ -73,7 +166,7 @@ public class TextTransformer {
 			}
 
 			if (i != 0 && legacy.charAt(i - 1) == legacyPrefix) {
-				Formatting fmt = Formatting.byCode(legacy.charAt(i));
+				ChatFormatting fmt = ChatFormatting.getByCode(legacy.charAt(i));
 
 				switch (fmt) {
 					case BOLD -> bold = true;
@@ -95,11 +188,11 @@ public class TextTransformer {
 
 			// We've read the last character so append the last text with all the formatting
 			if (i == legacy.length() - 1) {
-				newText.append(Text.literal(builder.toString()).setStyle(Style.EMPTY
+				newText.append(Component.literal(builder.toString()).setStyle(Style.EMPTY
 						.withColor(formatting)
 						.withBold(bold)
 						.withItalic(italic)
-						.withUnderline(underline)
+						.withUnderlined(underline)
 						.withStrikethrough(strikethrough)
 						.withObfuscated(obfuscated)));
 			}

@@ -1,87 +1,57 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
+import java.util.Locale;
 
 public class ItemFilter {
-	private FilterMode currentFilterMode = FilterMode.ALL;
+	private final List<String> categories = new ArrayList<>();
+	private int filterIndex = 0;
 
-	// Filtering logic methods
-	private static final UnaryOperator<List<Donation>> FILTER_ALL = donations -> donations;
-	private static final UnaryOperator<List<Donation>> FILTER_WEAPONS = donations ->
-			donations.stream().filter(d -> "weapons".equals(d.getCategory())).collect(Collectors.toList());
-	private static final UnaryOperator<List<Donation>> FILTER_ARMOR = donations ->
-			donations.stream().filter(d -> "armor".equals(d.getCategory())).collect(Collectors.toList());
-	private static final UnaryOperator<List<Donation>> FILTER_RARITIES = donations ->
-			donations.stream().filter(d -> "rarities".equals(d.getCategory())).collect(Collectors.toList());
+	public void updateCategories() {
+		categories.clear();
+		this.categories.add("All");
+		this.categories.addAll(MuseumItemCache.MUSEUM_CATEGORIES);
+		this.categories.remove("special");
+		filterIndex = Math.min(filterIndex, categories.size()-1);
+	}
 
 	// Method to cycle through filtering modes and apply the corresponding logic
 	public void cycleFilterMode(List<Donation> items, List<Donation> filteredList) {
-		// Cycle to the next filter mode
-		currentFilterMode = FilterMode.values()[(currentFilterMode.ordinal() + 1) % FilterMode.values().length];
-		// Apply the filtering logic for the current mode
-		currentFilterMode.applyFilter(items, filteredList);
+		if (categories.isEmpty()) return;
+		filterIndex = (filterIndex + 1) % categories.size();
+		applyFilter(items, filteredList);
 	}
 
 	public void applyFilter(List<Donation> items, List<Donation> filteredList) {
-		currentFilterMode.applyFilter(items, filteredList);
-	}
-
-	// Get the item associated with the current filter mode
-	public ItemStack getCurrentFilterItem() {
-		return currentFilterMode.getAssociatedItem();
+		filteredList.clear();
+		if (filterIndex == 0) {
+			filteredList.addAll(items);
+		} else {
+			items.stream().filter(d -> d.getCategory().equals(categories.get(filterIndex))).forEach(filteredList::add);
+		}
 	}
 
 	public Tooltip getTooltip() {
-		Text tooltip = Text.translatable("skyblocker.museum.hud.filter").append("\n\n").formatted(Formatting.GREEN)
-				.append(getFilterText(FilterMode.ALL))
-				.append(getFilterText(FilterMode.WEAPONS))
-				.append(getFilterText(FilterMode.ARMOR))
-				.append(getFilterText(FilterMode.RARITIES))
-				.append("\n").append(Text.translatable("skyblocker.museum.hud.filter.switch").formatted(Formatting.YELLOW));
-		return Tooltip.of(tooltip);
+		MutableComponent tooltip = Component.translatable("skyblocker.museum.hud.filter").append("\n\n").withStyle(ChatFormatting.GREEN);
+		int i = 0;
+		for (String category : categories) {
+			String categoryName = category.length() < 2 ? category : category.substring(0, 1).toUpperCase(Locale.ENGLISH) + category.substring(1);
+			tooltip.append(getFilterText(i, Component.literal(categoryName)));
+			i += 1;
+		}
+		tooltip.append("\n").append(Component.translatable("skyblocker.museum.hud.filter.switch").withStyle(ChatFormatting.YELLOW));
+		return Tooltip.create(tooltip);
 	}
 
-	private Text getFilterText(FilterMode mode) {
-		boolean isCurrent = mode == currentFilterMode;
-		return Text.literal((isCurrent ? "➤ " : "  ")).append(mode.getDisplayName()).append("\n")
-				.formatted(isCurrent ? Formatting.AQUA : Formatting.GRAY);
-	}
-
-	public enum FilterMode {
-		ALL(new ItemStack(Items.NETHER_STAR), FILTER_ALL, Text.translatable("skyblocker.museum.hud.filter.all")),
-		WEAPONS(new ItemStack(Items.DIAMOND_SWORD), FILTER_WEAPONS, Text.translatable("skyblocker.museum.hud.filter.weapons")),
-		ARMOR(new ItemStack(Items.DIAMOND_CHESTPLATE), FILTER_ARMOR, Text.translatable("skyblocker.museum.hud.filter.armor")),
-		RARITIES(new ItemStack(Items.EMERALD), FILTER_RARITIES, Text.translatable("skyblocker.museum.hud.filter.rarities"));
-
-		private final ItemStack associatedItem;
-		private final UnaryOperator<List<Donation>> filterFunction;
-		private final Text displayName;
-
-		FilterMode(ItemStack item, UnaryOperator<List<Donation>> function, Text displayName) {
-			this.associatedItem = item;
-			this.filterFunction = function;
-			this.displayName = displayName;
-		}
-
-		public ItemStack getAssociatedItem() {
-			return associatedItem;
-		}
-
-		public Text getDisplayName() {
-			return displayName;
-		}
-
-		public void applyFilter(List<Donation> items, List<Donation> filteredList) {
-			filteredList.clear();
-			filteredList.addAll(filterFunction.apply(items));
-		}
+	private Component getFilterText(int index, Component category) {
+		boolean isCurrent = index == filterIndex;
+		return Component.literal((isCurrent ? "➤ " : "  ")).append(category).append("\n")
+				.withStyle(isCurrent ? ChatFormatting.AQUA : ChatFormatting.GRAY);
 	}
 }

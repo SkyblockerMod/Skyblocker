@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.Formatting;
-
 import java.awt.Color;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = false;
@@ -51,7 +51,13 @@ public class DungeonsConfig {
 
 	public Goldor goldor = new Goldor();
 
+	public TerminalHud terminalHud = new TerminalHud();
+
 	public SecretWaypoints secretWaypoints = new SecretWaypoints();
+
+	public SecretSync secretSync = new SecretSync();
+
+	public RareRoomAlert rareRoomAlert = new RareRoomAlert();
 
 	public MimicMessage mimicMessage = new MimicMessage();
 
@@ -71,6 +77,14 @@ public class DungeonsConfig {
 		public boolean showSelfHead = true;
 
 		public boolean showRoomLabels = true;
+
+		public DungeonMapLabels.RoomLabelType roomLabelType = DungeonMapLabels.RoomLabelType.ROOM_NAME_AND_SECRETS_FOUND;
+
+		public boolean hideCheckmarks = true;
+
+		public boolean showOutline = true;
+
+		public boolean backgroundBlur = false;
 
 		public float mapScaling = 1f;
 
@@ -172,6 +186,23 @@ public class DungeonsConfig {
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 	}
 
+	public static class TerminalHud {
+		public boolean enableTerminalHud = false;
+
+		public boolean showTerminalStatus = true;
+
+		public boolean showPlayerAtTerminal = true;
+
+		public boolean showTerminals = true;
+
+		public boolean showDevice = true;
+
+		public boolean showLevers = true;
+
+		public boolean showGate = true;
+	}
+
+
 	public static class SecretWaypoints {
 		@Deprecated
 		public transient boolean enableRoomMatching = true;
@@ -179,6 +210,8 @@ public class DungeonsConfig {
 		public boolean enableSecretWaypoints = true;
 
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
+
+		public boolean adaptiveBoxSize = false;
 
 		public boolean showSecretText = true;
 
@@ -194,6 +227,8 @@ public class DungeonsConfig {
 
 		public boolean enableWitherWaypoints = true;
 
+		public boolean enableRedstoneKeyWaypoints = true;
+
 		public boolean enableLeverWaypoints = true;
 
 		public boolean enableFairySoulWaypoints = true;
@@ -207,6 +242,24 @@ public class DungeonsConfig {
 		public boolean enablePrinceWaypoints = true;
 
 		public boolean enableDefaultWaypoints = true;
+	}
+
+	public static class SecretSync {
+		public boolean receiveRoomMatch = true;
+
+		public boolean receiveRoomSecretCount = true;
+
+		public boolean hideReceivedWaypoints = true;
+	}
+
+	public static class RareRoomAlert {
+		public boolean enabled = false;
+
+		public boolean showForTrinity = true;
+
+		public boolean showForTomioka = false;
+
+		public boolean showForDuncan = false;
 	}
 
 	public static class MimicMessage {
@@ -235,7 +288,7 @@ public class DungeonsConfig {
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
+				return I18n.get("skyblocker.config.dungeons.doorHighlight.doorHighlightType.type." + name());
 			}
 		}
 	}
@@ -283,13 +336,13 @@ public class DungeonsConfig {
 
 		public int neutralThreshold = 1000;
 
-		public Formatting neutralColor = Formatting.DARK_GRAY;
+		public ChatFormatting neutralColor = ChatFormatting.DARK_GRAY;
 
-		public Formatting profitColor = Formatting.DARK_GREEN;
+		public ChatFormatting profitColor = ChatFormatting.DARK_GREEN;
 
-		public Formatting lossColor = Formatting.RED;
+		public ChatFormatting lossColor = ChatFormatting.RED;
 
-		public Formatting incompleteColor = Formatting.BLUE;
+		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
 	}
 
 }

@@ -4,19 +4,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 public final class DungeonsTabPlaceholder {
 
-	private static List<Text> placeholder = null;
+	private static List<Component> placeholder = null;
 
-	public static List<Text> get() {
+	public static List<Component> get() {
 		if (placeholder != null) return placeholder;
-		List<Text> l = new ArrayList<>();
+		List<Component> l = new ArrayList<>();
 		List<String> json = List.of(
 				"{\"text\":\"\",\"extra\":[\"         \",{\"text\":\"Party \",\"color\":\"aqua\",\"bold\":true},{\"text\":\"(1)\",\"color\":\"white\"}],\"italic\":false}",
 				"{\"text\":\"\",\"extra\":[{\"text\":\"[\",\"color\":\"dark_gray\"},{\"text\":\"303\",\"color\":\"blue\"},{\"text\":\"] \",\"color\":\"dark_gray\"},{\"text\":\"AzureAaron \",\"color\":\"aqua\"},{\"text\":\"⚡ \",\"color\":\"gold\",\"bold\":true},{\"text\":\"(\",\"color\":\"white\"},{\"text\":\"\",\"color\":\"light_purple\"},{\"text\":\"EMPTY\",\"color\":\"gray\"},{\"text\":\")\",\"color\":\"white\"}],\"italic\":false}",
@@ -100,7 +99,7 @@ public final class DungeonsTabPlaceholder {
 				"{\"text\":\"\",\"extra\":[\" \",{\"text\":\"Year: \",\"color\":\"white\"},{\"text\":\"358\",\"color\":\"light_purple\"}],\"italic\":false}");
 
 		for (String s : json) {
-			l.add(TextCodecs.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(s, JsonElement.class)).getOrThrow().getFirst());
+			l.add(ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(s, JsonElement.class)).getOrThrow().getFirst());
 		}
 
 		return placeholder = ImmutableList.copyOf(l);

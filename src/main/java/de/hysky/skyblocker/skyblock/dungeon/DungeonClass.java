@@ -2,13 +2,13 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.ColorHelper;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import net.minecraft.util.ARGB;
 
 public enum DungeonClass {
 	UNKNOWN("Unknown", MobGlow.NO_GLOW, Ico.BARRIER),
@@ -24,11 +24,11 @@ public enum DungeonClass {
 	private final String name;
 	private final int color;
 	private final int glowColor;
-	private final ItemStack icon;
+	private final FlexibleItemStack icon;
 
-	DungeonClass(String name, int color, ItemStack icon) {
+	DungeonClass(String name, int color, FlexibleItemStack icon) {
 		this.name = name;
-		this.color = ColorHelper.fullAlpha(color);
+		this.color = ARGB.opaque(color);
 		this.glowColor = color;
 		this.icon = icon;
 	}
@@ -51,7 +51,7 @@ public enum DungeonClass {
 		return this.glowColor;
 	}
 
-	public ItemStack icon() {
+	public FlexibleItemStack icon() {
 		return icon;
 	}
 

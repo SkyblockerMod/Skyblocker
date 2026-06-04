@@ -5,8 +5,10 @@ import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.*;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.POSSIBLE_STATES;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.flipGrid;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.rotateGrid;
 
 public class FossilSolverTest {
 

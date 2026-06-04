@@ -1,20 +1,27 @@
 package de.hysky.skyblocker.config.configs;
 
-import net.minecraft.client.resource.language.I18n;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import net.minecraft.client.resources.language.I18n;
+
+import java.awt.Color;
 
 public class SlayersConfig {
 	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
 
 	public HighlightSlayerEntities highlightBosses = HighlightSlayerEntities.GLOW;
 
+	public Color highlightColor = new Color(0xFFFF4800, true);
+
 	public boolean displayBossbar = true;
 
 	public enum HighlightSlayerEntities {
+		@EnumDisabledValue
 		OFF, GLOW, HITBOX;
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.slayer.highlightBosses." + name());
+			return I18n.get("skyblocker.config.slayer.highlightBosses." + name());
 		}
 	}
 
@@ -22,9 +29,17 @@ public class SlayersConfig {
 
 	public boolean miniBossSpawnAlert = true;
 
+	public boolean alertOtherMinibosses = false;
+
+	public boolean showMiniBossNameInAlert = false;
+
 	public boolean slainTime = true;
 
 	public boolean enableHud = true;
+
+	public ChatFilterResult hideSlayerMinibossSpawn = ChatFilterResult.PASS;
+
+	public boolean highlightUnclaimedRewards = true;
 
 	public CallMaddox callMaddox = new CallMaddox();
 
@@ -34,10 +49,24 @@ public class SlayersConfig {
 
 	public BlazeSlayer blazeSlayer = new BlazeSlayer();
 
+	public WolfSlayer wolfSlayer = new WolfSlayer();
+
+	public SpiderSlayer spiderSlayer = new SpiderSlayer();
+
 	public static class CallMaddox {
 		public boolean sendMessageOnFail = true;
 
 		public boolean sendMessageOnKill = false;
+	}
+
+	public static class SpiderSlayer {
+		public boolean muteSpiderSounds = false;
+	}
+
+	public static class WolfSlayer {
+		public boolean muteWolfSounds = false;
+
+		public boolean hideSvenPupNametag = true;
 	}
 
 	public static class EndermanSlayer {
@@ -78,17 +107,24 @@ public class SlayersConfig {
 
 	public static class BlazeSlayer {
 		public FirePillar firePillarCountdown = FirePillar.SOUND_AND_VISUAL;
-		public Boolean attunementHighlights = true;
+
+		public boolean attunementHighlights = true;
+
+		public boolean muteBlazeSounds = false;
+
+		public ChatFilterResult hideHellionShield = ChatFilterResult.PASS;
 
 		public enum FirePillar {
+			@EnumDisabledValue
 			OFF,
 			VISUAL,
 			SOUND_AND_VISUAL;
 
 			@Override
 			public String toString() {
-				return I18n.translate("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
+				return I18n.get("skyblocker.config.slayer.blazeSlayer.enableFirePillarAnnouncer.mode." + name());
 			}
 		}
 	}
+
 }

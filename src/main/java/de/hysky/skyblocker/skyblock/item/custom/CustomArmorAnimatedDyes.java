@@ -12,22 +12,21 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CustomArmorAnimatedDyes {
 	private static final Object2ObjectOpenHashMap<AnimatedDye, AnimatedDyeStateTracker> STATE_TRACKER_MAP = new Object2ObjectOpenHashMap<>();
@@ -37,12 +36,12 @@ public class CustomArmorAnimatedDyes {
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register(CustomArmorAnimatedDyes::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(ignored -> ++frames);
+		LevelRenderExtractionCallback.EVENT.register(_ -> ++frames);
 		// have the animation restart on world change because why not?
-		SkyblockEvents.LOCATION_CHANGE.register(ignored -> cleanTrackers());
+		SkyblockEvents.LOCATION_CHANGE.register(_ -> cleanTrackers());
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("custom")
 						.then(literal("animatedDye")
@@ -57,10 +56,10 @@ public class CustomArmorAnimatedDyes {
 	}
 
 	private static int customizeAnimatedDye(FabricClientCommandSource source, int color1, int color2, float duration, boolean cycleBack, float delay) {
-		ItemStack heldItem = source.getPlayer().getMainHandStack();
+		ItemStack heldItem = source.getPlayer().getMainHandItem();
 
 		if (Utils.isOnSkyblock() && heldItem != null && !heldItem.isEmpty()) {
-			if (heldItem.isIn(ItemTags.DYEABLE)) {
+			if (heldItem.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)) {
 				String itemUuid = heldItem.getUuid();
 
 				if (!itemUuid.isEmpty()) {
@@ -69,24 +68,24 @@ public class CustomArmorAnimatedDyes {
 					if (color1 == Integer.MIN_VALUE && color2 == Integer.MIN_VALUE) {
 						if (customAnimatedDyes.containsKey(itemUuid)) {
 							SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.remove(itemUuid));
-							source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.removed")));
+							source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.removed")));
 						} else {
-							source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.neverHad")));
+							source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.neverHad")));
 						}
 					} else {
 						AnimatedDye animatedDye = new AnimatedDye(List.of(new Keyframe(color1, 0), new Keyframe(color2, 1)), cycleBack, delay, duration);
 
 						SkyblockerConfigManager.update(config -> config.general.customAnimatedDyes.put(itemUuid, animatedDye));
-						source.sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.added")));
+						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.noItemUuid")));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.noItemUuid")));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.notDyeable")));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.notDyeable")));
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.customAnimatedDyes.unableToSetDye")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.unableToSetDye")));
 		}
 
 		return Command.SINGLE_SUCCESS;
@@ -101,7 +100,7 @@ public class CustomArmorAnimatedDyes {
 
 		trackedState.lastRecordedFrame = frames;
 
-		return trackedState.interpolate(animatedDye, MinecraftClient.getInstance().getRenderTickCounter().getDynamicDeltaTicks());
+		return trackedState.interpolate(animatedDye, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	@VisibleForTesting
@@ -174,6 +173,6 @@ public class CustomArmorAnimatedDyes {
 		STATE_TRACKER_MAP.clear();
 	}
 
-	public record Keyframe(@SerialEntry int color, @SerialEntry float time) {}
-	public record AnimatedDye(@SerialEntry List<Keyframe> keyframes, @SerialEntry boolean cycleBack, @SerialEntry float delay, @SerialEntry float duration) {}
+	public record Keyframe(int color, float time) {}
+	public record AnimatedDye(List<Keyframe> keyframes, boolean cycleBack, float delay, float duration) {}
 }

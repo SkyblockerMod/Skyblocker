@@ -44,8 +44,8 @@ class ChatRuleTest {
 		testRule.setIgnoreCase(false);
 		testRule.setFilter("(\\d+)\\D+(\\d+)");
 		testRule.setPartialMatch(true);
-		testRule.setReplaceMessage("Number: $1; Another number: $2");
-		Assertions.assertEquals("Number: 1234567890; Another number: 123", testRule.isMatch("this is a number 1234567890 and some more text and 123 and even more text").insertCaptureGroups(testRule.getReplaceMessage()));
+		testRule.setChatMessage("Number: $1; Another number: $2");
+		Assertions.assertEquals("Number: 1234567890; Another number: 123", testRule.isMatch("this is a number 1234567890 and some more text and 123 and even more text").insertCaptureGroups(testRule.getChatMessage()));
 	}
 
 	@Test
@@ -55,6 +55,11 @@ class ChatRuleTest {
 		Assertions.assertEquals(
 				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
 				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("Dwarven Mines, Jerry's Workshop, The Park")).getOrThrow()
+		);
+
+		Assertions.assertEquals(
+				EnumSet.of(Location.HUB),
+				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createString("hub")).getOrThrow()
 		);
 	}
 
@@ -76,7 +81,7 @@ class ChatRuleTest {
 		Assertions.assertEquals(
 				EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK),
 				ChatRule.LOCATION_FIXING_CODEC.parse(JsonOps.INSTANCE, JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND, Location.THE_PARK)
-						.map(Location::asString)
+						.map(Location::getSerializedName)
 						.map(JsonOps.INSTANCE::createString)
 				)).getOrThrow()
 		);
@@ -99,7 +104,7 @@ class ChatRuleTest {
 
 		Assertions.assertEquals(
 				JsonOps.INSTANCE.createList(Stream.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)
-						.map(Location::asString)
+						.map(Location::getSerializedName)
 						.map(JsonOps.INSTANCE::createString)
 				),
 				ChatRule.LOCATION_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, EnumSet.of(Location.DWARVEN_MINES, Location.WINTER_ISLAND)).getOrThrow()

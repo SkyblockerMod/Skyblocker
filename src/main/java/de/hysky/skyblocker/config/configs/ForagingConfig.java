@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ForagingConfig {
 

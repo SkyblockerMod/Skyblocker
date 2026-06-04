@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.item.tooltip;
 import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -24,7 +23,7 @@ public abstract class SimpleTooltipAdder extends RegexContainerMatcher implement
 	 *
 	 * @see #SimpleTooltipAdder(Pattern, int)
 	 */
-	protected SimpleTooltipAdder(@NotNull @Language("RegExp") String titlePattern, int priority) {
+	protected SimpleTooltipAdder(@Language("RegExp") String titlePattern, int priority) {
 		super(titlePattern);
 		this.priority = priority;
 	}
@@ -35,7 +34,7 @@ public abstract class SimpleTooltipAdder extends RegexContainerMatcher implement
 	 * @param titlePattern The pattern to match the screen title against.
 	 * @param priority The priority of this adder. Lower priority means it will be applied first.
 	 */
-	protected SimpleTooltipAdder(@NotNull Pattern titlePattern, int priority) {
+	protected SimpleTooltipAdder(Pattern titlePattern, int priority) {
 		super(titlePattern);
 		this.priority = priority;
 	}

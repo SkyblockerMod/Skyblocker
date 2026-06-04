@@ -1,17 +1,16 @@
 package de.hysky.skyblocker.skyblock.crimson;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 
-import net.minecraft.util.StringIdentifiable;
-
-public enum CrimsonFaction implements StringIdentifiable {
+public enum CrimsonFaction implements StringRepresentable {
 	MAGE,
 	BARBARIAN;
 
-	public static final Codec<CrimsonFaction> CODEC = StringIdentifiable.createBasicCodec(CrimsonFaction::values);
+	public static final Codec<CrimsonFaction> CODEC = StringRepresentable.fromValues(CrimsonFaction::values);
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.name();
 	}
 }

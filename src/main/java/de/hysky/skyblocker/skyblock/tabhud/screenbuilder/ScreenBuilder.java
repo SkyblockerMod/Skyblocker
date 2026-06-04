@@ -10,15 +10,15 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.resource.language.I18n;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.language.I18n;
+import org.jspecify.annotations.Nullable;
 
 public class ScreenBuilder {
 	// TODO: eliminate this static field completely?
@@ -103,6 +103,7 @@ public class ScreenBuilder {
 		}
 
 		for (TabHudWidget widget : PlayerListManager.tabWidgetsToShow) {
+			if (!config && widget.isEmpty()) continue;
 			PositionRule rule = getPositionRule(widget.getInternalID());
 			widget.setVisible(true);
 			if (rule == null) {
@@ -173,11 +174,11 @@ public class ScreenBuilder {
 	/**
 	 * Renders the widgets present on the specified layer. Doesn't scale with the config option.
 	 */
-	public void renderWidgets(DrawContext context, WidgetManager.ScreenLayer screenLayer) {
+	public void extractWidgetsRenderState(GuiGraphicsExtractor graphics, WidgetManager.ScreenLayer screenLayer) {
 		List<HudWidget> widgetsToRender = getHudWidgets(screenLayer);
 
 		for (HudWidget widget : widgetsToRender) {
-			widget.render(context);
+			widget.extractRenderState(graphics);
 		}
 	}
 
@@ -193,9 +194,9 @@ public class ScreenBuilder {
 	/**
 	 * Builds and renders the given {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager.ScreenLayer WidgetManager.ScreenLayer}, which
 	 * {@link #updateWidgetLists(boolean) updates the widget lists (for all screen layers)}, {@link #updateWidgets(WidgetManager.ScreenLayer) updates the widgets (for the current screen layer)},
-	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #renderWidgets(DrawContext, WidgetManager.ScreenLayer) renders the widgets}.
+	 * {@link #positionWidgets(int, int) positions the widgets}, and {@link #extractWidgetsRenderState(GuiGraphics, WidgetManager.ScreenLayer) renders the widgets}.
 	 */
-	public void run(DrawContext context, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
+	public void run(GuiGraphicsExtractor graphics, int screenW, int screenH, WidgetManager.ScreenLayer screenLayer) {
 		boolean widgetListsChanged = updateWidgetLists(false);
 
 		updateWidgets(screenLayer);
@@ -205,7 +206,7 @@ public class ScreenBuilder {
 			positionWidgets(screenW, screenH);
 		}
 
-		renderWidgets(context, screenLayer);
+		extractWidgetsRenderState(graphics, screenLayer);
 	}
 
 
@@ -225,7 +226,7 @@ public class ScreenBuilder {
 
 		@Override
 		public String toString() {
-			return I18n.translate("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
+			return I18n.get("skyblocker.config.uiAndVisuals.tabHud.defaultPosition." + name());
 		}
 	}
 

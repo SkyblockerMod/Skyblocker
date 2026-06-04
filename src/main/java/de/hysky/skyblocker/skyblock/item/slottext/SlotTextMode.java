@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 /**
  * Used in {@link SlotTextManager#isEnabled()} to determine whether the slot text should be shown or not.
@@ -14,6 +14,6 @@ public enum SlotTextMode {
 
 	@Override
 	public String toString() {
-		return I18n.translate("skyblocker.config.uiAndVisuals.slotText.mode." + name());
+		return I18n.get("skyblocker.config.uiAndVisuals.slotText.mode." + name());
 	}
 }

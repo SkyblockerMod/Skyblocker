@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class SpeedPresetsScreen extends Screen {
-
 	protected final Screen parent;
-	protected SpeedPresetListWidget list;
+
+	protected @Nullable HeaderAndFooterLayout layout;
+	protected @Nullable SpeedPresetListWidget list;
 
 	public SpeedPresetsScreen(Screen parent) {
-		super(Text.translatable("skyblocker.config.general.speedPresets.config"));
+		super(Component.translatable("skyblocker.config.general.speedPresets.config"));
 		this.parent = parent;
 	}
 
@@ -23,54 +25,47 @@ public class SpeedPresetsScreen extends Screen {
 	protected void init() {
 		if (this.list == null)
 			this.list = new SpeedPresetListWidget(0, 0, 24);
-		this.list.setDimensions(this.width, this.height - 24 - 32);
-		this.list.updatePosition();
-		this.addDrawableChild(this.list);
 
-		var grid = new GridWidget();
-		grid.setSpacing(4);
-		var doneButton = ButtonWidget.builder(ScreenTexts.DONE,
-						button -> {
+		HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
+		layout.addTitleHeader(this.title, font);
+
+		list.setWidth(layout.getWidth());
+		list.setHeight(layout.getContentHeight());
+		layout.addToContents(this.list);
+
+		LinearLayout footerLayout = LinearLayout.horizontal();
+		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE,
+						_ -> {
 							this.list.save();
-							assert this.client != null;
-							this.client.setScreen(parent);
+							this.minecraft.setScreen(parent);
 						})
-				.width(Math.max(textRenderer.getWidth(ScreenTexts.DONE) + 8, 100))
-				.build();
-		grid.add(doneButton, 0, 0, 1, 2);
-		var plusButton = ButtonWidget.builder(Text.literal("+"),
-						button -> list.newEntry())
+				.width(Math.max(font.width(CommonComponents.GUI_DONE) + 8, 100))
+				.build(), s -> s.paddingRight(2));
+		footerLayout.addChild(Button.builder(Component.literal("+"),
+						_ -> list.newEntry())
 				.width(20)
-				.build();
-		grid.add(plusButton, 0, 2, 1, 1);
-		grid.refreshPositions();
-		SimplePositioningWidget.setPos(grid, 0, this.height - 24, this.width, 24, 0.5f, 0.5f);
-		grid.forEachChild(this::addDrawableChild);
+				.build(), s -> s.paddingLeft(2));
+		layout.addToFooter(footerLayout);
+
+		layout.visitWidgets(this::addRenderableWidget);
+		layout.arrangeElements();
+		list.refreshScrollAmount();
+		list.updatePosition();
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-		assert this.client != null;
-		var renderer = this.client.textRenderer;
-		context.drawCenteredTextWithShadow(renderer, this.title, this.width / 2,
-				8, Colors.WHITE);
-	}
-
-	@Override
-	public void close() {
-		assert this.client != null;
-		if (this.list.hasBeenChanged()) {
-			client.setScreen(new ConfirmScreen(confirmedAction -> {
+	public void onClose() {
+		if (this.list != null && this.list.hasBeenChanged()) {
+			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
-					this.client.setScreen(parent);
+					this.minecraft.setScreen(parent);
 				} else {
-					this.client.setScreen(this);
+					this.minecraft.setScreen(this);
 				}
-			}, Text.translatable("text.skyblocker.quit_config"), Text.translatable("text.skyblocker.quit_config_sure"), Text.translatable("text.skyblocker.quit_discard")
-					.formatted(Formatting.RED), ScreenTexts.CANCEL));
+			}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard")
+					.withStyle(ChatFormatting.RED), CommonComponents.GUI_CANCEL));
 			return;
 		}
-		this.client.setScreen(parent);
+		this.minecraft.setScreen(parent);
 	}
 }

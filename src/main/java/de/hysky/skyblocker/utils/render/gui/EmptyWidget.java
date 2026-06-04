@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class EmptyWidget extends AbstractWidget {
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {}
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float a) {}
 }

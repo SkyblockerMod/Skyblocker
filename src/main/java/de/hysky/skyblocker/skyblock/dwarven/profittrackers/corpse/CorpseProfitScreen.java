@@ -2,18 +2,21 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.List;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class CorpseProfitScreen extends Screen {
 	private static final int ENTRY_HEIGHT = 11;
@@ -25,64 +28,71 @@ public class CorpseProfitScreen extends Screen {
 	private final DoubleBooleanPair totalProfit = calculateTotalProfit(rewardsList);
 	private boolean summaryView;
 
+	private @Nullable HeaderAndFooterLayout layout;
+	private @Nullable ContainerObjectSelectionList<?> selectionList;
+
 	public CorpseProfitScreen(Screen parent) {
 		this(parent, true);
 	}
 
 	public CorpseProfitScreen(Screen parent, boolean summaryView) {
-		super(Text.translatable("skyblocker.corpseTracker.screenTitle"));
+		super(Component.translatable("skyblocker.corpseTracker.screenTitle"));
 		this.parent = parent;
 		this.summaryView = summaryView;
 	}
 
 	@Override
+	protected void repositionElements() {
+		if (layout == null || selectionList == null) return;
+		layout.arrangeElements();
+		selectionList.setSize(layout.getWidth(), layout.getContentHeight());
+		selectionList.setPosition(layout.getX(), layout.getHeaderHeight());
+		selectionList.refreshScrollAmount();
+	}
+
+	@Override
 	protected void init() {
-		assert client != null;
-		addDrawable((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredTextWithShadow(client.textRenderer, Text.translatable("skyblocker.corpseTracker.screenTitle").formatted(Formatting.BOLD), width / 2, (32 - client.textRenderer.fontHeight) / 2, Colors.WHITE);
-		});
+		layout = new HeaderAndFooterLayout(this, 25, 45);
+		layout.addTitleHeader(Component.translatable("skyblocker.corpseTracker.screenTitle").withStyle(ChatFormatting.BOLD), this.minecraft.font);
+		selectionList = summaryView ? getRewardList() : getCorpseList();
+		layout.addToContents(selectionList);
 
-		if (summaryView) addDrawableChild(getRewardList());
-		else addDrawableChild(getCorpseList());
+		GridLayout gridWidget = new GridLayout();
+		gridWidget.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
+		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
-		GridWidget gridWidget = new GridWidget();
-		gridWidget.getMainPositioner().marginX(5).marginY(2);
-		GridWidget.Adder adder = gridWidget.createAdder(2);
+		Component totalProfitText = Component.translatable("skyblocker.corpseTracker.totalProfit",
+				NumberFormat.getInstance().format(totalProfit.leftDouble()).formatted(totalProfit.leftDouble() >= 0 ? ChatFormatting.GREEN : ChatFormatting.RED), // Formatting.GOLD is filled in from parent if it's 0
+				totalProfit.rightBoolean() ? Component.empty() : Component.literal("skyblocker.corpseTracker.incompletePriceData").withStyle(ChatFormatting.RED)
+		).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 
-		Text totalProfitText = Text.translatable("skyblocker.corpseTracker.totalProfit",
-				NumberFormat.getInstance().format(totalProfit.leftDouble()).formatted(totalProfit.leftDouble() >= 0 ? Formatting.GREEN : Formatting.RED), // Formatting.GOLD is filled in from parent if it's 0
-				totalProfit.rightBoolean() ? Text.empty() : Text.literal("skyblocker.corpseTracker.incompletePriceData").formatted(Formatting.RED)
-		).formatted(Formatting.GOLD, Formatting.BOLD);
+		adder.addChild(new StringWidget(Button.DEFAULT_WIDTH * 2 + 10, ENTRY_HEIGHT, totalProfitText, minecraft.font).setMaxWidth(Button.DEFAULT_WIDTH * 2 + 10, StringWidget.TextOverflow.SCROLLING), 2, gridWidget.newCellSettings().alignHorizontallyCenter());
 
-		adder.add(new TextWidget(ButtonWidget.DEFAULT_WIDTH * 2 + 10, ENTRY_HEIGHT, totalProfitText, client.textRenderer).setMaxWidth(ButtonWidget.DEFAULT_WIDTH * 2 + 10, TextWidget.TextOverflow.SCROLLING), 2, gridWidget.copyPositioner().alignHorizontalCenter());
+		Component buttonText = summaryView ? Component.translatable("skyblocker.corpseTracker.historyView") : Component.translatable("skyblocker.corpseTracker.summaryView");
+		adder.addChild(Button.builder(buttonText, this::changeView).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 
-		Text buttonText = summaryView ? Text.translatable("skyblocker.corpseTracker.historyView") : Text.translatable("skyblocker.corpseTracker.summaryView");
-		adder.add(ButtonWidget.builder(buttonText, this::changeView).build());
-		adder.add(ButtonWidget.builder(ScreenTexts.DONE, button -> close()).build());
-		gridWidget.refreshPositions();
-		SimplePositioningWidget.setPos(gridWidget, 0, this.height - 64, this.width, 64);
-		gridWidget.forEachChild(this::addDrawableChild);
+		layout.addToFooter(gridWidget);
+		repositionElements();
+		layout.visitWidgets(this::addRenderableWidget);
 	}
 
 	// Rebuilds the screen with the new view, the main difference being which list is displayed
-	private void changeView(ButtonWidget button) {
+	private void changeView(Button button) {
 		summaryView = !summaryView;
-		clearAndInit();
+		rebuildWidgets();
 	}
 
 	// Lazy init
-	@NotNull
 	private CorpseList getCorpseList() {
-		return corpseList == null ? corpseList = new CorpseList(MinecraftClient.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : corpseList;
+		return corpseList == null ? corpseList = new CorpseList(Minecraft.getInstance(), width, height - 96, ENTRY_HEIGHT, rewardsList) : corpseList;
 	}
 
 	// Lazy init
-	@NotNull
 	private RewardList getRewardList() {
-		return rewardList == null ? rewardList = new RewardList(MinecraftClient.getInstance(), width, height - 96, 32, ENTRY_HEIGHT, rewardsList) : rewardList;
+		return rewardList == null ? rewardList = new RewardList(Minecraft.getInstance(), width, height - 96, 0, ENTRY_HEIGHT, rewardsList) : rewardList;
 	}
 
-	@NotNull
 	private static DoubleBooleanPair calculateTotalProfit(List<CorpseLoot> list) {
 		double total = 0;
 		boolean isPriceComplete = true;
@@ -94,8 +104,7 @@ public class CorpseProfitScreen extends Screen {
 	}
 
 	@Override
-	public void close() {
-		assert client != null;
-		client.setScreen(parent);
+	public void onClose() {
+		minecraft.setScreen(parent);
 	}
 }

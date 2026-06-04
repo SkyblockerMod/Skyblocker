@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.skyblock.ChestValue;
-import net.minecraft.client.gui.screen.Screen;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.client.gui.screens.Screen;
 
 /**
  * A regex implementation of {@link ContainerMatcher} that matches the title of the screen.
@@ -19,18 +18,16 @@ public abstract class RegexContainerMatcher implements ContainerMatcher {
 	 * @implNote Don't end your regex with a {@code $} as {@link ChestValue} appends text to the end of the title,
 	 * so the regex will stop matching if the player uses chest value.
 	 */
-	@Nullable
-	public final Pattern titlePattern;
+	public final @Nullable Pattern titlePattern;
 
-	@Nullable
-	protected String[] groups = null;
+	protected @Nullable String[] groups = null;
 
 	@Override
-	public boolean test(@NotNull Screen screen) {
+	public boolean test(Screen screen) {
 		return test(screen.getTitle().getString());
 	}
 
-	public boolean test(@NotNull String title) {
+	public boolean test(String title) {
 		if (titlePattern == null) return true;
 		Matcher matcher = titlePattern.matcher(title);
 		if (matcher.matches()) {
@@ -50,7 +47,7 @@ public abstract class RegexContainerMatcher implements ContainerMatcher {
 		this((Pattern) null);
 	}
 
-	protected RegexContainerMatcher(@NotNull @Language("RegExp") String titlePattern) {
+	protected RegexContainerMatcher(@Language("RegExp") String titlePattern) {
 		this(Pattern.compile(titlePattern));
 	}
 

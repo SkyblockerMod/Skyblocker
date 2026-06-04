@@ -4,7 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 public class SilencePhantoms {
 
@@ -14,7 +14,7 @@ public class SilencePhantoms {
 	}
 
 	private static boolean onSound(SoundEvent sound) {
-		if (Utils.isInGalatea() && SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && sound.id().getPath().startsWith("entity.phantom")) {
+		if (Utils.isInGalatea() && SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && sound.location().getPath().startsWith("entity.phantom")) {
 			return false;
 		}
 

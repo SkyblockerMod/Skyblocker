@@ -2,7 +2,7 @@ package de.hysky.skyblocker.compatibility.rei;
 
 import me.shedaniel.rei.api.common.entry.comparison.ComparisonContext;
 import me.shedaniel.rei.api.common.entry.comparison.EntryComparator;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class SkyblockItemComparator implements EntryComparator<ItemStack> {
 	@Override

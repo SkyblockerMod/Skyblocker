@@ -1,6 +1,21 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.config.configs.*;
+import de.hysky.skyblocker.config.configs.ChatConfig;
+import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
+import de.hysky.skyblocker.config.configs.DebugConfig;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.config.configs.FarmingConfig;
+import de.hysky.skyblocker.config.configs.ForagingConfig;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.config.configs.HuntingConfig;
+import de.hysky.skyblocker.config.configs.MiningConfig;
+import de.hysky.skyblocker.config.configs.MiscConfig;
+import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 
 public class SkyblockerConfig {
 	public int version = SkyblockerConfigManager.CONFIG_VERSION;

@@ -5,12 +5,11 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public final class SuperpairsSolver extends ExperimentSolver {
 	/**
@@ -40,7 +39,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
 	 * @param screen
 	 */
 	@Override
-	public void start(GenericContainerScreen screen) {
+	public void start(ContainerScreen screen) {
 		super.start(screen);
 		setState(State.SHOW);
 	}
@@ -52,12 +51,12 @@ public final class SuperpairsSolver extends ExperimentSolver {
 	 * and sets {@link #superpairsCurrentSlot} to the item of the last clicked slot.
 	 */
 	@Override
-	protected void tick(GenericContainerScreen screen) {
+	protected void tick(ContainerScreen screen) {
 		if (getState() == State.SHOW && getSlots().get(superpairsPrevClickedSlot) == null) {
-			ItemStack itemStack = screen.getScreenHandler().getInventory().getStack(superpairsPrevClickedSlot);
-			if (!(itemStack.isOf(Items.CYAN_STAINED_GLASS) || itemStack.isOf(Items.BLACK_STAINED_GLASS_PANE) || itemStack.isOf(Items.AIR))) {
+			ItemStack itemStack = screen.getMenu().getContainer().getItem(superpairsPrevClickedSlot);
+			if (!(itemStack.is(Items.CYAN_STAINED_GLASS) || itemStack.is(Items.BLACK_STAINED_GLASS_PANE) || itemStack.is(Items.AIR))) {
 				getSlots().int2ObjectEntrySet().stream()
-						.filter(entry -> ItemStack.areEqual(entry.getValue(), itemStack))
+						.filter(entry -> ItemStack.matches(entry.getValue(), itemStack))
 						.findAny()
 						.ifPresent(entry -> {
 							superpairsDuplicatedSlots.add(entry.getIntKey());
@@ -82,8 +81,8 @@ public final class SuperpairsSolver extends ExperimentSolver {
 				int index = indexStack.getIntKey();
 				ItemStack displayStack = indexStack.getValue();
 				ItemStack stack = getSlots().get(index);
-				if (stack != null && !ItemStack.areEqual(stack, displayStack)) {
-					if (ItemStack.areEqual(superpairsCurrentSlot, stack) && displayStack.getName().getString().equals("Click a second button!")) {
+				if (stack != null && !ItemStack.matches(stack, displayStack)) {
+					if (ItemStack.matches(superpairsCurrentSlot, stack) && displayStack.getHoverName().getString().equals("Click a second button!")) {
 						highlights.add(ColorHighlight.green(index));
 					} else if (superpairsDuplicatedSlots.contains(index)) {
 						highlights.add(ColorHighlight.yellow(index));

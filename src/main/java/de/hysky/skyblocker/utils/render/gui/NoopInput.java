@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.input.InputWithModifiers;
 
-public record NoopInput() implements AbstractInput {
-	public static final AbstractInput INSTANCE = new NoopInput();
+public record NoopInput() implements InputWithModifiers {
+	public static final InputWithModifiers INSTANCE = new NoopInput();
 
 	@Override
-	public int getKeycode() {
+	public int input() {
 		return 0;
 	}
 

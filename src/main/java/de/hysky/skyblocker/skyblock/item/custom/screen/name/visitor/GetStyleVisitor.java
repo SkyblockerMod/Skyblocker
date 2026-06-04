@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
-import net.minecraft.text.Style;
+import net.minecraft.network.chat.Style;
 
 /**
  * This visitor is used to get the style of a text at a specific selection range.
@@ -35,7 +35,7 @@ public class GetStyleVisitor extends BaseVisitor {
 		this.style = this.style
 				.withBold(this.style.isBold() || st.isBold())
 				.withItalic(this.style.isItalic() || st.isItalic())
-				.withUnderline(this.style.isUnderlined() || st.isUnderlined())
+				.withUnderlined(this.style.isUnderlined() || st.isUnderlined())
 				.withStrikethrough(this.style.isStrikethrough() || st.isStrikethrough())
 				.withObfuscated(this.style.isObfuscated() || st.isObfuscated());
 	}

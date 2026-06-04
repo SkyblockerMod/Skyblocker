@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Used by {@link de.hysky.skyblocker.skyblock.entity.glow.adder.GardenGlowAdder} and {@link StereoHarmonyHelper}
  */
 public final class CurrentJacobCrop {
 	private CurrentJacobCrop() {}
 
-	public static String CURRENT_CROP_CONTEST;
+	public static @Nullable String CURRENT_CROP_CONTEST;
 }

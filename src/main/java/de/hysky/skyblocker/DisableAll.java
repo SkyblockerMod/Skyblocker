@@ -4,26 +4,30 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Command helper for disabling every configurable feature.
  */
 public class DisableAll {
-	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
+	protected static final Logger LOGGER = LogUtils.getLogger();
 
 	@Init
 	public static void init() {
@@ -33,41 +37,41 @@ public class DisableAll {
 	private static final long CONFIRM_TIMEOUT = 30_000L; // 30 seconds
 	private static long confirmAllowedUntil;
 
-	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, net.minecraft.command.CommandRegistryAccess registryAccess) {
-		dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-				.then(ClientCommandManager.literal("disableAll")
+	private static void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, net.minecraft.commands.CommandBuildContext registryAccess) {
+		dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.then(ClientCommands.literal("disableAll")
 						.executes(DisableAll::confirmMessage)
-						.then(ClientCommandManager.literal("confirm")
+						.then(ClientCommands.literal("confirm")
 								.executes(DisableAll::disableAll)))
 		);
 	}
 
 	private static int confirmMessage(CommandContext<FabricClientCommandSource> context) {
 		confirmAllowedUntil = System.currentTimeMillis() + CONFIRM_TIMEOUT;
-		MutableText confirm = Text.translatable("skyblocker.disableAll.confirmYes")
-				.styled(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
-		context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.confirm", confirm)));
+		MutableComponent confirm = Component.translatable("skyblocker.disableAll.confirmYes").withStyle(ChatFormatting.RED)
+				.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/" + SkyblockerMod.NAMESPACE + " disableAll confirm")));
+		context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.confirm", confirm)));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.notPending")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending").withStyle(ChatFormatting.RED)));
 			return Command.SINGLE_SUCCESS;
 		}
 		confirmAllowedUntil = 0;
 		try {
 			SkyblockerConfigManager.update(config -> {
 				try {
-					disableBooleans(config);
+					disableEntries(config);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 			});
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.success")));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-			context.getSource().sendError(Constants.PREFIX.get().append(Text.translatable("skyblocker.disableAll.failed")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -77,7 +81,7 @@ public class DisableAll {
 	 * {@code false}. Previously this relied on the {@code SerialEntry} annotation
 	 * from YACL, but the configuration system no longer uses it.
 	 */
-	private static void disableBooleans(Object target) throws IllegalAccessException {
+	protected static void disableEntries(Object target) throws IllegalAccessException {
 		for (Field field : target.getClass().getDeclaredFields()) {
 			if (Modifier.isStatic(field.getModifiers())) continue;
 			field.setAccessible(true);
@@ -87,31 +91,23 @@ public class DisableAll {
 				field.setBoolean(target, false);
 			} else if (type == Boolean.class) {
 				field.set(target, false);
-			} else if (value instanceof java.util.Map<?, ?>) {
+			} else if (value instanceof Map<?, ?>) {
 				@SuppressWarnings("unchecked")
-				java.util.Map<Object, Object> m = (java.util.Map<Object, Object>) value;
-				for (java.util.Map.Entry<Object, Object> entry : m.entrySet()) {
+				Map<Object, Object> m = (Map<Object, Object>) value;
+				for (Map.Entry<Object, Object> entry : m.entrySet()) {
 					if (entry.getValue() instanceof Boolean) {
 						m.put(entry.getKey(), Boolean.FALSE);
 					}
 				}
-			} else if (value != null && isConfigClass(type)) {
-				disableBooleans(value);
+			} else if (type.isEnum()) {
+				Field[] declaredFields = type.getDeclaredFields();
+				if (declaredFields.length == 0) continue;
+				Optional<Field> option = Arrays.stream(declaredFields).filter(f -> f.getAnnotation(EnumDisabledValue.class) != null).findFirst();
+				if (option.isEmpty()) continue;
+				field.set(target, option.get().get(type));
+			} else if (value != null && SkyblockerConfigManager.isConfigClass(type)) {
+				disableEntries(value);
 			}
 		}
-	}
-
-	/**
-	 * Returns {@code true} if the given class represents one of our config
-	 * classes. This prevents {@link #disableBooleans(Object)} from touching
-	 * unrelated objects from other mods.
-	 */
-	private static boolean isConfigClass(Class<?> clazz) {
-		return !clazz.isPrimitive()
-				&& !clazz.isEnum()
-				&& !clazz.isRecord()
-				&& !clazz.equals(String.class)
-				&& !Number.class.isAssignableFrom(clazz)
-				&& clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
 	}
 }

@@ -25,15 +25,6 @@
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
-    "rei_client": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
-    ],
-    "rei_common": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
-    ],
-    "emi": [
-      "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
-    ],
     "jei_mod_plugin": [
       "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
     ]
@@ -41,22 +32,23 @@
   "mixins": [
     "skyblocker.mixins.json"
   ],
-  "accessWidener": "skyblocker.accesswidener",
+  "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.17.3",
-    "fabric-api": ">=0.137.0+1.21.10",
-	"dandelion": ">=1.0.0-alpha.5+1.21.8",
-    "yet_another_config_lib_v3": ">=3.8.0+1.21.9",
+    "fabricloader": ">=0.19.1",
+    "fabric-api": ">=0.145.3+26.1.1",
+	"dandelion": ">=1.0.0-alpha.18+26.1",
+    "yet_another_config_lib_v3": ">=3.9.2+26.1",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.1+1.21.2",
-    "minecraft": "~1.21.9",
-    "java": ">=21"
+    "hm-api": ">=1.0.3+26.1",
+    "minecraft": "~26.1",
+    "java": ">=25"
   },
   "conflicts": {
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
-    "skyblockmod": "<=1.10.7"
+    "skyblockmod": "<=1.10.7",
+	"sodium": "<=0.8.7"
   },
   "custom": {
     "modmenu": {
@@ -65,26 +57,6 @@
         "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap",
         "text.skyblocker.translate": "https://translate.hysky.de"
       }
-    },
-    "loom:injected_interfaces": {
-      "net/minecraft/class_1799": [
-        "de/hysky/skyblocker/injected/SkyblockerStack"
-      ],
-	  "net/minecraft/class_490": [
-		"de/hysky/skyblocker/injected/RecipeBookHolder"
-	  ],
-      "net/minecraft/class_898": [
-        "de/hysky/skyblocker/injected/EntityRenderMarker"
-      ],
-      "net/minecraft/class_11661\u0024class_11668": [
-        "de/hysky/skyblocker/injected/CustomGlowState"
-      ],
-      "net/minecraft/class_11661\u0024class_11789": [
-        "de/hysky/skyblocker/injected/CustomGlowState"
-      ],
-	  "net/minecraft/class_11661\u0024class_11670": [
-		"de/hysky/skyblocker/injected/CustomGlowState"
-	  ]
     }
   }
 }

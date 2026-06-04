@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.entity;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public abstract class MobGlowAdder {
 	protected static final int NO_GLOW = MobGlow.NO_GLOW;

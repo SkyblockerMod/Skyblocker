@@ -6,11 +6,11 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 
 public abstract class ConfigDataFix extends DataFix {
-    public ConfigDataFix(Schema outputSchema, boolean changesType) {
-        super(outputSchema, changesType);
-    }
+	public ConfigDataFix(Schema outputSchema, boolean changesType) {
+		super(outputSchema, changesType);
+	}
 
-    protected <T> Dynamic<T> fixVersion(Dynamic<T> dynamic) {
-        return dynamic.set("version", dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
-    }
+	protected <T> Dynamic<T> fixVersion(Dynamic<T> dynamic) {
+		return dynamic.set(ConfigDataFixer.VERSION_KEY, dynamic.createInt(DataFixUtils.getVersion(getVersionKey())));
+	}
 }
