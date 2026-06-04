@@ -353,7 +353,7 @@ def truncateChangelog = { String text, int limit ->
 publishMods {
 	file = jar.archiveFile
 	if (System.getenv("BUILD_SOURCES_JAR")?.toBoolean()) {
-		additionalFiles.from(sourcesJar.archiveFile)
+		additionalFiles.from(tasks.named("sourcesJar").flatMap { it.archiveFile })
 	}
 	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
