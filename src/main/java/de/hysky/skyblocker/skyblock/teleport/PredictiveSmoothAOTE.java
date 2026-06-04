@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -182,8 +183,8 @@ public class PredictiveSmoothAOTE {
 			return;
 		}
 
-		// make sure the camera is not in 3rd person
-		if (CLIENT.options.getCameraType() != CameraType.FIRST_PERSON) {
+		// make sure the camera is not in 3rd person if disabled
+		if (CLIENT.options.getCameraType() != CameraType.FIRST_PERSON && !SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.thirdPerson) {
 			return;
 		}
 
@@ -216,7 +217,7 @@ public class PredictiveSmoothAOTE {
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
 			startPos = CLIENT.player.position().add(0, Utils.getEyeHeight(CLIENT.player), 0); // the eye poss should not be affected by crouching
-			cameraStartPos = CLIENT.player.getEyePosition();
+			cameraStartPos = RenderHelper.getCamera().position();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
 			currentTeleportPing = lastPing;
@@ -484,7 +485,12 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//return full distance if no collision found
-		return direction.scale(distance).subtract(0,1,0);
+		//Hypixel has started moving this a block down so do that if it's not solid
+		if (!isBlockFloor(BlockPos.containing(startPos.add(direction.scale(distance)).subtract(0, 1, 0)))) {
+			return direction.scale(distance).subtract(0, 1, 0);
+		}
+
+		return direction.scale(distance);
 	}
 
 	/**
@@ -533,11 +539,12 @@ public class PredictiveSmoothAOTE {
 	 *
 	 * @return the camera position for the interpolated pos
 	 */
-
+	@Nullable
 	public static Vec3 getInterpolatedPos() {
 		if (CLIENT.player == null || teleportVector == null || startPos == null || teleportDisabled) {
 			return null;
 		}
+		//save actual Camara position
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
 		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + ((long) SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag * teleportsAhead), MAX_TELEPORT_TIME)) {
@@ -559,6 +566,15 @@ public class PredictiveSmoothAOTE {
 		}
 
 		return cameraStartPos.add(teleportVector.scale(percentage));
+	}
+
+	@Nullable
+	public static Vec3 getInterpolatedPlayerPos() {
+		if (startPos == null || CLIENT.player == null || cameraStartPos == null) return null;
+		Vec3 diff = startPos.subtract(0, Utils.getEyeHeight(CLIENT.player), 0).subtract(cameraStartPos);
+		Vec3 camara = getInterpolatedPos();
+		if (camara == null) return null;
+		return camara.add(diff);
 	}
 
 	public static void updatePing(long ping) {

@@ -20,7 +20,7 @@ public class CameraMixin {
 				return pos;
 			}
 		} else {
-			Vec3 pos = ResponsiveSmoothAOTE.getInterpolatedPos();
+			Vec3 pos = ResponsiveSmoothAOTE.getInterpolatedPos(original);
 			if (pos != null) {
 				return pos;
 			}
