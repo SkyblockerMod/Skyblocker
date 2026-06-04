@@ -474,6 +474,14 @@ public class GeneralCategory {
 										newValue -> config.general.specialEffects.rareDyeDropEffects = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip"))
+								.binding(defaults.general.specialEffects.trophyDropEffects,
+										() -> config.general.specialEffects.trophyDropEffects,
+										newValue -> config.general.specialEffects.trophyDropEffects = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				.build();

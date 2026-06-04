@@ -81,11 +81,11 @@ public class RareDropSpecialEffects {
 			case "High Class Archfiend Dice" -> "HIGH_CLASS_ARCHFIEND_DICE";
 
 			//Fishing
-			case "Pocket-sized Igloo " -> "POCKET_SIZED_IGLOO";
+			case "Prince's Crown Jewel" -> " PRINCES_CROWN_JEWEL";
+			case "Pocket-sized Igloo" -> "POCKET_SIZED_IGLOO";
 			case "Radioactive Vial" -> "RADIOACTIVE_VIAL";
 			case "Tiki Mask" -> "TIKI_MASK";
 			case "Titanoboa Shed" -> "TITANOBOA_SHED";
-
 			default -> "NONE";
 		};
 
