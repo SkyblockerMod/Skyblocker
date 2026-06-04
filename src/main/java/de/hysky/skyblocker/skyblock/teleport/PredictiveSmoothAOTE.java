@@ -544,7 +544,6 @@ public class PredictiveSmoothAOTE {
 		if (CLIENT.player == null || teleportVector == null || startPos == null || teleportDisabled) {
 			return null;
 		}
-		//save actual Camara position
 		long gap = System.currentTimeMillis() - startTime;
 		//make sure the player is actually getting teleported if not disable teleporting until they are teleported again
 		if (System.currentTimeMillis() - lastTeleportTime > Math.min(Math.max(lastPing, currentTeleportPing) + ((long) SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.maximumAddedLag * teleportsAhead), MAX_TELEPORT_TIME)) {
@@ -568,6 +567,10 @@ public class PredictiveSmoothAOTE {
 		return cameraStartPos.add(teleportVector.scale(percentage));
 	}
 
+	/**
+	 * Get the difference between the camara and the actual player position. Then adds this to interpolated camara position
+	 * @return Interpolated player position
+	 */
 	@Nullable
 	public static Vec3 getInterpolatedPlayerPos() {
 		if (startPos == null || CLIENT.player == null || cameraStartPos == null) return null;

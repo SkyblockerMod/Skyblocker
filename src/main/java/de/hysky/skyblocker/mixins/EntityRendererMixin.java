@@ -63,27 +63,22 @@ public class EntityRendererMixin {
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
-	private void skyblocker$movePlayerRenderPos(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state,  @Local(name = "partialTicks") float partialTicks)
-	{
+	private void skyblocker$movePlayerRenderPos(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state, @Local(name = "partialTicks") float partialTicks) {
 		Minecraft client = Minecraft.getInstance();
 
 		if (entity == client.player && !client.options.getCameraType().isFirstPerson()) {
+			Vec3 pos;
 			if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) {
-				Vec3 pos = PredictiveSmoothAOTE.getInterpolatedPlayerPos();
-				if (pos != null )
-				{
-					state.x = pos.x;
-					state.y = pos.y;
-					state.z = pos.z;
-				}
+				pos = PredictiveSmoothAOTE.getInterpolatedPlayerPos();
+
 			} else {
-				Vec3 pos = ResponsiveSmoothAOTE.getInterpolatedPlayerPos(partialTicks);
-				if (pos != null )
-				{
-					state.x = pos.x;
-					state.y = pos.y;
-					state.z = pos.z;
-				}
+				pos = ResponsiveSmoothAOTE.getInterpolatedPlayerPos(partialTicks);
+			}
+			if (pos != null)
+			{
+				state.x = pos.x;
+				state.y = pos.y;
+				state.z = pos.z;
 			}
 		}
 	}

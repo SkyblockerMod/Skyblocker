@@ -1377,7 +1377,7 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
-  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
