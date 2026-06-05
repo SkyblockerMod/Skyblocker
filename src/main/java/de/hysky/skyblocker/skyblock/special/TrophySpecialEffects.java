@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.special;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -11,7 +12,6 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
@@ -38,11 +38,11 @@ public class TrophySpecialEffects {
 			Matcher matcher = DIAMOND_PATTERN.matcher(stringForm);
 
 			if (matcher.matches()) {
-				FlexibleItemStack stack = getStackFromName(matcher.group("item"));
+				ItemStack stack = getStackFromName(matcher.group("item"));
 
-				if (stack != null && stack.getStack() != null && !stack.getStackOrThrow().isEmpty()) {
+				if (stack != null && !stack.isEmpty()) {
 					CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-					CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
+					CLIENT.gameRenderer.displayItemActivation(stack);
 				}
 			}
 		} catch (Exception e) { // In case there's a regex failure or something else bad happens
@@ -52,7 +52,7 @@ public class TrophySpecialEffects {
 		return true;
 	}
 
-	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
+	private static @Nullable ItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 
 			// Fish
