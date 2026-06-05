@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +44,7 @@ public class BackpackPreview {
 	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
 	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
 	private static final int STORAGE_SIZE = 27;
-	private static final AtomicReferenceArray<Storage> storages = new AtomicReferenceArray<>(STORAGE_SIZE);
+	private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
 	/**
 	 * The profile id of the currently loaded backpack preview.
@@ -90,7 +89,7 @@ public class BackpackPreview {
 
 	private static void loadStorages() {
 		for (int index = 0; index < STORAGE_SIZE; ++index) {
-			storages.set(index, null);
+			storages[index] = null;
 			//Copy variable since lambdas do not like when you use iteration variables (JDK-8300691)
 			int index2 = index;
 
@@ -106,7 +105,7 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages.set(index2, storage), Minecraft.getInstance());
+			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
 		}
 	}
 
@@ -116,7 +115,7 @@ public class BackpackPreview {
 
 	private static void saveStorages() {
 		for (int index = 0; index < STORAGE_SIZE; ++index) {
-			Storage storage = storages.get(index);
+			Storage storage = storages[index];
 			if (storage != null && storage.dirty) {
 				saveStorage(index);
 			}
@@ -125,7 +124,7 @@ public class BackpackPreview {
 
 	private static void saveStorage(int index) {
 		//Store desired storage in a variable to ensure that the instance cannot change during async execution
-		Storage storage = storages.get(index);
+		Storage storage = storages[index];
 
 		CompletableFuture.runAsync(() -> {
 			Path storageFile = saveDir.resolve(index + ".nbt");
@@ -141,7 +140,7 @@ public class BackpackPreview {
 		String title = handledScreen.getTitle().getString();
 		int index = getStorageIndexFromTitle(title);
 		if (index != -1) {
-			storages.set(index, new Storage(handledScreen.getMenu().slots.getFirst().container, title, true));
+			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
 		}
 	}
 
@@ -150,7 +149,7 @@ public class BackpackPreview {
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;
 
-		Storage storage = storages.get(index);
+		Storage storage = storages[index];
 		if (storage == null) return false;
 		int rows = (storage.size() - 9) / 9;
 
