@@ -35,9 +35,8 @@ public class CropMilestonesAdder extends SimpleSlotTextAdder {
 		String number = name.substring(lastSpace + 1);
 		if (!number.matches("\\d+")) return List.of();
 
-		// TODO: Change the max milestone line
 		boolean maxed = ItemUtils.getLoreLineIf(stack, s ->
-			s.contains("Max milestone reached!")
+			s.contains("Max tier reached!")
 		) != null;
 
 		return SlotText.bottomRightList(
