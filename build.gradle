@@ -195,6 +195,15 @@ dependencies {
 	implementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skyblocker-test"
+		enableGameTests = false
+		eula = true
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
@@ -206,6 +215,12 @@ loom {
 					)
 		}
 	}
+
+	runs {
+		clientGameTest {
+			programArg "--graphicsBackend " + System.getenv("GRAPHICS_BACKEND")
+		}
+	}
 }
 
 sourceSets {
@@ -214,16 +229,6 @@ sourceSets {
 			exclude("**/compatibility/rei/**")
 			exclude("**/compatibility/emi/**")
 		}
-	}
-}
-
-fabricApi {
-	configureTests {
-		createSourceSet = true
-		modId = "skyblocker-test"
-		enableGameTests = false
-		eula = true
-		clearRunDirectory = false
 	}
 }
 
