@@ -218,7 +218,7 @@ loom {
 
 	runs {
 		clientGameTest {
-			programArg "--graphicsBackend " + System.getenv("GRAPHICS_BACKEND")
+			programArg "--graphicsBackend " + System.getenv().getOrDefault("GRAPHICS_BACKEND", "").toUpperCase(Locale.ENGLISH)
 		}
 	}
 }
