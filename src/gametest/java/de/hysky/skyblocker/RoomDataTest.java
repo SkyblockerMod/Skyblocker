@@ -23,7 +23,7 @@ public class RoomDataTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext clientGameTestContext) {
-		clientGameTestContext.waitFor((client) -> DungeonManager.isRoomsLoaded());
+		clientGameTestContext.waitFor(_ -> DungeonManager.isRoomsLoaded());
 		clientGameTestContext.waitTicks(100);
 		clientGameTestContext.runOnClient(this::testMain);
 	}

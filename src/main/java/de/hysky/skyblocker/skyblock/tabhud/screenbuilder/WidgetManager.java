@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
@@ -47,6 +47,7 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
+	@SuppressWarnings("unused")
 	private static final int VERSION = 2;
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
@@ -61,7 +62,7 @@ public class WidgetManager {
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> {
 
 			instantiateWidgets();
 			for (int i = 1; i < 6; i++) {
@@ -72,15 +73,15 @@ public class WidgetManager {
 
 		});
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveConfig());
 
 		// Renders the hud (always on screen) widgets.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, _) -> extractRenderState(context, true));
 		// Renders the tab widgets
-		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, _) -> extractRenderState(context, false));
 	}
 
-	private static void render(GuiGraphics context, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor context, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
@@ -90,7 +91,7 @@ public class WidgetManager {
 		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
+		WidgetManager.extractRenderState(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -100,7 +101,7 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(GuiGraphics context, int w, int h, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.keyPlayerList.isDown()) {
@@ -131,7 +132,7 @@ public class WidgetManager {
 					}
 				}
 			}
-		} catch (NoSuchFileException e) {
+		} catch (NoSuchFileException _) {
 			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
 			fillDefaultConfig();
 		} catch (Exception e) {
@@ -165,12 +166,6 @@ public class WidgetManager {
 		screenBuilder.setPositionRule(
 				"hud_end",
 				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
-		);
-
-		screenBuilder = getScreenBuilder(Location.GARDEN);
-		screenBuilder.setPositionRule(
-				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {

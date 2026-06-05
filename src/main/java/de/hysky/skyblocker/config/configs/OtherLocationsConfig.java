@@ -19,6 +19,8 @@ public class OtherLocationsConfig {
 		public boolean solveTreasureHunter = true;
 
 		public boolean enableCallTrevorMessage = true;
+
+		public boolean enablePeltAnimalHighlighter = true;
 	}
 
 	public static class Rift {
@@ -29,6 +31,8 @@ public class OtherLocationsConfig {
 		public boolean enigmaSoulWaypoints = false;
 
 		public boolean highlightFoundEnigmaSouls = true;
+
+		public boolean autoDetectMcGrubber = true;
 
 		public int mcGrubberStacks = 0;
 	}
@@ -46,7 +50,7 @@ public class OtherLocationsConfig {
 
 		public boolean waypoint = true;
 
-		public boolean muteEndermanSounds = false;
+		public boolean muteEndermanSounds = true;
 
 		public int x = 10;
 

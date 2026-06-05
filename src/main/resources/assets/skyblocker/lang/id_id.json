@@ -45,7 +45,6 @@
     "key.skyblocker.itemPriceLookup": "Pencarian Bazar",
     "text.skyblocker.clickToSend": "[Klik Untuk Mengirim Pesan]",
     "text.skyblocker.clickToSend.@Tooltip": "Klik untuk mengirim pesan ini ke percakapan.",
-    "skyblocker.itemTooltip.noData": "Tidak Ada Data",
     "skyblocker.fishing.reelNow": "Tarik Sekarang!",
     "emi.category.skyblocker.skyblock_crafting": "Kerajinan (Skyblock)",
     "skyblocker.chat.confirmationPromptNotification": "Klik di mana saja pada layar dalam waktu 60 detik untuk menerima perintah.",
@@ -86,6 +85,5 @@
     "skyblocker.bars.config.textPosition.CENTER": "Tengah",
     "key.category.skyblocker.main": "Skyblocker",
     "key.skyblocker.itemProtection": "Lindungi Item",
-    "key.skyblocker.wikiLookup.fandom": "Pencarian Wiki Fandom",
     "key.skyblocker.wikiLookup.official": "Pencarian Wiki Hypixel"
 }

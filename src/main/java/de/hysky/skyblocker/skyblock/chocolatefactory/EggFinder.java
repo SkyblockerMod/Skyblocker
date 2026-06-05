@@ -11,9 +11,9 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.command.argumenttypes.EggTypeArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -47,26 +47,27 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EggFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Egg Finder");
 	private static final Pattern EGG_FOUND_PATTERN = Pattern.compile("^(?:HOPPITY'S HUNT You found a Chocolate|You have already collected this Chocolate) (Breakfast|Lunch|Dinner|Brunch|Déjeuner|Supper) Egg");
+	private static final Pattern NO_EGGS_PATTERN = Pattern.compile("^There are no hidden Chocolate Rabbit Eggs nearby! Try again later!$");
 	private static final Set<Location> LOCATIONS = Set.of(
 			Location.BACKWATER_BAYOU, Location.CRIMSON_ISLE, Location.CRYSTAL_HOLLOWS, Location.DEEP_CAVERNS,
 			Location.DUNGEON_HUB, Location.DWARVEN_MINES, Location.GALATEA, Location.GOLD_MINE, Location.HUB,
-			Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK, Location.SPIDERS_DEN
+			Location.LOTUS_ATOLL, Location.SPIDERS_DEN, Location.THE_END, Location.THE_FARMING_ISLAND, Location.THE_PARK
 	);
 
 	private static boolean isSpring = SkyblockTime.skyblockSeason.get() == SkyblockTime.Season.SPRING;
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> clearEggs());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearEggs());
 		SkyblockEvents.LOCATION_CHANGE.register(EggFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(EggFinder::onChatMessage);
-		WorldRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(EggFinder::extractRendering);
 
 		SkyblockTime.HOUR_CHANGE.register(hour -> {
 			if (!isSpring) return;
@@ -86,11 +87,11 @@ public class EggFinder {
 			if (!isSpring) clearEggs();
 		});
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("shareLocation").then(argument("eggType", EggTypeArgumentType.eggType())
 					.executes(context -> {
 						EggType eggType = context.getArgument("eggType", EggType.class);
-						if (eggType == null || eggType.egg == null) {
+						if (eggType.egg == null) {
 							context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.unableToShareEgg").withStyle(style -> style.withColor(ChatFormatting.RED))));
 							return Command.SINGLE_SUCCESS;
 						}
@@ -100,7 +101,7 @@ public class EggFinder {
 
 			if (!Debug.debugEnabled()) return;
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("resetFoundStatus")
-					.executes(context -> {
+					.executes(_ -> {
 						for (EggType type : EggType.entries) {
 							type.collected = false;
 							if (type.egg != null) type.egg.setMissing();
@@ -109,7 +110,7 @@ public class EggFinder {
 					}))));
 
 			dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("eggFinder").then(literal("clearWaypoints")
-					.executes(context -> {
+					.executes(_ -> {
 						clearEggs();
 						return Command.SINGLE_SUCCESS;
 					}))));
@@ -131,7 +132,7 @@ public class EggFinder {
 
 	private static void handleLocationChange(Location location) {
 		clearEggs();
-		if (!isSpring || !LOCATIONS.contains(location)) return;
+		if (!isSpring || !LOCATIONS.contains(location) || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return;
 		WsStateManager.subscribeIsland(Service.EGG_WAYPOINTS, Optional.empty());
 	}
 
@@ -162,7 +163,18 @@ public class EggFinder {
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (overlay || !isSpring || !SkyblockerConfigManager.get().helpers.chocolateFactory.enableEggFinder) return true;
-		Matcher matcher = EGG_FOUND_PATTERN.matcher(text.getString());
+		Matcher matcher = NO_EGGS_PATTERN.matcher(text.getString());
+		if (matcher.matches()) {
+			for (EggType type : EggType.entries) {
+				Egg egg = type.egg;
+				if (egg == null) continue;
+				type.collected = true;
+				egg.setFound();
+			}
+			return true;
+		}
+
+		matcher.usePattern(EGG_FOUND_PATTERN);
 		if (!matcher.find()) return true;
 
 		try {
@@ -180,18 +192,20 @@ public class EggFinder {
 			if (client.player == null || client.level == null) return true;
 			List<ArmorStand> entities = client.level.getEntitiesOfClass(ArmorStand.class,
 					AABB.ofSize(client.player.position(), 4f, 4f, 4f),
-					(entity) -> EggFinder.checkIfEgg(entity, eggType)
+					entity -> EggFinder.checkIfEgg(entity, eggType)
 			);
 
 			if (entities.size() != 1) return true;
 			eggType.egg = new Egg(entities.getFirst().blockPosition().above(2), eggType);
 			eggType.egg.setFound();
 			eggType.sendEggMessage();
+			//noinspection DataFlowIssue
 			if (eggType.egg.equals(eggType.prevEgg)) {
 				LOGGER.info("[Skyblocker Egg Finder] Not sharing this egg to the WebSocket - matches previous location");
 				return true;
 			}
-			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS, new EggWaypointMessage(eggType, eggType.egg.pos));
+			WsMessageHandler.sendLocationMessage(Service.EGG_WAYPOINTS,
+					new EggWaypointMessage(eggType, eggType.egg.pos, Optional.empty()));
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("[Skyblocker Egg Finder] Failed to process an egg!", e);
 		}
@@ -235,22 +249,20 @@ public class EggFinder {
 		}
 
 		public void onEggReceived() {
-			if (!SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) return;
 			if (collected) {
 				egg.setFound();
-				return;
+			} else if (SkyblockerConfigManager.get().helpers.chocolateFactory.sendEggFoundMessages) {
+				sendEggMessage();
 			}
-			sendEggMessage();
 		}
 
 		public void sendEggMessage() {
 			MutableComponent eggName = Component.translatable("skyblocker.helpers.hoppitysHunt.chocolateEgg", this.name).withColor(color);
-			Minecraft.getInstance().player.displayClientMessage(
+			Minecraft.getInstance().player.sendSystemMessage(
 					Constants.PREFIX.get().append(Component.translatable("skyblocker.helpers.hoppitysHunt.newEggDiscovered", eggName, egg.pos.toShortString())
 					).withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker eggFinder shareLocation " + this))
 							.withHoverEvent(new HoverEvent.ShowText(Component.translatable("skyblocker.helpers.hoppitysHunt.shareEggPrompt").withStyle(ChatFormatting.GREEN)))
-					),
-					false
+					)
 			);
 		}
 

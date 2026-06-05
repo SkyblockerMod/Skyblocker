@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 import io.github.moulberry.repo.data.NEUIngredient;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -10,12 +12,11 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 
@@ -23,25 +24,49 @@ public interface SkyblockRecipe {
 	Logger LOGGER = LoggerFactory.getLogger(SkyblockRecipe.class);
 	NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 
-	static ItemStack getItemStack(NEUIngredient input) {
-		if (input == NEUIngredient.SENTINEL_EMPTY) return Items.AIR.getDefaultInstance();
+	static FlexibleItemStack getItemStack(NEUIngredient input) {
+		if (input == NEUIngredient.SENTINEL_EMPTY) return FlexibleItemStack.EMPTY;
 
-		ItemStack stack = ItemRepository.getItemStack(input.getItemId());
-		if (stack != null) {
-			return stack.copyWithCount((int) input.getAmount());
-		} else if (input.getItemId().equals("SKYBLOCK_COIN")) {
-			ItemStack itemStack = new ItemStack(Items.GOLD_NUGGET);
-			itemStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
-			itemStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-			String format = NUMBER_FORMAT.format(input.getAmount());
-			itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(format).withStyle(ChatFormatting.GOLD).withStyle(style -> style.withItalic(false)).append(Component.literal(" coins")))));
-			return itemStack;
+		String id = input.getItemId();
+		int amount = (int) input.getAmount();
+		String cacheKey = RecipeItemStackCache.getCacheKey(id, amount);
+		FlexibleItemStack cachedStack = RecipeItemStackCache.CACHE.get(cacheKey);
+
+		// Short-circuit with the cached stack when it exists
+		if (cachedStack != null) {
+			return cachedStack;
 		}
 
-		LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", input.getItemId());
-		ItemStack fallbackStack = new ItemStack(Items.BARRIER);
-		fallbackStack.set(DataComponents.ITEM_NAME, Component.literal(input.getItemId()));
-		return fallbackStack;
+		FlexibleItemStack baseStack = ItemRepository.getItemStack(id);
+		FlexibleItemStack computedStack = null;
+
+		if (baseStack != null) {
+			// If the amount of the ingredient matches the base stack then use that
+			if (amount == baseStack.count()) {
+				computedStack = baseStack;
+			} else {
+				// Copy the base stack with the correct amount
+				computedStack = baseStack.copyWithCount(amount);
+				if (amount > 1) {
+					computedStack.set(DataComponents.MAX_STACK_SIZE, amount);
+				}
+			}
+		} else if (id.equals("SKYBLOCK_COIN")) {
+			computedStack = new FlexibleItemStack(Items.GOLD_NUGGET);
+			computedStack.set(DataComponents.ITEM_NAME, Component.literal("Skyblock Coins").withStyle(ChatFormatting.GOLD));
+			computedStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+			String format = NUMBER_FORMAT.format(amount);
+			computedStack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(format).withStyle(ChatFormatting.GOLD).withStyle(style -> style.withItalic(false)).append(Component.literal(" coins")))));
+		} else {
+			// Create a fallback stack, cache it, and return it if nothing else worked
+			LOGGER.warn("[Skyblocker Recipe] Unable to find item {}", id);
+			computedStack = ItemUtils.getNamedPlaceholder(id);
+		}
+
+		// Cache the computed item stack for this ingredient and return it
+		RecipeItemStackCache.CACHE.put(cacheKey, computedStack);
+
+		return computedStack;
 	}
 
 	/**
@@ -62,9 +87,9 @@ public interface SkyblockRecipe {
 		return null;
 	}
 
-	List<ItemStack> getInputs();
+	List<FlexibleItemStack> getInputs();
 
-	List<ItemStack> getOutputs();
+	List<FlexibleItemStack> getOutputs();
 
 	/**
 	 * Render some extra things, i.e an entity
@@ -74,7 +99,7 @@ public interface SkyblockRecipe {
 	 * @param mouseX mouse x
 	 * @param mouseY mouse y
 	 */
-	default void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {}
+	default void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {}
 
 	/**
 	 * Extra text like collection requirements
@@ -91,8 +116,8 @@ public interface SkyblockRecipe {
 	 */
 	Identifier getRecipeIdentifier();
 
-	record RecipeSlot(int x, int y, ItemStack stack, boolean showBackground) {
-		public RecipeSlot(int x, int y, ItemStack stack) {
+	record RecipeSlot(int x, int y, FlexibleItemStack stack, boolean showBackground) {
+		public RecipeSlot(int x, int y, FlexibleItemStack stack) {
 			this(x, y, stack, true);
 		}
 	}

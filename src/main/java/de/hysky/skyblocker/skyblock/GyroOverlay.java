@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import java.awt.Color;
 import java.util.Locale;
@@ -28,7 +28,7 @@ public class GyroOverlay {
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayColor);
-		WorldRenderExtractionCallback.EVENT.register(GyroOverlay::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(GyroOverlay::extractRendering);
 	}
 
 	// render

@@ -6,24 +6,24 @@ import com.mojang.brigadier.context.CommandContext;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 
 public class RoomPreview {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("dungeons")
-						.then(ClientCommandManager.literal("preview").then(ClientCommandManager.literal("loadRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("dungeons")
+						.then(ClientCommands.literal("preview").then(ClientCommands.literal("loadRoom").then(argument("type", StringArgumentType.string()).suggests(DungeonManager::suggestRoomTypes)
 								.then(argument("room", StringArgumentType.string()).suggests((ctx, sB) -> DungeonManager.suggestRooms(ctx.getArgument("type", String.class), sB))
 										.executes(RoomPreview::startPreview))))))));
 	}

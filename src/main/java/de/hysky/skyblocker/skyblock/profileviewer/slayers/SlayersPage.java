@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class SlayersPage implements ProfileViewerPage {
 	private static final String[] SLAYERS = {"Zombie", "Spider", "Wolf", "Enderman", "Vampire", "Blaze"};
@@ -24,9 +24,9 @@ public class SlayersPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		for (int i = 0; i < slayerWidgets.size(); i++) {
-			slayerWidgets.get(i).render(context, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
+			slayerWidgets.get(i).extractRenderState(graphics, mouseX, mouseY, rootX, rootY + i * ROW_GAP);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class SlayersPage implements ProfileViewerPage {
 		try {
 			return pProfile.getAsJsonObject("slayer").getAsJsonObject("slayer_bosses")
 					.getAsJsonObject(slayer).get("xp").getAsLong();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return 0;
 		}
 	}

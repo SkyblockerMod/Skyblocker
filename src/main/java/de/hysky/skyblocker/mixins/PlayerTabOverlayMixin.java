@@ -11,7 +11,7 @@ import net.minecraft.client.gui.components.PlayerTabOverlay;
 @Mixin(PlayerTabOverlay.class)
 public class PlayerTabOverlayMixin {
 
-	@Inject(method = "renderPingIcon", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "extractPingIcon", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideLatencyIcon(CallbackInfo ci) {
 		if (Utils.isOnSkyblock()) ci.cancel();
 	}

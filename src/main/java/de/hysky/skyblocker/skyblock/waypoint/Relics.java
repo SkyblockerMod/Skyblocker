@@ -13,7 +13,7 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -44,7 +44,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Relics {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Relics.class);
@@ -59,7 +59,7 @@ public class Relics {
 		ClientLifecycleEvents.CLIENT_STARTED.register(Relics::loadRelics);
 		ClientLifecycleEvents.CLIENT_STOPPING.register(Relics::saveFoundRelics);
 		ClientCommandRegistrationCallback.EVENT.register(Relics::registerCommands);
-		WorldRenderExtractionCallback.EVENT.register(Relics::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(Relics::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Relics::onChatMessage);
 	}
 
@@ -89,7 +89,7 @@ public class Relics {
 					}
 				}
 				LOGGER.debug("[Skyblocker] Loaded found relics");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found relics", e);
 			}
@@ -100,7 +100,7 @@ public class Relics {
 		Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
 		for (ProfileAwareWaypoint relic : relics.values()) {
 			for (String profile : relic.foundProfiles) {
-				foundRelics.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundRelics.computeIfAbsent(profile, _ -> new HashSet<>());
 				foundRelics.get(profile).add(relic.pos);
 			}
 		}

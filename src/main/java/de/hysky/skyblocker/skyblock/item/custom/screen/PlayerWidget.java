@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.InventoryScreenInvoker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -38,15 +38,15 @@ public class PlayerWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 
 		float size = 64f;
 		Vector3f translation = new Vector3f(0, player.getBbHeight() / 2f + 0.0625f, 0);
 		Quaternionf rotation = new Quaternionf().rotationXYZ(-xRotation * Mth.DEG_TO_RAD, -yRotation * Mth.DEG_TO_RAD, FLIP_ROTATION);
 
 		EntityRenderState renderState = InventoryScreenInvoker.invokeExtractRenderState(this.player);
-		context.submitEntityRenderState(renderState, size, translation, rotation, null, getX(), getY(), this.getRight(), this.getBottom());
+		graphics.entity(renderState, size, translation, rotation, null, getX(), getY(), this.getRight(), this.getBottom());
 	}
 
 	@Override

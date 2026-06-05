@@ -139,7 +139,7 @@ public class LegacyStringNbtReader {
 			if ("false".equalsIgnoreCase(input)) {
 				return ByteTag.ZERO;
 			}
-		} catch (NumberFormatException var3) {
+		} catch (NumberFormatException _) {
 		}
 
 		return StringTag.valueOf(input);

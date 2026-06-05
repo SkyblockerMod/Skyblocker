@@ -2,8 +2,9 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,7 +21,7 @@ public class EventWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(List<Component> lines) {
-		if (!lines.isEmpty()) this.addComponent(Components.iconTextComponent(Ico.NTAG, lines.getFirst()));
-		if (lines.size() > 1) this.addComponent(Components.iconTextComponent(Ico.CLOCK, lines.get(1)));
+		if (!lines.isEmpty()) this.addComponent(Elements.iconTextComponent(Ico.NTAG, lines.getFirst()));
+		if (lines.size() > 1) this.addComponent(Elements.iconTextComponent(Ico.CLOCK, lines.get(1)));
 	}
 }

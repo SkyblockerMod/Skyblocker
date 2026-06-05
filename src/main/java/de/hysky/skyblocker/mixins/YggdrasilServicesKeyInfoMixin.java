@@ -35,7 +35,7 @@ public class YggdrasilServicesKeyInfoMixin {
 		} catch (IllegalArgumentException e) {
 			try {
 				return decode.call(decoder, signature.replaceAll("[^A-Za-z0-9+/=]", ""));
-			} catch (IllegalArgumentException e2) {
+			} catch (IllegalArgumentException _) {
 				if (Utils.isOnSkyblock()) {
 					if (REPLACEMENT_MAP.containsKey(signature)) {
 						return decode.call(decoder, REPLACEMENT_MAP.get(signature));

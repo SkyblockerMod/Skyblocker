@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.AABB;
 
 /**
  * Represents a waypoint with a position, type, color, alpha, line width, through walls, and enabled state.
@@ -20,6 +21,7 @@ public class Waypoint implements Renderable {
 	protected static final float DEFAULT_HIGHLIGHT_ALPHA = 0.5f;
 	protected static final float DEFAULT_LINE_WIDTH = 5f;
 	public final BlockPos pos;
+	private final transient AABB box;
 	final Supplier<Type> typeSupplier;
 	/**
 	 * The color components of the waypoint.
@@ -66,6 +68,7 @@ public class Waypoint implements Renderable {
 
 	public Waypoint(BlockPos pos, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, float lineWidth, boolean throughWalls, boolean enabled) {
 		this.pos = pos;
+		this.box = new AABB(this.pos);
 		this.typeSupplier = typeSupplier;
 		this.colorComponents = colorComponents;
 		this.alpha = alpha;
@@ -176,6 +179,13 @@ public class Waypoint implements Renderable {
 	}
 
 	/**
+	 * Used to get the box that will be used to render the waypoint.
+	 */
+	protected AABB getRenderBox() {
+		return this.box;
+	}
+
+	/**
 	 * Returns the render time color components of the waypoint.
 	 * <p>
 	 * Override this method for custom behavior.
@@ -203,20 +213,23 @@ public class Waypoint implements Renderable {
 	@Override
 	public void extractRendering(PrimitiveCollector collector) {
 		if (!shouldRender()) return;
-		final float[] colorComponents = getRenderColorComponents();
-		final boolean throughWalls = shouldRenderThroughWalls();
+
+		AABB box = getRenderBox();
+		float[] colorComponents = getRenderColorComponents();
+		boolean throughWalls = shouldRenderThroughWalls();
+
 		switch (getRenderType()) {
-			case WAYPOINT -> collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
+			case WAYPOINT -> collector.submitFilledBoxWithBeaconBeam(box, colorComponents, alpha, throughWalls);
 			case OUTLINED_WAYPOINT -> {
-				collector.submitFilledBoxWithBeaconBeam(pos, colorComponents, alpha, throughWalls);
-				collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
+				collector.submitFilledBoxWithBeaconBeam(box, colorComponents, alpha, throughWalls);
+				collector.submitOutlinedBox(box, colorComponents, lineWidth, throughWalls);
 			}
-			case HIGHLIGHT -> collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
+			case HIGHLIGHT -> collector.submitFilledBox(box, colorComponents, alpha, throughWalls);
 			case OUTLINED_HIGHLIGHT -> {
-				collector.submitFilledBox(pos, colorComponents, alpha, throughWalls);
-				collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
+				collector.submitFilledBox(box, colorComponents, alpha, throughWalls);
+				collector.submitOutlinedBox(box, colorComponents, lineWidth, throughWalls);
 			}
-			case OUTLINE -> collector.submitOutlinedBox(pos, colorComponents, lineWidth, throughWalls);
+			case OUTLINE -> collector.submitOutlinedBox(box, colorComponents, lineWidth, throughWalls);
 		}
 	}
 	// endregion

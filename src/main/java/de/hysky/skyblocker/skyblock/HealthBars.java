@@ -6,7 +6,7 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class HealthBars {
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthBars.class);
 	private static final Identifier HEALTH_BAR_BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_background.png");
 	private static final Identifier HEALTH_BAR_TEXTURE = Identifier.withDefaultNamespace("textures/gui/sprites/boss_bar/white_progress.png");
@@ -47,8 +48,8 @@ public class HealthBars {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(HealthBars::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(HealthBars::extractRendering);
 		ClientEntityEvents.ENTITY_UNLOAD.register(HealthBars::onEntityDespawn);
 	}
 
@@ -161,7 +162,7 @@ public class HealthBars {
 
 			cleanedText.append(parts.get(i));
 		}
-		armorStand.setCustomName(cleanedText);
+		armorStand.skyblocker$setCustomName(cleanedText);
 	}
 
 	/**
@@ -207,7 +208,7 @@ public class HealthBars {
 			}
 			cleanedText.append(parts.get(i));
 		}
-		armorStand.setCustomName(cleanedText);
+		armorStand.skyblocker$setCustomName(cleanedText);
 	}
 
 	/**

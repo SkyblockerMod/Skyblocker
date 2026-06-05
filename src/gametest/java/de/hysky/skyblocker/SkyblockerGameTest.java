@@ -31,7 +31,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 			});
 
 			// Save the current fancy status bars config and reset it to default
-			var config = context.computeOnClient(client -> {
+			var config = context.computeOnClient(_ -> {
 				var curConfig = FancyStatusBars.statusBars.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue().toJson())).toList();
 
 				int[] counts = new int[7];
@@ -46,11 +46,11 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 			});
 
 			// Take a screenshot and compare it
-			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getClientLevel().waitForChunksRender();
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_render").saveWithFileName("skyblocker_render"));
 
 			// Restore the fancy status bars config
-			context.runOnClient(client -> {
+			context.runOnClient(_ -> {
 				config.forEach(pair -> FancyStatusBars.statusBars.get(pair.key()).loadFromJson(pair.value()));
 				FancyStatusBars.placeBarsInPositioner();
 				FancyStatusBars.updatePositions(false);

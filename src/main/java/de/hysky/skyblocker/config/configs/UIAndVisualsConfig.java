@@ -155,9 +155,6 @@ public class UIAndVisualsConfig {
 
 		public Alignment alignment = Alignment.MIDDLE;
 
-		public float getRenderScale() {
-			return titleContainerScale * 0.03f;
-		}
 	}
 
 	public enum Direction {
@@ -183,7 +180,7 @@ public class UIAndVisualsConfig {
 
 		public int tabHudScale = 100;
 
-		public boolean showVanillaTabByDefault = false;
+		public boolean showVanillaTabByDefault = true;
 
 		public TabHudStyle style = TabHudStyle.FANCY;
 
@@ -237,15 +234,11 @@ public class UIAndVisualsConfig {
 	}
 
 	public enum NameSorting {
-		DEFAULT,
+		DEFAULT((_, _) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
 
 		public final Comparator<PlayerInfo> comparator;
-
-		NameSorting() {
-			this(null);
-		}
 
 		NameSorting(Comparator<PlayerInfo> comparator) {
 			this.comparator = comparator;
@@ -304,12 +297,16 @@ public class UIAndVisualsConfig {
 	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	public static class LegacyBarPositions {
+		@Deprecated
 		public LegacyBarPosition healthBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition manaBarPosition = LegacyBarPosition.LAYER1;
 
+		@Deprecated
 		public LegacyBarPosition defenceBarPosition = LegacyBarPosition.RIGHT;
 
+		@Deprecated
 		public LegacyBarPosition experienceBarPosition = LegacyBarPosition.LAYER2;
 	}
 
@@ -334,6 +331,8 @@ public class UIAndVisualsConfig {
 		public boolean allowSkippingWaypoints = true;
 
 		public boolean allowGoingBackwards = true;
+
+		public float waypointActivationRadius = 2f;
 
 		public boolean enableChatWaypoints = true;
 	}

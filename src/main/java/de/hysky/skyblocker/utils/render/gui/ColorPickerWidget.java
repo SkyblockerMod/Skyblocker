@@ -2,9 +2,9 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import java.awt.Color;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -178,30 +178,30 @@ public class ColorPickerWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		int color = 0x80_60_60_60;
 		// Hue
-		context.fill(hRect.left() - 1, hRect.top() - 1, hRect.right() + 1, hRect.bottom() + 1, color);
+		graphics.fill(hRect.left() - 1, hRect.top() - 1, hRect.right() + 1, hRect.bottom() + 1, color);
 		for (int i = 0; i < rainbowColors.length; i++) {
 			int startColor = rainbowColors[i];
 			int endColor = rainbowColors[(i + 1) % rainbowColors.length];
 			float segmentLength = (float) hRect.width() / rainbowColors.length;
 			float startX = hRect.left() + segmentLength * i;
 			float endX = hRect.left() + segmentLength * (i + 1);
-			HudHelper.drawHorizontalGradient(context, startX, hRect.top(), endX, hRect.bottom(), startColor, endColor);
+			GuiHelper.horizontalGradient(graphics, startX, hRect.top(), endX, hRect.bottom(), startColor, endColor);
 		}
-		drawThumb(context, hRect, (int) hThumbX);
+		drawThumb(graphics, hRect, (int) hThumbX);
 
 		// Light and saturation or whatever
-		context.fill(svRect.left() - 1, svRect.top() - 1, svRect.right() + 1, svRect.bottom() + 1, color);
+		graphics.fill(svRect.left() - 1, svRect.top() - 1, svRect.right() + 1, svRect.bottom() + 1, color);
 		int pickerX = svRect.left();
 		int pickerY = svRect.top();
 		int pickerEndX = svRect.right();
 		int pickerEndY = svRect.bottom();
-		HudHelper.drawHorizontalGradient(context, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
-		context.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0xFF_00_00_00);
+		GuiHelper.horizontalGradient(graphics, pickerX, pickerY, pickerEndX, pickerEndY, -1, svColor);
+		graphics.fillGradient(pickerX, pickerY, pickerEndX, pickerEndY, 1, 0xFF_00_00_00);
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, SV_THUMB_TEXTURE,
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SV_THUMB_TEXTURE,
 				svRect.left() + (int) svThumbX - 2,
 				svRect.top() + (int) svThumbY - 2,
 				5, 5
@@ -209,37 +209,37 @@ public class ColorPickerWidget extends AbstractWidget {
 
 		// Alpha
 		if (hasAlpha) {
-			context.fill(aRect.left() - 1, aRect.top() - 1, aRect.right() + 1, aRect.bottom() + 1, color);
-			HudHelper.drawHorizontalGradient(context, aRect.left(), aRect.top(), aRect.right(), aRect.bottom(), CommonColors.BLACK, CommonColors.WHITE);
+			graphics.fill(aRect.left() - 1, aRect.top() - 1, aRect.right() + 1, aRect.bottom() + 1, color);
+			GuiHelper.horizontalGradient(graphics, aRect.left(), aRect.top(), aRect.right(), aRect.bottom(), CommonColors.BLACK, CommonColors.WHITE);
 
-			drawThumb(context, aRect, (int) aThumbX);
+			drawThumb(graphics, aRect, (int) aThumbX);
 
 		}
 
 		// Preview
-		context.fill(getX(), getY(), svRect.left() - 2, svRect.bottom() + 1, color);
-		context.fill(getX() + 1, getY() + 1, svRect.left() - 3, svRect.bottom(), argbColor);
+		graphics.fill(getX(), getY(), svRect.left() - 2, svRect.bottom() + 1, color);
+		graphics.fill(getX() + 1, getY() + 1, svRect.left() - 3, svRect.bottom(), argbColor);
 
 		// Cursor changes (functions similar to Vanilla's slider widgets)
 		if (this.isHovered()) {
 			// Apply hand cursor to indicate that the element can be interacted with
 			if (this.svRect.containsPoint(mouseX, mouseY) || this.hRect.containsPoint(mouseX, mouseY) || this.aRect.containsPoint(mouseX, mouseY)) {
-				context.requestCursor(CursorTypes.POINTING_HAND);
+				graphics.requestCursor(CursorTypes.POINTING_HAND);
 			}
 
 			// Apply crosshair or resize east/west to indicate the element is being interacted with
 			if (this.draggingSV) {
-				context.requestCursor(CursorTypes.CROSSHAIR);
+				graphics.requestCursor(CursorTypes.CROSSHAIR);
 			} else if (this.draggingH || this.draggingA) {
-				context.requestCursor(CursorTypes.RESIZE_EW);
+				graphics.requestCursor(CursorTypes.RESIZE_EW);
 			}
 		}
 	}
 
-	private void drawThumb(GuiGraphics context, ScreenRectangle rect, int thumbX) {
-		context.fill(rect.left() + thumbX - 1, rect.top(), rect.left() + thumbX + 2, rect.bottom(), CommonColors.BLACK);
-		context.fill(rect.left() + thumbX, rect.top() - 1, rect.left() + thumbX + 1, rect.bottom() + 1, CommonColors.BLACK);
-		context.fill(rect.left() + thumbX, rect.top(), rect.left() + thumbX + 1, rect.bottom(), CommonColors.WHITE);
+	private void drawThumb(GuiGraphicsExtractor graphics, ScreenRectangle rect, int thumbX) {
+		graphics.fill(rect.left() + thumbX - 1, rect.top(), rect.left() + thumbX + 2, rect.bottom(), CommonColors.BLACK);
+		graphics.fill(rect.left() + thumbX, rect.top() - 1, rect.left() + thumbX + 1, rect.bottom() + 1, CommonColors.BLACK);
+		graphics.fill(rect.left() + thumbX, rect.top(), rect.left() + thumbX + 1, rect.bottom(), CommonColors.WHITE);
 	}
 
 	public int getARGBColor() {

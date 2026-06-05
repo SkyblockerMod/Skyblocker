@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.configs;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -18,9 +19,11 @@ public class HelperConfig {
 
 	public boolean enableCopyUnderbidPrice = false;
 
-	public boolean enableBuildersWandPreview = true;
-
 	public boolean enableAnvilHelper = true;
+
+	public boolean enableAccessoriesHelperWidget = true;
+
+	public BuildersWand buildersWand = new BuildersWand();
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
 
@@ -41,6 +44,12 @@ public class HelperConfig {
 	public ItemPrice itemPrice = new ItemPrice();
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
+
+	public static class BuildersWand {
+		public boolean enableBuildersWandPreview = true;
+
+		public float previewOpacity = 0.5f;
+	}
 
 	public static class MythologicalRitual {
 		public boolean enableMythologicalRitualHelper = true;
@@ -91,13 +100,15 @@ public class HelperConfig {
 
 		public boolean seaCreatureTimerNotification = true;
 
-		public int seaCreatureCap = 30;
+		@Deprecated
+		public transient int seaCreatureCap;
 
 		public boolean seaCreatureCapNotification = true;
 
 		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
 
 		public enum FishingHookDisplay {
+			@EnumDisabledValue
 			OFF,
 			CROSSHAIR,
 			HUD;
@@ -152,7 +163,8 @@ public class HelperConfig {
 	public static class ItemPrice {
 		public boolean enableItemPriceLookup = true;
 
-		public boolean enableItemPriceRefresh = true;
+		@Deprecated
+		public transient boolean enableItemPriceRefresh;
 	}
 
 	public static class GreatSpookEvent {

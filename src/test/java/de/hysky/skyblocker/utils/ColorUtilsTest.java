@@ -12,8 +12,8 @@ public class ColorUtilsTest {
 
 	@Test
 	void testInterpolate() {
-		Assertions.assertEquals(0x00FE00, ColorUtils.interpolate(0.5, 0xFF0000, 0x00FF00, 0x0000FF));
+		Assertions.assertEquals(0x00FF00, ColorUtils.interpolate(0.5, 0xFF0000, 0x00FF00, 0x0000FF));
 		Assertions.assertEquals(0xD0A800, ColorUtils.interpolate(0.25, 0xFF0000, 0x00FF00, 0x0000FF));
-		Assertions.assertEquals(0x00A9BE, ColorUtils.interpolate(0.75, 0xFF0000, 0x00FF00, 0x0000FF));
+		Assertions.assertEquals(0x00AABF, ColorUtils.interpolate(0.75, 0xFF0000, 0x00FF00, 0x0000FF));
 	}
 }

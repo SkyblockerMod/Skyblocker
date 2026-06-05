@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
@@ -58,7 +58,7 @@ public abstract class ColoredItemBackground<T> {
 	 * @param y        Slot y position
 	 * @param colorKey The color key, e.g. an enum or RGB integer
 	 */
-	protected abstract void draw(GuiGraphics context, int x, int y, T colorKey);
+	protected abstract void extract(GuiGraphicsExtractor graphics, int x, int y, T colorKey);
 
 	/**
 	 * Whether this background renderer is enabled.
@@ -78,10 +78,10 @@ public abstract class ColoredItemBackground<T> {
 	 * @param x       The slot's x position
 	 * @param y       The slot's y position
 	 */
-	public final void tryDraw(ItemStack stack, GuiGraphics context, int x, int y) {
+	public final void tryExtract(ItemStack stack, GuiGraphicsExtractor graphics, int x, int y) {
 		T value = getColorKey(stack, cache);
 		if (value != null) {
-			draw(context, x, y, value);
+			extract(graphics, x, y, value);
 		}
 	}
 

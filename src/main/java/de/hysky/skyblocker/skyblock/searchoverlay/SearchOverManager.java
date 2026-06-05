@@ -9,12 +9,15 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
@@ -31,7 +34,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.apache.commons.lang3.function.Consumers;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +49,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SearchOverManager {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -70,6 +72,7 @@ public class SearchOverManager {
 	private static HashSet<String> bazaarItems = new HashSet<>();
 	private static HashSet<String> auctionItems = new HashSet<>();
 	private static HashSet<String> auctionPets = new HashSet<>();
+	private static HashSet<String> level200Pets = new HashSet<>();
 	private static HashSet<String> starableItems = new HashSet<>();
 	private static HashMap<String, String> namesToNeuId = new HashMap<>();
 
@@ -86,8 +89,8 @@ public class SearchOverManager {
 
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-			dispatcher.register(literal("ahs").executes(context -> startCommand(true, "")));
-			dispatcher.register(literal("bzs").executes(context -> startCommand(false, "")));
+			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
 
 			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
@@ -123,6 +126,7 @@ public class SearchOverManager {
 		HashSet<String> bazaarItems = new HashSet<>();
 		HashSet<String> auctionItems = new HashSet<>();
 		HashSet<String> auctionPets = new HashSet<>();
+		HashSet<String> level200Pets = new HashSet<>();
 		HashSet<String> starableItems = new HashSet<>();
 		HashMap<String, String> namesToNeuId = new HashMap<>();
 
@@ -175,15 +179,21 @@ public class SearchOverManager {
 
 			for (Object2DoubleMap.Entry<String> entry : TooltipInfoType.THREE_DAY_AVERAGE.getData().object2DoubleEntrySet()) {
 				String id = entry.getKey();
+				id = ItemUtils.getNeuIdFromApiId(id);
 				//look up in NEU repo.
-				id = id.split("[+-]")[0];
+				String[] parts = id.split("[+-]");
+				id = parts[0];
 				NEUItem neuItem = NEURepoManager.getItemByNeuId(id);
 				if (neuItem != null) {
 					String name = ChatFormatting.stripFormatting(neuItem.getDisplayName());
 					//add names that are pets to the list of pets to work with the lvl 100 button
 					if (name != null && name.startsWith(PET_NAME_START)) {
 						name = name.replace(PET_NAME_START, "");
-						auctionPets.add(name.toLowerCase(Locale.ENGLISH));
+						String petName = name.toLowerCase(Locale.ENGLISH);
+						auctionPets.add(petName);
+						if (parts.length >= 2 && parts[1].equals("200")) {
+							level200Pets.add(petName);
+						}
 					}
 					//if it has essence cost add to starable items
 					if (name != null && essenceCosts.contains(neuItem.getSkyblockItemId())) {
@@ -200,6 +210,7 @@ public class SearchOverManager {
 		SearchOverManager.bazaarItems = bazaarItems;
 		SearchOverManager.auctionItems = auctionItems;
 		SearchOverManager.auctionPets = auctionPets;
+		SearchOverManager.level200Pets = level200Pets;
 		SearchOverManager.starableItems = starableItems;
 		SearchOverManager.namesToNeuId = namesToNeuId;
 	}
@@ -259,6 +270,7 @@ public class SearchOverManager {
 				.filter(MuseumItemCache::hasItemInMuseum)
 				.map(ItemRepository::getItemStack)
 				.filter(Objects::nonNull)
+				.map(FlexibleItemStack::getStackOrThrow)
 				.map(ItemStack::getHoverName)
 				.map(Component::getString);
 
@@ -311,7 +323,13 @@ public class SearchOverManager {
 	}
 
 	private static String getItemId(String name) {
-		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) return namesToNeuId.get(name);
+		if (name.isEmpty()) return "";
+		if (location != SearchLocation.MUSEUM || !MuseumItemCache.ARMOR_NAMES.containsValue(name)) {
+			return namesToNeuId.computeIfAbsent(name, str ->
+					ItemRepository.getItemsStream().filter(stack -> stack.getStackOrThrow().getHoverName().getString().equals(str))
+							.map(SkyblockerStack::getNeuName).findFirst().orElse("")
+			);
+		}
 
 		// Handle Id for Armor/Equipment Donation Sets
 		String armorId = "";
@@ -339,12 +357,12 @@ public class SearchOverManager {
 			case BAZAAR -> history = config.bazaarHistory;
 			case MUSEUM -> history = config.museumHistory;
 			default -> {
-				return null;
+				return "";
 			}
 		}
 
 		if (history.size() > index) return history.get(index);
-		return null;
+		return "";
 	}
 
 	protected static String getHistoryId(int index) {
@@ -352,21 +370,23 @@ public class SearchOverManager {
 	}
 
 	protected static void removeHistoryItem(int index) {
-		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
-		List<String> history;
+		SkyblockerConfigManager.updateOnly(fullConfig -> {
+			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
+			List<String> history;
 
-		switch (location) {
-			case AUCTION -> history = config.auctionHistory;
-			case BAZAAR -> history = config.bazaarHistory;
-			case MUSEUM -> history = config.museumHistory;
-			default -> {
-				return;
+			switch (location) {
+				case AUCTION -> history = config.auctionHistory;
+				case BAZAAR -> history = config.bazaarHistory;
+				case MUSEUM -> history = config.museumHistory;
+				default -> {
+					return;
+				}
 			}
-		}
 
-		if (history.size() > index) {
-			history.remove(index);
-		}
+			if (history.size() > index) {
+				history.remove(index);
+			}
+		});
 	}
 
 	private static List<String> addToHistory(List<String> history, String search, int historyLength) {
@@ -389,14 +409,14 @@ public class SearchOverManager {
 	 */
 	@SuppressWarnings("incomplete-switch")
 	private static void saveHistory() {
-		//save to history
-		UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
-		switch (location) {
-			case AUCTION -> config.auctionHistory = addToHistory(config.auctionHistory, search, config.historyLength);
-			case BAZAAR -> config.bazaarHistory = addToHistory(config.bazaarHistory, search, config.historyLength);
-			case MUSEUM -> config.museumHistory = addToHistory(config.museumHistory, search, config.historyLength);
-		}
-		SkyblockerConfigManager.update(Consumers.nop());
+		SkyblockerConfigManager.updateOnly(fullConfig -> {
+			UIAndVisualsConfig.SearchOverlay config = fullConfig.uiAndVisuals.searchOverlay;
+			switch (location) {
+				case AUCTION -> config.auctionHistory = addToHistory(config.auctionHistory, search, config.historyLength);
+				case BAZAAR -> config.bazaarHistory = addToHistory(config.bazaarHistory, search, config.historyLength);
+				case MUSEUM -> config.museumHistory = addToHistory(config.museumHistory, search, config.historyLength);
+			}
+		});
 	}
 
 	/**
@@ -407,12 +427,16 @@ public class SearchOverManager {
 		if (!search.isEmpty()) {
 			saveHistory();
 		}
+
+		// Write history to the config
+		SkyblockerConfigManager.update(_ -> {});
+
 		//add pet level or dungeon starts if in ah
 		if (location == SearchLocation.AUCTION) {
 			addExtras();
 		}
-		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase(Locale.ENGLISH).contains("null")) {
+		// Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isCommand && search.toLowerCase(Locale.ENGLISH).startsWith("null")) {
 			search = "\"%s\"".formatted(search);
 		}
 		//push
@@ -431,11 +455,8 @@ public class SearchOverManager {
 		if (maxPetLevel) {
 			String lcSearch = search.toLowerCase(Locale.ENGLISH);
 			if (auctionPets.contains(lcSearch)) {
-				if (lcSearch.endsWith("dragon") && !lcSearch.startsWith("ender")) {
-					search = "[Lvl 200] " + search;
-				} else {
-					search = "[Lvl 100] " + search;
-				}
+				int maxLevel = level200Pets.contains(lcSearch) ? 200 : 100;
+				search = "[Lvl %d] %s".formatted(maxLevel, search);
 			}
 		} else {
 			// still filter for only pets

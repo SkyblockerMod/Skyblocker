@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 
@@ -44,7 +46,7 @@ public class CustomHelmetTextures {
 					.forEach(stack -> {
 						String texture = ItemUtils.getHeadTexture(stack);
 						if (texture.isEmpty() || !seen.add(texture)) return;
-						String name = cleanName(stack.getHoverName().getString());
+						String name = cleanName(stack.get(DataComponents.CUSTOM_NAME).getString());
 						TEXTURES.add(new NamedTexture(name, texture, stack.getNeuName()));
 					});
 

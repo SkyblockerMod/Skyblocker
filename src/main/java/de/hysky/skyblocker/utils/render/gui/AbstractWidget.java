@@ -9,6 +9,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 /**
  * Implements a few things so you don't have to!
  */
+// FIXME This should really be renamed
 public abstract class AbstractWidget implements LayoutElement, GuiEventListener, Renderable {
 
 	protected int w = 0, h = 0;

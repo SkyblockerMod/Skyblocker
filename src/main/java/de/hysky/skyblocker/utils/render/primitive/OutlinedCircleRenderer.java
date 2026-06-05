@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.OutlinedCircleRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class OutlinedCircleRenderer implements PrimitiveRenderer<OutlinedCircleRenderState> {
 	protected static final OutlinedCircleRenderer INSTANCE = new OutlinedCircleRenderer();

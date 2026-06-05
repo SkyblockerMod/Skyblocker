@@ -2,12 +2,13 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.PlainTextComponent;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,11 +42,11 @@ public class FireSaleWidget extends TabHudWidget {
 				float total = Float.parseFloat(m.group("total")) * 1000;
 				Component prgressTxt = Component.literal(String.format("%s/%.0f", avail, total));
 				float pcnt = (Float.parseFloat(avail) / (total)) * 100f;
-				this.addComponent(Components.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
+				this.addComponent(Elements.progressComponent(Ico.GOLD, itemTxt, prgressTxt, pcnt));
 			} else if (text.getString().toLowerCase(Locale.ENGLISH) instanceof String s && (s.contains("starts") || s.contains("starting"))) {
-				this.addComponent(Components.iconTextComponent(Ico.CLOCK, text));
+				this.addComponent(Elements.iconTextComponent(Ico.CLOCK, text));
 			} else {
-				this.addComponent(new PlainTextComponent(text));
+				this.addComponent(new PlainTextElement(text));
 			}
 		}
 	}

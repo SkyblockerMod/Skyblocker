@@ -17,16 +17,16 @@ import net.minecraft.util.Util;
 
 public class GlowRenderer implements AutoCloseable {
 	private static GlowRenderer instance = null;
-	private final Minecraft client;
-	private final OutlineBufferSource glowOutlineVertexConsumers;
+	private final Minecraft minecraft;
+	private final OutlineBufferSource glowBufferSource;
 	private GpuTexture glowDepthTexture;
 	private GpuTextureView glowDepthTextureView;
 	private boolean isRenderingGlow = false;
 
 	private GlowRenderer() {
-		this.client = Minecraft.getInstance();
-		this.glowOutlineVertexConsumers = Util.make(new OutlineBufferSource(), outlineVertexConsumers -> {
-			((OutlineBufferSourceAccessor) outlineVertexConsumers).setOutlineBufferSource(new GlowVertexConsumerProvider(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE)));
+		this.minecraft = Minecraft.getInstance();
+		this.glowBufferSource = Util.make(new OutlineBufferSource(), outlineBufferSource -> {
+			((OutlineBufferSourceAccessor) outlineBufferSource).setOutlineBufferSource(new GlowBufferSource(new ByteBufferBuilder(RenderType.TRANSIENT_BUFFER_SIZE)));
 		});
 	}
 
@@ -38,13 +38,13 @@ public class GlowRenderer implements AutoCloseable {
 		return instance;
 	}
 
-	public OutlineBufferSource getGlowVertexConsumers() {
-		return this.glowOutlineVertexConsumers;
+	public OutlineBufferSource getGlowBufferSource() {
+		return this.glowBufferSource;
 	}
 
 	public void updateGlowDepthTexDepth() {
 		tryUpdateDepthTexture();
-		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.client.getMainRenderTarget().getDepthTexture(), this.glowDepthTexture, 0, 0, 0, 0, 0, this.glowDepthTexture.getWidth(0), this.glowDepthTexture.getHeight(0));
+		RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.minecraft.getMainRenderTarget().getDepthTexture(), this.glowDepthTexture, 0, 0, 0, 0, 0, this.glowDepthTexture.getWidth(0), this.glowDepthTexture.getHeight(0));
 	}
 
 	private void startRenderingGlow() {
@@ -64,8 +64,8 @@ public class GlowRenderer implements AutoCloseable {
 	}
 
 	private void tryUpdateDepthTexture() {
-		int neededWidth = this.client.getWindow().getWidth();
-		int neededHeight = this.client.getWindow().getHeight();
+		int neededWidth = this.minecraft.getWindow().getWidth();
+		int neededHeight = this.minecraft.getWindow().getHeight();
 
 		//If the texture hasn't been created or needs resizing
 		if (this.glowDepthTexture == null || this.glowDepthTexture.getWidth(0) != neededWidth || this.glowDepthTexture.getHeight(0) != neededHeight) {
@@ -90,29 +90,29 @@ public class GlowRenderer implements AutoCloseable {
 		}
 	}
 
-	private static class GlowVertexConsumerProvider extends MultiBufferSource.BufferSource {
+	private static class GlowBufferSource extends MultiBufferSource.BufferSource {
 
-		protected GlowVertexConsumerProvider(ByteBufferBuilder allocator) {
-			super(allocator, Object2ObjectSortedMaps.emptyMap());
+		protected GlowBufferSource(ByteBufferBuilder sharedBuffer) {
+			super(sharedBuffer, Object2ObjectSortedMaps.emptyMap());
 		}
 
 		@Override
-		public VertexConsumer getBuffer(RenderType renderLayer) {
-			if (this.startedBuilders.get(renderLayer) != null && !renderLayer.canConsolidateConsecutiveGeometry()) {
+		public VertexConsumer getBuffer(RenderType renderType) {
+			if (this.startedBuilders.get(renderType) != null && !renderType.canConsolidateConsecutiveGeometry()) {
 				getInstance().startRenderingGlow();
-				VertexConsumer buffer = super.getBuffer(renderLayer);
+				VertexConsumer buffer = super.getBuffer(renderType);
 				getInstance().stopRenderingGlow();
 
 				return buffer;
 			}
 
-			return super.getBuffer(renderLayer);
+			return super.getBuffer(renderType);
 		}
 
 		@Override
-		public void endBatch(RenderType layer) {
+		public void endBatch(RenderType type) {
 			getInstance().startRenderingGlow();
-			super.endBatch(layer);
+			super.endBatch(type);
 			getInstance().stopRenderingGlow();
 		}
 	}

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
@@ -196,11 +196,11 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(minecraft.font, targetName, getContentXMiddle() - 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
-			context.drawCenteredString(minecraft.font, replacementName, getContentXMiddle() + 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			graphics.centeredText(minecraft.font, targetName, getContentXMiddle() - 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			graphics.centeredText(minecraft.font, replacementName, getContentXMiddle() + 85, getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 			if (tooltip != null && isMouseOver(mouseX, mouseY)) {
-				context.setTooltipForNextFrame(tooltip, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(tooltip, mouseX, mouseY);
 			}
 		}
 	}
@@ -233,8 +233,8 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(minecraft.font, text, this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			graphics.centeredText(minecraft.font, text, this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 		}
 	}
 
@@ -256,10 +256,10 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		protected abstract void save();
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
-			replacement.render(context, mouseX, mouseY, deltaTicks);
-			context.drawCenteredString(minecraft.font, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+			replacement.extractRenderState(graphics, mouseX, mouseY, a);
+			graphics.centeredText(minecraft.font, "→", this.getX() + this.getWidth() / 2, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 		}
 
 		@Override
@@ -316,10 +316,10 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			super.renderContent(context, mouseX, mouseY, hovered, deltaTicks);
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			super.extractContent(graphics, mouseX, mouseY, hovered, a);
 			target.setY(this.getY() + TEXT_FIELD_PADDING);
-			target.render(context, mouseX, mouseY, deltaTicks);
+			target.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 
 		@Override
@@ -352,7 +352,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 							: Component.translatable("narrator.controls.bound", replacement.getValue(), textSupplier.get()),
 					ShortcutsConfigListWidget.this::updateKeybinds);
 			// The duplicate warning tooltip displays replacement commands and needs to be updated.
-			replacement.setResponder(command -> ShortcutsConfigListWidget.this.updateKeybinds());
+			replacement.setResponder(_ -> ShortcutsConfigListWidget.this.updateKeybinds());
 			children = List.of(keybindButton, replacement);
 			update();
 		}
@@ -392,12 +392,12 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#renderContent(GuiGraphics, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
 		 */
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			super.renderContent(context, mouseX, mouseY, hovered, deltaTicks);
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			super.extractContent(graphics, mouseX, mouseY, hovered, a);
 			keybindButton.setY(this.getY() + TEXT_FIELD_PADDING);
-			keybindButton.render(context, mouseX, mouseY, deltaTicks);
+			keybindButton.extractRenderState(graphics, mouseX, mouseY, a);
 			if (duplicate) {
-				context.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), CommonColors.YELLOW);
+				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), CommonColors.YELLOW);
 			}
 		}
 

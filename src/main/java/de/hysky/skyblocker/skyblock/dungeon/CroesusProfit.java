@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jspecify.annotations.Nullable;
@@ -19,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -49,14 +52,14 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		ItemStack bestChest = null, secondBestChest = null;
 		double bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
 		// Only suggest buying a second dungeon chest if you get double the key's value back so that its worth it (less is pointless)
-		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY") * 2;
+		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY").orElse(0) * 2;
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
 			String name = stack.getHoverName().getString();
 
 			if (DUNGEON_CHEST_PATTERN.matcher(name).matches()) {
-				double value = getChestValue(stack);
+				double value = getChestValue(stack).leftDouble();
 				if (value <= 0) continue;
 
 				if (value > bestValue) {
@@ -69,7 +72,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 					secondBestValue = value;
 				}
 			} else if (KUUDRA_CHEST_PATTERN.matcher(name).matches()) {
-				double value = getChestValue(stack);
+				double value = getChestValue(stack).leftDouble();
 				if (value <= 0) continue;
 
 				if (value > bestValue) {
@@ -97,9 +100,13 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		if (focusedSlot == null || !focusedSlot.hasItem()) return;
 		if (!focusedSlot.getItem().is(Items.PLAYER_HEAD)) return;
 
-		double value = getChestValue(focusedSlot.getItem());
+		DoubleBooleanPair valueData = getChestValue(focusedSlot.getItem());
+		MutableComponent valueString = Component.literal(Formatters.INTEGER_NUMBERS.format(valueData.leftDouble()));
+		if (valueData.rightBoolean()) {
+			valueString = valueString.append(" ").append(Component.translatable("skyblocker.dungeons.croesusHelper.incompletePriceData"));
+		}
 		lines.add(Constants.PREFIX.get().append(
-				Component.translatable("skyblocker.dungeons.croesusHelper.chestValue", Formatters.INTEGER_NUMBERS.format(value))
+				Component.translatable("skyblocker.dungeons.croesusHelper.chestValue", valueString)
 		));
 	}
 
@@ -108,9 +115,11 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return 16;
 	}
 
-	private double getChestValue(ItemStack chest) {
+	@SuppressWarnings("deprecation")
+	private DoubleBooleanPair getChestValue(ItemStack chest) {
 		double chestValue = 0;
 		int chestPrice = 0;
+		boolean hasIncompleteData = false;
 
 		boolean processingContents = false;
 		for (Component line : ItemUtils.getLore(chest)) {
@@ -163,7 +172,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 								amount *= ChestValue.computeCrimsonEssenceMultiplier();
 							}
 
-							chestValue += getItemPrice("ESSENCE_" + type) * amount;
+							OptionalDouble priceData = getItemPrice("ESSENCE_" + type);
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -176,7 +187,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 							if (attribute == null) continue;
 
-							chestValue += getItemPrice(attribute.apiId()) * shards;
+							OptionalDouble priceData = getItemPrice(attribute.apiId());
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * shards;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -186,7 +199,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						if (matcher.matches()) {
 							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
 
-							chestValue += getItemPrice("KUUDRA_TEETH") * amount;
+							OptionalDouble priceData = getItemPrice("KUUDRA_TEETH");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -196,13 +211,23 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						if (matcher.matches()) {
 							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
 
-							chestValue += getItemPrice("HEAVY_PEARL") * amount;
+							OptionalDouble priceData = getItemPrice("HEAVY_PEARL");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
-					// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-					case String s when s.equals("Spirit") && line.getStyle().getColor() == TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE) -> {
-						chestValue += getItemPrice("Spirit Epic");
+					case String s when s.equals("[Lvl 1] Spirit") -> {
+						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
+						if (line.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
+							OptionalDouble priceData = getItemPrice("Spirit Epic");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
+						} else {
+							OptionalDouble priceData = getItemPrice("Spirit Legendary");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
+						}
 					}
 
 					default -> {
@@ -210,25 +235,29 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						// in terms of actually selling the item (for both Dungeons and Kuudra) .
 						String adjusted = lineString.replace("✪", "").trim();
 
-						chestValue += getItemPrice(adjusted);
+						OptionalDouble priceData = getItemPrice(adjusted);
+						if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+						else hasIncompleteData = true;
 					}
 				}
 			}
 		}
 
-		return chestValue - chestPrice;
+		return DoubleBooleanPair.of(chestValue - chestPrice, hasIncompleteData);
 	}
 
 	/**
 	 * @param itemName The item's display name or API Id
 	 *                 The API id is used for Essences, Shards, Kuudra Teeth, Heavy Pearls, and the Dungeon Chest Key.
 	 */
-	private double getItemPrice(String itemName) {
+	private OptionalDouble getItemPrice(String itemName) {
 		String dungeonApiId = DUNGEON_DROPS_NAME_TO_API_ID.get(itemName);
 		String kuudraApiId = KUUDRA_DROPS_NAME_TO_API_ID.get(itemName);
 		String apiIdToUse = dungeonApiId != null ? dungeonApiId : kuudraApiId != null ? kuudraApiId : itemName;
 
-		return ItemUtils.getItemPrice(apiIdToUse).leftDouble();
+		if (ChestValue.WORTHLESS_ITEMS.contains(apiIdToUse)) return OptionalDouble.empty();
+
+		return ItemUtils.getItemPrice(apiIdToUse);
 	}
 
 	// I did a thing :(
@@ -295,8 +324,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		Map.entry("Spirit Sword", "SPIRIT_SWORD"),    // F4 M4
 		Map.entry("Spirit Shortbow", "ITEM_SPIRIT_BOW"),
 		Map.entry("Spirit Boots", "THORNS_BOOTS"),
-		Map.entry("Spirit", "LVL_1_LEGENDARY_SPIRIT"),    // Spirit pet (Legendary)
+		Map.entry("Spirit Legendary", "LVL_1_LEGENDARY_SPIRIT"),    // Spirit pet (Legendary)
 		Map.entry("Spirit Epic", "LVL_1_EPIC_SPIRIT"),
+		Map.entry("Spirit Mask", "SPIRIT_MASK"),      // M4 Only
 
 		Map.entry("Second Master Star", "SECOND_MASTER_STAR"),
 		Map.entry("Spirit Wing", "SPIRIT_WING"),
@@ -439,6 +469,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			Map.entry("Dusty Travel Scroll to the Kuudra Skull", "NETHER_FORTRESS_BOSS_TRAVEL_SCROLL"),
 			Map.entry("Mandraa", "MANDRAA"),
 			Map.entry("Kuudra Mandible", "KUUDRA_MANDIBLE"),
+			Map.entry("Kuudra Tentacle", "KUUDRA_TENTACLE"),
 			Map.entry("Burning Kuudra Core", "BURNING_KUUDRA_CORE"),
 			Map.entry("Wheel of Fate", "WHEEL_OF_FATE"),
 			Map.entry("Ananke Feather", "ANANKE_FEATHER"),

@@ -22,6 +22,7 @@ public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId != 22) return List.of();
+		@SuppressWarnings("deprecation")
 		List<Component> lore = ItemUtils.getLore(stack);
 		if (lore.isEmpty()) return List.of();
 		List<Component> siblings = lore.getFirst().getSiblings();

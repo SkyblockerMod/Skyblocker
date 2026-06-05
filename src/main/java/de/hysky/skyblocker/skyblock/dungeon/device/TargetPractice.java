@@ -10,7 +10,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
@@ -35,8 +35,8 @@ public class TargetPractice {
 	@Init
 	public static void init() {
 		WorldEvents.BLOCK_STATE_UPDATE.register(TargetPractice::onBlockStateUpdate);
-		WorldRenderExtractionCallback.EVENT.register(TargetPractice::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(TargetPractice::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {

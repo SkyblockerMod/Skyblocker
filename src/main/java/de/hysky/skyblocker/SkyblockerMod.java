@@ -46,6 +46,7 @@ public class SkyblockerMod implements ClientModInitializer {
 	 */
 	@Override
 	public void onInitializeClient() {
+		Utils.isOnSkyblock();
 		ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 		SkyblockerConfigManager.init();
 		ConfigNullFieldsFix.init(); //DO NOT INIT ANY CLASS THAT USES CONFIG FIELDS BEFORE THIS!

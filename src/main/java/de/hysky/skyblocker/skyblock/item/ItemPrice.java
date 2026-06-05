@@ -8,10 +8,12 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class ItemPrice {
-	public static final KeyMapping ITEM_PRICE_LOOKUP = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+	public static final KeyMapping ITEM_PRICE_LOOKUP = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.itemPriceLookup",
 			GLFW.GLFW_KEY_F6,
 			SkyblockerMod.KEYBINDING_CATEGORY
@@ -41,15 +43,15 @@ public class ItemPrice {
 	 *     This is probably due to how fabric adds key binding options to the key binding options screen.
 	 *     Since {@link #ITEM_PRICE_LOOKUP} is a static field, it is initialized lazily, which means it is only initialized when the class is accessed for the first time.
 	 *     That first time is generally when the player is already in the game and tries to use the key bindings in a handled screen, which is much later than the possible initialization period.
-	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl#registerKeyBinding(KeyMapping) KeyBindingRegistryImpl#registerKeybinding} and the game to crash.
+	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl#registerKeyMapping(KeyMapping) KeyMappingRegistryImpl#registerKeyMapping(KeyMapping)} and the game to crash.
 	 * </p>
 	 */
-	@SuppressWarnings("UnstableApiUsage") //For the javadoc reference.
+	@SuppressWarnings("UnstableApiUsage") //For the Javadoc reference.
 	@Init
 	public static void init() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-					.then(ClientCommandManager.literal("refreshPrices").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+					.then(ClientCommands.literal("refreshPrices").executes(context -> {
 						refreshItemPrices(context.getSource().getPlayer());
 						return Command.SINGLE_SUCCESS;
 					})));
@@ -63,7 +65,8 @@ public class ItemPrice {
 
 	public static void itemPriceLookup(LocalPlayer player, ItemStack stack) {
 		String skyblockApiId = stack.getSkyblockApiId();
-		ItemStack neuStack = ItemRepository.getItemStack(stack.getNeuName());
+		FlexibleItemStack flexible = ItemRepository.getItemStack(stack.getNeuName());
+		ItemStack neuStack = flexible == null ? null : flexible.getStackOrThrow();
 		if (neuStack != null && !neuStack.isEmpty()) {
 			String itemName = ChatFormatting.stripFormatting(neuStack.getHoverName().getString());
 
@@ -74,8 +77,11 @@ public class ItemPrice {
 
 			// Handle Enchanted Books
 			if (itemName.equals("Enchanted Book")) {
-				itemName = stack.skyblocker$getLoreStrings().stream().findFirst().orElse("");
+				itemName = EnchantedBookUtils.getEnchantNameFromLore(stack.skyblocker$getLoreStrings());
 			}
+
+			// prevent the player from getting kicked for sending the section symbol character
+			itemName = ChatFormatting.stripFormatting(itemName);
 
 			// Search up the item in the bazaar or auction house
 			if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
@@ -87,20 +93,20 @@ public class ItemPrice {
 			}
 		}
 
-		player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")), false);
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.itemPriceLookupFailed")));
 	}
 
 	private static void refreshItemPrices(LocalPlayer player) {
-		player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")), false);
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.refreshingItemPrices")));
 		CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
 						.map(DataTooltipInfoType::downloadIfEnabled)
 						.toArray(CompletableFuture[]::new)
 		).thenRun(() -> {
 			ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")));
 		}).exceptionally(e -> {
 			ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")));
 			return null;
 		});
 	}

@@ -10,8 +10,8 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
 
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 
 /**
  * Creates a pool of {@code GpuTexture}s and {@code GpuTextureView}s, useful if you are blitting textures or copying them.
@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderConte
 public record TexturePool(String name, int size, @GpuTexture.Usage int usage, TextureFormat format, @Nullable GpuTexture[] textures, @Nullable GpuTextureView[] textureViews, boolean[] usedSlots) implements AutoCloseable {
 
 	public TexturePool {
-		WorldRenderEvents.START_MAIN.register(this::clearUnusedTextures);
+		LevelRenderEvents.START_MAIN.register(this::clearUnusedTextures);
 	}
 
 	/**
@@ -31,7 +31,7 @@ public record TexturePool(String name, int size, @GpuTexture.Usage int usage, Te
 		return new TexturePool(name, size, usage, format, new GpuTexture[size], new GpuTextureView[size], new boolean[size]);
 	}
 
-	private void clearUnusedTextures(WorldTerrainRenderContext context) {
+	private void clearUnusedTextures(LevelTerrainRenderContext context) {
 		// Close textures if they were unused for a frame
 		for (int i = 0; i < this.size(); i++) {
 			if (!this.usedSlots()[i]) {

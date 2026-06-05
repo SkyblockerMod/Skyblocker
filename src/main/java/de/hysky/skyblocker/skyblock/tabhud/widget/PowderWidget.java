@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Formatters;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -57,10 +57,10 @@ public class PowderWidget extends TabHudWidget {
 					if (mithril != lastMithril || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastMithrilDiff = mithril - lastMithril;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 						lastMithril = mithril;
 					} else {
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 					}
 					updated |= 0b001;
 				}
@@ -70,10 +70,10 @@ public class PowderWidget extends TabHudWidget {
 					if (gemstone != lastGemstone || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGemstoneDiff = gemstone - lastGemstone;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 						lastGemstone = gemstone;
 					} else {
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 					}
 					updated |= 0b010;
 				}
@@ -83,10 +83,10 @@ public class PowderWidget extends TabHudWidget {
 					if (glacite != lastGlacite || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGlaciteDiff = glacite - lastGlacite;
 						updated |= 0b1000;
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 						lastGlacite = glacite;
 					} else {
-						addComponent(Components.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
+						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 					}
 					updated |= 0b100;
 				}

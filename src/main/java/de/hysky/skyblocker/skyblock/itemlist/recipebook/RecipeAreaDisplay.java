@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 
@@ -11,9 +11,9 @@ import net.minecraft.client.input.MouseButtonEvent;
 public interface RecipeAreaDisplay {
 	void initialize(Minecraft client, int parentLeft, int parentTop);
 
-	void draw(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta);
+	void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta);
 
-	void drawTooltip(GuiGraphics context, int x, int y);
+	void extractTooltip(GuiGraphicsExtractor graphics, int x, int y);
 
 	boolean mouseClicked(MouseButtonEvent click, boolean doubled);
 

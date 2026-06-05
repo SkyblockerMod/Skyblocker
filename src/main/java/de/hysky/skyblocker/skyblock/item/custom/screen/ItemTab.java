@@ -8,8 +8,9 @@ import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -49,18 +50,22 @@ public class ItemTab extends GridLayoutTab {
 			glintState = states[(glintState.ordinal() + 1) % states.length];
 			b.setMessage(getGlintText());
 			String uuid = currentItem.getUuid();
-			Object2BooleanMap<String> customGlint = SkyblockerConfigManager.get().general.customGlint;
-			switch (glintState) {
-				case DEFAULT -> customGlint.removeBoolean(uuid);
-				case TRUE -> customGlint.put(uuid, true);
-				case FALSE -> customGlint.put(uuid, false);
-			}
+			SkyblockerConfigManager.updateOnly(config -> {
+				Object2BooleanMap<String> customGlint = config.general.customGlint;
+				switch (glintState) {
+					case DEFAULT -> customGlint.removeBoolean(uuid);
+					case TRUE -> customGlint.put(uuid, true);
+					case FALSE -> customGlint.put(uuid, false);
+				}
+			});
 		}).width(Button.SMALL_WIDTH).build();
 		modelField = new IdentifierTextField(120, 20, identifier -> {
 			String uuid = currentItem.getUuid();
 			if (uuid.isEmpty()) return;
-			if (identifier == null) SkyblockerConfigManager.get().general.customItemModel.remove(uuid);
-			else SkyblockerConfigManager.get().general.customItemModel.put(uuid, identifier);
+			SkyblockerConfigManager.updateOnly(config -> {
+				if (identifier == null) config.general.customItemModel.remove(uuid);
+				else config.general.customItemModel.put(uuid, identifier);
+			});
 		});
 		modelField.setHint(Component.translatable("skyblocker.customization.item.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		nameWidget = new CustomizeNameWidget(parentScreen);
@@ -136,9 +141,9 @@ public class ItemTab extends GridLayoutTab {
 		private final LinearLayout layout = LinearLayout.vertical().spacing(5);
 
 		private ItemSelector() {
-			super(0, 20, 0, 0, Component.literal("Item Selector"));
+			super(0, 20, 0, 0, Component.literal("Item Selector"), AbstractScrollArea.defaultSettings(8));
 			layout.addChild(SpacerElement.height(32)); // ITEM
-			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), b ->
+			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), _ ->
 					Minecraft.getInstance().setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
 			).width(Button.SMALL_WIDTH).build());
 			layout.arrangeElements();
@@ -174,20 +179,20 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-			Matrix3x2fStack matrices = context.pose();
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			float x = layout.getX() + layout.getWidth() / 2f - 16;
 			int y = layout.getY();
 			if (mouseX >= x && mouseX < x + 32 && mouseY >= y && mouseY < y + 32) {
-				context.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
 			}
 			matrices.translate(x, y);
 			matrices.scale(2);
-			context.renderItem(currentItem, 0, 0);
+			graphics.item(currentItem, 0, 0);
 			matrices.popMatrix();
-			selectItemButton.render(context, mouseX, mouseY, deltaTicks);
+			selectItemButton.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 
 		@Override
@@ -204,10 +209,10 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			int x = glintButton.getX() - 3;
 			int y = glintButton.getY() - 3;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
 					x,
 					y,

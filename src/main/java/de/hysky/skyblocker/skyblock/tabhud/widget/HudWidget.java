@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
 import java.util.Objects;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public abstract class HudWidget extends AbstractWidget {
@@ -72,15 +72,15 @@ public abstract class HudWidget extends AbstractWidget {
 		return false;
 	}
 
-	protected abstract void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta);
+	protected abstract void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
 
-	public final void render(GuiGraphics context) {
-		render(context, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
+	public final void extractRenderState(GuiGraphicsExtractor graphics) {
+		extractRenderState(graphics, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
 	}
 
 	@Override
-	public final void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		renderWidget(context, mouseX, mouseY, delta);
+	public final void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		extractWidgetRenderState(graphics, mouseX, mouseY, delta);
 	}
 
 	/**

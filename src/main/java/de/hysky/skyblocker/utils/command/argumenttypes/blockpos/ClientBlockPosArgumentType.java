@@ -21,16 +21,17 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERRO
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_OUT_OF_WORLD;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_NOT_LOADED;
 
-// Uses the static fields of BlockPosArgumentType to not create the same field twice
+// Uses the static fields of BlockPosArgument to not create the same field twice
 public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgument> {
 	public static ClientBlockPosArgumentType blockPos() {
 		return new ClientBlockPosArgumentType();
 	}
 
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, String name) throws CommandSyntaxException {
-		return getLoadedBlockPos(context, context.getSource().getWorld(), name);
+		return getLoadedBlockPos(context, context.getSource().getLevel(), name);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static BlockPos getLoadedBlockPos(CommandContext<FabricClientCommandSource> context, ClientLevel world, String name) throws CommandSyntaxException {
 		BlockPos blockPos = getBlockPos(context, name);
 		//FIXME Vanilla still uses this deprecated method, watch out in future updates in case this changes

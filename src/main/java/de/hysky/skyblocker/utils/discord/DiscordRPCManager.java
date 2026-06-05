@@ -106,6 +106,7 @@ public class DiscordRPCManager {
 		return presence;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String getInfo() {
 		String info = null;
 		if (!SkyblockerConfigManager.get().misc.richPresence.cycleMode) {

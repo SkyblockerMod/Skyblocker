@@ -32,7 +32,7 @@ public class SkyblockXpMessages {
 				int hash = xpMessage.hashCode();
 
 				if (!RECENT_MESSAGES.contains(hash)) {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(xpMessage), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(xpMessage));
 					RECENT_MESSAGES.add(hash);
 					Scheduler.INSTANCE.schedule(() -> RECENT_MESSAGES.remove(hash), 20 * 10);
 				}

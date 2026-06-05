@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -29,8 +29,8 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderWidget(context, mouseX, mouseY, delta);
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 		if (toggled()) return;
 		if (isDoubleClick() == showingConfirmTooltip) return;
 		showingConfirmTooltip = !showingConfirmTooltip;

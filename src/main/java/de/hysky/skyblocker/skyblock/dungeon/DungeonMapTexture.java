@@ -23,10 +23,10 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -57,9 +57,9 @@ public class DungeonMapTexture {
 			dungeonMapTexture = new DynamicTexture(() -> "Skyblocker Dungeon Map", MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE, true);
 			minecraft.getTextureManager().register(ID, dungeonMapTexture);
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> clearMapImage());
-		DungeonEvents.ROOM_MATCHED.register((_room) -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
-		WorldRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearMapImage());
+		DungeonEvents.ROOM_MATCHED.register(_ -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
+		LevelRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
 	public static void onMapItemDataUpdate(MapId mapId, boolean updateMapTexture) {
@@ -185,15 +185,15 @@ public class DungeonMapTexture {
 	 * Upload the map texture to the GPU at the start of the game, this is to ensure this runs on the GPU
 	 * for the thread split.
 	 */
-	private static void uploadMapTexture(WorldTerrainRenderContext context) {
+	private static void uploadMapTexture(LevelTerrainRenderContext context) {
 		if (dungeonMapTexture != null && requiresUpload) {
 			dungeonMapTexture.upload();
 			requiresUpload = false;
 		}
 	}
 
-	protected static void blitMap(GuiGraphics graphics) {
-		graphics.submitMapRenderState(MAP_RENDER_STATE);
+	protected static void blitMap(GuiGraphicsExtractor graphics) {
+		graphics.map(MAP_RENDER_STATE);
 	}
 
 	public static void close() {

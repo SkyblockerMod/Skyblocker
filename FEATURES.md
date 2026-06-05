@@ -6,7 +6,7 @@
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Labels
-      - Can show either the Room Name, Secrets Found, or Both
+        - Can show either the Room Name, Secrets Found, or Both
     - Hidable room checkmarks
     - Configurable outline and background blur
 - **Score Calculation**
@@ -66,6 +66,8 @@
 - **Blood Camp Helper**
 - **Dungeon Splits Widget**
 - **Door Key Highlighter**
+- **Rare Room Alerts**
+    - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
 - **Forest Node Highlighter**
@@ -130,13 +132,14 @@
 - **Catacombs**
 - **Container:**
     - Inventory
-    - Enderchest
+    - Ender Chest
     - Backpack
     - Wardrobe
     - Pets
     - Accessory Bag
 - **Collections**
-- **Networth Calculation**
+- **Net Worth Calculation**
+- **Magical Power Calculation**
 
 ### Dwarven Mines / Crystal Hollows / Glacite Mining:
 - **Dwarven Mines:**
@@ -178,7 +181,7 @@
 ### Spider's Den Features:
 - **Hidden Relic Helper**
 
-### Slayer Helper:
+### Slayer Features:
 - **Vampire:**
     - Effigy Waypoints
     - Healing Melon Indicator
@@ -189,18 +192,19 @@
     - Yang Glyph Notification
     - Nukekubi Head Highlighting
     - Laser phase Timer
-- **Blaze Slayer:**
+- **Blaze:**
     - Attunement highlighting
     - Fire Pillar Countdown Notifications
 - **General:**
-    - Bossbars
     - Slayer HUD
-    - Boss slain time
-    - Personal Best slain time
-    - Boss and MiniBoss spawn alert
-    - Mute Enderman sounds
-    - Slayer (Mini)Bosses Highlighting
-    - Glow Effect Slayer Mob Highlighting
+    - Bossbars
+    - Boss Kill Time
+        - Personal Bests
+    - Boss and MiniBoss spawn alerts
+    - Mute Blaze, Wolf, Spider, and Enderman sounds
+    - Slayer Boss and Mini-Boss Highlighting
+        - Glow Effect or Bounding Box options
+    - Highlight unclaimed level
 
 ### Garden Features:
 - **Farming HUD:**
@@ -216,15 +220,20 @@
     - Copy amount to clipboard
 - **Garden Plots Widget**
 - **Speed Presets (Rancher's Boots)**
-- **Basic garden mouse locking feature (set mouse sensitivity to 0)**
+- **Mouse Locking**
+    - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
+    - Highlight pests for the current Jacob's contest.
+    - Highlight pests for the active Stereo Harmony vinyl.
+- **Stereo Harmony Helper**
+    - Highlights the vinyl for the current Jacob's contest
+- **Greenhouse Paste Preview**
 
 ### Visual Enhancements:
 - **Smooth AOTE**
 - **Compact damage**
 - **Waypoints for commissions in dwarven mines and glacite tunnels**
 - **Fancy Tab HUD:** Fully configurable, allowing individual widgets to be freely placed on the main screen.
-- **1.8 Hitbox for Levers, Mushrooms, and Cacti**
 - **Hide Status Effect Overlay**
 - **Personal Compactor/Deletor Preview**
 - **Hide Fake Players in Social Interactions Screen**
@@ -289,11 +298,13 @@
     - *HOTM*
     - *HOTF*
     - *Bestiary*
-    - *Hunting Toolkit Indicator*
+    - *Farming/Hunting Toolkit Indicator*
+    - *Garden Chip Level*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
     - *NPC Sell Prices*
+    - *George Sell Prices*
     - *Motes Prices*
     - *Bazaar (average, lowest bin)*
     - *Auction House*
@@ -303,7 +314,7 @@
     - *Accessories Helper*
     - *Craft Cost*
     - *Essence Shop Price*
-    - *True HEX display for dye items*
+  - *True Hex Color for Dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
@@ -313,7 +324,7 @@
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
-- **Backpack Preview:** After clicking your backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
+- **Backpack Preview:** After opening a backpack or ender chest once, you can hover over it and hold Shift to preview its contents.
 - **New Year Cakes Helper**
 - **Fancy Crafting Table**
 - **Info Screen**
@@ -332,6 +343,7 @@
     - *Treasure Hunter*
     - *Hungry Hiker*
     - *Glowing Mushroom Highlighter*
+- **Pelt Animal Highlighter**
 
 ### Chat Features:
 - **Custom Chat Rules**
@@ -342,6 +354,7 @@
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
+  - *`/chapters` command*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -353,6 +366,7 @@
     - *Sky Mall*
     - *Lottery*
     - *Dungeonbreaker*
+    - *Spirit Sceptre*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
@@ -367,7 +381,7 @@
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe helper based on hotbar keybinds**
+- **Wardrobe Keybinds**
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
@@ -376,25 +390,26 @@
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
 - **Anvil Helper**
+- **Accessory Helper**
 
 ### Miscellaneous Features:
-- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) (1.21.11 only) and [JEI](https://modrinth.com/mod/jei/) Support**
     - Crafting
     - Forge
     - NPC Shop Recipes
+  - Kat Pet Upgrade Recipes
     - Skyblock Info
     - Collapsible Entries
 - **Item Protection**
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
-- **OptiFabric Compatibility**
+- **Wiki Lookup:** Press F1 (Independent) or F4 (Official) to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**
 - **Chest Value**
 - **Add useful tips in chat**
-- **Suppress badlion packet warnings**
+- **Suppress Badlion packet warnings**
 - **Remove screens when switching island**
 - **Skin transparency correction**
 - **Skyblock XP Messages**
@@ -406,3 +421,4 @@
     - Keybind/Keybind Combo Shortcuts
 - **Config Backups**
 - **Iris shader support**
+- **Block Break Prediction**

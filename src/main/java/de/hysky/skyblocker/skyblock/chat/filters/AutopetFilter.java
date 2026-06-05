@@ -16,10 +16,10 @@ public class AutopetFilter extends ChatPatternListener {
 	@Override
 	public boolean onMatch(Component _message, Matcher matcher) {
 		if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.ACTION_BAR) {
-			Objects.requireNonNull(Minecraft.getInstance().player).displayClientMessage(
+			Objects.requireNonNull(Minecraft.getInstance().player).sendOverlayMessage(
 					Component.literal(
 							_message.getString().replace("VIEW RULE", "")
-					), true);
+					));
 		}
 		return true;
 	}

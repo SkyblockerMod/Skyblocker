@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenDirection;
@@ -19,10 +19,9 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
-
 
 public class RadialMenuScreen extends Screen implements ContainerListener {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -215,7 +214,7 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 
 	private void clickSlot(int slotId, int button) {
 		if (CLIENT.gameMode == null) return;
-		CLIENT.gameMode.handleInventoryMouseClick(handler.containerId, slotId + menuType.clickSlotOffset(slotId), menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId)), ClickType.PICKUP, CLIENT.player);
+		CLIENT.gameMode.handleContainerInput(handler.containerId, slotId + menuType.clickSlotOffset(slotId), menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId)), ContainerInput.PICKUP, CLIENT.player);
 	}
 
 	@Override
@@ -229,17 +228,17 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		super.render(context, mouseX, mouseY, deltaTicks);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 
 		//render menu title
-		context.drawCenteredString(font, getTitle(), width / 2, height / 2 - font.lineHeight, 0xFFFFFFFF);
+		graphics.centeredText(font, getTitle(), width / 2, height / 2 - font.lineHeight, 0xFFFFFFFF);
 		//draw separation line
 		int textWidth = font.width(getTitle());
-		context.hLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
+		graphics.horizontalLine(width / 2 - textWidth / 2, width / 2 + textWidth / 2, height / 2, 0xFFFFFFFF);
 		//render current option name
 		if (buttonsHoveredIndex != -1 && buttonsHoveredIndex < buttons.size()) {
-			context.drawCenteredString(font, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
+			graphics.centeredText(font, buttons.get(buttonsHoveredIndex).getName(), width / 2, height / 2 + 2, 0xFFFFFFFF); // + 2 to move out of way of line.
 		}
 	}
 

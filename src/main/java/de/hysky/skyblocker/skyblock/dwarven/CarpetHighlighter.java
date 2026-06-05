@@ -9,7 +9,7 @@ import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.Renderable;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
@@ -37,7 +37,7 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 	@Init
 	public static void init() {
 		INSTANCE.configCallback(SkyblockerConfigManager.get().mining.dwarvenMines.carpetHighlightColor);
-		WorldRenderExtractionCallback.EVENT.register(INSTANCE::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(INSTANCE::extractRendering);
 		SkyblockEvents.LOCATION_CHANGE.register(INSTANCE::onLocationChange);
 		Scheduler.INSTANCE.scheduleCyclic(INSTANCE::tick, TICK_INTERVAL);
 		ClientPlayConnectionEvents.JOIN.register(INSTANCE);

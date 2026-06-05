@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
@@ -10,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class MuseumUtils {
 	private static final Set<String> EQUIPMENT_TYPES = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT", "LOCKET", "VINE", "GRIPPERS");
@@ -59,9 +60,9 @@ public class MuseumUtils {
 				return Component.literal(setName).setStyle(nameStyle);
 			}
 		} else {
-			ItemStack stack = ItemRepository.getItemStack(id);
+			FlexibleItemStack stack = ItemRepository.getItemStack(id);
 			if (stack != null) {
-				return stack.getHoverName();
+				return stack.getStackOrThrow().getHoverName();
 			}
 		}
 		return Component.literal(id);
@@ -73,7 +74,7 @@ public class MuseumUtils {
 	 * @param id the piece ID to search for
 	 * @return the ID of the set that the piece belongs to, or null if not found
 	 */
-	protected static String getSetID(String id) {
+	protected static @Nullable String getSetID(String id) {
 		for (Donation donation : MuseumItemCache.MUSEUM_DONATIONS) {
 			for (ObjectObjectMutablePair<String, PriceData> set : donation.getSet()) {
 				if (set.left().equals(id)) {

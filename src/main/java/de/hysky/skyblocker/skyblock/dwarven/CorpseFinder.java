@@ -12,7 +12,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -44,8 +44,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CorpseFinder {
 	private static boolean isLocationCorrect = false;
@@ -57,13 +57,13 @@ public class CorpseFinder {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((ignored, ignored2, ignored3) -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
 			isLocationCorrect = false;
 			corpsesByType.clear();
 		});
 		SkyblockEvents.LOCATION_CHANGE.register(CorpseFinder::handleLocationChange);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CorpseFinder::onChatMessage);
-		WorldRenderExtractionCallback.EVENT.register(CorpseFinder::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(CorpseFinder::extractRendering);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (!SkyblockerConfigManager.get().mining.glacite.enableCorpseFinder || client.player == null) return;
 			if (!isLocationCorrect) return;
@@ -75,7 +75,7 @@ public class CorpseFinder {
 				}
 			}
 		});
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("corpseHelper")
 						.then(literal("shareLocation")
 								.then(argument("blockPos", ClientBlockPosArgumentType.blockPos())
@@ -113,17 +113,17 @@ public class CorpseFinder {
 		if (corpseType == CorpseType.UNKNOWN) return;
 
 		LOGGER.debug(PREFIX + "Triggered code for handleArmorStand and matched with ITEM_IDS");
-		List<Corpse> corpses = corpsesByType.computeIfAbsent(corpseType, k -> new ArrayList<>());
+		List<Corpse> corpses = corpsesByType.computeIfAbsent(corpseType, _ -> new ArrayList<>());
 		if (corpses.stream().noneMatch(c -> c.entity.blockPosition().equals(armorStand.blockPosition()))) {
 			Waypoint corpseWaypoint;
 			float[] color = getColors(corpseType.color);
 			corpseWaypoint = new Waypoint(armorStand.blockPosition().above(), Waypoint.Type.OUTLINED_WAYPOINT, color);
 			if (Debug.debugEnabled() && SkyblockerConfigManager.get().debug.corpseFinderDebug && !seenDebugWarning && (seenDebugWarning = true)) {
-				Minecraft.getInstance().player.displayClientMessage(
+				Minecraft.getInstance().player.sendSystemMessage(
 						Constants.PREFIX.get().append(
 								Component.literal("Corpse finder debug mode is active! Please use it only for the sake of debugging corpse detection!")
 										.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
-						), false);
+						));
 			}
 			Corpse newCorpse = new Corpse(armorStand, corpseWaypoint, corpseType);
 			corpses.add(newCorpse);
@@ -184,14 +184,14 @@ public class CorpseFinder {
 
 		corpse.messageLastSent = Util.getMillis();
 
-		Minecraft.getInstance().player.displayClientMessage(
+		Minecraft.getInstance().player.sendSystemMessage(
 				Constants.PREFIX.get()
 						.append("Found a ")
 						.append(Component.literal(WordUtils.capitalizeFully(corpse.corpseType.getSerializedName()) + " Corpse")
 								.withColor(corpse.corpseType.color.getColor()))
 						.append(" at " + corpse.entity.blockPosition().above().toShortString() + "!")
 						.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.corpseType.toString().toLowerCase(Locale.ENGLISH)))
-								.withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to share the location in chat!").withStyle(ChatFormatting.GREEN)))), false);
+								.withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to share the location in chat!").withStyle(ChatFormatting.GREEN)))));
 	}
 
 	private static void shareLocation(BlockPos pos, CorpseType corpseType) {
@@ -234,10 +234,10 @@ public class CorpseFinder {
 					corpse.seen = true;
 					foundCorpse = true;
 					LOGGER.info(PREFIX + "Setting corpse {} as seen!", corpse.entity);
-					Minecraft.getInstance().player.displayClientMessage(
+					Minecraft.getInstance().player.sendSystemMessage(
 							Constants.PREFIX.get()
 									.append("Parsed message from chat, adding corpse at ")
-									.append(corpse.entity.blockPosition().toShortString()), false);
+									.append(corpse.entity.blockPosition().toShortString()));
 					break;
 				}
 			}

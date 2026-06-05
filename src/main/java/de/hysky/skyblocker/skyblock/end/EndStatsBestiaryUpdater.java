@@ -25,7 +25,7 @@ public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		slots.int2ObjectEntrySet().stream().filter(entry -> entry.getIntKey() == ALL_ZEALOTS_INDEX || entry.getIntKey() == SPECIAL_ZEALOT_INDEX)
-				.filter(entry -> entry.getValue().is(Items.ENDER_CHEST)).forEach((entry) -> {
+				.filter(entry -> entry.getValue().is(Items.ENDER_CHEST)).forEach(entry -> {
 					Matcher matcher = ItemUtils.getLoreLineIfMatch(entry.getValue(), KILLS_PATTERN);
 					if (matcher == null) return;
 					String killsStr = matcher.group(1).replace(",", "");

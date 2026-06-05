@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -44,6 +46,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import de.hysky.skyblocker.utils.render.gui.CyclingIconButtonWidget;
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -51,6 +54,7 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import org.jspecify.annotations.Nullable;
 
 public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsListWidget.AbstractWaypointEntry> {
 	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");
@@ -61,7 +65,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	private final AbstractWaypointsScreen<?> screen;
 	private Location island;
 	private List<WaypointGroup> waypoints;
-	private InsertPosition insertPosition = null;
+	private @Nullable InsertPosition insertPosition = null;
 	private final Set<WaypointGroup> collapsedGroups = new ReferenceOpenHashSet<>(); // use identity hash code
 
 	public WaypointsListWidget(Minecraft client, AbstractWaypointsScreen<?> screen, int width, int height, int y, int itemHeight) {
@@ -110,8 +114,8 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	}
 
 	@Override
-	protected void renderListItems(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		super.renderListItems(context, mouseX, mouseY, deltaTicks);
+	protected void extractListItems(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+		super.extractListItems(context, mouseX, mouseY, deltaTicks);
 		insertPosition = null;
 		int insertButtonY;
 		int position;
@@ -132,7 +136,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 						groupEntry = waypointGroupEntry;
 						position = 0;
 					}
-					case null, default -> {
+					default -> {
 						return;
 					}
 				}
@@ -158,7 +162,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 				boolean top = Math.abs(mouseY - rowTop) < Math.abs(mouseY - rowBottom);
 				if (top) {
 					insertButtonY = rowTop;
-					AbstractWaypointEntry above = nextEntry(ScreenDirection.UP, ignored -> true, hoveredEntry);
+					AbstractWaypointEntry above = nextEntry(ScreenDirection.UP, _ -> true, hoveredEntry);
 					switch (above) {
 						case WaypointEntry entry -> {
 							groupEntry = entry.groupEntry;
@@ -188,7 +192,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		if (insertButtonY <= getY() || insertButtonY >= getBottom() || mX > 32) return;
 		boolean hovering = isMouseOver(mouseX, mouseY) && Math.abs(mouseY - insertButtonY) <= 6 && mX < 16 && mX >= -8;
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, hovering ? INSERT_HIGHLIGHTED_TEXTURE : INSERT_TEXTURE, getRowLeft(), insertButtonY - 5, 48, 11);
-		if (Debug.debugEnabled()) context.drawString(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
+		if (Debug.debugEnabled()) context.text(minecraft.font, String.valueOf(position), getX(), getY(), -1, true);
 		if (hovering) {
 			insertPosition = new InsertPosition(groupEntry, position);
 			context.requestCursor(CursorTypes.POINTING_HAND);
@@ -207,6 +211,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 
 	void updateEntries() {
 		clearEntries();
+		checkAndAddWarning();
 		for (WaypointGroup group : waypoints) {
 			boolean collapsed = collapsedGroups.contains(group);
 			WaypointGroupEntry groupEntry = new WaypointGroupEntry(group, collapsed);
@@ -228,11 +233,40 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 	}
 
+	void checkAndAddWarning() {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
+			addEntryToTop(new WaypointsDisabledWarningEntry());
+		}
+	}
+
 	private BlockPos getDefaultPos() {
 		return minecraft.hitResult instanceof BlockHitResult blockHitResult && minecraft.hitResult.getType() == HitResult.Type.BLOCK ? blockHitResult.getBlockPos() : minecraft.player != null ? minecraft.player.blockPosition() : BlockPos.ZERO;
 	}
 
 	protected abstract static class AbstractWaypointEntry extends ContainerObjectSelectionList.Entry<AbstractWaypointEntry> {
+	}
+
+	protected class WaypointsDisabledWarningEntry extends AbstractWaypointEntry {
+		Component text = Component.translatable("skyblocker.waypoints.disabledWarning").withStyle(ChatFormatting.RED);
+		StringWidget textWidget = new StringWidget(text, minecraft.font);
+		int textSize = minecraft.font.width(text);
+		List<AbstractWidget> children = List.of(textWidget);
+
+		@Override
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			textWidget.setPosition(getX() + (getRowWidth() - textSize) / 2, getY() + (getHeight() - minecraft.font.lineHeight) / 2);
+			textWidget.extractRenderState(graphics, mouseX, mouseY, a);
+		}
+
+		@Override
+		public List<? extends GuiEventListener> children() {
+			return children;
+		}
+
+		@Override
+		public List<? extends NarratableEntry> narratables() {
+			return children;
+		}
 	}
 
 	protected class WaypointGroupEntry extends AbstractWaypointEntry {
@@ -259,14 +293,14 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			layout.addChild(rightLayout, LayoutSettings::alignHorizontallyRight);
 
 			Component arrow = Component.nullToEmpty(collapsed ? "▲" : "▼");
-			Button collapseWaypoint = Button.builder(arrow, button -> {
+			Button collapseWaypoint = Button.builder(arrow, _ -> {
 				if (collapsed) collapsedGroups.remove(group);
 				else collapsedGroups.add(group);
 				updateEntries();
 			}).size(11, 11).build();
 			leftLayout.addChild(collapseWaypoint);
 
-			enabled = Checkbox.builder(Component.empty(), minecraft.font).selected(shouldBeChecked()).onValueChange((checkbox, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
+			enabled = Checkbox.builder(Component.empty(), minecraft.font).selected(shouldBeChecked()).onValueChange((_, checked) -> group.waypoints().forEach(waypoint -> screen.enabledChanged(waypoint, checked))).build();
 			leftLayout.addChild(enabled);
 
 			EditBox nameField = new EditBox(minecraft.font, 70, 20, Component.literal("Name"));
@@ -302,7 +336,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 					this::updateWaypointType
 			));
 
-			Button buttonNewWaypoint = Button.builder(Component.translatable("skyblocker.waypoints.new"), ignored -> {
+			Button buttonNewWaypoint = Button.builder(Component.translatable("skyblocker.waypoints.new"), _ -> {
 				WaypointEntry waypointEntry = new WaypointEntry(this);
 				group.waypoints().add(waypointEntry.waypoint);
 				WaypointsListWidget.this.updateEntries();
@@ -314,7 +348,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			rightLayout.addChild(buttonNewWaypoint);
 
 			Component deleteText = Component.translatable("selectServer.deleteButton");
-			Button buttonDelete = SpriteIconButton.builder(deleteText, ignored -> {
+			Button buttonDelete = SpriteIconButton.builder(deleteText, _ -> {
 				waypoints.remove(group);
 				updateEntries();
 			}, true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
@@ -372,10 +406,10 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			for (AbstractWidget child : children) {
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -411,13 +445,13 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			layout.addChild(leftLayout, LayoutSettings::alignHorizontallyLeft);
 			leftLayout.addChild(SpacerElement.width(6));
 
-			buttonUp = Button.builder(Component.nullToEmpty("↑"), button -> this.shiftWaypointIndex(-1))
+			buttonUp = Button.builder(Component.nullToEmpty("↑"), _ -> this.shiftWaypointIndex(-1))
 					.size(11, 11).build();
 			leftLayout.addChild(buttonUp);
-			buttonDown = Button.builder(Component.nullToEmpty("↓"), button -> this.shiftWaypointIndex(1))
+			buttonDown = Button.builder(Component.nullToEmpty("↓"), _ -> this.shiftWaypointIndex(1))
 					.size(11, 11).build();
 			leftLayout.addChild(buttonDown);
-			enabled = Checkbox.builder(Component.literal(""), minecraft.font).selected(screen.isEnabled(waypoint)).onValueChange((checkbox, checked) -> screen.enabledChanged(waypoint, checked)).build();
+			enabled = Checkbox.builder(Component.literal(""), minecraft.font).selected(screen.isEnabled(waypoint)).onValueChange((_, checked) -> screen.enabledChanged(waypoint, checked)).build();
 			leftLayout.addChild(enabled, p -> p.paddingLeft(4));
 			EditBox nameField = new EditBox(minecraft.font, 65, 20, Component.literal("Name"));
 			nameField.setValue(waypoint.getName().getString());
@@ -425,21 +459,21 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			leftLayout.addChild(nameField, p -> p.paddingLeft(2));
 
 			leftLayout.addChild(new StringWidget(Component.literal("X:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox xField = new EditBox(minecraft.font, 26, 20, Component.literal("X"));
+			FilteredEditBox xField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("X"));
 			xField.setValue(Integer.toString(waypoint.pos.getX()));
 			xField.setFilter(this::checkInt);
 			xField.setResponder(this::updateX);
 			leftLayout.addChild(xField);
 
 			leftLayout.addChild(new StringWidget(Component.literal("Y:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox yField = new EditBox(minecraft.font, 26, 20, Component.literal("Y"));
+			FilteredEditBox yField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("Y"));
 			yField.setValue(Integer.toString(waypoint.pos.getY()));
 			yField.setFilter(this::checkInt);
 			yField.setResponder(this::updateY);
 			leftLayout.addChild(yField);
 
 			leftLayout.addChild(new StringWidget(Component.literal("Z:"), minecraft.font), p -> p.paddingLeft(2));
-			EditBox zField = new EditBox(minecraft.font, 26, 20, Component.literal("Z"));
+			FilteredEditBox zField = new FilteredEditBox(minecraft.font, 26, 20, Component.literal("Z"));
 			zField.setValue(Integer.toString(waypoint.pos.getZ()));
 			zField.setFilter(this::checkInt);
 			zField.setResponder(this::updateZ);
@@ -455,7 +489,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			leftLayout.addChild(colorField);
 
 			Component deleteText = Component.translatable("selectServer.deleteButton");
-			Button buttonDelete = SpriteIconButton.builder(deleteText, button -> {
+			Button buttonDelete = SpriteIconButton.builder(deleteText, _ -> {
 				groupEntry.group.waypoints().remove(waypoint);
 				WaypointsListWidget.this.updateEntries();
 			}, true).size(20, 20).sprite(DELETE_ICON, ICON_WIDTH, ICON_HEIGHT).build();
@@ -499,7 +533,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 			try {
 				parseEmptiableInt(string);
 				return true;
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return false;
 			}
 		}
@@ -547,13 +581,13 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			layout.setPosition(this.getX(), this.getY());
 			boolean showButtons = hovered && mouseY >= buttonUp.getY() - 1 && mouseY <= buttonUp.getBottom();
 			buttonUp.visible = showButtons;
 			buttonDown.visible = showButtons;
 			for (AbstractWidget child : children) {
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(context, mouseX, mouseY, deltaTicks);
 			}
 		}
 	}
@@ -582,7 +616,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 			int padding = 1;
 			context.fill(getX() + padding, getY() + padding, getRight() - padding, getBottom() - padding, isHovered() ? CommonColors.WHITE : CommonColors.BLACK);
 			context.fill(getX() + padding + 1, getY() + padding + 1, getRight() - padding - 1, getBottom() - padding - 1, this.color);

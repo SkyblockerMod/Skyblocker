@@ -3,44 +3,66 @@ package de.hysky.skyblocker.config.configs;
 import net.minecraft.client.resources.language.I18n;
 
 public class FarmingConfig {
-	public Garden garden = new Garden();
+	public FarmingHud farmingHud = new FarmingHud();
+
+	public PestHighlighter pestHighlighter = new PestHighlighter();
+
+	public MouseLock mouseLock = new MouseLock();
+
+	public PlotsWidget plotsWidget = new PlotsWidget();
 
 	public VisitorHelper visitorHelper = new VisitorHelper();
 
-	public static class Garden {
-		public FarmingHud farmingHud = new FarmingHud();
+	public Greenhouse greenhouse = new Greenhouse();
 
-		public boolean dicerTitlePrevent = true;
+	public static class Greenhouse {
+		public boolean enabled = true;
 
-		public boolean pestHighlighter = true;
+		public boolean showMutationSlot = true;
+	}
 
-		public boolean lockMouseTool = false;
+	public static class PestHighlighter {
+		public boolean enabled = true;
 
-		public boolean lockMouseGroundOnly = false;
+		public boolean vinylHighlighter = true;
 
-		public boolean gardenPlotsWidget = true;
-
-		public boolean closeScreenOnPlotClick = false;
+		public boolean contestHighlighter = true;
 
 		public boolean enableStereoHarmonyHelperForContest = true;
 	}
 
+	public static class MouseLock {
+		public boolean lockMouseTool = false;
+
+		public boolean lockMouseGroundOnly = false;
+	}
+
+	public static class PlotsWidget {
+		public boolean enabled = true;
+
+		public boolean closeScreenOnPlotClick = false;
+	}
+
 	public static class VisitorHelper {
-		public boolean visitorHelper = true;
+		public boolean enabled = true;
 
-		public boolean visitorHelperGardenOnly = true;
+		public boolean showInGardenOnly = true;
 
-		public boolean showStacksInVisitorHelper = false;
+		public boolean showInStacks = false;
 	}
 
 	public static class FarmingHud {
-		public boolean enableHud = true;
+		public boolean enabled = true;
 
-		public int x;
+		public boolean counter = true;
 
-		public int y;
+		public boolean coins = true;
 
 		public Type type = Type.BOTH;
+
+		public boolean includeSeedsPrice = true;
+
+		public boolean experience = true;
 	}
 
 	public enum Type {
@@ -50,7 +72,7 @@ public class FarmingConfig {
 
 		@Override
 		public String toString() {
-			return I18n.get("skyblocker.config.farming.garden.farmingHud.type." + name());
+			return I18n.get("skyblocker.config.farming.farmingHud.type." + name());
 		}
 	}
 }

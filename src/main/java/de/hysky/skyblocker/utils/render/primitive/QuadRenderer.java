@@ -6,7 +6,7 @@ import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class QuadRenderer implements PrimitiveRenderer<QuadRenderState> {
 	protected static final QuadRenderer INSTANCE = new QuadRenderer();

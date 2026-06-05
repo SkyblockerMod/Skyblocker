@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -33,7 +33,7 @@ import net.minecraft.network.chat.Component;
 public class ConfigBackupScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
 
@@ -68,10 +68,9 @@ public class ConfigBackupScreen extends Screen {
 		detailsWidget.refreshScrollAmount();
 		addRenderableWidget(detailsWidget);
 
-		Button restoreBtn = Button.builder(Component.translatable("skyblocker.config.general.backup.restore"), b -> {
+		Button restoreBtn = Button.builder(Component.translatable("skyblocker.config.general.backup.restore"), _ -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
-				assert minecraft != null;
 				minecraft.setScreen(new ConfirmScreen(confirm -> {
 					if (confirm) {
 						try {
@@ -99,7 +98,7 @@ public class ConfigBackupScreen extends Screen {
 		}).size(90, 20).pos(width / 2 - 95, height - 28).build();
 		addRenderableWidget(restoreBtn);
 
-		Button done = Button.builder(CommonComponents.GUI_DONE, b -> onClose()).size(90, 20).pos(width / 2 + 5, height - 28).build();
+		Button done = Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).size(90, 20).pos(width / 2 + 5, height - 28).build();
 		addRenderableWidget(done);
 
 		StringWidget titleWidget = new StringWidget(title, font);
@@ -109,7 +108,6 @@ public class ConfigBackupScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		minecraft.setScreen(parent);
 	}
 
@@ -137,7 +135,7 @@ public class ConfigBackupScreen extends Screen {
 				for (Path backup : backups) {
 					addEntry(new BackupEntry(backup));
 				}
-			} catch (IOException e) {
+			} catch (IOException _) {
 				// ignored
 			}
 		}
@@ -156,8 +154,8 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			context.drawCenteredString(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+			context.centeredText(font, path.getFileName().toString(), this.getContentXMiddle(), this.getY() + 7, 0xFFFFFFFF);
 			if (isMouseOver(mouseX, mouseY)) context.requestCursor(CursorTypes.POINTING_HAND);
 		}
 
@@ -250,9 +248,9 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
-			super.renderScrollbar(context, mouseX, mouseY);
-			if (scrollbarVisible()) {
+		protected void extractScrollbar(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+			super.extractScrollbar(context, mouseX, mouseY);
+			if (this.scrollable()) {
 				int scrollBarX = scrollBarX();
 				int listWidgetY = getY();
 				int totalHeight = height + maxScrollAmount();
@@ -292,12 +290,12 @@ public class ConfigBackupScreen extends Screen {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			int color = 0xFFFFFFFF;
 			if (path != null && changedPaths.contains(path)) {
 				color = 0xFFFFFF55;
 			}
-			context.drawString(font, text, this.getX() + 2, this.getY() + 2, color, false);
+			graphics.text(font, text, this.getX() + 2, this.getY() + 2, color, false);
 		}
 	}
 }

@@ -188,7 +188,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			case SE -> Direction.NORTH;
 		};
 
-		prospective = BlockGetter.traverseBlocks(room.relativeToActual(start), room.relativeToActual(end), null, (ctx, pos) -> {
+		prospective = BlockGetter.traverseBlocks(room.relativeToActual(start), room.relativeToActual(end), null, (_, pos) -> {
 			if (room.actualToRelative(pos).getZ() != BOARD_Z) {
 				return null;
 			}
@@ -198,7 +198,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 				leverType = LeverType.fromBlock(world.getBlockState(alternatePos).getBlock());
 			}
 			return leverType;
-		}, (ctx) -> null);
+		}, _ -> null);
 	}
 
 	private void extractProspectiveChanges(PrimitiveCollector collector) {

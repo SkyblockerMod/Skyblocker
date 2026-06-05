@@ -5,7 +5,7 @@ import de.hysky.skyblocker.utils.EnumUtils;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -25,7 +25,7 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 
 	private Function<T, Component> textSupplier = t -> Component.nullToEmpty(t.name());
 	private Function<T, Tooltip> tooltipSupplier = t -> Tooltip.create(Component.translationArg(textSupplier.apply(t)));
-	private Consumer<T> onCycle = t -> {};
+	private Consumer<T> onCycle = _ -> {};
 	private T current;
 
 	private static final WidgetSprites BUTTON = new WidgetSprites(Identifier.withDefaultNamespace("widget/button"),
@@ -59,7 +59,7 @@ public class CyclingTextureWidget<T extends Enum<T> & Supplier<Identifier>> exte
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		var button = BUTTON.get(this.active, this.isHoveredOrFocused());
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, button, this.getX(),
 				this.getY(), width, height);

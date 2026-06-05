@@ -15,7 +15,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 
 public class CatchAFish {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final AABB AREA = AABB.encapsulatingFullBlocks(new BlockPos(-69, 65, -5), new BlockPos(-87, 84, 22));
+	private static final AABB AREA = AABB.encapsulatingFullBlocks(new BlockPos(-69, 65, 25), new BlockPos(-87, 84, 52));
 	private static final int YELLOW = Color.YELLOW.getRGB();
 
 	public static int getFishGlowColor(ArmorStand armorStand) {

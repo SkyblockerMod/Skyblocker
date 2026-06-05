@@ -39,12 +39,12 @@ import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.util.CommonColors;
@@ -96,7 +96,7 @@ public class SlotTextManager {
 			new ChipLevelAdder(),
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	private static final KeyMapping keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
+	private static final KeyMapping keyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
@@ -104,18 +104,18 @@ public class SlotTextManager {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
 				onScreenChange(screen);
-				ScreenEvents.remove(screen).register(ignored -> currentScreenAdders.clear());
+				ScreenEvents.remove(screen).register(_ -> currentScreenAdders.clear());
 			}
-			ScreenKeyboardEvents.afterKeyPress(screen).register((screen1, input) -> {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_, input) -> {
 				if (keyBinding.matches(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
-			ScreenKeyboardEvents.afterKeyRelease(screen).register((screen1, input) -> {
+			ScreenKeyboardEvents.afterKeyRelease(screen).register((_, input) -> {
 				if (keyBinding.matches(input)) {
 					keyHeld = false;
 				}
@@ -147,14 +147,14 @@ public class SlotTextManager {
 		return text;
 	}
 
-	public static void renderSlotText(GuiGraphics context, Font textRenderer, Slot slot) {
-		renderSlotText(context, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
+	public static void extractSlotText(GuiGraphicsExtractor graphics, Font textRenderer, Slot slot) {
+		extractSlotText(graphics, textRenderer, slot, slot.getItem(), slot.index, slot.x, slot.y);
 	}
 
-	public static void renderSlotText(GuiGraphics context, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
+	public static void extractSlotText(GuiGraphicsExtractor graphics, Font textRenderer, @Nullable Slot slot, ItemStack stack, int slotId, int x, int y) {
 		List<SlotText> textList = getText(slot, stack, slotId);
 		if (textList.isEmpty()) return;
-		Matrix3x2fStack matrices = context.pose();
+		Matrix3x2fStack matrices = graphics.pose();
 
 		for (SlotText slotText : textList) {
 			matrices.pushMatrix();
@@ -175,7 +175,7 @@ public class SlotTextManager {
 					case BOTTOM_RIGHT -> matrices.translate(16f - length, 16f - textRenderer.lineHeight + 2f);
 				}
 			}
-			context.drawString(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
+			graphics.text(textRenderer, slotText.text(), x, y, CommonColors.WHITE, true);
 			matrices.popMatrix();
 		}
 	}

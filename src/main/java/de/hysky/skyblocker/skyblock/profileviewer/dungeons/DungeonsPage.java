@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class DungeonsPage implements ProfileViewerPage {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileUtils.class);
@@ -28,12 +28,12 @@ public class DungeonsPage implements ProfileViewerPage {
 		}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
-		dungeonHeaderWidget.render(context, rootX, rootY);
-		dungeonFloorRunsWidget.render(context, mouseX, mouseY, rootX + 113, rootY + 56);
-		dungeonMiscStatsWidgets.render(context, rootX + 113, rootY);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, int rootX, int rootY) {
+		dungeonHeaderWidget.extractRenderState(graphics, rootX, rootY);
+		dungeonFloorRunsWidget.extractRenderState(graphics, mouseX, mouseY, rootX + 113, rootY + 56);
+		dungeonMiscStatsWidgets.extractRenderState(graphics, rootX + 113, rootY);
 		for (int i = 0; i < dungeonClassWidgetsList.size(); i++) {
-			dungeonClassWidgetsList.get(i).render(context, mouseX, mouseY, rootX, rootY + 28 + i * 28);
+			dungeonClassWidgetsList.get(i).extractRenderState(graphics, mouseX, mouseY, rootX, rootY + 28 + i * 28);
 		}
 	}
 }

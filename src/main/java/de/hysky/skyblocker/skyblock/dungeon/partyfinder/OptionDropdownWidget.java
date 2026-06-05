@@ -5,8 +5,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -77,35 +76,35 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (isOpen) {
-			if (animationProgress < 1) animationProgress += delta * 0.5f;
+			if (animationProgress < 1) animationProgress += a * 0.5f;
 			else if (animationProgress != 1) animationProgress = 1;
 		} else {
 			animationProgress = 0;
 		}
 
 		if (PartyFinderScreen.DEBUG) {
-			context.drawString(Minecraft.getInstance().font, String.valueOf(slotId), getX(), getY() - 10, CommonColors.RED, true);
-			context.drawString(Minecraft.getInstance().font, String.valueOf(backButtonId), getX() + 50, getY() - 10, CommonColors.RED, true);
-			context.drawString(minecraft.font, String.valueOf(animationProgress), getX() - 10, getY(), CommonColors.GREEN, true);
+			graphics.text(Minecraft.getInstance().font, String.valueOf(slotId), getX(), getY() - 10, CommonColors.RED, true);
+			graphics.text(Minecraft.getInstance().font, String.valueOf(backButtonId), getX() + 50, getY() - 10, CommonColors.RED, true);
+			graphics.text(minecraft.font, String.valueOf(animationProgress), getX() - 10, getY(), CommonColors.GREEN, true);
 		}
 		if (isOpen) {
 			int listHeight = Math.min(getHeight(), contentHeight() - header.getHeight() - 4);
 			int openedListHeight = isOpen ? (int) (listHeight * animationProgress) : (int) (listHeight * (1 - animationProgress));
-			context.fill(getX(), header.getY() + header.getHeight(), getX() + getWidth() - 1, header.getY() + openedListHeight + header.getHeight(), 0xFFF0F0F0);
-			context.fill(getX() + 1, header.getY() + header.getHeight() + 1, getX() + getWidth() - 2, header.getY() + openedListHeight + header.getHeight() - 1, CommonColors.BLACK);
+			graphics.fill(getX(), header.getY() + header.getHeight(), getX() + getWidth() - 1, header.getY() + openedListHeight + header.getHeight(), 0xFFF0F0F0);
+			graphics.fill(getX() + 1, header.getY() + header.getHeight() + 1, getX() + getWidth() - 2, header.getY() + openedListHeight + header.getHeight() - 1, CommonColors.BLACK);
 		}
 
-		super.renderWidget(context, mouseX, mouseY, delta);
+		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 	}
 
 	@Override
-	protected void renderListSeparators(GuiGraphics context) {
+	protected void extractListSeparators(GuiGraphicsExtractor graphics) {
 	}
 
 	@Override
-	protected void renderListBackground(GuiGraphics context) {
+	protected void extractListBackground(GuiGraphicsExtractor graphics) {
 	}
 
 	public void open(List<Option> entries, int backButtonId) {
@@ -150,16 +149,16 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			int x = this.getX();
 			int y = this.getY();
-			context.drawString(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
+			graphics.text(Minecraft.getInstance().font, name, x, y + 1, 0xFFD0D0D0, false);
 			int offset = 10;
-			context.fill(x - 2, y + offset, x - 3 + OptionDropdownWidget.this.getWidth(), y + 15 + offset, 0xFFF0F0F0);
-			context.fill(x - 1, y + 1 + offset, x - 3 + OptionDropdownWidget.this.getWidth() - 1, y + 14 + offset, CommonColors.BLACK);
+			graphics.fill(x - 2, y + offset, x - 3 + OptionDropdownWidget.this.getWidth(), y + 15 + offset, 0xFFF0F0F0);
+			graphics.fill(x - 1, y + 1 + offset, x - 3 + OptionDropdownWidget.this.getWidth() - 1, y + 14 + offset, CommonColors.BLACK);
 			if (selectedOption != null) {
-				context.drawString(Minecraft.getInstance().font, selectedOption.message, x + 2, y + 3 + offset, CommonColors.WHITE, true);
-			} else context.drawString(Minecraft.getInstance().font, "???", x + 2, y + 3 + offset, CommonColors.WHITE, true);
+				graphics.text(Minecraft.getInstance().font, selectedOption.message, x + 2, y + 3 + offset, CommonColors.WHITE, true);
+			} else graphics.text(Minecraft.getInstance().font, "???", x + 2, y + 3 + offset, CommonColors.WHITE, true);
 		}
 	}
 
@@ -176,22 +175,22 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-			Matrix3x2fStack matrices = context.pose();
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			int iconY = this.getY() + 1;
 			matrices.translate(this.getX(), iconY);
 			matrices.scale(0.8f, 0.8f);
 			matrices.translate(-this.getX(), -iconY);
-			context.renderItem(icon, this.getX(), iconY);
+			graphics.item(icon, this.getX(), iconY);
 			matrices.popMatrix();
 
-			if (PartyFinderScreen.DEBUG) context.drawString(minecraft.font, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), CommonColors.RED, true);
+			if (PartyFinderScreen.DEBUG) graphics.text(minecraft.font, String.valueOf(optionSlotId), this.getX() + 8, this.getY(), CommonColors.RED, true);
 			MutableComponent text = Component.literal(message).withStyle(Style.EMPTY.withUnderlined(hovered));
 			if (minecraft.font.width(text) >= this.getWidth() - 14) {
-				context.textRenderer(HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + minecraft.font.lineHeight);
+				graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(text, this.getX() + 14, this.getX() + this.getWidth(), getY() + 3, this.getY() + 3 + minecraft.font.lineHeight);
 			} else {
-				context.drawString(minecraft.font, text, this.getX() + 14, this.getY() + 3, CommonColors.WHITE, false);
+				graphics.text(minecraft.font, text, this.getX() + 14, this.getY() + 3, CommonColors.WHITE, false);
 			}
 		}
 

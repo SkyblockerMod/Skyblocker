@@ -7,7 +7,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -35,7 +35,7 @@ public class LightsOn {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(LightsOn::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(LightsOn::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {

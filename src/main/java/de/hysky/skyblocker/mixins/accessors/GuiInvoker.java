@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.mixins.accessors;
 
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.scores.Objective;
 import org.jspecify.annotations.Nullable;
@@ -16,5 +16,5 @@ public interface GuiInvoker {
 	@Nullable Component getOverlayMessageString();
 
 	@Invoker("displayScoreboardSidebar")
-	void skyblocker$renderSidebar(GuiGraphics context, Objective objective);
+	void extractSidebar(GuiGraphicsExtractor graphics, Objective objective);
 }

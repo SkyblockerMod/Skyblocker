@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -58,7 +59,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (copied) return;
 
-		double price = ItemUtils.getItemPrice(stack).leftDouble();
+		double price = ItemUtils.getItemPrice(stack).orElse(0);
 		if (price <= 1) return;
 
 		long underbid = (long) price - 1;
@@ -66,8 +67,8 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (client.player != null) {
 			Component priceText = Component.literal(Formatters.INTEGER_NUMBERS.format(underbid)).withStyle(ChatFormatting.GOLD);
-			client.player.displayClientMessage(Constants.PREFIX.get()
-					.append(Component.translatable("skyblocker.copyUnderbidPrice.copied", priceText).withStyle(ChatFormatting.GRAY)), false);
+			client.player.sendSystemMessage(Constants.PREFIX.get()
+					.append(Component.translatable("skyblocker.copyUnderbidPrice.copied", priceText).withStyle(ChatFormatting.GRAY)));
 		}
 
 		copied = true;

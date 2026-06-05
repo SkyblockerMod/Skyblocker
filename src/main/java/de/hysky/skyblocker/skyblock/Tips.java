@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Tips {
 	private static final String modVersion = SkyblockerMod.VERSION.split("\\+")[0];
@@ -122,7 +122,7 @@ public class Tips {
 	private static void sendNextTip() {
 		Minecraft client = Minecraft.getInstance();
 		if (client.player != null && SkyblockerConfigManager.get().general.enableTips && !sentTip) {
-			client.player.displayClientMessage(tipMessage(nextTip()), false);
+			client.player.sendSystemMessage(tipMessage(nextTip()));
 			sentTip = true;
 		}
 	}

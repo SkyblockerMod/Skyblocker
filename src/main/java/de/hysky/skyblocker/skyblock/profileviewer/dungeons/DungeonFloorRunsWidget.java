@@ -11,7 +11,7 @@ import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -26,12 +26,12 @@ public class DungeonFloorRunsWidget {
 	public DungeonFloorRunsWidget(JsonObject pProfile) {
 		try {
 			dungeonsStats = pProfile.getAsJsonObject("dungeons").getAsJsonObject("dungeon_types");
-		} catch (Exception ignored) {}
+		} catch (Exception _) {}
 	}
 
-	public void render(GuiGraphics context, int mouseX, int mouseY, int x, int y) {
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
-		context.drawString(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 109, 110, 109, 110);
+		graphics.text(textRenderer, Component.literal("Floor Runs").withStyle(ChatFormatting.BOLD), x + 6, y + 4, Color.WHITE.getRGB(), true);
 
 		int columnX = x + 4;
 		int elementY = y + 15;
@@ -46,7 +46,7 @@ public class DungeonFloorRunsWidget {
 					if (entry.getKey().equals("total")) continue;
 
 					String textToRender = String.format((dungeon.equals("catacombs") ? "§aF" : "§cM") + "%s§r %s", entry.getKey(), entry.getValue().getAsInt());
-					context.drawString(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
+					graphics.text(textRenderer, textToRender, columnX + 2, elementY + 2, Color.WHITE.getRGB(), true);
 					if (!entry.getKey().equals("0") && mouseX >= columnX && mouseX <= columnX + 40 && mouseY >= elementY && mouseY <= elementY + 9) {
 						List<Component> tooltipText = new ArrayList<>();
 						tooltipText.add(Component.literal("Personal Bests").withStyle(ChatFormatting.BOLD, ChatFormatting.LIGHT_PURPLE));
@@ -66,14 +66,14 @@ public class DungeonFloorRunsWidget {
 							tooltipText.add(Component.literal("Completion:  " + formatTime(fastestTimes.get(entry.getKey()).getAsLong())).withStyle(ChatFormatting.GOLD));
 						}
 
-						context.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
+						graphics.setComponentTooltipForNextFrame(textRenderer, tooltipText, mouseX, mouseY);
 					}
 
 					elementY += 11;
 				}
 				columnX += 52;
 				elementY = y + 26;
-			} catch (Exception e) {
+			} catch (Exception _) {
 				return;
 			}
 		}

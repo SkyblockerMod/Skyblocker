@@ -8,6 +8,7 @@ import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
@@ -55,6 +56,9 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	private @Nullable List<String> loreString;
 
 	@Unique
+	private @Nullable List<ItemAbility> abilities;
+
+	@Unique
 	private @Nullable PetInfo petInfo;
 
 	@Unique
@@ -70,7 +74,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@ModifyExpressionValue(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
-	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local TooltipProvider component) {
+	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local(name = "component") TooltipProvider component) {
 		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantments);
 	}
 
@@ -78,7 +82,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getKey(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;")),
 			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
-	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Component> textConsumer) {
+	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(name = "builder") Consumer<Component> textConsumer) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = getSkyblockId();
 
@@ -111,7 +115,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		return durabilityBarFill >= 0 ? OkLabColor.interpolate(CommonColors.RED, CommonColors.GREEN, durabilityBarFill) : original;
 	}
 
-	@Inject(method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
+	@Inject(method = "<init>(Lnet/minecraft/core/Holder;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
 		skyblocker$getAndCacheDurability();
 	}
@@ -128,6 +132,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		if (type == DataComponents.LORE) {
 			loreString = null;
 			skyblockRarity = null;
+			abilities = null;
 		}
 	}
 
@@ -186,6 +191,13 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	public List<String> skyblocker$getLoreStrings() {
 		if (loreString != null) return loreString;
 		return loreString = ItemUtils.getLore((ItemStack) (Object) this).stream().map(Component::getString).toList();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<ItemAbility> skyblocker$getAbilities() {
+		if (abilities != null) return abilities;
+		return abilities = ItemAbility.getAbilities((ItemStack) (Object) this);
 	}
 
 	@SuppressWarnings("deprecation")

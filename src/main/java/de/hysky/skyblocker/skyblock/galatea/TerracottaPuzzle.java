@@ -16,7 +16,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class TerracottaPuzzle {
@@ -37,7 +37,7 @@ public class TerracottaPuzzle {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(TerracottaPuzzle::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(TerracottaPuzzle::extractRendering);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class TerracottaPuzzle {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (!SkyblockerConfigManager.get().foraging.galatea.solveForestTemplePuzzle || !Utils.isInGalatea() || Utils.getArea() != Area.FOREST_TEMPLE || CLIENT.level == null) return;
+		if (!SkyblockerConfigManager.get().foraging.galatea.solveForestTemplePuzzle || !Utils.isInGalatea() || Utils.getArea() != Area.Galatea.FOREST_TEMPLE || CLIENT.level == null) return;
 
 		List<Direction> solutions = solve();
 

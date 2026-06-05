@@ -2,12 +2,14 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Component;
-import de.hysky.skyblocker.skyblock.tabhud.widget.component.Components;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.slf4j.Logger;
 
@@ -20,7 +22,7 @@ import com.mojang.logging.LogUtils;
 public class CommsWidget extends TabHudWidget {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final String ID = "commissions";
-	private static final MutableComponent TITLE = net.minecraft.network.chat.Component.literal("Commissions").withStyle(ChatFormatting.DARK_AQUA,
+	private static final MutableComponent TITLE = Component.literal("Commissions").withStyle(ChatFormatting.DARK_AQUA,
 			ChatFormatting.BOLD);
 
 	// match a comm
@@ -33,21 +35,21 @@ public class CommsWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<net.minecraft.network.chat.Component> lines) {
+	public void updateContent(List<Component> lines) {
 		if (lines.isEmpty()) {
-			this.addComponent(Components.iconTextComponent());
+			this.addComponent(Elements.iconTextComponent());
 			return;
 		}
-		for (net.minecraft.network.chat.Component line : lines) {
+		for (Component line : lines) {
 			Matcher m = COMM_PATTERN.matcher(line.getString());
 			if (m.matches()) {
-				Component component;
+				Element element;
 
 				String name = m.group("name");
 				String progress = m.group("progress");
 
 				if (progress.equals("DONE")) {
-					component = Components.progressComponent(Ico.BOOK, net.minecraft.network.chat.Component.nullToEmpty(name), net.minecraft.network.chat.Component.nullToEmpty(progress), 100f);
+					element = Elements.progressComponent(Ico.BOOK, Component.nullToEmpty(name), Component.nullToEmpty(progress), 100f);
 				} else {
 					float percent;
 					try {
@@ -56,9 +58,9 @@ public class CommsWidget extends TabHudWidget {
 						LOGGER.error("[Skyblocker Comms Widget] Failed to parse number.", e);
 						percent = 0;
 					}
-					component = Components.progressComponent(Ico.BOOK, net.minecraft.network.chat.Component.nullToEmpty(name), percent);
+					element = Elements.progressComponent(Ico.BOOK, Component.nullToEmpty(name), percent);
 				}
-				this.addComponent(component);
+				this.addComponent(element);
 			}
 		}
 	}

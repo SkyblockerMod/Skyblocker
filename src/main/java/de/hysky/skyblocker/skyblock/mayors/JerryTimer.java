@@ -34,7 +34,7 @@ public final class JerryTimer {
 			LocalPlayer player = Minecraft.getInstance().player;
 			Scheduler.INSTANCE.schedule(() -> {
 				if (player == null || !Utils.isOnSkyblock()) return;
-				player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.jerry.sendJerryTimerMessage")).withStyle(ChatFormatting.GREEN), false);
+				player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.jerry.sendJerryTimerMessage")).withStyle(ChatFormatting.GREEN));
 				player.playSound(SoundEvents.VILLAGER_TRADE, 100f, 1.0f);
 			}, 20 * 60 * 6); // 6 minutes
 

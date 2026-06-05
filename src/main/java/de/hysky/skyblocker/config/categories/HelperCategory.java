@@ -15,6 +15,7 @@ import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -73,14 +74,6 @@ public class HelperCategory {
 								newValue -> config.helpers.enableCopyUnderbidPrice = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				// Builder's Wand and Ruler Preview
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.helpers.enableBuildersWandPreview"))
-						.binding(defaults.helpers.enableBuildersWandPreview,
-								() -> config.helpers.enableBuildersWandPreview,
-								newValue -> config.helpers.enableBuildersWandPreview = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
 				// Anvil Helper
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.enableAnvilHelper"))
@@ -91,6 +84,38 @@ public class HelperCategory {
 								newValue -> config.helpers.enableAnvilHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				// Accessories Helper Widget
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget"))
+						.description(Component.translatable("skyblocker.config.helpers.enableAccessoriesHelperWidget.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_0_0)
+						.binding(defaults.helpers.enableAccessoriesHelperWidget,
+								() -> config.helpers.enableAccessoriesHelperWidget,
+								newValue -> config.helpers.enableAccessoriesHelperWidget = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				// Builder's Wand and Ruler Preview
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.buildersWand"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.buildersWand.enableBuildersWandPreview"))
+								.binding(defaults.helpers.buildersWand.enableBuildersWandPreview,
+										() -> config.helpers.buildersWand.enableBuildersWandPreview,
+										newValue -> config.helpers.buildersWand.enableBuildersWandPreview = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.buildersWand.previewOpacity"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
+								.binding(defaults.helpers.buildersWand.previewOpacity,
+										() -> config.helpers.buildersWand.previewOpacity,
+										newValue -> config.helpers.buildersWand.previewOpacity = newValue)
+								.controller(FloatController.createBuilder().range(0f, 1f).slider(0.05f).build())
+								.build())
+						.build()
+				)
 
 				//Mythological Ritual
 				.group(OptionGroup.createBuilder()
@@ -233,14 +258,6 @@ public class HelperCategory {
 										() -> config.helpers.fishing.seaCreatureTimerNotification,
 										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip"))
-								.binding(defaults.helpers.fishing.seaCreatureCap,
-										() -> config.helpers.fishing.seaCreatureCap,
-										newValue -> config.helpers.fishing.seaCreatureCap = newValue)
-								.controller(IntegerController.createBuilder().range(1, 60).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification"))
@@ -416,14 +433,6 @@ public class HelperCategory {
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
 										() -> config.helpers.itemPrice.enableItemPriceLookup,
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip"))
-								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-										() -> config.helpers.itemPrice.enableItemPriceRefresh,
-										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())

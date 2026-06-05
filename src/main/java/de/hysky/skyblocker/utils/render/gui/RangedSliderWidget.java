@@ -25,7 +25,7 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		this.step = step;
 		this.formatter = formatter;
 		this.callback = callback;
-		setValue(defaultValue);
+		setValue(valueToProgress(defaultValue));
 	}
 
 	private double roundToNearestStep(double value) {
@@ -43,11 +43,6 @@ public class RangedSliderWidget extends AbstractSliderButton {
 	@Override
 	protected void updateMessage() {
 		setMessage(this.formatter.apply(getValue()));
-	}
-
-	public void setValue(double value) {
-		this.value = valueToProgress(value);
-		this.updateMessage();
 	}
 
 	public double getValue() {
@@ -73,7 +68,7 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		private int x, y, width = Button.DEFAULT_WIDTH, height = Button.DEFAULT_HEIGHT;
 		private double value, min = 0, max = 1, step;
 		private Double2ObjectFunction<Component> formatter = d -> Component.literal(Formatters.DOUBLE_NUMBERS.format(d));
-		private DoubleConsumer callback = d -> {};
+		private DoubleConsumer callback = _ -> {};
 
 		private Builder() {}
 

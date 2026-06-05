@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
@@ -40,13 +39,13 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 
 		switch (screenHandler) {
 			// Better party finder
-			case ChestMenu ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
-			case ChestMenu ignored when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
+			case ChestMenu _ when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("select tier") -> PartyFinderScreen.isInKuudraPartyFinder = true;
+			case ChestMenu _ when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
 
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
 				if (client.screen != null) {
 					String lowerCase = client.screen.getTitle().getString().toLowerCase(Locale.ENGLISH);
-					if (lowerCase.contains("group builder")) return;
+					if (lowerCase.contains("group builder") || lowerCase.equals("training dummy")) return;
 				}
 
 				if (PartyFinderScreen.isInKuudraPartyFinder) return;
@@ -95,13 +94,12 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase(Locale.ENGLISH).contains("craft item") -> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.containerMenu = skyblockCraftingTableScreenHandler;
-				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(),
-						ResourcePackCompatibility.options.renameCraftingTable().orElse(false) ? Component.literal("CraftingTableSkyblocker") : Component.literal("Craft Item")));
+				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Component.literal("Craft Item")));
 				ci.cancel();
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || nameLowercase.endsWith("widget settings") || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (nameLowercase.startsWith("widgets in") || nameLowercase.startsWith("widgets on") || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				switch (client.screen) {
 					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);

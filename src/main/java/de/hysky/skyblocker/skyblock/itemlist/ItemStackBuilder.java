@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
@@ -15,7 +16,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import org.slf4j.Logger;
@@ -29,12 +29,12 @@ public class ItemStackBuilder {
 	protected static void loadPetNums() {
 		try {
 			petNums = NEURepoManager.getConstants().getPetNumbers();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			ItemRepository.LOGGER.error("Failed to load petnums.json");
 		}
 	}
 
-	protected static ItemStack fromNEUItem(NEUItem item) {
+	protected static FlexibleItemStack fromNEUItem(NEUItem item) {
 		try {
 			CompoundTag nbt = new CompoundTag();
 			CompoundTag tag = LegacyStringNbtReader.parse(item.getNbttag());
@@ -45,10 +45,10 @@ public class ItemStackBuilder {
 			nbt.putShort("Damage", (short) item.getDamage());
 			nbt.putInt("Count", 1);
 
-			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt);
+			FlexibleItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, FlexibleItemStack.CODEC);
 
 			//The item couldn't be fixed up
-			if (stack.isEmpty()) {
+			if (stack.is(Items.AIR)) {
 				LOGGER.error("[Skyblocker ItemStackBuilder] Failed to build item with skyblock id: {}!", item.getSkyblockItemId());
 
 				return createErrorStack(item.getSkyblockItemId());
@@ -74,8 +74,8 @@ public class ItemStackBuilder {
 		return createErrorStack(item.getSkyblockItemId());
 	}
 
-	private static ItemStack createErrorStack(String skyblockItemId) {
-		ItemStack errorStack = new ItemStack(Items.BARRIER);
+	private static FlexibleItemStack createErrorStack(String skyblockItemId) {
+		FlexibleItemStack errorStack = new FlexibleItemStack(Items.BARRIER);
 		errorStack.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(skyblockItemId));
 
 		return errorStack;

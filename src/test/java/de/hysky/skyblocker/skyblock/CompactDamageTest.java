@@ -51,7 +51,7 @@ public class CompactDamageTest {
 	private static Component getCompactText(ArmorStand entity, int maxPrecision) {
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.maxPrecision = maxPrecision;
 		CompactDamage.compactDamage(entity);
-		return entity.getCustomName();
+		return entity.skyblocker$getCustomName();
 	}
 
 	private static void testCompact(Component inputText, int maxPrecision, Component expectedText) {

@@ -6,7 +6,7 @@ import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.util.function.IntConsumer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -31,7 +31,7 @@ public class ColorPopup extends AbstractPopupScreen {
 	}
 
 	private ColorPopup(Screen backgroundScreen, IntConsumer consumer) {
-		this(backgroundScreen, ((start, end) -> consumer.accept(start)), false);
+		this(backgroundScreen, ((start, _) -> consumer.accept(start)), false);
 	}
 
 	public static ColorPopup create(Screen backgroundScreen, IntConsumer colorConsumer) {
@@ -52,8 +52,8 @@ public class ColorPopup extends AbstractPopupScreen {
 			createLayout(adder);
 		}
 		adder.addChild(SpacerElement.height(15), 2);
-		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.cancel"), b -> onClose()).build(), LayoutSettings.defaults().alignHorizontallyRight().paddingRight(2)));
-		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.done"), b -> {
+		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.cancel"), _ -> onClose()).build(), LayoutSettings.defaults().alignHorizontallyRight().paddingRight(2)));
+		addRenderableWidget(adder.addChild(Button.builder(Component.translatable("gui.done"), _ -> {
 			gradientConsumer.accept(currentColor.firstInt(), currentColor.secondInt());
 			onClose();
 		}).build(), LayoutSettings.defaults().alignHorizontallyLeft().paddingLeft(2)));
@@ -68,9 +68,9 @@ public class ColorPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 	}
 
 	private void createLayout(GridLayout.RowHelper adder) {
@@ -83,7 +83,7 @@ public class ColorPopup extends AbstractPopupScreen {
 			colorPicker.setARGBColor(color);
 			currentColor.first(color);
 		});
-		colorPicker.setOnColorChange((color, mouseRelease) -> {
+		colorPicker.setOnColorChange((color, _) -> {
 			argb.setARGBColor(color);
 			currentColor.first(color);
 		});
@@ -106,7 +106,7 @@ public class ColorPopup extends AbstractPopupScreen {
 			colorPickerStart.setARGBColor(color);
 			currentColor.first(color);
 		});
-		colorPickerStart.setOnColorChange((color, mouseRelease) -> {
+		colorPickerStart.setOnColorChange((color, _) -> {
 			argbStart.setARGBColor(color);
 			currentColor.first(color);
 		});
@@ -114,7 +114,7 @@ public class ColorPopup extends AbstractPopupScreen {
 			colorPickerEnd.setARGBColor(color);
 			currentColor.second(color);
 		});
-		colorPickerEnd.setOnColorChange((color, mouseRelease) -> {
+		colorPickerEnd.setOnColorChange((color, _) -> {
 			argbEnd.setARGBColor(color);
 			currentColor.second(color);
 		});

@@ -37,7 +37,7 @@ public class RedialOnBadSignal extends ChatPatternListener {
 				style.withClickEvent(new ClickEvent.RunCommand("/call " + name))
 						.withColor(ChatFormatting.AQUA)
 		);
-		player.displayClientMessage(callMessage, false);
+		player.sendSystemMessage(callMessage);
 
 		return false;
 	}

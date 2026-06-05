@@ -8,16 +8,18 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.function.Consumer;
+import java.util.function.Function;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -33,6 +35,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.effect.MobEffects;
 
 public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
@@ -88,9 +91,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public boolean visible = true;
 	public boolean enabled = true;
 
-	private Object value = "???";
-	private @Nullable Object max = "???";
-	private @Nullable Object overflow = "???";
+	private @Nullable Integer value = null;
+	private @Nullable Integer max = null;
+	private @Nullable Integer overflow = null;
+	private final Function<Integer, String> toDisplay;
 
 	private int renderX = 0;
 	private int renderY = 0;
@@ -103,10 +107,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public boolean showOverflow = false;
 
 	public StatusBar(StatusBarType type) {
+		this(type, String::valueOf);
+	}
+
+	public StatusBar(StatusBarType type, Function<Integer, String> toDisplay) {
 		this.icon = SkyblockerMod.id("bars/icons/" + type.getSerializedName());
 		this.colors = type.getColors();
 		this.textColor = type.getTextColor();
 		this.type = type;
+		this.toDisplay = toDisplay;
 	}
 
 	protected int transparency(int color) {
@@ -115,40 +124,41 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		renderBar(context);
-		if (enabled) renderText(context);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		extractBar(graphics);
+		if (enabled) extractText(graphics);
 	}
 
 	protected Identifier getIcon() {
 		return icon;
 	}
 
-	public void renderBar(GuiGraphics context) {
+	@SuppressWarnings("incomplete-switch")
+	public void extractBar(GuiGraphicsExtractor graphics) {
 		if (renderWidth <= 0) return;
 		int transparency = transparency(-1);
 		switch (iconPosition) {
-			case LEFT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
-			case RIGHT -> context.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case LEFT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
+			case RIGHT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
-		drawBarFill(context, barX, barWidth);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
+		extractBarFill(graphics, barX, barWidth);
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 	}
 
-	protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
-		HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
+	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
 
 		if (hasOverflow() && overflowFill > 0) {
-			HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
 		}
 	}
 
-	public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-		this.value = text;
+	public void updateValues(float fill, float overflowFill, int value, @Nullable Integer max, @Nullable Integer overflow) {
+		this.value = value;
 		this.fill = Math.clamp(fill, 0, 1);
 		this.overflowFill = Math.clamp(overflowFill, 0, 1);
 		this.max = max;
@@ -156,23 +166,25 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	public void updateWithResource(StatusBarTracker.Resource resource) {
-		updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
+		this.updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
 	}
 
-	public void renderText(GuiGraphics context) {
+	public void extractText(GuiGraphicsExtractor graphics) {
 		if (!showText()) return;
 		Font textRenderer = Minecraft.getInstance().font;
 		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
 		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
-		String stringValue = this.value.toString();
-		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor((textColor == null ? colors[0] : textColor).getRGB()));
+		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
+		//Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
+		Color displayColor = textColor == null ? colors[0] : textColor;
+		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(displayColor.getRGB()));
 
 		if (hasMax() && showMax && max != null) {
 			text.append("/").append(max.toString());
 		}
 		if (hasOverflow() && showOverflow && overflow != null) {
 			MutableComponent literal = Component.literal(" + ").withStyle(style -> style.withColor(colors[1].getRGB()));
-			literal.append(overflow.toString());
+			literal.append(toDisplay.apply(overflow));
 			text.append(literal);
 		}
 
@@ -186,13 +198,13 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		int y = this.renderY - 3;
 
-		int color = transparency((textColor == null ? colors[0] : textColor).getRGB());
+		int color = transparency(displayColor.getRGB());
 		int outlineColor = transparency(CommonColors.BLACK);
 
-		HudHelper.drawOutlinedText(context, Component.translationArg(text), x, y, color, outlineColor);
+		GuiHelper.outlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
 	}
 
-	public void renderCursor(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractCursor(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		int temp_x = renderX;
 		int temp_y = renderY;
 		boolean temp_ghost = inMouse;
@@ -201,7 +213,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		renderY = mouseY;
 		inMouse = false;
 
-		render(context, mouseX, mouseY, delta);
+		extractRenderState(graphics, mouseX, mouseY, a);
 
 		renderX = temp_x;
 		renderY = temp_y;
@@ -436,47 +448,81 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public static class ManaStatusBar extends StatusBar {
 
 		public ManaStatusBar(StatusBarType type) {
-			super(type);
+			super(type, mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString());
 		}
 
 		@Override
-		protected void drawBarFill(GuiGraphics context, int barX, int barWith) {
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 				} else {
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
-					HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
 				}
 			} else {
-				HudHelper.renderNineSliceColored(context, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
 			}
-		}
-
-		@Override
-		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-			super.updateValues(fill, overflowFill, StatusBarTracker.isManaEstimated() ? "~" + text : text, max, overflow);
 		}
 	}
 
 	public static class ExperienceStatusBar extends StatusBar {
 		private static final Identifier CLOCK_ICON = SkyblockerMod.id("bars/icons/rift_time");
 		public ExperienceStatusBar(StatusBarType type) {
-			super(type);
+			super(type, time -> {
+				if (Utils.isInTheRift()) {
+					return time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
+				}
+				return time.toString();
+			});
 		}
 
 		@Override
 		protected Identifier getIcon() {
 			return Utils.isInTheRift() ? CLOCK_ICON : super.getIcon();
 		}
+	}
+
+	public static class HealthStatusBar extends StatusBar {
+		private static final Color WITHER_COLOR = new Color(76, 48, 57);
+		private static final Color POISON_COLOR = new Color(94, 78, 18);
+		private static final Identifier WITHER_ICON = SkyblockerMod.id("bars/icons/health_wither");
+		private static final Identifier POISON_ICON = SkyblockerMod.id("bars/icons/health_poison");
+
+		public HealthStatusBar(StatusBarType type) {
+			super(type);
+		}
 
 		@Override
-		public void updateValues(float fill, float overflowFill, Object text, @Nullable Object max, @Nullable Object overflow) {
-			if (Utils.isInTheRift() && text instanceof Integer time) {
-				text = time < 60 ? time + "s" : String.format("%dm%02ds", time / 60, time % 60);
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
+			Minecraft client = Minecraft.getInstance();
+			boolean withering = client.player != null && client.player.hasEffect(MobEffects.WITHER);
+			boolean poisoned = client.player != null && client.player.hasEffect(MobEffects.POISON);
+
+			int fillColor;
+			if (withering) {
+				fillColor = WITHER_COLOR.getRGB();
+			} else if (poisoned) {
+				fillColor = POISON_COLOR.getRGB();
+			} else {
+				fillColor = getColors()[0].getRGB();
 			}
-			super.updateValues(fill, overflowFill, text, max, overflow);
+
+			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * fill), 5, transparency(fillColor));
+			if (hasOverflow() && overflowFill > 0) {
+				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+			}
+		}
+
+		@Override
+		protected Identifier getIcon() {
+			Minecraft client = Minecraft.getInstance();
+			if (client.player != null) {
+				if (client.player.hasEffect(MobEffects.WITHER)) return WITHER_ICON;
+				else if (client.player.hasEffect(MobEffects.POISON)) return POISON_ICON;
+			}
+			return super.getIcon();
 		}
 	}
 }

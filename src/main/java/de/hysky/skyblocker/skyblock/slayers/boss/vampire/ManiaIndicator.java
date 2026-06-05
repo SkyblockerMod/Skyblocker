@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.block.Blocks;
 
 public class ManiaIndicator {
@@ -18,17 +19,17 @@ public class ManiaIndicator {
 	public static void updateMania() {
 		Minecraft client = Minecraft.getInstance();
 
-		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isInSlayerType(SlayerType.VAMPIRE) || client.player == null || client.level == null) {
+		if (!SkyblockerConfigManager.get().slayers.vampireSlayer.enableManiaIndicator || !SlayerManager.isFightingSlayerType(SlayerType.VAMPIRE) || client.player == null || client.level == null) {
 			TitleContainer.removeTitle(title);
 			return;
 		}
 
-		Entity slayerEntity = SlayerManager.getSlayerBossArmorStand();
+		Entity slayerEntity = SlayerManager.getSlayerArmorStand();
 		if (slayerEntity == null) return;
 
 		boolean anyMania = false;
-		for (Entity entity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
-			if (entity.getDisplayName().toString().contains("MANIA")) {
+		for (ArmorStand armorStandEntity : SlayerManager.getEntityArmorStands(slayerEntity, 2.5f)) {
+			if (armorStandEntity.getName().toString().contains("MANIA")) {
 				anyMania = true;
 				BlockPos pos = client.player.blockPosition().below();
 				boolean isGreen = client.level.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;

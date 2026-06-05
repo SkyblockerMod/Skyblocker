@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -191,7 +192,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (!bitsMatcher.find()) return;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 
 			if (itemCost == 0) return;
 
@@ -217,7 +218,8 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 				}
 			}
 		}
-		ItemStack foundItemStack = ItemRepository.getItemStack(itemID);
+		FlexibleItemStack flexibleItemStack = ItemRepository.getItemStack(itemID);
+		ItemStack foundItemStack = flexibleItemStack == null ? null : flexibleItemStack.getStackOrThrow();
 		if (itemID.isEmpty()) {   // a bit dirty, but basically if itemID is empty then it is normal item and NOT category
 			lines.add(Component.empty()
 					.append(Component.literal("Bits Cost: ").withStyle(ChatFormatting.AQUA))
@@ -289,7 +291,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			ItemStack stack = entry.getValue();
 			if (stack == null || stack.isEmpty()) continue;
 
-			if (CATEGORY_PATTERN.matcher(ItemUtils.concatenateLore(ItemUtils.getLore(stack))).find()) {
+			if (CATEGORY_PATTERN.matcher(ItemUtils.getConcatenatedLore(stack)).find()) {
 				ObjectLongImmutablePair<String> categoryResults = calculateBestInCategory(stack);
 
 				String itemID = categoryResults.left();
@@ -312,12 +314,12 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (stack == null || stack.isEmpty()) continue;
 
 			String itemId = stack.getSkyblockApiId();
-			String lore = ItemUtils.concatenateLore(ItemUtils.getLore(stack));
+			String lore = ItemUtils.getConcatenatedLore(stack);
 			Matcher bitsMatcher = BITS_PATTERN.matcher(lore);
 			if (!bitsMatcher.find()) continue;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 			if (itemCost == 0 || bitsCost == 0) continue;
 
 			long coinsPerBit = Math.round(itemCost / bitsCost);
@@ -370,7 +372,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			for (Map.Entry<String, Integer> entry : category.entrySet()) {
 				String itemID = entry.getKey();
 				Integer itemBitsPrice = entry.getValue();
-				double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();
+				double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);
 				long coinsPerBit = Math.round(itemCost / itemBitsPrice);
 				results.put(itemID, coinsPerBit);
 			}
@@ -378,7 +380,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		} else if (categoryName.contains("Fuel Blocks")) {
 			String itemID = "INFERNO_FUEL_BLOCK";    // but I don't know if only 1x offer of 64x offer gets discount too
 			int[] itemBitsPrice = {75, 3600};   // if only 1x gets discount then it doesn't matter as x64 would be ALWAYS better even with it
-			double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();   // TLDR: need blaze slayer 9 players to show their prices
+			double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);   // TLDR: need blaze slayer 9 players to show their prices
 			long coinsPerBit = (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));
 			Object2LongMap<String> fuelBlockResult = new Object2LongOpenHashMap<>();
 			fuelBlockResult.put(itemID, coinsPerBit);

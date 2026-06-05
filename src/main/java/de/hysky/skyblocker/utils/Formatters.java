@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.utils;
 
-import ca.weblite.objc.Client;
 import com.ibm.icu.text.DateTimePatternGenerator;
+
+import de.hysky.skyblocker.compatibility.MacCompatibility;
+import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
-import net.minecraft.client.input.InputQuirks;
 import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
@@ -70,7 +71,7 @@ public class Formatters {
 	public static Number parseNumber(String number) throws NumberFormatException {
 		try {
 			return SHORT_INTEGER_NUMBERS.parse(number.replace(",", ""));
-		} catch (ParseException e) {
+		} catch (ParseException _) {
 			throw new NumberFormatException("For input string: \"" + number + "\"");
 		}
 	}
@@ -89,27 +90,21 @@ public class Formatters {
 		return Debug.isTestEnvironment() ? ZoneId.of("UTC") : ZoneId.systemDefault();
 	}
 
-	/**
-	 * Determines whether to use the 12 or 24 hour clock for formatting time.
-	 * <p>
-	 * On macOS this reads the preference for the system clock's time format which accounts for whether a user
-	 * chooses 12 or 24 hour time in the System Settings.
-	 * <p>
-	 * On other platforms, the time format follows the default for the user's current locale.
-	 *
-	 * @see <a href="https://developer.apple.com/documentation/foundation/nsdateformatter/1408112-dateformatfromtemplate?language=objc">NSDateFormatter</a>
-	 * @see <a href="https://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Field_Symbol_Table">Unicode Locale Data Markup Language (LDML)</a>
-	 */
+	/// Determines whether to use the 12 or 24 hour clock for formatting time.
+	///
+	/// On Windows and macOS this reads the preference for the system clock's time format which accounts for whether a user
+	/// chooses 12 or 24 hour time in the System Settings.
+	///
+	/// On other platforms, the time format follows the default for the user's current locale.
+	///
+	/// @see <a href="https://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Field_Symbol_Table">Unicode Locale Data Markup Language (LDML)</a>
 	private static boolean is12HourClock() {
-		//The j formatting template returns the preferred formatting for the time
-		//If the format contains a (am/pm pattern) then the preference is to use the 12 hour clock, otherwise its the 24 hour clock
-		if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY) {
-			Object locale = Client.getInstance().send("NSLocale", "currentLocale");
-			String timeFormat = (String) Client.getInstance().send("NSDateFormatter", "dateFormatFromTemplate:options:locale:", "j", 0, locale);
-
-			return timeFormat.contains("a");
-		} else {
-			return DateTimePatternGenerator.getInstance(Locale.getDefault()).getBestPattern("j").contains("a");
-		}
+		return switch (Util.getPlatform()) {
+			case Util.OS.OSX -> MacCompatibility.is12HourClock();
+			case Util.OS.WINDOWS -> WindowsCompatibility.is12HourClock();
+			// The j formatting template returns the preferred formatting for the time
+			// If the format contains a (am/pm pattern) then the preference is to use the 12 hour clock, otherwise its the 24 hour clock
+			default -> DateTimePatternGenerator.getInstance(Locale.getDefault()).getBestPattern("j").contains("a");
+		};
 	}
 }

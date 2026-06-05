@@ -5,9 +5,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import org.jspecify.annotations.Nullable;
@@ -124,11 +124,11 @@ public class PickobulusHelper {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(PickobulusHelper::update, 1);
-		WorldRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(PickobulusHelper::extractRendering);
 	}
 
 	private static void update() {
-		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
+		if (!(SkyblockerConfigManager.get().mining.enablePickobulusHelper || SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud)) return;
 
 		shouldRender = true;
 		errorMessage = null;
@@ -149,7 +149,7 @@ public class PickobulusHelper {
 			return;
 		}
 
-		if (ItemUtils.getLoreLineContains(CLIENT.player.getMainHandItem(), "Ability: Pickobulus") == null) {
+		if (!ItemAbility.hasAbility(CLIENT.player.getMainHandItem(), "Pickobulus")) {
 			shouldRender = false;
 			errorMessage = Component.literal("Not holding a tool with pickobulus").withStyle(ChatFormatting.RED);
 			return;
@@ -165,6 +165,7 @@ public class PickobulusHelper {
 		calculatePickobulus(blockHitResult.getBlockPos());
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private static void calculatePickobulus(BlockPos pos) {
 		assert CLIENT.level != null;
 		BlockPos.MutableBlockPos posMutable = pos.mutable().move(-4, -4, -4);
@@ -189,10 +190,10 @@ public class PickobulusHelper {
 									|| blocks[i][j][k - 1].isAir() || blocks[i][j][k + 1].isAir();
 					if (!exposed) continue;
 
-					if (Utils.getArea().equals(Area.GLACITE_TUNNELS)) handleGlaciteTunnels(pos, state, i, j, k);
-					else if (Utils.getArea().equals(Area.GLACITE_MINESHAFTS)) handleGlaciteMineshafts(pos, state, i, j, k);
+					if (Utils.getArea() == Area.DwarvenMines.GLACITE_TUNNELS
+							|| Utils.getArea() == Area.DwarvenMines.GREAT_GLACITE_LAKE) handleGlaciteTunnels(pos, state, i, j, k);
+					else if (Utils.getArea() == Area.DwarvenMines.GLACITE_MINESHAFTS) handleGlaciteMineshafts(pos, state, i, j, k);
 					else switch (Utils.getLocation()) {
-						case PRIVATE_ISLAND -> handleBreakable(pos, i, j, k);
 						case GOLD_MINE, DEEP_CAVERNS, DWARVEN_MINES -> handleConvertIntoBedrock(pos, state, i, j, k);
 						case CRYSTAL_HOLLOWS -> handleCrystalHollows(pos, state, i, j, k);
 						case GLACITE_MINESHAFTS -> handleGlaciteMineshafts(pos, state, i, j, k); // This doesn't seem to be actually possible according to the API?

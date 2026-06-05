@@ -24,8 +24,8 @@ public class GalateaGlowAdder extends MobGlowAdder {
 
 		return switch (entity) {
 			case Shulker shulker when shulker.getColor() == DyeColor.GREEN && SkyblockerConfigManager.get().hunting.huntingMobs.highlightHideonleaf -> SkyblockerConfigManager.get().hunting.huntingMobs.hideonleafGlowColor.getRGB();
-			case Turtle turtle when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> SkyblockerConfigManager.get().hunting.huntingMobs.shellwiseGlowColor.getRGB();
-			case Axolotl ax when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> SkyblockerConfigManager.get().hunting.huntingMobs.coralotGlowColor.getRGB();
+			case Turtle _ when SkyblockerConfigManager.get().hunting.huntingMobs.highlightShellwise -> SkyblockerConfigManager.get().hunting.huntingMobs.shellwiseGlowColor.getRGB();
+			case Axolotl _ when SkyblockerConfigManager.get().hunting.huntingMobs.highlightCoralot -> SkyblockerConfigManager.get().hunting.huntingMobs.coralotGlowColor.getRGB();
 			default -> NO_GLOW;
 		};
 	}

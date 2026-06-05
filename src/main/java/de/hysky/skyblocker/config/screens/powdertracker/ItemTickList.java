@@ -4,7 +4,7 @@ import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -63,7 +63,7 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 			ItemTickEntry entry = new ItemTickEntry(
 					Checkbox.builder(Component.nullToEmpty(item.toString()), minecraft.font)
 								.selected(whitelist == filters.contains(item))
-								.onValueChange((checkbox1, checked) -> {
+								.onValueChange((_, checked) -> {
 									if (whitelist) {
 										if (checked) filters.add(item);
 										else filters.remove(item);
@@ -93,13 +93,13 @@ public class ItemTickList<T> extends ContainerObjectSelectionList<ItemTickList.I
 		}
 
 		@Override
-		public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			for (Checkbox child : children) {
 				child.setX(this.getX());
 				child.setY(this.getY());
 				child.setWidth(this.getWidth());
 				child.setHeight(this.getHeight());
-				child.render(context, mouseX, mouseY, deltaTicks);
+				child.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		}
 

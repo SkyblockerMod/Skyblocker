@@ -3,16 +3,19 @@ package de.hysky.skyblocker.skyblock.museum;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
@@ -20,21 +23,22 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class DonationButton extends AbstractWidget {
 	private static final int SIZE = 33;
 	private static final int ITEM_OFFSET = 8;
 	private static final Font TEXT_RENDERER = Minecraft.getInstance().font;
-	private Donation donation = null;
-	private ItemStack itemStack = null;
-	private String textToRender;
-	private List<Component> tooltip;
+	private @Nullable Donation donation = null;
+	private @Nullable ItemStack itemStack = null;
+	private @Nullable String textToRender;
+	private @Nullable List<Component> tooltip;
 
 	protected DonationButton(int x, int y) {
 		super(x, y, SIZE, SIZE + 2, Component.empty());
 	}
 
-	protected ItemStack getDisplayStack() {
+	protected @Nullable ItemStack getDisplayStack() {
 		return this.itemStack;
 	}
 
@@ -49,10 +53,10 @@ public class DonationButton extends AbstractWidget {
 		this.textToRender = MuseumUtils.formatPrice(donation.getPriceData().getEffectivePrice());
 
 		// Determine the item stack to display
-		this.itemStack = !donation.isSet()
+		FlexibleItemStack flexible = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
 				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
-
+		this.itemStack = flexible == null ? null : flexible.getStackOrThrow();
 		buildTooltip();
 	}
 
@@ -68,16 +72,17 @@ public class DonationButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		assert donation != null && textToRender != null; // shouldn't be able to happen in-game, here to quiet down warnings
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
 
 		boolean hasPrice = donation.hasPrice();
 		if (itemStack != null && !itemStack.isEmpty()) {
-			context.renderFakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + (hasPrice ? 4 : 8));
+			graphics.fakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + (hasPrice ? 4 : 8));
 		}
 
 		if (hasPrice) {
-			context.drawCenteredString(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
+			graphics.centeredText(TEXT_RENDERER, textToRender, this.getX() + (this.width / 2), this.getY() + ITEM_OFFSET + 13, 0xFF00FF00);
 		}
 	}
 
@@ -85,6 +90,7 @@ public class DonationButton extends AbstractWidget {
 	 * Builds the tooltip for the button based on its associated donation data
 	 */
 	private void buildTooltip() {
+		assert donation != null; // shouldn't be able to happen in-game, here to quiet down warnings
 		List<Component> tooltip = new ArrayList<>();
 
 		boolean soulbound = itemStack != null && !itemStack.isEmpty() && ItemUtils.isSoulbound(itemStack);
@@ -97,8 +103,9 @@ public class DonationButton extends AbstractWidget {
 		// Set pieces display names
 		if (donation.isSet()) {
 			for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
-				ItemStack stack = ItemRepository.getItemStack(piece.left());
-				if (stack != null) {
+				FlexibleItemStack flexible = ItemRepository.getItemStack(piece.left());
+				if (flexible != null) {
+					ItemStack stack = flexible.getStackOrThrow();
 					Component itemName = stack.getHoverName().copy();
 					if (soulbound) {
 						tooltip.add(Component.literal("  ").append(itemName));
@@ -156,7 +163,7 @@ public class DonationButton extends AbstractWidget {
 	}
 
 	protected List<Component> getItemTooltip() {
-		return this.tooltip;
+		return Objects.requireNonNull(this.tooltip, "Tried to get tooltip before button was initialized.");
 	}
 
 	@Override

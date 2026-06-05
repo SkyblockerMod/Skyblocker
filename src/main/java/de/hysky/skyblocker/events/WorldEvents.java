@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jspecify.annotations.Nullable;
 
 public class WorldEvents {
 	/**
@@ -26,6 +27,6 @@ public class WorldEvents {
 		 * @param pos The position of the block being updated. Note that there are no guarantees made of the mutability of this; if you are storing this
 		 * somewhere it is highly recommended to make an immutable copy to avoid unintended results.
 		 */
-		void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState);
+		void onBlockStateUpdate(BlockPos pos, @Nullable BlockState oldState, BlockState newState);
 	}
 }

@@ -41,6 +41,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("big_brain", "BB");
 		ENCHANTMENT_ABBREVIATIONS.put("blast_protection", "BP");
 		ENCHANTMENT_ABBREVIATIONS.put("blessing", "BL");
+		ENCHANTMENT_ABBREVIATIONS.put("bug_blender", "BUG");
 
 		ENCHANTMENT_ABBREVIATIONS.put("caster", "CAT");
 		ENCHANTMENT_ABBREVIATIONS.put("cayenne", "CAY");
@@ -68,6 +69,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("experience", "EXP");
 		ENCHANTMENT_ABBREVIATIONS.put("expertise", "EPR");
 
+		ENCHANTMENT_ABBREVIATIONS.put("feast", "FE");
 		ENCHANTMENT_ABBREVIATIONS.put("feather_falling", "FF");
 		ENCHANTMENT_ABBREVIATIONS.put("ferocious_mana", "FM");
 		ENCHANTMENT_ABBREVIATIONS.put("fire_aspect", "FA");
@@ -143,7 +145,6 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("stealth", "STL");
 		ENCHANTMENT_ABBREVIATIONS.put("strong_mana", "SM");
 		ENCHANTMENT_ABBREVIATIONS.put("sugar_rush", "SR");
-		ENCHANTMENT_ABBREVIATIONS.put("sunder", "SU");
 		ENCHANTMENT_ABBREVIATIONS.put("syphon", "DR"); // Drain
 
 		ENCHANTMENT_ABBREVIATIONS.put("tabasco", "TAB");
@@ -197,8 +198,9 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_refrigerate", "RF");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_rend", "RN");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_soul_eater", "SE");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_sunset", "SU");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_swarm", "SW");
-		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("the_one", "TO");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_the_one", "TO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_jerry", "UJ");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wise", "UW");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wisdom", "W");

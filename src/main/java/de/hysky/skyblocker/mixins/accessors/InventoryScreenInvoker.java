@@ -9,8 +9,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(InventoryScreen.class)
 public interface InventoryScreenInvoker {
 
-	// TODO rename this after mojmap because this method nothing to do with drawing entities but filling the render state
-	// for the GUI
 	@Invoker
 	static EntityRenderState invokeExtractRenderState(LivingEntity entity) {
 		throw new UnsupportedOperationException();

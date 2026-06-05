@@ -35,7 +35,7 @@ public class MobGlow {
 	@Init
 	public static void init() {
 		// Clear the cache every tick
-		ClientTickEvents.END_WORLD_TICK.register(client -> clearCache());
+		ClientTickEvents.END_LEVEL_TICK.register(_ -> clearCache());
 	}
 
 	protected static void registerGlowAdder(MobGlowAdder adder) {

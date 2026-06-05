@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.end.EndHudWidget;
@@ -56,6 +57,14 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.barn.enableCallTrevorMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
+								.tags(CommonTags.ADDED_IN_6_2_0)
+								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
+										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
+										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//The Rift
@@ -90,6 +99,15 @@ public class OtherLocationsCategory {
 								.binding(defaults.otherLocations.rift.highlightFoundEnigmaSouls,
 										() -> config.otherLocations.rift.highlightFoundEnigmaSouls,
 										newValue -> config.otherLocations.rift.highlightFoundEnigmaSouls = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber"))
+								.description(Component.translatable("skyblocker.config.otherLocations.rift.autoDetectMcGrubber.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
+								.binding(defaults.otherLocations.rift.autoDetectMcGrubber,
+										() -> config.otherLocations.rift.autoDetectMcGrubber,
+										newValue -> config.otherLocations.rift.autoDetectMcGrubber = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
@@ -164,7 +182,7 @@ public class OtherLocationsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.resetName"))
 								.prompt(Component.translatable("skyblocker.config.otherLocations.end.resetText"))
-								.action(screen -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
+								.action(_ -> TheEnd.PROFILES_STATS.put(TheEnd.EndStats.EMPTY.get()))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.muteEndermanSounds"))
