@@ -252,7 +252,7 @@ public class GoldorWaypointsManager {
 		final int phase;
 
 		GoldorWaypoint(WaypointTargetKind kind, int phase, Component name, BlockPos pos) {
-			super(pos, name, TYPE_SUPPLIER, kind.colorComponents, 0.25F, true);
+			super(pos, name, TYPE_SUPPLIER, kind.colorComponents, 0.25f, true);
 			this.kind = kind;
 			this.phase = phase;
 		}
@@ -269,7 +269,7 @@ public class GoldorWaypointsManager {
 			private final float[] colorComponents;
 
 			WaypointTargetKind(int r, int g, int b) {
-				this.colorComponents = new float[]{r / 255F, g / 255F, b / 255F};
+				this.colorComponents = new float[]{r / 255f, g / 255f, b / 255f};
 			}
 
 			@Override

@@ -56,9 +56,9 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 	@Override
 	protected void extract(GuiGraphicsExtractor context, int x, int y, Integer color) {
-		float r = ((color >> 16) & 0xFF) / 255F;
-		float g = ((color >> 8) & 0xFF) / 255F;
-		float b = (color & 0xFF) / 255F;
+		float r = ((color >> 16) & 0xFF) / 255f;
+		float g = ((color >> 8) & 0xFF) / 255f;
+		float b = (color & 0xFF) / 255f;
 
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ARGB.colorFromFloat(

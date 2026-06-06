@@ -371,7 +371,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			matrices.pushMatrix();
 			matrices.translate(((this.getX() + this.width / 2f) - font.width(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.lineHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
+			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0f) << 24, true);
 			matrices.popMatrix();
 		}
 	}

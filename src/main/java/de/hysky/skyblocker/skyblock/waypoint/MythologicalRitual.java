@@ -223,10 +223,10 @@ public class MythologicalRitual {
 				}
 				if (burrow.confirmed != TriState.FALSE) {
 					if (burrow.nextBurrowLine != null) {
-						collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+						collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5f, 5f, false);
 					}
 					if (burrow.echoBurrowLine != null) {
-						collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+						collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5f, 5f, false);
 					}
 					if (burrow.nextBurrowEstimatedPos != null && burrow.confirmed == TriState.DEFAULT) {
 						collector.submitFilledBoxWithBeaconBeam(burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
@@ -313,7 +313,7 @@ public class MythologicalRitual {
 		private @Nullable Line echoBurrowLineEstimation;
 
 		private GriffinBurrow(BlockPos pos) {
-			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
+			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25f);
 		}
 
 		private void init() {

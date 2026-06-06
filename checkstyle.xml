@@ -91,10 +91,12 @@
         <module name="EqualsHashCode"/>
 
         <module name="HexLiteralCase"/>
+        <module name="NumericalPrefixesInfixesSuffixesCharacterCase"/>
         <module name="UpperEll"/>
 
         <module name="UnusedCatchParameterShouldBeUnnamed"/>
         <module name="UnusedLambdaParameterShouldBeUnnamed"/>
+        <module name="UnusedTryResourceShouldBeUnnamed"/>
 
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
