@@ -3,7 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
@@ -51,14 +54,20 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 		else updateContentMissing();
 	}
 
-	protected void updateContentMissing() {} // TODO
+	protected void updateContentMissing() {
+		for (Component component : createErrorMessage()) addElement(new PlainTextElement(component));
+	}
 
 	/**
 	 * Updates the content from the hypixel widget's lines
-	 *
-	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
-	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
 	 */
 	protected abstract void updateContent(PlayerListManager.Widget widget);
+
+	public List<Component> createErrorMessage() {
+		return List.of(
+				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(hypixelWidgetName).withStyle(ChatFormatting.YELLOW)),
+				Component.translatable("skyblocker.hud.missingTabWidget[1]")
+		);
+	}
 
 }

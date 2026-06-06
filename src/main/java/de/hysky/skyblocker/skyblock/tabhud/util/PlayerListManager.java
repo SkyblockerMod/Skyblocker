@@ -84,13 +84,6 @@ public class PlayerListManager {
 		return WIDGET_MAP.keySet();
 	}
 
-	public static List<Component> createErrorMessage(String widgetName) {
-		return List.of(
-				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(widgetName).withStyle(ChatFormatting.YELLOW)),
-				Component.translatable("skyblocker.hud.missingTabWidget[1]")
-		);
-	}
-
 	public static void addHandledTabWidget(String name, HudWidget widget) {
 		HANDLED_TAB_WIDGETS.put(name, widget);
 	}

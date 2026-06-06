@@ -1754,6 +1754,9 @@
   "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "Click to share this egg's location in chat!",
   "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Unable to share this egg.",
 
+	"skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
+	"skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
+
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",
 
