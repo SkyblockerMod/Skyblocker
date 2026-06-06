@@ -20,12 +20,12 @@ public final class FilledCircleRenderer implements PrimitiveRenderer<FilledCircl
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 
-		for (int i = 0; i <= state.segments; i++) {
-			double angle = Math.TAU * i / state.segments;
-			float dx = (float) Math.cos(angle) * state.radius;
-			float dz = (float) Math.sin(angle) * state.radius;
+		for (int i = 0; i <= state.segments(); i++) {
+			double angle = Math.TAU * i / state.segments();
+			float dx = (float) Math.cos(angle) * state.radius();
+			float dz = (float) Math.sin(angle) * state.radius();
 
-			buffer.addVertex(positionMatrix, (float) state.centre.x() + dx, (float) state.centre.y(), (float) state.centre.z() + dz).setColor(state.colour);
+			buffer.addVertex(positionMatrix, (float) state.centre().x() + dx, (float) state.centre().y(), (float) state.centre().z() + dz).setColor(state.colour());
 		}
 	}
 }

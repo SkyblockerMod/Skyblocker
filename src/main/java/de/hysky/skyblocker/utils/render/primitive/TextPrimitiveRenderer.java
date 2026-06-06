@@ -36,11 +36,11 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 	@Override
 	public void submitPrimitives(TextRenderState state, CameraRenderState cameraState) {
 		Matrix4f positionMatrix = new Matrix4f()
-				.translate((float) (state.pos.x() - cameraState.pos.x()), (float) (state.pos.y() - cameraState.pos.y()), (float) (state.pos.z() - cameraState.pos.z()))
+				.translate((float) (state.pos().x() - cameraState.pos.x()), (float) (state.pos().y() - cameraState.pos.y()), (float) (state.pos().z() - cameraState.pos.z()))
 				.rotate(cameraState.orientation)
-				.scale(state.scale, -state.scale, state.scale);
+				.scale(state.scale(), -state.scale(), state.scale());
 
-		state.glyphs.visit(new Font.GlyphVisitor() {
+		state.glyphs().visit(new Font.GlyphVisitor() {
 			@Override
 			public void acceptGlyph(TextRenderable.Styled glyph) {
 				this.draw(glyph);
@@ -55,7 +55,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 				TextureSetup textureSetup = TextureSetup.singleTextureWithLightmap(glyph.textureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
 				// This is a bit of a weird workaround to know if the intensity pipelines should be used instead of the normal ones.
 				// Normally GlyphBitmap#isColored should be used to figure that out, but we don't have access to it here
-				VertexConsumer buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_GRAYSCALE), textureSetup);
+				VertexConsumer buffer = Renderer.getBuffer(getPipeline(state.throughWalls(), glyph.guiPipeline() == RenderPipelines.GUI_TEXT_GRAYSCALE), textureSetup);
 
 				glyph.render(positionMatrix, buffer, LightCoordsUtil.FULL_BRIGHT, false);
 			}

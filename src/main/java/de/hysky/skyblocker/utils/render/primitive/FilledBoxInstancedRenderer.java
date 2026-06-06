@@ -28,7 +28,7 @@ public final class FilledBoxInstancedRenderer implements AutoCloseable {
 		List<FilledBoxRenderState> throughWallsStates = new ArrayList<>(states.size());
 
 		for (FilledBoxRenderState state : states) {
-			if (state.throughWalls) {
+			if (state.throughWalls()) {
 				throughWallsStates.add(state);
 			} else {
 				normalStates.add(state);

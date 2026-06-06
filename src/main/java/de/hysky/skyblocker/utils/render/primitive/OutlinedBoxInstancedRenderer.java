@@ -28,7 +28,7 @@ public final class OutlinedBoxInstancedRenderer implements AutoCloseable {
 		List<OutlinedBoxRenderState> throughWallsStates = new ArrayList<>(states.size());
 
 		for (OutlinedBoxRenderState state : states) {
-			if (state.throughWalls) {
+			if (state.throughWalls()) {
 				throughWallsStates.add(state);
 			} else {
 				normalStates.add(state);

@@ -20,12 +20,12 @@ public final class OutlinedCircleRenderer implements PrimitiveRenderer<OutlinedC
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 
-		float innerRadius = state.radius - state.thickness / 2f;
-		float outerRadius = state.radius + state.thickness / 2f;
+		float innerRadius = state.radius() - state.thickness() / 2f;
+		float outerRadius = state.radius() + state.thickness() / 2f;
 
-		for (int i = 0; i < state.segments; i++) {
-			double angle1 = Math.TAU * i / state.segments;
-			double angle2 = Math.TAU * (i + 1) / state.segments;
+		for (int i = 0; i < state.segments(); i++) {
+			double angle1 = Math.TAU * i / state.segments();
+			double angle2 = Math.TAU * (i + 1) / state.segments();
 
 			float x1Inner = (float) Math.cos(angle1) * innerRadius;
 			float z1Inner = (float) Math.sin(angle1) * innerRadius;
@@ -39,15 +39,15 @@ public final class OutlinedCircleRenderer implements PrimitiveRenderer<OutlinedC
 			float x2Outer = (float) Math.cos(angle2) * outerRadius;
 			float z2Outer = (float) Math.sin(angle2) * outerRadius;
 
-			float cx = (float) state.centre.x();
-			float cy = (float) state.centre.y();
-			float cz = (float) state.centre.z();
+			float cx = (float) state.centre().x();
+			float cy = (float) state.centre().y();
+			float cz = (float) state.centre().z();
 
 			// Each quad is formed from two triangles
-			buffer.addVertex(positionMatrix, cx + x1Inner, cy, cz + z1Inner).setColor(state.colour);
-			buffer.addVertex(positionMatrix, cx + x1Outer, cy, cz + z1Outer).setColor(state.colour);
-			buffer.addVertex(positionMatrix, cx + x2Outer, cy, cz + z2Outer).setColor(state.colour);
-			buffer.addVertex(positionMatrix, cx + x2Inner, cy, cz + z2Inner).setColor(state.colour);
+			buffer.addVertex(positionMatrix, cx + x1Inner, cy, cz + z1Inner).setColor(state.colour());
+			buffer.addVertex(positionMatrix, cx + x1Outer, cy, cz + z1Outer).setColor(state.colour());
+			buffer.addVertex(positionMatrix, cx + x2Outer, cy, cz + z2Outer).setColor(state.colour());
+			buffer.addVertex(positionMatrix, cx + x2Inner, cy, cz + z2Inner).setColor(state.colour());
 		}
 	}
 }

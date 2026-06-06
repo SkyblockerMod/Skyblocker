@@ -125,17 +125,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.filledBoxStates = new ArrayList<>();
 		}
 
-		FilledBoxRenderState state = new FilledBoxRenderState();
-		state.minX = minX;
-		state.minY = minY;
-		state.minZ = minZ;
-		state.maxX = maxX;
-		state.maxY = maxY;
-		state.maxZ = maxZ;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		FilledBoxRenderState state = new FilledBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, throughWalls);
 		this.filledBoxStates.add(state);
 	}
 
@@ -189,18 +179,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.outlinedBoxStates = new ArrayList<>();
 		}
 
-		OutlinedBoxRenderState state = new OutlinedBoxRenderState();
-		state.minX = minX;
-		state.minY = minY;
-		state.minZ = minZ;
-		state.maxX = maxX;
-		state.maxY = maxY;
-		state.maxZ = maxZ;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-		state.throughWalls = throughWalls;
-
+		OutlinedBoxRenderState state = new OutlinedBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, lineWidth, throughWalls);
 		this.outlinedBoxStates.add(state);
 	}
 
@@ -212,13 +191,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.linesStates = new ArrayList<>();
 		}
 
-		LinesRenderState state = new LinesRenderState();
-		state.points = points;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-		state.throughWalls = throughWalls;
-
+		LinesRenderState state = new LinesRenderState(points, colourComponents, alpha, lineWidth, throughWalls);
 		this.linesStates.add(state);
 	}
 
@@ -230,12 +203,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.cursorLineStates = new ArrayList<>();
 		}
 
-		CursorLineRenderState state = new CursorLineRenderState();
-		state.point = point;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-
+		CursorLineRenderState state = new CursorLineRenderState(point, colourComponents, alpha, lineWidth);
 		this.cursorLineStates.add(state);
 	}
 
@@ -247,12 +215,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.quadStates = new ArrayList<>();
 		}
 
-		QuadRenderState state = new QuadRenderState();
-		state.points = points;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		QuadRenderState state = new QuadRenderState(points, colourComponents, alpha, throughWalls);
 		this.quadStates.add(state);
 	}
 
@@ -264,18 +227,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.texturedQuadStates = new ArrayList<>();
 		}
 
-		TexturedQuadRenderState state = new TexturedQuadRenderState();
-		state.pos = pos;
-		state.width = width;
-		state.height = height;
-		state.textureWidth = textureWidth;
-		state.textureHeight = textureHeight;
-		state.renderOffset = renderOffset;
-		state.texture = texture;
-		state.shaderColour = shaderColour;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		TexturedQuadRenderState state = new TexturedQuadRenderState(pos, width, height, textureWidth, textureHeight, renderOffset, texture, shaderColour, alpha, throughWalls);
 		this.texturedQuadStates.add(state);
 	}
 
@@ -291,11 +243,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.blockHologramStates = new ArrayList<>();
 		}
 
-		BlockHologramRenderState renderState = new BlockHologramRenderState();
-		renderState.pos = pos;
-		renderState.state = state;
-		renderState.alpha = alpha;
-
+		BlockHologramRenderState renderState = new BlockHologramRenderState(pos, state, alpha);
 		this.blockHologramStates.add(renderState);
 	}
 
@@ -325,13 +273,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		float xOffset = -textRenderer.width(text) / 2f;
 		Font.PreparedText glyphs = textRenderer.prepareText(text, xOffset, yOffset, CommonColors.WHITE, false, false, 0);
 
-		TextRenderState state = new TextRenderState();
-		state.glyphs = glyphs;
-		state.pos = pos;
-		state.scale = scale * 0.025f;
-		state.yOffset = yOffset;
-		state.throughWalls = throughWalls;
-
+		TextRenderState state = new TextRenderState(glyphs, pos, scale * 0.025f, yOffset, throughWalls);
 		this.textStates.add(state);
 	}
 
@@ -343,13 +285,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.cylinderStates = new ArrayList<>();
 		}
 
-		CylinderRenderState state = new CylinderRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.height = height;
-		state.segments = segments;
-		state.colour = colour;
-
+		CylinderRenderState state = new CylinderRenderState(centre, radius, height, segments, colour);
 		this.cylinderStates.add(state);
 	}
 
@@ -361,12 +297,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.filledCircleStates = new ArrayList<>();
 		}
 
-		FilledCircleRenderState state = new FilledCircleRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.segments = segments;
-		state.colour = colour;
-
+		FilledCircleRenderState state = new FilledCircleRenderState(centre, radius, segments, colour);
 		this.filledCircleStates.add(state);
 	}
 
@@ -378,13 +309,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.sphereStates = new ArrayList<>();
 		}
 
-		SphereRenderState state = new SphereRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.segments = segments;
-		state.rings = rings;
-		state.colour = colour;
-
+		SphereRenderState state = new SphereRenderState(centre, radius, segments, rings, colour);
 		this.sphereStates.add(state);
 	}
 
@@ -396,13 +321,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.outlinedCircleStates = new ArrayList<>();
 		}
 
-		OutlinedCircleRenderState state = new OutlinedCircleRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.thickness = thickness;
-		state.segments = segments;
-		state.colour = colour;
-
+		OutlinedCircleRenderState state = new OutlinedCircleRenderState(centre, radius, thickness, segments, colour);
 		this.outlinedCircleStates.add(state);
 	}
 
