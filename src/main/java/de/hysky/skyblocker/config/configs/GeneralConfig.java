@@ -203,8 +203,8 @@ public class GeneralConfig {
 	}
 
 	public enum SlotLockStyle {
-		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
-		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
+		CLASSIC(SkyblockerMod.id("slot_lock")),
+		FANCY(SkyblockerMod.id("fancy_slot_lock"));
 
 		public final Identifier tex;
 
@@ -231,6 +231,8 @@ public class GeneralConfig {
 		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
+
+		public boolean trophyDropEffects = true;
 	}
 
 	@Deprecated

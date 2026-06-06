@@ -301,8 +301,6 @@
     "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Độ hiếm tối thiểu của sea creature để thông báo . (UNKNOWN = tắt)",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup": "Bật Tra cứu giá vật phẩm",
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "Không tìm thấy vật phẩm trong Bazaar và AH",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh": "Bật Làm mới giá vật phẩm",
-    "skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip": "Làm mới giá của Bazaar và AH bằng phím Z.",
     "skyblocker.config.helpers.itemPrice.refreshingItemPrices": "Đang làm mới giá vật phẩm...",
     "skyblocker.config.helpers.itemPrice.refreshedItemPrices": "Giá vật phẩm đã được làm mới",
     "skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed": "Làm mới giá vật phẩm thất bại.",

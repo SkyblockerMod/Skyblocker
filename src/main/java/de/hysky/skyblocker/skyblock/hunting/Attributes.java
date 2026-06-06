@@ -55,4 +55,11 @@ public class Attributes {
 
 		return null;
 	}
+
+	public static @Nullable Attribute getAttributeFromAbilityName(String name) {
+		for (Attribute attribute : attributes) {
+			if (name.startsWith(attribute.name())) return attribute;
+		}
+		return null;
+	}
 }

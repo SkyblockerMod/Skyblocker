@@ -249,14 +249,6 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip"))
-								.binding(defaults.helpers.fishing.seaCreatureCap,
-										() -> config.helpers.fishing.seaCreatureCap,
-										newValue -> config.helpers.fishing.seaCreatureCap = newValue)
-								.controller(IntegerController.createBuilder().range(1, 60).slider(1).build())
-								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification"))
 								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification.@Tooltip"))
@@ -431,14 +423,6 @@ public class HelperCategory {
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
 										() -> config.helpers.itemPrice.enableItemPriceLookup,
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip"))
-								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-										() -> config.helpers.itemPrice.enableItemPriceRefresh,
-										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ConfigUtils.createShortcutToKeybindsScreen())

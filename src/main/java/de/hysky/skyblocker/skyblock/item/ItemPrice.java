@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -42,10 +43,10 @@ public class ItemPrice {
 	 *     This is probably due to how fabric adds key binding options to the key binding options screen.
 	 *     Since {@link #ITEM_PRICE_LOOKUP} is a static field, it is initialized lazily, which means it is only initialized when the class is accessed for the first time.
 	 *     That first time is generally when the player is already in the game and tries to use the key bindings in a handled screen, which is much later than the possible initialization period.
-	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl#registerKeyBinding(KeyMapping) KeyBindingRegistryImpl#registerKeybinding} and the game to crash.
+	 *     This causes an {@link IllegalStateException} to be thrown from {@link net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl#registerKeyMapping(KeyMapping) KeyMappingRegistryImpl#registerKeyMapping(KeyMapping)} and the game to crash.
 	 * </p>
 	 */
-	@SuppressWarnings("UnstableApiUsage") //For the javadoc reference.
+	@SuppressWarnings("UnstableApiUsage") //For the Javadoc reference.
 	@Init
 	public static void init() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
@@ -76,8 +77,11 @@ public class ItemPrice {
 
 			// Handle Enchanted Books
 			if (itemName.equals("Enchanted Book")) {
-				itemName = stack.skyblocker$getLoreStrings().stream().findFirst().orElse("");
+				itemName = EnchantedBookUtils.getEnchantNameFromLore(stack.skyblocker$getLoreStrings());
 			}
+
+			// prevent the player from getting kicked for sending the section symbol character
+			itemName = ChatFormatting.stripFormatting(itemName);
 
 			// Search up the item in the bazaar or auction house
 			if (TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {

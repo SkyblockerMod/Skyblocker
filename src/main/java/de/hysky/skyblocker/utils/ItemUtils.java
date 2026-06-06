@@ -25,9 +25,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import io.github.moulberry.repo.util.NEUId;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.azureaaron.networth.Calculation;
@@ -260,13 +258,20 @@ public final class ItemUtils {
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
 				}
 
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().endsWith("Experimentation Table RNG")) {
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Experimentation Table RNG")) {
 					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					return switch (stackName.getString()) {
 							case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
 							case "Grand Experience Bottle" -> "GRAND_EXP_BOTTLE";
 							default -> EnchantedBookUtils.getApiIdByName(stackName);
 					};
+				}
+
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().equals("Attribute Menu")) {
+					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
+					if (attribute != null) return attribute.apiId();
+					return id;
 				}
 
 				if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
@@ -385,56 +390,53 @@ public final class ItemUtils {
 	/**
 	 * Gets the bazaar sell price or the lowest bin based on the id of the item stack.
 	 *
-	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
-	 * and the {@code right boolean} indicating if the price was based on complete data.
+	 * @return An {@link OptionalDouble}, empty if the value could not be gotten due to missing data
 	 */
-	public static DoubleBooleanPair getItemPrice(SkyblockerStack stack) {
+	public static OptionalDouble getItemPrice(SkyblockerStack stack) {
 		return getItemPrice(stack.getSkyblockApiId(), false);
 	}
 
 	/**
 	 * @see #getItemPrice(String, boolean, boolean)
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId) {
 		return getItemPrice(skyblockApiId, false);
 	}
 
 	/**
 	 * @see #getItemPrice(String, boolean, boolean)
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice)  {
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice)  {
 		return getItemPrice(skyblockApiId, useBazaarBuyPrice, false);
 	}
 
 	/**
 	 * Gets the bazaar sell price or the lowest bin of the item with the specified skyblock api id.
 	 *
-	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
-	 * and the {@code right boolean} indicating if the price was based on complete data.
+	 * @return An {@link OptionalDouble}, empty if the value could not be gotten due to missing data
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice, boolean useAuctionAverage) {
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice, boolean useAuctionAverage) {
 		Object2ObjectMap<String, BazaarProduct> bazaarPrices = TooltipInfoType.BAZAAR.getData();
 		Object2DoubleMap<String> threeDayAveragePrices = TooltipInfoType.THREE_DAY_AVERAGE.getData();
 		Object2DoubleMap<String> lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
-		if (skyblockApiId == null || skyblockApiId.isEmpty()) return DoubleBooleanPair.of(0, false);
+		if (skyblockApiId == null || skyblockApiId.isEmpty()) return OptionalDouble.empty();
 
 		if (bazaarPrices != null && bazaarPrices.containsKey(skyblockApiId)) {
 			BazaarProduct product = bazaarPrices.get(skyblockApiId);
-			OptionalDouble price = useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
 
-			return DoubleBooleanPair.of(price.orElse(0d), price.isPresent());
+			return useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
 		}
 
 		if (useAuctionAverage && threeDayAveragePrices != null && threeDayAveragePrices.containsKey(skyblockApiId)) {
-			return DoubleBooleanPair.of(threeDayAveragePrices.getDouble(skyblockApiId), true);
+			return OptionalDouble.of(threeDayAveragePrices.getDouble(skyblockApiId));
 		}
 
 		if (lowestBinPrices != null && lowestBinPrices.containsKey(skyblockApiId)) {
-			return DoubleBooleanPair.of(lowestBinPrices.getDouble(skyblockApiId), true);
+			return OptionalDouble.of(lowestBinPrices.getDouble(skyblockApiId));
 		}
 
-		return DoubleBooleanPair.of(0, false);
+		return OptionalDouble.empty();
 	}
 
 	public static double getCraftCost(String neuId) {
@@ -723,7 +725,7 @@ public final class ItemUtils {
 		if (currentScreen instanceof ContainerScreen container) {
 			if (container.getTitle().getString().startsWith("Superpairs")) {
 				if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
-			} else if (container.getTitle().getString().endsWith("Experimentation Table RNG")) {
+			} else if (container.getTitle().getString().contains("Experimentation Table RNG")) {
 				return OptionalInt.of(1);
 			}
 		}
