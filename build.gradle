@@ -237,10 +237,11 @@ base {
 }
 
 tasks.withType(ProcessResources).configureEach {
-	inputs.property "version", project.version
+	def version = project.version
+	inputs.property "version", version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand "version": version
 	}
 }
 
