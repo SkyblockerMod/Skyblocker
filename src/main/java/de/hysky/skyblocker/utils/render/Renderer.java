@@ -113,7 +113,7 @@ public class Renderer {
 				.createCommandEncoder()
 				.createRenderPass(
 						() -> "Skyblocker Level Rendering",
-						mainRenderTarget.getColorTextureView(), 
+						mainRenderTarget.getColorTextureView(),
 						Optional.empty(),
 						mainRenderTarget.useDepth ? mainRenderTarget.getDepthTextureView() : null,
 						OptionalDouble.empty()
