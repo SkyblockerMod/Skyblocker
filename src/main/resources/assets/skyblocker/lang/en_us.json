@@ -1816,6 +1816,8 @@
 
   "skyblocker.rift.enigmaSouls.markAllFound": "Marked all enigma souls as found!",
   "skyblocker.rift.enigmaSouls.markAllMissing": "Marked all enigma souls as missing!",
+	"skyblocker.rift.enigmaSouls.markClosestFound": "Marked closest enigma soul as found!",
+	"skyblocker.rift.enigmaSouls.markClosestMissing": "Marked closest enigma soul as missing!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
