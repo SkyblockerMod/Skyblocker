@@ -296,8 +296,8 @@ public class UIAndVisualsCategory {
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip"))
 								.binding(defaults.uiAndVisuals.tabHud.enableFancyTab,
 										() -> config.uiAndVisuals.tabHud.enableFancyTab,
 										newValue -> config.uiAndVisuals.tabHud.enableFancyTab = newValue)
@@ -316,7 +316,7 @@ public class UIAndVisualsCategory {
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
 								.tags(ArrayUtils.add(WidgetManager.WIDGET_INSTANCES.values().stream().map(w -> w.getInformation().displayName()).toArray(Component[]::new), Component.literal("gui")))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(_ -> new WidgetsConfigurationScreen())
+								.action(_ -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen()))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))

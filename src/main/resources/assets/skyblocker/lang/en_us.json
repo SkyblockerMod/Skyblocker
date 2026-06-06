@@ -827,10 +827,10 @@
   "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
 
   "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
-  "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatically change the anchor of the widget based on its position to avoid it going off screen when the screen is resized.",
   "skyblocker.config.hud.topBar.help": "Help",
   "skyblocker.config.hud.topBar.options": "Options",
-  "skyblocker.config.hud.topBar.options.@Tooltip": "Automatically change the anchor of the widget based on the position to avoid it going off screen when the screen is resized.",
+  "skyblocker.config.hud.topBar.options.@Tooltip": "More Options",
 
   "skyblocker.config.hud.widget.copy": "Create Copy",
   "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",

@@ -348,26 +348,28 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent keyInput) {
-		if (selectedWidget != null && selectedWidget == hoveredWidget) {
-			boolean move = true;
-			int x = 0, y = 0;
-			if (keyInput.isLeft()) x = -1;
-			else if (keyInput.isRight()) x = 1;
-			else if (keyInput.isUp()) y = -1;
-			else if (keyInput.isDown()) y = 1;
-			else move = false;
+		if (selectedWidget != null) {
+			if (selectedWidget == hoveredWidget) {
+				boolean move = true;
+				int x = 0, y = 0;
+				if (keyInput.isLeft()) x = -1;
+				else if (keyInput.isRight()) x = 1;
+				else if (keyInput.isUp()) y = -1;
+				else if (keyInput.isDown()) y = 1;
+				else move = false;
 
-			if (move) {
-				PositionRule oldRule = selectedWidget.rule;
-				selectedWidget.rule = new PositionRule(
-						oldRule.parent(),
-						oldRule.parentPoint(),
-						oldRule.thisPoint(),
-						oldRule.relativeX() + x,
-						oldRule.relativeY() + y
-				);
-				updateBuilderPositions();
-				return true;
+				if (move) {
+					PositionRule oldRule = selectedWidget.rule;
+					selectedWidget.rule = new PositionRule(
+							oldRule.parent(),
+							oldRule.parentPoint(),
+							oldRule.thisPoint(),
+							oldRule.relativeX() + x,
+							oldRule.relativeY() + y
+					);
+					updateBuilderPositions();
+					return true;
+				}
 			}
 			if (keyInput.key() == GLFW.GLFW_KEY_DELETE) {
 				removeWidget(selectedWidget);
