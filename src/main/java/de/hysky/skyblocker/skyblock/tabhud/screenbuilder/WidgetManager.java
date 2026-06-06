@@ -14,8 +14,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.ConfigLayerBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.config.ConfigScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -231,8 +229,8 @@ public class WidgetManager {
 
 	private static void fillDefaultConfig(int comingFromVersion) {
 		if (comingFromVersion <= 0) {
-			ConfigScreenBuilder configScreenBuilder = new ConfigScreenBuilder();
-			ConfigLayerBuilder hud = configScreenBuilder.hud();
+			EditableScreenBuilder editableScreenBuilder = new EditableScreenBuilder();
+			LayerBuilderEditor hud = editableScreenBuilder.getEditor(ScreenLayer.HUD);
 			// Mining related stuff
 
 			HudWidget commissions = getWidgetOrPlaceholder("commissions");
@@ -255,13 +253,13 @@ public class WidgetManager {
 					0,
 					2
 			);
-			configScreenBuilder.setConfig(getScreenConfig(Location.DWARVEN_MINES));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.DWARVEN_MINES));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.serializeConfig();
 
 
-			configScreenBuilder.setConfig(getScreenConfig(Location.CRYSTAL_HOLLOWS));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.CRYSTAL_HOLLOWS));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.add(getWidgetOrPlaceholder("hud_crystals"), new PositionRule(
@@ -273,7 +271,7 @@ public class WidgetManager {
 			));
 			hud.serializeConfig();
 
-			configScreenBuilder.setConfig(getScreenConfig(Location.GLACITE_MINESHAFTS));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GLACITE_MINESHAFTS));
 			hud.add(commissions, commsRule);
 			hud.add(powders, powderRule);
 			hud.serializeConfig();
@@ -281,14 +279,14 @@ public class WidgetManager {
 			// Sweep details
 			HudWidget sweepDetails = getWidgetOrPlaceholder("sweep_details");
 			for (Location location : SweepDetailsHudWidget.LOCATIONS) {
-				configScreenBuilder.setConfig(getScreenConfig(location));
+				editableScreenBuilder.setConfig(getScreenConfig(location));
 				hud.add(sweepDetails);
 				hud.serializeConfig();
 			}
 			getCopyTracker().hud().getOrCreate(sweepDetails.getInternalID()).track(SweepDetailsHudWidget.LOCATIONS);
 
 			// Galatea
-			configScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
 			hud.add(getWidgetOrPlaceholder("hud_treeprogress"), new PositionRule(
 					"sweep_details",
 					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
@@ -299,16 +297,16 @@ public class WidgetManager {
 			hud.serializeConfig();
 
 			// Garden
-			configScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
 			hud.add(getWidgetOrPlaceholder("hud_farming"));
 			hud.serializeConfig();
 
 			// The end
-			configScreenBuilder.setConfig(getScreenConfig(Location.THE_END));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.THE_END));
 			hud.add(getWidgetOrPlaceholder("hud_end"));
 			hud.serializeConfig();
 
-			configScreenBuilder.setConfig(getScreenConfig(Location.DUNGEON));
+			editableScreenBuilder.setConfig(getScreenConfig(Location.DUNGEON));
 			hud.add(getWidgetOrPlaceholder("dungeon_splits"), new PositionRule(
 					Optional.empty(),
 					new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),

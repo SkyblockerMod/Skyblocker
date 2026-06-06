@@ -4,18 +4,18 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 public class ScreenBuilder {
 	private final LayerBuilder hud;
-	private final LayerBuilder tab;
+	private final TabLayerBuilder tab;
 	private final LayerBuilder secondaryTab;
 	private ScreenConfig config = ScreenConfig.DUMMY;
 
-	public ScreenBuilder(LayerBuilder hud, LayerBuilder tab, LayerBuilder secondaryTab) {
+	protected ScreenBuilder(LayerBuilder hud, TabLayerBuilder tab, LayerBuilder secondaryTab) {
 		this.hud = hud;
 		this.tab = tab;
 		this.secondaryTab = secondaryTab;
 	}
 
 	public ScreenBuilder() {
-		this(new LayerBuilder(), new LayerBuilder(), new LayerBuilder());
+		this(new LayerBuilder(), new TabLayerBuilder(), new LayerBuilder());
 	}
 
 	public LayerBuilder get(WidgetManager.ScreenLayer layer) {

@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.EditableScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenConfig;
@@ -63,9 +64,9 @@ public class WidgetsConfigurationScreen extends Screen {
 	private Location currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
-	private final ConfigScreenBuilder screenBuilder = new ConfigScreenBuilder();
+	private final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
 	private ScreenConfig screenConfig;
-	private ConfigLayerBuilder builder;
+	private EditableScreenBuilder.Layer layer;
 
 	private SidePanelWidget sidePanelWidget;
 	private AddWidgetWidget addWidgetWidget;
@@ -88,26 +89,25 @@ public class WidgetsConfigurationScreen extends Screen {
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);
 		screenBuilder.setConfig(screenConfig);
-		builder = screenBuilder.get(currentScreenLayer);
-		builder.update();
+		layer = screenBuilder.getLayer(currentScreenLayer);
+		layer.update();
 		screenBuilder.updateFancyTab();
 	}
 
 	public void setCurrentLocation(Location newLocation) {
-		builder.serializeConfig();
+		layer.editor().serializeConfig();
 		this.currentLocation = newLocation;
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);
 		screenBuilder.setConfig(screenConfig);
-		builder = screenBuilder.get(currentScreenLayer);
-		builder.update();
+		layer = screenBuilder.getLayer(currentScreenLayer);
 		screenBuilder.updateFancyTab();
 	}
 
 	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
-		builder.serializeConfig();
+		layer.editor().serializeConfig();
 		this.currentScreenLayer = newScreenLayer;
-		builder = screenBuilder.get(newScreenLayer);
-		builder.update();
+		layer = screenBuilder.getLayer(newScreenLayer);
+		layer.update();
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	private void addWidget(HudWidget widget) {
-		builder.add(widget).rule = new PositionRule(
+		layer.editor().add(widget).rule = new PositionRule(
 				"screen",
 				PositionRule.Point.DEFAULT,
 				PositionRule.Point.DEFAULT,
@@ -166,12 +166,12 @@ public class WidgetsConfigurationScreen extends Screen {
 		float scale = TabHud.getScaleFactor();
 		matrices.pushMatrix();
 		matrices.scale(scale);
-		builder.extractRenderStates(context, getScreenWidth(), getScreenHeight(), true);
+		layer.builder().extractRenderStates(context, getScreenWidth(), getScreenHeight(), true);
 		matrices.popMatrix();
 		hoveredWidget = null;
 		double scaledMouseX = mouseX / scale;
 		double scaledMouseY = mouseY / scale;
-		for (PositionedWidget hudWidget : builder.getRendered()) {
+		for (PositionedWidget hudWidget : layer.builder().getRendered()) {
 			if (hudWidget.widget.isMouseOver(scaledMouseX, scaledMouseY)) {
 				hoveredWidget = hudWidget;
 				break;
@@ -223,7 +223,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
 
 				int distanceToCursor = Integer.MAX_VALUE;
-				for (PositionedWidget positionedWidget : builder.getRendered()) {
+				for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
 					if (positionedWidget == selectedWidget) continue;
 					if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
 					ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
@@ -314,7 +314,7 @@ public class WidgetsConfigurationScreen extends Screen {
 			selectedWidget = null;
 			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
-				availableWidgets.removeAll(builder.getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
+				availableWidgets.removeAll(layer.builder().getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
@@ -388,7 +388,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	@Override
 	public void tick() {
 		if (selectedWidget == null && sidePanelWidget.isOpen()) sidePanelWidget.close();
-		for (PositionedWidget widget : builder.getRendered()) {
+		for (PositionedWidget widget : layer.builder().getRendered()) {
 			if (widget.widget.getRectangle().intersects(new ScreenRectangle(0, 0, getScreenWidth(), getScreenHeight())) || widget.rule.parent().isPresent()) continue;
 			widget.rule = PositionRule.DEFAULT;
 			updateBuilderPositions();
@@ -397,7 +397,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public void removed() {
-		builder.serializeConfig();
+		layer.editor().serializeConfig();
 		WidgetManager.SCREEN_BUILDER.hud().update();
 	}
 
@@ -421,9 +421,9 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	public void removeWidget(PositionedWidget widget) {
-		builder.remove(widget);
+		layer.editor().remove(widget);
 		PositionRule deleted = widget.rule;
-		for (PositionedWidget positionedWidget : builder.getRendered()) {
+		for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
 			PositionRule rule = positionedWidget.rule;
 			if (rule.parent().isEmpty()) continue;
 			if (rule.parent().get().equals(widget.widget.getInternalID())) {
@@ -492,7 +492,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	private void updateBuilderPositions() {
-		builder.updatePositions(getScreenWidth(), getScreenHeight());
+		layer.builder().updatePositions(getScreenWidth(), getScreenHeight());
 	}
 
 	public HudWidget getEditedWidget() {
