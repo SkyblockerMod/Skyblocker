@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import net.minecraft.client.gui.Font;
@@ -15,8 +17,6 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.LightCoordsUtil;
-
-import org.jspecify.annotations.Nullable;
 
 public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRenderState> {
 	protected static final TextPrimitiveRenderer INSTANCE = new TextPrimitiveRenderer();
@@ -55,7 +55,7 @@ public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRender
 				TextureSetup textureSetup = TextureSetup.singleTextureWithLightmap(glyph.textureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
 				// This is a bit of a weird workaround to know if the intensity pipelines should be used instead of the normal ones.
 				// Normally GlyphBitmap#isColored should be used to figure that out, but we don't have access to it here
-				BufferBuilder buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_GRAYSCALE), textureSetup);
+				VertexConsumer buffer = Renderer.getBuffer(getPipeline(state.throughWalls, glyph.guiPipeline() == RenderPipelines.GUI_TEXT_GRAYSCALE), textureSetup);
 
 				glyph.render(positionMatrix, buffer, LightCoordsUtil.FULL_BRIGHT, false);
 			}

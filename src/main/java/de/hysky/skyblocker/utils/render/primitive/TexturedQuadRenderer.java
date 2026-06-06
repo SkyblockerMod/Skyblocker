@@ -4,7 +4,8 @@ import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
@@ -20,7 +21,7 @@ public final class TexturedQuadRenderer implements PrimitiveRenderer<TexturedQua
 	@Override
 	public void submitPrimitives(TexturedQuadRenderState state, CameraRenderState cameraState) {
 		TextureSetup textureSetup = TextureSetup.singleTexture(Minecraft.getInstance().getTextureManager().getTexture(state.texture).getTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-		BufferBuilder buffer = Renderer.getBuffer(state.throughWalls ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE, textureSetup);
+		VertexConsumer buffer = Renderer.getBuffer(state.throughWalls ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE, textureSetup);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) (state.pos.x() - cameraState.pos.x()), (float) (state.pos.y() - cameraState.pos.y()), (float) (state.pos.z() - cameraState.pos.z()))
 				.rotate(cameraState.orientation);

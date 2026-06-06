@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
@@ -14,7 +16,7 @@ public final class FilledCircleRenderer implements PrimitiveRenderer<FilledCircl
 
 	@Override
 	public void submitPrimitives(FilledCircleRenderState state, CameraRenderState cameraState) {
-		BufferBuilder buffer = Renderer.getBuffer(SkyblockerRenderPipelines.CIRCLE);
+		VertexConsumer buffer = Renderer.getBuffer(SkyblockerRenderPipelines.CIRCLE);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 

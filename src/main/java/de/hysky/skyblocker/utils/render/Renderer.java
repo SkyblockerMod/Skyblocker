@@ -1,44 +1,29 @@
 package de.hysky.skyblocker.utils.render;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.function.Supplier;
 
 import org.joml.Matrix4fStack;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.system.MemoryUtil;
 
-import com.mojang.blaze3d.IndexType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.RenderSystem.AutoStorageIndexBuffer;
-import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.MeshData.DrawState;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.renderer.MappableRingBuffer;
+import net.minecraft.client.renderer.StagedVertexBuffer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 /**
  * This class automatically handles batching, buffering, and drawing of objects within the world.
@@ -47,207 +32,63 @@ import net.minecraft.client.renderer.rendertype.RenderType;
  */
 public class Renderer {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final List<RenderPipeline> EXCLUDED_FROM_BATCHING = new ArrayList<>();
-	private static final ByteBufferBuilder GENERAL_ALLOCATOR = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
-	private static final Int2ObjectMap<ByteBufferBuilder> ALLOCATORS = new Int2ObjectArrayMap<>(5);
-	private static final Int2ObjectMap<BatchedDraw> BATCHED_DRAWS = new Int2ObjectArrayMap<>(5);
-	private static final Map<VertexFormat, MappableRingBuffer> VERTEX_BUFFERS = new Object2ObjectOpenHashMap<>();
-	private static final List<PreparedDraw> PREPARED_DRAWS = new ArrayList<>();
+	private static final StagedVertexBuffer VERTEX_BUFFER = new StagedVertexBuffer(() -> "Skyblocker Renderer Vertex Buffer", RenderType.SMALL_BUFFER_SIZE);
 	private static final List<Draw> DRAWS = new ArrayList<>();
-	private static @Nullable BatchedDraw lastUnbatchedDraw = null;
+	private static @Nullable RenderPipeline previousPipeline = null;
+	private static @Nullable TextureSetup previousTextureSetup = null;
+	private static float previousAlphaMultiplier = 1f;
+	private static int previousInstanceCount = 1;
+	private static @Nullable UniformBinding previousUniform = null;
+	private static StagedVertexBuffer.@Nullable Draw previousDraw = null;
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline) {
-		return getBuffer(pipeline, TextureSetup.noTexture(), 1f);
+	public static VertexConsumer getBuffer(RenderPipeline pipeline) {
+		return getBuffer(pipeline, TextureSetup.noTexture(), 1f, 1, null);
 	}
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup) {
-		return getBuffer(pipeline, Objects.requireNonNull(textureSetup, "textureSetup must not be null"), 1f);
+	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup) {
+		return getBuffer(pipeline, textureSetup, 1f, 1, null);
 	}
 
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {
-		return setupUnbatched(pipeline, textureSetup, alphaMultiplier, instanceCount, uniform);
+	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
+		return getBuffer(pipeline, textureSetup, alphaMultiplier, 1, null);
 	}
 
-	/**
-	 * Returns the appropriate {@code BufferBuilder} that should be used with the given pipeline, texture view, and line width.
-	 */
-	public static BufferBuilder getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
-		if (!EXCLUDED_FROM_BATCHING.contains(pipeline)) {
-			return setupBatched(pipeline, textureSetup, alphaMultiplier);
-		} else {
-			return setupUnbatched(pipeline, textureSetup, alphaMultiplier, 1, null);
-		}
-	}
-
-	private static BufferBuilder setupBatched(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
-		int hash = hash(pipeline, textureSetup, alphaMultiplier);
-		BatchedDraw draw = BATCHED_DRAWS.get(hash);
-
-		if (draw == null) {
-			ByteBufferBuilder allocator = ALLOCATORS.computeIfAbsent(hash, _ -> new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE));
-			BufferBuilder bufferBuilder = new BufferBuilder(allocator, pipeline.getPrimitiveTopology(), pipeline.getVertexFormatBinding(0));
-			BATCHED_DRAWS.put(hash, new BatchedDraw(bufferBuilder, 1, pipeline, textureSetup, alphaMultiplier, null));
-
-			return bufferBuilder;
-		} else {
-			return draw.bufferBuilder();
-		}
-	}
-
-	private static BufferBuilder setupUnbatched(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {
-		if (lastUnbatchedDraw != null) {
-			prepareBatchedDraw(lastUnbatchedDraw);
+	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {
+		if (previousDraw == null || pipeline != previousPipeline || !textureSetup.equals(previousTextureSetup) || alphaMultiplier != previousAlphaMultiplier || instanceCount != previousInstanceCount || !uniform.equals(previousUniform)) {
+			previousDraw = VERTEX_BUFFER.appendDraw(pipeline.getVertexFormatBinding(0), pipeline.getPrimitiveTopology());
+			DRAWS.add(new Draw(previousDraw, pipeline, textureSetup, alphaMultiplier, instanceCount, uniform));
 		}
 
-		BufferBuilder bufferBuilder = new BufferBuilder(GENERAL_ALLOCATOR, pipeline.getPrimitiveTopology(), pipeline.getVertexFormatBinding(0));
-		lastUnbatchedDraw = new BatchedDraw(bufferBuilder, instanceCount, pipeline, textureSetup, alphaMultiplier, uniform);
-
-		return bufferBuilder;
+		return VERTEX_BUFFER.getVertexBuilder(Objects.requireNonNull(previousDraw));
 	}
 
-	/**
-	 * Calculates the hash of the given inputs which serves as the keys to our maps where we store stuff for the batched draws.
-	 * This is much faster than using an object-based key as we do not need to create any objects to find the instances we want.
-	 */
-	private static int hash(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
-		// This manually calculates the hash, avoiding Objects#hash to not incur the array allocation each time
-		int hash = 1;
-		hash = 31 * hash + pipeline.hashCode();
-		hash = 31 * hash + textureSetup.hashCode();
-		hash = 31 * hash + Float.hashCode(alphaMultiplier);
-
-		return hash;
-	}
-
-	/**
-	 * Allows for excluding the {@code pipeline} from the batching system. This may be needed when working with triangle fans
-	 * or contiguous triangle strips.
-	 */
-	protected static void excludePipelineFromBatching(RenderPipeline pipeline) {
-		EXCLUDED_FROM_BATCHING.add(pipeline);
-	}
-
-	private static void endBatches() {
-		for (Int2ObjectMap.Entry<BatchedDraw> entry : Int2ObjectMaps.fastIterable(BATCHED_DRAWS)) {
-			prepareBatchedDraw(entry.getValue());
-		}
-
-		if (lastUnbatchedDraw != null) {
-			prepareBatchedDraw(lastUnbatchedDraw);
-			lastUnbatchedDraw = null;
-		}
-	}
-
-	private static void prepareBatchedDraw(BatchedDraw draw) {
-		PREPARED_DRAWS.add(new PreparedDraw(draw.bufferBuilder().buildOrThrow(), draw.instanceCount(), draw.pipeline(), draw.textureSetup(), draw.alphaMultiplier(), draw.uniform()));
+	protected static void prepare() {
+		previousDraw = null;
+		previousPipeline = null;
+		previousTextureSetup = null;
+		previousAlphaMultiplier = 1f;
+		previousInstanceCount = 1;
+		previousUniform = null;
 	}
 
 	protected static void executeDraws() {
-		// End all of the batches and prepare the draws
-		endBatches();
+		ProfilerFiller profiler = Profiler.get();
 
-		// Setup the draws
-		setupDraws();
+		// Upload vertex buffer
+		profiler.push("skyblockerRendererUpload");
+		VERTEX_BUFFER.upload();
 
-		// Execute the draws
+		// Dispatch draws
+		profiler.popPush("skyblockerRendererDraw");
 		dispatchDraws();
 
-		// Rotate the buffers - ensures that we're likely to be using buffers that the GPU isn't (prevents synchronization/stalls)
-		for (MappableRingBuffer buffer : VERTEX_BUFFERS.values()) {
-			buffer.rotate();
-		}
-
-		// Clear the draws from this frame
-		BATCHED_DRAWS.clear();
-		PREPARED_DRAWS.clear();
+		// Clean up state
+		profiler.popPush("skyblockerRendererEndFrame");
+		VERTEX_BUFFER.endDraw();
+		VERTEX_BUFFER.endFrame();
 		DRAWS.clear();
-	}
 
-	private static void setupDraws() {
-		setupVertexBuffers();
-		Object2IntMap<VertexFormat> vertexBufferPositions = new Object2IntOpenHashMap<>();
-
-		for (PreparedDraw prepared : PREPARED_DRAWS) {
-			MeshData builtBuffer = prepared.builtBuffer();
-			DrawState drawParameters = builtBuffer.drawState();
-			VertexFormat format = drawParameters.format();
-
-			MappableRingBuffer vertices = VERTEX_BUFFERS.get(format);
-			ByteBuffer vertexData = builtBuffer.vertexBuffer();
-			int vertexBufferPosition = vertexBufferPositions.getInt(format);
-			int remainingVertexBytes = vertexData.remaining();
-
-			// Copy vertex data into the shared vertex buffer
-			copyDataInto(vertices, vertexData, vertexBufferPosition, remainingVertexBytes);
-			// Update vertex buffer position
-			vertexBufferPositions.put(format, vertexBufferPosition + remainingVertexBytes);
-
-			DRAWS.add(new Draw(
-					vertices.currentBuffer(),
-					vertexBufferPosition / format.getVertexSize(),
-					drawParameters.indexCount(),
-					prepared.instanceCount(),
-					prepared.pipeline(),
-					prepared.textureSetup(),
-					prepared.alphaMultiplier(),
-					prepared.uniform()
-			));
-			builtBuffer.close();
-		}
-	}
-
-	/**
-	 * Maps the {@code target} buffer and copies the {@code source} data into it.
-	 */
-	private static void copyDataInto(MappableRingBuffer target, ByteBuffer source, int position, int remainingBytes) {
-		try (GpuBufferSlice.MappedView mappedView = target.currentBuffer().slice(position, remainingBytes).map(false, true)) {
-			MemoryUtil.memCopy(source, mappedView.data());
-		}
-	}
-
-	/**
-	 * Resizes/allocates the necessary vertex buffers.
-	 */
-	private static void setupVertexBuffers() {
-		Object2IntMap<VertexFormat> vertexBufferSizes = collectVertexBufferSizes();
-
-		for (Object2IntMap.Entry<VertexFormat> entry : Object2IntMaps.fastIterable(vertexBufferSizes)) {
-			VertexFormat format = entry.getKey();
-			int vertexBufferSize = entry.getIntValue();
-			MappableRingBuffer vertexBuffer = VERTEX_BUFFERS.get(format);
-
-			VERTEX_BUFFERS.put(format, initOrResizeBuffer(vertexBuffer, () -> "Skyblocker vertex buffer for: " + format, vertexBufferSize, GpuBuffer.USAGE_VERTEX));
-		}
-	}
-
-	private static MappableRingBuffer initOrResizeBuffer(MappableRingBuffer buffer, Supplier<String> name, int neededSize, int usageType) {
-		if (buffer == null || buffer.size() < neededSize) {
-			if (buffer != null) {
-				buffer.close();
-			}
-
-			return new MappableRingBuffer(name, GpuBuffer.USAGE_MAP_WRITE | usageType, neededSize);
-		}
-
-		return buffer;
-	}
-
-	/**
-	 * Collect the required buffer size for each vertex format in use.
-	 */
-	private static Object2IntMap<VertexFormat> collectVertexBufferSizes() {
-		// If we ever need to create our own shared index buffers then we can turn this into an Object2LongMap and pack
-		// both the vertex & index buffer sizes into a single long (since they're two ints)
-		Object2IntMap<VertexFormat> vertexSizes = new Object2IntOpenHashMap<>();
-
-		for (PreparedDraw prepared : PREPARED_DRAWS) {
-			DrawState drawParameters = prepared.builtBuffer().drawState();
-			VertexFormat format = drawParameters.format();
-
-			vertexSizes.put(format, vertexSizes.getOrDefault(format, 0) + drawParameters.vertexCount() * format.getVertexSize());
-		}
-
-		return vertexSizes;
+		profiler.pop();
 	}
 
 	private static void dispatchDraws() {
@@ -261,13 +102,22 @@ public class Renderer {
 	}
 
 	private static void draw(Draw draw) {
-		AutoStorageIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(draw.pipeline().getPrimitiveTopology());
-		GpuBuffer indices = shapeIndexBuffer.getBuffer(draw.indexCount());
-		IndexType indexType = shapeIndexBuffer.type();
+		RenderTarget mainRenderTarget = CLIENT.gameRenderer.mainRenderTarget();
+		StagedVertexBuffer.ExecuteInfo executeInfo = VERTEX_BUFFER.getExecuteInfo(draw.draw);
+
+		if (executeInfo == null) {
+			return;
+		}
 
 		try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
-				.createRenderPass(() -> "skyblocker world rendering", getMainColorTexture(), Optional.empty(), getMainDepthTexture(), OptionalDouble.empty())) {
+				.createRenderPass(
+						() -> "Skyblocker Level Rendering",
+						mainRenderTarget.getColorTextureView(), 
+						Optional.empty(),
+						mainRenderTarget.useDepth ? mainRenderTarget.getDepthTextureView() : null,
+						OptionalDouble.empty()
+						)) {
 			renderPass.setPipeline(draw.pipeline);
 
 			RenderSystem.bindDefaultUniforms(renderPass);
@@ -282,29 +132,26 @@ public class Renderer {
 				renderPass.bindTexture("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
 			}
 
+			if (draw.textureSetup.texure1() != null) {
+				// Sampler1 is used for alternate texture inputs in shaders
+				renderPass.bindTexture("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
+			}
+
 			if (draw.textureSetup.texure2() != null) {
 				// Sampler2 is used for lightmap texture inputs in shaders
 				renderPass.bindTexture("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
 			}
 
-			renderPass.setVertexBuffer(0, draw.vertices.slice());
-			renderPass.setIndexBuffer(indices, indexType);
+			renderPass.setVertexBuffer(0, executeInfo.vertexBuffer().slice());
+			renderPass.setIndexBuffer(executeInfo.indexBuffer(), executeInfo.indexType());
 
-			renderPass.drawIndexed(draw.indexCount, draw.instanceCount, 0, draw.baseVertex, 0);
+			renderPass.drawIndexed(executeInfo.indexCount(), draw.instanceCount, executeInfo.firstIndex(), executeInfo.baseVertex(), 0);
 		}
 	}
 
 	private static GpuBufferSlice setupDynamicTransforms(float alphaMultiplier) {
 		return RenderSystem.getDynamicUniforms()
 				.writeTransform(RenderSystem.getModelViewMatrixCopy(), new Vector4f(1f, 1f, 1f, alphaMultiplier));
-	}
-
-	private static GpuTextureView getMainColorTexture() {
-		return CLIENT.gameRenderer.mainRenderTarget().getColorTextureView();
-	}
-
-	private static GpuTextureView getMainDepthTexture() {
-		return CLIENT.gameRenderer.mainRenderTarget().getDepthTextureView();
 	}
 
 	private static void applyViewOffsetZLayering() {
@@ -318,22 +165,10 @@ public class Renderer {
 	}
 
 	public static void close() {
-		GENERAL_ALLOCATOR.close();
-
-		for (ByteBufferBuilder allocator : ALLOCATORS.values()) {
-			allocator.close();
-		}
-
-		for (MappableRingBuffer vertexBuffer : VERTEX_BUFFERS.values()) {
-			vertexBuffer.close();
-		}
+		VERTEX_BUFFER.close();
 	}
 
-	private record Draw(GpuBuffer vertices, int baseVertex, int indexCount, int instanceCount, RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, @Nullable UniformBinding uniform) {}
-
-	private record PreparedDraw(MeshData builtBuffer, int instanceCount, RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, @Nullable UniformBinding uniform) {}
-
-	private record BatchedDraw(BufferBuilder bufferBuilder, int instanceCount, RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, @Nullable UniformBinding uniform) {}
+	private record Draw(StagedVertexBuffer.Draw draw, RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {}
 
 	public record UniformBinding(String name, GpuBuffer buffer) {}
 }

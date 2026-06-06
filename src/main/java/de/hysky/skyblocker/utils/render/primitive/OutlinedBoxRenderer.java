@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import org.joml.Matrix4f;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
@@ -15,7 +17,7 @@ public final class OutlinedBoxRenderer implements PrimitiveRenderer<OutlinedBoxR
 
 	@Override
 	public void submitPrimitives(OutlinedBoxRenderState state, CameraRenderState cameraState) {
-		BufferBuilder buffer = Renderer.getBuffer(state.throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES);
+		VertexConsumer buffer = Renderer.getBuffer(state.throughWalls ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES);
 		Matrix4f positionMatrix = new Matrix4f()
 				.translate((float) -cameraState.pos.x, (float) -cameraState.pos.y, (float) -cameraState.pos.z);
 		float minX = (float) state.minX;
