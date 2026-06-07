@@ -1987,6 +1987,7 @@
   "text.skyblocker.confirm": "Confirm",
   "text.skyblocker.dead": "Dead",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.logsFolder": "Open Logs Folder",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.offline": "Offline",
   "text.skyblocker.open": "Open",
@@ -1996,7 +1997,6 @@
   "text.skyblocker.reset": "Reset",
   "text.skyblocker.source": "Source",
   "text.skyblocker.supportUs": "Support Us",
-  "text.skyblocker.logsFolder": "Open Logs Folder",
   "text.skyblocker.translate": "Translate",
   "text.skyblocker.undo": "Undo",
   "text.skyblocker.website": "Website"
