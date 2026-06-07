@@ -1,15 +1,22 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.list;
 
+import com.mojang.brigadier.Command;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.BooleanSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.DefaultSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.EditableSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetsListSlotEntry;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -41,6 +48,7 @@ import java.util.Locale;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListScreen extends Screen implements ContainerListener {
+	public static boolean overrideWidgetsScreen = false;
 	public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId(1_000);
 	private static final int PADDING = 8;
 
@@ -80,6 +88,20 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		this.handler = handler;
 		titleLowercase = name.getString().toLowerCase(Locale.ENGLISH);
 		this.handler.addSlotListener(this);
+	}
+
+	@Init
+	public static void initCommands() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+					.then(ClientCommands.literal("hypixelWidgets").executes(_ -> {
+						if (Utils.isOnSkyblock()) {
+							overrideWidgetsScreen = true;
+							MessageScheduler.INSTANCE.sendMessageAfterCooldown("/widgets", true);
+						}
+						return Command.SINGLE_SUCCESS;
+					})));
+		});
 	}
 
 	@Override
@@ -361,6 +383,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	@Override
 	public void onClose() {
 		if (this.minecraft.player != null) this.minecraft.player.closeContainer();
+		overrideWidgetsScreen = false;
 	}
 
 	@Override

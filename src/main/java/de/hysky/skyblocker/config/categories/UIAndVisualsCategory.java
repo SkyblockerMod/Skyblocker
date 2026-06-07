@@ -303,14 +303,6 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.enableFancyWidgetsList,
-										() -> config.uiAndVisuals.tabHud.enableFancyWidgetsList,
-										newValue -> config.uiAndVisuals.tabHud.enableFancyWidgetsList = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))

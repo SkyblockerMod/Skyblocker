@@ -1438,8 +1438,6 @@
   "skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip": "Replaces the vanilla tab with a fancier version",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
-  "skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList": "Enable fancy widgets list",
-  "skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip": "Replaces the /widgets and /tablist menu with a more readable version.",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip": "Alphabetical sorting sorts names alphabetically while Default has no particular order.",
   "skyblocker.config.uiAndVisuals.tabHud.showVanillaTabByDefault": "Show Vanilla Tab by Default",
