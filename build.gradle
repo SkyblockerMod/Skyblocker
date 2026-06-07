@@ -217,7 +217,11 @@ loom {
 
 	runs {
 		clientGameTest {
-			programArg "--graphicsBackend=" + System.getenv().getOrDefault("GRAPHICS_BACKEND", "default")
+			programArguments.add("--graphicsBackend=" + System.getenv().getOrDefault("GRAPHICS_BACKEND", "default"))
+		}
+
+		configureEach {
+			preferGradleTask = true
 		}
 	}
 }
@@ -255,8 +259,11 @@ java {
 }
 
 jar {
+	def archivesName = project.base.archivesName
+	inputs.property "archivesName", archivesName
+
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}" }
+		rename { "${it}_${archivesName}" }
 	}
 }
 
