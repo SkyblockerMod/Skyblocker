@@ -298,9 +298,9 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.enableFancyTab,
-										() -> config.uiAndVisuals.tabHud.enableFancyTab,
-										newValue -> config.uiAndVisuals.tabHud.enableFancyTab = newValue)
+								.binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
+										() -> config.uiAndVisuals.tabHud.tabHudEnabled,
+										newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

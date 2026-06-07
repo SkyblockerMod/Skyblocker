@@ -156,7 +156,7 @@ public class WidgetManager {
 	}
 
 	public static void onPlayerListUpdate() {
-		boolean fancyTab = SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableFancyTab;
+		boolean fancyTab = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
 		if (!fancyTab && hasFancyTab) {
 			SCREEN_BUILDER.clearFancyTab();
 		} else if (fancyTab) {

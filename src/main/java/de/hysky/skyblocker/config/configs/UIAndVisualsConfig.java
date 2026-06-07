@@ -176,7 +176,7 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class TabHudConf {
-		public boolean enableFancyTab = true;
+		public boolean tabHudEnabled = true;
 
 		public boolean enableFancyWidgetsList = true;
 
