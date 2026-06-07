@@ -11,7 +11,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -23,6 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
@@ -31,6 +34,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,6 +79,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		widgetsElementList = new WidgetsElementList(this, minecraft, 0, 0, 0);
 		this.handler = handler;
 		titleLowercase = name.getString().toLowerCase(Locale.ENGLISH);
+		this.handler.addSlotListener(this);
 	}
 
 	@Override
@@ -92,7 +98,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				.build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
 		infoText = headerLayout.addChild(new MultiLineTextWidget(Component.empty(), font).setCentered(true), l -> l.paddingVertical(4));
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		LinearLayout footer = LinearLayout.horizontal();
+		LinearLayout footer = LinearLayout.horizontal().spacing(10);
 		previousPage = footer.addChild(Button.builder(Component.translatable("book.page_button.previous"), _ -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
 				.build());
@@ -108,21 +114,19 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		}).size(60, 15).build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
 		layout.visitWidgets(this::addRenderableWidget);
 		addRenderableWidget(waitingForServerText);
+		repositionElements();
 	}
 
 	@Override
 	protected void repositionElements() {
-		back.setPosition(16, 4);
-		widgetsElementList.setY(0);
-		widgetsElementList.setSize(width, height - 20);
-		widgetsElementList.refreshScrollAmount();
+		infoText.setMaxWidth(width - thirdColumnButton.getWidth() * 2 - PADDING * 3);
 
-		int bottomButtonY = widgetsElementList.getBottom() + 4;
-		thirdColumnButton.setPosition((width - thirdColumnButton.getWidth()) / 2, bottomButtonY);
-		previousPage.setPosition(thirdColumnButton.getX() - previousPage.getWidth() - 5, bottomButtonY);
-		nextPage.setPosition(thirdColumnButton.getRight() + 5, bottomButtonY);
-		resetButton.setPosition(width - resetButton.getWidth() - 4, bottomButtonY);
-		waitingForServerText.setPosition(width - waitingForServerText.getWidth() - 5, height - minecraft.font.lineHeight - 2);
+		headerLayout.setMinWidth(width);
+		headerLayout.arrangeElements();
+		layout.setHeaderHeight(headerLayout.getHeight());
+		widgetsElementList.updateSize(width, layout);
+		layout.arrangeElements();
+		waitingForServerText.setPosition(width - waitingForServerText.getWidth() - 5, height - font.lineHeight - 2);
 	}
 
 	public void resetScrollOnLoad() {
@@ -156,6 +160,8 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 
 	public void updateHandler(ChestMenu newHandler, Component name) {
 		titleLowercase = name.getString().toLowerCase(Locale.ENGLISH);
+		this.handler.removeSlotListener(this);
+		newHandler.addSlotListener(this);
 		this.handler = newHandler;
 		back.visible = true;
 		entries.clear();
@@ -164,6 +170,44 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		if (this.shouldResetScroll) {
 			this.shouldResetScroll = false;
 			this.widgetsElementList.setScrollAmount(0);
+		}
+	}
+
+	@Override
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		if (minecraft.hasControlDown()) {
+			int max = Arrays.stream(previewColumns).flatMap(Collection::stream).mapToInt(font::width).max().orElse(0);
+			if (max <= 0) return;
+			int colWidth = Math.min(previewColumns.length * max, width - 20) / previewColumns.length;
+			int lineCount = 0;
+			for (List<Component> column : previewColumns) {
+				lineCount = Math.max(lineCount, column.size());
+			}
+			int columnSpacing = 4;
+			int totalWidth = colWidth * previewColumns.length + columnSpacing * (previewColumns.length - 1);
+			int totalHeight = lineCount * font.lineHeight;
+			int startX = (width - totalWidth) / 2;
+			int startY = (height - totalHeight) / 2;
+
+			graphics.fill(startX - 5, startY - 5, startX + totalWidth + 5, startY + totalHeight + 5, 0xA0_00_00_00);
+			for (int i = 0; i < previewColumns.length; i++) {
+				int colX = startX + i * (colWidth + columnSpacing);
+				graphics.fill(colX, startY, colX + colWidth, startY + totalHeight, 0x20FFFFFF);
+				List<Component> column = previewColumns[i];
+				if (column.isEmpty()) {
+					List<FormattedCharSequence> split = font.split(Component.translatable("skyblocker.widgetsList.playerColumn"), colWidth);
+					for (int j = 0; j < split.size(); j++) {
+						graphics.text(font, split.get(j), colX, startY + j * font.lineHeight, -1);
+					}
+				} else {
+					for (int j = 0; j < column.size(); j++) {
+						Component component = column.get(j);
+						FormattedCharSequence trimmed = font.width(component) >= colWidth ? ComponentRenderUtils.clipText(component, font, colWidth) : component.getVisualOrderText();
+						graphics.text(font, trimmed, colX, startY + j * font.lineHeight, -1);
+					}
+				}
+			}
 		}
 	}
 
@@ -299,13 +343,24 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		MutableComponent text = Component.translatable("skyblocker.widgetsList.info.preview");
 		if (overflowing) {
 			MutableComponent overflowWarning = Component.translatable("skyblocker.widgetsList.info.overflowWarning").withStyle(ChatFormatting.RED).append("\n");
-			if (!thirdColumnEnabled) overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.columnTip"));
+			if (!thirdColumnEnabled) overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.columnTip")).append("\n");
 			overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.wrappingSpacingTip"));
 			text.append("\n");
 			text.append(overflowWarning);
 		}
 		infoText.setMessage(text);
 		repositionElements();
+	}
+
+	@Override
+	public void removed() {
+		if (this.minecraft.player != null) this.handler.removed(this.minecraft.player);
+		this.handler.removeSlotListener(this);
+	}
+
+	@Override
+	public void onClose() {
+		if (this.minecraft.player != null) this.minecraft.player.closeContainer();
 	}
 
 	@Override
