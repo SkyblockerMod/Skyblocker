@@ -92,6 +92,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		if (!collector.getElements().isEmpty()) {
 			configElements = collector.getElements();
 		}
+		this.pack(configElements);
 	}
 
 	@Override
