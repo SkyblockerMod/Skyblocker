@@ -477,6 +477,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects"))
 								.description(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_1)
 								.binding(defaults.general.specialEffects.trophyDropEffects,
 										() -> config.general.specialEffects.trophyDropEffects,
 										newValue -> config.general.specialEffects.trophyDropEffects = newValue)
