@@ -100,6 +100,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);
 		screenBuilder.setConfig(screenConfig);
 		layer = screenBuilder.getLayer(currentScreenLayer);
+		layer.update();
 		screenBuilder.updateFancyTab();
 	}
 
