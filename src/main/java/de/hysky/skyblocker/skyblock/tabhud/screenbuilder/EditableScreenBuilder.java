@@ -9,11 +9,11 @@ public class EditableScreenBuilder extends ScreenBuilder {
 		return new LayerBuilderEditor(get(layer));
 	}
 
-	public Layer getLayer(WidgetManager.ScreenLayer layer) {
-		return new Layer(get(layer), getEditor(layer));
+	public EditableLayer getLayer(WidgetManager.ScreenLayer layer) {
+		return new EditableLayer(get(layer), getEditor(layer));
 	}
 
-	public record Layer(LayerBuilder builder, LayerBuilderEditor editor) {
+	public record EditableLayer(LayerBuilder builder, LayerBuilderEditor editor) {
 		public void update() {
 			builder.update();
 			builder.getRendered().forEach(w -> w.widget.onConfigChanged());

@@ -66,7 +66,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	private final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
 	private ScreenConfig screenConfig;
-	private EditableScreenBuilder.Layer layer;
+	private EditableScreenBuilder.EditableLayer layer;
 
 	private SidePanelWidget sidePanelWidget;
 	private AddWidgetWidget addWidgetWidget;
