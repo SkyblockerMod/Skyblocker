@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.FunUtils;
+import de.hysky.skyblocker.utils.LogsFolderFinder;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -40,6 +41,7 @@ public class SkyblockerScreen extends Screen {
 	private static final Component DISCORD_TEXT = Component.translatable("text.skyblocker.discord");
 	private static final Component SUPPORT_US_TEXT = Component.translatable("text.skyblocker.supportUs");
 	private static final Component CREDITS_TEXT = Component.translatable("credits_and_attribution.button.credits");
+	private static final Component LOGS_FOLDER_TEXT = Component.translatable("text.skyblocker.logsFolder");
 	private HeaderAndFooterLayout layout;
 	private MultiLineTextWidget tip;
 
@@ -78,7 +80,8 @@ public class SkyblockerScreen extends Screen {
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
 		adder.addChild(Button.builder(CONFIGURATION_TEXT, _ -> this.openConfig()).width(BUTTON_WIDTH).build(), 2);
-		adder.addChild(Button.builder(SOURCE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://github.com/SkyblockerMod/Skyblocker")).width(HALF_BUTTON_WIDTH).build());
+		adder.addChild(Button.builder(SOURCE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://github.com/SkyblockerMod/Skyblocker")).width(BUTTON_WIDTH).build(), 2);
+		adder.addChild(Button.builder(LOGS_FOLDER_TEXT, _ -> LogsFolderFinder.openLogsFolder()).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(REPORT_BUGS_TEXT, ConfirmLinkScreen.confirmLink(this, "https://github.com/SkyblockerMod/Skyblocker/issues")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(WEBSITE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://hysky.de/")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(TRANSLATE_TEXT, ConfirmLinkScreen.confirmLink(this, "https://translate.hysky.de/")).width(HALF_BUTTON_WIDTH).build());
