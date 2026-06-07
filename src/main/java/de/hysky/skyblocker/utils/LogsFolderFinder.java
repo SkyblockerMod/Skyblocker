@@ -78,23 +78,6 @@ public final class LogsFolderFinder {
 			return getFallbackFolder();
 		}
 		return Path.of(latestLogOpt.get()).toAbsolutePath().getParent();
-
-		/*return Optional.of(context)
-				.filter(org.apache.logging.log4j.core.LoggerContext.class::isInstance)
-				.map(org.apache.logging.log4j.core.LoggerContext.class::cast)
-				.stream()
-				.flatMap(c -> c.getConfiguration().getAppenders().values().stream())
-				.filter(AbstractOutputStreamAppender.class::isInstance)
-				.map(AbstractOutputStreamAppender.class::cast)
-				.map(AbstractOutputStreamAppender::getManager)
-				.filter(FileManager.class::isInstance)
-				.map(FileManager.class::cast)
-				.map(FileManager::getFileName)
-				.filter(s -> s.contains("latest.log"))
-				.map(File::new)
-				.map(File::toPath)
-				.map(Path::toAbsolutePath)
-				.findFirst().orElseGet(() -> FabricLoader.getInstance().getGameDir().resolve("logs"));*/
 	}
 
 	private static Path getFallbackFolder() {
