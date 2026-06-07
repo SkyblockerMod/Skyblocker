@@ -15,7 +15,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -40,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -204,8 +204,8 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	 * Normally, the price is calculated on a per-reward basis as they are obtained. This is what this method does.
 	 */
 	private void calculateProfitForItem(String itemId, int amount) {
-		DoubleBooleanPair price = ItemUtils.getItemPrice(itemId);
-		if (price.rightBoolean()) profit += price.leftDouble() * amount;
+		OptionalDouble price = ItemUtils.getItemPrice(itemId);
+		if (price.isPresent()) profit += price.getAsDouble() * amount;
 	}
 
 	/**
