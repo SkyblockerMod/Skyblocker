@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
@@ -10,12 +9,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An {@link ElementBasedWidget} specialized to replace/use information from one hypixel TAB widget. <p>
+ * {@link TabHudWidget#updateContent(PlayerListManager.Widget)} is automatically called when the player list updates with the specified
+ * hypixel TAB widget's contents.
+ */
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;
-	private final List<Element> cachedElements = new ArrayList<>();
 
 
 	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Information information) {

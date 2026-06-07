@@ -14,7 +14,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-// split into a bunch of different records to avoid weird typing issues in codecs
+/**
+ * Tracks where widgets were copied to.
+ * Used to have the option to remove the copies of a widget, and to pre-select other copies in the "Copy to" popup to easily "propagate" config changes
+ */
 public record CopyTracker(Layer hud, Layer tab, Layer secondaryTab) {
 	public static final Codec<CopyTracker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Layer.CODEC.fieldOf("hud").forGetter(CopyTracker::hud),
@@ -53,7 +56,12 @@ public record CopyTracker(Layer hud, Layer tab, Layer secondaryTab) {
 		}
 	}
 
+	/**
+	 * A list of sets that each represent locations where the widget was copied to. The sets should not overlap.
+	 * @param sets the sets
+	 */
 	public record LocationSets(List<Set<Location>> sets) {
+		// Codec that accepts either a list of locations, or a string (contents doesn't matter) to represent "all locations"
 		private static final Codec<Set<Location>> LOCATION_SET_CODEC =  Codec.either(Location.CODEC.listOf(), Codec.STRING)
 				.xmap(
 						e -> e.map(l -> (Set<Location>) EnumSet.copyOf(l), _ -> EnumSet.copyOf(WidgetManager.ALLOWED_LOCATIONS)),

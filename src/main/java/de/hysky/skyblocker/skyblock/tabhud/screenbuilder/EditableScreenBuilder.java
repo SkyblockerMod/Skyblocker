@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+/**
+ * A screen builder whose {@link LayerBuilder}s can be edited to remove and add widgets
+ */
 public class EditableScreenBuilder extends ScreenBuilder {
 	public EditableScreenBuilder() {
 		super();
