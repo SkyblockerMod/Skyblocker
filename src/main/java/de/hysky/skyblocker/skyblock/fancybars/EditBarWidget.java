@@ -28,6 +28,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private final EnumCyclingOption<StatusBar.IconPosition> iconOption;
 	private final EnumCyclingOption<StatusBar.TextPosition> textOption;
+	private final EnumCyclingOption<StatusBar.FlowDirection> flowOption;
 
 	private final BooleanOption showMaxOption;
 	private final BooleanOption showOverflowOption;
@@ -45,7 +46,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 	private int contentsWidth = 0;
 
 	public EditBarWidget(int x, int y, Screen parent) {
-		super(x, y, 100, 99, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
+		super(x, y, 100, 110, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
 
 		Font textRenderer = Minecraft.getInstance().font;
 
@@ -58,33 +59,37 @@ public class EditBarWidget extends AbstractContainerWidget {
 		translatable = Component.translatable("skyblocker.bars.config.text");
 		textOption = new EnumCyclingOption<>(0, 22, getWidth(), translatable, StatusBar.TextPosition.class);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
+		
+		translatable = Component.translatable("skyblocker.bars.config.flow");
+		flowOption = new EnumCyclingOption<>(0, 33, getWidth(), translatable, StatusBar.FlowDirection.class);
+		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
 
 		translatable = Component.translatable("skyblocker.bars.config.showMax");
-		showMaxOption = new BooleanOption(0, 33, getWidth(), translatable);
+		showMaxOption = new BooleanOption(0, 44, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 
 		translatable = Component.translatable("skyblocker.bars.config.showOverflow");
-		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
+		showOverflowOption = new BooleanOption(0, 55, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 
 		// COLO(u)RS
 		translatable = Component.translatable("skyblocker.bars.config.mainColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		color1 = new ColorOption(0, 55, getWidth(), translatable, parent);
+		color1 = new ColorOption(0, 66, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.overflowColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		color2 = new ColorOption(0, 66, getWidth(), translatable, parent);
+		color2 = new ColorOption(0, 77, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.textColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		textColor = new ColorOption(0, 77, getWidth(), translatable, parent);
+		textColor = new ColorOption(0, 88, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.hide");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		hideOption = new RunnableOption(0, 88, getWidth(), translatable);
+		hideOption = new RunnableOption(0, 99, getWidth(), translatable);
 
-		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
+		options = List.of(iconOption, textOption, flowOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
 
 		setWidth(contentsWidth);
 	}
@@ -132,6 +137,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 		iconOption.setOnChange(statusBar::setIconPosition);
 		textOption.setCurrent(statusBar.getTextPosition());
 		textOption.setOnChange(statusBar::setTextPosition);
+		flowOption.setCurrent(statusBar.getFlowDirection());
+		flowOption.setOnChange(statusBar::setFlowDirection);
 
 		color1.setCurrent(statusBar.getColors()[0].getRGB());
 		color1.setOnChange(color -> statusBar.getColors()[0] = color);

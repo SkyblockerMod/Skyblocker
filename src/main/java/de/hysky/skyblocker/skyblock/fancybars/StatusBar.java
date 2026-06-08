@@ -102,6 +102,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	private IconPosition iconPosition = IconPosition.LEFT;
 	private TextPosition textPosition = TextPosition.BAR_CENTER;
+	private FlowDirection flowDirection = FlowDirection.LEFT_TO_RIGHT;
 
 	public boolean showMax = false;
 	public boolean showOverflow = false;
@@ -149,14 +150,25 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
 	}
 
-	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
-		GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * fill), 5, transparency(colors[0].getRGB()));
-
+	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
+		renderBarFill(graphics, barX, barWidth, fill, transparency(colors[0].getRGB()));
+		
 		if (hasOverflow() && overflowFill > 0) {
-			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, renderY + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(colors[1].getRGB()));
+			renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(colors[1].getRGB()));
 		}
 	}
-
+	
+	protected void renderBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth, float fill, int argb) {
+		int fillWidth = (int) ((barWidth - 2) * fill);
+		int x = switch (flowDirection) {
+			case LEFT_TO_RIGHT -> barX + 1;
+			case RIGHT_TO_LEFT -> barX + barWidth - fillWidth - 1;
+			case FROM_MIDDLE -> barX + (barWidth - fillWidth) / 2;
+		};
+		
+		GuiHelper.nineSliceColored(graphics, BAR_FILL, x, renderY + 2, fillWidth, 5, argb);
+	}
+	
 	public void updateValues(float fill, float overflowFill, int value, @Nullable Integer max, @Nullable Integer overflow) {
 		this.value = value;
 		this.fill = Math.clamp(fill, 0, 1);
@@ -334,6 +346,14 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public void setTextPosition(TextPosition textPosition) {
 		this.textPosition = textPosition;
 	}
+	
+	public FlowDirection getFlowDirection() {
+		return flowDirection;
+	}
+	
+	public void setFlowDirection(FlowDirection flowDirection) {
+		this.flowDirection = flowDirection;
+	}
 
 	public enum IconPosition implements StringRepresentable {
 		LEFT,
@@ -367,6 +387,23 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		public String toString() {
 			if (this == CENTER || this == BAR_CENTER) return I18n.get("skyblocker.bars.config.textPosition." + name());
 			return I18n.get("skyblocker.bars.config.commonPosition." + name());
+		}
+	}
+	
+	public enum FlowDirection implements StringRepresentable {
+		LEFT_TO_RIGHT,
+		RIGHT_TO_LEFT,
+		FROM_MIDDLE;
+
+		@Override
+		public String getSerializedName() {
+			return name();
+		}
+
+		@Override
+		public String toString()
+		{
+			return I18n.get("skyblocker.bars.config.flowDirection." + name());
 		}
 	}
 
@@ -411,6 +448,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		// backwards compat teehee
 		if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
 		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+		if (object.has("flow_direction")) this.flowDirection = FlowDirection.valueOf(object.get("flow_direction").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 	}
@@ -439,6 +477,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		object.addProperty("icon_position", iconPosition.getSerializedName());
 		object.addProperty("text_position", textPosition.getSerializedName());
+		object.addProperty("flow_direction", flowDirection.getSerializedName());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
 		object.addProperty("enabled", enabled);
@@ -452,17 +491,17 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 
 		@Override
-		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWith) {
+		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
-					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
+					renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
 				} else {
-					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
-					GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+					renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
+					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
 				}
 			} else {
-				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWith - 2) * fill), 5, transparency(getColors()[0].getRGB()));
+				renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
 			}
 		}
 	}
@@ -508,10 +547,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			} else {
 				fillColor = getColors()[0].getRGB();
 			}
-
-			GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * fill), 5, transparency(fillColor));
+			renderBarFill(graphics, barX, barWidth, fill, transparency(fillColor));
 			if (hasOverflow() && overflowFill > 0) {
-				GuiHelper.nineSliceColored(graphics, BAR_FILL, barX + 1, getY() + 2, (int) ((barWidth - 2) * Math.min(overflowFill, 1)), 5, transparency(getColors()[1].getRGB()));
+				renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
 			}
 		}
 
