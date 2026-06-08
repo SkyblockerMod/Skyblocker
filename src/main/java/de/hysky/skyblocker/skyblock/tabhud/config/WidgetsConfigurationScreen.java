@@ -38,9 +38,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class WidgetsConfigurationScreen extends Screen implements ContainerListener {
 	public static final Logger LOGGER = LogUtils.getLogger();
+	public static Pattern SCREEN_TITLE_PATTERN = Pattern.compile("(\\(\\d/\\d]\\) )?widgets (in|on)");
 
 	private @Nullable ChestMenu handler;
 	private String titleLowercase;
