@@ -135,7 +135,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 
 		@Override
 		public @Nullable Instant getStartTime(ItemStack stack, String qualifiedLine) {
-			if (stack.count() > 31) return null;
+			if (stack.getCount() > 31) return null;
 			return SkyblockTime.SKYBLOCK_EPOCH
 					.with(SkyblockTimeField.YEAR, year)
 					.with(SkyblockTimeField.MONTH_OF_YEAR, month.ordinal() + 1)
