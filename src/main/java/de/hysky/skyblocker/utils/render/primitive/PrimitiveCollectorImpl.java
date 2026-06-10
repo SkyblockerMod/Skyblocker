@@ -8,7 +8,6 @@ import org.jspecify.annotations.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vulkan.VulkanDevice;
 
-import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
 import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
@@ -25,8 +24,8 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
-//import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
-//import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -50,7 +49,7 @@ import net.minecraft.world.phys.Vec3;
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
-	private final boolean useInstancing;
+	private final boolean isVulkan;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
 	private @Nullable List<VanillaSubmittable<?>> vanillaSubmittables = null;
@@ -69,8 +68,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
-		boolean isVulkan = ((GpuDeviceAccessor) RenderSystem.getDevice()).getBackend() instanceof VulkanDevice;
-		this.useInstancing = isVulkan || Debug.debugEnabled();
+		this.isVulkan = ((GpuDeviceAccessor) RenderSystem.getDevice()).getBackend() instanceof VulkanDevice;
 		this.worldState = worldState;
 		this.frustum = frustum;
 	}
@@ -357,7 +355,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.filledBoxStates != null) {
-			if (this.useInstancing) {
+			if (this.isVulkan) {
 				FilledBoxInstancedRenderer.INSTANCE.submitPrimitives(this.filledBoxStates, cameraState);
 			} else {
 				for (FilledBoxRenderState state : this.filledBoxStates) {
@@ -367,7 +365,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.outlinedBoxStates != null) {
-			if (this.useInstancing) {
+			if (this.isVulkan) {
 				OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(this.outlinedBoxStates, cameraState);
 			} else {
 				for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
@@ -400,14 +398,14 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			}
 		}
 
-		/*if (this.blockHologramStates != null) {
-			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.getGameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
+		if (this.blockHologramStates != null) {
+			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.gameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
+			BlockHologramRenderer hologramRenderer = new BlockHologramRenderer(altModelBlockRenderer);
 
 			for (BlockHologramRenderState state : this.blockHologramStates) {
-				state.altModelBlockRenderer = altModelBlockRenderer;
-				BlockHologramRenderer.INSTANCE.submitPrimitives(state, cameraState);
+				hologramRenderer.submitPrimitives(state, cameraState);
 			}
-		}*/
+		}
 
 		if (this.textStates != null) {
 			for (TextRenderState state : this.textStates) {

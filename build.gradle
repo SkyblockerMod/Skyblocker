@@ -364,7 +364,7 @@ publishMods {
 	file = jar.archiveFile
 	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
-	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
+	displayName = "Skyblocker ${project.mod_version} for ${project.minecraft_version}"
 	modLoaders.add("fabric")
 	type = project.version.contains("alpha") ? ALPHA : project.version.contains("beta") ? BETA : STABLE
 
@@ -378,8 +378,8 @@ publishMods {
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
-		projectId = modrinth_id
-		minecraftVersions.add(minecraft_version)
+		projectId = project.modrinth_id
+		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
 		requires("fabric-api", "fabric-language-kotlin")
 		optional("modmenu", "rei", "emi", "jei")
@@ -388,8 +388,8 @@ publishMods {
 
 	curseforge {
 		accessToken = System.getenv("CURSEFORGE_TOKEN")
-		projectId = curseforge_id
-		minecraftVersions.add(minecraft_version)
+		projectId = project.curseforge_id
+		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
 		requires("fabric-api", "fabric-language-kotlin")
@@ -401,7 +401,7 @@ publishMods {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
 		content = changelog.map {
-			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
+			def header = "<@&1134565945482948638>\n## Skyblocker v${project.mod_version} for ${project.minecraft_version}\n"
 			def truncatedChangelog = truncateChangelog(it, 1850)
 			header + truncatedChangelog
 		}
