@@ -508,6 +508,7 @@ public class Utils {
 
 			@Override
 			public void run() {
+				if (!Utils.isOnSkyblock()) return;
 				if (requestId == profileIdRequest) {
 					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
 					profileSuggestionMessages = 0;
