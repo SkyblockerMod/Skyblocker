@@ -17,6 +17,7 @@ import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -134,6 +135,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 
 		@Override
 		public @Nullable Instant getStartTime(ItemStack stack, String qualifiedLine) {
+			if (stack.count() > 31) return null;
 			return SkyblockTime.SKYBLOCK_EPOCH
 					.with(SkyblockTimeField.YEAR, year)
 					.with(SkyblockTimeField.MONTH_OF_YEAR, month.ordinal() + 1)
