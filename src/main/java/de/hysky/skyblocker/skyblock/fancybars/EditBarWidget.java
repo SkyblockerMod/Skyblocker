@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -59,7 +61,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		translatable = Component.translatable("skyblocker.bars.config.text");
 		textOption = new EnumCyclingOption<>(0, 22, getWidth(), translatable, StatusBar.TextPosition.class);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
-		
+
 		translatable = Component.translatable("skyblocker.bars.config.flow");
 		flowOption = new EnumCyclingOption<>(0, 33, getWidth(), translatable, StatusBar.FlowDirection.class);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
@@ -210,7 +212,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {
+		}
 	}
 
 	public static class EnumCyclingOption<T extends Enum<T>> extends AbstractWidget {
@@ -282,7 +285,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
 			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
-			if (current && active) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
+			if (current && active)
+				graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override

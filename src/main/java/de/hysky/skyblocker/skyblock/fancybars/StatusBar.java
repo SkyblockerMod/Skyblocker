@@ -152,12 +152,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
 		renderBarFill(graphics, barX, barWidth, fill, transparency(colors[0].getRGB()));
-		
+
 		if (hasOverflow() && overflowFill > 0) {
 			renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(colors[1].getRGB()));
 		}
 	}
-	
+
 	protected void renderBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth, float fill, int argb) {
 		int fillWidth = (int) ((barWidth - 2) * fill);
 		int x = switch (flowDirection) {
@@ -165,10 +165,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			case RIGHT_TO_LEFT -> barX + barWidth - fillWidth - 1;
 			case FROM_MIDDLE -> barX + (barWidth - fillWidth) / 2;
 		};
-		
+
 		GuiHelper.nineSliceColored(graphics, BAR_FILL, x, renderY + 2, fillWidth, 5, argb);
 	}
-	
+
 	public void updateValues(float fill, float overflowFill, int value, @Nullable Integer max, @Nullable Integer overflow) {
 		this.value = value;
 		this.fill = Math.clamp(fill, 0, 1);
@@ -346,11 +346,11 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public void setTextPosition(TextPosition textPosition) {
 		this.textPosition = textPosition;
 	}
-	
+
 	public FlowDirection getFlowDirection() {
 		return flowDirection;
 	}
-	
+
 	public void setFlowDirection(FlowDirection flowDirection) {
 		this.flowDirection = flowDirection;
 	}
@@ -389,7 +389,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			return I18n.get("skyblocker.bars.config.commonPosition." + name());
 		}
 	}
-	
+
 	public enum FlowDirection implements StringRepresentable {
 		LEFT_TO_RIGHT,
 		RIGHT_TO_LEFT,
@@ -401,8 +401,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return I18n.get("skyblocker.bars.config.flowDirection." + name());
 		}
 	}
@@ -427,7 +426,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			this.colors = newColors;
 		}
 
-		if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
+		if (object.has("text_color"))
+			this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
 
 		String maybeAnchor = object.get("anchor").getAsString().trim();
 		this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
@@ -444,11 +444,15 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			this.y = object.get("y").getAsFloat();
 		}
 		// these are optional too, why not
-		if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
+		if (object.has("icon_position"))
+			this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
 		// backwards compat teehee
-		if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
-		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
-		if (object.has("flow_direction")) this.flowDirection = FlowDirection.valueOf(object.get("flow_direction").getAsString().trim());
+		if (object.has("show_text"))
+			this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
+		if (object.has("text_position"))
+			this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+		if (object.has("flow_direction"))
+			this.flowDirection = FlowDirection.valueOf(object.get("flow_direction").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 	}
@@ -508,6 +512,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	public static class ExperienceStatusBar extends StatusBar {
 		private static final Identifier CLOCK_ICON = SkyblockerMod.id("bars/icons/rift_time");
+
 		public ExperienceStatusBar(StatusBarType type) {
 			super(type, time -> {
 				if (Utils.isInTheRift()) {
