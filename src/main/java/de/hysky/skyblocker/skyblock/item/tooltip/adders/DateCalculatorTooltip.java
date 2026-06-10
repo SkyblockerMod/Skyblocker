@@ -49,7 +49,7 @@ public class DateCalculatorTooltip extends SimpleTooltipAdder {
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
-		if (currentTimer == null) return;
+		if (currentTimer == null || focusedSlot == null || focusedSlot.container instanceof Inventory) return;
 
 		for (int i = 1; i < lines.size(); i++) {
 			String text = lines.get(i).getString();
