@@ -1737,5 +1737,6 @@
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "當粘貼佈局時，突顯突變植物的位置。",
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy掉落效果",
     "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "當首次釣上鑽石等級的獎盃魚/青蛙時，顯示特殊的視覺效果！",
-    "skyblocker.waypoints.disabledWarning": "路徑點目前已在配置中停用！"
+    "skyblocker.waypoints.disabledWarning": "路徑點目前已在配置中停用！",
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "以綠色突顯掉落目前Jacob's Contest作物的害蟲。 （Vinyl Highlighter會被覆蓋）\n需要啟用害蟲突顯！"
 }
