@@ -94,21 +94,7 @@ public class Renderer {
 	private static void dispatchDraws() {
 		applyViewOffsetZLayering();
 
-		for (Draw draw : DRAWS) {
-			draw(draw);
-		}
-
-		unapplyViewOffsetZLayering();
-	}
-
-	private static void draw(Draw draw) {
 		RenderTarget mainRenderTarget = CLIENT.gameRenderer.mainRenderTarget();
-		StagedVertexBuffer.ExecuteInfo executeInfo = VERTEX_BUFFER.getExecuteInfo(draw.draw);
-
-		if (executeInfo == null) {
-			return;
-		}
-
 		try (RenderPass renderPass = RenderSystem.getDevice()
 				.createCommandEncoder()
 				.createRenderPass(
@@ -118,35 +104,49 @@ public class Renderer {
 						mainRenderTarget.useDepth ? mainRenderTarget.getDepthTextureView() : null,
 						OptionalDouble.empty()
 						)) {
-			renderPass.setPipeline(draw.pipeline);
-
 			RenderSystem.bindDefaultUniforms(renderPass);
-			renderPass.setUniform("DynamicTransforms", setupDynamicTransforms(draw.alphaMultiplier));
 
-			if (draw.uniform != null) {
-				renderPass.setUniform(draw.uniform.name, draw.uniform.buffer);
+			for (Draw draw : DRAWS) {
+				draw(draw, renderPass);
 			}
-
-			if (draw.textureSetup.texure0() != null) {
-				// Sampler0 is used for normal texture inputs in shaders
-				renderPass.bindTexture("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
-			}
-
-			if (draw.textureSetup.texure1() != null) {
-				// Sampler1 is used for alternate texture inputs in shaders
-				renderPass.bindTexture("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
-			}
-
-			if (draw.textureSetup.texure2() != null) {
-				// Sampler2 is used for lightmap texture inputs in shaders
-				renderPass.bindTexture("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
-			}
-
-			renderPass.setVertexBuffer(0, executeInfo.vertexBuffer().slice());
-			renderPass.setIndexBuffer(executeInfo.indexBuffer(), executeInfo.indexType());
-
-			renderPass.drawIndexed(executeInfo.indexCount(), draw.instanceCount, executeInfo.firstIndex(), executeInfo.baseVertex(), 0);
 		}
+
+		unapplyViewOffsetZLayering();
+	}
+
+	private static void draw(Draw draw, RenderPass renderPass) {
+		StagedVertexBuffer.ExecuteInfo executeInfo = VERTEX_BUFFER.getExecuteInfo(draw.draw);
+
+		if (executeInfo == null) {
+			return;
+		}
+
+		renderPass.setPipeline(draw.pipeline);
+		renderPass.setUniform("DynamicTransforms", setupDynamicTransforms(draw.alphaMultiplier));
+
+		if (draw.uniform != null) {
+			renderPass.setUniform(draw.uniform.name, draw.uniform.buffer);
+		}
+
+		if (draw.textureSetup.texure0() != null) {
+			// Sampler0 is used for normal texture inputs in shaders
+			renderPass.bindTexture("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
+		}
+
+		if (draw.textureSetup.texure1() != null) {
+			// Sampler1 is used for alternate texture inputs in shaders
+			renderPass.bindTexture("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
+		}
+
+		if (draw.textureSetup.texure2() != null) {
+			// Sampler2 is used for lightmap texture inputs in shaders
+			renderPass.bindTexture("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
+		}
+
+		renderPass.setVertexBuffer(0, executeInfo.vertexBuffer().slice());
+		renderPass.setIndexBuffer(executeInfo.indexBuffer(), executeInfo.indexType());
+
+		renderPass.drawIndexed(executeInfo.indexCount(), draw.instanceCount, executeInfo.firstIndex(), executeInfo.baseVertex(), 0);
 	}
 
 	private static GpuBufferSlice setupDynamicTransforms(float alphaMultiplier) {
