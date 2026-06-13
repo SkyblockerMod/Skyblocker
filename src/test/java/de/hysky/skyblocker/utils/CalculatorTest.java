@@ -104,6 +104,7 @@ public class CalculatorTest {
 		assertThrows("p2p");
 		assertCalculation(PURSE * PURSE, "p*p");
 		assertCalculation(PURSE, "purse");
+		assertCalculation(PURSE + PURSE, "purse+purse");
 	}
 
 	private void assertCalculation(double expected, String input) {

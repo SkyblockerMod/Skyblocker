@@ -168,7 +168,7 @@ public class Calculator {
 		input = input.replace(" ", "").toLowerCase(Locale.ENGLISH).replace("x", "*");
 		int i = 0;
 		while (i < input.length()) {
-			AbstractToken<?> token = switch (input.charAt(i)) {
+			tokens.add(switch (input.charAt(i)) {
 				case '+', '-', '*', '/', '%', '^' -> {
 					String op = String.valueOf(input.charAt(i));
 					Operator operator = Operator.OPERATOR_MAP.apply(op);
@@ -212,15 +212,12 @@ public class Calculator {
 
 				case 'p' -> {
 					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.NUMBER) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation");
+					if (input.substring(i, Math.min(input.length(), i+5)).equals("purse")) i += 4;
 					yield new PurseToken();
 				}
 
 				default -> {
 					String func = input.substring(i).split("[ (]", 2)[0];
-					if (func.startsWith("urse")) {
-						i += 4;
-						yield null;
-					}
 					Function function = Function.FUNCTION_MAP.apply(func);
 					if (function == null) {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError", func);
@@ -237,8 +234,7 @@ public class Calculator {
 					i += func.length() - 1;
 					yield new FunctionToken(function);
 				}
-			};
-			if (token != null) tokens.add(token);
+			});
 			i++;
 		}
 
