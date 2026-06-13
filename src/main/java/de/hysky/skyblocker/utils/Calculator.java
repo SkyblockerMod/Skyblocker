@@ -146,12 +146,6 @@ public class Calculator {
 		}
 	}
 
-	public static class PurseToken extends AbstractToken<String> {
-		public PurseToken() {
-			super(TokenType.NUMBER, String.valueOf((long) Utils.getPurse()));
-		}
-	}
-
 	private static final Pattern NUMBER_PATTERN = Pattern.compile("([_,\\d]+\\.?[_,\\d]*)([sekmbtq]?)");
 	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMap.ofEntries(
 			Object2LongMap.entry("s", 64L),
@@ -212,8 +206,8 @@ public class Calculator {
 
 				case 'p' -> {
 					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.NUMBER) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation");
-					if (input.substring(i, Math.min(input.length(), i+5)).equals("purse")) i += 4;
-					yield new PurseToken();
+					if (input.substring(i, Math.min(input.length(), i + 5)).equals("purse")) i += 4;
+					yield new Token(TokenType.NUMBER, String.valueOf((long) Utils.getPurse()));
 				}
 
 				default -> {
