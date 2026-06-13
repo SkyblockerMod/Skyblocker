@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.Nullable;
 
 public class Calculator {
 	public enum TokenType {
@@ -41,7 +42,7 @@ public class Calculator {
 
 	public enum Operator implements StringRepresentable {
 		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
-		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringRepresentable.createNameLookup(Operator.values(), op -> op.op);
+		private static final java.util.function.Function<String, @Nullable Operator> OPERATOR_MAP = StringRepresentable.createNameLookup(Operator.values(), op -> op.op);
 		private final String op;
 		private final boolean rightAssociative;
 
@@ -122,7 +123,7 @@ public class Calculator {
 		CEIL("ceil", Math::ceil),
 		ROUND("round", Math::round);
 
-		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringRepresentable.createNameLookup(Function.values(), func -> func.name);
+		private static final java.util.function.Function<String, @Nullable Function> FUNCTION_MAP = StringRepresentable.createNameLookup(Function.values(), func -> func.name);
 		private final String name;
 		private final CalculatorFunction function;
 
