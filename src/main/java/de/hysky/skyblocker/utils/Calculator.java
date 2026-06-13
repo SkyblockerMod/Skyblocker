@@ -368,6 +368,7 @@ public class Calculator {
 	}
 
 	public static double calculate(String equation) throws CalculatorException {
+		if (equation.startsWith(".")) equation = "0" + equation;
 		//custom bit for replacing purse with its value
 		equation = equation.toLowerCase(Locale.ENGLISH).replaceAll("p(urse)?", String.valueOf((long) Utils.getPurse()));
 		return evaluate(shunt(lex(equation)));

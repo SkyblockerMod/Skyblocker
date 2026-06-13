@@ -19,8 +19,7 @@ public class CalculatorTest {
 		assertCalculation(11254123, "1_125_41,23");
 		assertCalculation(11254123.341, "1_125_41,23_.341");
 		assertCalculation(11254123., "1_125_41,23.");
-		// Trailing decimal supported, leading decimal not supported. Tempting, but KISS
-		assertThrows(".52");
+		assertCalculation(0.52, ".52");
 	}
 
 	@Test
