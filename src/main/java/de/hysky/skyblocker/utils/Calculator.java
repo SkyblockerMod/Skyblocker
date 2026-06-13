@@ -145,6 +145,12 @@ public class Calculator {
 		}
 	}
 
+	public static class PurseToken extends AbstractToken<String> {
+		public PurseToken() {
+			super(TokenType.NUMBER, String.valueOf((long) Utils.getPurse()));
+		}
+	}
+
 	private static final Pattern NUMBER_PATTERN = Pattern.compile("([_,\\d]+\\.?[_,\\d]*)([sekmbtq]?)");
 	private static final Object2LongMap<String> MAGNITUDE_VALUES = Object2LongMap.ofEntries(
 			Object2LongMap.entry("s", 64L),
@@ -161,7 +167,7 @@ public class Calculator {
 		input = input.replace(" ", "").toLowerCase(Locale.ENGLISH).replace("x", "*");
 		int i = 0;
 		while (i < input.length()) {
-			tokens.add(switch (input.charAt(i)) {
+			AbstractToken<?> token = switch (input.charAt(i)) {
 				case '+', '-', '*', '/', '%', '^' -> {
 					String op = String.valueOf(input.charAt(i));
 					Operator operator = Operator.OPERATOR_MAP.apply(op);
@@ -203,8 +209,17 @@ public class Calculator {
 					yield new Token(TokenType.NUMBER, number);
 				}
 
+				case 'p' -> {
+					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.NUMBER) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation");
+					yield new PurseToken();
+				}
+
 				default -> {
 					String func = input.substring(i).split("[ (]", 2)[0];
+					if (func.startsWith("urse")) {
+						i += 4;
+						yield null;
+					}
 					Function function = Function.FUNCTION_MAP.apply(func);
 					if (function == null) {
 						throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidOperatorError", func);
@@ -221,8 +236,8 @@ public class Calculator {
 					i += func.length() - 1;
 					yield new FunctionToken(function);
 				}
-			});
-
+			};
+			if (token != null) tokens.add(token);
 			i++;
 		}
 
@@ -369,8 +384,6 @@ public class Calculator {
 
 	public static double calculate(String equation) throws CalculatorException {
 		if (equation.startsWith(".")) equation = "0" + equation;
-		//custom bit for replacing purse with its value
-		equation = equation.toLowerCase(Locale.ENGLISH).replaceAll("p(urse)?", String.valueOf((long) Utils.getPurse()));
 		return evaluate(shunt(lex(equation)));
 	}
 

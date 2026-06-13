@@ -3,15 +3,24 @@ package de.hysky.skyblocker.utils;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class CalculatorTest {
+	private static final double PURSE = 12345;
+
 	@BeforeAll
 	public static void setup() {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
+		Utils.purse = PURSE;
+	}
+
+	@AfterAll
+	public static void cleanup() {
+		Utils.purse = 0;
 	}
 
 	@Test
@@ -86,6 +95,15 @@ public class CalculatorTest {
 	void testFloatingPointError() {
 		SignCalculator.calculate("262.6m");
 		Assertions.assertEquals("2.626E8", SignCalculator.getNewValue(true));
+	}
+
+	@Test
+	void testPurseShort() {
+		assertCalculation(3 * PURSE, "3*p");
+		assertCalculation(5 * PURSE, "5*p");
+		assertThrows("p2p");
+		assertCalculation(PURSE * PURSE, "p*p");
+		assertCalculation(PURSE, "purse");
 	}
 
 	private void assertCalculation(double expected, String input) {
