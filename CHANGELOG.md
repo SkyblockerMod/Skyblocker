@@ -14,6 +14,7 @@
 * Add support for 7th anniversary Cake Hats by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2455
 * Fix Pets Menu Title by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2449
 * Fix Pet Info Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2456
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2453
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.1+26.1.2...v6.5.2+26.1.2
 
