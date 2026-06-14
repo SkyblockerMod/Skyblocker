@@ -193,10 +193,8 @@ public final class ItemUtils {
 				}
 			}
 			case "PET" -> {
-				if (customData.contains("petInfo")) {
-					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
-					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
-				}
+				PetInfo petInfo = getPetInfo(stack);
+				return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 			}
 			case "POTION" -> {
 				String enhanced = customData.getBooleanOr("enhanced", false) ? "_ENHANCED" : "";
@@ -299,8 +297,7 @@ public final class ItemUtils {
 				yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getIntOr(enchant, 0);
 			}
 			case "PET" -> {
-				if (!customData.contains("petInfo")) yield id;
-				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
+				PetInfo petInfo = getPetInfo(stack);
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
 			case "RUNE" -> {
