@@ -193,7 +193,7 @@ public final class ItemUtils {
 				}
 			}
 			case "PET" -> {
-				PetInfo petInfo = getPetInfo(stack);
+				PetInfo petInfo = getPetInfo(itemStack);
 				return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 			}
 			case "POTION" -> {
@@ -350,8 +350,8 @@ public final class ItemUtils {
 	 * @deprecated use {@link ItemStack#getPetInfo()} instead
 	 */
 	@Deprecated(since = "5.8.0")
-	public static PetInfo getPetInfo(ItemStack stack) {
-		if (!stack.getSkyblockId().equals("PET")) return PetInfo.EMPTY;
+	public static PetInfo getPetInfo(DataComponentHolder stack) {
+		if (!getCustomData(stack).getStringOr(ID, "").equals("PET")) return PetInfo.EMPTY;
 
 		String petInfo = getCustomData(stack).getStringOr("petInfo", "");
 
@@ -360,7 +360,9 @@ public final class ItemUtils {
 				JsonElement jsonElement = JsonParser.parseString(petInfo);
 
 				// Add item name into PetInfo to be used for wiki lookup
-				jsonElement.getAsJsonObject().addProperty("name", stack.getHoverName().getString());
+				if (stack instanceof ItemStack itemStack) {
+					jsonElement.getAsJsonObject().addProperty("name", itemStack.getHoverName().getString());
+				}
 				return PetInfo.CODEC.parse(JsonOps.INSTANCE, jsonElement)
 						.setPartial(PetInfo.EMPTY)
 						.getPartialOrThrow();
