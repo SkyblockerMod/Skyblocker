@@ -819,12 +819,12 @@
 
   "skyblocker.config.hud.location.everywhere": "Everywhere",
 
+  "skyblocker.config.hud.movedMessage": "To enable/disable this widget, click the button and either right click anywhere to add it, or right click on it and click 'remove' to delete.",
+
   "skyblocker.config.hud.position.parent": "Parent: %s",
   "skyblocker.config.hud.position.parent.screen": "Screen",
   "skyblocker.config.hud.position.pointParent": "Parent Point",
   "skyblocker.config.hud.position.pointThis": "This Point",
-
-	"skyblocker.config.hud.movedMessage": "To enable/disable this widget, click the button and either right click anywhere to add it, or right click on it and click 'remove' to delete.",
 
   "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
 
