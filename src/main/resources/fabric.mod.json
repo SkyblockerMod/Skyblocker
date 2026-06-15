@@ -27,7 +27,10 @@
     ],
     "jei_mod_plugin": [
       "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
-    ]
+    ],
+		"skyblock-item-list": [
+			"de.hysky.skyblocker.compatibility.ItemListCompatibility"
+		]
   },
   "mixins": [
     "skyblocker.mixins.json"
