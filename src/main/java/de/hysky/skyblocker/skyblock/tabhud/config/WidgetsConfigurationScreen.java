@@ -46,10 +46,12 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.function.Function;
 
 public class WidgetsConfigurationScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	public static Pattern SCREEN_TITLE_PATTERN = Pattern.compile("(\\(\\d/\\d]\\) )?widgets (in|on)");
 
 	@Init
 	public static void initCommands() {
