@@ -49,7 +49,7 @@ public class Kuudra {
 							checkKuudraKeyShop(genericContainerScreen, factionShopMatcher);
 						});
 					}
-					case String s when s.startsWith("Pets") -> {
+					case String s when s.endsWith("Pets") -> {
 						ScreenEvents.afterTick(screen).register(_ -> {
 							checkForKuudraPet(genericContainerScreen);
 						});

@@ -16,7 +16,6 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -209,14 +209,14 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			for (Reward reward : corpseLoot.rewards()) {
 				if (PRICELESS_ITEMS.contains(reward.itemId())) continue;
 
-				DoubleBooleanPair price = ItemUtils.getItemPrice(reward.itemId());
-				if (!price.rightBoolean()) {
+				OptionalDouble price = ItemUtils.getItemPrice(reward.itemId());
+				if (price.isEmpty()) {
 					LOGGER.warn("No price found for item `{}`.", reward.itemId());
 					corpseLoot.markPriceDataIncomplete();
 					continue;
 				}
-				corpseLoot.profit(corpseLoot.profit() + price.leftDouble() * reward.amount());
-				reward.pricePerUnit(price.leftDouble());
+				corpseLoot.profit(corpseLoot.profit() + price.getAsDouble() * reward.amount());
+				reward.pricePerUnit(price.getAsDouble());
 			}
 			try {
 				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());

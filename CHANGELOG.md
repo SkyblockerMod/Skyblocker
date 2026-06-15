@@ -1,3 +1,51 @@
+# Release 6.5.2
+
+## Highlight
+* Add Price Tooltip support for 7th Anniversary Cake Hats
+* Update Pets Menu Title in Quick Navigation
+* Fix HUD screen not working on some islands
+* Fix rare Date Calculator Tooltip crash
+* Fix sending /profileid command outside of SkyBlock.
+
+## What's Changed
+* Fix WidgetsConfigurationScreen Not Working On Some Islands by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2448
+* Fix Sending /profileid Outside of SkyBlock by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2452
+* Fix Date Calculator Tooltip Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2451
+* Add support for 7th anniversary Cake Hats by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2455
+* Fix Pets Menu Title by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2449
+* Fix Pet Info Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2456
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2453
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.1+26.1.2...v6.5.2+26.1.2
+
+___
+
+# Release 6.5.1
+
+## Highlight
+* Add Trophy Special Effects
+* Add Lily Pad Minion to Minions Widget
+* Add support for Moldy Bread in Evolving Item Slot Text
+* Improve Etherwarp Teleport Overlay
+* Fix Item Price Lookup not working on updated Enchanted Books
+* Fix Lotus Guardian Rarity
+* Fix Minion Count for Dungeons Quiz question
+
+## What's Changed
+* Fix lotus guardian rarity by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2435
+* Fix Item Price Lookup on Updated Enchanted Books by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2436
+* Add Lily Pad minion to widget by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2433
+* All Modern (Again) (For Real This Time) by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2431
+* Fix Experimentation Table RNG Meter Menu Check by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2437
+* refactor getItemPrice and usages to use OptionalDouble by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2428
+* Add Not Very Moldy Bread to list of evolving items by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2429
+* Update Special Effects by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2434
+* fix negative coins per hour if you don't have a counter and have replenish by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2438
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.0+26.1.2...v6.5.1+26.1.2
+
+___
+
 # Release 6.5.0
 
 ## Highlight
