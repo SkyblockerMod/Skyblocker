@@ -16,6 +16,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
@@ -984,6 +985,12 @@ public class UIAndVisualsCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup"))
 						.collapsed(true)
+						.option(ButtonOption.createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
+								.prompt(Component.translatable("text.skyblocker.open"))
+								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip"))

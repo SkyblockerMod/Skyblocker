@@ -60,6 +60,8 @@ public class WidgetsConfigurationScreen extends Screen {
 		));
 	}
 
+	private final @Nullable Screen previousScreen;
+
 	/**
 	 * The currently edited location. {@link Location#UNKNOWN} if editing the global skyblock screen.
 	 */
@@ -86,8 +88,13 @@ public class WidgetsConfigurationScreen extends Screen {
 	private @Nullable SelectWidgetPrompt selectWidgetPrompt = null;
 
 	public WidgetsConfigurationScreen() {
+		this(Utils.getLocation(), null);
+	}
+
+	public WidgetsConfigurationScreen(Location location, @Nullable Screen previousScreen) {
 		super(Component.literal("Widgets Config Screen"));
-		currentLocation = Utils.getLocation();
+		this.previousScreen = previousScreen;
+		currentLocation = location;
 		currentScreenLayer = WidgetManager.ScreenLayer.HUD;
 		screenConfig = WidgetManager.getScreenConfig(currentLocation);
 		screenBuilder.setConfig(screenConfig);
@@ -421,6 +428,11 @@ public class WidgetsConfigurationScreen extends Screen {
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
 		sidePanelWidget.close();
+	}
+
+	@Override
+	public void onClose() {
+		this.minecraft.setScreen(previousScreen);
 	}
 
 	public void removeWidget(PositionedWidget widget) {
