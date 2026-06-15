@@ -21,6 +21,7 @@ public class ConfigDataFixer {
 	protected static final Logger LOGGER = LogUtils.getLogger();
 	public static final DSL.TypeReference CONFIG_TYPE = () -> "config";
 	public static final DSL.TypeReference CHAT_RULES_TYPE = () -> "chat_rules";
+	public static final DSL.TypeReference HUD_WIDGETS_TYPE = () -> "hud_widgets";
 	private static @Nullable DataFixer dataFixer;
 
 	public static JsonObject apply(DSL.TypeReference type, JsonObject oldConfig) {
@@ -68,6 +69,8 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix8ItemList(schema9, true));
 		Schema schema10 = builder.addSchema(10, Schema::new);
 		builder.addFixer(new ConfigFix9EventNotifications(schema10, true));
+		Schema schema11 = builder.addSchema(11, Schema::new);
+		builder.addFixer(new ConfigFix10NewHud(schema11, true));
 
 		return dataFixer = builder.build().fixer();
 	}

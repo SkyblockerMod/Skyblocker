@@ -11,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
@@ -62,8 +63,8 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
-	private static final int VERSION = 2;
-	private static final String VERSION_KEY = "_version";
+	private static final int DEFAULTS_VERSION = 1;
+	private static final String VERSION_KEY = "_defaults_version";
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
 	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
@@ -198,27 +199,22 @@ public class WidgetManager {
 	}
 
 	public static void loadConfig() {
+		AtomicReference<@Nullable String> error = new AtomicReference<>();
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			AtomicReference<@Nullable String> error = new AtomicReference<>();
 			JsonElement input = JsonParser.parseReader(reader);
-			if (!(input instanceof JsonObject object) || !object.has(VERSION_KEY)) {
-				// Don't bother TRYING to load if it's the old format.
-				showOldVersionMessage = true;
-				fillDefaultConfig(0);
-				LOGGER.info("[Skyblocker] Old HUD config detected. Ignoring :(");
-				return;
-			}
-			if (object.get(VERSION_KEY).isJsonPrimitive()) fillDefaultConfig(object.get(VERSION_KEY).getAsInt());
-			CONFIG = Config.CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
+			CONFIG = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.HUD_WIDGETS_TYPE, Config.CODEC).decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
 				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
 				showErrorToast();
+			}
+			if (input instanceof JsonObject object && object.has(VERSION_KEY)) {
+				fillDefaultConfig(object.get(VERSION_KEY).getAsInt());
 			}
 		} catch (NoSuchFileException _) {
 			// Fill default config
 			fillDefaultConfig(0);
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker] Failed to HUD load config", e);
+			LOGGER.error("[Skyblocker] Failed to HUD load config: {}", error.get(), e);
 			showErrorToast();
 		}
 	}
@@ -227,8 +223,11 @@ public class WidgetManager {
 		SystemToast.add(Minecraft.getInstance().getToastManager(), new SystemToast.SystemToastId(), Component.literal("Error reading Skyblocker HUD Config"), Component.literal("Check your logs!"));
 	}
 
+	/**
+	 * When adding something do not forget to bump {@link WidgetManager#DEFAULTS_VERSION}!
+	 */
 	private static void fillDefaultConfig(int comingFromVersion) {
-		if (comingFromVersion <= 0) {
+		if (comingFromVersion < 1) {
 			EditableScreenBuilder editableScreenBuilder = new EditableScreenBuilder();
 			LayerBuilderEditor hud = editableScreenBuilder.getEditor(ScreenLayer.HUD);
 			// Mining related stuff
@@ -321,7 +320,7 @@ public class WidgetManager {
 	public static void saveConfig() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			JsonElement element = Config.CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow();
-			element.getAsJsonObject().addProperty(VERSION_KEY, VERSION);
+			element.getAsJsonObject().addProperty(VERSION_KEY, DEFAULTS_VERSION);
 			SkyblockerMod.GSON.toJson(element, writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (IOException e) {
@@ -372,7 +371,7 @@ public class WidgetManager {
 
 	public record Config(Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker) {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("widgets"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
+				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("configs"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
 				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker)
 		).apply(instance, Config::new));
 
