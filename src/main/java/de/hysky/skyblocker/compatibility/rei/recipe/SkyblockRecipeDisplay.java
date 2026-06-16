@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
@@ -27,12 +28,12 @@ public class SkyblockRecipeDisplay implements Display {
 
 	@Override
 	public List<EntryIngredient> getInputEntries() {
-		return recipe.getInputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+		return recipe.getInputs().stream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).map(EntryIngredient::of).toList();
 	}
 
 	@Override
 	public List<EntryIngredient> getOutputEntries() {
-		return recipe.getOutputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+		return recipe.getOutputs().stream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).map(EntryIngredient::of).toList();
 	}
 
 	public SkyblockRecipe getRecipe() {

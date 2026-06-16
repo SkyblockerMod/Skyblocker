@@ -53,7 +53,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	private Button getWikiLookupButton(Component text, boolean isOfficial, ItemStack itemStack, LocalPlayer player) {
-		Button btn = Button.builder(text, (button) -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
+		Button btn = Button.builder(text, _ -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
 
 		if (ItemRepository.getWikiLink(itemStack.getNeuName(), isOfficial) == null) {
 			btn.setMessage(btn.getMessage().copy().withColor(RED_ERROR_COLOR));
@@ -82,7 +82,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		LinearLayout layoutWidget = LinearLayout.vertical();
 		layoutWidget.setPosition(bounds.x + OFFSET, bounds.y + OFFSET + REI_SLOT_HEIGHT);
 
-		layoutWidget.addChild(Button.builder(Component.translatable("key.skyblocker.itemPriceLookup"), (button) -> {
+		layoutWidget.addChild(Button.builder(Component.translatable("key.skyblocker.itemPriceLookup"), button -> {
 			ItemPrice.itemPriceLookup(player, itemStack);
 
 			Scheduler.INSTANCE.schedule(() -> {
