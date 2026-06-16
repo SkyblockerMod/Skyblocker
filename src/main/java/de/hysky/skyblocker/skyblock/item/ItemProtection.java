@@ -146,7 +146,7 @@ public class ItemProtection {
 
 	public static boolean isNpcSellButton(Slot slot) {
 		String name = slot.getItem().getHoverName().getString();
-		return name.equals("Sell Item") || name.equals("Sell Inventory");
+		return name.equals("Sell Item") || name.equals("Sell Inventory") || ItemUtils.getLoreLineIf(slot.getItem(), text -> text.contains("buyback")) != null;
 	}
 
 	private static InteractionResult onEntityInteract(Player playerEntity, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult entityHitResult) {
