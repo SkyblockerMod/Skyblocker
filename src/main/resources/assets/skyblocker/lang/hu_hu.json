@@ -1646,7 +1646,7 @@
     "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "Builder's Wand és Builder's Ruler Előnézet Engedélyezése",
     "skyblocker.config.helpers.buildersWand": "Builder's Wand",
     "skyblocker.config.helpers.buildersWand.previewOpacity": "Előnézet Átlátszósága",
-    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Pelt Állat Kiemelő Engedélyezése",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Trapper Állat Kiemelő Engedélyezése",
     "skyblocker.config.farming.farmingHud": "Farmolási HUD",
     "skyblocker.config.farming.farmingHud.config": "Farmolási HUD Beállítások...",
     "skyblocker.config.farming.farmingHud.enabled": "Farmolási HUD Engedélyezése",
@@ -1741,5 +1741,6 @@
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled": "Mutáció Slot Mutatása",
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "Kiemeli (zölddel) a mutáció slotját az előnézet beillesztésekor.",
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Gyémánt Trófea Fogás Effektek",
-    "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Egy speciális vizuális effekt lejátszása, amikor megszerzel egy gyémánt trófeát (Hal/Béka)!"
+    "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Egy speciális vizuális effekt lejátszása, amikor megszerzel egy gyémánt trófeát (Hal/Béka)!",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "Trevor the Trapper feladataihoz tartozó állatoknak körvonalat ad."
 }
