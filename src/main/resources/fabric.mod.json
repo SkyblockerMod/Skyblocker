@@ -25,6 +25,12 @@
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
+	"rei_client": [
+	  "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
+	],
+	"rei_common": [
+	   "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+	],
     "jei_mod_plugin": [
       "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
     ]

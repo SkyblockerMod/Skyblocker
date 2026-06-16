@@ -1,3 +1,17 @@
+# Release 6.5.3
+
+## Highlight
+* Restore REI Compatibility
+* Fix being able to sell protected items in some NPC Shops
+
+## What's Changed
+* Improve Pelt Animal Highlighter Description by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2465
+* Fix: Item protection not blocking NPC selling by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2463
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.2+26.1.2...v6.5.3+26.1.2
+
+___
+
 # Release 6.5.2
 
 ## Highlight
