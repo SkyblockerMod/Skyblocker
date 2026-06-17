@@ -166,10 +166,15 @@ public class SkyblockTime {
 		EARLY_WINTER, WINTER, LATE_WINTER;
 
 		private final String name;
+		private static final String[] SHORT_NAMES = new String[]{"ESP", "SP", "LSP", "ESU", "SU", "LSU", "EAU", "AU", "LAU", "EWI", "WI", "LWI"};
 
 		Month() {
 			// can't be bothered defining all of them manually
 			this.name = WordUtils.capitalizeFully(this.name().replace("_", " "));
+		}
+
+		public String getShortName() {
+			return SHORT_NAMES[ordinal()];
 		}
 
 		@Override
