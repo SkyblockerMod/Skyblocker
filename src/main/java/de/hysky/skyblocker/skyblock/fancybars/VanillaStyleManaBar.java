@@ -44,6 +44,13 @@ public class VanillaStyleManaBar {
 	private static final Identifier OVERFLOW_DARK_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full_blink");
 	private static final Identifier OVERFLOW_DARK_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half_blink");
 
+	private static final Identifier FOOD_EMPTY_TEXTURE = Identifier.withDefaultNamespace("hud/food_empty");
+	private static final Identifier FOOD_FULL_TEXTURE = Identifier.withDefaultNamespace("hud/food_full");
+	private static final Identifier FOOD_HALF_TEXTURE = Identifier.withDefaultNamespace("hud/food_half");
+	private static final Identifier FOOD_EMPTY_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_empty_hunger");
+	private static final Identifier FOOD_FULL_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_full_hunger");
+	private static final Identifier FOOD_HALF_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_half_hunger");
+
 	enum NotchType {
 		CONTAINER,
 		MANA,
@@ -78,7 +85,12 @@ public class VanillaStyleManaBar {
 		int top = graphics.guiHeight() - 39;       // Top of mana bar area
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
-		Identifier texture = switch (notchtype) {
+		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarTextures ? switch (notchtype) {
+			case CONTAINER -> FOOD_EMPTY_TEXTURE;
+			case MANA -> !isHalf ? FOOD_FULL_TEXTURE : FOOD_HALF_TEXTURE;
+			case OVERFLOW -> !isHalf ? FOOD_FULL_HUNGER_TEXTURE : FOOD_HALF_HUNGER_TEXTURE;
+			case OVERFLOW_DARK -> FOOD_EMPTY_HUNGER_TEXTURE;
+		} : switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
 			case MANA -> !isHalf ? (isBlinking ? MANA_FULL_BLINK_TEXTURE : MANA_FULL_TEXTURE) : (isBlinking ? MANA_HALF_BLINK_TEXTURE : MANA_HALF_TEXTURE);
 			case OVERFLOW -> !isHalf ? (isBlinking ? OVERFLOW_FULL_BLINK_TEXTURE : OVERFLOW_FULL_TEXTURE) : (isBlinking ? OVERFLOW_HALF_BLINK_TEXTURE : OVERFLOW_HALF_TEXTURE);
