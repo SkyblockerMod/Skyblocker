@@ -202,7 +202,7 @@ public class SlayerManager {
 						!bossName.equals(slayerQuest.slayerType.bossName) ||
 						!bossTier.equals(slayerQuest.slayerTier.name())) {
 					SlayerType slayerType = SlayerType.fromBossName(bossName);
-					assert slayerType != null;
+					if (slayerType == null) return;
 					slayerQuest = new SlayerQuest(slayerType, SlayerTier.valueOf(bossTier));
 				}
 				active = true;
