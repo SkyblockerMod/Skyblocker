@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * "Builds" the rendered screen, positions widgets properly each frame and updates their configs when needed
+ */
 public class LayerBuilder {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -30,6 +33,9 @@ public class LayerBuilder {
 		this.config = config;
 	}
 
+	/**
+	 * Updates the displayed widgets and their config based on the LayerConfig.
+	 */
 	public void update() {
 		positionsHash = 0;
 		widgets.clear();

@@ -96,8 +96,8 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 	}
 
 	@Override
-	public void onConfigChanged() {
-		super.onConfigChanged();
+	public void updateConfigPreview() {
+		super.updateConfigPreview();
 		updateConfig();
 	}
 

@@ -19,7 +19,7 @@ public class EditableScreenBuilder extends ScreenBuilder {
 	public record EditableLayer(LayerBuilder builder, LayerBuilderEditor editor) {
 		public void update() {
 			builder.update();
-			builder.getRendered().forEach(w -> w.widget.onConfigChanged());
+			builder.getRendered().forEach(w -> w.widget.updateConfigPreview());
 		}
 	}
 }

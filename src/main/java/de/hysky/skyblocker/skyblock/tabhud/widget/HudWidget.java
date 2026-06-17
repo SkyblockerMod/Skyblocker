@@ -75,7 +75,11 @@ public abstract class HudWidget implements LayoutElement {
 				.build());
 	}
 
-	public void onConfigChanged() {}
+	/**
+	 * Called when the config preview should be updated.
+	 * Such as when the user changes location in the dropdown or when they edit an option on the widget.
+	 */
+	public void updateConfigPreview() {}
 
 	/**
 	 * @param object the other HudWidget

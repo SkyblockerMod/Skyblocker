@@ -22,6 +22,7 @@ public class LayerBuilderEditor {
 		PositionedWidget positionedWidget = new PositionedWidget(hudWidget, rule);
 		layer.widgets.add(positionedWidget);
 		layer.updateList();
+		hudWidget.updateConfigPreview();
 		return positionedWidget;
 	}
 

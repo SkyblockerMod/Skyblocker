@@ -56,6 +56,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Pretty much the entry point for anything widget related. Decides which screen should be rendered.
+ */
 public class WidgetManager {
 	@SuppressWarnings("deprecation")
 	public static final Set<Location> ALLOWED_LOCATIONS = Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.BLAZING_FORTRESS)));
@@ -168,13 +171,14 @@ public class WidgetManager {
 
 	/**
 	 * Top level render method.
-	 * Calls the appropriate LayerBuilder with the screen's dimensions
+	 * Renders the appropriate LayerBuilder with the screen's dimensions and updates it when its LayerConfig is changed.
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
 	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenLayer layer;
+		// Figure out which layer should be used
 		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
 			if (TabHud.toggleSecondary.isDown()) {
@@ -185,7 +189,9 @@ public class WidgetManager {
 		} else if (hud) {
 			layer = ScreenLayer.HUD;
 		} else return;
+
 		Location location = Utils.getLocation();
+
 		if (currentLocation != location) {
 			currentLocation = location;
 			SCREEN_BUILDER.setConfig(getScreenConfig(currentLocation));
@@ -344,9 +350,6 @@ public class WidgetManager {
 		if (put != null && !(put instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
 	}
 
-	/**
-	 * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
-	 */
 	public enum ScreenLayer implements StringRepresentable {
 		MAIN_TAB,
 		SECONDARY_TAB,
