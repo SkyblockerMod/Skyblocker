@@ -1646,7 +1646,7 @@
     "skyblocker.customization.armor.pickDye.title": "選擇染料",
     "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "啟用Builder's Wand和Builder's Ruler預覽",
     "skyblocker.config.helpers.buildersWand.previewOpacity": "預覽不透明度",
-    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "啟用Pelt Animal突顯",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "啟用Trapper Animal突顯",
     "skyblocker.config.farming.farmingHud.type": "價格數據來源",
     "skyblocker.config.farming.farmingHud": "農耕HUD",
     "skyblocker.config.farming.farmingHud.config": "農耕HUD設定…",
