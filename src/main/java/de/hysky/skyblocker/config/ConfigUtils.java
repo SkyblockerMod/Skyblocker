@@ -4,14 +4,11 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.controllers.BooleanController;
 import net.azureaaron.dandelion.api.controllers.BooleanController.BooleanStyle;
 import net.azureaaron.dandelion.api.controllers.ColourController;
 import net.azureaaron.dandelion.api.controllers.EnumController;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 
 public class ConfigUtils {
@@ -43,15 +40,6 @@ public class ConfigUtils {
 	@SuppressWarnings("unchecked")
 	public static <T extends Enum<T>> EnumController<T> createEnumDropdownController(Function<T, Component> formatter) {
 		return (EnumController<T>) EnumController.createBuilder().dropdown(true).formatter(Function.class.cast(formatter)).build();
-	}
-
-	public static ButtonOption createShortcutToKeybindsScreen() {
-		Minecraft client = Minecraft.getInstance();
-		return ButtonOption.createBuilder()
-				.name(Component.translatable("skyblocker.config.shortcutToKeybindsSettings"))
-				.action(screen -> client.gui.setScreen(new KeyBindsScreen(screen, client.options)))
-				.prompt(Component.translatable("skyblocker.config.shortcutToKeybindsSettings.@Text"))
-				.build();
 	}
 
 	//FIXME Would probably be a good idea to add a utility method for creating a waypoint type option

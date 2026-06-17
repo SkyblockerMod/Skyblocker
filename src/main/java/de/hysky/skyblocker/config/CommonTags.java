@@ -14,4 +14,6 @@ public final class CommonTags {
 	public static final Component ADDED_IN_6_5_1 = Component.nullToEmpty("v6.5.1");
 
 	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_5_1;
+
+	public static final Component[] KEY_MAPPING = { Component.literal("key bind"), Component.literal("key mapping") };
 }

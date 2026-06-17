@@ -96,7 +96,7 @@ public class SlotTextManager {
 			new ChipLevelAdder(),
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	private static final KeyMapping keyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping KEY_MAPPING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {
@@ -110,13 +110,13 @@ public class SlotTextManager {
 				ScreenEvents.remove(screen).register(_ -> currentScreenAdders.clear());
 			}
 			ScreenKeyboardEvents.afterKeyPress(screen).register((_, input) -> {
-				if (keyBinding.matches(input)) {
+				if (KEY_MAPPING.matches(input)) {
 					SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled = !SkyblockerConfigManager.get().uiAndVisuals.slotText.slotTextToggled;
 					keyHeld = true;
 				}
 			});
 			ScreenKeyboardEvents.afterKeyRelease(screen).register((_, input) -> {
-				if (keyBinding.matches(input)) {
+				if (KEY_MAPPING.matches(input)) {
 					keyHeld = false;
 				}
 			});
