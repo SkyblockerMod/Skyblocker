@@ -5,6 +5,7 @@ import com.ibm.icu.text.DateTimePatternGenerator;
 import de.hysky.skyblocker.compatibility.MacCompatibility;
 import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
@@ -12,7 +13,10 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter
@@ -69,6 +73,13 @@ public class Formatters {
 	 * Examples: Thu Jan 30 2025 2:00:10 PM, Thu Jan 30 2025 14:00:10
 	 */
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(getTimeZone());
+
+	public static final DateTimeFormatter SKYBLOCK_TIME_FORMATTER = new DateTimeFormatterBuilder()
+			.parseCaseInsensitive()
+			.parseLenient()
+			.appendValue(SkyblockTimeField.DAY_OF_MONTH, 1, 2, SignStyle.NEVER)
+			.appendLiteral(' ')
+			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Map.of(1L, "ESP")).toFormatter();
 
 	/**
 	 * Parses a number from a string.
