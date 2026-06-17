@@ -23,7 +23,7 @@ public class EventWidget extends TabHudWidget {
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
 		List<Component> lines = widget.lines();
-		if (!lines.isEmpty()) this.addElement(Elements.iconTextComponent(Ico.NTAG, lines.getFirst()));
-		if (lines.size() > 1) this.addElement(Elements.iconTextComponent(Ico.CLOCK, lines.get(1)));
+		if (!widget.detail().getString().isEmpty()) this.addElement(Elements.iconTextComponent(Ico.NTAG, widget.detail()));
+		if (!lines.isEmpty()) this.addElement(Elements.iconTextComponent(Ico.CLOCK, lines.getFirst()));
 	}
 }
