@@ -115,9 +115,9 @@ class CopyToPopup extends AbstractPopupScreen {
 		for (Location loc : selectedLocations) {
 			LayerConfig config = WidgetManager.getScreenConfig(loc).get(layer);
 			if (copyPosition) {
-				config.widgets.put(copiedWidget.widget.getInternalID(), new WidgetConfig(widgetConfig, copiedWidget.rule));
+				config.widgets().put(copiedWidget.widget.getInternalID(), new WidgetConfig(widgetConfig, copiedWidget.rule));
 			} else {
-				config.widgets.computeIfPresent(copiedWidget.widget.getInternalID(), (_, oldConfig) -> new WidgetConfig(Optional.of(widgetConfig), oldConfig.position()));
+				config.widgets().computeIfPresent(copiedWidget.widget.getInternalID(), (_, oldConfig) -> new WidgetConfig(Optional.of(widgetConfig), oldConfig.position()));
 			}
 		}
 		selectedLocations.add(location);

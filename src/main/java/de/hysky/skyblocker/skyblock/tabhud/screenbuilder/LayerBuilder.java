@@ -39,7 +39,7 @@ public class LayerBuilder {
 	public void update() {
 		positionsHash = 0;
 		widgets.clear();
-		for (Map.Entry<String, WidgetConfig> entry : config.widgets.entrySet()) {
+		for (Map.Entry<String, WidgetConfig> entry : config.widgets().entrySet()) {
 			if (entry.getValue().config().isEmpty()) continue;
 			HudWidget hudWidget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {

@@ -18,7 +18,7 @@ public class LayerBuilderEditor {
 	}
 
 	public PositionedWidget add(HudWidget hudWidget, PositionRule rule) {
-		layer.config.widgets.put(hudWidget.getInternalID(), new WidgetConfig(new JsonObject(), rule));
+		layer.config.widgets().put(hudWidget.getInternalID(), new WidgetConfig(new JsonObject(), rule));
 		PositionedWidget positionedWidget = new PositionedWidget(hudWidget, rule);
 		layer.widgets.add(positionedWidget);
 		layer.updateList();
@@ -31,7 +31,7 @@ public class LayerBuilderEditor {
 	}
 
 	public void remove(HudWidget widget) {
-		layer.config.widgets.remove(widget.getInternalID());
+		layer.config.widgets().remove(widget.getInternalID());
 		layer.widgets.removeIf(w -> w.widget.equals(widget));
 		layer.updateList();
 	}
@@ -41,7 +41,7 @@ public class LayerBuilderEditor {
 	}
 
 	public void serializeConfig() {
-		layer.config.widgets.replaceAll((id, widgetConfig) -> {
+		layer.config.widgets().replaceAll((id, widgetConfig) -> {
 			PositionedWidget widget = layer.getRendered().stream().filter(w -> w.widget.getInternalID().equals(id)).findFirst().orElse(null);
 			if (widget == null) {
 				if (widgetConfig.config().isEmpty()) return widgetConfig; // normal, it was removed
@@ -53,10 +53,10 @@ public class LayerBuilderEditor {
 			return new WidgetConfig(Optional.of(conf), widget.fromTab ? Optional.empty() : Optional.of(widget.rule));
 		});
 		for (PositionedWidget widget : layer.getRendered()) {
-			if (!widget.fromTab || layer.config.widgets.containsKey(widget.widget.getInternalID())) continue;
+			if (!widget.fromTab || layer.config.widgets().containsKey(widget.widget.getInternalID())) continue;
 			JsonObject conf = new JsonObject();
 			widget.widget.save(conf);
-			layer.config.widgets.put(widget.widget.getInternalID(), new WidgetConfig(Optional.of(conf), Optional.empty()));
+			layer.config.widgets().put(widget.widget.getInternalID(), new WidgetConfig(Optional.of(conf), Optional.empty()));
 		}
 	}
 

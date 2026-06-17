@@ -479,10 +479,10 @@ public class WidgetsConfigurationScreen extends Screen {
 	private void removeCopies(Set<Location> locations, String widgetId) {
 		for (Location location : locations) {
 			LayerConfig config = WidgetManager.getScreenConfig(location).get(currentScreenLayer);
-			WidgetConfig deletedConfig = config.widgets.remove(widgetId);
+			WidgetConfig deletedConfig = config.widgets().remove(widgetId);
 			if (deletedConfig == null) continue;
 			// fix up widgets that had the deleted one as parent
-			for (Map.Entry<String, WidgetConfig> entry : config.widgets.entrySet()) {
+			for (Map.Entry<String, WidgetConfig> entry : config.widgets().entrySet()) {
 				WidgetConfig widgetConfig = entry.getValue();
 				Optional<PositionRule> posOpt = widgetConfig.position();
 				if (posOpt.isEmpty()) continue;
