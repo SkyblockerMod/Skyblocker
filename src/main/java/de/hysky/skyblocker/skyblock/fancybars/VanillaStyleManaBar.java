@@ -85,7 +85,7 @@ public class VanillaStyleManaBar {
 		int top = graphics.guiHeight() - 39;       // Top of mana bar area
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
-		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarTextures ? switch (notchtype) {
+		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarSprites ? switch (notchtype) {
 			case CONTAINER -> FOOD_EMPTY_TEXTURE;
 			case MANA -> !isHalf ? FOOD_FULL_TEXTURE : FOOD_HALF_TEXTURE;
 			case OVERFLOW -> !isHalf ? FOOD_FULL_HUNGER_TEXTURE : FOOD_HALF_HUNGER_TEXTURE;

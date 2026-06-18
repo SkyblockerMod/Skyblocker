@@ -467,10 +467,10 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarTextures"))
-								.binding(defaults.uiAndVisuals.bars.useHungerBarTextures,
-										() -> config.uiAndVisuals.bars.useHungerBarTextures,
-										newValue -> config.uiAndVisuals.bars.useHungerBarTextures = newValue)
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarSprites"))
+								.binding(defaults.uiAndVisuals.bars.useHungerBarSprites,
+										() -> config.uiAndVisuals.bars.useHungerBarSprites,
+										newValue -> config.uiAndVisuals.bars.useHungerBarSprites = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
