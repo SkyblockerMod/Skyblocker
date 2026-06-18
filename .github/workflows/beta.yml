@@ -120,7 +120,7 @@ jobs:
         with:
           cache-disabled: true
 
-      - run: sudo apt-get install -y mesa-vulkan-drivers
+      - run: sudo apt-get update && sudo apt-get install -y mesa-vulkan-drivers
         if: matrix.graphics_backend == 'vulkan'
 
       - run: ./gradlew runClientGametest
