@@ -107,7 +107,8 @@ public class VanillaStyleManaBar {
 		long currentTime = Util.getMillis();
 		final long BLINK_TIME_LENGTH = 1000;
 		final long BLINK_FREQUENCY = 300;
-		if (lastManaValue + lastOverflowValue > mana.value() + mana.overflow() && mana.value() != mana.max()) {
+		boolean blinkingEnabled = SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBarBlinking;
+		if (blinkingEnabled && lastManaValue + lastOverflowValue > mana.value() + mana.overflow() && mana.value() != mana.max()) {
 			boolean justStartedBlinking = blinkEndTime <= currentTime;
 			if (justStartedBlinking) {
 				manaValueBlinkStart = lastManaValue;
@@ -121,7 +122,7 @@ public class VanillaStyleManaBar {
 				blinkEndTime = currentTime + BLINK_TIME_LENGTH;
 			}
 		}
-		boolean blinking = blinkEndTime > currentTime && (blinkEndTime - currentTime) / (BLINK_FREQUENCY/2) % 2 == 1;
+		boolean blinking = blinkingEnabled && blinkEndTime > currentTime && (blinkEndTime - currentTime) / (BLINK_FREQUENCY/2) % 2 == 1;
 		if (blinkEndTime <= currentTime) {
 			manaValueBlinkStart = 0;
 			overflowValueBlinkStart = 0;

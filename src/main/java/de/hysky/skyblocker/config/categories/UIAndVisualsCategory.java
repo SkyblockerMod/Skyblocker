@@ -467,6 +467,13 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking"))
+								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarSprites"))
 								.binding(defaults.uiAndVisuals.bars.useHungerBarSprites,
 										() -> config.uiAndVisuals.bars.useHungerBarSprites,

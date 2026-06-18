@@ -274,6 +274,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableVanillaStyleManaBar = false;
 
+		public boolean enableVanillaStyleManaBarBlinking = true;
+
 		public boolean useHungerBarSprites = false;
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
