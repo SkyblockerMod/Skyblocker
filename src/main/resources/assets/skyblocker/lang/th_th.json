@@ -58,7 +58,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "ข้อความที่จะแสดงสามารถใช้โค้ดปรับแต่งได้ (ใช้เครื่องหมาย &)",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "ซ่อนข้อความ",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage.@Tooltip": "ลบข้อคววามออกจากแชท",
-    "skyblocker.accessoryHelper.allTiers": "แสดงทุกเทียร์",
+    "skyblocker.accessoryHelper.allTiers": "แสดงเทียร์ทั้งหมด",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "ชื่อ",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip": "ชื่อข้อกำหนด",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.outputField.@Placeholder": "ปล่อยว่างเปล่าเพื่อไม่แสดงอะไรเลย",
