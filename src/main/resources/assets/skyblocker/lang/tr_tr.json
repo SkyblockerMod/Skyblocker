@@ -270,6 +270,12 @@
     "skyblocker.bars.config.intelligence": "Zeka",
     "skyblocker.api.token.authFailure": "Skyblock API token yenilenemedi, bazı özellikler geçici olarak çalışmayabilir!",
     "skyblocker.api.token.noProfileKeys": "Profil anahtarın alınamadı! Modun bazı özellikleri geçici olarak çalışmayabilir :( (Oyunun 24 saatten fazladır açık mı?). Bu özellikleri tekrar aktif etmek için oyunu yeniden başlat.",
-    "skyblocker.api.cache.MISS": "Bu veri önbelleğe alınmadı!",
-    "skyblocker.api.cache.HIT": "Bu veri belleğe alındı!\nBu veri %sn kadar eski."
+    "skyblocker.api.cache.MISS": "Bu veri önbelleğe alınmamıştı!",
+    "skyblocker.api.cache.HIT": "Bu veri belleğe alındı!\nBu veri %sn kadar eski.",
+    "skyblocker.accessoryHelper.recombobulate": "Bu %s aksesuarın nadirliğini arttır.",
+    "skyblocker.bars.config.explanation": "Durum çubuğu yapılandırma ekranına hoş geldiniz!\n\nÇubukları sürükleyip bırakarak bir sabitleme noktasına (beyaz kareler), mevcut çubuklara veya istediğiniz yere yerleştirebilirsiniz.\nÇubuklara sağ tıklayarak bir çok özelliğini düzenleyebilirsiniz.\nİki çubuğun arasına fare imlecinizi üzerine getirerek (İşaretçi değişecektir), yeniden boyutlandırabilirsiniz.\n\nÇıktığınız zaman her şey kaydedilecektir.",
+    "skyblocker.accessoryHelper.independent": "(Serbest bırakmak için Shift tuşuna basılı tutun)",
+    "skyblocker.config.chat.filter.hideDungeonBreaker": "Dungeonbreaker mesajlarını gizle",
+    "skyblocker.config.chat.filter.hideDeath.@Tooltip": "Oyuncu ölüm mesajlarını sohbetten filtreler.",
+    "skyblocker.config.chat.filter.hideDeath": "Oyuncu Ölüm Mesajlarını Gizle"
 }
