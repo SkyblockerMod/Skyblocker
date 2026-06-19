@@ -271,5 +271,5 @@
     "skyblocker.api.token.authFailure": "Skyblock API token yenilenemedi, bazı özellikler geçici olarak çalışmayabilir!",
     "skyblocker.api.token.noProfileKeys": "Profil anahtarın alınamadı! Modun bazı özellikleri geçici olarak çalışmayabilir :( (Oyunun 24 saatten fazladır açık mı?). Bu özellikleri tekrar aktif etmek için oyunu yeniden başlat.",
     "skyblocker.api.cache.MISS": "Bu veri önbelleğe alınmadı!",
-    "skyblocker.api.cache.HIT": "Bu veri %s saniye öncesinden önbelleğe alınmış."
+    "skyblocker.api.cache.HIT": "Bu veri belleğe alındı!\nBu veri %sn kadar eski."
 }
