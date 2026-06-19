@@ -116,5 +116,12 @@
     "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "แยกข้อความจากคำสั่ง /show",
     "skyblocker.config.chat.filter.hideSpiritSceptre": "ซ่อนข้อความจาก Spirit Sceptre",
     "skyblocker.config.chat.filter.hideTeleportPad": "ซ่อนข้อความจาก Teleport Pad",
-    "skyblocker.config.chat.filter.hideToggleLottery": "ซ่อนข้อความประเภท ล็อตเตอร์รี เมื่ออยู่นอก Galatea"
+    "skyblocker.config.chat.filter.hideToggleLottery": "ซ่อนข้อความประเภท ล็อตเตอร์รี เมื่ออยู่นอก Galatea",
+    "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "ซ่อนข้อความจาก เพิร์คล็อตเตอร์รีจาก HOTF เมื่ออยู่นอก Galatea",
+    "skyblocker.config.chat.filter.hideToggleSkyMall": "ซ่อนข้อคววามจาก Sky Mall เมื่ออยู่นอกเกาะประเภท Mining",
+    "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "ซ่อนข้อความจาก เพิร์ค Sky Mall จาก HOTM เมื่ออยู่นอกเกาะประเภท Mining",
+    "skyblocker.config.chat.skyblockXpMessages": "ข้อความค่าประสบการณ์สกายบล็อก",
+    "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "แจ้งเตือนในแชทเมื่อคุณได้รับค่าประสบการณ์สกายบล็อก",
+    "skyblocker.config.chat.toastDuration": "ระยะเวลาแสดงผลของ Toast",
+    "skyblocker.config.chat.toastDuration.@Tooltip": "ระยะเวลาที่ Toast แสดงในหน่วยววินาที เมื่อคัดกรองเป็น \"แสดง Toast\""
 }
