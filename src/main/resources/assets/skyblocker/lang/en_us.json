@@ -659,6 +659,8 @@
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
+  "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy Drop Effects",
+  "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a diamond Trophy Fish/Frog!",
 
   "skyblocker.config.general.speedPresets": "Speed Presets",
   "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",
@@ -997,7 +999,8 @@
   "skyblocker.config.otherLocations.barn.callTrevor.@Tooltip": "Adds a message in chat to quickly call Trevor after completing a trapping task.\n\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
   "skyblocker.config.otherLocations.barn.callTrevor.message": "Click here to call Trevor the Trapper!",
   "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
-  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Enable Pelt Animal Highlighter",
+  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Enable Trapper Animal Highlighter",
+  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "Adds an outline to animals from Trevor the Trapper's tasks.",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
 

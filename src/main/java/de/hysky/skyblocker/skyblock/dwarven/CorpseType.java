@@ -48,11 +48,7 @@ public enum CorpseType implements StringRepresentable {
 		return switch (this) {
 			case UNKNOWN -> throw new IllegalStateException("There's no key or key price for the UNKNOWN corpse type!");
 			case LAPIS -> 0; // Lapis corpses don't need a key
-			default -> {
-				var result = ItemUtils.getItemPrice(keyItemId);
-				if (!result.rightBoolean()) throw new IllegalStateException("No price found for key item `" + keyItemId + "`!");
-				yield result.leftDouble();
-			}
+			default -> ItemUtils.getItemPrice(keyItemId).orElseThrow(() -> new IllegalStateException("No price found for key item `" + keyItemId + "`!"));
 		};
 	}
 
