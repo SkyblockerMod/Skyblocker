@@ -42,7 +42,7 @@
   "depends": {
     "fabricloader": ">=0.19.3",
     "fabric-api": ">=0.152.1+26.2",
-	"dandelion": ">=1.0.0-alpha.20+26.2",
+	"dandelion": ">=1.0.0-alpha.21+26.2",
 	"yet_another_config_lib_v3": ">=3.9.4+26.2",
 	"fabric-language-kotlin": "*",
     "hm-api": ">=1.0.4+26.2",
