@@ -26,10 +26,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.util.Comparator;
 import java.util.List;
@@ -158,8 +159,7 @@ public class GoldorWaypointsManager {
 	 * @param matcher The matcher to extract the name from
 	 * @return The player name, or null if the matcher didn't match
 	 */
-	@Nullable
-	private static String getPlayerName(Matcher matcher) {
+	private static @Nullable String getPlayerName(Matcher matcher) {
 		return matcher.matches() ? matcher.group("name") : null;
 	}
 
