@@ -190,7 +190,7 @@ public class Debug {
 		return literal("dumpActionBar")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Component actionBar = ((HudAccessor) (source.getClient().gui)).getOverlayMessageString();
+					Component actionBar = ((HudAccessor) (source.getClient().gui.hud)).getOverlayMessageString();
 
 					if (actionBar != null) {
 						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());

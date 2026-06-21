@@ -137,7 +137,7 @@ public class PreviewWidget extends AbstractWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(ratio, ratio);
-		((HudAccessor) Minecraft.getInstance().gui).extractSidebar(graphics, tab.placeHolderObjective);
+		((HudAccessor) Minecraft.getInstance().gui.hud).extractSidebar(graphics, tab.placeHolderObjective);
 		matrices.popMatrix();
 		graphics.disableScissor();
 	}
