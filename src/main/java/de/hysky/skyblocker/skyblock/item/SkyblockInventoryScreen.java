@@ -152,8 +152,6 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 			if (hovered) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, AbstractContainerScreenAccessor.getSLOT_HIGHLIGHT_FRONT_SPRITE(), equipmentSlot.x - 4, equipmentSlot.y - 4, 24, 24);
 		}
-
-		super.extractLabels(graphics, mouseX, mouseY);
 	}
 
 	@Override
