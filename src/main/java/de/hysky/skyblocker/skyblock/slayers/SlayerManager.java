@@ -125,6 +125,10 @@ public class SlayerManager {
 				}
 				return true;
 			}
+			case "YOU COCOONED YOUR SLAYER BOSS" -> {
+				if (slayerQuest != null) SlayerTimer.sendMessage();
+				return true;
+			}
 			case String s when s.startsWith("SLAYER MINI-BOSS") -> {
 				if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert && !SkyblockerConfigManager.get().slayers.alertOtherMinibosses) {
 					TitleContainer.addTitleAndPlaySound(MINIBOSS_SPAWN, 20);
@@ -401,7 +405,7 @@ public class SlayerManager {
 	/**
 	 * Checks whether the player is currently fighting a Slayer boss.
 	 *
-	 *  @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
+	 * @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
 	 */
 	public static boolean isFightingSlayer() {
 		return bossFight != null && bossFight.boss.isAlive();
