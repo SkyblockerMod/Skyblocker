@@ -70,6 +70,7 @@ public class Utils {
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
+	private static boolean transferInterrupted = false;
 
 	/**
 	 * The player's rank.
@@ -115,6 +116,14 @@ public class Utils {
 
 	public static boolean isOnHypixel() {
 		return isOnHypixel;
+	}
+
+	public static boolean isTransferInterrupted() {
+		return transferInterrupted;
+	}
+
+	public static void setTransferInterrupted(boolean interrupted) {
+		transferInterrupted = interrupted;
 	}
 
 	public static boolean isOnSkyblock() {
