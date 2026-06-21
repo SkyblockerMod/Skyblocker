@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -44,13 +45,6 @@ public class VanillaStyleManaBar {
 	private static final Identifier OVERFLOW_DARK_FULL_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_full_blink");
 	private static final Identifier OVERFLOW_DARK_HALF_BLINK_TEXTURE = SkyblockerMod.id("bars/vanilla_mana/overflow_dark_half_blink");
 
-	private static final Identifier FOOD_EMPTY_TEXTURE = Identifier.withDefaultNamespace("hud/food_empty");
-	private static final Identifier FOOD_FULL_TEXTURE = Identifier.withDefaultNamespace("hud/food_full");
-	private static final Identifier FOOD_HALF_TEXTURE = Identifier.withDefaultNamespace("hud/food_half");
-	private static final Identifier FOOD_EMPTY_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_empty_hunger");
-	private static final Identifier FOOD_FULL_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_full_hunger");
-	private static final Identifier FOOD_HALF_HUNGER_TEXTURE = Identifier.withDefaultNamespace("hud/food_half_hunger");
-
 	enum NotchType {
 		CONTAINER,
 		MANA,
@@ -86,10 +80,10 @@ public class VanillaStyleManaBar {
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
 		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarSprites ? switch (notchtype) {
-			case CONTAINER -> FOOD_EMPTY_TEXTURE;
-			case MANA -> !isHalf ? FOOD_FULL_TEXTURE : FOOD_HALF_TEXTURE;
-			case OVERFLOW -> !isHalf ? FOOD_FULL_HUNGER_TEXTURE : FOOD_HALF_HUNGER_TEXTURE;
-			case OVERFLOW_DARK -> FOOD_EMPTY_HUNGER_TEXTURE;
+			case CONTAINER -> HudAccessor.getFOOD_EMPTY_SPRITE();
+			case MANA -> !isHalf ? HudAccessor.getFOOD_FULL_SPRITE() : HudAccessor.getFOOD_HALF_SPRITE();
+			case OVERFLOW -> !isHalf ? HudAccessor.getFOOD_FULL_HUNGER_SPRITE() : HudAccessor.getFOOD_HALF_HUNGER_SPRITE();
+			case OVERFLOW_DARK -> HudAccessor.getFOOD_EMPTY_HUNGER_SPRITE();
 		} : switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
 			case MANA -> !isHalf ? (isBlinking ? MANA_FULL_BLINK_TEXTURE : MANA_FULL_TEXTURE) : (isBlinking ? MANA_HALF_BLINK_TEXTURE : MANA_HALF_TEXTURE);
