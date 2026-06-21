@@ -28,6 +28,7 @@ public class CropMilestonesAdder extends SimpleSlotTextAdder {
 		ItemStack stack,
 		int slotId
 	) {
+		if (slotId > 53) return List.of();
 		String name = stack.getHoverName().getString();
 		int lastSpace = name.lastIndexOf(' ');
 		if (lastSpace == -1) return List.of();
