@@ -16,5 +16,5 @@ public final class CommonTags {
 	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_5_1;
 
 	/// Common tags for {@link net.minecraft.client.KeyMapping KeyMappings} to make them all easily searchable.
-	public static final Component[] KEY_MAPPING = { Component.translatable("skyblocker.config.tag.keyBind"), Component.literal("skyblocker.config.tag.keyMapping") };
+	public static final Component[] KEY_MAPPING = { Component.translatable("skyblocker.config.tag.keyBind"), Component.translatable("skyblocker.config.tag.keyMapping") };
 }
