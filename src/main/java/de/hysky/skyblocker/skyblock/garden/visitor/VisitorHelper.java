@@ -154,6 +154,7 @@ public class VisitorHelper extends AbstractWidget {
 
 		acceptButton.skyblocker$getLoreStrings().stream()
 				.map(String::trim)
+				.map(ChatFormatting::stripFormatting)
 				.dropWhile(lore -> !lore.contains("Items Required")) // All lines before Items Required (shouldn't be any, but you never know)
 				.skip(1) // skip the Items Required line
 				.takeWhile(lore -> !lore.isEmpty()) // All lines until the blank line before Rewards
