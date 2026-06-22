@@ -122,9 +122,8 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		boolean hasIncompleteData = false;
 
 		boolean processingContents = false;
-		for (Component line : ItemUtils.getLore(chest)) {
-			String lineString = line.getString();
-
+		for (String rawString : chest.skyblocker$getLoreStrings()) {
+			String lineString = ChatFormatting.stripFormatting(rawString);
 			switch (lineString) {
 				case String s when s.contains("Contents") -> {
 					processingContents = true;
@@ -219,15 +218,14 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 					case String s when s.equals("[Lvl 1] Spirit") -> {
 						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-						if (line.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
-							OptionalDouble priceData = getItemPrice("Spirit Epic");
-							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
-							else hasIncompleteData = true;
+						OptionalDouble priceData;
+						if (rawString.toLowerCase(Locale.ENGLISH).contains("§d")) { // 😭
+							priceData = getItemPrice("Spirit Epic");
 						} else {
-							OptionalDouble priceData = getItemPrice("Spirit Legendary");
-							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
-							else hasIncompleteData = true;
+							priceData = getItemPrice("Spirit Legendary");
 						}
+						if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+						else hasIncompleteData = true;
 					}
 
 					default -> {
