@@ -115,7 +115,6 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return 16;
 	}
 
-	@SuppressWarnings("deprecation")
 	private DoubleBooleanPair getChestValue(ItemStack chest) {
 		double chestValue = 0;
 		int chestPrice = 0;
@@ -168,7 +167,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 							// Apply Kuudra Pet bonus
 							if (type.equals("CRIMSON")) {
-								amount *= ChestValue.computeCrimsonEssenceMultiplier();
+								amount *= (int) ChestValue.computeCrimsonEssenceMultiplier();
 							}
 
 							OptionalDouble priceData = getItemPrice("ESSENCE_" + type);
