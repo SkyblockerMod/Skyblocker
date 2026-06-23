@@ -62,17 +62,17 @@ public class EditBarWidget extends AbstractContainerWidget {
 		textOption = new EnumCyclingOption<>(0, 22, getWidth(), translatable, StatusBar.TextPosition.class);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
 
-		translatable = Component.translatable("skyblocker.bars.config.flow");
-		flowOption = new EnumCyclingOption<>(0, 33, getWidth(), translatable, StatusBar.FlowDirection.class);
-		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
-
 		translatable = Component.translatable("skyblocker.bars.config.showMax");
-		showMaxOption = new BooleanOption(0, 44, getWidth(), translatable);
+		showMaxOption = new BooleanOption(0, 33, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 
 		translatable = Component.translatable("skyblocker.bars.config.showOverflow");
-		showOverflowOption = new BooleanOption(0, 55, getWidth(), translatable);
+		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
+
+		translatable = Component.translatable("skyblocker.bars.config.flowDirection");
+		flowOption = new EnumCyclingOption<>(0, 55, getWidth(), translatable, StatusBar.FlowDirection.class);
+		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
 
 		// COLO(u)RS
 		translatable = Component.translatable("skyblocker.bars.config.mainColor");
