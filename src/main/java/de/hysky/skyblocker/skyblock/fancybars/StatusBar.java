@@ -479,7 +479,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		object.addProperty("text_position", textPosition.getSerializedName());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
-		object.addProperty("flow_direction", direction.getSerializedName());
+		object.addProperty("direction", direction.getSerializedName());
 		object.addProperty("enabled", enabled);
 		return object;
 	}
