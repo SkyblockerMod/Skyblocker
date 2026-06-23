@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexListUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
@@ -53,7 +54,7 @@ public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
 	// Hypixel broke dungeon chest titles to fix the kuudra ones because yeah... ;(((
 	private static final Set<String> DUNGEON_CHESTS = Set.of("Wood Chest", "Wood", "Gold Chest", "Gold", "Diamond Chest", "Diamond", "Emerald Chest", "Emerald", "Obsidian Chest", "Obsidian", "Bedrock Chest", "Bedrock");
-	public static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^(?:§.)?([0-9,]+) Coins$");
+	public static final Pattern DUNGEON_CHEST_COIN_COST_PATTERN = Pattern.compile("^([0-9,]+) Coins$");
 	// Hypixel does include the word "Chest" twice in the screen titles (:
 	private static final Set<String> KUUDRA_CHESTS = Set.of("Free Chest", "Free Chest Chest", "Paid Chest", "Paid Chest Chest");
 	private static final Map<String, String> KUUDRA_KEYS = Map.of(
@@ -251,7 +252,7 @@ public class ChestValue {
 					switch (chestType) {
 						// If not found (wood chest or already opened chest), it will be 0
 						case DUNGEON -> {
-							Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
+							Matcher matcher = RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, DUNGEON_CHEST_COIN_COST_PATTERN);
 							if (matcher == null) continue;
 							String foundString = matcher.group(1).replaceAll("\\D", "");
 							if (!NumberUtils.isCreatable(foundString)) continue;
