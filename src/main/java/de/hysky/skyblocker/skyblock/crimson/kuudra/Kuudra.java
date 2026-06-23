@@ -14,7 +14,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
