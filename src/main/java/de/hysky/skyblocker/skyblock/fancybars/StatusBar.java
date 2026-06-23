@@ -102,7 +102,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	private IconPosition iconPosition = IconPosition.LEFT;
 	private TextPosition textPosition = TextPosition.BAR_CENTER;
-	private FlowDirection flowDirection = FlowDirection.LEFT_TO_RIGHT;
+	private Direction direction = Direction.LEFT_TO_RIGHT;
 
 	public boolean showMax = false;
 	public boolean showOverflow = false;
@@ -160,7 +160,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	protected void renderBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth, float fill, int argb) {
 		int fillWidth = (int) ((barWidth - 2) * fill);
-		int x = switch (flowDirection) {
+		int x = switch (direction) {
 			case LEFT_TO_RIGHT -> barX + 1;
 			case RIGHT_TO_LEFT -> barX + barWidth - fillWidth - 1;
 			case FROM_MIDDLE -> barX + (barWidth - fillWidth) / 2;
@@ -347,12 +347,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		this.textPosition = textPosition;
 	}
 
-	public FlowDirection getFlowDirection() {
-		return flowDirection;
+	public Direction getDirection() {
+		return direction;
 	}
 
-	public void setFlowDirection(FlowDirection flowDirection) {
-		this.flowDirection = flowDirection;
+	public void setDirection(Direction direction) {
+		this.direction = direction;
 	}
 
 	public enum IconPosition implements StringRepresentable {
@@ -390,7 +390,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 	}
 
-	public enum FlowDirection implements StringRepresentable {
+	public enum Direction implements StringRepresentable {
 		LEFT_TO_RIGHT,
 		RIGHT_TO_LEFT,
 		FROM_MIDDLE;
@@ -402,7 +402,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 		@Override
 		public String toString() {
-			return I18n.get("skyblocker.bars.config.flowDirection." + name());
+			return I18n.get("skyblocker.bars.config.direction." + name());
 		}
 	}
 
@@ -452,7 +452,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		if (object.has("text_position"))
 			this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
 		if (object.has("flow_direction"))
-			this.flowDirection = FlowDirection.valueOf(object.get("flow_direction").getAsString().trim());
+			this.direction = Direction.valueOf(object.get("flow_direction").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 	}
@@ -481,7 +481,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		object.addProperty("icon_position", iconPosition.getSerializedName());
 		object.addProperty("text_position", textPosition.getSerializedName());
-		object.addProperty("flow_direction", flowDirection.getSerializedName());
+		object.addProperty("flow_direction", direction.getSerializedName());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
 		object.addProperty("enabled", enabled);

@@ -30,7 +30,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private final EnumCyclingOption<StatusBar.IconPosition> iconOption;
 	private final EnumCyclingOption<StatusBar.TextPosition> textOption;
-	private final EnumCyclingOption<StatusBar.FlowDirection> flowOption;
+	private final EnumCyclingOption<StatusBar.Direction> directionOption;
 
 	private final BooleanOption showMaxOption;
 	private final BooleanOption showOverflowOption;
@@ -70,9 +70,9 @@ public class EditBarWidget extends AbstractContainerWidget {
 		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 
-		translatable = Component.translatable("skyblocker.bars.config.flowDirection");
-		flowOption = new EnumCyclingOption<>(0, 55, getWidth(), translatable, StatusBar.FlowDirection.class);
-		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 10);
+		translatable = Component.translatable("skyblocker.bars.config.direction");
+		directionOption = new EnumCyclingOption<>(0, 55, getWidth(), translatable, StatusBar.Direction.class);
+		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 20);
 
 		// COLO(u)RS
 		translatable = Component.translatable("skyblocker.bars.config.mainColor");
@@ -91,7 +91,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 		hideOption = new RunnableOption(0, 99, getWidth(), translatable);
 
-		options = List.of(iconOption, textOption, flowOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
+		options = List.of(iconOption, textOption, directionOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
 
 		setWidth(contentsWidth);
 	}
@@ -139,8 +139,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 		iconOption.setOnChange(statusBar::setIconPosition);
 		textOption.setCurrent(statusBar.getTextPosition());
 		textOption.setOnChange(statusBar::setTextPosition);
-		flowOption.setCurrent(statusBar.getFlowDirection());
-		flowOption.setOnChange(statusBar::setFlowDirection);
+		directionOption.setCurrent(statusBar.getDirection());
+		directionOption.setOnChange(statusBar::setDirection);
 
 		color1.setCurrent(statusBar.getColors()[0].getRGB());
 		color1.setOnChange(color -> statusBar.getColors()[0] = color);
