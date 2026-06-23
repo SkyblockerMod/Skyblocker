@@ -30,10 +30,10 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private final EnumCyclingOption<StatusBar.IconPosition> iconOption;
 	private final EnumCyclingOption<StatusBar.TextPosition> textOption;
-	private final EnumCyclingOption<StatusBar.Direction> directionOption;
 
 	private final BooleanOption showMaxOption;
 	private final BooleanOption showOverflowOption;
+	private final EnumCyclingOption<StatusBar.Direction> directionOption;
 
 	private final ColorOption color1;
 	private final ColorOption color2;
@@ -91,7 +91,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 		hideOption = new RunnableOption(0, 99, getWidth(), translatable);
 
-		options = List.of(iconOption, textOption, directionOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
+		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, directionOption, color1, color2, textColor, hideOption);
 
 		setWidth(contentsWidth);
 	}
@@ -212,8 +212,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {
-		}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 
 	public static class EnumCyclingOption<T extends Enum<T>> extends AbstractWidget {
@@ -251,8 +250,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {
-		}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		public void setOnChange(Consumer<T> onChange) {
 			this.onChange = onChange;
@@ -285,8 +283,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 			Font textRenderer = Minecraft.getInstance().font;
 			graphics.text(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : CommonColors.GRAY, true);
 			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
-			if (current && active)
-				graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
+			if (current && active) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
 		}
 
 		@Override

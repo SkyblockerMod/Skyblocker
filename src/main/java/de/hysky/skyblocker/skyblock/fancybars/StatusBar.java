@@ -102,10 +102,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	private IconPosition iconPosition = IconPosition.LEFT;
 	private TextPosition textPosition = TextPosition.BAR_CENTER;
-	private Direction direction = Direction.LEFT_TO_RIGHT;
 
 	public boolean showMax = false;
 	public boolean showOverflow = false;
+	private Direction direction = Direction.LEFT_TO_RIGHT;
 
 	public StatusBar(StatusBarType type) {
 		this(type, String::valueOf);
@@ -426,8 +426,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			this.colors = newColors;
 		}
 
-		if (object.has("text_color"))
-			this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
+		if (object.has("text_color")) this.textColor = new Color(Integer.parseInt(object.get("text_color").getAsString(), 16));
 
 		String maybeAnchor = object.get("anchor").getAsString().trim();
 		this.anchor = maybeAnchor.equals("null") ? null : BarPositioner.BarAnchor.valueOf(maybeAnchor);
@@ -444,15 +443,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			this.y = object.get("y").getAsFloat();
 		}
 		// these are optional too, why not
-		if (object.has("icon_position"))
-			this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
+		if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
 		// backwards compat teehee
 		if (object.has("show_text"))
 			this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
 		if (object.has("text_position"))
 			this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
-		if (object.has("flow_direction"))
-			this.direction = Direction.valueOf(object.get("flow_direction").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 	}
@@ -481,9 +477,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		}
 		object.addProperty("icon_position", iconPosition.getSerializedName());
 		object.addProperty("text_position", textPosition.getSerializedName());
-		object.addProperty("flow_direction", direction.getSerializedName());
 		object.addProperty("show_max", showMax);
 		object.addProperty("show_overflow", showOverflow);
+		object.addProperty("flow_direction", direction.getSerializedName());
 		object.addProperty("enabled", enabled);
 		return object;
 	}
