@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -114,14 +115,15 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return 16;
 	}
 
+	@SuppressWarnings("deprecation")
 	private DoubleBooleanPair getChestValue(ItemStack chest) {
 		double chestValue = 0;
 		int chestPrice = 0;
 		boolean hasIncompleteData = false;
 
 		boolean processingContents = false;
-		for (String rawString : chest.skyblocker$getLoreStrings()) {
-			String lineString = ChatFormatting.stripFormatting(rawString);
+		for (Component line : ItemUtils.getLore(chest)) {
+			String lineString = ChatFormatting.stripFormatting(line.getString());
 			switch (lineString) {
 				case String s when s.contains("Contents") -> {
 					processingContents = true;
@@ -216,14 +218,16 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 					case String s when s.equals("[Lvl 1] Spirit") -> {
 						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-						OptionalDouble priceData;
-						if (rawString.toLowerCase(Locale.ENGLISH).contains("§d")) { // 😭
-							priceData = getItemPrice("Spirit Epic");
+						TextColor color = line.getStyle().getColor();
+						if (color != null && color.equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
+							OptionalDouble priceData = getItemPrice("Spirit Epic");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
 						} else {
-							priceData = getItemPrice("Spirit Legendary");
+							OptionalDouble priceData = getItemPrice("Spirit Legendary");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
 						}
-						if (priceData.isPresent()) chestValue += priceData.getAsDouble();
-						else hasIncompleteData = true;
 					}
 
 					default -> {
