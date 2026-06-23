@@ -15,7 +15,7 @@ public class QuickNavigationConfig {
 	 * "Pets" : simple match on letters
 	 * "(?: \\(\\d+/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
 	 */
-	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "Pets(?: \\(\\d+/\\d+\\))?", "/pets", "Pets");
+	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "(?:\\(\\d+/\\d+\\) )?Pets", "/pets", "Pets");
 
 	/* REGEX Explanation
 	 * "Wardrobe" : simple match on letters

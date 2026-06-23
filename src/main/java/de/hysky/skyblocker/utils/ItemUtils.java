@@ -203,10 +203,8 @@ public final class ItemUtils {
 				}
 			}
 			case "PET" -> {
-				if (customData.contains("petInfo")) {
-					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
-					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
-				}
+				PetInfo petInfo = getPetInfo(stack);
+				return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 			}
 			case "POTION" -> {
 				String enhanced = customData.getBooleanOr("enhanced", false) ? "_ENHANCED" : "";
@@ -232,7 +230,7 @@ public final class ItemUtils {
 			case "NEW_YEAR_CAKE" -> {
 				return id + "_" + customData.getIntOr("new_years_cake", 0);
 			}
-			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
+			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025", "CAKE_HAT_2026" -> {
 				return id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			}
 			case "PARTY_HAT_SLOTH" -> {
@@ -310,8 +308,7 @@ public final class ItemUtils {
 				yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getIntOr(enchant, 0);
 			}
 			case "PET" -> {
-				if (!customData.contains("petInfo")) yield id;
-				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
+				PetInfo petInfo = getPetInfo(stack);
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
 			case "RUNE" -> {
@@ -325,7 +322,7 @@ public final class ItemUtils {
 				if (attribute == null) yield id;
 				yield attribute.neuId();
 			}
-			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025", "CAKE_HAT_2026" -> id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			default -> id.replace(":", "-");

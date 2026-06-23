@@ -1,3 +1,39 @@
+# Release 6.5.3
+
+## Highlight
+* Restore REI Compatibility
+* Fix being able to sell protected items in some NPC Shops
+
+## What's Changed
+* Improve Pelt Animal Highlighter Description by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2465
+* Fix: Item protection not blocking NPC selling by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2463
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.2+26.1.2...v6.5.3+26.1.2
+
+___
+
+# Release 6.5.2
+
+## Highlight
+* Add Price Tooltip support for 7th Anniversary Cake Hats
+* Update Pets Menu Title in Quick Navigation
+* Fix HUD screen not working on some islands
+* Fix rare Date Calculator Tooltip crash
+* Fix sending /profileid command outside of SkyBlock.
+
+## What's Changed
+* Fix WidgetsConfigurationScreen Not Working On Some Islands by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2448
+* Fix Sending /profileid Outside of SkyBlock by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2452
+* Fix Date Calculator Tooltip Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2451
+* Add support for 7th anniversary Cake Hats by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2455
+* Fix Pets Menu Title by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2449
+* Fix Pet Info Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2456
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2453
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.1+26.1.2...v6.5.2+26.1.2
+
+___
+
 # Release 6.5.1
 
 ## Highlight
@@ -19,7 +55,6 @@
 * Add Not Very Moldy Bread to list of evolving items by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2429
 * Update Special Effects by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2434
 * fix negative coins per hour if you don't have a counter and have replenish by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2438
-
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.0+26.1.2...v6.5.1+26.1.2
 

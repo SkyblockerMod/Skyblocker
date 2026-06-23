@@ -59,7 +59,8 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
-								.tags(CommonTags.ADDED_IN_6_2_0)
+								.description(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_2_0, Component.literal("pelt animal"))
 								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
 										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
 										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
