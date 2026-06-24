@@ -1747,5 +1747,9 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Külső Nézet engedélyezése",
     "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "A teleportálás külső nézetben is simítva lesz.",
     "skyblocker.rift.enigmaSouls.markClosestFound": "A legközelebbi enigma soul megjelölve megtaláltként!",
-    "skyblocker.rift.enigmaSouls.markClosestMissing": "A legközelebbi enigma soul megjelölve hiányzóként!"
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "A legközelebbi enigma soul megjelölve hiányzóként!",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "Növény Mérföldkövek",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Megmutatja a növény mérföldkő szinteket",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Garden Fejlesztések",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Megmutatja a növény szintjét és a greenhouse fejlesztéseket"
 }
