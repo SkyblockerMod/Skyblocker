@@ -139,6 +139,8 @@ public class ItemProtection {
 				|| screenTitle.startsWith("Ender Chest")
 				|| screenTitle.startsWith("Chest")
 				|| (screenTitle.contains("Backpack") && screenTitle.contains("(Slot #"));
+	}
+
 	public static boolean isNpcSellMenu(AbstractContainerMenu menu) {
 		for (Slot slot : menu.slots) {
 			ItemStack stack = slot.getItem();
