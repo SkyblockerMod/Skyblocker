@@ -1392,6 +1392,8 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
