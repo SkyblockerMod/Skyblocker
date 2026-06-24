@@ -1742,5 +1742,10 @@
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "Kiemeli (zölddel) a mutáció slotját az előnézet beillesztésekor.",
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Gyémánt Trófea Fogás Effektek",
     "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Egy speciális vizuális effekt lejátszása, amikor megszerzel egy gyémánt trófeát (Hal/Béka)!",
-    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "Trevor the Trapper feladataihoz tartozó állatoknak körvonalat ad."
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "Trevor the Trapper feladataihoz tartozó állatoknak körvonalat ad.",
+    "skyblocker.config.mining.glacite.solveFossilMuncher": "Fossil Muncher Megoldás",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Külső Nézet engedélyezése",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "A teleportálás külső nézetben is simítva lesz.",
+    "skyblocker.rift.enigmaSouls.markClosestFound": "A legközelebbi enigma soul megjelölve megtaláltként!",
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "A legközelebbi enigma soul megjelölve hiányzóként!"
 }
