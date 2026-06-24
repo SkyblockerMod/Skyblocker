@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.util.StringRepresentable;
+import org.jspecify.annotations.Nullable;
 
 public class Calculator {
 	public enum TokenType {
@@ -41,7 +42,7 @@ public class Calculator {
 
 	public enum Operator implements StringRepresentable {
 		ADD("+"), SUB("-"), MULT("*"), DIV("/"), MOD("%"), POW("^", true);
-		private static final java.util.function.Function<String, Operator> OPERATOR_MAP = StringRepresentable.createNameLookup(Operator.values(), op -> op.op);
+		private static final java.util.function.Function<String, @Nullable Operator> OPERATOR_MAP = StringRepresentable.createNameLookup(Operator.values(), op -> op.op);
 		private final String op;
 		private final boolean rightAssociative;
 
@@ -122,7 +123,7 @@ public class Calculator {
 		CEIL("ceil", Math::ceil),
 		ROUND("round", Math::round);
 
-		private static final java.util.function.Function<String, Function> FUNCTION_MAP = StringRepresentable.createNameLookup(Function.values(), func -> func.name);
+		private static final java.util.function.Function<String, @Nullable Function> FUNCTION_MAP = StringRepresentable.createNameLookup(Function.values(), func -> func.name);
 		private final String name;
 		private final CalculatorFunction function;
 
@@ -203,6 +204,12 @@ public class Calculator {
 					yield new Token(TokenType.NUMBER, number);
 				}
 
+				case 'p' -> {
+					if (!tokens.isEmpty() && tokens.getLast().type == TokenType.NUMBER) throw new CalculatorException("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation");
+					if (input.substring(i, Math.min(input.length(), i + 5)).equals("purse")) i += 4;
+					yield new Token(TokenType.NUMBER, String.valueOf((long) Utils.getPurse()));
+				}
+
 				default -> {
 					String func = input.substring(i).split("[ (]", 2)[0];
 					Function function = Function.FUNCTION_MAP.apply(func);
@@ -222,7 +229,6 @@ public class Calculator {
 					yield new FunctionToken(function);
 				}
 			});
-
 			i++;
 		}
 
@@ -368,8 +374,7 @@ public class Calculator {
 	}
 
 	public static double calculate(String equation) throws CalculatorException {
-		//custom bit for replacing purse with its value
-		equation = equation.toLowerCase(Locale.ENGLISH).replaceAll("p(urse)?", String.valueOf((long) Utils.getPurse()));
+		if (equation.startsWith(".")) equation = "0" + equation;
 		return evaluate(shunt(lex(equation)));
 	}
 

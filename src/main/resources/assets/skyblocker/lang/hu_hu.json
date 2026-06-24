@@ -778,7 +778,7 @@
     "skyblocker.config.uiAndVisuals.healthBars.hideFullHealth.@Tooltip": "Nem mutatja az életerő csíkot ha az teljes",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name": "Név",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.name.@Tooltip": "A szabály neve.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "Regex használata",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "Regex használata (%s)",
     "skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip": "Mennyi ideig látszódjanak a tárgyak a widgeten.",
     "skyblocker.config.uiAndVisuals.itemPickup.splitSack": "Zsákok és Felszerelés Tárgyainak Szétválasztása",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.cave": "Barlang",
@@ -1728,5 +1728,18 @@
     "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "A jelenlegi Jacob Verseny Kártevői zölden csillognak. (felülírva a Stereo Harmony Kiemelést)\nA Kártevőkiemelőnek engedélyezve kell lennie!",
     "text.skyblocker.supportUs": "Támogass Minket",
     "skyblocker.config.debug.enableRepoDev": "Repo Fejlesztői Opciók Engedélyezése",
-    "skyblocker.waypoints.disabledWarning": "A helyjelölők jelenleg ki vannak kapcsolva a beállításokban!"
+    "skyblocker.waypoints.disabledWarning": "A helyjelölők jelenleg ki vannak kapcsolva a beállításokban!",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink": "?",
+    "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Magvak beleszámítása a Wheat Hoe Profitszámlálójába",
+    "skyblocker.config.farming.greenhouse": "Greenhouse",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "SkyMutations Plot Beillesztése",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Kattints a weboldal \"link\" gombjára, majd futtasd a /skyblocker garden greenhouse paste parancsot, hogy beilleszd a növények helyét a greenhouse-ba!",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Nem sikerült a növények helyzetének betöltése a greenhousba. Vágólapból kinyert információ: ",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess": "Greenhouse sikeresen betöltve!",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "Nem vagy egy greenhouseban.",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.unload": "Greenhouse előnézet eltávolítva.",
+    "skyblocker.config.farming.greenhouse.showMutationSlot.enabled": "Mutáció Slot Mutatása",
+    "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "Kiemeli (zölddel) a mutáció slotját az előnézet beillesztésekor.",
+    "skyblocker.config.general.specialEffects.trophyDropEffects": "Gyémánt Trófea Fogás Effektek",
+    "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Egy speciális vizuális effekt lejátszása, amikor megszerzel egy gyémánt trófeát (Hal/Béka)!"
 }

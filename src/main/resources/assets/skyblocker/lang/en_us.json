@@ -659,6 +659,8 @@
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare dungeon loot!",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects": "Rare Dye Drop Effects",
   "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a rare dye!",
+  "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy Drop Effects",
+  "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Adds a special visual effect triggered upon dropping a diamond Trophy Fish/Frog!",
 
   "skyblocker.config.general.speedPresets": "Speed Presets",
   "skyblocker.config.general.speedPresets.config": "Speed Presets Config...",
@@ -956,6 +958,7 @@
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.solveFossilMuncher": "Solve Fossil Muncher",
 
   "skyblocker.config.mining.pickobulusHelper": "Pickobulus Helper",
   "skyblocker.config.mining.pickobulusHelper.enable": "Enable Pickobulus Helper",
@@ -994,7 +997,8 @@
   "skyblocker.config.otherLocations.barn.callTrevor.@Tooltip": "Adds a message in chat to quickly call Trevor after completing a trapping task.\n\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
   "skyblocker.config.otherLocations.barn.callTrevor.message": "Click here to call Trevor the Trapper!",
   "skyblocker.config.otherLocations.barn.enableGlowingMushroomHelper": "Enable Glowing Mushroom Helper",
-  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Enable Pelt Animal Highlighter",
+  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "Enable Trapper Animal Highlighter",
+  "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "Adds an outline to animals from Trevor the Trapper's tasks.",
   "skyblocker.config.otherLocations.barn.solveHungryHiker": "Solve Hungry Hiker",
   "skyblocker.config.otherLocations.barn.solveTreasureHunter": "Solve Treasure Hunter",
 
@@ -1388,6 +1392,8 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
@@ -1816,6 +1822,8 @@
 
   "skyblocker.rift.enigmaSouls.markAllFound": "Marked all enigma souls as found!",
   "skyblocker.rift.enigmaSouls.markAllMissing": "Marked all enigma souls as missing!",
+  "skyblocker.rift.enigmaSouls.markClosestFound": "Marked closest enigma soul as found!",
+  "skyblocker.rift.enigmaSouls.markClosestMissing": "Marked closest enigma soul as missing!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",

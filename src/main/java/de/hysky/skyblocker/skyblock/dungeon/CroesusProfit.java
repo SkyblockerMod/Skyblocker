@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
@@ -51,7 +52,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		ItemStack bestChest = null, secondBestChest = null;
 		double bestValue = 0, secondBestValue = 0;    // If negative value of chest - it is out of the question
 		// Only suggest buying a second dungeon chest if you get double the key's value back so that its worth it (less is pointless)
-		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY").leftDouble() * 2;
+		double dungeonKeyPriceData = getItemPrice("DUNGEON_CHEST_KEY").orElse(0) * 2;
 
 		for (Int2ObjectMap.Entry<ItemStack> entry : slots.int2ObjectEntrySet()) {
 			ItemStack stack = entry.getValue();
@@ -122,8 +123,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 		boolean processingContents = false;
 		for (Component line : ItemUtils.getLore(chest)) {
-			String lineString = line.getString();
-
+			String lineString = ChatFormatting.stripFormatting(line.getString());
 			switch (lineString) {
 				case String s when s.contains("Contents") -> {
 					processingContents = true;
@@ -168,12 +168,12 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 							// Apply Kuudra Pet bonus
 							if (type.equals("CRIMSON")) {
-								amount *= ChestValue.computeCrimsonEssenceMultiplier();
+								amount *= (int) ChestValue.computeCrimsonEssenceMultiplier();
 							}
 
-							DoubleBooleanPair priceData = getItemPrice("ESSENCE_" + type);
-							chestValue += priceData.leftDouble() * amount;
-							hasIncompleteData |= !priceData.rightBoolean();
+							OptionalDouble priceData = getItemPrice("ESSENCE_" + type);
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -186,9 +186,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 							if (attribute == null) continue;
 
-							DoubleBooleanPair priceData = getItemPrice(attribute.apiId());
-							chestValue += priceData.leftDouble() * shards;
-							hasIncompleteData |= !priceData.rightBoolean();
+							OptionalDouble priceData = getItemPrice(attribute.apiId());
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * shards;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -198,9 +198,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						if (matcher.matches()) {
 							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
 
-							DoubleBooleanPair priceData = getItemPrice("KUUDRA_TEETH");
-							chestValue += priceData.leftDouble() * amount;
-							hasIncompleteData |= !priceData.rightBoolean();
+							OptionalDouble priceData = getItemPrice("KUUDRA_TEETH");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -210,22 +210,23 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						if (matcher.matches()) {
 							int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
 
-							DoubleBooleanPair priceData = getItemPrice("HEAVY_PEARL");
-							chestValue += priceData.leftDouble() * amount;
-							hasIncompleteData |= !priceData.rightBoolean();
+							OptionalDouble priceData = getItemPrice("HEAVY_PEARL");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble() * amount;
+							else hasIncompleteData = true;
 						}
 					}
 
 					case String s when s.equals("[Lvl 1] Spirit") -> {
 						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-						if (line.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
-							DoubleBooleanPair priceData = getItemPrice("Spirit Epic");
-							chestValue += priceData.leftDouble();
-							hasIncompleteData |= !priceData.rightBoolean();
+						TextColor color = line.getStyle().getColor();
+						if (color != null && color.equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
+							OptionalDouble priceData = getItemPrice("Spirit Epic");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
 						} else {
-							DoubleBooleanPair priceData = getItemPrice("Spirit Legendary");
-							chestValue += priceData.leftDouble();
-							hasIncompleteData |= !priceData.rightBoolean();
+							OptionalDouble priceData = getItemPrice("Spirit Legendary");
+							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+							else hasIncompleteData = true;
 						}
 					}
 
@@ -234,9 +235,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						// in terms of actually selling the item (for both Dungeons and Kuudra) .
 						String adjusted = lineString.replace("✪", "").trim();
 
-						DoubleBooleanPair priceData = getItemPrice(adjusted);
-						chestValue += priceData.leftDouble();
-						hasIncompleteData |= !priceData.rightBoolean();
+						OptionalDouble priceData = getItemPrice(adjusted);
+						if (priceData.isPresent()) chestValue += priceData.getAsDouble();
+						else hasIncompleteData = true;
 					}
 				}
 			}
@@ -249,12 +250,12 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	 * @param itemName The item's display name or API Id
 	 *                 The API id is used for Essences, Shards, Kuudra Teeth, Heavy Pearls, and the Dungeon Chest Key.
 	 */
-	private DoubleBooleanPair getItemPrice(String itemName) {
+	private OptionalDouble getItemPrice(String itemName) {
 		String dungeonApiId = DUNGEON_DROPS_NAME_TO_API_ID.get(itemName);
 		String kuudraApiId = KUUDRA_DROPS_NAME_TO_API_ID.get(itemName);
 		String apiIdToUse = dungeonApiId != null ? dungeonApiId : kuudraApiId != null ? kuudraApiId : itemName;
 
-		if (ChestValue.WORTHLESS_ITEMS.contains(apiIdToUse)) return DoubleBooleanPair.of(0, true);
+		if (ChestValue.WORTHLESS_ITEMS.contains(apiIdToUse)) return OptionalDouble.empty();
 
 		return ItemUtils.getItemPrice(apiIdToUse);
 	}

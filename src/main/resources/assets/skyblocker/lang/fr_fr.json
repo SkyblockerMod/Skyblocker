@@ -1746,5 +1746,6 @@
     "skyblocker.wikiLookup.noArticleFound.independent": "Impossible de localiser un article d’un wiki indépendant correspondant à cet objet…",
     "text.skyblocker.supportUs": "Nous soutenir",
     "skyblocker.waypoints.disabledWarning": "Les marqueurs sont désactivés dans la config !",
-    "skyblocker.config.debug.enableRepoDev": "Activer les options de développeur de répo"
+    "skyblocker.config.debug.enableRepoDev": "Activer les options de développeur de répo",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink": "?"
 }

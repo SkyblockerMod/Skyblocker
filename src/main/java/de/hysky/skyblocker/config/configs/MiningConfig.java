@@ -153,6 +153,8 @@ public class MiningConfig {
 
 		public boolean fossilSolver = true;
 
+		public boolean solveFossilMuncher = true;
+
 		public boolean enableCorpseFinder = true;
 
 		public boolean enableParsingChatCorpseFinder = true;

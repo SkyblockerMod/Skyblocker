@@ -348,6 +348,13 @@ public class MiningCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.mining.glacite.solveFossilMuncher"))
+								.binding(defaults.mining.glacite.solveFossilMuncher,
+										() -> config.mining.glacite.solveFossilMuncher,
+										newValue -> config.mining.glacite.solveFossilMuncher = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.glacite.enableCorpseFinder"))
 								.description(Component.translatable("skyblocker.config.mining.glacite.enableCorpseFinder.@Tooltip"))
 								.binding(defaults.mining.glacite.enableCorpseFinder,
