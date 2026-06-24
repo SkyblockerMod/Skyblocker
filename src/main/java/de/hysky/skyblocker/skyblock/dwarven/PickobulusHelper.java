@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.Utils;
@@ -13,7 +14,6 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
@@ -102,7 +102,7 @@ public class PickobulusHelper {
 	private static boolean shouldRender;
 	private static @Nullable Component errorMessage;
 	private static final BlockState[][][] blocks = new BlockState[8][8][8];
-	private static final Set<BlockPos> breakBlocks = new HashSet<>();
+	private static final BlockPosSet breakBlocks = new BlockPosSet();
 	private static final int[] drops = new int[MiningDrop.values().length];
 
 	public static boolean shouldRender() {
