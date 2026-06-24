@@ -126,6 +126,22 @@ repositories {
 		}
 	}
 
+	maven {
+		url = "https://maven.operationpotato.com/releases"
+
+		content {
+			includeGroup "com.operationpotato"
+		}
+	}
+
+	maven {
+		url = "https://maven.operationpotato.com/snapshots"
+
+		content {
+			includeGroup "com.operationpotato"
+		}
+	}
+
 	//mavenLocal()
 }
 
@@ -171,6 +187,8 @@ dependencies {
 	// JEI (Using modrinth repo since official release is in mojmap and doesn't work)
 	compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 	//runtimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
+
+	compileOnly "com.operationpotato:skyblock-item-list-api:${project.skyblock_item_list_version}"
 
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 

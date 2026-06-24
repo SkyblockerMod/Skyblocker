@@ -653,6 +653,14 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip"))
+								.binding(defaults.uiAndVisuals.smoothAOTE.thirdPerson,
+										() -> config.uiAndVisuals.smoothAOTE.thirdPerson,
+										newValue -> config.uiAndVisuals.smoothAOTE.thirdPerson = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))
 								.binding(defaults.uiAndVisuals.smoothAOTE.enableWeirdTransmission,

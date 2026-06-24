@@ -236,7 +236,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		AtomicReference<String> stringAtomicReference = new AtomicReference<>("");
 
 		for (Component text : tooltip) {
-			String string = text.getString();
+			String string = ChatFormatting.stripFormatting(text.getString());
 			String thingToLookFor = (isBinAuction) ? "price:" : "new bid:";
 			String lowerCase = string.toLowerCase(Locale.ENGLISH);
 			if (lowerCase.contains(thingToLookFor)) {

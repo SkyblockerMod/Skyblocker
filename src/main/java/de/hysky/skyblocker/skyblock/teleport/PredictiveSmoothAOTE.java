@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -43,6 +44,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 public class PredictiveSmoothAOTE {
@@ -52,8 +55,11 @@ public class PredictiveSmoothAOTE {
 	private static final long MAX_TELEPORT_TIME = 2500; //2.5 seconds
 
 	private static long startTime;
+	@Nullable
 	private static Vec3 startPos;
+	@Nullable
 	private static Vec3 cameraStartPos;
+	@Nullable
 	private static Vec3 teleportVector;
 	private static long lastPing;
 	private static long currentTeleportPing;
@@ -177,8 +183,8 @@ public class PredictiveSmoothAOTE {
 			return;
 		}
 
-		// make sure the camera is not in 3rd person
-		if (CLIENT.options.getCameraType() != CameraType.FIRST_PERSON) {
+		// make sure the camera is not in 3rd person if disabled
+		if (CLIENT.options.getCameraType() != CameraType.FIRST_PERSON && !SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.thirdPerson) {
 			return;
 		}
 
@@ -211,7 +217,7 @@ public class PredictiveSmoothAOTE {
 		if (teleportsAhead == 0 || startPos == null || teleportVector == null) {
 			//start of teleport sequence
 			startPos = CLIENT.player.position().add(0, Utils.getEyeHeight(CLIENT.player), 0); // the eye poss should not be affected by crouching
-			cameraStartPos = CLIENT.player.getEyePosition();
+			cameraStartPos = RenderHelper.getCamera().position();
 			lastTeleportTime = System.currentTimeMillis();
 			// update the ping used for the teleport
 			currentTeleportPing = lastPing;
@@ -479,6 +485,11 @@ public class PredictiveSmoothAOTE {
 		}
 
 		//return full distance if no collision found
+		//Hypixel has started moving this a block down so do that if it's not solid
+		if (!isBlockFloor(BlockPos.containing(startPos.add(direction.scale(distance)).subtract(0, 1, 0)))) {
+			return direction.scale(distance).subtract(0, 1, 0);
+		}
+
 		return direction.scale(distance);
 	}
 
@@ -528,7 +539,7 @@ public class PredictiveSmoothAOTE {
 	 *
 	 * @return the camera position for the interpolated pos
 	 */
-
+	@Nullable
 	public static Vec3 getInterpolatedPos() {
 		if (CLIENT.player == null || teleportVector == null || startPos == null || teleportDisabled) {
 			return null;
@@ -554,6 +565,19 @@ public class PredictiveSmoothAOTE {
 		}
 
 		return cameraStartPos.add(teleportVector.scale(percentage));
+	}
+
+	/**
+	 * Get the difference between the camara and the actual player position. Then adds this to interpolated camara position
+	 * @return Interpolated player position
+	 */
+	@Nullable
+	public static Vec3 getInterpolatedPlayerPos() {
+		if (startPos == null || CLIENT.player == null || cameraStartPos == null) return null;
+		Vec3 diff = startPos.subtract(0, Utils.getEyeHeight(CLIENT.player), 0).subtract(cameraStartPos);
+		Vec3 camara = getInterpolatedPos();
+		if (camara == null) return null;
+		return camara.add(diff);
 	}
 
 	public static void updatePing(long ping) {

@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import net.minecraft.ChatFormatting;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
@@ -262,6 +263,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				List<String> tooltipSearch = stack.skyblocker$getLoreStrings();
 				for (String string : tooltipSearch) {
 					if (string.contains("Filtered:")) {
+						string = ChatFormatting.stripFormatting(string);
 						String[] splitSearch = string.split(":");
 						if (splitSearch.length < 2) {
 							search = "";
@@ -339,7 +341,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private void parsePage(ItemStack stack) {
 		try {
 			List<String> tooltip = stack.skyblocker$getLoreStrings();
-			String str = tooltip.getFirst().trim();
+			String str = ChatFormatting.stripFormatting(tooltip.getFirst().trim());
 			str = str.substring(1, str.length() - 1); // remove parentheses
 			String[] parts = str.split("/"); // split the string
 			currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
