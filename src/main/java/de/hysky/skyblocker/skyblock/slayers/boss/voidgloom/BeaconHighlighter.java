@@ -107,8 +107,8 @@ public class BeaconHighlighter {
 				beaconThrown = false;
 			} else if (oldState == null || oldState.is(Blocks.BEACON)) {
 				List<Vec3> closestPath = BEACON_ENTITY_PATHS.values().stream()
-						.min(Comparator.comparingDouble(path -> path.getLast().distanceToSqr(pos.getCenter())))
-						.filter(path -> path.getLast().distanceToSqr(pos.getCenter()) < 4)
+						.min(Comparator.comparingDouble(path -> path.getLast().distanceToSqr(Vec3.atCenterOf(pos))))
+						.filter(path -> path.getLast().distanceToSqr(Vec3.atCenterOf(pos)) < 4)
 						.orElse(null);
 				BEACON_ENTITY_PATHS.values().removeIf(path -> path == closestPath);
 			}
@@ -142,7 +142,7 @@ public class BeaconHighlighter {
 				float remainingSec = (BEACON_DURATION_MS - elapsed) / 1000f;
 				if (remainingSec >= 0) {
 					Component text = Component.literal(String.format("%.1fs", remainingSec)).withStyle(ChatFormatting.AQUA);
-					collector.submitText(text, beacon.getKey().above().getCenter(), 3, true);
+					collector.submitText(text, Vec3.atCenterOf(beacon.getKey().above()), 3, true);
 				}
 			}
 		}

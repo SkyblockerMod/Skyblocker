@@ -144,7 +144,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 			this.enabledPredicate = enabledPredicate;
 			colorComponents = new float[intColorComponents.length];
 			for (int i = 0; i < intColorComponents.length; i++) {
-				colorComponents[i] = intColorComponents[i] / 255F;
+				colorComponents[i] = intColorComponents[i] / 255f;
 			}
 		}
 

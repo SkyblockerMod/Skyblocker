@@ -142,7 +142,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		int colour = ARGB.colorFromFloat(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().position().subtract(pos.getCenter()).horizontalDistance();
+		float length = (float) RenderHelper.getCamera().position().subtract(Vec3.atCenterOf(pos)).horizontalDistance();
 		BeaconRenderState state = new BeaconRenderState();
 		state.blockPos = pos;
 		((BlockEntityRenderStateAccessor) state).setBlockState(Blocks.BEACON.defaultBlockState());
@@ -151,7 +151,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		state.breakProgress = null;
 		state.animationTime = MINECRAFT.level != null ? Math.floorMod(MINECRAFT.level.getGameTime(), 40) + MINECRAFT.getDeltaTracker().getGameTimeDeltaPartialTick(true) : 0f;
 		state.sections.add(new BeaconRenderState.Section(colour, MAX_OVERWORLD_BUILD_HEIGHT));
-		state.beamRadiusScale = MINECRAFT.player != null && MINECRAFT.player.isScoping() ? 1.0F : Math.max(1.0F, length / 96.0F);
+		state.beamRadiusScale = MINECRAFT.player != null && MINECRAFT.player.isScoping() ? 1.0f : Math.max(1.0f, length / 96.0f);
 
 		this.worldState.blockEntityRenderStates.add(state);
 	}

@@ -234,7 +234,7 @@ public class SoundSelectionPopup extends AbstractPopupScreen {
 			selectedSound = sound;
 			if (doneButton != null) doneButton.active = true;
 			minecraft.getSoundManager().stop();
-			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(sound, 1.0F));
+			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(sound, 1.0f));
 			super.onClick(click, doubled);
 		}
 	}
