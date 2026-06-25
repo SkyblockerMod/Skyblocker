@@ -1749,7 +1749,10 @@
     "skyblocker.rift.enigmaSouls.markClosestFound": "A legközelebbi enigma soul megjelölve megtaláltként!",
     "skyblocker.rift.enigmaSouls.markClosestMissing": "A legközelebbi enigma soul megjelölve hiányzóként!",
     "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "Növény Mérföldkövek",
-    "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Megmutatja a növény mérföldkő szinteket",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Megmutatja a növény mérföldkő szinteket.",
     "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Garden Fejlesztések",
-    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Megmutatja a növény szintjét és a greenhouse fejlesztéseket"
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Megmutatja a növény szintjét és a greenhouse fejlesztéseket.",
+    "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "Kiemeli a jelzőfényeket és pirossal mutatja, hogy merre vannak.",
+    "skyblocker.config.tag.keyBind": "Billentyűbeállítás",
+    "skyblocker.config.tag.keyMapping": "Billentyűátkötés"
 }
