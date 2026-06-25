@@ -1738,5 +1738,18 @@
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy掉落效果",
     "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "當首次釣上鑽石等級的獎盃魚/青蛙時，顯示特殊的視覺效果！",
     "skyblocker.waypoints.disabledWarning": "路徑點目前已在配置中停用！",
-    "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "以綠色突顯掉落目前Jacob's Contest作物的害蟲。 （Vinyl Highlighter會被覆蓋）\n需要啟用害蟲突顯！"
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip": "以綠色突顯掉落目前Jacob's Contest作物的害蟲。 （Vinyl Highlighter會被覆蓋）\n需要啟用害蟲突顯！",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "為Trevor the Trapper任務的動物添加發光輪廓。",
+    "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "自動偵測McGrubber Stacks",
+    "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "高亮烽火台並以紅色顯示抵達烽火台的路徑。",
+    "skyblocker.config.tag.keyBind": "按鍵綁定",
+    "skyblocker.config.tag.keyMapping": "按鍵映射",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "作物里程碑",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "顯示作物里程碑等級。",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "花園升級",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "顯示作物和溫室升級的等級。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "使用第三人稱時啟用",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "當處於第三人稱模式時，啟用平滑的傳送。",
+    "skyblocker.rift.enigmaSouls.markClosestFound": "將最近的enigma soul標記為已找到！",
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "將最近的enigma soul標記為未找到！"
 }
