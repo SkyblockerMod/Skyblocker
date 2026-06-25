@@ -27,11 +27,11 @@ import org.lwjgl.glfw.GLFW;
 public final class SameColorTerminal extends SimpleContainerSolver implements TerminalSolver, SlotTextAdder {
 	public static final SameColorTerminal INSTANCE = new SameColorTerminal();
 	private static final Item[] ORDER = new Item[]{
-			Items.RED_STAINED_GLASS_PANE,
-			Items.ORANGE_STAINED_GLASS_PANE,
-			Items.YELLOW_STAINED_GLASS_PANE,
-			Items.GREEN_STAINED_GLASS_PANE,
-			Items.BLUE_STAINED_GLASS_PANE
+			Items.STAINED_GLASS_PANE.red(),
+			Items.STAINED_GLASS_PANE.orange(),
+			Items.STAINED_GLASS_PANE.yellow(),
+			Items.STAINED_GLASS_PANE.green(),
+			Items.STAINED_GLASS_PANE.blue()
 	};
 	private static final ImmutableMap<Item, Integer> INDEX;
 

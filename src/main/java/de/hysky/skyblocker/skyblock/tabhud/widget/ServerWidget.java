@@ -12,6 +12,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about "generic" servers.
 // a server is "generic", when only name, server ID and gems are shown
@@ -22,7 +23,7 @@ public class ServerWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Server Info").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD);
 
 	public ServerWidget() {
-		super("Area", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Area", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

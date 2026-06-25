@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.EntityUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.io.Closeable;
 import java.time.Duration;
@@ -66,6 +67,11 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		@Override
 		public boolean isModelPartShown(PlayerModelPart modelPart) {
 			return modelPart != PlayerModelPart.CAPE && CLIENT.options.isModelPartEnabled(modelPart);
+		}
+
+		@Override
+		public int getId() {
+			return EntityUtils.PLACEHOLDER_ID;
 		}
 	};
 

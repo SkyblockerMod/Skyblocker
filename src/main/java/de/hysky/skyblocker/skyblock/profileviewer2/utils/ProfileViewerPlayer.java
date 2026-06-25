@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
 import com.mojang.authlib.GameProfile;
 
+import de.hysky.skyblocker.utils.EntityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.RemotePlayer;
@@ -17,6 +18,7 @@ public class ProfileViewerPlayer extends RemotePlayer {
 	public ProfileViewerPlayer(GameProfile gameProfile) {
 		super(Minecraft.getInstance().level, gameProfile);
 		this.setCustomNameVisible(false);
+		this.setId(EntityUtils.PLACEHOLDER_ID);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows a list of obtained dungeon buffs
 @RegisterWidget
@@ -19,7 +20,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Buffs", TITLE, TextColor.DARK_PURPLE.getValue());
 	}
 
 	@Override
@@ -58,11 +59,11 @@ public class DungeonBuffWidget extends TabHudWidget {
 
 	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
-		if (blessing.contains("Life")) return ChatFormatting.LIGHT_PURPLE.getColor();
-		if (blessing.contains("Power")) return ChatFormatting.RED.getColor();
-		if (blessing.contains("Stone")) return ChatFormatting.GREEN.getColor();
+		if (blessing.contains("Life")) return TextColor.LIGHT_PURPLE.getValue();
+		if (blessing.contains("Power")) return TextColor.RED.getValue();
+		if (blessing.contains("Stone")) return TextColor.GREEN.getValue();
 		if (blessing.contains("Time")) return 0xAFB8C1;
-		if (blessing.contains("Wisdom")) return ChatFormatting.AQUA.getColor();
+		if (blessing.contains("Wisdom")) return TextColor.AQUA.getValue();
 
 		return 0xFFFFFF;
 	}

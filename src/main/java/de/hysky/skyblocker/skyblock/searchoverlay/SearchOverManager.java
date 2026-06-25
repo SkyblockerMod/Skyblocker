@@ -118,7 +118,7 @@ public class SearchOverManager {
 			updateSearch(itemName);
 		}
 
-		CLIENT.schedule(() -> CLIENT.setScreen(new OverlayScreen()));
+		CLIENT.schedule(() -> CLIENT.gui.setScreen(new OverlayScreen()));
 		return Command.SINGLE_SUCCESS;
 	}
 

@@ -43,13 +43,13 @@
   ],
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.19.1",
-    "fabric-api": ">=0.145.3+26.1.1",
-	"dandelion": ">=1.0.0-alpha.18+26.1",
-    "yet_another_config_lib_v3": ">=3.9.2+26.1",
+    "fabricloader": ">=0.19.3",
+    "fabric-api": ">=0.152.1+26.2",
+	"dandelion": ">=1.0.0-alpha.21+26.2",
+	"yet_another_config_lib_v3": ">=3.9.4+26.2",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.3+26.1",
-    "minecraft": "~26.1",
+    "hm-api": ">=1.0.4+26.2",
+    "minecraft": "~26.2",
     "java": ">=25"
   },
   "conflicts": {

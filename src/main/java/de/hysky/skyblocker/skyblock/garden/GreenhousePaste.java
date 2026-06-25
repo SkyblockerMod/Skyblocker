@@ -548,8 +548,6 @@ public class GreenhousePaste {
 		}
 	}
 
-	private record HeadPreviewState(BlockPos pos, ResolvableProfile profile) {}
-
 	public static void rotatePreview(boolean left) {
 		/*
 			x,z -> z, 9-x (left rotation, since an axis is reversed)

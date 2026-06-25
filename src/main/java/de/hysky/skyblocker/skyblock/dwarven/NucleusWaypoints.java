@@ -13,6 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.phys.Vec3;
 
 public class NucleusWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NucleusWaypoints.class);
@@ -50,7 +51,7 @@ public class NucleusWaypoints {
 
 					MutableComponent text = Component.literal(waypoint.name).setStyle(Style.EMPTY.withColor(textColor));
 
-					collector.submitText(text, waypoint.position.getCenter().add(0, 5, 0), 8, true);
+					collector.submitText(text, Vec3.atCenterOf(waypoint.position).add(0, 5, 0), 8, true);
 				}
 			}
 		} catch (Exception e) {

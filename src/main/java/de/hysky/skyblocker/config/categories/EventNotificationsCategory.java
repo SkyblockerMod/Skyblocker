@@ -79,7 +79,7 @@ public class EventNotificationsCategory {
 							.name(Component.translatable("skyblocker.config.eventNotifications.event.editReminders", entry.getKey()))
 							.prompt(Component.translatable("skyblocker.config.eventNotifications.event.editReminders.prompt"))
 							.description(Component.translatable("skyblocker.config.eventNotifications.event.editReminders.tooltip"))
-							.action(s -> Minecraft.getInstance().setScreen(new EventConfigTimesEditScreen(s, entry.getKey(), entry.getValue())))
+							.action(s -> Minecraft.getInstance().gui.setScreen(new EventConfigTimesEditScreen(s, entry.getKey(), entry.getValue())))
 							.build()
 					)
 					.build()

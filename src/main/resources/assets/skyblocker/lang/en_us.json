@@ -1144,6 +1144,9 @@
   "skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag": "Hide Sven Pup's Nametag",
   "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Mute Wolf Sounds",
 
+  "skyblocker.config.tag.keyBind": "Key Bind",
+  "skyblocker.config.tag.keyMapping": "Key Mapping",
+
   "skyblocker.config.title": "Skyblocker %s",
   "skyblocker.config.title.settings": "Settings",
 

@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,7 @@ public class TextTransformer {
 	private static final Pattern REDUNDANT_COLOR_REGEX = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
 	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\s+");
 	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
-	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> c.getColor() != null).collect(Collectors.toUnmodifiableMap(ChatFormatting::getColor, ChatFormatting::getChar));
+	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> TextColor.fromLegacyFormat(c) != null).collect(Collectors.toUnmodifiableMap(cf -> TextColor.fromLegacyFormat(cf).getValue(), cf -> cf.code));
 	private static final List<Map.Entry<Predicate<Style>, Character>> PREDICATE_FORMAT_LIST = List.of(
 			Map.entry(Style::isBold, 'l'),
 			Map.entry(Style::isItalic, 'o'),

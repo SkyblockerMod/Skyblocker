@@ -339,7 +339,7 @@ public class SlayerManager {
 	 * @return a list of nearby custom-named armor stands
 	 */
 	public static List<ArmorStand> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1F, expandY, 0.1F), x -> x instanceof ArmorStand && x.hasCustomName())
+		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1f, expandY, 0.1f), x -> x instanceof ArmorStand && x.hasCustomName())
 				.stream()
 				.map(e -> (ArmorStand) e)
 				.toList();

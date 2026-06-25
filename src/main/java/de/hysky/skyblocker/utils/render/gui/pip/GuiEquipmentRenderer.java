@@ -8,15 +8,12 @@ import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
 
 public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipmentRenderState<S>> {
 
-	private GuiEquipmentRenderer(PictureInPictureRendererRegistry.Context context) {
-		super(context.bufferSource());
-	}
+	private GuiEquipmentRenderer(PictureInPictureRendererRegistry.Context context) {}
 
 	@Init
 	public static void init() {
@@ -30,7 +27,7 @@ public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipme
 	}
 
 	@Override
-	protected void renderToTexture(GuiEquipmentRenderState<S> state, PoseStack matrices) {
+	protected void renderToTexture(GuiEquipmentRenderState<S> state, PoseStack matrices, SubmitNodeCollector submitNodeCollector) {
 		Minecraft client = Minecraft.getInstance();
 
 		matrices.pushPose();
@@ -38,9 +35,7 @@ public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipme
 		matrices.mulPose(Axis.XN.rotationDegrees(-5));
 		matrices.mulPose(Axis.YN.rotationDegrees(state.rotation()));
 
-		client.gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
-		FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
-		SubmitNodeStorage orderedRenderCommandQueueImpl = renderDispatcher.getSubmitNodeStorage();
+		client.gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
 		state.equipmentRenderer().renderLayers(
 				state.layerType(),
 				state.assetKey(),
@@ -48,12 +43,11 @@ public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipme
 				state.state(),
 				state.stack(),
 				matrices,
-				orderedRenderCommandQueueImpl,
+				submitNodeCollector,
 				LightCoordsUtil.FULL_BRIGHT,
 				0
 		);
 
-		renderDispatcher.renderAllFeatures();
 		matrices.popPose();
 	}
 

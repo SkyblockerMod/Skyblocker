@@ -10,10 +10,10 @@ import net.minecraft.client.gui.screens.Screen;
 public class SkyblockerConfigTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext clientGameTestContext) {
-		Screen currentScreen = clientGameTestContext.computeOnClient(client -> client.screen);
-		clientGameTestContext.runOnClient(client -> client.setScreen(SkyblockerConfigManager.createGUI(client.screen)));
+		Screen currentScreen = clientGameTestContext.computeOnClient(client -> client.gui.screen());
+		clientGameTestContext.runOnClient(client -> client.gui.setScreen(SkyblockerConfigManager.createGUI(client.gui.screen())));
 		clientGameTestContext.waitTicks(20);
 		clientGameTestContext.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_config").saveWithFileName("skyblocker_config"));
-		clientGameTestContext.runOnClient(client -> client.setScreen(currentScreen));
+		clientGameTestContext.runOnClient(client -> client.gui.setScreen(currentScreen));
 	}
 }

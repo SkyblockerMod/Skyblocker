@@ -22,6 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
@@ -49,7 +50,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedSackCount = new Object2ObjectOpenHashMap<>();
 
 	public ItemPickupWidget() {
-		super(Component.literal("Items"), ChatFormatting.AQUA.getColor(), "Item Pickup");
+		super(Component.literal("Items"), TextColor.AQUA.getValue(), "Item Pickup");
 		instance = this;
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register(instance::onChatMessage);
@@ -108,7 +109,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
+		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
 			addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
 			return;
 		}
@@ -208,7 +209,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		//if just changed a lobby, don't read item as this is just going to be all the player's items
 		if (changingLobby || CLIENT.player == null) return;
 		//make sure there is not an inventory open
-		if (CLIENT.screen != null) return;
+		if (CLIENT.gui.screen() != null) return;
 
 		//if the slot is below 9, it is a slot that we do not care about
 		//if the slot is equals to or above 45, it is not in the player's inventory

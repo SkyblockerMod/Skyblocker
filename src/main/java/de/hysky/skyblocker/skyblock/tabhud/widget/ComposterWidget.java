@@ -11,6 +11,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about the garden's composter
 @RegisterWidget
@@ -20,7 +21,7 @@ public class ComposterWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public ComposterWidget() {
-		super("Composter", TITLE, ChatFormatting.GREEN.getColor());
+		super("Composter", TITLE, TextColor.GREEN.getValue());
 	}
 
 	@Override

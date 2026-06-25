@@ -26,7 +26,7 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (slotId >= CATEGORIES_START && slotId <= CATEGORIES_END && stack.is(Items.LIME_STAINED_GLASS_PANE)) { //Only the selected category has a lime stained glass pane, the others have a gray one.
+		if (slotId >= CATEGORIES_START && slotId <= CATEGORIES_END && stack.is(Items.STAINED_GLASS_PANE.lime())) { //Only the selected category has a lime stained glass pane, the others have a gray one.
 			currentScreen = (byte) (slotId - CATEGORIES_START);
 			return List.of();
 		}

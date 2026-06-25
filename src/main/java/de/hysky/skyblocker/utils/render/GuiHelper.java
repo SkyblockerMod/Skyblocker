@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.textures.TextureFormat;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
@@ -47,7 +47,7 @@ public class GuiHelper {
 	/**
 	 * Suitable for rendering two blurred rectangles at once
 	 */
-	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8);
+	private static final TexturePool BLIT_TEXTURE_POOL = TexturePool.create("Blit Pool", 4, GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_COPY_DST, GpuFormat.RGBA8_UNORM);
 	private static int blitIndexForFrame = -1;
 
 	public static void nineSliceColored(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height, int argb) {
@@ -121,7 +121,7 @@ public class GuiHelper {
 	 */
 	public static void blurredRectangle(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int radius) {
 		if (blitIndexForFrame == -1) {
-			RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
+			RenderTarget mainRenderTarget = CLIENT.gameRenderer.mainRenderTarget();
 			int requiredWidth = mainRenderTarget.width;
 			int requiredHeight = mainRenderTarget.height;
 			blitIndexForFrame = BLIT_TEXTURE_POOL.getNextAvailableIndex(requiredWidth, requiredHeight);
@@ -138,7 +138,7 @@ public class GuiHelper {
 
 	public static void updateScreenBlitTexture() {
 		if (blitIndexForFrame != -1) {
-			RenderTarget mainRenderTarget = CLIENT.getMainRenderTarget();
+			RenderTarget mainRenderTarget = CLIENT.gameRenderer.mainRenderTarget();
 			int requiredWidth = mainRenderTarget.width;
 			int requiredHeight = mainRenderTarget.height;
 			GpuTextureView blitTextureView = BLIT_TEXTURE_POOL.getTextureView(blitIndexForFrame);

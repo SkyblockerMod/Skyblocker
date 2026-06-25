@@ -122,7 +122,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@Override
 	public void markDirty() {
-		if (Minecraft.getInstance().screen instanceof ContainerScreen genericContainerScreen) {
+		if (Minecraft.getInstance().gui.screen() instanceof ContainerScreen genericContainerScreen) {
 			List<Slot> slots = genericContainerScreen.getMenu().slots.subList(0, genericContainerScreen.getMenu().getRowCount() * 9);
 			Int2ObjectMap<ItemStack> slotMap = ContainerSolverManager.slotMap(slots);
 

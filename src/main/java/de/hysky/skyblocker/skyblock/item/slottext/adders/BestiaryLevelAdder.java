@@ -31,7 +31,7 @@ public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 		//Ignore slots that cannot have bestiary texts
 		if (!((slotId >= 10 && slotId <= 16) || (slotId >= 19 && slotId <= 25) || (slotId >= 28 && slotId <= 34) || (slotId >= 37 && slotId <= 43))) return List.of();
 		//Ignore slots without an item or bestiaries that aren't unlocked
-		if (stack.isEmpty() || stack.is(Items.GRAY_DYE)) return List.of();
+		if (stack.isEmpty() || stack.is(Items.DYE.gray())) return List.of();
 		Matcher matcher = BESTIARY.matcher(stack.getHoverName().getString());
 		if (matcher.matches()) {
 			int level = RomanNumerals.romanToDecimal(matcher.group("level"));

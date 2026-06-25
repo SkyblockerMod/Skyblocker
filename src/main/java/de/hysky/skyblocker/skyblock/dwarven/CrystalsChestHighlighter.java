@@ -160,7 +160,7 @@ public class CrystalsChestHighlighter {
 		//render chest outline
 		float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
 		for (BlockPos chest : activeChests) {
-			collector.submitOutlinedBox(AABB.ofSize(chest.getCenter().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
+			collector.submitOutlinedBox(AABB.ofSize(Vec3.atCenterOf(chest).subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
 		}
 
 		//render lock picking if player is looking at chest that is in the active chests list
@@ -169,7 +169,7 @@ public class CrystalsChestHighlighter {
 		}
 		HitResult target = CLIENT.hitResult;
 		if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
-			Vec3 chestPos = blockHitResult.getBlockPos().getCenter();
+			Vec3 chestPos = Vec3.atCenterOf(blockHitResult.getBlockPos());
 
 			if (!activeParticles.isEmpty()) {
 				//the player is looking at a chest use active particle to highlight correct spot

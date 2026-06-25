@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -109,11 +110,11 @@ public class CustomizeScreen extends Screen {
 		super.init();
 
 		armorTab = new ArmorTab(this);
-		tabNavigation = TabNavigationBar.builder(tabManager, width)
+		tabNavigation = MenuTabBar.builder(tabManager, width)
 				.addTabs(armorTab, new ItemTab(this))
 				.build();
 		int i = tabNavigation.getRectangle().bottom();
-		tabNavigation.arrangeElements();
+		tabNavigation.arrangeElements(width);
 		tabManager.setTabArea(new ScreenRectangle(0, i, width, height - i - 30));
 		tabNavigation.selectTab(item ? 1 : 0, false);
 		addRenderableWidget(tabNavigation);
@@ -182,8 +183,7 @@ public class CustomizeScreen extends Screen {
 	@Override
 	protected void repositionElements() {
 		int i = tabNavigation.getRectangle().bottom();
-		tabNavigation.updateWidth(width);
-		tabNavigation.arrangeElements();
+		tabNavigation.arrangeElements(width);
 		footerLayout.setPosition((width - footerLayout.getWidth()) / 2, height - footerLayout.getHeight() - 5);
 		tabManager.setTabArea(new ScreenRectangle(0, i, width, footerLayout.getY() - i - 2));
 	}
@@ -208,7 +208,7 @@ public class CustomizeScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(previousScreen);
+		minecraft.gui.setScreen(previousScreen);
 		SkyblockerConfigManager.update(Consumers.nop());
 	}
 
@@ -238,7 +238,7 @@ public class CustomizeScreen extends Screen {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			CLIENT.setScreen(new CustomizeScreen(CLIENT.screen, false));
+			CLIENT.gui.setScreen(new CustomizeScreen(CLIENT.gui.screen(), false));
 		}
 
 		@Override

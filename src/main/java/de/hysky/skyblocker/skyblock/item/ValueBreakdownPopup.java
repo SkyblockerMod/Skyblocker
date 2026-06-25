@@ -48,7 +48,7 @@ import java.util.function.Function;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+	public static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
 			GLFW.GLFW_KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
@@ -232,7 +232,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getItem());
-					if (networth.price() > 0) client.setScreen(new ValueBreakdownPopup(screen, networth));
+					if (networth.price() > 0) client.gui.setScreen(new ValueBreakdownPopup(screen, networth));
 				});
 			}
 		});

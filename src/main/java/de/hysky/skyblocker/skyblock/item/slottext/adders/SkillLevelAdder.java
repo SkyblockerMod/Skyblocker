@@ -24,7 +24,7 @@ public class SkillLevelAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId / 9 < 1 || slotId / 9 > 4) return List.of();
-		if (stack.getItem() == Items.BLACK_STAINED_GLASS_PANE) return List.of();
+		if (stack.getItem() == Items.STAINED_GLASS_PANE.black()) return List.of();
 		String name = stack.getHoverName().getString();
 		if (name.equals("Dungeoneering")) return List.of(); //This is a button to open the dungeon skill menu
 		int lastIndex = name.lastIndexOf(' ');
