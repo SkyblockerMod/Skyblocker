@@ -208,6 +208,7 @@ public class SlayersCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.endermanSlayer.highlightBeacons"))
+								.description(Component.translatable("skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip"))
 								.binding(defaults.slayers.endermanSlayer.highlightBeacons,
 										() -> config.slayers.endermanSlayer.highlightBeacons,
 										newValue -> config.slayers.endermanSlayer.highlightBeacons = newValue)
