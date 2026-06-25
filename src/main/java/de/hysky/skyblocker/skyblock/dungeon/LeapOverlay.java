@@ -241,7 +241,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 				matrices.pushMatrix();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
 				matrices.scale(scale, scale);
-				graphics.centeredText(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
+				graphics.centeredText(CLIENT.font, reference.status().text, 0, 0, CommonColors.WHITE);
 				matrices.popMatrix();
 
 				//Overlay
@@ -285,13 +285,13 @@ public class LeapOverlay extends Screen implements ContainerListener {
 	}
 
 	private enum PlayerStatus {
-		DEAD(() -> Component.translatable("text.skyblocker.dead").withColor(CommonColors.RED), ARGB.color(64, CommonColors.SOFT_RED)),
-		OFFLINE(() -> Component.translatable("text.skyblocker.offline").withColor(CommonColors.GRAY), ARGB.color(64, CommonColors.LIGHT_GRAY));
+		DEAD(Component.translatable("text.skyblocker.dead").withColor(CommonColors.RED), ARGB.color(64, CommonColors.SOFT_RED)),
+		OFFLINE(Component.translatable("text.skyblocker.offline").withColor(CommonColors.GRAY), ARGB.color(64, CommonColors.LIGHT_GRAY));
 
-		private final Supplier<Component> text;
+		private final Component text;
 		private final int overlayColor;
 
-		PlayerStatus(Supplier<Component> text, int overlayColor) {
+		PlayerStatus(Component text, int overlayColor) {
 			this.text = text;
 			this.overlayColor = overlayColor;
 		}
