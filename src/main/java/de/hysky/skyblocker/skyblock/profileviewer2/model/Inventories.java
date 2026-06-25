@@ -23,8 +23,6 @@ public class Inventories {
 	public @Nullable AbstractInventoryContents equipmentContents;
 	@SerializedName("personal_vault_contents")
 	public @Nullable AbstractInventoryContents personalVaultContents;
-	@SerializedName("wardrobe_contents")
-	public @Nullable AbstractInventoryContents wardrobeContents;
 	/** The non-zero indexed wardrobe slot in use. */
 	@SerializedName("wardrobe_equipped_slot")
 	public int equippedWardrobeSlot;

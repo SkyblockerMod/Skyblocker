@@ -105,6 +105,8 @@ public class PlayerStats {
 		public int largeTreasure;
 		@SerializedName("trophy_fish")
 		public int trophyFish;
+		@SerializedName("trophy_frog")
+		public int trophyFrog;
 		public int outstanding;
 	}
 

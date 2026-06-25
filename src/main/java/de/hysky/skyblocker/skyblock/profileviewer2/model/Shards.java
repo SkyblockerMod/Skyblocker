@@ -31,6 +31,7 @@ public class Shards {
 			public long placedAt;
 			public String shard = "";
 			public boolean captured;
+			public boolean museum;
 			public UUID uuid = UUID.randomUUID();
 
 			public Location getIsland() {
