@@ -8,4 +8,9 @@ public final class PaginationWidget extends ImageButton {
 	public PaginationWidget(boolean forwards, OnPress onPress) {
 		super(0, 0, RecipeBookPage.TURN_PAGE_SPRITE_WIDTH, RecipeBookPage.TURN_PAGE_SPRITE_HEIGHT, forwards ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES, onPress);
 	}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 }
