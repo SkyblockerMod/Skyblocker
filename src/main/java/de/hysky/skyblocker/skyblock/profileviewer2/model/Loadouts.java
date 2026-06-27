@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
+import java.util.Map;
+
 import org.jspecify.annotations.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Loadouts {
 	@SerializedName("armor")
-	public @Nullable Armour armour;
+	public Map<String, Armour> armour = Map.of();
 
 	public static class Armour {
 		public int id;

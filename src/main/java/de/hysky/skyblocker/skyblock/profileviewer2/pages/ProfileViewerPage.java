@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
-public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
+public sealed interface ProfileViewerPage<T> permits InventoryPage, SkillsPage, SlayersPage {
 	/**
 	 * {@return the icon of the page}
 	 */
@@ -35,5 +35,5 @@ public sealed interface ProfileViewerPage<T> permits SkillsPage, SlayersPage {
 	/**
 	 * {@return the widgets this page is composed of}
 	 */
-	List<ProfileViewerWidget> getWidgets();
+	List<AbstractWidget> getWidgets();
 }

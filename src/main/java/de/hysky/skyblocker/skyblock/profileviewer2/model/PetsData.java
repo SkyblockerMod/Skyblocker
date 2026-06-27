@@ -29,7 +29,7 @@ public class PetsData {
 		public @Nullable String heldItem;
 		public int candyUsed;
 		public @Nullable String skin;
-		public transient @Nullable PetInfo petInfo;
+		private transient @Nullable PetInfo petInfo;
 
 		public PetInfo toPetInfo() {
 			if (this.petInfo == null) {

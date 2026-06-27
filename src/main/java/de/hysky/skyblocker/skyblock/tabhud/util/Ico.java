@@ -41,6 +41,8 @@ public class Ico {
 	public static final FlexibleItemStack POISONOUS_POTATO = new FlexibleItemStack(Items.POISONOUS_POTATO);
 	public static final FlexibleItemStack PLAYER = new FlexibleItemStack(Items.PLAYER_HEAD);
 	public static final FlexibleItemStack FAIRY_SOUL = ItemUtils.createSkull(HeadTextures.FAIRY_SOUL);
+	public static final FlexibleItemStack JUMBO_BACKPACK = ItemUtils.createSkull(HeadTextures.JUMBO_BACKPACK);
+	public static final FlexibleItemStack ACCESSORY_BAG = ItemUtils.createSkull(HeadTextures.ACCESSORY_BAG);
 	public static final FlexibleItemStack WATER = new FlexibleItemStack(Items.WATER_BUCKET);
 	public static final FlexibleItemStack LEATHER = new FlexibleItemStack(Items.LEATHER);
 	public static final FlexibleItemStack MITHRIL = new FlexibleItemStack(Items.PRISMARINE_CRYSTALS);
