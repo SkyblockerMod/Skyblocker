@@ -23,9 +23,7 @@ public class Shards {
 			@SerializedName("capture_time")
 			public long captureTime;
 			public String mode = "";
-			/**
-			 * Comma delimited string of coordinates with decimals
-			 */
+			/// Comma delimited string of coordinates with decimals
 			public String location = "";
 			@SerializedName("placed_at")
 			public long placedAt;

@@ -21,9 +21,7 @@ public class Dungeons {
 	public String selectedDungeonClass = "";
 	@SerializedName("daily_runs")
 	public DailyRuns dailyRuns = new DailyRuns();
-	/**
-	 * Croesus storage data
-	 */
+	/// Croesus storage data
 	public Treasures treasures = new Treasures();
 	@SerializedName("player_classes")
 	public Map<String, ClassStats> classStats = Map.of();
@@ -50,9 +48,7 @@ public class Dungeons {
 	}
 
 	public static class DailyRuns {
-		/**
-		 * This is days since UNIX epoch.
-		 */
+		/// This is days since UNIX epoch.
 		@SerializedName("current_day_stamp")
 		public int currentDayStamp;
 

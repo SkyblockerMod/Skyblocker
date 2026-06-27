@@ -5,9 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CoopBanking {
-	/**
-	 * @see ProfileMemberProfile#personalBankAccount
-	 */
+	/// @see ProfileMemberProfile#personalBankAccount
 	public double balance;
 	public List<Transaction> transactions = List.of();
 

@@ -17,17 +17,13 @@ public class GenericCatacombs {
 	public AggregateStat mobsKilled = new AggregateStat();
 	@SerializedName("most_mobs_killed")
 	public PersonalBest mobsKilledInOneRun = new PersonalBest();
-	/**
-	 * Is this only for healer role or in general?
-	 */
+	/// Is this only for healer role or in general?
 	@SerializedName("most_healing")
 	public PersonalBest mostHealing = new PersonalBest();
 
 	@SerializedName("tier_completions")
 	public AggregateStat tierCompletions = new AggregateStat();
-	/**
-	 * Is this adding the milestones achieved across runs? Definitely a weird metric to track, and then not include any recent update in the API.
-	 */
+	/// Is this adding the milestones achieved across runs? Definitely a weird metric to track, and then not include any recent update in the API.
 	@SerializedName("milestone_completions")
 	public AggregateStat milestoneCompletions = new AggregateStat();
 	@SerializedName("fastest_time_s")
@@ -48,9 +44,7 @@ public class GenericCatacombs {
 	@SerializedName("highest_tier_completed")
 	public int highestTierCompleted;
 
-	/**
-	 * Mapping of 0 indexed floor to a list of "best runs". This might be the run in which one of the {@link PersonalBest personal bests} was achieved, but i am not entirely sure.
-	 */
+	/// Mapping of 0 indexed floor to a list of "best runs". This might be the run in which one of the {@link PersonalBest personal bests} was achieved, but i am not entirely sure.
 	@SerializedName("best_runs")
 	public Map<String, List<BestRun>> bestRuns = Map.of();
 
@@ -64,9 +58,7 @@ public class GenericCatacombs {
 		public int scoreSkill;
 		@SerializedName("score_bonus")
 		public int scoreBonus;
-		/**
-		 * One of {@code tank}, {@code healer}, etc.
-		 */
+		/// One of {@code tank}, {@code healer}, etc.
 		@SerializedName("dungeon_class")
 		public String dungeonClass;
 		public List<UUID> teammates = List.of();
@@ -103,18 +95,14 @@ public class GenericCatacombs {
 		@SerializedName("7")
 		public @Nullable Double seven;
 
-		/**
-		 * @see #getValue
-		 */
+		/// @see #getValue
 		public double getValueOrZero(int oneIndexedFloor) {
 			var value = getValue(oneIndexedFloor);
 			if (value == null) return 0;
 			return value;
 		}
 
-		/**
-		 * @param oneIndexedFloor one indexed floor (F1 = 1), with Entrance = 0.
-		 */
+		/// @param oneIndexedFloor one indexed floor (F1 = 1), with Entrance = 0.
 		public @Nullable Double getValue(int oneIndexedFloor) {
 			return switch (oneIndexedFloor) {
 				case 0 -> entrance;
@@ -136,18 +124,14 @@ public class GenericCatacombs {
 	}
 
 	public static class AggregateStat extends PerFloorDisambiguation {
-		/**
-		 * @see #getManuallyCalculatedTotal()
-		 */
+		/// @see #getManuallyCalculatedTotal()
 		public double total;
 
 		private static double coerce0(@Nullable Double d) {
 			return d != null ? d : 0;
 		}
 
-		/**
-		 * {@link #total} seems to be off by quite a bit sometimes. This manually calculates the total.
-		 */
+		/// {@link #total} seems to be off by quite a bit sometimes. This manually calculates the total.
 		public double getManuallyCalculatedTotal() {
 			double result = 0;
 			result += coerce0(entrance);
