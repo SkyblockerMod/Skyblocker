@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public final class LogsFolderFinder {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static @Nullable Path folder;
+	private static @Nullable Path folder; // TODO replace with a LazyConstant when that's out of preview
 
 	public static Path getLogsFolder() {
 		if (folder == null) {
