@@ -13,9 +13,7 @@ public class ProfileMember {
 	public AccessoryBagStorage accessoryBagStorage = new AccessoryBagStorage();
 	public Attributes attributes = new Attributes();
 	public Bestiary bestiary = new Bestiary();
-	/**
-	 * Nota bene: this is for item collections, for boss collections you need to manually add up the boss kill counts.
-	 */
+	/// Nota Bene: This is for item collections, for boss collections you need to manually add up the boss kill counts.
 	public Map<String, Long> collection = Map.of();
 	public Events events = new Events();
 	@SerializedName("fairy_soul")

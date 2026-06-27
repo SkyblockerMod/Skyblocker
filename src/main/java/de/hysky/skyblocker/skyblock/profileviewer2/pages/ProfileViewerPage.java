@@ -10,30 +10,20 @@ import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
 public sealed interface ProfileViewerPage<T> permits InventoryPage, SkillsPage, SlayersPage {
-	/**
-	 * {@return the icon of the page}
-	 */
+	/// {@return the icon of the page}
 	FlexibleItemStack getIcon();
 
-	/**
-	 * {@return the name of the page}
-	 */
+	/// {@return the name of the page}
 	Component getName();
 
-	/**
-	 * {@return a {@link CompletableFuture} that succeeds once the page has built its widgets}
-	 *
-	 * <p>Allows pages to optionally construct additional state off-thread before building widgets.
-	 */
+	/// {@return a {@link CompletableFuture} that succeeds once the page has built its widgets}
+	///
+	/// Allows pages to optionally construct additional state off-thread before building widgets.
 	CompletableFuture<LayoutElement> load(LoadingInformation info);
 
-	/**
-	 * Builds the widgets of this page, the {@code data} comes from the result of {@link #load(LoadingInformation)}.
-	 */
+	/// Builds the widgets of this page, the {@code data} comes from the result of {@link #load(LoadingInformation)}.
 	LayoutElement buildWidgets(T data);
 
-	/**
-	 * {@return the widgets this page is composed of}
-	 */
+	/// {@return the widgets this page is composed of}
 	List<AbstractWidget> getWidgets();
 }

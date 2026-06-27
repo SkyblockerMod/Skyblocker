@@ -15,17 +15,13 @@ public class PlayerStats {
 	public long highestCriticalDamage;
 
 	// candy_collected
-	/**
-	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new kills after the bestiary data.
-	 *
-	 * @see Bestiary#kills
-	 */
+	/// Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new kills after the bestiary data.
+	///
+	/// @see Bestiary#kills
 	public Map<String, Integer> kills = Map.of();
-	/**
-	 * Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new deaths after the bestiary data.
-	 *
-	 * @see Bestiary#deaths
-	 */
+	/// Has a {@code total} field and does not distinguish between levels. Not sure if this is updated with new deaths after the bestiary data.
+	///
+	/// @see Bestiary#deaths
 	public Map<String, Integer> deaths = Map.of();
 
 	public Pets pets = new Pets();
@@ -153,7 +149,7 @@ public class PlayerStats {
 			public int total;
 			@SerializedName("none")
 			public int none;
-			/** No clue what this field is meant to mean. */
+			/// No clue what this field is meant to mean.
 			@SerializedName("null")
 			public int nulls;
 			@SerializedName("COMMON")
