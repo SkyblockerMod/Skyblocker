@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.config;
 
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import java.awt.Color;
 import java.util.List;
@@ -22,9 +22,9 @@ import org.jspecify.annotations.Nullable;
  */
 public abstract class HudConfigScreen extends Screen {
 	protected final @Nullable Screen parent;
-	protected final List<AbstractWidget> widgets;
+	protected final List<BasicWidget> widgets;
 
-	private @Nullable AbstractWidget draggingWidget;
+	private @Nullable BasicWidget draggingWidget;
 	private double mouseClickRelativeX;
 	private double mouseClickRelativeY;
 
@@ -35,7 +35,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent the parent screen
 	 * @param widget the widget to configure
 	 */
-	public HudConfigScreen(Component title, @Nullable Screen parent, AbstractWidget widget) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, BasicWidget widget) {
 		this(title, parent, List.of(widget));
 	}
 
@@ -46,7 +46,7 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param parent  the parent screen
 	 * @param widgets the widgets to configure
 	 */
-	public HudConfigScreen(Component title, @Nullable Screen parent, List<AbstractWidget> widgets) {
+	public HudConfigScreen(Component title, @Nullable Screen parent, List<BasicWidget> widgets) {
 		super(title);
 		this.parent = parent;
 		this.widgets = widgets;
@@ -67,13 +67,13 @@ public abstract class HudConfigScreen extends Screen {
 	}
 
 	/**
-	 * Renders the widgets using the default {@link AbstractWidget#render(GuiGraphics, int, int, float)} method. Override to change the behavior.
+	 * Renders the widgets using the default {@link BasicWidget#render(GuiGraphics, int, int, float)} method. Override to change the behavior.
 	 *
 	 * @param context the context to render in
 	 * @param widgets the widgets to render
 	 */
-	protected void extractRenderState(GuiGraphicsExtractor graphics, List<AbstractWidget> widgets, float delta) {
-		for (AbstractWidget widget : widgets) {
+	protected void extractRenderState(GuiGraphicsExtractor graphics, List<BasicWidget> widgets, float delta) {
+		for (BasicWidget widget : widgets) {
 			widget.extractRenderState(graphics, -1, -1, delta);
 		}
 	}
@@ -90,7 +90,7 @@ public abstract class HudConfigScreen extends Screen {
 	@Override
 	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (click.button() == 0) {
-			for (AbstractWidget widget : widgets) {
+			for (BasicWidget widget : widgets) {
 				if (GuiHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
 					mouseClickRelativeX = click.x() - widget.getX() - getWidgetXOffset(widget);
@@ -110,7 +110,7 @@ public abstract class HudConfigScreen extends Screen {
 		return super.mouseReleased(click);
 	}
 
-	protected int getWidgetXOffset(AbstractWidget widget) {
+	protected int getWidgetXOffset(BasicWidget widget) {
 		return 0;
 	}
 
@@ -123,7 +123,7 @@ public abstract class HudConfigScreen extends Screen {
 			throw new IllegalStateException("The number of positions (" + configPositions.size() + ") does not match the number of widgets (" + widgets.size() + ")");
 		}
 		for (int i = 0; i < widgets.size(); i++) {
-			AbstractWidget widget = widgets.get(i);
+			BasicWidget widget = widgets.get(i);
 			IntIntMutablePair configPos = configPositions.get(i);
 			widget.setX(configPos.leftInt());
 			widget.setY(configPos.rightInt());
@@ -153,5 +153,5 @@ public abstract class HudConfigScreen extends Screen {
 	 * @param widgets       the widgets to save
 	 * @see SkyblockerConfigManager#update(java.util.function.Consumer)
 	 */
-	protected abstract void savePos(SkyblockerConfig configManager, List<AbstractWidget> widgets);
+	protected abstract void savePos(SkyblockerConfig configManager, List<BasicWidget> widgets);
 }
