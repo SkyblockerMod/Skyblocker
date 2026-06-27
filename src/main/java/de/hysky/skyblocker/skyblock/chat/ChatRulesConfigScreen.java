@@ -50,14 +50,14 @@ public class ChatRulesConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (!chatRulesConfigListWidget.hasChanges()) {
-			this.minecraft.setScreen(parent);
+			this.minecraft.gui.setScreen(parent);
 			return;
 		}
-		minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
+		minecraft.gui.setScreen(new ConfirmScreen(confirmedAction -> {
 			if (confirmedAction) {
-				this.minecraft.setScreen(parent);
+				this.minecraft.gui.setScreen(parent);
 			} else {
-				minecraft.setScreen(this);
+				minecraft.gui.setScreen(this);
 			}
 		}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard"), CommonComponents.GUI_CANCEL));
 	}

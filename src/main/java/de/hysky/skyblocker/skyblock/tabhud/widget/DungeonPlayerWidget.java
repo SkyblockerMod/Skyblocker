@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about a player in the current dungeon group
 public class DungeonPlayerWidget extends TabHudWidget {
@@ -24,7 +25,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Player " + player, TITLE, TextColor.DARK_PURPLE.getValue());
 		this.player = player;
 	}
 

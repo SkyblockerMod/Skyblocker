@@ -100,7 +100,7 @@ public class CreeperBeams extends DungeonPuzzle {
 		// find all creepers
 		List<Creeper> creepers = world.getEntitiesOfClass(
 				Creeper.class,
-				player.getBoundingBox().inflate(50D),
+				player.getBoundingBox().inflate(50d),
 				EntitySelector.ENTITY_STILL_ALIVE);
 
 		if (creepers.isEmpty()) {

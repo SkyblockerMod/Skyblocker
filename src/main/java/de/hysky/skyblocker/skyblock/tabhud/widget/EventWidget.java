@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about ongoing events (e.g. election)
 @RegisterWidget
@@ -16,7 +17,7 @@ public class EventWidget extends TabHudWidget {
 
 
 	public EventWidget() {
-		super("Event", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Event", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override

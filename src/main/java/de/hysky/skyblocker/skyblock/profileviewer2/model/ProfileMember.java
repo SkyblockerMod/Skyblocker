@@ -39,6 +39,8 @@ public class ProfileMember {
 	public JacobsContest jacobsContest = new JacobsContest();
 	@SerializedName("leveling")
 	public Levelling levelling = new Levelling();
+	@SerializedName("loadout")
+	public Loadouts loadouts = new Loadouts();
 	@SerializedName("mining_core")
 	public MiningCore miningCore = new MiningCore();
 	@SerializedName("nether_island_player_data")

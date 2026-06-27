@@ -37,7 +37,7 @@ public class FireFreezeStaffTimer {
 	private static void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
 		Minecraft client = Minecraft.getInstance();
 
-		if (client.screen != null) return;
+		if (client.gui.screen() != null) return;
 
 		if (SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && fireFreezeTimer != 0) {
 			if (fireFreezeTimer <= -5000) {

@@ -10,6 +10,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows your dungeon essences (dungeon hub only)
 @RegisterWidget
@@ -19,7 +20,7 @@ public class EssenceWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public EssenceWidget() {
-		super("Essence", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Essence", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

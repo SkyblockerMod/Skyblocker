@@ -9,6 +9,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.AccessoryTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -16,6 +18,7 @@ import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.OptionListener.UpdateType;
@@ -34,7 +37,7 @@ public class GeneralCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(_ -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.action(_ -> Minecraft.getInstance().gui.setScreen(new SkyblockerScreen()))
 						.build())
 
 				// Disable All
@@ -83,7 +86,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.backup.manage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ConfigBackupScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ConfigBackupScreen(screen)))
 								.build())
 						.build())
 				// Speed Presets
@@ -100,7 +103,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.speedPresets.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new SpeedPresetsScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new SpeedPresetsScreen(screen)))
 								.build())
 						.build())
 
@@ -143,7 +146,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.shortcuts.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ShortcutsConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ShortcutsConfigScreen(screen)))
 								.build())
 						.build())
 
@@ -403,6 +406,11 @@ public class GeneralCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.general.itemProtection"))
 						.collapsed(true)
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.hotbarSlotLock"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(HotbarSlotLock.hotbarSlotLock)
+								.build())
 						.option(Option.<GeneralConfig.SlotLockStyle>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemProtection.slotLockStyle"))
 								.description(Component.translatable("skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip"))
@@ -418,6 +426,11 @@ public class GeneralCategory {
 										() -> config.general.itemProtection.protectValuableConsumables,
 										newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.itemProtection"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ItemProtection.itemProtection)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemProtection.displayChatNotification"))
@@ -442,7 +455,16 @@ public class GeneralCategory {
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.wikiLookup.official"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(WikiLookupManager.officialWikiLookup)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.wikiLookup.independent"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(WikiLookupManager.independentWikiLookup)
+								.build())
 						.build())
 
 				//Special Effects
@@ -477,6 +499,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects"))
 								.description(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_1)
 								.binding(defaults.general.specialEffects.trophyDropEffects,
 										() -> config.general.specialEffects.trophyDropEffects,
 										newValue -> config.general.specialEffects.trophyDropEffects = newValue)

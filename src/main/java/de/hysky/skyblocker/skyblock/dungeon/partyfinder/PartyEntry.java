@@ -111,7 +111,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 
 			} else if (lowerCase.contains("dungeon:")) {
 				dungeon = tooltipText.split(":")[1].trim();
-			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(ChatFormatting.RED.getColor())) && !lowerCase.startsWith(" ")) {
+			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.RED) && !lowerCase.startsWith(" ")) {
 				isLocked = true;
 				lockReason = text;
 			} else if (lowerCase.contains("note:")) {

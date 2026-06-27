@@ -1,29 +1,36 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.renderer.OutlineBufferSource;
-import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 
 @Mixin(ItemFeatureRenderer.class)
 public class ItemFeatureRendererMixin {
 
-	@WrapOperation(method = "renderItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeStorage$ItemSubmit;outlineColor()I"), require = 3)
-	private int skyblocker$useCustomGlowColour(SubmitNodeStorage.ItemSubmit submit, Operation<Integer> operation) {
-		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? submit.skyblocker$getCustomGlowColour() : operation.call(submit);
+	@ModifyExpressionValue(method = "prepareOutlineSubmit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/rendertype/RenderType;outline()Ljava/util/Optional;"))
+	private Optional<RenderType> skyblocker$useCustomGlowRenderType(Optional<RenderType> original, ItemFeatureRenderer.Submit submit, @Local(name = "material") BakedQuad.MaterialInfo material) {
+		if (submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW) {
+			return material.itemRenderType().skyblocker$getGlowRenderType();
+		}
+
+		return original;
 	}
 
-	@ModifyVariable(method = "renderItem", at = @At("LOAD"), name = "outlineBufferSource", require = 2)
-	private OutlineBufferSource skyblocker$useCustomGlowConsumers(OutlineBufferSource original, @Local(name = "submit") SubmitNodeStorage.ItemSubmit submit) {
-		return submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW ? GlowRenderer.getInstance().getGlowBufferSource() : original;
+	@ModifyExpressionValue(method = "prepareOutlineSubmit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit;outlineColor()I"))
+	private int skyblocker$useCustomGlowColour(int original, ItemFeatureRenderer.Submit submit) {
+		if (submit.skyblocker$getCustomGlowColour() != MobGlow.NO_GLOW) {
+			return submit.skyblocker$getCustomGlowColour();
+		}
+
+		return original;
 	}
 }

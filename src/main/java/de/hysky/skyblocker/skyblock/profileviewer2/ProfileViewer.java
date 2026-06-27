@@ -92,10 +92,10 @@ public class ProfileViewer {
 						return new ProfileViewerScreen(apiProfileResponse.get(), selectedProfile.get(), gameProfile.get(), member);
 					}
 				}, minecraft)
-				.thenAcceptAsync(minecraft::setScreen, minecraft)
+				.thenAcceptAsync(minecraft.gui::setScreen, minecraft)
 				.exceptionallyAsync(throwable -> {
 					LOGGER.error("[Skyblocker Profile Viewer] Encountered an unknown exception when loading the data.", throwable);
-					minecraft.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error."));
+					minecraft.gui.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error."));
 
 					return null;
 				}, minecraft);

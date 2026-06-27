@@ -217,7 +217,7 @@ public class DungeonsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.mapScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new DungeonMapConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new DungeonMapConfigScreen(screen)))
 								.build())
 						.build())
 

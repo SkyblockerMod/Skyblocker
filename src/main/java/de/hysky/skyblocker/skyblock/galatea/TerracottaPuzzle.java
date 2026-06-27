@@ -56,7 +56,7 @@ public class TerracottaPuzzle {
 				BlockState state = CLIENT.level.getBlockState(pos);
 
 				//This should be the case but we'll be extra safe
-				if (!state.is(Blocks.ORANGE_GLAZED_TERRACOTTA) || !state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) continue;
+				if (!state.is(Blocks.GLAZED_TERRACOTTA.orange()) || !state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) continue;
 
 				Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
@@ -78,7 +78,7 @@ public class TerracottaPuzzle {
 			BlockState state = CLIENT.level.getBlockState(pos);
 
 			//This should be the case but we'll be extra safe
-			if (!state.is(Blocks.ORANGE_GLAZED_TERRACOTTA) || !state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) continue;
+			if (!state.is(Blocks.GLAZED_TERRACOTTA.orange()) || !state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) continue;
 
 			Direction floorDirection = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 

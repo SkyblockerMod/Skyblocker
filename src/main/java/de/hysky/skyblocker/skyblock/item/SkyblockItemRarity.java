@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import java.util.Arrays;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.StringRepresentable;
 import com.google.common.collect.Streams;
@@ -35,7 +36,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 		this.name = name().replace("_", " ");
 		this.formatting = formatting;
 		//noinspection DataFlowIssue
-		this.color = formatting.getColor();
+		this.color = TextColor.fromLegacyFormat(formatting).getValue();
 
 		this.r = ((color >> 16) & 0xFF) / 255f;
 		this.g = ((color >> 8) & 0xFF) / 255f;

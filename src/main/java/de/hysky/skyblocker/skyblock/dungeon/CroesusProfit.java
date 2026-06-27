@@ -123,8 +123,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 		boolean processingContents = false;
 		for (Component line : ItemUtils.getLore(chest)) {
-			String lineString = line.getString();
-
+			String lineString = ChatFormatting.stripFormatting(line.getString());
 			switch (lineString) {
 				case String s when s.contains("Contents") -> {
 					processingContents = true;
@@ -169,7 +168,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 							// Apply Kuudra Pet bonus
 							if (type.equals("CRIMSON")) {
-								amount *= ChestValue.computeCrimsonEssenceMultiplier();
+								amount *= (int) ChestValue.computeCrimsonEssenceMultiplier();
 							}
 
 							OptionalDouble priceData = getItemPrice("ESSENCE_" + type);
@@ -219,7 +218,8 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 					case String s when s.equals("[Lvl 1] Spirit") -> {
 						// TODO: Make code like this to detect recombed gear (it can drop with 1% chance, according to wiki, tho I never saw any?)
-						if (line.getStyle().getColor().equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
+						TextColor color = line.getStyle().getColor();
+						if (color != null && color.equals(TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE))) {
 							OptionalDouble priceData = getItemPrice("Spirit Epic");
 							if (priceData.isPresent()) chestValue += priceData.getAsDouble();
 							else hasIncompleteData = true;

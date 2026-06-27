@@ -138,7 +138,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@Unique
 	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
-		return !(Minecraft.getInstance() != null && Minecraft.getInstance().screen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return !(Minecraft.getInstance() != null && Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique

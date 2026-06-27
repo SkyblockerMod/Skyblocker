@@ -34,6 +34,8 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.phys.Vec3;
+
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -373,7 +375,7 @@ public class CrystalsLocationsManager {
 		String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
 		MiningLocationLabel unknownWaypoint = activeWaypoints.getOrDefault(name, null);
 		if (unknownWaypoint != null) {
-			double distance = unknownWaypoint.centerPos.distanceTo(location.getCenter());
+			double distance = unknownWaypoint.centerPos.distanceTo(Vec3.atCenterOf(location));
 			if (distance < REMOVE_UNKNOWN_DISTANCE) {
 				activeWaypoints.remove(name);
 			}
