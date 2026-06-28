@@ -290,7 +290,12 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
 		if (dragAreaHovered) {
-			dragging = new ScreenPosition((int) click.x() - getX(), (int) click.y() - getY());
+			if (click.button() == 1 && Minecraft.getInstance().hasShiftDown()) {
+				setPosition(inventoryRectangle.right() + SPACING, inventoryRectangle.top());
+				savePositionToConfig();
+			} else {
+				dragging = new ScreenPosition((int) click.x() - getX(), (int) click.y() - getY());
+			}
 		}
 		if (hoveredSlot == -1) return;
 
@@ -323,7 +328,12 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	@Override
 	public void onRelease(MouseButtonEvent event) {
 		super.onRelease(event);
+		if (dragging == null) return;
 		dragging = null;
+		savePositionToConfig();
+	}
+
+	private void savePositionToConfig() {
 		SkyblockerConfigManager.update(config -> {
 			config.farming.plotsWidget.x = getX() - inventoryRectangle.right() - SPACING;
 			config.farming.plotsWidget.y = getY() - inventoryRectangle.top();
