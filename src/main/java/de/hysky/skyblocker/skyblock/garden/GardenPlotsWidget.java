@@ -152,8 +152,9 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
 		}).toArray(ItemStack[]::new);
-		items[12] = new ItemStack(Items.LODESTONE);
-		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
+		ItemStack barnIcon = new ItemStack(Items.LODESTONE);
+		barnIcon.set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
+		items[12] = barnIcon;
 	}
 
 	@SuppressWarnings("deprecation")
