@@ -125,6 +125,10 @@ public class SlayerManager {
 				}
 				return true;
 			}
+			case "YOU COCOONED YOUR SLAYER BOSS" -> {
+				if (slayerQuest != null) SlayerTimer.sendMessage();
+				return true;
+			}
 			case String s when s.startsWith("SLAYER MINI-BOSS") -> {
 				if (SkyblockerConfigManager.get().slayers.miniBossSpawnAlert && !SkyblockerConfigManager.get().slayers.alertOtherMinibosses) {
 					TitleContainer.addTitleAndPlaySound(MINIBOSS_SPAWN, 20);
@@ -202,7 +206,7 @@ public class SlayerManager {
 						!bossName.equals(slayerQuest.slayerType.bossName) ||
 						!bossTier.equals(slayerQuest.slayerTier.name())) {
 					SlayerType slayerType = SlayerType.fromBossName(bossName);
-					assert slayerType != null;
+					if (slayerType == null) return;
 					slayerQuest = new SlayerQuest(slayerType, SlayerTier.valueOf(bossTier));
 				}
 				active = true;
@@ -335,7 +339,7 @@ public class SlayerManager {
 	 * @return a list of nearby custom-named armor stands
 	 */
 	public static List<ArmorStand> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1F, expandY, 0.1F), x -> x instanceof ArmorStand && x.hasCustomName())
+		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1f, expandY, 0.1f), x -> x instanceof ArmorStand && x.hasCustomName())
 				.stream()
 				.map(e -> (ArmorStand) e)
 				.toList();
@@ -401,7 +405,7 @@ public class SlayerManager {
 	/**
 	 * Checks whether the player is currently fighting a Slayer boss.
 	 *
-	 *  @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
+	 * @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
 	 */
 	public static boolean isFightingSlayer() {
 		return bossFight != null && bossFight.boss.isAlive();

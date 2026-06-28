@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexListUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
@@ -44,6 +45,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -187,11 +189,11 @@ public class ChestValue {
 				// Implicitly excludes the "Reroll Shard" item in Kuudra chests which is a Wheel of Fate from the profit calculation
 				if (!skyblockApiId.isEmpty() && !(name.contains("Essence") || name.contains("Shard"))) {
 					if (!WORTHLESS_ITEMS.contains(skyblockApiId)) {
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
+						OptionalDouble priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 						//Add the item price to the profit
-						profit += priceData.leftDouble() * stack.getCount();
-						hasIncompleteData |= !priceData.rightBoolean();
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * stack.getCount();
+						else hasIncompleteData = true;
 					}
 
 					continue;
@@ -205,7 +207,7 @@ public class ChestValue {
 						String type = matcher.group("type").toUpperCase(Locale.ENGLISH);
 						// Defaults to 1 due to the comment about the regex
 						int amount = RegexUtils.parseOptionalIntFromMatcher(matcher, "amount").orElse(1);
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(skyblockApiId);
+						OptionalDouble priceData = ItemUtils.getItemPrice(skyblockApiId);
 
 						// Apply Kuudra Pet bonus
 						if (type.equals("CRIMSON")) {
@@ -213,8 +215,8 @@ public class ChestValue {
 						}
 
 						//Add the price of the essence to the profit
-						profit += priceData.leftDouble() * amount;
-						hasIncompleteData |= !priceData.rightBoolean();
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * amount;
+						else hasIncompleteData = true;
 
 						continue;
 					}
@@ -235,11 +237,11 @@ public class ChestValue {
 							continue;
 						}
 						String shardApiId = attribute.apiId();
-						DoubleBooleanPair priceData = ItemUtils.getItemPrice(shardApiId);
+						OptionalDouble priceData = ItemUtils.getItemPrice(shardApiId);
 
 						//Add the price of the shard to the profit
-						profit += priceData.leftDouble() * shards;
-						hasIncompleteData |= !priceData.rightBoolean();
+						if (priceData.isPresent()) profit += priceData.getAsDouble() * shards;
+						else hasIncompleteData = true;
 
 						continue;
 					}
@@ -250,7 +252,7 @@ public class ChestValue {
 					switch (chestType) {
 						// If not found (wood chest or already opened chest), it will be 0
 						case DUNGEON -> {
-							Matcher matcher = ItemUtils.getLoreLineIfContainsMatch(stack, DUNGEON_CHEST_COIN_COST_PATTERN);
+							Matcher matcher = RegexListUtils.matchInList(stack.skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, DUNGEON_CHEST_COIN_COST_PATTERN);
 							if (matcher == null) continue;
 							String foundString = matcher.group(1).replaceAll("\\D", "");
 							if (!NumberUtils.isCreatable(foundString)) continue;
@@ -277,10 +279,10 @@ public class ChestValue {
 			}
 
 			if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeKismet && usedKismet) {
-				DoubleBooleanPair kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
+				OptionalDouble kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
 
-				profit -= kismetPriceData.leftDouble();
-				hasIncompleteData |= !kismetPriceData.rightBoolean();
+				if (kismetPriceData.isPresent()) profit -= kismetPriceData.getAsDouble();
+				else hasIncompleteData = true;
 			}
 
 			return getProfitText((long) profit, hasIncompleteData);
@@ -332,15 +334,14 @@ public class ChestValue {
 
 		double price = 0;
 		boolean hasCompleteData = true;
-		DoubleBooleanPair ingredientPriceData = ItemUtils.getItemPrice(ingredient);
-		DoubleBooleanPair netherStarPriceData = ItemUtils.getItemPrice("CORRUPTED_NETHER_STAR");
+		OptionalDouble ingredientPriceData = ItemUtils.getItemPrice(ingredient);
+		OptionalDouble netherStarPriceData = ItemUtils.getItemPrice("CORRUPTED_NETHER_STAR");
 
 		price += baseCost;
-		price += ingredientPriceData.leftDouble() * ingredientAmount;
-		price += netherStarPriceData.leftDouble() * 2;
-
-		hasCompleteData &= ingredientPriceData.rightBoolean();
-		hasCompleteData &= netherStarPriceData.rightBoolean();
+		if (ingredientPriceData.isPresent()) price += ingredientPriceData.getAsDouble() * ingredientAmount;
+		else hasCompleteData = false;
+		if (netherStarPriceData.isPresent()) price += netherStarPriceData.getAsDouble() * 2;
+		else hasCompleteData = false;
 
 		return DoubleBooleanPair.of(price, hasCompleteData);
 	}
@@ -386,9 +387,9 @@ public class ChestValue {
 				if (count == 0) continue;
 
 				if (!id.isEmpty()) {
-					DoubleBooleanPair priceData = ItemUtils.getItemPrice(id);
+					OptionalDouble priceData = ItemUtils.getItemPrice(id);
 
-					if (!priceData.rightBoolean()) hasIncompleteData = true;
+					if (priceData.isEmpty()) hasIncompleteData = true;
 
 					value += NetworthCalculator.getItemNetworth(stack, count).price();
 				}

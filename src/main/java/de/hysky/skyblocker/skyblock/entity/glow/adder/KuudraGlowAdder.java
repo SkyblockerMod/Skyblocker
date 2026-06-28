@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.MagmaCube;
+import net.minecraft.world.entity.monster.cubemob.MagmaCube;
 
 public class KuudraGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")

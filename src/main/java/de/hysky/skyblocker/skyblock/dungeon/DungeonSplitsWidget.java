@@ -22,6 +22,8 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -192,7 +194,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
-				ChatFormatting.GOLD.getColor(), "Dungeon Splits", 3, 0, false);
+				TextColor.GOLD.getValue(), "Dungeon Splits", 3, 0, false);
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -340,7 +342,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public void updateContent() {
-		if (!(Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen)) {
+		if (!(Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen)) {
 			updateFloor();
 			loadFloorSplits();
 		}

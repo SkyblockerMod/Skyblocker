@@ -16,7 +16,6 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,12 +91,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 							// Optional argument.
 							.then(argument("summaryView", BoolArgumentType.bool())
 								.executes(ctx -> {
-									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen, BoolArgumentType.getBool(ctx, "summaryView")));
+									Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().gui.screen(), BoolArgumentType.getBool(ctx, "summaryView")));
 									return Command.SINGLE_SUCCESS;
 								})
 							)
 							.executes(ctx -> {
-								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().screen));
+								Scheduler.queueOpenScreen(new CorpseProfitScreen(ctx.getSource().getClient().gui.screen()));
 								return Command.SINGLE_SUCCESS;
 							})
 						)
@@ -137,12 +137,12 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			}
 			currentProfileRewards.add(lastCorpseLoot);
 			if (!lastCorpseLoot.isPriceDataComplete()) {
-				Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+				Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 						Constants.PREFIX.get().append(Component.translatable("skyblocker.corpseTracker.somethingWentWrong").withStyle(ChatFormatting.GOLD))
 				);
 			} else {	// if forceEnglishCorpseProfitTracker is FALSE - use normal translation
 				if (!SkyblockerConfigManager.get().mining.glacite.forceEnglishCorpseProfitTracker) {
-					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+					Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.translatable("skyblocker.corpseTracker.corpseProfit", Component.literal(Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit()))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)))
@@ -152,7 +152,7 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 									)
 					);
 				} else {	// else, if forceEnglishCorpseProfitTracker is TRUE - force English translation
-					Minecraft.getInstance().gui.getChat().addClientSystemMessage(
+					Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(
 							Constants.PREFIX.get()
 									.append(Component.literal(String.format(CORPSE_PROFIT_MESSAGE, Formatters.INTEGER_NUMBERS.format(lastCorpseLoot.profit())))
 											.withStyle(lastCorpseLoot.profit() > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
@@ -209,14 +209,14 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 			for (Reward reward : corpseLoot.rewards()) {
 				if (PRICELESS_ITEMS.contains(reward.itemId())) continue;
 
-				DoubleBooleanPair price = ItemUtils.getItemPrice(reward.itemId());
-				if (!price.rightBoolean()) {
+				OptionalDouble price = ItemUtils.getItemPrice(reward.itemId());
+				if (price.isEmpty()) {
 					LOGGER.warn("No price found for item `{}`.", reward.itemId());
 					corpseLoot.markPriceDataIncomplete();
 					continue;
 				}
-				corpseLoot.profit(corpseLoot.profit() + price.leftDouble() * reward.amount());
-				reward.pricePerUnit(price.leftDouble());
+				corpseLoot.profit(corpseLoot.profit() + price.getAsDouble() * reward.amount());
+				reward.pricePerUnit(price.getAsDouble());
 			}
 			try {
 				corpseLoot.profit(corpseLoot.profit() - corpseLoot.corpseType().getKeyPrice());

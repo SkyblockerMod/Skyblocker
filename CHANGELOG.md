@@ -1,3 +1,147 @@
+# Release 6.5.3
+
+## Highlight
+* Restore REI Compatibility
+* Fix being able to sell protected items in some NPC Shops
+
+## What's Changed
+* Improve Pelt Animal Highlighter Description by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2465
+* Fix: Item protection not blocking NPC selling by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2463
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.2+26.1.2...v6.5.3+26.1.2
+
+___
+
+# Release 6.5.2
+
+## Highlight
+* Add Price Tooltip support for 7th Anniversary Cake Hats
+* Update Pets Menu Title in Quick Navigation
+* Fix HUD screen not working on some islands
+* Fix rare Date Calculator Tooltip crash
+* Fix sending /profileid command outside of SkyBlock.
+
+## What's Changed
+* Fix WidgetsConfigurationScreen Not Working On Some Islands by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2448
+* Fix Sending /profileid Outside of SkyBlock by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2452
+* Fix Date Calculator Tooltip Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2451
+* Add support for 7th anniversary Cake Hats by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2455
+* Fix Pets Menu Title by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2449
+* Fix Pet Info Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2456
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2453
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.1+26.1.2...v6.5.2+26.1.2
+
+___
+
+# Release 6.5.1
+
+## Highlight
+* Add Trophy Special Effects
+* Add Lily Pad Minion to Minions Widget
+* Add support for Moldy Bread in Evolving Item Slot Text
+* Improve Etherwarp Teleport Overlay
+* Fix Item Price Lookup not working on updated Enchanted Books
+* Fix Lotus Guardian Rarity
+* Fix Minion Count for Dungeons Quiz question
+
+## What's Changed
+* Fix lotus guardian rarity by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2435
+* Fix Item Price Lookup on Updated Enchanted Books by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2436
+* Add Lily Pad minion to widget by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2433
+* All Modern (Again) (For Real This Time) by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2431
+* Fix Experimentation Table RNG Meter Menu Check by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2437
+* refactor getItemPrice and usages to use OptionalDouble by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2428
+* Add Not Very Moldy Bread to list of evolving items by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2429
+* Update Special Effects by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2434
+* fix negative coins per hour if you don't have a counter and have replenish by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2438
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.0+26.1.2...v6.5.1+26.1.2
+
+___
+
+# Release 6.5.0
+
+## Highlight
+* Add support for the Lotus Atoll
+* Add tab completions for the /chapters command
+* Add support for Kat pet upgrade recipes
+* Add Greenhouse Paste Preview
+  * Allows previewing a SkyMutations Greenhouse layout on your Garden.
+  * Copy a layout's link and run '/skyblocker garden greenhouse paste'.
+  * Rotate the layout with '/skyblocker garden greenhouse rotate (left|right)'
+  * Remove the preview with '/skyblocker garden greenhouse endPaste'.
+* Add option to include formatting in Chat Rules
+* Add support for Fossil & Forest Essence
+* Add Mouse Lock support for Garden Axes
+* Add a warning on the Waypoints Screen when waypoints are disabled
+* Improve Pest Highlighter Config
+* Improve Chat Rule Config Screens
+* Improve accuracy of Wheat Coins/hr in Farming Hud
+* Improve accuracy of Sweep Overlay
+* Improve contrast of Inventory Search highlights
+* Update Fishing HUD Sea Creatures
+* Update Sea Creature Cap
+* Fix Mouse Lock applying in The Barn
+* Fix certain items not showing properly in the Item Selection Popup
+* Fix Pets and Potions in Search Overlay
+* Fix Price Tooltips not working on certain potions
+* Fix Fancy Party Finder crash when using /joinkuudra
+* Fix Alpha server profile data not being separate
+* Fix /skyblocker screen on small displays
+* Fix searching for null items in Search Overlay
+* Fix Events Date Calculator being inaccurate on far-away events
+* Fix Bank radial menu applying for Banker Broadjaw visitor
+
+## What's Changed
+* Change Profile ID when on Alpha Server by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2362
+* Add support for Kat Pet Upgrade recipes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2327
+* Add option to include formatting in chat rules by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2331
+* Add overflow to status bar values if necessary by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2335
+* Add Fossil & Forest Essence by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2368
+* Fix Price Tooltip Item Quantity in Experimentation Table RNG Menu by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2372
+* Fix Pets & Potions in Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2373
+* Fix Fancy Party Finder Kuudra Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2385
+* More Customizable Pest Highlighter Config by @BonkersTurnip in https://github.com/SkyblockerMod/Skyblocker/pull/2361
+* Update sc caps by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2374
+* Update Skyblocker screen by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2375
+* fix true quiver count after hypixel update by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2379
+* Fix Price Tooltip in Attribute Menu by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2380
+* Improve Inventory Search Highlight Contrast by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2381
+* Hide Egg Waypoints If All Are Collected by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2390
+* Detect Party Finder Type from Command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2392
+* Added gardening axes to the farming tools (thus enabling Mouse Lockin… by @Gosigs in https://github.com/SkyblockerMod/Skyblocker/pull/2393
+* move a few texture to the sprites folder by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2398
+* Remove unused Item Price Refresh config option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2400
+* Fix Rare ForestNodes NPE by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2405
+* Pause farming tool mouse lock while in the garden's barn by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2399
+* refactor item protection rendering by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2408
+* Fix True Hex Color Mutating Lore & Add Config Option by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2403
+* Fix Skyblocker screen by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2388
+* Fix Item Selection Popup Ignoring Item Model by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2410
+* Add Warning on Waypoints Screen if Waypoints are Disabled by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2412
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2369
+* Fix Searching for null In Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2422
+* skyblock temporal api units by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2416
+* 0.25 Update Changes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2415
+* Add Auto Complete for Chapters Command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2414
+* Fix Item Pickup Widget Issues by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2409
+* hopefully more accurate wheat coins/h in farming hud by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2384
+* Greenhouse Paste by @TheTerrariaGuy in https://github.com/SkyblockerMod/Skyblocker/pull/2382
+* Improve chat rule list & chat rule GUIs by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2333
+* Remove REI + EMI Entrypoints by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2417
+* feat(SweepOverlay): improve formula by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/2423
+* Fix PV Active Dungeon Class Indication by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2425
+
+## New Contributors
+* @BonkersTurnip made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2361
+* @legentpc made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2381
+* @Gosigs made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2393
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.4.1+26.1.2...v6.5.0+26.1.2
+
+___
+
 # Release 6.4.1
 
 ## Highlight

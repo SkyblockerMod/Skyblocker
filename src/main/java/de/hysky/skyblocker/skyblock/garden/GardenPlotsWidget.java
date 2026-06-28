@@ -135,7 +135,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		);
 		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
 				getRight() - 7 - 20, getBottom() - 24,
-				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Component.translatable("skyblocker.gardenPlots.setSpawn"),
+				new ItemStack(Math.random() < 0.001 ? Items.BED.pink() : Items.BED.red()), Component.translatable("skyblocker.gardenPlots.setSpawn"),
 				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
 		);
 		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
@@ -313,8 +313,8 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			return;
 		}
 
-		if (SkyblockerConfigManager.get().farming.plotsWidget.closeScreenOnPlotClick && Minecraft.getInstance().screen != null)
-			Minecraft.getInstance().screen.onClose();
+		if (SkyblockerConfigManager.get().farming.plotsWidget.closeScreenOnPlotClick && Minecraft.getInstance().gui.screen() != null)
+			Minecraft.getInstance().gui.screen().onClose();
 
 		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp barn", true);
 		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + GardenPlots.GARDEN_PLOTS[hoveredSlot].name(), true);

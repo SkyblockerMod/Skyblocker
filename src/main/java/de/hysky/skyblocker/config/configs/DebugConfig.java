@@ -12,4 +12,6 @@ public class DebugConfig {
 	public boolean webSocketDebug = false;
 
 	public boolean corpseFinderDebug = false;
+
+	public boolean enableRepoDev = false;
 }

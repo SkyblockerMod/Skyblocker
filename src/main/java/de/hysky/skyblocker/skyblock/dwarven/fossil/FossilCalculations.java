@@ -101,9 +101,9 @@ public class FossilCalculations {
 		for (int y = 0; y < EXCAVATOR_HEIGHT; y++) {
 			for (int x = 0; x < EXCAVATOR_WIDTH; x++) {
 				Item item = currentState.get(index).getItem();
-				if (item == Items.WHITE_STAINED_GLASS_PANE) {
+				if (item == Items.STAINED_GLASS_PANE.white()) {
 					output.updateSlot(x, y, Structures.TileState.FOSSIL);
-				} else if (item == Items.BROWN_STAINED_GLASS_PANE) {
+				} else if (item == Items.STAINED_GLASS_PANE.brown()) {
 					output.updateSlot(x, y, Structures.TileState.UNKNOWN);
 				} else {
 					output.updateSlot(x, y, Structures.TileState.EMPTY);

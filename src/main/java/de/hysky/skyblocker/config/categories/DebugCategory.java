@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.config.categories;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.debug.Debug;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.network.chat.Component;
@@ -14,6 +16,16 @@ public class DebugCategory {
 		return ConfigCategory.createBuilder()
 				.id(SkyblockerMod.id("config/debug"))
 				.name(Component.translatable("skyblocker.config.debug"))
+				.optionIf(Debug.dumpHoveredItemKey != null, () -> KeyMappingOption.createBuilder()
+						.name(Component.translatable("key.skyblocker.debug.dumpHoveredItem"))
+						.tags(CommonTags.KEY_MAPPING)
+						.keyMapping(Debug.dumpHoveredItemKey)
+						.build())
+				.optionIf(Debug.dumpNearbyEntitiesKey != null, () -> KeyMappingOption.createBuilder()
+						.name(Component.translatable("key.skyblocker.debug.dumpNearbyEntities"))
+						.tags(CommonTags.KEY_MAPPING)
+						.keyMapping(Debug.dumpNearbyEntitiesKey)
+						.build())
 				.option(Option.<Integer>createBuilder()
 						.name(Component.translatable("skyblocker.config.debug.dumpRange"))
 						.description(Component.translatable("skyblocker.config.debug.dumpRange.@Tooltip"))
@@ -49,6 +61,13 @@ public class DebugCategory {
 						.binding(defaults.debug.corpseFinderDebug,
 								() -> config.debug.corpseFinderDebug,
 								newValue -> config.debug.corpseFinderDebug = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.debug.enableRepoDev"))
+						.binding(defaults.debug.enableRepoDev,
+								() -> config.debug.enableRepoDev,
+								newValue -> config.debug.enableRepoDev = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.build();

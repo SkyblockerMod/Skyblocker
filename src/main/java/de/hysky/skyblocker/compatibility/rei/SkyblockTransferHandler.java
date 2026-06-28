@@ -57,7 +57,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 	}
 
 	private void checkScreen(String skyblockId) {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		if (!(currentScreen instanceof ContainerScreen)) {
 			FAIL_COUNT = 0;
 			FAILED_ITEM = skyblockId;

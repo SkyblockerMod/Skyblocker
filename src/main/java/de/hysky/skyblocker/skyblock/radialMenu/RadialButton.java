@@ -98,8 +98,8 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		//render tooltip
 		if (hovered && (GuiHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
-			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
-				BackpackPreview.extractPreview(graphics, CLIENT.screen, linkedSlot, mouseX, mouseY);
+			if (CLIENT.gui.screen() != null && CLIENT.gui.screen().getTitle().getString().equals("Storage")) {
+				BackpackPreview.extractPreview(graphics, CLIENT.gui.screen(), linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
 				graphics.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);

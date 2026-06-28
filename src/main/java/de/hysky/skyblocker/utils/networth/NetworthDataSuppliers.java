@@ -30,6 +30,6 @@ public class NetworthDataSuppliers {
 	static double getPrice(String id) {
 		// Use bazaar buy price because sell price can be heavily skewed sometimes
 		// Use three day average prices to avoid auction manipulation
-		return ItemUtils.getItemPrice(id, true, true).leftDouble();
+		return ItemUtils.getItemPrice(id, true, true).orElse(0);
 	}
 }

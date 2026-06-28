@@ -60,11 +60,11 @@ public class EffigyWaypoints {
 		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getArea() == Area.TheRift.CHATEAU) {
 			for (BlockPos effigy : UNBROKEN_EFFIGIES) {
 				if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
-					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5F, true);
+					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5f, true);
 				} else {
-					collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5F, true);
+					collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5f, true);
 					for (int i = 1; i < 6; i++) {
-						collector.submitFilledBox(effigy.below(i), RED, 0.5F - (0.075F * i), true);
+						collector.submitFilledBox(effigy.below(i), RED, 0.5f - (0.075f * i), true);
 					}
 				}
 			}

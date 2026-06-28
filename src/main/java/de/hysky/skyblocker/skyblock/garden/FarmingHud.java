@@ -127,8 +127,8 @@ public class FarmingHud {
 		return SkyblockerConfigManager.get().farming.farmingHud.enabled && client.player != null && Utils.getLocation() == Location.GARDEN;
 	}
 
-	public static String counterText() {
-		return counterType.text;
+	public static CounterType counterType() {
+		return counterType;
 	}
 
 	public static long counter() {
@@ -165,19 +165,15 @@ public class FarmingHud {
 	}
 
 	public enum CounterType {
-		NONE("", "No Cultivating"),
+		NONE("", "Cultivating Needed"),
 		CULTIVATING("farmed_cultivating", "Cultivating: ");
 
 		private final String nbtKey;
-		private final String text;
+		public final String text;
 
 		CounterType(String nbtKey, String text) {
 			this.nbtKey = nbtKey;
 			this.text = text;
-		}
-
-		public boolean matchesText(String textToMatch) {
-			return this.text.equals(textToMatch);
 		}
 	}
 }

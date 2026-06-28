@@ -36,8 +36,8 @@ public class SnapshotDebug {
 			collector.submitLinesFromPoints(new Vec3[] { new Vec3(173, 66, -7.5), new Vec3(178, 66, -7.5) }, RED, ALPHA, LINE_WIDTH, false);
 			collector.submitQuad(new Vec3[] { new Vec3(183, 66, -16), new Vec3(183, 63, -16), new Vec3(183, 63, -14), new Vec3(183, 66, -14) }, RED, ALPHA, false);
 			collector.submitText(Component.nullToEmpty("Skyblocker on " + SharedConstants.getCurrentVersion().name() + "!"), new Vec3(175.5, 67.5, -7.5), false);
-			collector.submitCylinder(new BlockPos(172, 78, 44).getCenter(), 12, 12, 32, CYAN);
-			collector.submitCylinder(new BlockPos(144, 78, 44).getCenter(), 12, 12, 32, BLUE);
+			collector.submitCylinder(Vec3.atCenterOf(new BlockPos(172, 78, 44)), 12, 12, 32, CYAN);
+			collector.submitCylinder(Vec3.atCenterOf(new BlockPos(144, 78, 44)), 12, 12, 32, BLUE);
 			collector.submitBlockHologram(new BlockPos(183, 65, 9), Blocks.DIAMOND_BLOCK.defaultBlockState(), 0.5f);
 		} else if (isInSnapshot()) {
 			collector.submitFilledBoxWithBeaconBeam(new BlockPos(-3, 63, 5), RED, ALPHA, true);

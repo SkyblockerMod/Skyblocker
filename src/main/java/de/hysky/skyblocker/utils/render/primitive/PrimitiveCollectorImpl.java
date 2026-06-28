@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.debug.Debug;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vulkan.VulkanDevice;
+
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
+import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -38,15 +41,15 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
-	private static final boolean USE_INSTANCING = Debug.debugEnabled();
 	private static final int MAX_OVERWORLD_BUILD_HEIGHT = 319;
+	private final boolean isVulkan;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
 	private @Nullable List<VanillaSubmittable<?>> vanillaSubmittables = null;
@@ -65,6 +68,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
+		this.isVulkan = ((GpuDeviceAccessor) RenderSystem.getDevice()).getBackend() instanceof VulkanDevice;
 		this.worldState = worldState;
 		this.frustum = frustum;
 	}
@@ -119,17 +123,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.filledBoxStates = new ArrayList<>();
 		}
 
-		FilledBoxRenderState state = new FilledBoxRenderState();
-		state.minX = minX;
-		state.minY = minY;
-		state.minZ = minZ;
-		state.maxX = maxX;
-		state.maxY = maxY;
-		state.maxZ = maxZ;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		FilledBoxRenderState state = new FilledBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, throughWalls);
 		this.filledBoxStates.add(state);
 	}
 
@@ -142,16 +136,16 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		int colour = ARGB.colorFromFloat(1f, colourComponents[0], colourComponents[1], colourComponents[2]);
-		float length = (float) RenderHelper.getCamera().position().subtract(pos.getCenter()).horizontalDistance();
+		float length = (float) RenderHelper.getCamera().position().subtract(Vec3.atCenterOf(pos)).horizontalDistance();
 		BeaconRenderState state = new BeaconRenderState();
 		state.blockPos = pos;
 		((BlockEntityRenderStateAccessor) state).setBlockState(Blocks.BEACON.defaultBlockState());
-		state.blockEntityType = BlockEntityType.BEACON;
+		state.blockEntityType = BlockEntityTypes.BEACON;
 		state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
 		state.breakProgress = null;
 		state.animationTime = MINECRAFT.level != null ? Math.floorMod(MINECRAFT.level.getGameTime(), 40) + MINECRAFT.getDeltaTracker().getGameTimeDeltaPartialTick(true) : 0f;
 		state.sections.add(new BeaconRenderState.Section(colour, MAX_OVERWORLD_BUILD_HEIGHT));
-		state.beamRadiusScale = MINECRAFT.player != null && MINECRAFT.player.isScoping() ? 1.0F : Math.max(1.0F, length / 96.0F);
+		state.beamRadiusScale = MINECRAFT.player != null && MINECRAFT.player.isScoping() ? 1.0f : Math.max(1.0f, length / 96.0f);
 
 		this.worldState.blockEntityRenderStates.add(state);
 	}
@@ -183,18 +177,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.outlinedBoxStates = new ArrayList<>();
 		}
 
-		OutlinedBoxRenderState state = new OutlinedBoxRenderState();
-		state.minX = minX;
-		state.minY = minY;
-		state.minZ = minZ;
-		state.maxX = maxX;
-		state.maxY = maxY;
-		state.maxZ = maxZ;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-		state.throughWalls = throughWalls;
-
+		OutlinedBoxRenderState state = new OutlinedBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, lineWidth, throughWalls);
 		this.outlinedBoxStates.add(state);
 	}
 
@@ -206,13 +189,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.linesStates = new ArrayList<>();
 		}
 
-		LinesRenderState state = new LinesRenderState();
-		state.points = points;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-		state.throughWalls = throughWalls;
-
+		LinesRenderState state = new LinesRenderState(points, colourComponents, alpha, lineWidth, throughWalls);
 		this.linesStates.add(state);
 	}
 
@@ -224,12 +201,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.cursorLineStates = new ArrayList<>();
 		}
 
-		CursorLineRenderState state = new CursorLineRenderState();
-		state.point = point;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.lineWidth = lineWidth;
-
+		CursorLineRenderState state = new CursorLineRenderState(point, colourComponents, alpha, lineWidth);
 		this.cursorLineStates.add(state);
 	}
 
@@ -241,12 +213,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.quadStates = new ArrayList<>();
 		}
 
-		QuadRenderState state = new QuadRenderState();
-		state.points = points;
-		state.colourComponents = colourComponents;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		QuadRenderState state = new QuadRenderState(points, colourComponents, alpha, throughWalls);
 		this.quadStates.add(state);
 	}
 
@@ -258,18 +225,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.texturedQuadStates = new ArrayList<>();
 		}
 
-		TexturedQuadRenderState state = new TexturedQuadRenderState();
-		state.pos = pos;
-		state.width = width;
-		state.height = height;
-		state.textureWidth = textureWidth;
-		state.textureHeight = textureHeight;
-		state.renderOffset = renderOffset;
-		state.texture = texture;
-		state.shaderColour = shaderColour;
-		state.alpha = alpha;
-		state.throughWalls = throughWalls;
-
+		TexturedQuadRenderState state = new TexturedQuadRenderState(pos, width, height, textureWidth, textureHeight, renderOffset, texture, shaderColour, alpha, throughWalls);
 		this.texturedQuadStates.add(state);
 	}
 
@@ -285,11 +241,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.blockHologramStates = new ArrayList<>();
 		}
 
-		BlockHologramRenderState renderState = new BlockHologramRenderState();
-		renderState.pos = pos;
-		renderState.state = state;
-		renderState.alpha = alpha;
-
+		BlockHologramRenderState renderState = new BlockHologramRenderState(pos, state, alpha);
 		this.blockHologramStates.add(renderState);
 	}
 
@@ -319,13 +271,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		float xOffset = -textRenderer.width(text) / 2f;
 		Font.PreparedText glyphs = textRenderer.prepareText(text, xOffset, yOffset, CommonColors.WHITE, false, false, 0);
 
-		TextRenderState state = new TextRenderState();
-		state.glyphs = glyphs;
-		state.pos = pos;
-		state.scale = scale * 0.025f;
-		state.yOffset = yOffset;
-		state.throughWalls = throughWalls;
-
+		TextRenderState state = new TextRenderState(glyphs, pos, scale * 0.025f, yOffset, throughWalls);
 		this.textStates.add(state);
 	}
 
@@ -337,13 +283,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.cylinderStates = new ArrayList<>();
 		}
 
-		CylinderRenderState state = new CylinderRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.height = height;
-		state.segments = segments;
-		state.colour = colour;
-
+		CylinderRenderState state = new CylinderRenderState(centre, radius, height, segments, colour);
 		this.cylinderStates.add(state);
 	}
 
@@ -355,12 +295,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.filledCircleStates = new ArrayList<>();
 		}
 
-		FilledCircleRenderState state = new FilledCircleRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.segments = segments;
-		state.colour = colour;
-
+		FilledCircleRenderState state = new FilledCircleRenderState(centre, radius, segments, colour);
 		this.filledCircleStates.add(state);
 	}
 
@@ -372,13 +307,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.sphereStates = new ArrayList<>();
 		}
 
-		SphereRenderState state = new SphereRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.segments = segments;
-		state.rings = rings;
-		state.colour = colour;
-
+		SphereRenderState state = new SphereRenderState(centre, radius, segments, rings, colour);
 		this.sphereStates.add(state);
 	}
 
@@ -390,13 +319,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.outlinedCircleStates = new ArrayList<>();
 		}
 
-		OutlinedCircleRenderState state = new OutlinedCircleRenderState();
-		state.centre = centre;
-		state.radius = radius;
-		state.thickness = thickness;
-		state.segments = segments;
-		state.colour = colour;
-
+		OutlinedCircleRenderState state = new OutlinedCircleRenderState(centre, radius, thickness, segments, colour);
 		this.outlinedCircleStates.add(state);
 	}
 
@@ -432,7 +355,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.filledBoxStates != null) {
-			if (USE_INSTANCING) {
+			if (this.isVulkan) {
 				FilledBoxInstancedRenderer.INSTANCE.submitPrimitives(this.filledBoxStates, cameraState);
 			} else {
 				for (FilledBoxRenderState state : this.filledBoxStates) {
@@ -442,7 +365,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.outlinedBoxStates != null) {
-			if (USE_INSTANCING) {
+			if (this.isVulkan) {
 				OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(this.outlinedBoxStates, cameraState);
 			} else {
 				for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
@@ -476,11 +399,11 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (this.blockHologramStates != null) {
-			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.getGameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
+			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.gameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
+			BlockHologramRenderer hologramRenderer = new BlockHologramRenderer(altModelBlockRenderer);
 
 			for (BlockHologramRenderState state : this.blockHologramStates) {
-				state.altModelBlockRenderer = altModelBlockRenderer;
-				BlockHologramRenderer.INSTANCE.submitPrimitives(state, cameraState);
+				hologramRenderer.submitPrimitives(state, cameraState);
 			}
 		}
 

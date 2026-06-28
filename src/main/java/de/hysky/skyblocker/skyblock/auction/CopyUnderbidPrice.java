@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -41,7 +42,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 	@Override
 	public void markDirty() {
 		Minecraft client = Minecraft.getInstance();
-		if (!(client.screen instanceof ContainerScreen screen)) return;
+		if (!(client.gui.screen() instanceof ContainerScreen screen)) return;
 
 		ItemStack stack = screen.getMenu().getSlot(13).getItem();
 
@@ -58,7 +59,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (copied) return;
 
-		double price = ItemUtils.getItemPrice(stack).leftDouble();
+		double price = ItemUtils.getItemPrice(stack).orElse(0);
 		if (price <= 1) return;
 
 		long underbid = (long) price - 1;

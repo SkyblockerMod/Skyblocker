@@ -7,12 +7,14 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.FloatController;
@@ -209,7 +211,7 @@ public class HelperCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<HelperConfig.Fishing.FishingHookDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.fishingHookDisplay"))
@@ -258,14 +260,6 @@ public class HelperCategory {
 										() -> config.helpers.fishing.seaCreatureTimerNotification,
 										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip"))
-								.binding(defaults.helpers.fishing.seaCreatureCap,
-										() -> config.helpers.fishing.seaCreatureCap,
-										newValue -> config.helpers.fishing.seaCreatureCap = newValue)
-								.controller(IntegerController.createBuilder().range(1, 60).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification"))
@@ -443,15 +437,11 @@ public class HelperCategory {
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip"))
-								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-										() -> config.helpers.itemPrice.enableItemPriceRefresh,
-										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
-								.controller(ConfigUtils.createBooleanController())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.itemPriceLookup"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ItemPrice.ITEM_PRICE_LOOKUP)
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
 						.build())
 				// Great Spook Event
 				.group(OptionGroup.createBuilder()

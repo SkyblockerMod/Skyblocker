@@ -111,7 +111,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 
 			} else if (lowerCase.contains("dungeon:")) {
 				dungeon = tooltipText.split(":")[1].trim();
-			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(ChatFormatting.RED.getColor())) && !lowerCase.startsWith(" ")) {
+			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.RED) && !lowerCase.startsWith(" ")) {
 				isLocked = true;
 				lockReason = text;
 			} else if (lowerCase.contains("note:")) {
@@ -133,6 +133,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 				if (!memberText.startsWith(" ")) continue; // Member thingamajigs start with a space
 
 				String[] parts = memberText.split(":", 2);
+				if (parts.length != 2) continue;
 				String playerNameTrim = parts[0].trim();
 
 				if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol

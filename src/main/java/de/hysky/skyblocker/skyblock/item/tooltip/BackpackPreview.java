@@ -168,7 +168,7 @@ public class BackpackPreview {
 			ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
 			if (ItemProtection.isItemProtected(currentStack)) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, itemX, itemY);
 			}
 
 			graphics.item(currentStack, itemX, itemY);

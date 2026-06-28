@@ -18,6 +18,6 @@ public class HuntingMenu extends BasicMenu {
 	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		if (slotId == 41) return false;
-		return !stack.getItem().equals(Items.BLACK_STAINED_GLASS_PANE) && !stack.getItem().equals(Items.GRAY_DYE);
+		return !stack.getItem().equals(Items.STAINED_GLASS_PANE.black()) && !stack.getItem().equals(Items.DYE.gray());
 	}
 }

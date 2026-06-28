@@ -29,6 +29,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class ForestNodes {
 	private static final Minecraft client = Minecraft.getInstance();
@@ -90,14 +91,16 @@ public class ForestNodes {
 		// Get all ItemDisplayEntity within the same block
 		List<Display.ItemDisplay> entities = world.getEntitiesOfClass(
 				Display.ItemDisplay.class,
-				AABB.ofSize(pos.getCenter(), 1.0, 1.0, 1.0),
+				AABB.ofSize(Vec3.atCenterOf(pos), 1.0, 1.0, 1.0),
 				_ -> true
 		);
 
 		// Count those with minecraft:string
 		return (int) entities.stream()
 				.filter(entity -> {
-					ItemStack stack = entity.itemRenderState().itemStack();
+					var state = entity.itemRenderState();
+					if (state == null) return false;
+					ItemStack stack = state.itemStack();
 					return !stack.isEmpty() && stack.getItem().equals(Items.STRING);
 				})
 				.count();

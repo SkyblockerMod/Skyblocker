@@ -118,7 +118,7 @@ public class SearchOverManager {
 			updateSearch(itemName);
 		}
 
-		CLIENT.schedule(() -> CLIENT.setScreen(new OverlayScreen()));
+		CLIENT.schedule(() -> CLIENT.gui.setScreen(new OverlayScreen()));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -435,8 +435,8 @@ public class SearchOverManager {
 		if (location == SearchLocation.AUCTION) {
 			addExtras();
 		}
-		// Fix Bazaar bug - Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
-		if (location == SearchLocation.BAZAAR && !isCommand && search.toLowerCase(Locale.ENGLISH).contains("null")) {
+		// Search doesn't work if input from sign contains "null" (blocks null ovoid, etc.)
+		if (!isCommand && search.toLowerCase(Locale.ENGLISH).startsWith("null")) {
 			search = "\"%s\"".formatted(search);
 		}
 		//push

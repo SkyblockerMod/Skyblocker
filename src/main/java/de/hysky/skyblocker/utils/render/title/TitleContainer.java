@@ -182,8 +182,8 @@ public class TitleContainer {
 			}
 
 			//Lerp the texts x and y variables
-			title.x = Mth.lerp(tickDelta * 0.5F, title.x, xTextLeft);
-			title.y = Mth.lerp(tickDelta * 0.5F, title.y, y);
+			title.x = Mth.lerp(tickDelta * 0.5f, title.x, xTextLeft);
+			title.y = Mth.lerp(tickDelta * 0.5f, title.y, y);
 
 			//Translate the matrix to the texts position and scale
 			graphics.pose().pushMatrix();

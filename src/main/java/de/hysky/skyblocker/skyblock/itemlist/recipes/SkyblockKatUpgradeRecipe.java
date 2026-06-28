@@ -4,7 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import net.minecraft.client.Minecraft;

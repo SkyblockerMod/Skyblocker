@@ -104,7 +104,7 @@ public class UpdateNotifications {
 						}
 
 						MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
-						SystemToast.add(MINECRAFT.getToastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
+						SystemToast.add(MINECRAFT.gui.toastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
 					});
 				}
 			} catch (Exception e) {

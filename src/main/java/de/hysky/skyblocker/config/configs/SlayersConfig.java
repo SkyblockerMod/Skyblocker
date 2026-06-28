@@ -110,7 +110,7 @@ public class SlayersConfig {
 
 		public boolean attunementHighlights = true;
 
-		public boolean muteBlazeSounds = true;
+		public boolean muteBlazeSounds = false;
 
 		public ChatFilterResult hideHellionShield = ChatFilterResult.PASS;
 

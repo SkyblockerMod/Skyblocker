@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows various dungeon info
 // deaths, healing, dmg taken, milestones
@@ -25,7 +26,7 @@ public class DungeonDeathWidget extends TabHudWidget {
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Deaths", TITLE, TextColor.DARK_PURPLE.getValue());
 	}
 
 	@Override

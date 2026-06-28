@@ -3,7 +3,7 @@ package de.hysky.skyblocker.config.screens.eventnotifications;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.utils.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.config.DurationController;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.ChatFormatting;
@@ -69,7 +69,7 @@ public class EventConfigTimesEditScreen extends Screen {
 				.mapToInt(b -> b.seconds)
 				.sorted()
 				.collect(IntArrayList::new, IntArrayList::add, IntArrayList::addAll));
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private class EntryList extends ContainerObjectSelectionList<EventConfigTimesEditScreen.Entry> {

@@ -21,7 +21,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
@@ -36,7 +35,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -296,17 +294,16 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			return;
 		}
 
+		// Prevent selling protected items to NPC shops
+		if (this.menu instanceof ChestMenu && ItemProtection.isItemProtected(stack)
+				&& !ItemProtection.isNpcSellButton(slot) && ItemProtection.isNpcSellMenu(this.menu)) {
+			ci.cancel();
+			return;
+		}
+
 		switch (this.menu) {
 			case ChestMenu genericContainerScreenHandler when genericContainerScreenHandler.getRowCount() == 6 -> {
 				VisitorHelper.onSlotClick(slot, slotId, title, genericContainerScreenHandler.getSlot(13));
-				// Prevent selling to NPC shops
-				ItemStack sellStack = this.menu.slots.get(49).getItem();
-				if (sellStack.getHoverName().getString().equals("Sell Item") || ItemUtils.getLoreLineIf(sellStack, text -> text.contains("buyback")) != null) {
-					if (slotId != 49 && ItemProtection.isItemProtected(stack)) {
-						ci.cancel();
-						return;
-					}
-				}
 			}
 
 			case ChestMenu genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
@@ -335,12 +332,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 		// Item Protection
 		if (ItemProtection.isItemProtected(slot.getItem())) {
-			graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, slot.x, slot.y, 0, 0, 16, 16, 16, 16);
+			ItemProtection.drawSlotIcon(graphics, slot.x, slot.y);
 		}
 
 		// Search - darken non-matching slots
 		if (InventorySearch.isSearching() && !InventorySearch.slotMatches(slot)) {
-			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88_000000);
+			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0xB0_000000);
 		}
 	}
 

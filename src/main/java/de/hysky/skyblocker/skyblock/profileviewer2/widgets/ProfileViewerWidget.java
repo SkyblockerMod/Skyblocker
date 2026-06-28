@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
+import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -12,12 +14,12 @@ import net.minecraft.network.chat.Component;
  * <p>Widgets may be clickable however do note that you must manually set {@link AbstractWidget#active} to {@code true}
  * in order for that to work properly as widgets are automatically set to be inactive.
  */
-public abstract sealed class ProfileViewerWidget extends AbstractWidget permits BasicInfoBoxWidget, LevelBarWidget, PageTabWidget, PlayerWidget, RulerWidget, TestTextWidget {
+public abstract sealed class ProfileViewerWidget extends AbstractWidget permits PageTabWidget {
 	/**
 	 * The padding needed to match vanilla in rendering inside of the "content" area of the Profile Viewer's background (leaving space from the border).
 	 */
-	protected static final int CONTENT_PADDING = 8;
-	protected static final int ITEM_SIZE = 16;
+	protected static final int CONTENT_PADDING = AbstractProfileViewerScreen.PADDING;
+	protected static final int ITEM_SIZE = GuiRenderer.DEFAULT_ITEM_SIZE;
 	private final boolean padToContent;
 	/**
 	 * The X position of this widget relative to the origin point of the Profile Viewer's background.

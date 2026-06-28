@@ -9,8 +9,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static de.hysky.skyblocker.skyblock.CompactDamage.baseTenDigits;
+import static de.hysky.skyblocker.skyblock.CompactDamage.compactDamage;
 import static de.hysky.skyblocker.skyblock.CompactDamage.formatToPrecision;
 import static de.hysky.skyblocker.skyblock.CompactDamage.prettifyDamageNumber;
 
@@ -40,22 +39,9 @@ public class CompactDamageTest {
 		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.critDamageGradientEnd = new Color(CommonColors.BLACK);
 	}
 
-	private static ArmorStand createEntityWithName(Component text) {
-		ArmorStand entity = new ArmorStand(EntityType.ARMOR_STAND, null);
-		entity.setInvisible(true);
-		entity.setCustomNameVisible(true);
-		entity.setCustomName(text);
-		return entity;
-	}
-
-	private static Component getCompactText(ArmorStand entity, int maxPrecision) {
-		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.maxPrecision = maxPrecision;
-		CompactDamage.compactDamage(entity);
-		return entity.skyblocker$getCustomName();
-	}
-
 	private static void testCompact(Component inputText, int maxPrecision, Component expectedText) {
-		Component outputText = getCompactText(createEntityWithName(inputText), maxPrecision);
+		SkyblockerConfigManager.get().uiAndVisuals.compactDamage.maxPrecision = maxPrecision;
+		Component outputText = compactDamage(inputText);
 		Assertions.assertEquals(expectedText, outputText);
 	}
 

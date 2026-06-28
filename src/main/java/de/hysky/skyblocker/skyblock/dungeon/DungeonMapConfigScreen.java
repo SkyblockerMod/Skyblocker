@@ -78,7 +78,7 @@ public class DungeonMapConfigScreen extends Screen {
 			config.dungeons.dungeonScore.scoreY = scoreY;
 		});
 
-		this.minecraft.setScreen(parent);
+		this.minecraft.gui.setScreen(parent);
 	}
 
 	public void extractHUDMap(GuiGraphicsExtractor graphics, int x, int y) {

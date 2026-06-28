@@ -46,9 +46,9 @@ public class BazaarQuickQuantities {
 		messages[0] = value;
 
 		UIAndVisualsConfig.BazaarQuickQuantities config = SkyblockerConfigManager.get().uiAndVisuals.bazaarQuickQuantities;
-		if (config.closeSignOnUse && client.screen != null) {
+		if (config.closeSignOnUse && client.gui.screen() != null) {
 			SignCalculator.calculate(messages[0]); // Avoid conflict on `finishEditing` with SignCalculator
-			client.screen.onClose();
+			client.gui.screen().onClose();
 		}
 	}
 }

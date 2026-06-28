@@ -8,16 +8,17 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public class AccessoryTooltip extends SimpleTooltipAdder {
-	public static final int COLLECTED_COLOUR = ChatFormatting.GREEN.getColor();
+	public static final int COLLECTED_COLOUR = TextColor.GREEN.getValue();
 	public static final int UPGRADE_COLOUR = 0x218BFF;
 	public static final int UPGRADABLE_COLOUR = 0xF8D048;
-	public static final int DOWNGRADE_COLOUR = ChatFormatting.GRAY.getColor();
-	public static final int MISSING_COLOUR = ChatFormatting.RED.getColor();
+	public static final int DOWNGRADE_COLOUR = TextColor.GRAY.getValue();
+	public static final int MISSING_COLOUR = TextColor.RED.getValue();
 
 	public AccessoryTooltip(int priority) {
 		super(priority);

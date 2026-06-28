@@ -52,7 +52,7 @@ public class AttributesDebug {
 	}
 
 	private static void dumpAttributes() {
-		if (CLIENT.screen instanceof AbstractContainerScreen<?> screen && screen.getTitle().getString().equals("Attribute Menu")) {
+		if (CLIENT.gui.screen() instanceof AbstractContainerScreen<?> screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			@SuppressWarnings("unchecked")
 			Int2ObjectMap<ItemStack> slots = ContainerSolverManager.slotMap(screen.getMenu().slots.subList(0, ((AbstractContainerScreen<ChestMenu>) screen).getMenu().getRowCount() * 9));
 			ContainerSolver.trimEdges(slots, 6);
@@ -90,7 +90,7 @@ public class AttributesDebug {
 	}
 
 	private static void exportAttributes() {
-		if (CLIENT.screen instanceof AbstractContainerScreen screen && screen.getTitle().getString().equals("Attribute Menu")) {
+		if (CLIENT.gui.screen() instanceof AbstractContainerScreen screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			List<Attribute> copy = DUMPED_ATTRIBUTES.stream().distinct().toList();
 
 			CompletableFuture.runAsync(() -> {

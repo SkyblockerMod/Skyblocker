@@ -12,8 +12,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-//TODO: Add required amount of shards to reach max level in the tooltip via a TooltipAdder implementation once people get enough shards to figure them out
-//      It can be seen by clicking on the attribute but that's too much effort, we could bring that up a layer, into the tooltip of the attribute
 public class AttributeLevelHelper extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation("attribute_levels",
 			"skyblocker.config.uiAndVisuals.slotText.attributeLevels",
@@ -29,7 +27,7 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slot == null || stack.isEmpty()) return List.of();
 		if (slot.index <= 9 || slot.index >= 44) return List.of(); // Don't need to process the first row and the last row
-		if (stack.is(Items.BLACK_STAINED_GLASS_PANE)) return List.of();
+		if (stack.is(Items.STAINED_GLASS_PANE.black())) return List.of();
 
 		Component customName = stack.getCustomName();
 		if (customName == null) return List.of();
