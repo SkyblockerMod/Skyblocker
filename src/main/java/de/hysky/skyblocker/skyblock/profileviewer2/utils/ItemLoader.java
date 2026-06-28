@@ -36,7 +36,7 @@ public class ItemLoader {
 
 	private static ProfileItemStorage decodeItemsInternal(ProfileMember member) {
 		List<ItemStack> inventory = member.inventories.inventoryContents != null ? fixHotbar(decode(member.inventories.inventoryContents.data)) : List.of();
-		List<ItemStack> armour = member.inventories.armourContents != null ? decode(member.inventories.armourContents.data) : List.of();
+		List<ItemStack> armour = member.inventories.armourContents != null ? decode(member.inventories.armourContents.data).reversed() : List.of();
 		List<ItemStack> equipment = member.inventories.equipmentContents != null ? decode(member.inventories.equipmentContents.data) : List.of();
 		List<ItemStack> enderChest = member.inventories.enderChestContents != null ? decode(member.inventories.enderChestContents.data) : List.of();
 		List<ItemStack> accessories = member.inventories.bagContents.talismanBag != null ? decode(member.inventories.bagContents.talismanBag.data) : List.of();
@@ -81,7 +81,7 @@ public class ItemLoader {
 		// When a wardrobe slot is selected it does not appear so we have to add it back manually
 		if (member.inventories.equippedWardrobeSlot != -1) {
 			// Note: The equipped slot is not zero-indexed
-			wardrobeContents.addAll(Math.min((member.inventories.equippedWardrobeSlot - 1) * 4, wardrobeContents.size()), armour.reversed());
+			wardrobeContents.addAll(Math.min((member.inventories.equippedWardrobeSlot - 1) * 4, wardrobeContents.size()), armour);
 		}
 
 		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), new ProfileItemStorage.Bags(accessories));
