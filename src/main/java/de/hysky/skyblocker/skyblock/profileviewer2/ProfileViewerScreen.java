@@ -68,7 +68,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
 				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
 				this.contentLayout.arrangeElements();
-				repositionElements();
+				this.repositionElements();
 				this.loadedPages.add(page);
 			}, this.minecraft).exceptionallyAsync(throwable -> {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to load {} page!", page.getName().getString(), throwable);
@@ -100,7 +100,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	protected void init() {
-		repositionElements();
+		this.repositionElements();
 	}
 
 	@Override
