@@ -82,7 +82,7 @@ class GlobalOptionsScreen extends Screen {
 
 		body.addChild(new StringWidget(Component.literal(parent.getCurrentLocation() + "'s options"), font));
 		GridLayout.RowHelper screenOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
-		screenOptions.addChild(Button.builder(Component.literal("Edit visible Fancy TAB widgets"), _ -> minecraft.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
+		screenOptions.addChild(Button.builder(Component.literal("Edit visible Fancy TAB widgets"), _ -> minecraft.gui.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
 
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
@@ -101,7 +101,7 @@ class GlobalOptionsScreen extends Screen {
 	@Override
 	public void onClose() {
 		SkyblockerConfigManager.update(_ -> {});
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private static class HiddenWidgetsPopup extends AbstractPopupScreen {

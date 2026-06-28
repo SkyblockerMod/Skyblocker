@@ -539,7 +539,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	public void openPopup(Function<WidgetsConfigurationScreen, Screen> popupCreator) {
-		minecraft.setScreen(popupCreator.apply(this));
+		minecraft.gui.setScreen(popupCreator.apply(this));
 	}
 
 	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself) {}

@@ -173,5 +173,10 @@ class TopBarWidget extends AbstractContainerWidget {
 				}
 			}
 		}
+
+		@Override
+		public void removeChildren() {
+			widgets.clear();
+		}
 	}
 }

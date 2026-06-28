@@ -298,7 +298,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 			}
 		}
 
-		if (stack.isEmpty() || stack.is(Items.BLACK_STAINED_GLASS_PANE)) {
+		if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.black())) {
 			entries.remove(slot);
 			return;
 		}
@@ -308,7 +308,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
-		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.RED_STAINED_GLASS_PANE)) {
+		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.STAINED_GLASS_PANE.red())) {
 			entry = new EditableSlotEntry(this, slot, stack);
 		} else if (lowerCase.endsWith("widget")) {
 			entry = new WidgetSlotEntry(this, slot, stack);
