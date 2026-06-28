@@ -1590,7 +1590,7 @@
     "skyblocker.config.dungeons.terminalHud.showGate": "Afficher la Porte",
     "skyblocker.config.dungeons.terminalHud.showTerminals": "Afficher les Terminaux",
     "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "Surligner les Forest Nodes en orange.",
-    "skyblocker.config.uiAndVisuals.slotText.chipLevel": "Niveau du Chip",
+    "skyblocker.config.uiAndVisuals.slotText.chipLevel": "Niveau de la Puce",
     "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "Indicateur des Toolkits",
     "skyblocker.config.uiAndVisuals.slotText.chipLevel.@tooltip": "Affiche le niveau des chips dans le menu des chips.",
     "skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip": "Afficher l'aperçu normal de l'inventaire",
