@@ -138,7 +138,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		});
 
-		zones.register(InventoryScreen.class, screen -> {
+		zones.register(InventoryScreen.class, _ -> {
 			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden() || GardenPlots.widget == null) return List.of();
 			return List.of(new Rectangle(GardenPlots.widget.getX(), GardenPlots.widget.getY(), GardenPlots.widget.getWidth(), GardenPlots.widget.getHeight()));
 		});
