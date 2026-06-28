@@ -4,7 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.util.profiling.Profiler;
 import org.joml.Vector2i;
 
@@ -17,7 +17,7 @@ import java.util.Set;
  * A {@link LayerBuilder} specialized to display fancy tab
  */
 public class TabLayerBuilder extends LayerBuilder {
-	private final Set<PositionedWidget> merged = new ObjectOpenHashSet<>();
+	private final Set<PositionedWidget> merged = new ObjectLinkedOpenHashSet<>();
 	private final List<PositionedWidget> tabWidgets = new LinkedList<>();
 
 	public void clearTab() {
