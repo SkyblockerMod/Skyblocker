@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class ScreenConfig {
+public record ScreenConfig(LayerConfig hud, LayerConfig tab, LayerConfig secondaryTab, Set<String> hiddenTabWidgets) {
 	public static final ScreenConfig DUMMY = new ScreenConfig(new LayerConfig(), new LayerConfig(), new LayerConfig());
 	public static final Codec<ScreenConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			LayerConfig.CODEC.fieldOf("hud").forGetter(ScreenConfig::hud),
@@ -15,15 +15,8 @@ public class ScreenConfig {
 			LayerConfig.CODEC.fieldOf("secondary_tab").forGetter(ScreenConfig::secondaryTab)
 	).apply(instance, ScreenConfig::new));
 
-	private final LayerConfig hud;
-	private final LayerConfig tab;
-	private final LayerConfig secondaryTab;
-	public final Set<String> hiddenTabWidgets = new ObjectOpenHashSet<>();
-
 	public ScreenConfig(LayerConfig hud, LayerConfig tab, LayerConfig secondaryTab) {
-		this.hud = hud;
-		this.tab = tab;
-		this.secondaryTab = secondaryTab;
+		this(hud, tab, secondaryTab, new ObjectOpenHashSet<>());
 	}
 
 	public ScreenConfig() {
@@ -36,18 +29,6 @@ public class ScreenConfig {
 			case MAIN_TAB ->  tab();
 			case SECONDARY_TAB -> secondaryTab();
 		};
-	}
-
-	public LayerConfig hud() {
-		return hud;
-	}
-
-	public LayerConfig tab() {
-		return tab;
-	}
-
-	public LayerConfig secondaryTab() {
-		return secondaryTab;
 	}
 
 	public Stream<LayerConfig> allLayers() {

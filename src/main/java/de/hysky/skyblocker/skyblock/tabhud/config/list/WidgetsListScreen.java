@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-// TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListScreen extends Screen implements ContainerListener {
 	public static boolean overrideWidgetsScreen = false;
 	public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId(1_000);
@@ -115,11 +114,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				})
 				.size(60, 15)
 				.build(), l -> l.alignHorizontallyLeft().paddingLeft(PADDING));
-		thirdColumnButton = headerLayout.addChild(Button.builder(Component.translatable("gui.back"), _ -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = headerLayout.addChild(Button.builder(Component.literal("if you are seeing this for more than a second, something went very wrong! (no i will not translate this aaron)"), _ -> clickAndWaitForServer(50, 0))
 				.size(120, 15)
 				.build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
 		infoText = headerLayout.addChild(new MultiLineTextWidget(Component.empty(), font).setCentered(true), l -> l.paddingVertical(4));
-		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
+		thirdColumnButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.widgetsList.thirdColumn.@Tooltip")));
 		LinearLayout footer = LinearLayout.horizontal().spacing(10);
 		previousPage = footer.addChild(Button.builder(Component.translatable("book.page_button.previous"), _ -> clickAndWaitForServer(45, 0))
 				.size(100, 15)
@@ -128,9 +127,9 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				.size(100, 15)
 				.build());
 		layout.addToFooter(footer);
-		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), font);
+		waitingForServerText = new StringWidget(Component.translatable("skyblocker.config.hud.widgetsList.waitingForServer"), font);
 		waitingForServerText.setWidth(font.width(waitingForServerText.getMessage()));
-		resetButton = layout.addToFooter(Button.builder(Component.literal("Reset"), _ -> {
+		resetButton = layout.addToFooter(Button.builder(Component.translatable("skyblocker.config.hud.widgetsList.reset"), _ -> {
 			if (resetSlotId == -1) return;
 			clickAndWaitForServer(resetSlotId, 0);
 		}).size(60, 15).build(), l -> l.alignHorizontallyRight().paddingRight(PADDING));
@@ -218,7 +217,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				graphics.fill(colX, startY, colX + colWidth, startY + totalHeight, 0x20FFFFFF);
 				List<Component> column = previewColumns[i];
 				if (column.isEmpty()) {
-					List<FormattedCharSequence> split = font.split(Component.translatable("skyblocker.widgetsList.playerColumn"), colWidth);
+					List<FormattedCharSequence> split = font.split(Component.translatable("skyblocker.config.hud.widgetsList.playerColumn"), colWidth);
 					for (int j = 0; j < split.size(); j++) {
 						graphics.text(font, split.get(j), colX, startY + j * font.lineHeight, -1);
 					}
@@ -283,14 +282,14 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				thirdColumnButton.visible = stack.is(Items.BOOKSHELF) || stack.is(Items.STONE_BUTTON);
 				if (thirdColumnButton.visible) {
 					if (stack.is(Items.STONE_BUTTON))
-						thirdColumnButton.setMessage(Component.literal("Apply to all locations"));
+						thirdColumnButton.setMessage(Component.translatable("skyblocker.config.hud.widgetsList.applyToAllLocations"));
 					else if (ItemUtils.getLoreLineIf(stack, s -> s.contains("DISABLED")) == null) {
 						thirdColumnEnabled = true;
-						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.ENABLED_TEXT));
+						thirdColumnButton.setMessage(Component.translatable("skyblocker.config.hud.widgetsList.thirdColumn", WidgetsListSlotEntry.ENABLED_TEXT));
 						updateInfoText();
 					} else {
 						thirdColumnEnabled = false;
-						thirdColumnButton.setMessage(Component.literal("3rd Column: ").append(WidgetsListSlotEntry.DISABLED_TEXT));
+						thirdColumnButton.setMessage(Component.translatable("skyblocker.config.hud.widgetsList.thirdColumn", WidgetsListSlotEntry.DISABLED_TEXT));
 						updateInfoText();
 					}
 				}
@@ -362,11 +361,11 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 			repositionElements();
 			return;
 		}
-		MutableComponent text = Component.translatable("skyblocker.widgetsList.info.preview");
+		MutableComponent text = Component.translatable("skyblocker.config.hud.widgetsList.info.preview");
 		if (overflowing) {
-			MutableComponent overflowWarning = Component.translatable("skyblocker.widgetsList.info.overflowWarning").withStyle(ChatFormatting.RED).append("\n");
-			if (!thirdColumnEnabled) overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.columnTip")).append("\n");
-			overflowWarning.append(Component.translatable("skyblocker.widgetsList.info.overflowWarning.wrappingSpacingTip"));
+			MutableComponent overflowWarning = Component.translatable("skyblocker.config.hud.widgetsList.info.overflowWarning").withStyle(ChatFormatting.RED).append("\n");
+			if (!thirdColumnEnabled) overflowWarning.append(Component.translatable("skyblocker.config.hud.widgetsList.info.overflowWarning.columnTip")).append("\n");
+			overflowWarning.append(Component.translatable("skyblocker.config.hud.widgetsList.info.overflowWarning.wrappingSpacingTip"));
 			text.append("\n");
 			text.append(overflowWarning);
 		}

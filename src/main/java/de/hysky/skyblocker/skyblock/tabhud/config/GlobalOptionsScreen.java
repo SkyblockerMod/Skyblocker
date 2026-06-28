@@ -36,7 +36,7 @@ class GlobalOptionsScreen extends Screen {
 	private final WidgetsConfigurationScreen parent;
 
 	GlobalOptionsScreen(WidgetsConfigurationScreen parent) {
-		super(Component.translatable("skyblocker.config.hud.globalOptionsScreen.title"));
+		super(Component.translatable("skyblocker.config.hud.otherOptions.title"));
 		this.parent = parent;
 	}
 
@@ -44,7 +44,7 @@ class GlobalOptionsScreen extends Screen {
 	protected void init() {
 		layout.addToHeader(new StringWidget(title, font));
 		LinearLayout body = layout.addToContents(LinearLayout.vertical().spacing(5));
-		body.addChild(new StringWidget(Component.literal("Global Options"), font));
+		body.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.otherOptions.globalOptions"), font));
 		GridLayout.RowHelper globalOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
 		layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 
@@ -75,14 +75,10 @@ class GlobalOptionsScreen extends Screen {
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
 				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (_, value) -> updateConfig(config -> config.compactWidgets = value))
 		);
-		globalOptions.addChild(CycleButton.booleanBuilder(YES, NO, conf.enableFancyWidgetsList)
-				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList.@Tooltip")))
-				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.fancyWidgetsList"), (_, value) -> updateConfig(config -> config.enableFancyWidgetsList = value))
-		);
 
-		body.addChild(new StringWidget(Component.literal(parent.getCurrentLocation() + "'s options"), font));
+		body.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.otherOptions.locationOptions", parent.getCurrentLocation()), font));
 		GridLayout.RowHelper screenOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
-		screenOptions.addChild(Button.builder(Component.literal("Edit visible Fancy TAB widgets"), _ -> minecraft.gui.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
+		screenOptions.addChild(Button.builder(Component.translatable("skyblocker.config.hud.otherOptions.visibleTabWidgets"), _ -> minecraft.gui.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
 
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
@@ -123,12 +119,12 @@ class GlobalOptionsScreen extends Screen {
 				content.addChild(
 						Checkbox.builder(widget.getInformation().displayName(), font)
 								.maxWidth(200)
-								.selected(screenConfig.hiddenTabWidgets.contains(widget.getInternalID()))
+								.selected(screenConfig.hiddenTabWidgets().contains(widget.getInternalID()))
 								.onValueChange((_, value) -> {
 									if (value) {
-										screenConfig.hiddenTabWidgets.add(widget.getInternalID());
+										screenConfig.hiddenTabWidgets().add(widget.getInternalID());
 									} else {
-										screenConfig.hiddenTabWidgets.remove(widget.getInternalID());
+										screenConfig.hiddenTabWidgets().remove(widget.getInternalID());
 									}
 								})
 								.build()

@@ -55,7 +55,7 @@ public interface ElementCollector {
 	}
 
 	/**
-	 * @return [entryName] [entryContent.formatted(contentFmt)]
+	 * @return a component in the form "entryName entryContent" with entryContent formatted with contentFmt
 	 */
 	static Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
 		return Component.literal(entryName).append(Component.literal(entryContent).withStyle(contentFmt));

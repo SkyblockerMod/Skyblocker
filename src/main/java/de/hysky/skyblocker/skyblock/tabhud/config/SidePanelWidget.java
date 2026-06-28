@@ -110,13 +110,13 @@ class SidePanelWidget extends AbstractContainerWidget {
 			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(positionedWidget)).build());
 		}
 
-		add(Button.builder(Component.literal("Copy to..."), _ -> configScreen.openPopup(screen -> new CopyToPopup(
+		add(Button.builder(Component.translatable("skyblocker.config.hud.copy.copyTo"), _ -> configScreen.openPopup(screen -> new CopyToPopup(
 						screen,
 						positionedWidget,
 						screen.getCurrentLocation(),
 						screen.getCurrentScreenLayer()
 				)))
-				.tooltip(Tooltip.create(Component.literal("Copy this widget to other locations."))).build());
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyTo.@Tooltip"))).build());
 
 		layout.addChild(SpacerElement.height(10));
 

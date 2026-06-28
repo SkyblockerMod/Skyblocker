@@ -53,16 +53,16 @@ class CopyToPopup extends AbstractPopupScreen {
 
 	@Override
 	protected void init() {
-		layout.addChild(Checkbox.builder(Component.literal("Copy Position"), font)
+		layout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.hud.copy.copyPosition"), font)
 				.selected(selectedLocations.isEmpty()) // automatically select if it's empty
-				.tooltip(Tooltip.create(Component.literal("If unchecked will not copy the position and only affect locations where the widget is already present.")))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyPosition.@Tooltip")))
 				.onValueChange((_, value) -> copyPosition = value).build()
 		);
-		layout.addChild(new StringWidget(Component.literal("Target locations").withStyle(ChatFormatting.BOLD), font), settings -> settings.paddingVertical(4));
+		layout.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.copy.targetLocations").withStyle(ChatFormatting.BOLD), font), settings -> settings.paddingVertical(4));
 		LinearLayout content = LinearLayout.vertical().spacing(2);
 
 		List<Checkbox> checkboxes = new ArrayList<>();
-		Checkbox selectAll = content.addChild(Checkbox.builder(Component.literal("Select All").withStyle(ChatFormatting.BOLD), font)
+		Checkbox selectAll = content.addChild(Checkbox.builder(Component.translatable("skyblocker.config.hud.copy.selectAll").withStyle(ChatFormatting.BOLD), font)
 				.maxWidth(200)
 				.selected(selectedLocations.containsAll(WidgetManager.ALLOWED_LOCATIONS))
 				.onValueChange((_, value) -> {

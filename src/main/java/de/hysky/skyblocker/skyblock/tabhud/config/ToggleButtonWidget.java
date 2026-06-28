@@ -12,7 +12,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 class ToggleButtonWidget extends AbstractButton {
-
 	private final BooleanConsumer onPress;
 	private boolean state;
 
@@ -34,7 +33,7 @@ class ToggleButtonWidget extends AbstractButton {
 		} else {
 			graphics.fill(getX(), y, getRight() + 1, y2, ARGB.color(50, 0));
 		}
-		int color = (this.active ? 16777215 : 10526880) | Mth.ceil(this.alpha * 255.0f) << 24;
+		int color = (this.active ? 0xFF_FF_FF_FF : 0xFF_A0_A0_A0) | Mth.ceil(this.alpha * 255.0f) << 24;
 		int textWidth = minecraftClient.font.width(getMessage());
 		int startX, endX;
 		int squareX;

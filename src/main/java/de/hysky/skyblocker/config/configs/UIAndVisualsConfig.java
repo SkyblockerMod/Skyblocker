@@ -178,8 +178,6 @@ public class UIAndVisualsConfig {
 	public static class TabHudConf {
 		public boolean tabHudEnabled = true;
 
-		public boolean enableFancyWidgetsList = true;
-
 		public int tabHudScale = 100;
 
 		public boolean showVanillaTabByDefault = true;

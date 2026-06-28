@@ -8,12 +8,7 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class OptionWidgetCollector {
-	private final List<AbstractWidget> collectorList;
-
-	public OptionWidgetCollector(List<AbstractWidget> collector) {
-		this.collectorList = collector;
-	}
+public record OptionWidgetCollector(List<AbstractWidget> collectorList) {
 
 	public <T extends AbstractWidget> T addWidget(T widget) {
 		collectorList.add(widget);

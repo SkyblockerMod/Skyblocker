@@ -132,7 +132,6 @@ public abstract class HudWidget implements LayoutElement {
 	}
 
 	public final boolean isMouseOver(double mouseX, double mouseY) {
-		// FIXME scaled
 		return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
 	}
 

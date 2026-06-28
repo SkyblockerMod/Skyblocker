@@ -12,7 +12,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
-import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -22,10 +21,8 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -76,7 +73,6 @@ public class WidgetManager {
 
 	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
 
-	private static boolean showOldVersionMessage = false;
 	private static boolean hasFancyTab = false;
 
 	public static ScreenConfig getScreenConfig(Location screenId) {
@@ -123,18 +119,6 @@ public class WidgetManager {
 			loadConfig();
 
 			PlayerListManager.registerTabListener(WidgetManager::onPlayerListUpdate);
-		});
-
-		SkyblockEvents.JOIN.register(() -> {
-			if (showOldVersionMessage) {
-				Scheduler.INSTANCE.schedule(() -> {
-					if (Minecraft.getInstance().player == null) return;
-					Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(
-							"The HUD system has changed! Sadly your previous config couldn't be ported over due to complications... Check out /skyblocker hud!"
-					));
-					showOldVersionMessage = false;
-				}, 10 * 20); // displays a bit too early and gets burried by tips and other stuff instantly, so we delay a bit
-			}
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveConfig());

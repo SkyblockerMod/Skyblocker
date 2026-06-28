@@ -39,7 +39,7 @@ public class ScreenBuilder {
 	}
 
 	public void updateFancyTab() {
-		tab.updateTab(config.hiddenTabWidgets);
+		tab.updateTab(config.hiddenTabWidgets());
 	}
 
 	public void clearFancyTab() {

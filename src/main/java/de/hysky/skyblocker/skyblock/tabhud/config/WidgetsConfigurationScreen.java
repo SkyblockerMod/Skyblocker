@@ -457,8 +457,8 @@ public class WidgetsConfigurationScreen extends Screen {
 				.get(widget.widget.getInternalID())
 				.flatMap(sets -> sets.whereHas(location));
 		locationsWithCopies.ifPresent(set -> openPopup(screen ->
-				new PopupScreen.Builder(screen, Component.literal("Delete Copies"))
-						.addMessage(Component.literal("Do you want to delete copies of this widget in other locations?"))
+				new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
+						.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
 						.addButton(CommonComponents.GUI_YES, popup -> {
 							set.clear();
 							removeCopies(set, widget.widget.getInternalID());
