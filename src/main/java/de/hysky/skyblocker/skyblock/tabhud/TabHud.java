@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class TabHud {
 	public static KeyMapping toggleSecondary;
-	private static KeyMapping defaultTgl;
+	public static KeyMapping defaultTgl;
 
 	@Init
 	public static void init() {

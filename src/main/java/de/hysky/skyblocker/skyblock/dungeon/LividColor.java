@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,15 +25,15 @@ import java.util.function.Supplier;
 
 public class LividColor {
 	private static final Map<Block, ChatFormatting> WOOL_TO_FORMATTING = Map.of(
-			Blocks.RED_WOOL, ChatFormatting.RED,
-			Blocks.YELLOW_WOOL, ChatFormatting.YELLOW,
-			Blocks.LIME_WOOL, ChatFormatting.GREEN,
-			Blocks.GREEN_WOOL, ChatFormatting.DARK_GREEN,
-			Blocks.BLUE_WOOL, ChatFormatting.BLUE,
-			Blocks.MAGENTA_WOOL, ChatFormatting.LIGHT_PURPLE,
-			Blocks.PURPLE_WOOL, ChatFormatting.DARK_PURPLE,
-			Blocks.GRAY_WOOL, ChatFormatting.GRAY,
-			Blocks.WHITE_WOOL, ChatFormatting.WHITE
+			Blocks.WOOL.red(), ChatFormatting.RED,
+			Blocks.WOOL.yellow(), ChatFormatting.YELLOW,
+			Blocks.WOOL.lime(), ChatFormatting.GREEN,
+			Blocks.WOOL.green(), ChatFormatting.DARK_GREEN,
+			Blocks.WOOL.blue(), ChatFormatting.BLUE,
+			Blocks.WOOL.magenta(), ChatFormatting.LIGHT_PURPLE,
+			Blocks.WOOL.purple(), ChatFormatting.DARK_PURPLE,
+			Blocks.WOOL.gray(), ChatFormatting.GRAY,
+			Blocks.WOOL.white(), ChatFormatting.WHITE
 	);
 	private static final Map<String, ChatFormatting> LIVID_TO_FORMATTING = Map.of(
 			"Hockey Livid", ChatFormatting.RED,
@@ -106,8 +107,8 @@ public class LividColor {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().append(message).getString(), true);
 		}
 		if (CONFIG.get().enableLividColorTitle) {
-			client.gui.resetTitleTimes();
-			client.gui.setTitle(message);
+			client.gui.hud.resetTitleTimes();
+			client.gui.hud.setTitle(message);
 		}
 	}
 
@@ -126,8 +127,8 @@ public class LividColor {
 	@SuppressWarnings("DataFlowIssue")
 	public static int getGlowColor(String name) {
 		if (SkyblockerConfigManager.get().dungeons.livid.enableSolidColor) return SkyblockerConfigManager.get().dungeons.livid.customColor.getRGB();
-		if (LIVID_TO_FORMATTING.containsKey(name)) return LIVID_TO_FORMATTING.get(name).getColor();
-		return ChatFormatting.WHITE.getColor();
+		if (LIVID_TO_FORMATTING.containsKey(name)) return TextColor.fromLegacyFormat(LIVID_TO_FORMATTING.get(name)).getValue();
+		return TextColor.WHITE.getValue();
 	}
 
 	public static int getCorrectLividId() {

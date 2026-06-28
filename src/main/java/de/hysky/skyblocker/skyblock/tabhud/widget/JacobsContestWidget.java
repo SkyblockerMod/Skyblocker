@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -45,7 +46,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, ChatFormatting.YELLOW.getColor(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
+		super("Jacob's Contest", TITLE, TextColor.YELLOW.getValue(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
 	}
 
 	@Override

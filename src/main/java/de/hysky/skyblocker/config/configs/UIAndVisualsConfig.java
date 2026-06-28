@@ -360,6 +360,8 @@ public class UIAndVisualsConfig {
 	public static class SmoothAOTE {
 		public boolean predictive = false;
 
+		public boolean thirdPerson = true;
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;

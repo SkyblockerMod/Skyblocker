@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -28,7 +29,7 @@ public class FireSaleWidget extends TabHudWidget {
 	private static final Pattern FIRE_PATTERN = Pattern.compile("(?<item>.*): (?<avail>\\d*)/(?<total>[0-9.]*)k");
 
 	public FireSaleWidget() {
-		super("Fire Sales", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Fire Sales", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

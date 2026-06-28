@@ -15,10 +15,9 @@ public class ProfileMemberProfile {
 	public @Nullable CoopInvitation coopInvitation;
 	@SerializedName("deletion_notice")
 	public @Nullable DeletionNotice deletionNotice;
-	/**
-	 * If this is not present, the person is not in a coop, and only has the shared coop bank, instead of a personal one.
-	 * @see ApiProfile#banking
-	 */
+	/// If this is not present, the person is not in a coop, and only has the shared coop bank, instead of a personal one.
+	///
+	/// @see ApiProfile#banking
 	@SerializedName("bank_account")
 	public @Nullable Double personalBankAccount;
 

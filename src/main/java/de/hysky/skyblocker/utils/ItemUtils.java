@@ -247,7 +247,7 @@ public final class ItemUtils {
 				}
 			}
 			case "" -> {
-				Screen currentScreen = Minecraft.getInstance().screen;
+				Screen currentScreen = Minecraft.getInstance().gui.screen();
 				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
 					ItemLore lore = stack.get(DataComponents.LORE);
 					if (lore == null) return id;
@@ -718,7 +718,7 @@ public final class ItemUtils {
 	 * For all other items, returns empty.
 	 */
 	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		if (currentScreen instanceof ContainerScreen container) {
 			if (container.getTitle().getString().startsWith("Superpairs")) {
 				if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);

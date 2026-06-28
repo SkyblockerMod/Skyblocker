@@ -99,7 +99,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 	@Override
 	public void onClose() {
 		if (!packetSent) sendPacket("");
-		this.minecraft.setScreen(null);
+		this.minecraft.gui.setScreen(null);
 	}
 
 	@Override

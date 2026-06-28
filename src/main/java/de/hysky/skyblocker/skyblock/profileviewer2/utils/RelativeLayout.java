@@ -66,4 +66,9 @@ public class RelativeLayout implements Layout {
 	}
 
 	private record Child(LayoutElement layoutElement, int relativeX, int relativeY) {}
+
+	@Override
+	public void removeChildren() {
+		this.children.clear();
+	}
 }

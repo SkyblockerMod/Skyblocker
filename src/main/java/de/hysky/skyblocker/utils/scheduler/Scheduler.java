@@ -131,7 +131,7 @@ public class Scheduler {
 	 * @see #queueOpenScreenFactoryCommand(Function)
 	 */
 	public static int queueOpenScreen(Screen screen) {
-		Minecraft.getInstance().schedule(() -> Minecraft.getInstance().setScreen(screen));
+		Minecraft.getInstance().schedule(() -> Minecraft.getInstance().gui.setScreen(screen));
 		return Command.SINGLE_SUCCESS;
 	}
 

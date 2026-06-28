@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Locale;
 
@@ -18,7 +19,7 @@ public class ProfileWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Profile").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 
 	public ProfileWidget() {
-		super("Profile", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Profile", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override

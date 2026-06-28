@@ -59,7 +59,8 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
-								.tags(CommonTags.ADDED_IN_6_2_0)
+								.description(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_2_0, Component.literal("pelt animal"))
 								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
 										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
 										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
@@ -142,7 +143,7 @@ public class OtherLocationsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
 								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.THE_END, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"))

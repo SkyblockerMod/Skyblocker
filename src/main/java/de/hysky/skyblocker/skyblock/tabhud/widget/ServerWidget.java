@@ -10,6 +10,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Locale;
 
@@ -22,7 +23,7 @@ public class ServerWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Server Info").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD);
 
 	public ServerWidget() {
-		super("Area", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Area", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class ForagingCategory {
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
 								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))

@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -19,7 +20,7 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, ChatFormatting.BLUE.getColor(), new Information("hud_pickobulus", Component.literal("Pickobulus HUD"), AVAILABLE_LOCATIONS));
+		super(TITLE, TextColor.BLUE.getValue(), new Information("hud_pickobulus", Component.literal("Pickobulus HUD"), AVAILABLE_LOCATIONS));
 		instance = this;
 		update();
 	}

@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -33,7 +34,7 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	}
 
 	public TreeBreakProgressHud() {
-		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), ChatFormatting.GREEN.getColor(), new Information("hud_treeprogress", Component.literal("Tree Break Progress"), Location.GALATEA));
+		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), TextColor.GREEN.getValue(), new Information("hud_treeprogress", Component.literal("Tree Break Progress"), Location.GALATEA));
 		instance = this;
 		update();
 	}
@@ -96,7 +97,7 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 		ClientLevel world = CLIENT.level;
 		ArmorStand closest;
 
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen) {
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
 			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", ChatFormatting.GREEN, "37%");
 			return;
 		}

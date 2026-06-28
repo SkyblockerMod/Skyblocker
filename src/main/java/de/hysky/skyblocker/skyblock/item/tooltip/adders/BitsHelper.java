@@ -249,7 +249,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	 */
 	private Int2ObjectMap<ItemStack> getSlots() {
 		Minecraft client = Minecraft.getInstance();
-		if (client.screen instanceof AbstractContainerScreen<?> screen) {
+		if (client.gui.screen() instanceof AbstractContainerScreen<?> screen) {
 			AbstractContainerMenu handler = screen.getMenu();
 
 			Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();

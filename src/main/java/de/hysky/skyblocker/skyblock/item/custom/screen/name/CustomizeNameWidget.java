@@ -39,6 +39,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
@@ -91,10 +92,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		addFormattingButtons(builder);
 
 		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), _ ->
-				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
+				client.gui.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
 		).size(48, 16).build(), 2, 17, 1, 3));
 		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), _ ->
-				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
+				client.gui.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
 		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));
 		builder.add(previewWidget = grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.empty(), textRenderer).setMaxWidth(20 * 16, StringWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, LayoutSettings.defaults().paddingVertical(2).alignHorizontallyCenter()));
@@ -114,7 +115,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 		int colorButtonIndex = 0;
 		for (ChatFormatting formatting : ChatFormatting.values()) {
-			if (formatting.isColor()) {
+			if (TextColor.fromLegacyFormat(formatting) != null) {
 				builder.add(grid.addChild(new ColorButton(formatting), 2, colorButtonIndex++));
 			}
 		}
@@ -396,7 +397,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(color.getColor());
+			this.intColor = ARGB.opaque(TextColor.fromLegacyFormat(color).getValue());
 		}
 
 		@Override

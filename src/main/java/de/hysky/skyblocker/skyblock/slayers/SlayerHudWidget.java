@@ -11,6 +11,8 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
 import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -25,7 +27,7 @@ public class SlayerHudWidget extends ElementBasedWidget {
 	private static @Nullable SlayerHudWidget instance;
 
 	public SlayerHudWidget() {
-		super(Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_slayer", Component.literal("Slayer HUD"), AVAILABLE_LOCATIONS));
+		super(Component.literal("Slayer").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD), TextColor.DARK_PURPLE.getValue(), new Information("hud_slayer", Component.literal("Slayer HUD"), AVAILABLE_LOCATIONS));
 		instance = this;
 		update();
 	}
@@ -46,7 +48,7 @@ public class SlayerHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen) {
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
 			SlayerType slayerType = SlayerType.REVENANT;
 			SlayerTier slayerTier = SlayerTier.V;
 

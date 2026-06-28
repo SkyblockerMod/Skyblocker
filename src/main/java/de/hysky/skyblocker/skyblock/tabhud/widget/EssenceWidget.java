@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Locale;
 
@@ -20,7 +21,7 @@ public class EssenceWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public EssenceWidget() {
-		super("Essence", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DUNGEON_HUB);
+		super("Essence", TITLE, TextColor.DARK_AQUA.getValue(), Location.DUNGEON_HUB);
 	}
 
 	@Override

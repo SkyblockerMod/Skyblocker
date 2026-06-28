@@ -103,7 +103,7 @@ public class HuntingCategory {
 								.name(Component.translatable("skyblocker.config.hunting.lassoHud.hud.screen"))
 								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
 								.build())
 
 						.build())

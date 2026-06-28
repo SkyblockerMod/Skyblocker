@@ -174,9 +174,9 @@ public class BlockBreakPrediction {
 							//if its mithril edit it to the actual strength as that is not in the repo
 							if (data.name.equals("Mithril Ore")) {
 								Block block = getBlockFromRepo(skyblockBlockType.itemId);
-								if (block == Blocks.GRAY_WOOL || block == Blocks.CYAN_TERRACOTTA) {
+								if (block == Blocks.WOOL.gray() || block == Blocks.DYED_TERRACOTTA.cyan()) {
 									addStrength(location, block, 500, data.breakingPower);
-								} else if (block == Blocks.LIGHT_BLUE_WOOL) {
+								} else if (block == Blocks.WOOL.lightBlue()) {
 									addStrength(location, block, 1500, data.breakingPower);
 								} else {
 									addStrength(location, block, 800, data.breakingPower);

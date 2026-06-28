@@ -432,7 +432,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(previousScreen);
+		this.minecraft.gui.setScreen(previousScreen);
 	}
 
 	public void removeWidget(PositionedWidget widget) {

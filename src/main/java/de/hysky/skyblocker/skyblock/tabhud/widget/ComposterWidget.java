@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.Locale;
 
@@ -21,7 +22,7 @@ public class ComposterWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public ComposterWidget() {
-		super("Composter", TITLE, ChatFormatting.GREEN.getColor(), new Information("composter", Component.literal("Composter"), Location.GARDEN));
+		super("Composter", TITLE, TextColor.GREEN.getValue(), new Information("composter", Component.literal("Composter"), Location.GARDEN));
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
 import org.slf4j.Logger;
 
 import java.util.regex.Matcher;
@@ -31,7 +33,7 @@ public class CommsWidget extends TabHudWidget {
 	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	public CommsWidget() {
-		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor(), new Information("commissions", Component.literal("Commissions"), Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS));
+		super("Commissions", TITLE, TextColor.DARK_AQUA.getValue(), new Information("commissions", Component.literal("Commissions"), Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS));
 	}
 
 	@Override

@@ -69,7 +69,7 @@ public class EventConfigTimesEditScreen extends Screen {
 				.mapToInt(b -> b.seconds)
 				.sorted()
 				.collect(IntArrayList::new, IntArrayList::add, IntArrayList::addAll));
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private class EntryList extends ContainerObjectSelectionList<EventConfigTimesEditScreen.Entry> {

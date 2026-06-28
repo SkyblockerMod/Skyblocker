@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -188,7 +189,7 @@ public class CorpseFinder {
 				Constants.PREFIX.get()
 						.append("Found a ")
 						.append(Component.literal(WordUtils.capitalizeFully(corpse.corpseType.getSerializedName()) + " Corpse")
-								.withColor(corpse.corpseType.color.getColor()))
+								.withColor(TextColor.fromLegacyFormat(corpse.corpseType.color).getValue()))
 						.append(" at " + corpse.entity.blockPosition().above().toShortString() + "!")
 						.withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/skyblocker corpseHelper shareLocation " + PosUtils.toSpaceSeparatedString(corpse.waypoint.pos) + " " + corpse.corpseType.toString().toLowerCase(Locale.ENGLISH)))
 								.withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to share the location in chat!").withStyle(ChatFormatting.GREEN)))));
@@ -200,7 +201,7 @@ public class CorpseFinder {
 
 	@SuppressWarnings("DataFlowIssue")
 	private static float[] getColors(ChatFormatting color) {
-		return ColorUtils.getFloatComponents(color.getColor());
+		return ColorUtils.getFloatComponents(TextColor.fromLegacyFormat(color).getValue());
 	}
 
 	// Since read in their format, might as well send in their format too.

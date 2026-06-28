@@ -21,6 +21,8 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -187,7 +189,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
-				ChatFormatting.GOLD.getColor(), 3, 0, false, new Information("dungeon_splits", Component.literal("Dungeon Splits"), Location.DUNGEON));
+				TextColor.GOLD.getValue(), 3, 0, false, new Information("dungeon_splits", Component.literal("Dungeon Splits"), Location.DUNGEON));
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -319,7 +321,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public void updateContent() {
-		if (!(Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen)) {
+		if (!(Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen)) {
 			updateFloor();
 			loadFloorSplits();
 		}

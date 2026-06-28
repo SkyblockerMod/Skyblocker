@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
@@ -19,7 +20,7 @@ public class DungeonDownedWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		super("Dungeon Downed", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 	}
 
 	@Override

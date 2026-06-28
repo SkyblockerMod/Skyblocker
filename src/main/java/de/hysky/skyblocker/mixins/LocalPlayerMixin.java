@@ -53,34 +53,34 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 	@Inject(method = "openTextEdit", at = @At("HEAD"), cancellable = true)
 	public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
 		// Fancy Party Finder
-		if (!PartyFinderScreen.isInKuudraPartyFinder && minecraft.screen instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
+		if (!PartyFinderScreen.isInKuudraPartyFinder && minecraft.gui.screen() instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
 			partyFinderScreen.updateSign(sign, front);
 			ci.cancel();
 			return;
 		}
 
-		if (minecraft.screen instanceof AuctionViewScreen auctionViewScreen) {
-			this.minecraft.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
+		if (minecraft.gui.screen() instanceof AuctionViewScreen auctionViewScreen) {
+			this.minecraft.gui.setScreen(new EditBidPopup(auctionViewScreen, sign, front, auctionViewScreen.minBid));
 			ci.cancel();
 		}
 
 		// Search Overlay
-		if (minecraft.screen != null) {
+		if (minecraft.gui.screen() != null) {
 			UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
 			boolean isInputSign = sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query");
 			if (!isInputSign) return;
 
-			if (config.enableAuctionHouse && minecraft.screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
+			if (config.enableAuctionHouse && minecraft.gui.screen().getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.AUCTION);
-				minecraft.setScreen(new OverlayScreen());
+				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableBazaar && minecraft.screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
+			} else if (config.enableBazaar && minecraft.gui.screen().getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.BAZAAR);
-				minecraft.setScreen(new OverlayScreen());
+				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableMuseum && minecraft.screen.getTitle().getString().contains("Museum")) {
+			} else if (config.enableMuseum && minecraft.gui.screen().getTitle().getString().contains("Museum")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.MUSEUM);
-				minecraft.setScreen(new OverlayScreen());
+				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
 			}
 		}

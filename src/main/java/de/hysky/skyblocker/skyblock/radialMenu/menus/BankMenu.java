@@ -18,6 +18,6 @@ public class BankMenu extends RegexMenu {
 	@Override
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
-		return !(item.equals(Items.BLACK_STAINED_GLASS_PANE) || item.equals(Items.GOLD_BLOCK) || item.equals(Items.REDSTONE_TORCH) || item.equals(Items.FILLED_MAP));
+		return !(item.equals(Items.STAINED_GLASS_PANE.black()) || item.equals(Items.GOLD_BLOCK) || item.equals(Items.REDSTONE_TORCH) || item.equals(Items.FILLED_MAP));
 	}
 }

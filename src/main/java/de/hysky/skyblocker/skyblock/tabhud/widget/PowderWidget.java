@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -42,7 +43,7 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
+		super("Powders", TITLE, TextColor.DARK_AQUA.getValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override

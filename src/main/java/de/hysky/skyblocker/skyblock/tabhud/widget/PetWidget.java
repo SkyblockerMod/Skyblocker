@@ -14,8 +14,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 @RegisterWidget
 public class PetWidget extends TabHudWidget {
@@ -26,7 +27,7 @@ public class PetWidget extends TabHudWidget {
 	///
 	/// See: <a href="https://canary.discord.com/channels/997079228510117908/1489752282948964483">SkyHanni Discord</a>
 	private static final LoadingCache<String, FlexibleItemStack> PET_ICON_CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(5, TimeUnit.MINUTES)
+			.expireAfterWrite(Duration.ofMinutes(5L))
 			.build(new CacheLoader<>() {
 				@Override
 				public FlexibleItemStack load(String key) throws Exception {
@@ -38,7 +39,7 @@ public class PetWidget extends TabHudWidget {
 	private FlexibleItemStack icon = Ico.BONE;
 
 	public PetWidget() {
-		super("Pet", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Pet", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override

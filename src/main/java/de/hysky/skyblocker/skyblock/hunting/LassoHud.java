@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -35,7 +36,7 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_lasso", Component.literal("Lasso HUD"), Location.GALATEA));
+		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), new Information("hud_lasso", Component.literal("Lasso HUD"), Location.GALATEA));
 		instance = this;
 	}
 

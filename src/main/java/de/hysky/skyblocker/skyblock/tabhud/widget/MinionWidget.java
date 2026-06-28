@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.Items;
 
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class MinionWidget extends TabHudWidget {
 		MIN_ICOS.put("Potato", new FlexibleItemStack(Items.POTATO));
 		MIN_ICOS.put("Pumpkin", new FlexibleItemStack(Items.PUMPKIN));
 		MIN_ICOS.put("Rabbit", new FlexibleItemStack(Items.RABBIT));
-		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WHITE_WOOL));
+		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WOOL.white()));
 		MIN_ICOS.put("Sugar Cane", new FlexibleItemStack(Items.SUGAR_CANE));
 		MIN_ICOS.put("Wheat", new FlexibleItemStack(Items.WHEAT));
 		MIN_ICOS.put("Clay", new FlexibleItemStack(Items.CLAY));
@@ -95,7 +96,7 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.PRIVATE_ISLAND);
+		super("Minions", TITLE, TextColor.DARK_AQUA.getValue(), Location.PRIVATE_ISLAND);
 	}
 
 	@Override

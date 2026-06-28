@@ -96,7 +96,7 @@ public class NamedWaypoint extends Waypoint {
 	public NamedWaypoint(BlockPos pos, Component name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean enabled, boolean throughWalls) {
 		super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, throughWalls, enabled);
 		this.name = name;
-		this.centerPos = pos.getCenter();
+		this.centerPos = Vec3.atCenterOf(pos);
 	}
 
 	public static NamedWaypoint fromSkytils(int x, int y, int z, String name, int color, boolean enabled) {

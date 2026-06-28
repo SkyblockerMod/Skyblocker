@@ -6,7 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -43,7 +43,7 @@ public class ElectionWidget extends TabHudWidget {
 	private static final ChatFormatting[] COLS = { ChatFormatting.RED, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.AQUA, ChatFormatting.YELLOW };
 
 	public ElectionWidget() {
-		super("Election", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Election", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class ElectionWidget extends TabHudWidget {
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
 					Component candidate = Component.literal(mayorname).withStyle(COLS[i]);
-					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i].getColor()));
+					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, TextColor.fromLegacyFormat(COLS[i]).getValue()));
 				} else this.addElement(new PlainTextElement(lines.get(i)));
 			}
 		}

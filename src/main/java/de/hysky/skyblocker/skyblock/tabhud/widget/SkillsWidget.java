@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ public class SkillsWidget extends TabHudWidget {
 	private static final Pattern SKILL_PATTERN = Pattern.compile("([A-Za-z]* [0-9]*): ([0-9.MAX]*)%?");
 
 	public SkillsWidget() {
-		super("Skills", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Skills", TITLE, TextColor.YELLOW.getValue());
 
 	}
 
@@ -42,7 +43,7 @@ public class SkillsWidget extends TabHudWidget {
 
 				if (!pcntStr.equals("MAX")) {
 					float pcnt = Float.parseFloat(pcntStr);
-					progress = Elements.progressComponent(Ico.LANTERN, Component.nullToEmpty(skill), pcnt, ChatFormatting.GOLD.getColor());
+					progress = Elements.progressComponent(Ico.LANTERN, Component.nullToEmpty(skill), pcnt, TextColor.GOLD.getValue());
 				} else {
 					addSimpleIcoText(Ico.LANTERN, skill + ": ", ChatFormatting.RED, pcntStr);
 					continue;

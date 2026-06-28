@@ -24,6 +24,7 @@ import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
@@ -75,6 +76,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		if (!(entity instanceof ArmorStand armorStandEntity)) return;
 
 		SlayerManager.checkSlayerBoss(armorStandEntity);
+		BeaconHighlighter.onEntitySpawn(armorStandEntity);
 		FirePillarAnnouncer.checkFirePillar(entity);
 
 		CorpseFinder.checkIfCorpse(armorStandEntity);

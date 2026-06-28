@@ -71,7 +71,7 @@ public class EventNotifications {
 									long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
 									int duration = context.getArgument("duration", int.class);
 									if (context.getArgument("jacob", Boolean.class)) {
-										Minecraft.getInstance().getToastManager().addToast(
+										Minecraft.getInstance().gui.toastManager().addToast(
 												new JacobEventToast(
 														time,
 														time + duration,
@@ -80,7 +80,7 @@ public class EventNotifications {
 												)
 										);
 									} else {
-										Minecraft.getInstance().getToastManager().addToast(
+										Minecraft.getInstance().gui.toastManager().addToast(
 												new EventToast(
 														time,
 														time + duration,
@@ -166,7 +166,7 @@ public class EventNotifications {
 				if (newTime + reminderTime < skyblockEvent.start() || currentTime + reminderTime >= skyblockEvent.start()) continue;
 				Minecraft instance = Minecraft.getInstance();
 				if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
-					instance.getToastManager().addToast(
+					instance.gui.toastManager().addToast(
 							new JacobEventToast(
 									skyblockEvent.start(),
 									skyblockEvent.start() + skyblockEvent.duration(),
@@ -175,7 +175,7 @@ public class EventNotifications {
 							)
 					);
 				} else {
-					instance.getToastManager().addToast(
+					instance.gui.toastManager().addToast(
 							new EventToast(
 									skyblockEvent.start(),
 									skyblockEvent.start() + skyblockEvent.duration(),

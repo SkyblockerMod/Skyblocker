@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +26,7 @@ public class DungeonServerWidget extends TabHudWidget {
 	private static final Pattern SECRET_PATTERN = Pattern.compile("Secrets Found: (?<secnum>.*)%");
 
 	public DungeonServerWidget() {
-		super("Dungeon Info", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		super("Dungeon Info", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class DungeonServerWidget extends TabHudWidget {
 		} else {
 			this.addElement(Elements.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
-					ChatFormatting.DARK_PURPLE.getColor()));
+					TextColor.DARK_PURPLE.getValue()));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GOLD, 45);

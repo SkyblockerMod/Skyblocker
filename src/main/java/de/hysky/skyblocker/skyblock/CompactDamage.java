@@ -3,18 +3,18 @@ package de.hysky.skyblocker.skyblock;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.OkLabColor;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class CompactDamage {
@@ -22,27 +22,30 @@ public class CompactDamage {
 	// Capture Group 2: Ring of Love, Tara Armor, End Stone Sword, Voodoo Doll, Guardian Pet
 	private static final Pattern DAMAGE_PATTERN = Pattern.compile("([✧✯]?)[\\d,]+[✧✯]?([❤+⚔☄♞]?)");
 
-	private CompactDamage() {
-	}
+	private CompactDamage() {}
 
 	public static void compactDamage(ArmorStand entity) {
-		UIAndVisualsConfig.CompactDamage config = SkyblockerConfigManager.get().uiAndVisuals.compactDamage;
-
-		if (!config.enabled) return;
+		if (!SkyblockerConfigManager.get().uiAndVisuals.compactDamage.enabled) return;
 		if (!entity.isInvisible() || !entity.hasCustomName() || !entity.isCustomNameVisible()) return;
-
 		Component customName = entity.getCustomName();
 		if (customName == null) return;
+		Component prettierCustomName = compactDamage(customName);
+		if (prettierCustomName == null) return;
+		entity.skyblocker$setCustomName(prettierCustomName);
+	}
 
+	@VisibleForTesting
+	public static @Nullable Component compactDamage(Component customName) {
+		UIAndVisualsConfig.CompactDamage config = SkyblockerConfigManager.get().uiAndVisuals.compactDamage;
 		String customNameString = customName.getString();
 		Matcher matcher = DAMAGE_PATTERN.matcher(customNameString);
-		if (!matcher.matches()) return;
+		if (!matcher.matches()) return null;
 		List<Component> siblings = customName.getSiblings();
-		if (siblings.isEmpty()) return;
+		if (siblings.isEmpty()) return null;
 
 		final boolean isCrit = !matcher.group(1).isEmpty();
 		final String dmg = customNameString.replaceAll("\\D", "");
-		if (!NumberUtils.isParsable(dmg)) return; //Sanity check
+		if (!NumberUtils.isParsable(dmg)) return null; //Sanity check
 		final TextColor textColor = siblings.getFirst().getStyle().getColor();
 
 		MutableComponent prettierCustomName = Component.empty();
@@ -74,7 +77,7 @@ public class CompactDamage {
 		}
 		// Add the additional symbol back, if present
 		if (!matcher.group(2).isEmpty()) prettierCustomName.append(Component.literal(matcher.group(2)).setStyle(siblings.getLast().getStyle()));
-		entity.skyblocker$setCustomName(prettierCustomName);
+		return prettierCustomName;
 	}
 
 	// We want precision to signify the *number of significant digits*, not the number of digits after the decimal.

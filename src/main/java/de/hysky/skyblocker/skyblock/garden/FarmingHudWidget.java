@@ -16,6 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -80,7 +81,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	private final Minecraft client = Minecraft.getInstance();
 
 	public FarmingHudWidget() {
-		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", Component.literal("Farming HUD"), Location.GARDEN));
+		super(TITLE, TextColor.YELLOW.getValue(), new Information("hud_farming", Component.literal("Farming HUD"), Location.GARDEN));
 		instance = this;
 		update();
 	}
@@ -122,7 +123,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
 		if (config.experience) {
 			//noinspection DataFlowIssue
-			addElement(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+			addElement(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), TextColor.GOLD.getValue()));
 			addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.farming.farmingHud.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 		}
 

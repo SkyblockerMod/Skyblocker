@@ -52,7 +52,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.player == null || CLIENT.screen instanceof WidgetsConfigurationScreen) {
+		if (CLIENT.player == null || CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
 			addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
 			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
 			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));

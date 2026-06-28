@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -29,7 +30,7 @@ public class EndHudWidget extends ElementBasedWidget {
 	private static final FlexibleItemStack POPPY = Util.make(new FlexibleItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
-		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_end", Component.literal("End Hud"), Location.THE_END));
+		super(TITLE, TextColor.DARK_PURPLE.getValue(), new Information("hud_end", Component.literal("End Hud"), Location.THE_END));
 		instance = this;
 		this.update();
 	}

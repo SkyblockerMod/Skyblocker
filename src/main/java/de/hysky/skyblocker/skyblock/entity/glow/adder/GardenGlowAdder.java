@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -36,10 +36,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 			case ArmorStand as when isPestHead(as) ->
 					doesPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
-							ChatFormatting.GREEN.getColor() :
+							TextColor.GREEN.getValue() :
 							// Pests from currently playing vinyl
 							doesPestMatchCurrentVinyl(as) ?
-									ChatFormatting.DARK_AQUA.getColor() :
+									TextColor.DARK_AQUA.getValue() :
 									// Default color
 									PEST_COLOUR;
 			default -> NO_GLOW;

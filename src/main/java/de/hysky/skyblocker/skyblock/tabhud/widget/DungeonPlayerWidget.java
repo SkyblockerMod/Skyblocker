@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,7 +26,7 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		super("Dungeon Player " + player, TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 		this.player = player;
 	}
 

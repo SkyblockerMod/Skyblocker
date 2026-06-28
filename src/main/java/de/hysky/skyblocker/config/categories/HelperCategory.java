@@ -6,9 +6,11 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.FloatController;
@@ -200,6 +202,11 @@ public class HelperCategory {
 										() -> config.helpers.fishing.enableFishingHud,
 										newValue -> config.helpers.fishing.enableFishingHud = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.screen"))
+								.prompt(Component.translatable("text.skyblocker.open"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 								.build())
 						.option(Option.<HelperConfig.Fishing.FishingHookDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.fishingHookDisplay"))
@@ -425,7 +432,11 @@ public class HelperCategory {
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.itemPriceLookup"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ItemPrice.ITEM_PRICE_LOOKUP)
+								.build())
 						.build())
 				// Great Spook Event
 				.group(OptionGroup.createBuilder()

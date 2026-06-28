@@ -8,6 +8,7 @@ import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 	private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
 	public DungeonPuzzleWidget() {
-		super("Dungeon Puzzles", TITLE, ChatFormatting.DARK_PURPLE.getColor(), Location.DUNGEON);
+		super("Dungeon Puzzles", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 	}
 
 	@Override

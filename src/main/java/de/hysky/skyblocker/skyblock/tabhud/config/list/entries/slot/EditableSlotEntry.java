@@ -23,7 +23,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 			this.parent.clickAndWaitForServer(this.slotId, 0);
 			this.parent.resetScrollOnLoad();
 		}).size(32, 12).build();
-		this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.is(Items.RED_STAINED_GLASS_PANE);
+		this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.is(Items.STAINED_GLASS_PANE.red());
 	}
 
 	@Override

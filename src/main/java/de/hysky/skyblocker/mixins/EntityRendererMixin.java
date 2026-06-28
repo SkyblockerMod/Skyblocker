@@ -8,13 +8,17 @@ import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.ColorUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,6 +58,28 @@ public class EntityRendererMixin {
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			float[] color = ColorUtils.getFloatComponents(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
 			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTicks), color);
+		}
+	}
+
+	// This is meant to be separate from the previous injection for organizational purposes.
+	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
+	private void skyblocker$movePlayerRenderPos(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state, @Local(name = "partialTicks") float partialTicks) {
+		Minecraft client = Minecraft.getInstance();
+
+		if (entity == client.player && !client.options.getCameraType().isFirstPerson()) {
+			Vec3 pos;
+			if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) {
+				pos = PredictiveSmoothAOTE.getInterpolatedPlayerPos();
+
+			} else {
+				pos = ResponsiveSmoothAOTE.getInterpolatedPlayerPos(partialTicks);
+			}
+			if (pos != null)
+			{
+				state.x = pos.x;
+				state.y = pos.y;
+				state.z = pos.z;
+			}
 		}
 	}
 

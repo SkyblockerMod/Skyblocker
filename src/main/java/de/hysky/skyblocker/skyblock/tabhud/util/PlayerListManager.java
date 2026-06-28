@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -149,7 +150,7 @@ public class PlayerListManager {
 					if (!doingPlayers) {
 						doingPlayers = true;
 						// noinspection DataFlowIssue
-						hypixelWidgetName = IntObjectPair.of(ChatFormatting.AQUA.getColor(), "Players");
+						hypixelWidgetName = IntObjectPair.of(TextColor.AQUA.getValue(), "Players");
 					}
 					continue;
 				}

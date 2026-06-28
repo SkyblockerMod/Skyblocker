@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 @RegisterWidget
 public class VisitorsWidget extends TabHudWidget {
@@ -14,7 +15,7 @@ public class VisitorsWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public VisitorsWidget() {
-		super("Visitors", TITLE, ChatFormatting.AQUA.getColor());
+		super("Visitors", TITLE, TextColor.AQUA.getValue());
 	}
 
 	@Override

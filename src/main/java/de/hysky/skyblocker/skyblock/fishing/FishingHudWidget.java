@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +36,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), new Information("hud_fishing", Component.literal("Fishing HUD")));
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), new Information("hud_fishing", Component.literal("Fishing HUD")));
 		instance = this;
 	}
 
@@ -67,7 +68,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
+		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
 			addElement(Elements.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
 			addElement(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;

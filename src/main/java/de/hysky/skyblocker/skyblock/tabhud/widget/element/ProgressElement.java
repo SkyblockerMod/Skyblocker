@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
@@ -38,7 +39,7 @@ class ProgressElement extends Element {
 			this.desc = Component.literal("No data").withStyle(ChatFormatting.GRAY);
 			this.bar = Component.literal("---").withStyle(ChatFormatting.GRAY);
 			this.pcnt = 100f;
-			this.color = 0xFF000000 | ChatFormatting.DARK_GRAY.getColor();
+			this.color = 0xFF000000 | TextColor.DARK_GRAY.getValue();
 		} else {
 			this.ico = showIcons ? (ico == null ? Ico.BARRIER : ico) : null;
 			this.desc = description;

@@ -59,7 +59,7 @@ public final class GardenPlots {
 							if (i == 22) continue; // Barn icon
 							Slot slot = screenHandler.slots.get(i);
 							ItemStack stack = slot.getItem();
-							if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
+							if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.red()) || stack.is(Items.OAK_BUTTON) || stack.is(Items.STAINED_GLASS_PANE.black()))
 								continue;
 							// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
 							String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());

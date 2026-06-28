@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ public class EffectWidget extends TabHudWidget {
 	private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
 
 	public EffectWidget() {
-		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Active Effects", TITLE, TextColor.DARK_PURPLE.getValue());
 		PlayerListManager.registerFooterListener(() -> {
 			if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter && WidgetManager.isWidgetInCurrentScreen(this)) update();
 		});
