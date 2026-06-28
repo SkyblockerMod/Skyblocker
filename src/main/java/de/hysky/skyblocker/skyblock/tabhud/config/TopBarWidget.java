@@ -39,7 +39,7 @@ class TopBarWidget extends AbstractContainerWidget {
 		layout = new Layout();
 
 		LinearLayout leftButtons = LinearLayout.horizontal();
-		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.translatable("skyblocker.config.hud.topBar.options"), _ -> parent.openPopup(GlobalOptionsScreen::new));
+		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.translatable("skyblocker.config.hud.topBar.options"), _ -> parent.openPopup(OtherOptionsScreen::new));
 		optionsButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.topBar.options.@Tooltip")));
 		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) ").append(Component.translatable("skyblocker.config.hud.topBar.help")), _ -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.literal("Help"))
 				.addMessage(Component.translatable("skyblocker.config.hud.helpText"))
