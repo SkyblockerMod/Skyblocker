@@ -4,14 +4,18 @@ import com.mojang.authlib.GameProfile;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileViewerPlayer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
-public final class PlayerWidget extends ProfileViewerWidget {
+public final class PlayerWidget extends AbstractWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/player_background");
 	public static final int WIDTH = 82;
 	public static final int HEIGHT = 110;
@@ -26,10 +30,14 @@ public final class PlayerWidget extends ProfileViewerWidget {
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		Font font = Minecraft.getInstance().font;
 		ActiveTextCollector textCollector = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-		textCollector.acceptScrollingWithDefaultCenter(this.entity.getName(), this.getX() + NAME_TAG_X_OFFSET, this.getRight() - NAME_TAG_X_OFFSET, this.getY() + NAME_TAG_Y_OFFSET, this.getY() + NAME_TAG_Y_OFFSET + getFont().lineHeight);
+		textCollector.acceptScrollingWithDefaultCenter(this.entity.getName(), this.getX() + NAME_TAG_X_OFFSET, this.getRight() - NAME_TAG_X_OFFSET, this.getY() + NAME_TAG_Y_OFFSET, this.getY() + NAME_TAG_Y_OFFSET + font.lineHeight);
 		InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), 42, 0.0625f, mouseX, mouseY, this.entity);
 	}
+
+	@Override
+	protected void updateWidgetNarration(NarrationElementOutput output) {}
 }

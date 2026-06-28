@@ -8,14 +8,17 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-public final class InventoryWidget extends ProfileViewerWidget implements HoveredItemStackProvider {
+public final class InventoryWidget extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Identifier CONTAINER_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final int HOTBAR_SEPARATOR_HEIGHT = 4;
 	private final int rows;
@@ -40,6 +43,7 @@ public final class InventoryWidget extends ProfileViewerWidget implements Hovere
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		Font font = Minecraft.getInstance().font;
 		int x = this.getX();
 		int y = this.getY();
 
@@ -57,7 +61,7 @@ public final class InventoryWidget extends ProfileViewerWidget implements Hovere
 		}
 
 		// Draw label
-		graphics.text(getFont(), this.getMessage(), x + 8, y + 6, 0xFF404040, false);
+		graphics.text(font, this.getMessage(), x + 8, y + 6, 0xFF404040, false);
 
 		// Draw Items
 		List<ItemStack> stacks = this.pages.get(this.index);
@@ -81,8 +85,8 @@ public final class InventoryWidget extends ProfileViewerWidget implements Hovere
 
 			// Draw item & item/slot decorations
 			graphics.fakeItem(stack, itemX, itemY);
-			graphics.itemDecorations(getFont(), stack, itemX, itemY);
-			SlotTextManager.extractSlotText(graphics, getFont(), null, stack, i, itemX, itemY);
+			graphics.itemDecorations(font, stack, itemX, itemY);
+			SlotTextManager.extractSlotText(graphics, font, null, stack, i, itemX, itemY);
 		}
 	}
 
