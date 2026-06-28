@@ -8,11 +8,14 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.render.GuiRenderer;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -39,11 +42,15 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 		this.columns = Math.max(columns, 3);
 		this.pages = pages;
 		this.hasHotbar = hasHotbar;
+
+		// Make the widget ignore clicks
+		this.active = false;
 	}
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		Font font = Minecraft.getInstance().font;
+		List<Component> tooltip = null;
 		int x = this.getX();
 		int y = this.getY();
 
@@ -87,6 +94,15 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 			graphics.fakeItem(stack, itemX, itemY);
 			graphics.itemDecorations(font, stack, itemX, itemY);
 			SlotTextManager.extractSlotText(graphics, font, null, stack, i, itemX, itemY);
+
+			if (!stack.isEmpty() && GuiHelper.pointIsInArea(mouseX, mouseY, itemX - 1, itemY - 1, itemX + GuiRenderer.DEFAULT_ITEM_SIZE + 1, itemY + GuiRenderer.DEFAULT_ITEM_SIZE + 1)) {
+				tooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+			}
+		}
+
+		// Draw Tooltip
+		if (tooltip != null) {
+			graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY, null);
 		}
 	}
 
@@ -108,6 +124,11 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 
 	@Override
 	public @Nullable ItemStack getFocusedItem() {

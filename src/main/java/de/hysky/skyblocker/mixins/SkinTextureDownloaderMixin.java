@@ -33,7 +33,7 @@ public class SkinTextureDownloaderMixin {
 
 	@Inject(method = "processLegacySkin", at = @At("HEAD"))
 	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen)) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen || Minecraft.getInstance().gui.screen() instanceof de.hysky.skyblocker.skyblock.profileviewer2.ProfileViewerScreen)) {
 			String skinTextureHash = PlayerHeadHashCache.getSkinHashFromUrl(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));

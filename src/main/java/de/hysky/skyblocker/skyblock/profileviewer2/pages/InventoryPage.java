@@ -97,7 +97,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		layout.addChild(SpacerElement.height(6));
 
 		LinearLayout gearLayout = LinearLayout.horizontal().spacing(4);
-		this.widgets.add(gearLayout.addChild(new InventoryWidget(Component.literal("Armour"), 1, 4, List.of(itemStorage.armour().reversed()), false)));
+		this.widgets.add(gearLayout.addChild(new InventoryWidget(Component.literal("Armour"), 1, 4, List.of(itemStorage.armour()), false)));
 		this.widgets.add(gearLayout.addChild(new InventoryWidget(Component.literal("Equipment"), 1, 4, List.of(itemStorage.equipment()), false)));
 		layout.addChild(gearLayout, layout.newCellSettings().alignHorizontallyCenter());
 
