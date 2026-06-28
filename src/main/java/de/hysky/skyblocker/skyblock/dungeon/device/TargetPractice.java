@@ -67,7 +67,7 @@ public class TargetPractice {
 		// The blocks on the grid are initially Blue Terracotta, when the blocks turns into Emerald Block it is the one that the
 		// player must shoot, so when that block turns back into Blue Terracotta it has either been successfully shot or the device reset.
 		if (POSSIBLE_TARGETS.contains(pos)) {
-			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.BLUE_TERRACOTTA)) {
+			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.DYED_TERRACOTTA.blue())) {
 				// Convert position to immutable since it might be mutable and we can't have it changing
 				HIT_TARGETS.add(pos.immutable());
 			}

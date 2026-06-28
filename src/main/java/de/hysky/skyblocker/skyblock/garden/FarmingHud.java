@@ -165,7 +165,7 @@ public class FarmingHud {
 	}
 
 	public enum CounterType {
-		NONE("", "No Cultivating"),
+		NONE("", "Cultivating Needed"),
 		CULTIVATING("farmed_cultivating", "Cultivating: ");
 
 		private final String nbtKey;

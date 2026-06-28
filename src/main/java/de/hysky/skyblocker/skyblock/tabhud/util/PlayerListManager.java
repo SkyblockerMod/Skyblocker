@@ -36,6 +36,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -97,7 +98,7 @@ public class PlayerListManager {
 			return;
 		}
 
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
+		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
 
 		if (Utils.isInDungeons()) updateDungeons(null);
 		else updateWidgetsFrom(playerList);
@@ -162,7 +163,7 @@ public class PlayerListManager {
 					if (!doingPlayers) {
 						doingPlayers = true;
 						// noinspection DataFlowIssue
-						hypixelWidgetName = IntObjectPair.of(ChatFormatting.AQUA.getColor(), "Players");
+						hypixelWidgetName = IntObjectPair.of(TextColor.AQUA.getValue(), "Players");
 					}
 					continue;
 				}

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about fire sales when in the hub.
 // or not, if there isn't one going on
@@ -28,7 +29,7 @@ public class FireSaleWidget extends TabHudWidget {
 	private static final Pattern FIRE_PATTERN = Pattern.compile("(?<item>.*): (?<avail>\\d*)/(?<total>[0-9.]*)k");
 
 	public FireSaleWidget() {
-		super("Fire Sales", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Fire Sales", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

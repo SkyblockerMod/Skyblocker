@@ -85,7 +85,7 @@ public class SkyblockerScreen extends Screen {
 		adder.addChild(Button.builder(MODRINTH_TEXT, ConfirmLinkScreen.confirmLink(this, "https://modrinth.com/mod/skyblocker-liap")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(DISCORD_TEXT, ConfirmLinkScreen.confirmLink(this, "https://discord.gg/aNNJHQykck")).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(SUPPORT_US_TEXT, ConfirmLinkScreen.confirmLink(this, "https://hysky.de/skyblocker/team")).width(HALF_BUTTON_WIDTH).build());
-		adder.addChild(Button.builder(CREDITS_TEXT, _ -> this.minecraft.setScreen(new SkyblockerCreditsScreen(this))).width(HALF_BUTTON_WIDTH).build());
+		adder.addChild(Button.builder(CREDITS_TEXT, _ -> this.minecraft.gui.setScreen(new SkyblockerCreditsScreen(this))).width(HALF_BUTTON_WIDTH).build());
 		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> this.onClose()).width(BUTTON_WIDTH).build(), 2);
 
 		GridLayout footerGridWidget = this.layout.addToFooter(new GridLayout()).columnSpacing(SPACING).rowSpacing(0);
@@ -112,7 +112,7 @@ public class SkyblockerScreen extends Screen {
 	}
 
 	private void openConfig() {
-		this.minecraft.setScreen(SkyblockerConfigManager.createGUI(this));
+		this.minecraft.gui.setScreen(SkyblockerConfigManager.createGUI(this));
 	}
 
 	@Override

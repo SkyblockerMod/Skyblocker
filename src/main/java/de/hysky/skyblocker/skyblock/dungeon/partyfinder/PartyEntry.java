@@ -111,7 +111,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 
 			} else if (lowerCase.contains("dungeon:")) {
 				dungeon = tooltipText.split(":")[1].trim();
-			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(ChatFormatting.RED.getColor())) && !lowerCase.startsWith(" ")) {
+			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.RED) && !lowerCase.startsWith(" ")) {
 				isLocked = true;
 				lockReason = text;
 			} else if (lowerCase.contains("note:")) {
@@ -139,7 +139,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 				if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol
 
 				List<Component> siblings = text.getSiblings();
-				Style nameStyle = !siblings.isEmpty() ? siblings.get(Math.min(1, siblings.size() - 1)).getStyle() : text.getStyle();
+				Style nameStyle = !siblings.isEmpty() ? siblings.getFirst().getStyle() : text.getStyle();
 				Component playerName = Component.literal(playerNameTrim).setStyle(nameStyle);
 				String className = parts[1].trim().split(" ")[0];
 				int classLevel = -1;

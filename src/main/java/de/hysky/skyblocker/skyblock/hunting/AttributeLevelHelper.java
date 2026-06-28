@@ -27,7 +27,7 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slot == null || stack.isEmpty()) return List.of();
 		if (slot.index <= 9 || slot.index >= 44) return List.of(); // Don't need to process the first row and the last row
-		if (stack.is(Items.BLACK_STAINED_GLASS_PANE)) return List.of();
+		if (stack.is(Items.STAINED_GLASS_PANE.black())) return List.of();
 
 		Component customName = stack.getCustomName();
 		if (customName == null) return List.of();

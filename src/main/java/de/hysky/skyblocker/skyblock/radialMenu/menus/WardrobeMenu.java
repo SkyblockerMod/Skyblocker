@@ -13,7 +13,7 @@ public class WardrobeMenu extends RegexMenu {
 	public boolean itemMatches(int slotId, ItemStack stack) {
 		Item item = stack.getItem();
 		if (item.equals(Items.ARROW) || item.equals(Items.BARRIER)) return true;
-		return (!item.equals(Items.BLACK_STAINED_GLASS_PANE) && slotId < 9);
+		return (!item.equals(Items.STAINED_GLASS_PANE.black()) && slotId < 9);
 	}
 
 	@Override

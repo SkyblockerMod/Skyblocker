@@ -54,7 +54,7 @@ public class BazaarOrderTracker extends SimpleTooltipAdder {
 	}
 
 	private void addOrderMarker(List<Component> lines, boolean sell) {
-		if (!(Minecraft.getInstance().screen instanceof ContainerScreen screen)) return;
+		if (!(Minecraft.getInstance().gui.screen() instanceof ContainerScreen screen)) return;
 		String skyblockId = screen.getMenu().slots.get(13).getItem().getSkyblockId();
 		List<Order> yourOrders = orders.values().stream()
 				.filter(o -> o.sell() == sell)

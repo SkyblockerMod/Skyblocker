@@ -28,7 +28,7 @@ public abstract class ChestMenuMixin extends AbstractContainerMenu {
 		super.setItem(slot, revision, stack);
 		ContainerSolverManager.markHighlightsDirty();
 
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		switch (currentScreen) {
 			case PartyFinderScreen screen -> screen.markDirty();
 			case ContainerScreen screen when screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("equipment") -> {
@@ -51,7 +51,7 @@ public abstract class ChestMenuMixin extends AbstractContainerMenu {
 		super.initializeContents(revision, stacks, cursorStack);
 		ContainerSolverManager.markHighlightsDirty();
 		broadcastChanges();
-		if (Minecraft.getInstance().screen instanceof PartyFinderScreen screen) {
+		if (Minecraft.getInstance().gui.screen() instanceof PartyFinderScreen screen) {
 			screen.markDirty();
 		}
 	}

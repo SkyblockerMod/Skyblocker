@@ -51,12 +51,12 @@ public class DangerWarning {
 		Block block = state.getBlock();
 
 		int argb = switch (block) {
-			case Block b when b == Blocks.GREEN_TERRACOTTA -> DyeColor.GREEN.getTextureDiffuseColor();
-			case Block b when b == Blocks.LIME_TERRACOTTA -> DyeColor.LIME.getTextureDiffuseColor();
-			case Block b when b == Blocks.YELLOW_TERRACOTTA -> DyeColor.YELLOW.getTextureDiffuseColor();
-			case Block b when b == Blocks.ORANGE_TERRACOTTA -> DyeColor.ORANGE.getTextureDiffuseColor();
-			case Block b when b == Blocks.PINK_TERRACOTTA -> DyeColor.PINK.getTextureDiffuseColor();
-			case Block b when b == Blocks.RED_TERRACOTTA -> DyeColor.RED.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.green() -> DyeColor.GREEN.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.lime() -> DyeColor.LIME.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.yellow() -> DyeColor.YELLOW.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.orange() -> DyeColor.ORANGE.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.pink() -> DyeColor.PINK.getTextureDiffuseColor();
+			case Block b when b == Blocks.DYED_TERRACOTTA.red() -> DyeColor.RED.getTextureDiffuseColor();
 
 			default -> 0;
 		};

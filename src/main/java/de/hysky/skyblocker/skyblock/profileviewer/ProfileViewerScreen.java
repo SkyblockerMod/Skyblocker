@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
 import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.ApiUtils;
+import de.hysky.skyblocker.utils.EntityUtils;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -142,7 +143,7 @@ public class ProfileViewerScreen extends Screen {
 
 	private void extractPlayerEntity(GuiGraphicsExtractor graphics, String username, int rootX, int rootY, int mouseX, int mouseY) {
 		if (entity != null)
-			extractEntityInInventoryFollowsMouse(graphics, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625F, mouseX, mouseY, entity);
+			extractEntityInInventoryFollowsMouse(graphics, rootX + 9, rootY + 16, rootX + 89, rootY + 124, 42, 0.0625f, mouseX, mouseY, entity);
 		graphics.centeredText(font, username.length() > 15 ? username.substring(0, 15) : username, rootX + 47, rootY + 14, Color.WHITE.getRGB());
 	}
 
@@ -198,6 +199,7 @@ public class ProfileViewerScreen extends Screen {
 					}
 				};
 				entity.setCustomNameVisible(false);
+				entity.setId(EntityUtils.PLACEHOLDER_ID);
 			}).exceptionally(_ -> {
 				// "Player not found" doesn't fit on the screen lol
 				this.playerName = "User not found";

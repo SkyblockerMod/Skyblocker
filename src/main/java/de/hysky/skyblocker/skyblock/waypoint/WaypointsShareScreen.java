@@ -59,7 +59,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 					waypoints.put(waypointGroup.island(), waypointGroup);
 				}
 				waypointsListWidget.updateEntries();
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
 			} catch (Exception e) {
 				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skyblocker waypoint data", e);
 				showErrorToast();
@@ -69,10 +69,10 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 			try {
 				List<WaypointGroup> waypointGroups = waypoints.values().stream().filter(waypointGroup -> waypointGroup.island().equals(island)).map(waypointGroup -> waypointGroup.filterWaypoints(selectedWaypoints::contains)).filter(waypointGroup -> !waypointGroup.waypoints().isEmpty()).toList();
 				minecraft.keyboardHandler.setClipboard(Waypoints.toSkyblocker(waypointGroups));
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportSuccess"), Component.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportSuccess"), Component.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
 			} catch (Exception e) {
 				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skyblocker waypoint data", e);
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportError"), Component.translatable("skyblocker.waypoints.exportErrorText"));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportError"), Component.translatable("skyblocker.waypoints.exportErrorText"));
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.exportWaypointsSkyblocker.tooltip"))).build());
 
@@ -91,7 +91,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 					waypoints.put(waypointGroup.island(), waypointGroup);
 				}
 				waypointsListWidget.updateEntries();
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
 			} catch (Exception e) {
 				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Skytils waypoint data", e);
 				showErrorToast();
@@ -101,10 +101,10 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 			try {
 				List<WaypointGroup> waypointGroups = waypoints.values().stream().filter(waypointGroup -> waypointGroup.island().equals(island)).map(waypointGroup -> waypointGroup.filterWaypoints(selectedWaypoints::contains)).filter(waypointGroup -> !waypointGroup.waypoints().isEmpty()).toList();
 				minecraft.keyboardHandler.setClipboard(Waypoints.toSkytilsBase64(waypointGroups));
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportSuccess"), Component.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportSuccess"), Component.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
 			} catch (Exception e) {
 				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skytils waypoint data", e);
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportError"), Component.translatable("skyblocker.waypoints.exportErrorText"));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportError"), Component.translatable("skyblocker.waypoints.exportErrorText"));
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.exportWaypointsSkytils.tooltip"))).build());
 
@@ -117,7 +117,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 				selectedWaypoints.addAll(waypointGroup.waypoints());
 				waypoints.put(waypointGroup.island(), waypointGroup);
 				waypointsListWidget.updateEntries();
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroup.waypoints().size(), 1));
+				SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importSuccess"), Component.translatable("skyblocker.waypoints.importSuccessText", waypointGroup.waypoints().size(), 1));
 			} catch (Exception e) {
 				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while parsing Snoopy waypoint data", e);
 				showErrorToast();
@@ -131,7 +131,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 	}
 
 	private void showErrorToast() {
-		SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importError"), Component.translatable("skyblocker.waypoints.importErrorText"));
+		SystemToast.addOrUpdate(minecraft.gui.toastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.importError"), Component.translatable("skyblocker.waypoints.importErrorText"));
 	}
 
 	@Override
@@ -148,6 +148,6 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 	@SuppressWarnings("DataFlowIssue")
 	@Override
 	public void onClose() {
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 }

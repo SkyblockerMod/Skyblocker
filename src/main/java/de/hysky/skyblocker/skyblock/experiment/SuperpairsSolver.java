@@ -54,7 +54,7 @@ public final class SuperpairsSolver extends ExperimentSolver {
 	protected void tick(ContainerScreen screen) {
 		if (getState() == State.SHOW && getSlots().get(superpairsPrevClickedSlot) == null) {
 			ItemStack itemStack = screen.getMenu().getContainer().getItem(superpairsPrevClickedSlot);
-			if (!(itemStack.is(Items.CYAN_STAINED_GLASS) || itemStack.is(Items.BLACK_STAINED_GLASS_PANE) || itemStack.is(Items.AIR))) {
+			if (!(itemStack.is(Items.STAINED_GLASS.cyan()) || itemStack.is(Items.STAINED_GLASS_PANE.black()) || itemStack.is(Items.AIR))) {
 				getSlots().int2ObjectEntrySet().stream()
 						.filter(entry -> ItemStack.matches(entry.getValue(), itemStack))
 						.findAny()

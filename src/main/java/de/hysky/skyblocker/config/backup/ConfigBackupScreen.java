@@ -71,25 +71,25 @@ public class ConfigBackupScreen extends Screen {
 		Button restoreBtn = Button.builder(Component.translatable("skyblocker.config.general.backup.restore"), _ -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
-				minecraft.setScreen(new ConfirmScreen(confirm -> {
+				minecraft.gui.setScreen(new ConfirmScreen(confirm -> {
 					if (confirm) {
 						try {
 							ConfigBackupManager.restoreBackup(selected);
 						} catch (IOException e) {
 							LOGGER.error("[Skyblocker] Failed to restore backup {}", selected.getFileName().toString(), e);
-							minecraft.getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+							minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
 									Component.translatable("skyblocker.config.general.backup.restore.error"),
 									null
 							));
 							return;
 						}
 						if (parent != null) {
-							minecraft.setScreen(SkyblockerConfigManager.createGUI(parent));
+							minecraft.gui.setScreen(SkyblockerConfigManager.createGUI(parent));
 						} else {
-							minecraft.setScreen(null);
+							minecraft.gui.setScreen(null);
 						}
 					} else {
-						minecraft.setScreen(this);
+						minecraft.gui.setScreen(this);
 					}
 				}, Component.translatable("skyblocker.config.general.backup.confirm.title"),
 						Component.translatableEscape("skyblocker.config.general.backup.confirm.text", selected.getFileName().toString()),
@@ -108,7 +108,7 @@ public class ConfigBackupScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private class BackupListWidget extends ObjectSelectionList<BackupEntry> {

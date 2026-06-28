@@ -64,7 +64,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	private boolean checkScreen() {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		return currentScreen instanceof ContainerScreen || currentScreen instanceof AbstractCustomHypixelGUI<?>;
 	}
 

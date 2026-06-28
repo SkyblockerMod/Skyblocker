@@ -56,9 +56,7 @@ public class ProfileViewer {
 		});
 	}
 
-	/**
-	 * Ensures that "dummy" players aren't included in command suggestions
-	 */
+	/// Ensures that "dummy" players aren't included in command suggestions
 	private static String[] getPlayerSuggestions(FabricClientCommandSource source) {
 		return source.getOnlinePlayerNames().stream()
 				.filter(playerName -> playerName.matches("[A-Za-z0-9_]+"))
@@ -92,10 +90,10 @@ public class ProfileViewer {
 						return new ProfileViewerScreen(apiProfileResponse.get(), selectedProfile.get(), gameProfile.get(), member);
 					}
 				}, minecraft)
-				.thenAcceptAsync(minecraft::setScreen, minecraft)
+				.thenAcceptAsync(minecraft.gui::setScreen, minecraft)
 				.exceptionallyAsync(throwable -> {
 					LOGGER.error("[Skyblocker Profile Viewer] Encountered an unknown exception when loading the data.", throwable);
-					minecraft.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error."));
+					minecraft.gui.setScreen(new ErrorProfileViewerScreen("Encountered an unknown error."));
 
 					return null;
 				}, minecraft);
@@ -103,9 +101,7 @@ public class ProfileViewer {
 		return new LoadingProfileViewerScreen(name);
 	}
 
-	/**
-	 * {@return a {@link Pair} optionally containing the user's {@link ApiProfileResponse} and {@link GameProfile}}
-	 */
+	/// {@return a {@link Pair} optionally containing the user's {@link ApiProfileResponse} and {@link GameProfile}}
 	private static CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> loadData(String name) {
 		Minecraft minecraft = Minecraft.getInstance();
 		CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> dataFuture = CompletableFuture.supplyAsync(() -> ApiUtils.name2Uuid(name), Executors.newVirtualThreadPerTaskExecutor())

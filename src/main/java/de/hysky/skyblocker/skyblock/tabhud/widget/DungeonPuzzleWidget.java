@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows info about all puzzeles in the dungeon (name and status)
 @RegisterWidget
@@ -27,7 +28,7 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 	private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
 	public DungeonPuzzleWidget() {
-		super("Dungeon Puzzles", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Puzzles", TITLE, TextColor.DARK_PURPLE.getValue());
 	}
 
 	@Override

@@ -267,8 +267,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 
 	private void onClickPickDye(Button button) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.screen == null) return;
-		client.setScreen(new DyeSelectPopup(client.screen, this::setFromSolidDye, this::setFromAnimatedDye));
+		if (client.gui.screen() == null) return;
+		client.gui.setScreen(new DyeSelectPopup(client.gui.screen(), this::setFromSolidDye, this::setFromAnimatedDye));
 	}
 
 	private void setFromSolidDye(Button button, int hex) {

@@ -19,6 +19,7 @@ import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -177,7 +178,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			previewTab.goToLayer(widgetsLayer);
 		}
 		widgetsListTab = new WidgetsListTab(this.minecraft, this.handler);
-		this.tabNavigation = TabNavigationBar.builder(this.tabManager, this.width)
+		this.tabNavigation = MenuTabBar.builder(this.tabManager, this.width)
 				.addTabs(this.widgetsListTab, this.previewTab, previewDungeons)
 				.build();
 		widgetsListTab.setShouldShowCustomWidgetEntries(titleLowercase.startsWith("widgets ") || noHandler);
@@ -191,8 +192,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	protected void repositionElements() {
 		if (this.tabNavigation != null) {
-			this.tabNavigation.updateWidth(this.width);
-			this.tabNavigation.arrangeElements();
+			this.tabNavigation.arrangeElements(this.width);
 			int i = this.tabNavigation.getRectangle().bottom();
 			ScreenRectangle screenRect = new ScreenRectangle(0, i, this.width, this.height - i - 5);
 			this.tabManager.setTabArea(screenRect);
@@ -319,7 +319,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			this.minecraft.player.closeContainer();
 			super.onClose();
 		} else {
-			minecraft.setScreen(parent);
+			minecraft.gui.setScreen(parent);
 		}
 	}
 

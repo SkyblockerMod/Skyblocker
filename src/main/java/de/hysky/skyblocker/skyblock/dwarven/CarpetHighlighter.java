@@ -79,9 +79,9 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 		// There are other colors for some ores in the royal mines,
 		// but since the actual ores don't include wool blocks
 		// they're not easily confused as ores so they are not accounted for here
-		if (!(actualBlock.is(Blocks.GRAY_CARPET) ||
-				actualBlock.is(Blocks.LIGHT_BLUE_CARPET) ||
-				actualBlock.is(Blocks.LIGHT_GRAY_CARPET))) return false;
+		if (!(actualBlock.is(Blocks.CARPET.gray()) ||
+				actualBlock.is(Blocks.CARPET.lightBlue()) ||
+				actualBlock.is(Blocks.CARPET.lightGray()))) return false;
 		BlockState blockBelow = Minecraft.getInstance().level.getBlockState(blockPos.below());
 		return blockBelow.is(Blocks.SEA_LANTERN);
 	}

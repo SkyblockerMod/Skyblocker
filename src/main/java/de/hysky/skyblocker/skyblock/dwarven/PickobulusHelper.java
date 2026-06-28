@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -38,9 +40,9 @@ public class PickobulusHelper {
 			Blocks.PRISMARINE,
 			Blocks.PRISMARINE_BRICKS,
 			Blocks.DARK_PRISMARINE,
-			Blocks.CYAN_TERRACOTTA,
-			Blocks.LIGHT_BLUE_WOOL,
-			Blocks.GRAY_WOOL,
+			Blocks.DYED_TERRACOTTA.cyan(),
+			Blocks.WOOL.lightBlue(),
+			Blocks.WOOL.gray(),
 			Blocks.LAPIS_BLOCK,
 			Blocks.GOLD_BLOCK,
 			Blocks.IRON_BLOCK,
@@ -62,40 +64,8 @@ public class PickobulusHelper {
 			Blocks.OBSIDIAN,
 			Blocks.END_STONE
 	);
-	private static final Set<Block> STAINED_GLASS_BLOCKS = Set.of(
-			Blocks.WHITE_STAINED_GLASS,
-			Blocks.ORANGE_STAINED_GLASS,
-			Blocks.MAGENTA_STAINED_GLASS,
-			Blocks.LIGHT_BLUE_STAINED_GLASS,
-			Blocks.YELLOW_STAINED_GLASS,
-			Blocks.LIME_STAINED_GLASS,
-			Blocks.PINK_STAINED_GLASS,
-			Blocks.GRAY_STAINED_GLASS,
-			Blocks.LIGHT_GRAY_STAINED_GLASS,
-			Blocks.CYAN_STAINED_GLASS,
-			Blocks.PURPLE_STAINED_GLASS,
-			Blocks.BLUE_STAINED_GLASS,
-			Blocks.BROWN_STAINED_GLASS,
-			Blocks.GREEN_STAINED_GLASS,
-			Blocks.RED_STAINED_GLASS,
-			Blocks.BLACK_STAINED_GLASS,
-			Blocks.WHITE_STAINED_GLASS_PANE,
-			Blocks.ORANGE_STAINED_GLASS_PANE,
-			Blocks.MAGENTA_STAINED_GLASS_PANE,
-			Blocks.LIGHT_BLUE_STAINED_GLASS_PANE,
-			Blocks.YELLOW_STAINED_GLASS_PANE,
-			Blocks.LIME_STAINED_GLASS_PANE,
-			Blocks.PINK_STAINED_GLASS_PANE,
-			Blocks.GRAY_STAINED_GLASS_PANE,
-			Blocks.LIGHT_GRAY_STAINED_GLASS_PANE,
-			Blocks.CYAN_STAINED_GLASS_PANE,
-			Blocks.PURPLE_STAINED_GLASS_PANE,
-			Blocks.BLUE_STAINED_GLASS_PANE,
-			Blocks.BROWN_STAINED_GLASS_PANE,
-			Blocks.GREEN_STAINED_GLASS_PANE,
-			Blocks.RED_STAINED_GLASS_PANE,
-			Blocks.BLACK_STAINED_GLASS_PANE
-	);
+	private static final Set<Block> STAINED_GLASS_BLOCKS = Set.of(Stream.concat(Blocks.STAINED_GLASS.asList().stream(), Blocks.STAINED_GLASS_PANE.asList().stream())
+			.toArray(Block[]::new));
 	private static final float[] LIGHT_BLUE = ColorUtils.getFloatComponents(DyeColor.LIGHT_BLUE);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 
@@ -223,11 +193,11 @@ public class PickobulusHelper {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
 		} else if (state.is(Blocks.DARK_PRISMARINE)) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.is(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.is(Blocks.WOOL.lightBlue())) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (state.is(Blocks.GRAY_WOOL)) {
+		} else if (state.is(Blocks.WOOL.gray())) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.is(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.is(Blocks.DYED_TERRACOTTA.cyan())) {
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
 		}
 		handleBreakable(pos, i, j, k);
@@ -247,7 +217,7 @@ public class PickobulusHelper {
 			drops[MiningDrop.TITANIUM.ordinal()]++;
 		} else if (state.is(Blocks.INFESTED_STONE)) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
-		} else if (state.is(Blocks.LIGHT_GRAY_CARPET)) {
+		} else if (state.is(Blocks.CARPET.lightGray())) {
 			drops[MiningDrop.HARDSTONE.ordinal()]++;
 		} else if (state.is(Blocks.PRISMARINE)) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
@@ -261,19 +231,19 @@ public class PickobulusHelper {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 3;
-		} else if (state.is(Blocks.LIGHT_BLUE_WOOL)) {
+		} else if (state.is(Blocks.WOOL.lightBlue())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()] += 5;
-		} else if (state.is(Blocks.GRAY_WOOL)) {
+		} else if (state.is(Blocks.WOOL.gray())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.is(Blocks.CYAN_TERRACOTTA)) {
+		} else if (state.is(Blocks.DYED_TERRACOTTA.cyan())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()]++;
 			drops[MiningDrop.MITHRIL.ordinal()]++;
 			drops[MiningDrop.MITHRIL_POWDER.ordinal()]++;
-		} else if (state.is(Blocks.BROWN_TERRACOTTA)) {
+		} else if (state.is(Blocks.DYED_TERRACOTTA.brown())) {
 			drops[MiningDrop.MINESHAFT_PITY.ordinal()] += 2;
 			drops[MiningDrop.UMBER.ordinal()]++;
 		} else if (state.is(Blocks.TERRACOTTA)) {

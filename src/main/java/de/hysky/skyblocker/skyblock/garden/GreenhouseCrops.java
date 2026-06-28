@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Map;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unchecked")
 public final class GreenhouseCrops {
 	public static final Map<String, Crop> CROP_ID_MAP;
 	public static final Map<Integer, Crop> CROP_BY_INT;
