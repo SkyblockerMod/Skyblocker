@@ -12,11 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class InvisibugHighlighter {
 	private static final Minecraft client = Minecraft.getInstance();
-
 	private static final Object2LongOpenHashMap<Vec3> invisibugLocations = new Object2LongOpenHashMap<>();
 
 	private static final long PARTICLE_EXPIRY = 500;
@@ -35,20 +37,29 @@ public class InvisibugHighlighter {
 		return SkyblockerConfigManager.get().hunting.huntingMobs.highlightInvisibug && Utils.isInGalatea();
 	}
 
+	/**
+	 * Filters incoming crit particles and forwards valid ones to {@link #handleInvisibugParticle}.
+	 * Particles are ignored if a non-player {@link LivingEntity} is at the spawn position,
+	 * preventing false positives from striking certain NPCs.
+	 *
+	 * @param packet the incoming particle packet from the server
+	 */
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (isActive() && packet.getParticle().getType() instanceof ParticleType<?> type && (ParticleTypes.CRIT.equals(type))) {
-			handleInvisibugParticle(packet);
+		if (isActive() && packet.getParticle().getType() instanceof ParticleType<?> type && (ParticleTypes.CRIT.equals(type)) && client.level != null) {
+			Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+			// Exclude particles that are emitted from striking an NPC
+			if (client.level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(pos, 1, 1, 1), e -> !(e instanceof Player)).isEmpty()) {
+				handleInvisibugParticle(pos);
+			}
 		}
 	}
 
 	/**
 	 * Records the particle position as an active invisibug location and removes nearby locations to handle movement.
 	 *
-	 * @param packet the incoming particle packet containing the spawn position
+	 * @param pos A vector representing the position of the invisibug particle
 	 */
-	private static void handleInvisibugParticle(ClientboundLevelParticlesPacket packet) {
-		if (Minecraft.getInstance().level == null) return;
-		Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+	private static void handleInvisibugParticle(Vec3 pos) {
 		// As the invisibug moves, remove the previous location
 		invisibugLocations.object2LongEntrySet().removeIf(e -> e.getKey().distanceToSqr(pos) <= 1);
 		// Add the new location to the map
