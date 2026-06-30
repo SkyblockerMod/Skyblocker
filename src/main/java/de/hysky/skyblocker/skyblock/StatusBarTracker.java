@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.ItemAbility;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -35,12 +36,12 @@ import java.util.regex.Pattern;
 public class StatusBarTracker {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Pattern STATUS_PATTERN = Pattern.compile("(?<status>.+?)(?: {2,}|$)");
-	private static final Pattern RIFT_TIME_STATUS = Pattern.compile("(?:[\\d,]+m)?[\\d,]+sф Left");
-	private static final Pattern HEALTH_STATUS = Pattern.compile("(?<health>[\\d,]+)/(?<max>[\\d,]+)❤(?<healing>\\+([\\d,]+)[▁-▆])?");
-	private static final Pattern HEALING = Pattern.compile("(?:§[\\da-z])*❤");
-	private static final Pattern DEFENSE_STATUS = Pattern.compile("(?<defense>[\\d,]+)❈ Defense");
+	private static final Pattern RIFT_TIME_STATUS = Pattern.compile(String.format("(?:[\\d,]+m)?[\\d,]+s[ф%s] Left", SkyBlockIcons.RIFT_TIME));
+	private static final Pattern HEALTH_STATUS = Pattern.compile(String.format("(?<health>[\\d,]+)/(?<max>[\\d,]+)[❤%s](?<healing>\\+([\\d,]+)[▁-▆])?", SkyBlockIcons.HEALTH));
+	private static final Pattern HEALING = Pattern.compile(String.format("(?:§[\\da-z])*[❤%s]", SkyBlockIcons.HEALTH));
+	private static final Pattern DEFENSE_STATUS = Pattern.compile(String.format("(?<defense>[\\d,]+)[❈%s]( Defense)?", SkyBlockIcons.DEFENSE));
 	private static final Pattern MANA_USE = Pattern.compile("-([\\d,]+) Mana \\(.*?\\)");
-	private static final Pattern MANA_STATUS = Pattern.compile("(?<mana>[\\d,]+)/(?<max>[\\d,]+)✎ (?:Mana|(?<overflow>[\\d,]+)ʬ)");
+	private static final Pattern MANA_STATUS = Pattern.compile(String.format("(?<mana>[\\d,]+)/(?<max>[\\d,]+)[✎%s] ?(?:Mana|(?<overflow>[\\d,]+)ʬ)?", SkyBlockIcons.MANA));
 
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
