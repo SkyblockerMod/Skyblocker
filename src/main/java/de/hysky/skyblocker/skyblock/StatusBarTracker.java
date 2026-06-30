@@ -170,7 +170,7 @@ public class StatusBarTracker {
 						// Parse healing again to add back formatting
 						} else {
 							status = HEALING.matcher(statuses.group());
-							status.find();
+							if (!status.find()) continue;
 
 							if (!status.group().startsWith("§"))
 								output.append("§c");
