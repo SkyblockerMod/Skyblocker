@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class SkyblockEvents {
+	public static final Codec<SkyblockEvent> CODEC = Codec.STRING.xmap(SkyblockEvents::getOrNew, SkyblockEvent::name);
 	private static final List<SkyblockEvent> ALL_EVENTS = new ArrayList<>();
 	private static final Map<String, SkyblockEvent> BY_NAME = new HashMap<>();
 
@@ -57,10 +58,9 @@ public class SkyblockEvents {
 	public static final SkyblockEvent SEASON_OF_JERRY = register("Season of Jerry", Items.SNOWBALL);
 	public static final SkyblockEvent JERRYS_WORKSHOP = register("Jerry's Workshop", Items.SNOW_BLOCK);
 	public static final SkyblockEvent TRAVELING_ZOO = register("Traveling Zoo", Items.HAY_BLOCK);
+	public static final SkyblockEvent HARVEST_FEAST = register("Harvest Feast", Items.GOLDEN_HOE);
 
 	public static final SkyblockEvent DUMMY = register("", Items.POISONOUS_POTATO);
-
-	public static final Codec<SkyblockEvent> CODEC = Codec.STRING.xmap(SkyblockEvents::getOrNew, SkyblockEvent::name);
 
 	public static Optional<SkyblockEvent> get(String name) {
 		return Optional.ofNullable(BY_NAME.get(name));

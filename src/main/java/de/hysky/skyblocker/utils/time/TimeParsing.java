@@ -21,19 +21,19 @@ public final class TimeParsing {
 	 */
 	public static final Codec<Instant> INSTANT_CODEC = Codec.STRING.flatXmap(
 			s -> {
+				DateTimeParseException e1, e2;
 				try {
 					TemporalAccessor parsed = Formatters.SKYBLOCK_TIME_FORMATTER.parse(s);
-					return DataResult.success(SkyblockTime.SKYBLOCK_EPOCH
-							.plus(parsed.getLong(SkyblockTimeField.HOUR_OF_DAY), SkyblockTimeField.HOUR_OF_DAY.getBaseUnit())
-							.plus(parsed.getLong(SkyblockTimeField.DAY_OF_MONTH), SkyblockTimeField.DAY_OF_MONTH.getBaseUnit())
-							.plus(parsed.getLong(SkyblockTimeField.MONTH_OF_YEAR), SkyblockTimeField.MONTH_OF_YEAR.getBaseUnit())
-							.plus(parsed.getLong(SkyblockTimeField.YEAR), SkyblockTimeField.YEAR.getBaseUnit())
-					);
-				} catch (DateTimeParseException _) {}
+					return DataResult.success(SkyblockTime.instantOf(parsed.getLong(SkyblockTimeField.YEAR), parsed.getLong(SkyblockTimeField.MONTH_OF_YEAR), parsed.getLong(SkyblockTimeField.DAY_OF_MONTH), parsed.getLong(SkyblockTimeField.HOUR_OF_DAY)));
+				} catch (DateTimeParseException e) {
+					e1 = e;
+				}
 				try {
 					return DataResult.success(Instant.parse(s));
-				} catch (DateTimeParseException _) {}
-				return DataResult.error(() -> "Could not parse instant.");
+				} catch (DateTimeParseException e) {
+					e2 = e;
+				}
+				return DataResult.error(() -> "Could not parse instant. Skyblock: " + e1.getMessage() + ", ISO: " + e2.getMessage());
 			},
 			_ -> DataResult.error(() -> "Encoding not supported.")
 	);

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.injected;
 
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+
 public interface RecipeBookHolder {
 
 	/**
@@ -9,6 +11,9 @@ public interface RecipeBookHolder {
 	 * @param callback the callback
 	 */
 	default void registerRecipeBookToggleCallback(Runnable callback) {
+		throw new UnsupportedOperationException("Implemented via Mixin");
+	}
+	default RecipeBookComponent<?> getRecipeBookComponent() {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 }

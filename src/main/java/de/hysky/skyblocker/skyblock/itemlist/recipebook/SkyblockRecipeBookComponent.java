@@ -170,6 +170,14 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	}
 
 	@Override
+	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		if (this.isVisible() && !this.minecraft.player.isSpectator()) {
+			return this.currentTab.left().mouseScrolled(x, y, scrollX, scrollY);
+		}
+		return false;
+	}
+
+	@Override
 	public boolean keyPressed(KeyEvent input) {
 		var client = Minecraft.getInstance();
 		if (client.isWindowActive() && currentTab != null) {
