@@ -41,8 +41,8 @@ import java.util.regex.Pattern;
 public class BackpackPreview {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
-	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
-	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
+	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
 	private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
@@ -142,6 +142,9 @@ public class BackpackPreview {
 			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
 		}
 	}
+	public static Storage[] getStorages() {
+		return storages;
+	}
 
 	public static boolean extractPreview(GuiGraphicsExtractor graphics, Screen screen, int index, int mouseX, int mouseY) {
 		if (index >= 9 && index < 18) index -= 9;
@@ -179,7 +182,7 @@ public class BackpackPreview {
 		return true;
 	}
 
-	private static int getStorageIndexFromTitle(String title) {
+	public static int getStorageIndexFromTitle(String title) {
 		Matcher echest = ECHEST_PATTERN.matcher(title);
 		if (echest.find()) return Integer.parseInt(echest.group(1)) - 1;
 		Matcher backpack = BACKPACK_PATTERN.matcher(title);
@@ -187,7 +190,7 @@ public class BackpackPreview {
 		return -1;
 	}
 
-	private static class Storage {
+	public static class Storage {
 		private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(Storage::name),
 				ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList)
@@ -206,11 +209,11 @@ public class BackpackPreview {
 			return name;
 		}
 
-		private int size() {
+		public int size() {
 			return inventory.getContainerSize();
 		}
 
-		private ItemStack getStack(int index) {
+		public ItemStack getStack(int index) {
 			return inventory.getItem(index);
 		}
 

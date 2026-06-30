@@ -58,6 +58,13 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		searchField.setValue(search);
 	}
 
+	public void setScrollAmount(double amount) {
+		widgetsContainer.setScrollAmount(amount);
+	}
+	public double getScrollAmount() {
+		return widgetsContainer.scrollAmount();
+	}
+
 	protected void recreateGrid() {
 		GridLayout newGrid = new GridLayout();
 		GridLayout.RowHelper adder = newGrid.createRowHelper((getWidth() - 6) / expectedWidgetWidth);
