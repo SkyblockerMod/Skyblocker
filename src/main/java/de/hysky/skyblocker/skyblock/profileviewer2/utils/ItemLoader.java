@@ -84,7 +84,7 @@ public class ItemLoader {
 			wardrobeContents.addAll(Math.min((member.inventories.equippedWardrobeSlot - 1) * 4, wardrobeContents.size()), armour);
 		}
 
-		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), new ProfileItemStorage.Bags(accessories));
+		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), PetLoader.parsePets(member.petsData.pets), new ProfileItemStorage.Bags(accessories));
 	}
 
 	public static List<ItemStack> decode(String itemData) {

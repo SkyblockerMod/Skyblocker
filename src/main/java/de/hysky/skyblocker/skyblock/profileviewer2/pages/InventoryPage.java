@@ -57,6 +57,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				this.buildEnderChestLayout(itemStorage),
 				this.buildBackpackLayout(itemStorage),
 				this.buildWardrobeLayout(itemStorage),
+				this.buildPetsLayout(itemStorage),
 				this.buildAccessoryBagLayout(itemStorage)
 				);
 		List<ButtonWidget> tabButtons = List.of(
@@ -64,8 +65,8 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				new ButtonWidget(Ico.E_CHEST, _ -> selectTab(1, tabContentLayouts)),
 				new ButtonWidget(Ico.JUMBO_BACKPACK, _ -> selectTab(2, tabContentLayouts)),
 				new ButtonWidget(Ico.L_CHESTPLATE, _ -> selectTab(3, tabContentLayouts)),
-				new ButtonWidget(Ico.BONE, _ -> {}),
-				new ButtonWidget(Ico.ACCESSORY_BAG, _ -> selectTab(4, tabContentLayouts))
+				new ButtonWidget(Ico.BONE, _ -> selectTab(4, tabContentLayouts)),
+				new ButtonWidget(Ico.ACCESSORY_BAG, _ -> selectTab(5, tabContentLayouts))
 				// Fishing Bag
 				// Potion Bag
 				// Quiver
@@ -137,6 +138,12 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		}
 
 		return this.buildPaginatedLayout(Component.literal("Wardrobe"), 4, orderedPages);
+	}
+
+	private LayoutElement buildPetsLayout(ProfileItemStorage itemStorage) {
+		List<List<ItemStack>> pages = divideIntoPages(itemStorage.pets(), 5 * 9);
+
+		return this.buildPaginatedLayout(Component.literal("Pets"), pages);
 	}
 
 	private LayoutElement buildAccessoryBagLayout(ProfileItemStorage itemStorage) {
