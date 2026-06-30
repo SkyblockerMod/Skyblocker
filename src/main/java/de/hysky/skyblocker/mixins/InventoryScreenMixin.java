@@ -77,6 +77,12 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 		return original;
 	}
 
+	@Override
+	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		if (super.mouseScrolled(x, y, scrollX, scrollY)) return true;
+		return getRecipeBookComponent().mouseScrolled(x, y, scrollX, scrollY);
+	}
+
 	@Inject(method = "onRecipeBookButtonClick", at = @At("TAIL"))
 	private void skyblocker$callRecipeToggleCallbacks(CallbackInfo ci) {
 		recipeBookToggleCallbacks.forEach(Runnable::run);

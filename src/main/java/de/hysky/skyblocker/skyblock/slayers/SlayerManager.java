@@ -96,10 +96,10 @@ public class SlayerManager {
 	private static void onMayorChange() {
 		slayerExpBuff = 1.0f;
 		// TODO: Remove when Aura leaves office
-		if (MayorUtils.getActivePerks().contains("Work Smarter")) {
+		if (MayorUtils.getActivePerkNames().contains("Work Smarter")) {
 			slayerExpBuff *= 1.5f;
 		}
-		if (MayorUtils.getActivePerks().contains("Slayer XP Buff")) {
+		if (MayorUtils.getActivePerkNames().contains("Slayer XP Buff")) {
 			slayerExpBuff *= 1.25f;
 		}
 	}

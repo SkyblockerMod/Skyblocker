@@ -13,10 +13,12 @@ import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
@@ -25,6 +27,7 @@ public class MayorUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MayorUtils.class);
 	private static Mayor mayor = Mayor.EMPTY;
 	private static Minister minister = Minister.EMPTY;
+	private static @Nullable Election election;
 	private static List<PerkOverride> mayorPerkOverrides = List.of();
 	private static boolean mayorTickScheduled = false;
 	private static int mayorTickRetryAttempts = 0;
@@ -34,15 +37,24 @@ public class MayorUtils {
 	/**
 	 * Returns the perks that are currently active from the mayor, minister, and any overrides.
 	 */
-	public static List<String> getActivePerks() {
-		Stream<String> mayorPerks = mayor.perks().stream()
-				.map(Perk::name);
-		Stream<String> ministerPerk = Stream.of(minister.perk().name());
-		Stream<String> overriddenMayorPerks = mayorPerkOverrides.stream()
-				.filter(PerkOverride::isActive)
-				.map(PerkOverride::perk);
+	public static List<String> getActivePerkNames() {
+		return getActivePerks().perks().stream().map(Perk::name).toList();
+	}
 
-		return Stream.concat(Stream.concat(mayorPerks, ministerPerk), overriddenMayorPerks).toList();
+	public static ActivePerks getActivePerks() {
+		Stream<Perk> mayorPerks = mayor.perks().stream();
+		Stream<Perk> ministerPerk = Stream.of(minister.perk());
+		Stream<Perk> overriddenMayorPerks = mayorPerkOverrides.stream()
+				.filter(PerkOverride::isActive)
+				.map(PerkOverride::perk)
+				.map(s -> new Perk(s, ""));
+
+		return new ActivePerks(Stream.concat(Stream.concat(mayorPerks, ministerPerk), overriddenMayorPerks).toList());
+	}
+
+	@SuppressWarnings("NullableProblems")
+	public static Optional<Election> getElection() {
+		return Optional.ofNullable(election);
 	}
 
 	@Init
@@ -123,6 +135,16 @@ public class MayorUtils {
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
 					mayor = Mayor.EMPTY;
+				}
+
+				if (result.has("election")) {
+					try {
+						election = Election.CODEC.parse(JsonOps.INSTANCE, result.get("election"))
+								.ifError(error -> LOGGER.warn("[Skyblocker] Failed to parse election from the API response. Error: {}", error.message()))
+								.result().orElse(null);
+					} catch (Exception e) {
+						election = null;
+					}
 				}
 
 				try {

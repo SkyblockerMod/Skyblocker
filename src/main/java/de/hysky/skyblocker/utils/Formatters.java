@@ -5,6 +5,7 @@ import com.ibm.icu.text.DateTimePatternGenerator;
 import de.hysky.skyblocker.compatibility.MacCompatibility;
 import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 import net.minecraft.util.Util;
 
@@ -15,8 +16,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
+import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter
@@ -82,9 +84,9 @@ public class Formatters {
 			.parseLenient()
 			.appendValue(SkyblockTimeField.DAY_OF_MONTH, 1, 2, SignStyle.NEVER)
 			.appendLiteral(' ')
-			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Map.of(1L, "ESP"))
+			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Arrays.stream(SkyblockTime.Month.values()).collect(Collectors.toMap(month -> (long) (month.ordinal() + 1), SkyblockTime.Month::getShortName)))
 			.appendLiteral(' ')
-			.appendValue(SkyblockTimeField.YEAR, 4)
+			.appendValue(SkyblockTimeField.YEAR)
 			.appendLiteral(' ')
 			.appendValue(SkyblockTimeField.HOUR_OF_DAY, 2)
 			.appendLiteral(":00").toFormatter();

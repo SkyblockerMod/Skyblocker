@@ -29,4 +29,8 @@ public interface RecipeAreaDisplay {
 	 * If this tab does not use the search bar then no-op this.
 	 */
 	void updateSearchResults(String query, FilterOption filterOption, boolean refresh);
+
+	default boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		return false;
+	}
 }
