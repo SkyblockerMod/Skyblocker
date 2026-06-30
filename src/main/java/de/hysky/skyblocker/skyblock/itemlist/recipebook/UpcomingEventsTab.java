@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
+import de.hysky.skyblocker.skyblock.events.EventInstance;
+import de.hysky.skyblocker.skyblock.events.EventManager;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
+import de.hysky.skyblocker.skyblock.events.ExtraEventData;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -24,7 +24,15 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -34,10 +42,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	private @Nullable EventRenderer hovered = null;
 
 	protected UpcomingEventsTab() {
-		List<EventRenderer> renderers = EventNotifications.getEvents().entrySet().stream()
-				.sorted(Comparator.comparingLong(a -> a.getValue().isEmpty() ? Long.MAX_VALUE : a.getValue().peekFirst().start()))
-				.map(stringLinkedListEntry -> new EventRenderer(stringLinkedListEntry.getKey(), stringLinkedListEntry.getValue()))
-				.toList();
+		List<EventRenderer> renderers = SkyblockEvents.getAllEvents().stream().map(EventRenderer::new).sorted().toList();
 
 		this.events.addAll(renderers);
 	}
@@ -98,24 +103,35 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void updateSearchResults(String query, FilterOption filterOption, boolean refresh) {}
 
-	private record EventRenderer(String eventName, LinkedList<EventNotifications.SkyblockEvent> events) {
+	private static final class EventRenderer implements Comparable<EventRenderer> {
 		private static final int HEIGHT = 20;
+		private final SkyblockEvent event;
+		private @Nullable EventInstance currentInstance;
+
+		private EventRenderer(SkyblockEvent event) {
+			this.event = event;
+			currentInstance = EventManager.getNext(event, Instant.now(), true).orElse(null);
+		}
 
 		private void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY) {
-			long time = System.currentTimeMillis() / 1000;
+			Instant time = Instant.now();
 			Font textRenderer = CLIENT.font;
 
-			graphics.text(textRenderer, Component.literal(eventName).withStyle(Style.EMPTY.withUnderlined(isMouseOver(mouseX, mouseY, x, y))), x, y, CommonColors.WHITE);
+			graphics.text(textRenderer, Component.literal(event.name()).withStyle(Style.EMPTY.withUnderlined(isMouseOver(mouseX, mouseY, x, y))), x, y, CommonColors.WHITE);
 
-			if (events.isEmpty()) {
+			if (currentInstance != null && time.isAfter(currentInstance.end()))
+				currentInstance = EventManager.getNext(event, Instant.now(), true).orElse(null);
+
+			if (currentInstance == null) {
 				graphics.text(textRenderer, Component.literal(" ").append(Component.translatable("skyblocker.events.tab.noMore")), x, y + textRenderer.lineHeight, CommonColors.GRAY, false);
-			} else if (events.peekFirst().start() > time) {
-				Component formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() - time)))).withStyle(ChatFormatting.YELLOW);
-
-				graphics.text(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
 			} else {
-				Component formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime((int) (events.peekFirst().start() + events.peekFirst().duration() - time)))).withStyle(ChatFormatting.GREEN);
-
+				EventInstance event = currentInstance;
+				Component formatted;
+				if (event.start().isAfter(time)) {
+					formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.startsIn", SkyblockTime.formatTime(time.until(event.start()).toSeconds()))).withStyle(ChatFormatting.YELLOW);
+				} else {
+					formatted = Component.literal(" ").append(Component.translatable("skyblocker.events.tab.endsIn", SkyblockTime.formatTime(time.until(event.end()).toSeconds())).withStyle(ChatFormatting.GREEN));
+				}
 				graphics.text(textRenderer, formatted, x, y + textRenderer.lineHeight, CommonColors.WHITE);
 			}
 		}
@@ -125,57 +141,23 @@ public class UpcomingEventsTab implements RecipeTab {
 		}
 
 		private List<ClientTooltipComponent> getTooltip() {
-			List<ClientTooltipComponent> components = new ArrayList<>();
-
-			EventNotifications.SkyblockEvent event = events.peekFirst();
-			if (event == null) return components;
-			if (eventName.equals(EventNotifications.JACOBS) && event.extras().left().isPresent()) {
-				components.add(new JacobsTooltip(event.extras().left().get()));
-			} else if (eventName.equals(EventNotifications.MAYOR_JERRY) && event.extras().right().isPresent()) {
-				EventNotifications.JerryPerks jerryInfo = event.extras().right().get();
-				Component mayorText = Component.translatable("skyblocker.events.tab.currentJerryMayor", jerryInfo.mayorName()).withStyle(ChatFormatting.DARK_GREEN);
-				components.add(ClientTooltipComponent.create(mayorText.getVisualOrderText()));
-
-				for (String perk : jerryInfo.perks()) {
-					Component perkText = Component.literal("- ").withStyle(ChatFormatting.GRAY).append(Component.literal(perk).withStyle(ChatFormatting.GREEN));
-					components.add(ClientTooltipComponent.create(perkText.getVisualOrderText()));
-				}
-
-				return components;
-			}
-
-			if (!event.warpCommand().isEmpty()) {
-				components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.clickToWarp").withStyle(ChatFormatting.ITALIC).getVisualOrderText()));
-			}
-
-			components.add(ClientTooltipComponent.create(Component.literal(Formatters.DATE_FORMATTER.format(Instant.ofEpochSecond(event.start()))).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY).getVisualOrderText()));
-
-			return components;
+			EventInstance event = currentInstance;
+			if (event == null) return List.of();
+			return currentInstance.createTooltip();
 		}
 
 		private @Nullable String getWarpCommand() {
-			return !events.isEmpty() ? events.peek().warpCommand() : null;
-		}
-	}
-
-	private record JacobsTooltip(List<String> crops) implements ClientTooltipComponent {
-
-		@Override
-		public int getHeight(Font textRenderer) {
-			return 20;
+			return currentInstance != null ? currentInstance.additionalInfo().warpCommand().orElse(null) : null;
 		}
 
 		@Override
-		public int getWidth(Font textRenderer) {
-			return 16 * 3 + 4;
-		}
-
-		@Override
-		public void extractImage(Font textRenderer, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
-			for (int i = 0; i < this.crops.size(); i++) {
-				String crop = this.crops.get(i);
-
-				graphics.fakeItem(JacobsContestWidget.FARM_DATA.getOrDefault(crop, Ico.BARRIER).getStackOrThrow(), x + 18 * i, y + 2);
+		public int compareTo(EventRenderer o) {
+			if (currentInstance == null) {
+				return (o.currentInstance == null) ? 0 : 1;
+			} else if (o.currentInstance == null) {
+				return -1;
+			} else {
+				return currentInstance.start().compareTo(o.currentInstance.start());
 			}
 		}
 	}

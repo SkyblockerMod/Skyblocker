@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
+import java.time.temporal.TemporalField;
 import java.util.Locale;
 import java.util.Map;
 
@@ -74,12 +75,20 @@ public class Formatters {
 	 */
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(getTimeZone());
 
+	/**
+	 * Based on {@link DateTimeFormatter#RFC_1123_DATE_TIME}
+	 */
 	public static final DateTimeFormatter SKYBLOCK_TIME_FORMATTER = new DateTimeFormatterBuilder()
 			.parseCaseInsensitive()
 			.parseLenient()
 			.appendValue(SkyblockTimeField.DAY_OF_MONTH, 1, 2, SignStyle.NEVER)
 			.appendLiteral(' ')
-			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Map.of(1L, "ESP")).toFormatter();
+			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Map.of(1L, "ESP"))
+			.appendLiteral(' ')
+			.appendValue(SkyblockTimeField.YEAR, 4)
+			.appendLiteral(' ')
+			.appendValue(SkyblockTimeField.HOUR_OF_DAY, 2)
+			.appendLiteral(":00").toFormatter();
 
 	/**
 	 * Parses a number from a string.
