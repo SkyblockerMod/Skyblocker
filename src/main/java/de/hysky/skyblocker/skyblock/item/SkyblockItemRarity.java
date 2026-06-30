@@ -9,6 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.utils.EnumUtils;
+import io.github.moulberry.repo.data.Rarity;
 
 public enum SkyblockItemRarity implements StringRepresentable {
 	COMMON(ChatFormatting.WHITE),
@@ -69,6 +70,22 @@ public enum SkyblockItemRarity implements StringRepresentable {
 			case DIVINE -> SPECIAL;
 			case SPECIAL, VERY_SPECIAL, ULTIMATE -> VERY_SPECIAL;
 			default -> UNKNOWN;
+		};
+	}
+
+	public Rarity toNeuRarity() {
+		return switch (this) {
+			case SkyblockItemRarity.COMMON -> Rarity.COMMON;
+			case SkyblockItemRarity.UNCOMMON -> Rarity.UNCOMMON;
+			case SkyblockItemRarity.RARE -> Rarity.RARE;
+			case SkyblockItemRarity.EPIC -> Rarity.EPIC;
+			case SkyblockItemRarity.LEGENDARY -> Rarity.LEGENDARY;
+			case SkyblockItemRarity.MYTHIC -> Rarity.MYTHIC;
+			case SkyblockItemRarity.DIVINE -> Rarity.DIVINE;
+			case SkyblockItemRarity.SPECIAL -> Rarity.SPECIAL;
+			case SkyblockItemRarity.VERY_SPECIAL -> Rarity.VERY_SPECIAL;
+			case SkyblockItemRarity.ULTIMATE -> Rarity.SUPREME;
+			case SkyblockItemRarity.ADMIN, SkyblockItemRarity.UNKNOWN -> Rarity.UNKNOWN;
 		};
 	}
 
