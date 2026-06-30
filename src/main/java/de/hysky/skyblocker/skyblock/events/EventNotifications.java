@@ -9,7 +9,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
@@ -17,36 +16,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.Items;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class EventNotifications {
-
-	public static final String JACOBS = "Jacob's Farming Contest";
-	public static final String MAYOR_JERRY = "Mayor Jerry";
-
 	public static final EventNotificationsConfig.EventConfig DEFAULT_REMINDERS = new EventNotificationsConfig.EventConfig();
-	public static final Map<String, FlexibleItemStack> eventIcons = Map.ofEntries(
-			Map.entry("Dark Auction", new FlexibleItemStack(Items.NETHER_BRICK)),
-			Map.entry("Bonus Fishing Festival", new FlexibleItemStack(Items.FISHING_ROD)),
-			Map.entry("Bonus Mining Fiesta", new FlexibleItemStack(Items.IRON_PICKAXE)),
-			Map.entry(JACOBS, new FlexibleItemStack(Items.IRON_HOE)),
-			Map.entry("New Year Celebration", new FlexibleItemStack(Items.CAKE)),
-			Map.entry("Election Over!", new FlexibleItemStack(Items.JUKEBOX)),
-			Map.entry("Election Booth Opens", new FlexibleItemStack(Items.JUKEBOX)),
-			Map.entry(MAYOR_JERRY, new FlexibleItemStack(Items.VILLAGER_SPAWN_EGG)),
-			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
-			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
-			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
-			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
-	);
-	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
 	private static Instant previousTime = Instant.now();
 
 	@Init

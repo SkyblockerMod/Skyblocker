@@ -2,13 +2,8 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import de.hysky.skyblocker.skyblock.events.EventInstance;
 import de.hysky.skyblocker.skyblock.events.EventManager;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.skyblock.events.ExtraEventData;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
@@ -24,15 +19,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class UpcomingEventsTab implements RecipeTab {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
