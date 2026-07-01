@@ -3,7 +3,7 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -80,10 +80,10 @@ public class VanillaStyleManaBar {
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
 		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarSprites ? switch (notchtype) {
-			case CONTAINER -> HudAccessor.getFOOD_EMPTY_SPRITE();
-			case MANA -> !isHalf ? HudAccessor.getFOOD_FULL_SPRITE() : HudAccessor.getFOOD_HALF_SPRITE();
-			case OVERFLOW -> !isHalf ? HudAccessor.getFOOD_FULL_HUNGER_SPRITE() : HudAccessor.getFOOD_HALF_HUNGER_SPRITE();
-			case OVERFLOW_DARK -> HudAccessor.getFOOD_EMPTY_HUNGER_SPRITE();
+			case CONTAINER -> GuiInvoker.getFOOD_EMPTY_SPRITE();
+			case MANA -> !isHalf ? GuiInvoker.getFOOD_FULL_SPRITE() : GuiInvoker.getFOOD_HALF_SPRITE();
+			case OVERFLOW -> !isHalf ? GuiInvoker.getFOOD_FULL_HUNGER_SPRITE() : GuiInvoker.getFOOD_HALF_HUNGER_SPRITE();
+			case OVERFLOW_DARK -> GuiInvoker.getFOOD_EMPTY_HUNGER_SPRITE();
 		} : switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
 			case MANA -> !isHalf ? (isBlinking ? MANA_FULL_BLINK_TEXTURE : MANA_FULL_TEXTURE) : (isBlinking ? MANA_HALF_BLINK_TEXTURE : MANA_HALF_TEXTURE);
