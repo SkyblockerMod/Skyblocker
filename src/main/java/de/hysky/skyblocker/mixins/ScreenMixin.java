@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ServerTransferHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,13 +23,13 @@ public class ScreenMixin {
 	private void skyblocker$releaseCursorWhileUnfocused(CallbackInfo ci) {
 		// If the window isn't focused while a transfer screen is up, give the cursor back so it isn't hidden when you come back
 		if (((Object) this instanceof ServerReconfigScreen || (Object) this instanceof LevelLoadingScreen) && Utils.isOnHypixel() && !this.minecraft.isWindowActive()) {
-			Utils.setTransferInterrupted(true);
+			ServerTransferHelper.setInterrupted(true);
 			if (this.minecraft.mouseHandler.isMouseGrabbed()) this.minecraft.mouseHandler.releaseMouse();
 		}
 	}
 
 	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideReconfiguringScreen(CallbackInfo ci) {
-		if ((Object) this instanceof ServerReconfigScreen && Utils.isOnHypixel() && !Utils.isTransferInterrupted()) ci.cancel();
+		if ((Object) this instanceof ServerReconfigScreen && Utils.isOnHypixel() && !ServerTransferHelper.isInterrupted()) ci.cancel();
 	}
 }

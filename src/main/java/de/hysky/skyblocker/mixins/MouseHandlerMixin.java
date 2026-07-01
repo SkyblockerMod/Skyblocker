@@ -3,6 +3,7 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ServerTransferHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
@@ -37,6 +38,6 @@ public class MouseHandlerMixin {
 	@Inject(method = "grabMouse", at = @At("HEAD"))
 	private void skyblocker$resetTransferState(CallbackInfo ci) {
 		// The transfer is over once we're back in the game
-		Utils.setTransferInterrupted(false);
+		ServerTransferHelper.setInterrupted(false);
 	}
 }
