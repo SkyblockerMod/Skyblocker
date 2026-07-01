@@ -1756,5 +1756,12 @@
     "skyblocker.config.tag.keyBind": "Billentyűbeállítás",
     "skyblocker.config.tag.keyMapping": "Billentyűátkötés",
     "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "A Vanilla Éhségcsík Használata",
-    "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Vanilla Típusú Mana Bar Villogás Engedélyezése"
+    "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Vanilla Típusú Mana Bar Villogás Engedélyezése",
+    "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Raffle Jutalom Kiemelő Engedélyezése",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "Kiemeli a nem begyűjtött jutalmakat pirossal és a begyűjtötteket zölddel.",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Raffle Feladatok Kiemelés Engedélyezése",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Kiemeli a befejezetlen feladatokat pirossal és a befejezetteket zölddel.",
+    "skyblocker.config.patches.updated.failed": "A config patch-ek frissítése sikertelen. Nézd meg a naplófájlt további információért.",
+    "skyblocker.config.patches.updated.success": "A config patch-ek sikeresen frissítve."
 }
