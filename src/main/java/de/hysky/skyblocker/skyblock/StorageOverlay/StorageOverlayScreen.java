@@ -34,20 +34,40 @@ import java.util.List;
 import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
 
 
-public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreenHandler> {
+public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlayScreenHandler> {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("social_interactions/background");
+	//inventory texture key values
+	private static final int HEADER_H = 17;
+	private static final int SLOT_SIZE = 18;
+	private static final int MAX_ROW_BATCH = 6; // texture body only has 6 rows
+
+	@Override
+	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		//let scrolling happen if not scrolling item slot
+		if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+			return super.mouseScrolled(x, y, scrollX, scrollY);
+		}
+		return this.getChildAt(x, y).filter(child -> child.mouseScrolled(x, y, scrollX, scrollY)).isPresent();
+
+	}
+
+
+	private static final int MAX_COL_BATCH = 9; // texture body only has 9 cols
+	private static final int BOTTOM_V = 215;
+	private static final int EDGE_PADDING = 7;
 
 	protected static int openStorage;
 	private static double savedScroll = 0;
+	private static String savedSearch = "";
 	private static backpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
 
 
-	public StorageOverlay(StorageOverlayScreenHandler handler, ChestMenu defaultHandler, Component name, Inventory inventory, int height) {
+	public StorageOverlayScreen(StorageOverlayScreenHandler handler, ChestMenu defaultHandler, Component name, Inventory inventory, int height) {
 		super(handler, inventory, name, 176, height);
 		this.titleLabelY = -1000; //let title exist so for preview widget without rendering in the way
 		this.handler = handler;
@@ -70,12 +90,19 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 		}
 	}
 
+	protected static String getStorageName(int index) {
+		if (index <= 8) {
+			return "Ender Chest " + (index + 1);
+		} else {
+			return "Backpack " + (index - 8);
+		}
+	}
+
 	private void hide(Button button) {
 		if (CLIENT.player == null) return;
 		CLIENT.player.containerMenu = defaultHandler;
 		CLIENT.gui.setScreen(new ContainerScreen(defaultHandler, CLIENT.player.getInventory(), name));
 	}
-
 
 
 	private int getLeftPos() {
@@ -96,6 +123,7 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 		super.init();
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
 		grid = new backpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols, handler, this.leftPos, this.topPos);
+		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
 
@@ -105,6 +133,7 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 				.pos(width - 50, height - 25)
 				.size(40, 15)
 				.build());
+
 	}
 
 	@Override
@@ -113,9 +142,16 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 		this.extractTooltip(graphics, mouseX, mouseY);
 
 	}
+
 	@Override
 	public void onClose() {
-		savedScroll = grid.getScrollAmount();
+		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch) {
+			savedScroll = grid.getScrollAmount();
+
+		} else {
+			savedSearch = "";
+			savedScroll = 0;
+		}
 		super.onClose();
 	}
 
@@ -152,26 +188,26 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 		private backpackWidget openBackpack = null;
 
 		public backpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
-			super(x, y, width, height, Component.literal("BackPack grid"), internalCols * 18 + 14, true);
+			super(x, y, width, height, Component.literal("BackPack grid"), internalCols * SLOT_SIZE + EDGE_PADDING * 2, true);
 
 			//add backpacks
 			BackpackPreview.Storage[] storages = BackpackPreview.getStorages();
 			for (int i = 0; i < storages.length; i++) {
 				BackpackPreview.Storage storage = storages[i];
-				boolean open = StorageOverlay.openStorage == i;
+				boolean open = StorageOverlayScreen.openStorage == i;
 				if (storage != null) {
-					backpackWidget widget = new backpackWidget(internalCols, "idk", i, storage, open, handler, screenLeft, screenTop);
+					backpackWidget widget = new backpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
 					if (open) {
 						openBackpack = widget;
 					}
 					backpackWidgets.add(widget);
 				}
 			}
-			setSearch("");
 		}
 
 		@Override
 		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
+			savedSearch = input;
 			return backpackWidgets.stream().filter(backpack -> backpack.matches(input)).toList();
 		}
 
@@ -182,6 +218,11 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 				return false;
 			}
 			return super.isMouseOver(mouseX, mouseY);
+		}
+
+		@Override
+		protected double scrollRate() {
+			return 15;
 		}
 	}
 
@@ -197,12 +238,12 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 		private final int screenLeft;
 		private final int screenTop;
 
-		public backpackWidget(int columns, String label, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft,int screenTop) {
+		public backpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			int rows = Math.max(1, Math.ceilDiv(storage.size() - 9, columns));
-			super(0, 0, columns * 18 + 14, rows * 18 + 24, Component.literal("Backpack preview"));
+			super(0, 0, columns * SLOT_SIZE + EDGE_PADDING * 2, rows * SLOT_SIZE + HEADER_H + EDGE_PADDING, Component.literal("Backpack preview"));
 			this.rows = rows;
 			this.columns = columns;
-			this.label = label;
+			this.label = getStorageName(index);
 			this.index = index;
 			this.storage = storage;
 			this.open = open;
@@ -223,12 +264,6 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 			return false;
 		}
 
-		private static final int HEADER_H = 17;
-		private static final int ROW_H = 18;
-		private static final int MAX_ROW_BATCH = 6; // texture body only has 6 rows
-		private static final int MAX_COL_BATCH = 9; // texture body only has 9 cols
-		private static final int BOTTOM_V = 215;
-		private static final int BOTTOM_H = 7;
 
 		private void CustomInventorySize(GuiGraphicsExtractor graphics, int x, int y, int rows, int columns) {
 			//top
@@ -238,8 +273,8 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 			int rowsRemaining = rows;
 			while (rowsRemaining > 0) {
 				int rowBatch = Math.min(rowsRemaining, MAX_ROW_BATCH);
-				int batchH = rowBatch * ROW_H;
-				int rowY = y + HEADER_H + (rows - rowsRemaining) * ROW_H;
+				int batchH = rowBatch * SLOT_SIZE;
+				int rowY = y + HEADER_H + (rows - rowsRemaining) * SLOT_SIZE;
 
 				extractSection(graphics, x, rowY, columns, batchH, HEADER_H);
 
@@ -247,8 +282,8 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 			}
 
 			//bottom
-			int bottomY = y + HEADER_H + rows * ROW_H;
-			extractSection(graphics, x, bottomY, columns, BOTTOM_H, BOTTOM_V);
+			int bottomY = y + HEADER_H + rows * SLOT_SIZE;
+			extractSection(graphics, x, bottomY, columns, EDGE_PADDING, BOTTOM_V);
 		}
 
 		private void extractSection(GuiGraphicsExtractor graphics, int x, int y, int columns, int height, int textureYOffset) {
@@ -256,13 +291,13 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 			int columnsRemaining = columns;
 			while (columnsRemaining > 0) {
 				int batch = Math.min(columnsRemaining, MAX_COL_BATCH);
-				int batchX = (columns - columnsRemaining) * 18 + 7 + x;
-				graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, batchX, y, 7, textureYOffset, batch * 18, height, 256, 256);
+				int batchX = (columns - columnsRemaining) * SLOT_SIZE + EDGE_PADDING + x;
+				graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, batchX, y, EDGE_PADDING, textureYOffset, batch * SLOT_SIZE, height, 256, 256);
 				columnsRemaining -= batch;
 			}
 			//blit left and right sides for section
-			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, textureYOffset, 7, height, 256, 256);
-			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, columns * 18 + 7 + x, y, 169, textureYOffset, 7, height, 256, 256);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, textureYOffset, EDGE_PADDING, height, 256, 256);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, columns * SLOT_SIZE + EDGE_PADDING + x, y, 169, textureYOffset, EDGE_PADDING, height, 256, 256);
 		}
 
 
@@ -277,8 +312,8 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 				for (int i = 9; i < storage.size(); ++i) {
 					ItemStack currentStack = storage.getStack(i);
 					if (currentStack.isEmpty()) continue;
-					int itemX = x + (i - 9) % columns * 18 + 8;
-					int itemY = y + (i - 9) / columns * 18 + 18;
+					int itemX = x + (i - 9) % columns * SLOT_SIZE + 8;
+					int itemY = y + (i - 9) / columns * SLOT_SIZE + SLOT_SIZE;
 					// draw custom backgrounds ect as well as item
 					ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
@@ -291,14 +326,14 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 					SlotTextManager.extractSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
 
 					//draw tooltip if hovered
-					if (mouseX > itemX && mouseX <= itemX + 18 && mouseY > itemY && mouseY <= itemY + 18) {
+					if (mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE) {
 						graphics.setTooltipForNextFrame(CLIENT.font, currentStack, mouseX, mouseY);
 					}
 				}
 			}
 			// use actual inventory data
 			else {
-				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + 18, columns);
+				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + SLOT_SIZE, columns);
 			}
 		}
 
@@ -322,7 +357,6 @@ public class StorageOverlay extends AbstractContainerScreen<StorageOverlayScreen
 
 		@Override
 		protected void updateWidgetNarration(NarrationElementOutput output) {
-
 		}
 	}
 }

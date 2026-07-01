@@ -254,6 +254,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.storageOverlay.backpackWidth = newValue)
 								.controller(IntegerController.createBuilder().range(4, 45).slider(1).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip"))
+								.binding(defaults.uiAndVisuals.storageOverlay.rememberSearch,
+										() -> config.uiAndVisuals.storageOverlay.rememberSearch,
+										newValue -> config.uiAndVisuals.storageOverlay.rememberSearch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build()
 				)
 

@@ -113,6 +113,8 @@ public class UIAndVisualsConfig {
 		public boolean enabled = false;
 
 		public int backpackWidth = 5;
+
+		public boolean rememberSearch = false;;
 	}
 
 	public static class RadialMenu {
