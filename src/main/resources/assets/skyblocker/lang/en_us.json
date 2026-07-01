@@ -1403,6 +1403,13 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
   "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
 
+  "skyblocker.config.uiAndVisuals.storageOverlay": "Storage Overly",
+  "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth": "Backpack Width",
+  "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip": "How many slots each backpack / echest should have in each row",
+  "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip": "Enables Overlay for ender chest and backpacks",
+  "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Hide",
+
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
 

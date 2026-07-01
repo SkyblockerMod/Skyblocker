@@ -52,6 +52,8 @@ public class UIAndVisualsConfig {
 
 	public SlotText slotText = new SlotText();
 
+	public StorageOverlay storageOverlay = new StorageOverlay();
+
 	public RadialMenu radialMenu = new RadialMenu();
 
 	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
@@ -105,6 +107,12 @@ public class UIAndVisualsConfig {
 
 		public boolean slotTextToggled = true;
 
+	}
+
+	public static class StorageOverlay {
+		public boolean enabled = false;
+
+		public int backpackWidth = 5;
 	}
 
 	public static class RadialMenu {
