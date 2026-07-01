@@ -12,7 +12,7 @@ import net.minecraft.world.item.Items;
 
 public class RaffleTaskHighlight extends SimpleContainerSolver {
 	public RaffleTaskHighlight() {
-		super("Daily Tasks");
+		super("Raffle Tasks");
 	}
 
 	@Override
