@@ -1763,5 +1763,7 @@
     "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Raffle Feladatok Kiemelés Engedélyezése",
     "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Kiemeli a befejezetlen feladatokat pirossal és a befejezetteket zölddel.",
     "skyblocker.config.patches.updated.failed": "A config patch-ek frissítése sikertelen. Nézd meg a naplófájlt további információért.",
-    "skyblocker.config.patches.updated.success": "A config patch-ek sikeresen frissítve."
+    "skyblocker.config.patches.updated.success": "A config patch-ek sikeresen frissítve.",
+    "text.skyblocker.curseforge": "CurseForge",
+    "text.skyblocker.logsFolder": "Naplófájl Mappájának Megnyitása"
 }
