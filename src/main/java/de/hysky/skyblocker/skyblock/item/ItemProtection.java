@@ -138,6 +138,7 @@ public class ItemProtection {
 				|| screenTitle.equals("Rift Storage") || screenTitle.startsWith("Rift Storage (")
 				|| screenTitle.startsWith("Ender Chest")
 				|| screenTitle.startsWith("Chest")
+				|| screenTitle.startsWith("Trapped Chest")
 				|| (screenTitle.contains("Backpack") && screenTitle.contains("(Slot #"));
 	}
 
