@@ -1031,6 +1031,9 @@
   "skyblocker.config.otherLocations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
   "skyblocker.config.otherLocations.spidersDen.relics.highlightFoundRelics": "Highlight Found Relics",
 
+  "skyblocker.config.patches.updated.failed": "Updating the config patches failed. See logs for details.",
+  "skyblocker.config.patches.updated.success": "Updated the config patches successfully.",
+
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %s",
   "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose SkyBlock Item",
