@@ -21,9 +21,7 @@ public class AccessoryBagStorage {
 		public int highestUnlockedSlot;
 		@SerializedName("refund_1")
 		public boolean refund1;
-		/*
-		 * Slot 0 is your current active Stats Tuning Points, Slots 1-4 are presets.
-		 */
+		/// Slot 0 is your current active Stats Tuning Points, Slots 1-4 are presets.
 		@SerializedName("slot_0")
 		public TuningSlot activeSlot = new TuningSlot();
 

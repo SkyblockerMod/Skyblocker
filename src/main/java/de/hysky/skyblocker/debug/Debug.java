@@ -9,7 +9,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
 import de.hysky.skyblocker.skyblock.events.EventNotifications;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -49,6 +49,8 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class Debug {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
+	public static KeyMapping dumpNearbyEntitiesKey;
+	public static KeyMapping dumpHoveredItemKey;
 	//This is necessary to not spam the chat with 20 messages per second
 	private static boolean keyDown = false;
 
@@ -71,8 +73,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyMapping dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
-		KeyMapping dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
@@ -188,7 +190,7 @@ public class Debug {
 		return literal("dumpActionBar")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Component actionBar = ((GuiInvoker) (source.getClient().gui)).getOverlayMessageString();
+					Component actionBar = ((HudAccessor) (source.getClient().gui.hud)).getOverlayMessageString();
 
 					if (actionBar != null) {
 						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());

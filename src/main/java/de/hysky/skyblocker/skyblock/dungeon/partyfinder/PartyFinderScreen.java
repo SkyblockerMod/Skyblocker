@@ -491,8 +491,8 @@ public class PartyFinderScreen extends Screen {
 		if (currentPage == Page.SIGN) {
 			assert this.minecraft.player != null;
 			this.minecraft.player.openTextEdit(sign, signFront);
-		} else this.minecraft.setScreen(new ContainerScreen(handler, inventory, title));
-		this.minecraft.getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
+		} else this.minecraft.gui.setScreen(new ContainerScreen(handler, inventory, title));
+		this.minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
 		aborted = true;
 	}
 

@@ -8,23 +8,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class Inventories {
 	@SerializedName("bag_contents")
-	public @Nullable BagContents bagContents;
+	public BagContents bagContents = new BagContents();
 	@SerializedName("inv_contents")
 	public @Nullable AbstractInventoryContents inventoryContents;
 	@SerializedName("ender_chest_contents")
 	public @Nullable AbstractInventoryContents enderChestContents;
 	@SerializedName("backpack_icons")
-	public @Nullable Map<String, AbstractInventoryContents> backpackIcons;
+	public Map<String, AbstractInventoryContents> backpackIcons = Map.of();
 	@SerializedName("backpack_contents")
-	public @Nullable Map<String, AbstractInventoryContents> backpackContents;
+	public Map<String, AbstractInventoryContents> backpackContents = Map.of();
 	@SerializedName("inv_armor")
 	public @Nullable AbstractInventoryContents armourContents;
 	@SerializedName("equipment_contents")
 	public @Nullable AbstractInventoryContents equipmentContents;
 	@SerializedName("personal_vault_contents")
 	public @Nullable AbstractInventoryContents personalVaultContents;
-	@SerializedName("wardrobe_contents")
-	public @Nullable AbstractInventoryContents wardrobeContents;
 	/** The non-zero indexed wardrobe slot in use. */
 	@SerializedName("wardrobe_equipped_slot")
 	public int equippedWardrobeSlot;

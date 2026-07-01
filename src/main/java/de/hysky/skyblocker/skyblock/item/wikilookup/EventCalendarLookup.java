@@ -45,7 +45,7 @@ public class EventCalendarLookup implements WikiLookup {
 		if (optional.isEmpty()) return false;
 		Slot slot = optional.get();
 		if (slot.index <= 9 || slot.index >= 26) return false;
-		if (slot.getItem().is(Items.BLACK_STAINED_GLASS_PANE)) return false;
+		if (slot.getItem().is(Items.STAINED_GLASS_PANE.black())) return false;
 		return StringUtils.isNotEmpty(title) && title.matches("^Calendar and Events$");
 	}
 }

@@ -56,9 +56,7 @@ public class EasterEvent {
 		public int unlockedSlots;
 		@SerializedName("missed_uncollected_eggs")
 		public int uncollectedEggCount;
-		/**
-		 * Is this the last collected egg timestamp?
-		 */
+		/// Is this the last collected egg timestamp?
 		@SerializedName("egg_slot_cooldown_mark")
 		public long eggSlotCooldownTimestamp;
 		@SerializedName("egg_slot_cooldown_sum")
@@ -106,9 +104,7 @@ public class EasterEvent {
 		return this.collectedEggs;
 	}
 
-	/**
-	 * Last collected egg timestamps, can be used calculate when the next egg is available.
-	 */
+	/// Last collected egg timestamps, can be used calculate when the next egg is available.
 	public static class CollectedEggs {
 		public long breakfast;
 		public long dinner;

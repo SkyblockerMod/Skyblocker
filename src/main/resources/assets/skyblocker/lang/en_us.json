@@ -1084,6 +1084,7 @@
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
+  "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "Highlights beacons and shows a path to them in red.",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
   "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
 
@@ -1144,6 +1145,9 @@
   "skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag": "Hide Sven Pup's Nametag",
   "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Mute Wolf Sounds",
 
+  "skyblocker.config.tag.keyBind": "Key Bind",
+  "skyblocker.config.tag.keyMapping": "Key Mapping",
+
   "skyblocker.config.title": "Skyblocker %s",
   "skyblocker.config.title.settings": "Settings",
 
@@ -1155,6 +1159,7 @@
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Enable in Rift",
   "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "Enable Vanilla Style Mana Bar",
+  "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Enable Vanilla Style Mana Bar Blinking",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
@@ -1162,6 +1167,7 @@
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
+  "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
@@ -1343,12 +1349,16 @@
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
+  "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "Crop Milestones",
+  "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Displays the crop milestone levels.",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "Enchantment Abbreviation",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
   "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "Evolving Items",
   "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "Displays the time held for Bottle of Jyrre, Moby Duck, Discrite, Dark Cacao Truffle, Training Weights.",
+  "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Garden Upgrades",
+  "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Displays the level of crop and greenhouse upgrades.",
   "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "Toolkit Indicator",

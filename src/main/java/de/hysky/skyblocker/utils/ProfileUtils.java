@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 public class ProfileUtils {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final LoadingCache<String, JsonObject> UUID_TO_PROFILES_CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(5, TimeUnit.MINUTES)
+			.expireAfterWrite(Duration.ofMinutes(5L))
 			.build(new CacheLoader<>() {
 				@Override
 				public JsonObject load(String uuid) throws Exception {

@@ -87,7 +87,7 @@ public class TooltipManager {
 	@Init
 	public static void init() {
 		ItemTooltipCallback.EVENT.register((stack, _, _, lines) -> {
-			if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> handledScreen) {
+			if (Minecraft.getInstance().gui.screen() instanceof AbstractContainerScreen<?> handledScreen) {
 				addToTooltip(((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
 				addToTooltip(null, stack, lines);

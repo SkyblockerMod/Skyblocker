@@ -43,17 +43,17 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu _ when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && nameLowercase.startsWith("catacombs") -> PartyFinderScreen.isInKuudraPartyFinder = false;
 
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().dungeons.fancyPartyFinder && PartyFinderScreen.possibleInventoryNames.contains(nameLowercase) -> {
-				if (client.screen != null) {
-					String lowerCase = client.screen.getTitle().getString().toLowerCase(Locale.ENGLISH);
+				if (client.gui.screen() != null) {
+					String lowerCase = client.gui.screen().getTitle().getString().toLowerCase(Locale.ENGLISH);
 					if (lowerCase.contains("group builder") || lowerCase.equals("training dummy")) return;
 				}
 
 				if (PartyFinderScreen.isInKuudraPartyFinder) return;
 				client.player.containerMenu = containerScreenHandler;
 
-				switch (client.screen) {
+				switch (client.gui.screen()) {
 					case PartyFinderScreen screen -> screen.updateHandler(containerScreenHandler, name);
-					case null, default -> client.setScreen(new PartyFinderScreen(containerScreenHandler, player.getInventory(), name));
+					case null, default -> client.gui.setScreen(new PartyFinderScreen(containerScreenHandler, player.getInventory(), name));
 				}
 
 				ci.cancel();
@@ -64,9 +64,9 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, false);
 				client.player.containerMenu = auctionHouseScreenHandler;
 
-				switch (client.screen) {
+				switch (client.gui.screen()) {
 					case AuctionBrowserScreen auctionBrowserScreen -> auctionBrowserScreen.changeHandler(auctionHouseScreenHandler);
-					case null, default -> client.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
+					case null, default -> client.gui.setScreen(new AuctionBrowserScreen(auctionHouseScreenHandler, client.player.getInventory()));
 				}
 
 				ci.cancel();
@@ -76,16 +76,16 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 				AuctionHouseScreenHandler auctionHouseScreenHandler = AuctionHouseScreenHandler.of(containerScreenHandler, true);
 				client.player.containerMenu = auctionHouseScreenHandler;
 
-				switch (client.screen) {
+				switch (client.gui.screen()) {
 					case AuctionViewScreen auctionViewScreen -> auctionViewScreen.changeHandler(auctionHouseScreenHandler);
-					case null, default -> client.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
+					case null, default -> client.gui.setScreen(new AuctionViewScreen(auctionHouseScreenHandler, client.player.getInventory(), name));
 				}
 
 				ci.cancel();
 			}
 
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.equals("confirm purchase") || nameLowercase.equals("confirm bid")) && client.screen instanceof AuctionViewScreen auctionViewScreen -> {
-				client.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyAuctionHouse.enabled && (nameLowercase.equals("confirm purchase") || nameLowercase.equals("confirm bid")) && client.gui.screen() instanceof AuctionViewScreen auctionViewScreen -> {
+				client.gui.setScreen(auctionViewScreen.getConfirmPurchasePopup(name));
 				client.player.containerMenu = containerScreenHandler;
 				ci.cancel();
 			}
@@ -94,16 +94,16 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.fancyCraftingTable && name.getString().toLowerCase(Locale.ENGLISH).contains("craft item") -> {
 				SkyblockCraftingTableScreenHandler skyblockCraftingTableScreenHandler = new SkyblockCraftingTableScreenHandler(containerScreenHandler, player.getInventory());
 				client.player.containerMenu = skyblockCraftingTableScreenHandler;
-				client.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Component.literal("Craft Item")));
+				client.gui.setScreen(new SkyblockCraftingTableScreen(skyblockCraftingTableScreenHandler, player.getInventory(), Component.literal("Craft Item")));
 				ci.cancel();
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (WidgetsConfigurationScreen.SCREEN_TITLE_PATTERN.matcher(nameLowercase).find() || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.screen instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (WidgetsConfigurationScreen.SCREEN_TITLE_PATTERN.matcher(nameLowercase).find() || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.gui.screen() instanceof WidgetsConfigurationScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
-				switch (client.screen) {
+				switch (client.gui.screen()) {
 					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
-					case null, default -> client.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
+					case null, default -> client.gui.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
 				}
 				ci.cancel();
 			}
@@ -111,7 +111,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			// Leap Overlay
 			case ChestMenu containerScreenHandler when Utils.isInDungeons() && SkyblockerConfigManager.get().dungeons.leapOverlay.enableLeapOverlay && nameLowercase.contains(LeapOverlay.TITLE.toLowerCase(Locale.ENGLISH)) -> {
 				client.player.containerMenu = containerScreenHandler;
-				client.setScreen(new LeapOverlay(containerScreenHandler));
+				client.gui.setScreen(new LeapOverlay(containerScreenHandler));
 
 				ci.cancel();
 			}
@@ -120,7 +120,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			case ChestMenu containerScreenHandler when RadialMenuManager.isMenuExistsFromTitle(nameLowercase) -> {
 				client.player.containerMenu = containerScreenHandler;
 				RadialMenu menuType = RadialMenuManager.getMenuFromTitle(nameLowercase);
-				client.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
+				client.gui.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();
 			}

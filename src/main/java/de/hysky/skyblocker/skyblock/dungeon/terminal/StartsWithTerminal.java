@@ -78,8 +78,8 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 	@Override
 	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
-		// rows * 9 = 54
-		return slotIndex >= 54 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
+		// 5 rows * 9 = 45
+		return slotIndex >= 45 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
 	}
 
 	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)

@@ -180,7 +180,7 @@ public class DungeonMap {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			Player playerEntity = world.getPlayerByUUID(dungeonPlayer.uuid());
 			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.position()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.y() / 2d + 64);
-			float deg = playerEntity != null ? playerEntity.getYRot() : mapDecoration.rot() * 360 / 16.0F;
+			float deg = playerEntity != null ? playerEntity.getYRot() : mapDecoration.rot() * 360 / 16.0f;
 
 			return new PlayerRenderState(dungeonPlayer.uuid(), dungeonPlayer.name(), mapPos, deg);
 		}

@@ -195,8 +195,8 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onSlotChange(AuctionHouseScreenHandler handler, int slotId, ItemStack stack) {
-		if (stack.is(Items.BLACK_STAINED_GLASS_PANE) || slotId == 13 || slotId >= handler.getRowCount() * 9) return;
-		if (stack.is(Items.RED_TERRACOTTA)) { // Red terracotta shows up when you can cancel it
+		if (stack.is(Items.STAINED_GLASS_PANE.black()) || slotId == 13 || slotId >= handler.getRowCount() * 9) return;
+		if (stack.is(Items.DYED_TERRACOTTA.red())) { // Red terracotta shows up when you can cancel it
 			changeState(BuyState.CANCELLABLE_AUCTION);
 			buySlotID = slotId;
 		}

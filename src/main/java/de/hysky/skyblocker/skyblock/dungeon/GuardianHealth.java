@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.phys.AABB;
@@ -45,7 +45,7 @@ public class GuardianHealth {
 			for (Guardian guardian : guardians) {
 				List<ArmorStand> armorStands =
 						client.level.getEntities(
-								EntityType.ARMOR_STAND,
+								EntityTypes.ARMOR_STAND,
 								guardian.getBoundingBox().inflate(0, 1, 0),
 								GuardianHealth::isGuardianName);
 

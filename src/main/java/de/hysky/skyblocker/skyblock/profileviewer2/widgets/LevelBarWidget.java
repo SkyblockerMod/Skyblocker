@@ -8,13 +8,17 @@ import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
-public final class LevelBarWidget extends ProfileViewerWidget {
+public final class LevelBarWidget extends AbstractWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");
 	private static final Identifier BAR_BACKGROUND = SkyblockerMod.id("bars/bar_back");
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
@@ -27,7 +31,7 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 	// Extra padding of 3 is so the text & bar aren't against the left edge of the content box
 	private static final int CONTENT_OFFSET = CONTENT_BOX_OFFSET + 3;
 	private static final int TEXT_Y_OFFSET = 5;
-	private static final int BAR_OFFSET = TEXT_Y_OFFSET + getFont().lineHeight + 1;
+	private static final int BAR_OFFSET = TEXT_Y_OFFSET + Minecraft.getInstance().font.lineHeight + 1;
 	private static final int BAR_WIDTH = 75;
 	private static final int BAR_HEIGHT = 6;
 	private final FlexibleItemStack icon;
@@ -64,18 +68,21 @@ public final class LevelBarWidget extends ProfileViewerWidget {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY() + ICON_BOX_Y_OFFSET, ICON_BOX_SIZE, ICON_BOX_SIZE);
 
 		// Icon
-		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (ICON_BOX_SIZE - ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - ITEM_SIZE) / 2);
+		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (ICON_BOX_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2);
 
 		// Content Area background
 		int contentAreaWidth = this.getWidth() - CONTENT_BOX_OFFSET;
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX() + CONTENT_BOX_OFFSET, this.getY(), contentAreaWidth, HEIGHT);
 
 		// Label
-		graphics.text(getFont(), this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 
 		// Bars
 		int barFillWidth = (int) (this.barFillPercentage * BAR_WIDTH);
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACKGROUND, this.getX() + CONTENT_OFFSET, this.getY() + BAR_OFFSET, BAR_WIDTH, BAR_HEIGHT);
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_FILL, this.getX() + CONTENT_OFFSET, this.getY() + BAR_OFFSET, barFillWidth, BAR_HEIGHT, this.barFillColour.getRGB());
 	}
+
+	@Override
+	protected void updateWidgetNarration(NarrationElementOutput output) {}
 }

@@ -70,7 +70,7 @@ public class MiningCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.dwarvenHud.screen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
 						.build())
 
 				//Pickobulus Helper
@@ -194,7 +194,7 @@ public class MiningCategory {
 								.name(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))
 								.description(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
 								.build())
 						.build())
 
@@ -212,7 +212,7 @@ public class MiningCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))

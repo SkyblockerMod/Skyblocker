@@ -186,7 +186,7 @@ public class ChatCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.chatRules.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ChatRulesConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ChatRulesConfigScreen(screen)))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.chatRules.announcementLength"))

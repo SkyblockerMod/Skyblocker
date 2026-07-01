@@ -79,14 +79,14 @@ public class TerminalHud extends ElementBasedWidget {
 	}
 
 	public void updateFromScheduler() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
 		if (!GoldorWaypointsManager.isActive() || !shouldRender(Utils.getLocation())) return;
 		update();
 	}
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
 			MutableComponent status = Component.empty();
 			if (CONFIG.get().showTerminalStatus) {
 				status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));

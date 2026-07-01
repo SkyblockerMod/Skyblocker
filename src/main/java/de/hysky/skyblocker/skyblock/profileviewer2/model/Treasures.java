@@ -7,57 +7,47 @@ import java.util.UUID;
 
 public class Treasures {
 	public List<Run> runs = List.of();
-	/**
-	 * This is a list of chests. Nota bene: the chests are not grouped by dungeon run, but have a run id that can be used to group them.
-	 */
+	/// This is a list of chests.
+	///
+	/// Nota Bene: The chests are not grouped by dungeon run, but have a run id that can be used to group them.
 	public List<Chest> chests = List.of();
 	// TODO: add a method to collate runs and chests
 
 	public static class Chest {
-		/**
-		 * The type of chest, either {@code DUNGEON} or {@code KUUDRA}.
-		 */
+		/// The type of chest, either {@code DUNGEON} or {@code KUUDRA}.
 		public String type = "";
 		@SerializedName("run_id")
 		public UUID runId = UUID.randomUUID();
 		@SerializedName("chest_id")
 		public UUID chestId = UUID.randomUUID();
-		/**
-		 * The dungeon chest type; one of {@code wood}, {@code gold}, {@code diamond}, {@code emerald}, {@code obsidian}, or {@code bedrock}.
-		 */
+		/// The dungeon chest type; one of {@code wood}, {@code gold}, {@code diamond}, {@code emerald}, {@code obsidian}, or {@code bedrock}.
 		@SerializedName("treasure_type")
 		public String treasureType = "";
 		public Rewards rewards = new Rewards();
 		public int quality;
 		@SerializedName("shiny_eligible")
 		public boolean shinyEligible;
-		/** Whether the dungeon chest was paid for. */
+		/// Whether the dungeon chest was paid for.
 		public boolean paid;
-		/** This field is for dungeon chests exclusively. */
+		/// This field is for dungeon chests exclusively.
 		public int rerolls;
-		/**
-		 * The Kuudra chest type; one of {@code free}, or {@code paid}.
-		 */
+		/// The Kuudra chest type; one of {@code free}, or {@code paid}.
 		@SerializedName("chest_type")
 		public String chestType = "";
-		/**
-		 * The Kuudra tier; one of {@code NONE}, {@code HOT}, {@code BURNING}, {@code FIERY}, or {@code INFERNAL}.
-		 */
+		/// The Kuudra tier; one of {@code NONE}, {@code HOT}, {@code BURNING}, {@code FIERY}, or {@code INFERNAL}.
 		@SerializedName("run_tier")
 		public String kuudraTier = "";
-		/**
-		 * Seems to be in the format of {@code kuudra_none_tier_paid} for example.
-		 */
+		/// Seems to be in the format of {@code kuudra_none_tier_paid} for example.
 		@SerializedName("loot_table_id")
 		public String lootTableId = "";
 		@SerializedName("secondary_slots")
 		public int secondarySlots;
 		@SerializedName("percentage_completed")
 		public int percentageCompleted;
-		/** This field is for Kuudra chests exclusively. */
+		/// This field is for Kuudra chests exclusively.
 		@SerializedName("is_opened")
 		public boolean isOpened;
-		/** This field is for Kuudra chests exclusively. */
+		/// This field is for Kuudra chests exclusively.
 		@SerializedName("is_rerolled")
 		public boolean isRerolled;
 		@SerializedName("is_attribute_rerolled")
@@ -81,24 +71,18 @@ public class Treasures {
 	}
 
 	public static class Run {
-		/**
-		 * The type of run, either {@code DUNGEON} or {@code KUUDRA}.
-		 */
+		/// The type of run, either {@code DUNGEON} or {@code KUUDRA}.
 		public String type = "";
 		@SerializedName("run_id")
 		public UUID runId = UUID.randomUUID();
 		@SerializedName("completion_ts")
 		public long completionTimestamp;
-		/**
-		 * Either {@code master_catacombs} or {@code catacombs}.
-		 */
+		/// Either {@code master_catacombs} or {@code catacombs}.
 		@SerializedName("dungeon_type")
 		public String dungeonType = "";
 		@SerializedName("dungeon_tier")
 		public int dungeonTier;
-		/**
-		 * The Kuudra tier; one of {@code NONE}, {@code HOT}, {@code BURNING}, {@code FIERY}, or {@code INFERNAL}.
-		 */
+		/// The Kuudra tier; one of {@code NONE}, {@code HOT}, {@code BURNING}, {@code FIERY}, or {@code INFERNAL}.
 		@SerializedName("tier_id")
 		public String kuudraTier = "";
 		public List<Participant> participants = List.of();
@@ -107,12 +91,10 @@ public class Treasures {
 	public static class Participant {
 		@SerializedName("player_uuid")
 		public UUID playerUuid;
-		/**
-		 * This is formatted as {@code [name]: [role] ([class level])} + some colour codes (probably depending on level). Notably the class level is not a roman numeral, but instead an arabic one.
-		 */
+		/// This is formatted as {@code [name]: [role] ([class level])} + some colour codes (probably depending on level). Notably the class level is not a roman numeral, but instead an arabic one.
 		@SerializedName("display_name")
 		public String displayName;
-		/** This field is for dungeon runs exclusively. */
+		/// This field is for dungeon runs exclusively.
 		@SerializedName("class_milestone")
 		public int classMilestone;
 	}

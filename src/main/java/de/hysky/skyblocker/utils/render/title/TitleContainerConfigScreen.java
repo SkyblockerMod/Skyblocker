@@ -6,7 +6,7 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import org.lwjgl.glfw.GLFW;
@@ -68,7 +68,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void extractRenderState(GuiGraphicsExtractor context, List<AbstractWidget> widgets, float delta) {
+	protected void extractRenderState(GuiGraphicsExtractor context, List<BasicWidget> widgets, float delta) {
 		super.extractRenderState(context, widgets, delta);
 		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
 		context.centeredText(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
@@ -127,7 +127,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected int getWidgetXOffset(AbstractWidget widget) {
+	protected int getWidgetXOffset(BasicWidget widget) {
 		return switch (alignment) {
 			case LEFT -> 0;
 			case MIDDLE -> -getSelectionWidth() / 2;
@@ -142,7 +142,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig fullConfig, List<AbstractWidget> widgets) {
+	protected void savePos(SkyblockerConfig fullConfig, List<BasicWidget> widgets) {
 		// Save to -1 if the widget is at the default position
 		List<IntIntMutablePair> defaultPos = getConfigPos(fullConfig);
 		UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;

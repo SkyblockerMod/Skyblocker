@@ -193,9 +193,7 @@ public class NetherIslandPlayerData {
 		public boolean weirdSailor;
 		@SerializedName("fished_wet_napkin")
 		public boolean fishedWetNapkin;
-		/**
-		 * The rarity of the Kuudra Teeth Plaque.
-		 */
+		/// The rarity of the Kuudra Teeth Plaque.
 		@SerializedName("cavity_rarity")
 		public String cavityRarity = "";
 	}

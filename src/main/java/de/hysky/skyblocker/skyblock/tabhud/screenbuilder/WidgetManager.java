@@ -85,7 +85,7 @@ public class WidgetManager {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
-		if (client.screen instanceof WidgetsConfigurationScreen) return;
+		if (client.gui.screen() instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
 		Matrix3x2fStack matrices = context.pose();

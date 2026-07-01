@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -31,7 +33,7 @@ public class CommsWidget extends TabHudWidget {
 	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	public CommsWidget() {
-		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Commissions", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

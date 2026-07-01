@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import java.util.function.Consumer;
+
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -9,8 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 /**
  * Implements a few things so you don't have to!
  */
-// FIXME This should really be renamed
-public abstract class AbstractWidget implements LayoutElement, GuiEventListener, Renderable {
+public abstract class BasicWidget implements LayoutElement, GuiEventListener, Renderable {
 
 	protected int w = 0, h = 0;
 	protected int x = 0, y = 0;
@@ -44,7 +45,7 @@ public abstract class AbstractWidget implements LayoutElement, GuiEventListener,
 	}
 
 	@Override
-	public void visitWidgets(Consumer<net.minecraft.client.gui.components.AbstractWidget> consumer) {}
+	public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 
 	public void setHeight(int height) {
 		this.h = height;

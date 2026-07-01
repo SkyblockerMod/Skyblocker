@@ -25,12 +25,12 @@ public class LookingClientPosArgument implements ClientPosArgument {
 	public Vec3 toAbsolutePos(FabricClientCommandSource source) {
 		Vec2 vec2f = source.getRotation();
 		Vec3 vec3d = source.getPlayer().position();
-		float f = Mth.cos((vec2f.y + 90.0F) * (float) (Math.PI / 180.0));
-		float g = Mth.sin((vec2f.y + 90.0F) * (float) (Math.PI / 180.0));
+		float f = Mth.cos((vec2f.y + 90.0f) * (float) (Math.PI / 180.0));
+		float g = Mth.sin((vec2f.y + 90.0f) * (float) (Math.PI / 180.0));
 		float h = Mth.cos(-vec2f.x * (float) (Math.PI / 180.0));
 		float i = Mth.sin(-vec2f.x * (float) (Math.PI / 180.0));
-		float j = Mth.cos((-vec2f.x + 90.0F) * (float) (Math.PI / 180.0));
-		float k = Mth.sin((-vec2f.x + 90.0F) * (float) (Math.PI / 180.0));
+		float j = Mth.cos((-vec2f.x + 90.0f) * (float) (Math.PI / 180.0));
+		float k = Mth.sin((-vec2f.x + 90.0f) * (float) (Math.PI / 180.0));
 		Vec3 vec3d2 = new Vec3(f * h, i, g * h);
 		Vec3 vec3d3 = new Vec3(f * j, k, g * j);
 		Vec3 vec3d4 = vec3d2.cross(vec3d3).scale(-1.0);

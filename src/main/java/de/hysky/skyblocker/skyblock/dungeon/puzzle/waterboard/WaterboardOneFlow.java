@@ -462,7 +462,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
 				collector.submitFilledBox(mark.pos, components, 0.5f, true);
 				collector.submitText(Component.nullToEmpty(String.format("Mark %d", mark.index)),
-						mark.pos.getCenter().relative(Direction.UP, 0.2), true);
+						Vec3.atCenterOf(mark.pos).relative(Direction.UP, 0.2), true);
 			}
 
 			if (solution != null) {
@@ -477,12 +477,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
-					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).getCenter(),
+					collector.submitLineFromCursor(Vec3.atCenterOf(room.relativeToActual(nextLever.leverPos)),
 							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
 						collector.submitLinesFromPoints(new Vec3[]{
-								room.relativeToActual(nextLever.leverPos).getCenter(),
-								room.relativeToActual(nextNextLever.leverPos).getCenter()
+								Vec3.atCenterOf(room.relativeToActual(nextLever.leverPos)),
+										Vec3.atCenterOf(room.relativeToActual(nextNextLever.leverPos))
 						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
@@ -513,7 +513,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				}
 
 				collector.submitText(text,
-						room.relativeToActual(lever.leverPos).getCenter()
+						room.relativeToActual(Vec3.atCenterOf(lever.leverPos))
 								.relative(Direction.UP, 0.5 * (i + 1)), true);
 			}
 		}

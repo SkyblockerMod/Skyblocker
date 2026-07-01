@@ -32,7 +32,7 @@ public class ManiaIndicator {
 			if (armorStandEntity.getName().toString().contains("MANIA")) {
 				anyMania = true;
 				BlockPos pos = client.player.blockPosition().below();
-				boolean isGreen = client.level.getBlockState(pos).getBlock() == Blocks.GREEN_TERRACOTTA;
+				boolean isGreen = client.level.getBlockState(pos).getBlock() == Blocks.DYED_TERRACOTTA.green();
 				title.setText(Component.translatable("skyblocker.rift.mania").withStyle(isGreen ? ChatFormatting.GREEN : ChatFormatting.RED));
 				TitleContainer.addTitleAndPlaySound(title);
 			}

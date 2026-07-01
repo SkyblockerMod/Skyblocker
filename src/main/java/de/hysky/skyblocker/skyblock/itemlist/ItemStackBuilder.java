@@ -8,6 +8,8 @@ import de.hysky.skyblocker.utils.datafixer.LegacyStringNbtReader;
 import io.github.moulberry.repo.constants.PetNumbers;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.Rarity;
+import it.unimi.dsi.fastutil.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,6 @@ import java.util.Set;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class ItemStackBuilder {
 				return createErrorStack(item.getSkyblockItemId());
 			}
 
-			List<Tuple<String, String>> injectors = new ArrayList<>(petData(item.getSkyblockItemId()));
+			List<Pair<String, String>> injectors = new ArrayList<>(petData(item.getSkyblockItemId()));
 
 			//Inject data into the item name
 			String name = injectData(item.getDisplayName(), injectors);
@@ -81,8 +82,8 @@ public class ItemStackBuilder {
 		return errorStack;
 	}
 
-	private static List<Tuple<String, String>> petData(String internalName) {
-		List<Tuple<String, String>> list = new ArrayList<>();
+	private static List<Pair<String, String>> petData(String internalName) {
+		List<Pair<String, String>> list = new ArrayList<>();
 
 		String petName = internalName.split(";")[0];
 		if (!internalName.contains(";") || !petNums.containsKey(petName)) return list;
@@ -100,7 +101,7 @@ public class ItemStackBuilder {
 
 		int minLevel = data.getLowLevel();
 		int maxLevel = data.getHighLevel();
-		list.add(new Tuple<>("\\{LVL\\}", minLevel + " ➡ " + maxLevel));
+		list.add(Pair.of("\\{LVL\\}", minLevel + " ➡ " + maxLevel));
 
 		Map<String, Double> statNumsMin = data.getStatsAtLowLevel().getStatNumbers();
 		Map<String, Double> statNumsMax = data.getStatsAtHighLevel().getStatNumbers();
@@ -109,7 +110,7 @@ public class ItemStackBuilder {
 			String key = entry.getKey();
 			String left = "\\{" + key + "\\}";
 			String right = statNumsMin.get(key) + " ➡ " + statNumsMax.get(key);
-			list.add(new Tuple<>(left, right));
+			list.add(Pair.of(left, right));
 		}
 
 		List<Double> otherNumsMin = data.getStatsAtLowLevel().getOtherNumbers();
@@ -117,15 +118,15 @@ public class ItemStackBuilder {
 		for (int i = 0; i < otherNumsMin.size(); ++i) {
 			String left = "\\{" + i + "\\}";
 			String right = otherNumsMin.get(i) + " ➡ " + otherNumsMax.get(i);
-			list.add(new Tuple<>(left, right));
+			list.add(Pair.of(left, right));
 		}
 
 		return list;
 	}
 
-	private static String injectData(String string, List<Tuple<String, String>> injectors) {
-		for (Tuple<String, String> injector : injectors) {
-			string = string.replaceAll(injector.getA(), injector.getB());
+	private static String injectData(String string, List<Pair<String, String>> injectors) {
+		for (Pair<String, String> injector : injectors) {
+			string = string.replaceAll(injector.left(), injector.right());
 		}
 		return string;
 	}

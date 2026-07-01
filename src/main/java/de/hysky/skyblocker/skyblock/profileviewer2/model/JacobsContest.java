@@ -41,9 +41,7 @@ public class JacobsContest {
 	@SerializedName("unique_brackets")
 	public Map<String, List<String>> uniqueBrackets = new HashMap<>();
 
-	/**
-	 * Contest ID Format: Contest keys like "99:11_7:POTATO_ITEM" are "SKYBLOCK_YEAR:MONTH_DAY:CROP"
-	 */
+	/// Contest ID Format: Contest keys like "99:11_7:POTATO_ITEM" are "SKYBLOCK_YEAR:MONTH_DAY:CROP"
 	public Map<String, Contest> contests = new HashMap<>();
 
 	public static class Contest {
