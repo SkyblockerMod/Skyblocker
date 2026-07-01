@@ -88,7 +88,7 @@ public class BeaconHighlighter {
 	}
 
 	private static void updateBeaconEntities() {
-		if (CLIENT.level == null || !Utils.isInTheEnd() || !SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) return;
+		if (CLIENT.level == null || !Utils.isInTheEnd() || !SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) || !SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) return;
 
 		for (Map.Entry<UUID, List<Vec3>> beaconEntityPath : BEACON_ENTITY_PATHS.entrySet()) {
 			Entity entity = CLIENT.level.getEntity(beaconEntityPath.getKey());
@@ -99,7 +99,7 @@ public class BeaconHighlighter {
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, @Nullable BlockState oldState, BlockState newState) {
-		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
+		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
 			BEACONS.removeLong(pos);
 
 			if (newState.is(Blocks.BEACON)) {
