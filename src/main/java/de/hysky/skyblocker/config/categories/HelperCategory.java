@@ -456,6 +456,29 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
+
+				// Century Raffle
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.centuryRaffle"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight"))
+								.description(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip"))
+								.binding(defaults.helpers.centuryRaffle.enableRaffleTaskHighlight,
+										() -> config.helpers.centuryRaffle.enableRaffleTaskHighlight,
+										newValue -> config.helpers.centuryRaffle.enableRaffleTaskHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight"))
+								.description(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip"))
+								.binding(defaults.helpers.centuryRaffle.enableRaffleRewardHighlight,
+										() -> config.helpers.centuryRaffle.enableRaffleRewardHighlight,
+										newValue -> config.helpers.centuryRaffle.enableRaffleRewardHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				.build();
 	}
 }

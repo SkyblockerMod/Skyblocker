@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,12 +13,12 @@ import net.minecraft.world.item.Items;
 
 public class RaffleTaskHighlight extends SimpleContainerSolver {
 	public RaffleTaskHighlight() {
-		super("Daily Tasks");
+		super("Raffle Tasks");
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return SkyblockerConfigManager.get().helpers.centuryRaffle.enableRaffleTaskHighlight;
 	}
 
 	@Override
