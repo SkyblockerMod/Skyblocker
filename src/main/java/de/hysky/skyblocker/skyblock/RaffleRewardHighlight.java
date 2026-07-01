@@ -28,7 +28,7 @@ public class RaffleRewardHighlight extends SimpleContainerSolver {
 			ItemStack itemStack = entry.getValue();
 
 			// Skip items that aren't valid
-			if (!itemStack.is(Items.FIREWORK_ROCKET) || !itemStack.is(Items.DIAMOND_BLOCK) || !itemStack.is(Items.GOLD_BLOCK)) {
+			if (!itemStack.is(Items.FIREWORK_ROCKET) && !itemStack.is(Items.DIAMOND_BLOCK) && !itemStack.is(Items.GOLD_BLOCK)) {
 				continue;
 			}
 
