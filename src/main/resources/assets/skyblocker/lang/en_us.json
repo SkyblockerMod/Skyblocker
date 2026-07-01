@@ -701,6 +701,12 @@
   "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout Helper",
   "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the color depends on the kind of zombie.",
 
+  "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Enable Raffle Reward Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "Highlights unclaimed raffle prizes in red and claimed ones in green.",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Enable Raffle Task Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Highlights incomplete raffle tasks in red and completed ones in green.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
