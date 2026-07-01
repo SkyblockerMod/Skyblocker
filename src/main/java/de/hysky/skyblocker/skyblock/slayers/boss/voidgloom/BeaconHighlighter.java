@@ -68,15 +68,20 @@ public class BeaconHighlighter {
 
 	@SuppressWarnings("ConstantValue")
 	public static <T> void onThrowBeacon(SyncedDataHolder dataHolder, SynchedEntityData.DataItem<T> dataItem, SynchedEntityData.DataValue<T> newValue) {
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification
+		if (Utils.isInTheEnd() && (SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification || SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons)
 				&& dataHolder instanceof Entity entity && SlayerManager.isSelectedBoss(entity.getUUID())
 				&& dataItem.getAccessor() == EnderManAccessor.getDATA_CARRY_STATE()
 				&& dataItem.getValue() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.is(Blocks.BEACON)
 				&& ((Optional<?>) newValue.value()).isEmpty()) {
-			beaconThrown = true;
-			CLIENT.gui.setTimes(5, 20, 10);
-			CLIENT.gui.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
-			CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
+				beaconThrown = true;
+			}
+
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification) {
+				CLIENT.gui.setTimes(5, 20, 10);
+				CLIENT.gui.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
+				CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+			}
 		}
 	}
 
