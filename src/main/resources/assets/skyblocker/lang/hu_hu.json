@@ -889,7 +889,7 @@
     "skyblocker.tips.next": "Következő Tipp",
     "skyblocker.tips.quickNav": "Személyre szabhatod a Gyors Navigáció gombjait a beállításokban.",
     "skyblocker.waypoints.exportWaypointsSkyblocker": "Helyjelölők Exportálása (Skyblocker)",
-    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Helyjelölők Vágólapra Másolása (Skytils Formátum)",
+    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Helyjelölők Skytils formátumú exportálása elavultsága miatt hamarosan eltávolításra kerül, használata adatvesztést okozhat.",
     "skyblocker.waypoints.importOptions.overrideLocation.tooltip": "A jelenleg kiválasztott helyen mentett helyjelölő helyett az új importálása.",
     "skyblocker.waypoints.importWaypointsSnoopy": "Helyjelölők Importálása (Snoopy)",
     "skyblocker.waypoints.type.OUTLINE": "Körvonal",
