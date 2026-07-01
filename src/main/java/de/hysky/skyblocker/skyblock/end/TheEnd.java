@@ -142,7 +142,7 @@ public class TheEnd {
 	private static boolean isProtectorHere(ClientLevel world, ProtectorLocation protectorLocation) {
 		for (int i = 0; i < 5; i++) {
 			BlockState state = world.getBlockState(new BlockPos(protectorLocation.x, i + 5, protectorLocation.z));
-			if (state.is(Blocks.PLAYER_WALL_HEAD)) {
+			if (state.is(Blocks.PLAYER_WALL_HEAD) || state.is(Blocks.PLAYER_HEAD)) {
 				stage = i + 1;
 				currentProtectorLocation = protectorLocation;
 				EndHudWidget.getInstance().update();
