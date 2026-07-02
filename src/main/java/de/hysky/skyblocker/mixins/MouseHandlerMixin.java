@@ -32,7 +32,7 @@ public class MouseHandlerMixin {
 	@Inject(method = "releaseMouse", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$keepCursorGrabbedDuringTransfer(CallbackInfo ci) {
 		// Keep the cursor hidden through Hypixel's transfer screens so the transfer looks seamless
-		if (this.minecraft.isWindowActive() && (this.minecraft.gui.screen() instanceof LevelLoadingScreen || this.minecraft.gui.screen() instanceof ServerReconfigScreen) && Utils.isOnHypixel()) ci.cancel();
+		if (this.minecraft.isWindowActive() && (this.minecraft.screen instanceof LevelLoadingScreen || this.minecraft.screen instanceof ServerReconfigScreen) && Utils.isOnHypixel()) ci.cancel();
 	}
 
 	@Inject(method = "grabMouse", at = @At("HEAD"))
