@@ -139,7 +139,21 @@ public class ItemProtection {
 				|| screenTitle.startsWith("Ender Chest")
 				|| screenTitle.startsWith("Chest")
 				|| screenTitle.startsWith("Trapped Chest")
-				|| (screenTitle.contains("Backpack") && screenTitle.contains("(Slot #"));
+				|| (screenTitle.contains("Backpack") && screenTitle.contains("(Slot #"))
+				// Furniture storage
+				|| screenTitle.startsWith("Chest Storage")
+				|| screenTitle.startsWith("Medium Shelves")
+				|| screenTitle.startsWith("Wood Chest")
+				|| screenTitle.startsWith("Diamond Chest")
+				|| screenTitle.startsWith("Emerald Chest")
+				|| screenTitle.startsWith("Iron Chest")
+				|| screenTitle.startsWith("Gold Chest")
+				|| screenTitle.startsWith("Lapis Chest")
+				|| screenTitle.startsWith("Redstone Chest")
+				|| screenTitle.startsWith("Endstone Chest")
+				|| screenTitle.startsWith("Skull Chest")
+				|| screenTitle.startsWith("Weapon Rack")
+				|| screenTitle.startsWith("Armor Stand");
 	}
 
 	public static boolean isNpcSellMenu(AbstractContainerMenu menu) {
