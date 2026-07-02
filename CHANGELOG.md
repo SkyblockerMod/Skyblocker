@@ -31,11 +31,10 @@
 * Fix item protection working on items you do not own
 * Fix Fancy Party finder name colours
 * Fix End Stone Protector stage detection
-* Fix compatibility issue with No Chat Reports
-* Fix compatibility issue with Fur Sky Reborn
+* Fix compatibility issue with FurSky Reborn
 * Fix crashes with some pets
-* Fix crash with some hud widgets
-* Fix crash with Devonian
+* Fix crash with some HUD widgets
+* Fix some mod incompatibility issues
 
 ## What's Changed
 * Fix Extracting Inventory Label Twice by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2475
