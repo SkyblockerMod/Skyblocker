@@ -468,6 +468,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
 								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
 										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
 										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking = newValue)
@@ -475,6 +476,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarSprites"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
 								.binding(defaults.uiAndVisuals.bars.useHungerBarSprites,
 										() -> config.uiAndVisuals.bars.useHungerBarSprites,
 										newValue -> config.uiAndVisuals.bars.useHungerBarSprites = newValue)
@@ -669,6 +671,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
 								.binding(defaults.uiAndVisuals.smoothAOTE.thirdPerson,
 										() -> config.uiAndVisuals.smoothAOTE.thirdPerson,
 										newValue -> config.uiAndVisuals.smoothAOTE.thirdPerson = newValue)

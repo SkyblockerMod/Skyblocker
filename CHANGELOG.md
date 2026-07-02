@@ -1,3 +1,80 @@
+# Release 6.6.0
+
+## Highlight
+* Updated to 26.2
+* Add full support for Vulkan
+  * Some rendering takes more optimized paths when Vulkan is in use.
+* Add Key Binds to the Config
+  * Skyblocker's key binds can be changed in both the Vanilla Controls Menu and the Skyblocker Config.
+* Add/Fix Raffle Highlighters
+  * Add Raffle Reward Highlight
+  * Fix Raffle Task Highlight
+* Add Fossil Muncher solver
+* Add slot text for crop milestones and crop/greenhouse upgrades
+* Add ability to move the Garden Plots Widget
+  * Can be moved by holding left click and dragging it around.
+  * Use Shift + Right Click to reset the position.
+* Add logs folder command (`/skyblocker logsFolder`) and button to `/skyblocker`
+* Add command to update config patches (`/skyblocker updateConfigPatches`)
+* Add path display to Voidgloom Beacon Highlighter
+* Add Smooth AOTE third-person support
+* Add missing Enigma Souls and mark missing/found commands under `/skyblocker rift enigmaSouls`
+* Add option to use hunger bar textures for vanilla mana bar
+* Improve calculator
+* Improve resource pack compatibility by splitting equipment slot textures
+* Improve item list compatibility
+* Deprecate Skytils waypoint exporting for removal due to waypoint data loss
+* Fix Ultrasequencer solver not showing the solution
+* Fix terminal solvers not hiding incorrect items
+* Fix slayer boss kill timer not sending when a boss gets cocooned
+* Fix cursor remaining hidden after a server transfer interruption
+* Fix item protection working on items you do not own
+* Fix Fancy Party finder name colours
+* Fix End Stone Protector stage detection
+* Fix compatibility issue with No Chat Reports
+* Fix compatibility issue with Fur Sky Reborn
+* Fix crashes with some pets
+* Fix crash with some hud widgets
+* Fix crash with Devonian
+
+## What's Changed
+* Fix Extracting Inventory Label Twice by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2475
+* Replace Assertion in SlayerManager by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2470
+* Send Boss Kill Time When Boss is Cocooned by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2469
+* Fix Visitor Helper Not Stripping Formatting Codes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2481
+* Fix Fancy Auction House Screens Not Stripping Color Codes by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2482
+* Add enigma souls and mark closest found/missing commands by @dom3 in https://github.com/SkyblockerMod/Skyblocker/pull/2443
+* Add fossil muncher solver by @GrowlingGrizzly in https://github.com/SkyblockerMod/Skyblocker/pull/2364
+* Cultivating Needed by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2488
+* Smooth aote 3rd person support by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2439
+* Fix Croesus Profit & Chest Value by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2484
+* Minor Calculator Improvements by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2457
+* feat: Slot text for crop milestones and crop/greenhouse upgrades by @thqnhz in https://github.com/SkyblockerMod/Skyblocker/pull/2440
+* Highlight yang glyph path because I am blind by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2387
+* Add support for 'SkyBlock Item List' mod by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2464
+* 26.2 by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2468
+* Fix Compact Damage Test by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2490
+* Fix 26.2 Merge Issue by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2491
+* Fix Pagination Widget taking focus by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2493
+* Fix Fancy Party Finder Name Colors by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2492
+* separate equipment textures by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2494
+* Bump SkyBlock Item List version by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2500
+* Add option to use vanilla hunger bar sprites as mana bar by @AlphaNecron in https://github.com/SkyblockerMod/Skyblocker/pull/2471
+* movable garden plots widget by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2383
+* Fix End Stone Protector Stage Detection by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2501
+* add logs folder command and button to SkyblockerScreen by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2446
+* Fix item protection triggering on non-owned items by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2427
+* Fix Cursor Staying Hidden After a Server Transfer by @anthonylul in https://github.com/SkyblockerMod/Skyblocker/pull/2477
+
+## New Contributors
+* @dom3 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2443
+* @AlphaNecron made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2471
+* @anthonylul made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2477
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.5.3+26.1.2...v6.6.0+26.2
+
+___
+
 # Release 6.5.3
 
 ## Highlight
