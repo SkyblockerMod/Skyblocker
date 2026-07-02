@@ -188,7 +188,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private backpackWidget openBackpack = null;
 
 		public backpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
-			super(x, y, width, height, Component.literal("BackPack grid"), internalCols * SLOT_SIZE + EDGE_PADDING * 2, true);
+			// cut down number of columns if it will not fit on to the current gui size
+			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
+			while (expectedWidth > width - 6) {
+				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
+			}
+			System.out.println(expectedWidth);
+			System.out.println(internalCols);
+			System.out.println(width);
+			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
 
 			//add backpacks
 			BackpackPreview.Storage[] storages = BackpackPreview.getStorages();
@@ -334,6 +342,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			// use actual inventory data
 			else {
 				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + SLOT_SIZE, columns);
+			}
+
+			//darken other slots to show they don't actually exist
+			for (int i = storage.size() - 9; i < rows * columns; ++i) {
+				int itemX = x + i % columns * SLOT_SIZE + 8;
+				int itemY = y + i / columns * SLOT_SIZE + SLOT_SIZE;
+				graphics.fill(itemX, itemY, itemX + 16, itemY + 16, 0xB0_000000);
+
 			}
 		}
 
