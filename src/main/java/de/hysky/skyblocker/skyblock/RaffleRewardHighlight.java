@@ -39,7 +39,7 @@ public class RaffleRewardHighlight extends SimpleContainerSolver {
 			}
 
 			switch (lore.getLast()) {
-				case "You claimed your prize!" -> highlights.add(ColorHighlight.green(entry.getIntKey()));
+				case "You claimed your prize!", "You've claimed this raffle!" -> highlights.add(ColorHighlight.green(entry.getIntKey()));
 				case "Click to reveal your prize!" -> highlights.add(ColorHighlight.red(entry.getIntKey()));
 			}
 		}
