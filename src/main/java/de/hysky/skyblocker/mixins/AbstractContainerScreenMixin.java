@@ -129,7 +129,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 			//item protection
 			if (ItemProtection.itemProtection.matches(input)) {
-				ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+				ItemProtection.itemProtection.consumeClick();
+				boolean ownItem = this.hoveredSlot.container == this.minecraft.player.getInventory()
+						|| ItemProtection.isPersonalStorage(this.getTitle().getString());
+				if (ownItem) {
+					ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+				}
 			}
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
