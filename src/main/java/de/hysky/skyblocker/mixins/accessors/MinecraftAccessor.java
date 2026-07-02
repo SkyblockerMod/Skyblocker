@@ -8,6 +8,6 @@ import net.minecraft.client.multiplayer.ProfileKeyPairManager;
 
 @Mixin(Minecraft.class)
 public interface MinecraftAccessor {
-	@Accessor
-	ProfileKeyPairManager getProfileKeyPairManager();
+	@Accessor("profileKeyPairManager")
+	ProfileKeyPairManager getProfileKeyPairManagerField();
 }
