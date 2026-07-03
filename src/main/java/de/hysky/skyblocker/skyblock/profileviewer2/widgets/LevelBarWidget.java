@@ -47,6 +47,9 @@ public final class LevelBarWidget extends AbstractWidget {
 		this.icon = icon;
 		this.barFillPercentage = barFillPercentage;
 		this.barFillColour = barFillColour;
+
+		// Make the widget ignore clicks
+		this.active = false;
 	}
 
 	public static LevelBarWidget forSkill(int width, Skill skill, ProfileMember member) {
@@ -85,4 +88,9 @@ public final class LevelBarWidget extends AbstractWidget {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 }
