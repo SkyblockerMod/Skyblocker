@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.StorageOverlay;
+package de.hysky.skyblocker.skyblock.storageoverlay;
 
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 import net.minecraft.world.Container;

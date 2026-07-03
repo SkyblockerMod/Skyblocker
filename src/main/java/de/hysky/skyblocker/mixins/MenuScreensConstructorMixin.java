@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.StorageOverlay.StorageOverlayScreen;
-import de.hysky.skyblocker.skyblock.StorageOverlay.StorageOverlayScreenHandler;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;

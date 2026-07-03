@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.StorageOverlay;
+package de.hysky.skyblocker.skyblock.storageoverlay;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -63,7 +63,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		this.name = name;
 	}
 
-	public static Boolean enabled(String title) {
+	public static boolean enabled(String title) {
 		openStorage = getStorageIndexFromTitle(title);
 
 		return SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1);
@@ -117,7 +117,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		//setup backpack widgets
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
-		grid = new backpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols, handler, this.leftPos, this.topPos);
+		grid = new BackpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols, handler, this.leftPos, this.topPos);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
@@ -186,13 +186,13 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 94, 0, 128, 175, 94, 256, 256);
 	}
 
-	private static class backpackGridWidget extends SearchableGridWidget {
+	private static class BackpackGridWidget extends SearchableGridWidget {
 
 		private final List<backpackWidget> backpackWidgets = new ArrayList<>();
 		@Nullable
 		private backpackWidget openBackpack = null;
 
-		backpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+		BackpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - 6) {
@@ -207,7 +207,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				BackpackPreview.Storage storage = storages[i];
 				boolean open = StorageOverlayScreen.openStorage == i;
 				if (storage != null) {
-					backpackWidget widget = new backpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
+					backpackWidget widget = new BackpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
 					if (open) {
 						openBackpack = widget;
 					}
@@ -238,7 +238,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 
-	private static class backpackWidget extends AbstractWidget {
+	private static class BackpackWidget extends AbstractWidget {
 		private final int rows;
 		private final int columns;
 		private final String label;
@@ -249,7 +249,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private final int screenLeft;
 		private final int screenTop;
 
-		backpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			int rows = Math.ceilDiv(storage.size() - 9, columns);
 			super(0, 0, columns * SLOT_SIZE + EDGE_PADDING * 2, rows * SLOT_SIZE + HEADER_H + EDGE_PADDING, Component.literal("Backpack preview"));
 			this.rows = rows;
@@ -278,7 +278,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		}
 
 
-		private void CustomInventorySize(GuiGraphicsExtractor graphics, int x, int y, int rows, int columns) {
+		private void customInventorySize(GuiGraphicsExtractor graphics, int x, int y, int rows, int columns) {
 			//top
 			extractSection(graphics, x, y, columns, HEADER_H, 0);
 
@@ -314,9 +314,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		}
 
 
-		private void RenderCustomBackpack(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int rows, int columns, String label, BackpackPreview.Storage storage) {
+		private void renderCustomBackpack(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int rows, int columns, String label, BackpackPreview.Storage storage) {
 			//render background
-			CustomInventorySize(graphics, x, y, rows, columns);
+			customInventorySize(graphics, x, y, rows, columns);
 
 			//render label
 			Font textRenderer = CLIENT.font;
@@ -362,7 +362,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		@Override
 		public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-			RenderCustomBackpack(graphics, mouseX, mouseY, getX(), getY(), rows, columns, label, storage);
+			renderCustomBackpack(graphics, mouseX, mouseY, getX(), getY(), rows, columns, label, storage);
 			//outline open
 			if (open) {
 				graphics.outline(getX(), getY(), getWidth(), getHeight(), Color.yellow.getRGB());
