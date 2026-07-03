@@ -50,7 +50,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	protected static int openStorage;
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
-	private static backpackGridWidget grid;
+	private static BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
@@ -188,9 +188,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	private static class BackpackGridWidget extends SearchableGridWidget {
 
-		private final List<backpackWidget> backpackWidgets = new ArrayList<>();
-		@Nullable
-		private backpackWidget openBackpack = null;
+		private final List<BackpackWidget> backpackWidgets = new ArrayList<>();
+		private StorageOverlayScreen.@Nullable BackpackWidget openBackpack = null;
 
 		BackpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			// cut down number of columns if it will not fit on to the current gui size
@@ -207,7 +206,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				BackpackPreview.Storage storage = storages[i];
 				boolean open = StorageOverlayScreen.openStorage == i;
 				if (storage != null) {
-					backpackWidget widget = new BackpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
+					BackpackWidget widget = new BackpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
 					if (open) {
 						openBackpack = widget;
 					}
