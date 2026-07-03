@@ -1751,5 +1751,6 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "使用第三人稱時啟用",
     "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "當處於第三人稱模式時，啟用平滑的傳送。",
     "skyblocker.rift.enigmaSouls.markClosestFound": "將最近的enigma soul標記為已找到！",
-    "skyblocker.rift.enigmaSouls.markClosestMissing": "將最近的enigma soul標記為未找到！"
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "將最近的enigma soul標記為未找到！",
+    "text.skyblocker.curseforge": "CurseForge"
 }
