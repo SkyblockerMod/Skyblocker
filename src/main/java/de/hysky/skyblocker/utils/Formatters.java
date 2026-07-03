@@ -77,6 +77,13 @@ public class Formatters {
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(getTimeZone());
 
 	/**
+	 * Formats dates to a standard format, without seconds.
+	 * <p>
+	 * Examples: Thu Jan 30 2025 2:00 PM, Thu Jan 30 2025 14:00
+	 */
+	public static final DateTimeFormatter DATE_FORMATTER_SHORT = DateTimeFormatter.ofPattern("E MMM d yyyy " + getShortTimeFormat(), Locale.US).withZone(getTimeZone());
+
+	/**
 	 * Based on {@link DateTimeFormatter#RFC_1123_DATE_TIME}
 	 */
 	public static final DateTimeFormatter SKYBLOCK_TIME_FORMATTER = new DateTimeFormatterBuilder()
@@ -109,6 +116,13 @@ public class Formatters {
 	 */
 	private static String getTimeFormat() {
 		return is12HourClock() || Debug.isTestEnvironment() ? "h:mm:ss a" : "HH:mm:ss";
+	}
+
+	/**
+	 * Returns the formatting for the time without seconds, always returns 12 hour in test environments.
+	 */
+	private static String getShortTimeFormat() {
+		return is12HourClock() || Debug.isTestEnvironment() ? "h:mm a" : "HH:mm";
 	}
 
 	/**
