@@ -114,7 +114,7 @@ public class UIAndVisualsConfig {
 
 		public int backpackWidth = 9;
 
-		public boolean rememberSearch = false;;
+		public boolean rememberSearch = false;
 	}
 
 	public static class RadialMenu {
