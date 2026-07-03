@@ -102,6 +102,16 @@ public class UpcomingEventsTab implements RecipeTab {
 	}
 
 	@Override
+	public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+		return eventsList.mouseDragged(event, dx, dy);
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent event) {
+		return eventsList.mouseReleased(event);
+	}
+
+	@Override
 	public ItemStack icon() {
 		return CLOCK;
 	}
