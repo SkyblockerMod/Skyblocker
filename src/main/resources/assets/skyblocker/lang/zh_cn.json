@@ -1752,5 +1752,6 @@
     "skyblocker.rift.enigmaSouls.markClosestMissing": "将最近的enigma soul标记为未找到！",
     "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "为Trevor the Trapper任务的动物添加发光轮廓。",
     "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "自动检测McGrubber Stacks",
-    "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "高亮信标并用红色显示抵达信标的路径。"
+    "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "高亮信标并用红色显示抵达信标的路径。",
+    "text.skyblocker.curseforge": "CurseForge"
 }
