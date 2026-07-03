@@ -321,7 +321,7 @@
     "skyblocker.dwarvenMines.metalDetectorHelper.possible": "Possible",
     "skyblocker.api.token.noProfileKeys": "Récupération de vos clés de profil échouée ! Certaines fonctionnalités du mod peuvent ne pas fonctionner temporairement :( (Votre jeu est-il ouvert depuis plus de 24H ?). Pour réactiver ces fonctionnalités, relancez le jeu.",
     "skyblocker.waypoints.importWaypointsSkytils": "Importer des Marqueurs (Skytils)",
-    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Importe les Marqueurs vers le presse-papiers (Format de Skytils)",
+    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "L'exportation de marqueurs Skytils est maintenant obsolète et n'est pas recommandé à cause de pertes de données.",
     "skyblocker.events.tab.noMore": "Pas d'autres cette année !",
     "skyblocker.customAnimatedDyes.removed": "La teinte animée de cet objet a été supprimée.",
     "skyblocker.shortcuts.new": "Nouveau Raccourci",
@@ -1760,5 +1760,11 @@
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Effets de drop de Diamond Trophy",
     "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "Ajoute un effet visuel activé en obtennant un Diamond Trophy Fish/Frog !",
     "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Inclue les graines dans les Pièces par Heures de la Wheat Hoe",
-    "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Echec du chargement du pattern de la greenhouse depuis le presse-papier. Contenu extrait : "
+    "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Echec du chargement du pattern de la greenhouse depuis le presse-papier. Contenu extrait : ",
+    "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Activer à la 3ème Personne",
+    "skyblocker.rift.enigmaSouls.markClosestFound": "L'enigma soul la plus proche a été marquée comme trouvée !",
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "L'enigma soul la plus proche a été marquée comme manquante !",
+    "text.skyblocker.curseforge": "CurseForge",
+    "text.skyblocker.logsFolder": "Ouvrir le Dossier des Logs"
 }
