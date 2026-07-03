@@ -68,6 +68,7 @@ public abstract class EventEntry extends ContainerObjectSelectionList.Entry<Even
 				formatted = Component.translatable("skyblocker.events.tab.over").withStyle(style -> style.withoutShadow().withColor(TextColor.GRAY));
 			}
 		}
+		// the split method creates a new array list everytime which kinda sucks
 		textRenderer.accept(getContentX() + 4, getContentY() + font.lineHeight, font.split(formatted, availableWidth - 4).getFirst());
 		graphics.disableScissor();
 	}
