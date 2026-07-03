@@ -866,5 +866,9 @@
     "skyblocker.config.uiAndVisuals.radialMenu.tooltipsWithoutShift": "Shiftキーを押さずにツールチップを表示する",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.regexLink": "？",
     "skyblocker.config.eventNotifications.event.editReminders.prompt": "編集",
-    "skyblocker.config.farming.farmingHud.type.BOTH": "両方"
+    "skyblocker.config.farming.farmingHud.type.BOTH": "両方",
+    "skyblocker.config.farming.greenhouse": "温室",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.unload": "温室のプレビューは削除されました。",
+    "skyblocker.config.mining.blockBreakPrediction.enabled": "有効",
+    "skyblocker.config.uiAndVisuals.radialMenu.bank": "銀行"
 }
