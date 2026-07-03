@@ -1408,9 +1408,9 @@
   "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip": "How many slots each backpack / echest should have in each row. (this will be capped at large gui scale to maximum fitting)",
   "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip": "Enables Overlay for echest and backpacks.",
+  "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Hide",
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Remember Search",
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Saves Search and scroll after closing backpack.",
-  "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Hide",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",

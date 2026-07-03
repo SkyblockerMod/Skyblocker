@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
 
@@ -42,18 +43,6 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static final int HEADER_H = 17;
 	private static final int SLOT_SIZE = 18;
 	private static final int MAX_ROW_BATCH = 6; // texture body only has 6 rows
-
-	@Override
-	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
-		//let scrolling happen if not scrolling item slot
-		if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
-			return super.mouseScrolled(x, y, scrollX, scrollY);
-		}
-		return this.getChildAt(x, y).filter(child -> child.mouseScrolled(x, y, scrollX, scrollY)).isPresent();
-
-	}
-
-
 	private static final int MAX_COL_BATCH = 9; // texture body only has 9 cols
 	private static final int BOTTOM_V = 215;
 	private static final int EDGE_PADDING = 7;
@@ -66,10 +55,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private final Component name;
 	private final ChestMenu defaultHandler;
 
-
 	public StorageOverlayScreen(StorageOverlayScreenHandler handler, ChestMenu defaultHandler, Component name, Inventory inventory, int height) {
 		super(handler, inventory, name, 176, height);
-		this.titleLabelY = -1000; //let title exist so for preview widget without rendering in the way
+		this.titleLabelY = -1000; //let title exist for backpack previews caching to work.
 		this.handler = handler;
 		this.defaultHandler = defaultHandler;
 		this.name = name;
@@ -98,6 +86,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		}
 	}
 
+	/**
+	 * Temporarily hide the overlay and show normal backpack
+	 *
+	 * @param button button
+	 */
 	private void hide(Button button) {
 		if (CLIENT.player == null) return;
 		CLIENT.player.containerMenu = defaultHandler;
@@ -121,6 +114,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	@Override
 	protected void init() {
 		super.init();
+
+		//setup backpack widgets
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
 		grid = new backpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols, handler, this.leftPos, this.topPos);
 		grid.setSearch(savedSearch);
@@ -140,7 +135,6 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractRenderState(graphics, mouseX, mouseY, a);
 		this.extractTooltip(graphics, mouseX, mouseY);
-
 	}
 
 	@Override
@@ -160,7 +154,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		if (slot.container instanceof Inventory) {
 			super.extractSlot(graphics, slot, mouseX, mouseY);
 		} else {
-			//keep backpack within screen
+			//keep backpack slots within gui
 			graphics.enableScissor(-this.leftPos, 28, getWidth(), getHeight() - 8);
 			super.extractSlot(graphics, slot, mouseX, mouseY);
 			graphics.disableScissor();
@@ -174,6 +168,16 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	@Override
+	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		//let scrolling happen if not scrolling item slot
+		if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+			return super.mouseScrolled(x, y, scrollX, scrollY);
+		}
+		return this.getChildAt(x, y).filter(child -> child.mouseScrolled(x, y, scrollX, scrollY)).isPresent();
+
+	}
+
+	@Override
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractBackground(graphics, mouseX, mouseY, a);
 		//render background
@@ -183,19 +187,18 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	private static class backpackGridWidget extends SearchableGridWidget {
+
 		private final List<backpackWidget> backpackWidgets = new ArrayList<>();
 		@Nullable
 		private backpackWidget openBackpack = null;
 
-		public backpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+		backpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - 6) {
 				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			}
-			System.out.println(expectedWidth);
-			System.out.println(internalCols);
-			System.out.println(width);
+
 			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
 
 			//add backpacks
@@ -246,8 +249,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private final int screenLeft;
 		private final int screenTop;
 
-		public backpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
-			int rows = Math.max(1, Math.ceilDiv(storage.size() - 9, columns));
+		backpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+			int rows = Math.ceilDiv(storage.size() - 9, columns);
 			super(0, 0, columns * SLOT_SIZE + EDGE_PADDING * 2, rows * SLOT_SIZE + HEADER_H + EDGE_PADDING, Component.literal("Backpack preview"));
 			this.rows = rows;
 			this.columns = columns;
@@ -263,9 +266,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		public boolean matches(String filter) {
 			//keep open backpack displayed even if no match
 			if (open) return true;
+
+			//matches if any item in backpack contains the filter word
 			for (int i = 9; i < storage.size(); ++i) {
 				ItemStack currentStack = storage.getStack(i);
-				if (currentStack.getDisplayName().getString().toLowerCase().contains(filter.toLowerCase())) {
+				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
 					return true;
 				}
 			}
@@ -303,7 +308,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, batchX, y, EDGE_PADDING, textureYOffset, batch * SLOT_SIZE, height, 256, 256);
 				columnsRemaining -= batch;
 			}
-			//blit left and right sides for section
+			//blit left and right edges for section
 			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, textureYOffset, EDGE_PADDING, height, 256, 256);
 			graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, columns * SLOT_SIZE + EDGE_PADDING + x, y, 169, textureYOffset, EDGE_PADDING, height, 256, 256);
 		}
@@ -312,11 +317,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private void RenderCustomBackpack(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int rows, int columns, String label, BackpackPreview.Storage storage) {
 			//render background
 			CustomInventorySize(graphics, x, y, rows, columns);
+
 			//render label
 			Font textRenderer = CLIENT.font;
 			graphics.text(textRenderer, label, x + 8, y + 6, 0xFF404040, false);
-			//render cached items if not open
+
+
 			if (!open) {
+				//render cached items
 				for (int i = 9; i < storage.size(); ++i) {
 					ItemStack currentStack = storage.getStack(i);
 					if (currentStack.isEmpty()) continue;
@@ -338,9 +346,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 						graphics.setTooltipForNextFrame(CLIENT.font, currentStack, mouseX, mouseY);
 					}
 				}
-			}
-			// use actual inventory data
-			else {
+			} else {
+				//move slots to fit this open backpack
 				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + SLOT_SIZE, columns);
 			}
 

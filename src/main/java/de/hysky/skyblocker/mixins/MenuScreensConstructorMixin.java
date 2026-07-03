@@ -135,7 +135,7 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 				boolean isBackpack = BackpackPreview.getStorageIndexFromTitle(nameLowercase) != -1;
 				StorageOverlayScreenHandler storageOverlayScreenHandler = new StorageOverlayScreenHandler(containerScreenHandler, isBackpack, height, player.getInventory());
 				client.player.containerMenu = storageOverlayScreenHandler;
-				client.gui.setScreen(new StorageOverlayScreen(storageOverlayScreenHandler,containerScreenHandler,name, client.player.getInventory(), height));
+				client.gui.setScreen(new StorageOverlayScreen(storageOverlayScreenHandler, containerScreenHandler, name, client.player.getInventory(), height));
 
 				ci.cancel();
 

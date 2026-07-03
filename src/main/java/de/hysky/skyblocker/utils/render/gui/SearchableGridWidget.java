@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.Collection;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -29,7 +31,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private final int expectedWidgetWidth;
 	private final boolean spaceElementsOut;
 
-	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth,  boolean spaceElementsOut) {
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, boolean spaceElementsOut) {
 		super(x, y, width, height, message, AbstractScrollArea.defaultSettings(8));
 		searchField = new EditBox(Minecraft.getInstance().font, width, TEXT_FIELD_HEIGHT, Component.translatable("gui.recipebook.search_hint"));
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
@@ -69,6 +71,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	public void setScrollAmount(double amount) {
 		widgetsContainer.setScrollAmount(amount);
 	}
+
 	public double getScrollAmount() {
 		return widgetsContainer.scrollAmount();
 	}
@@ -78,8 +81,8 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		int columns = (getWidth() - 6) / expectedWidgetWidth;
 		GridLayout.RowHelper adder = newGrid.createRowHelper(columns);
 		filteredWidgets.forEach(adder::addChild);
-		if (spaceElementsOut){
-			newGrid.columnSpacing(((getWidth() - 6)  - columns * expectedWidgetWidth) / columns);
+		if (spaceElementsOut) {
+			newGrid.columnSpacing(((getWidth() - 6) - columns * expectedWidgetWidth) / columns);
 		}
 		newGrid.arrangeElements();
 		newGrid.setPosition(grid.getX(), grid.getY());
