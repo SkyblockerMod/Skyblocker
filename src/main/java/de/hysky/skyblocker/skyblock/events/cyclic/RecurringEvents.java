@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public final class RepeatingEvents {
+public final class RecurringEvents {
 	// Hard coded because it is used for certain stuff
 	private static final RecurringEvent MAYOR_ELECTION_EVENT = new RecurringEvent(
 			"mayor_election",
@@ -48,7 +48,7 @@ public final class RepeatingEvents {
 
 	@Init
 	public static void init() {
-		CompletableFuture.supplyAsync(RepeatingEvents::fetchCyclicEvents).thenAcceptAsync(e -> {
+		CompletableFuture.supplyAsync(RecurringEvents::fetchRecurringEvents).thenAcceptAsync(e -> {
 			recurringEvents = e;
 			populate();
 		}, Minecraft.getInstance());
@@ -59,7 +59,7 @@ public final class RepeatingEvents {
 		nameToEvent = recurringEvents.stream().collect(() -> Multimaps.newListMultimap(new Reference2ObjectOpenHashMap<>(), () -> new ArrayList<>(1)), (map, event) -> map.put(SkyblockEvents.getOrNew(event.name()), event), Multimap::putAll);
 	}
 
-	private static List<RecurringEvent> fetchCyclicEvents() {
+	private static List<RecurringEvent> fetchRecurringEvents() {
 		Path path = FabricLoader.getInstance().getConfigDir().resolve("event_test.json");
 		try (Reader reader = Files.newBufferedReader(path)) {
 			DataResult<List<RecurringEvent>> parsed = RecurringEvent.CODEC.listOf().parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
