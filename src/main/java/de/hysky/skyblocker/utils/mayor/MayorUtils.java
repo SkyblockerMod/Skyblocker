@@ -2,14 +2,21 @@ package de.hysky.skyblocker.utils.mayor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.Command;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
@@ -54,6 +61,23 @@ public class MayorUtils {
 				mayorTickScheduled = true;
 			}
 		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.then(ClientCommands.literal("updatePerkOverrides")
+						.executes(context -> {
+							Minecraft minecraft = context.getSource().getClient();
+							loadMayorPerkOverrides().thenAcceptAsync(result -> {
+								if (minecraft.player != null) {
+									if (result) {
+										minecraft.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.mayor.perkOverrides.update.success")));
+									} else {
+										minecraft.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.mayor.perkOverrides.update.failed")));
+									}
+								}
+							}, minecraft);
+
+							return Command.SINGLE_SUCCESS;
+						}))
+				));
 	}
 
 	private static void scheduleMayorTick() {
@@ -149,16 +173,20 @@ public class MayorUtils {
 		});
 	}
 
-	private static void loadMayorPerkOverrides() {
-		CompletableFuture.runAsync(() -> {
+	private static CompletableFuture<Boolean> loadMayorPerkOverrides() {
+		return CompletableFuture.supplyAsync(() -> {
 			try {
 				String response = Http.sendGetRequest("https://hysky.de/api/mayorperkoverrides");
 				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
 				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+
+				return true;
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load mayor perk overrides.", e);
+
+				return false;
 			}
 		}, Executors.newVirtualThreadPerTaskExecutor());
 	}
