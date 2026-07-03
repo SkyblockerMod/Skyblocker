@@ -53,7 +53,7 @@ public class MayorUtils {
 	}
 
 	@SuppressWarnings("NullableProblems")
-	public static Optional<Election> getElection() {
+	public static Optional<Election> election() {
 		return Optional.ofNullable(election);
 	}
 
@@ -107,7 +107,7 @@ public class MayorUtils {
 					throw new RuntimeException("No mayor object found in response!");
 				}
 
-				return mayorObject;
+				return json;
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
@@ -125,10 +125,11 @@ public class MayorUtils {
 				LOGGER.warn("[Skyblocker] Failed to get mayor status after 5 retries! Stopping further retries until next reboot.");
 			}
 			return new JsonObject(); //Have to return a value for the thenAccept block.
-		}).thenAccept(result -> {
-			if (!result.isEmpty()) {
+		}).thenAccept(json -> {
+			JsonObject mayorObject = json.getAsJsonObject("mayor");
+			if (!mayorObject.isEmpty()) {
 				try {
-					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, result)
+					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, mayorObject)
 							.setPartial(Mayor.EMPTY)
 							.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response. Error: {}", error))
 							.get();
@@ -137,18 +138,8 @@ public class MayorUtils {
 					mayor = Mayor.EMPTY;
 				}
 
-				if (result.has("election")) {
-					try {
-						election = Election.CODEC.parse(JsonOps.INSTANCE, result.get("election"))
-								.ifError(error -> LOGGER.warn("[Skyblocker] Failed to parse election from the API response. Error: {}", error.message()))
-								.result().orElse(null);
-					} catch (Exception e) {
-						election = null;
-					}
-				}
-
 				try {
-					JsonObject ministerObject = result.getAsJsonObject("minister");
+					JsonObject ministerObject = mayorObject.getAsJsonObject("minister");
 
 					// Check if ministerObject is not null stops NPE caused by Derpy
 					if (ministerObject != null) {
@@ -168,6 +159,18 @@ public class MayorUtils {
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
 				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}
+
+			if (json.has("current")) {
+				try {
+					election = Election.CODEC.parse(JsonOps.INSTANCE, json.get("current"))
+							.ifError(error -> LOGGER.warn("[Skyblocker] Failed to parse election from the API response. Error: {}", error.message()))
+							.result().orElse(null);
+				} catch (Exception e) {
+					LOGGER.warn("[Skyblocker] Failed to parse election from the API response.", e);
+					election = null;
+				}
+			}
+			System.out.println("election: " + election);
 		});
 	}
 

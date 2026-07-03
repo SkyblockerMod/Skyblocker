@@ -19,6 +19,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
 
 public class EventToast implements Toast {
 	protected static final Identifier TEXTURE = SkyblockerMod.id("notification");
@@ -59,7 +60,9 @@ public class EventToast implements Toast {
 		y = 2 + extractMessage(graphics, 30, y, CommonColors.WHITE);
 		extractTimer(graphics, 30, y);
 
-		graphics.fakeItem(icon.getStackOrThrow(), 8, height()/2 - 8);
+		// If we are in the menu this will be null...
+		ItemStack stack = icon.getStack();
+		if (stack != null) graphics.fakeItem(stack, 8, height()/2 - 8);
 	}
 
 	protected int extractMessage(GuiGraphicsExtractor graphics, int x, int y, int color) {

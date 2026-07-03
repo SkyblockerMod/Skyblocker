@@ -123,13 +123,13 @@ public record RecurringEvent(String id, String name, Instant routineStart, List<
 		public boolean test(EventInstance instance) {
 			Optional<EventInstance> electionEvent = EventManager.getNext(SkyblockEvents.MAYOR_ELECTION, true);
 			// Current mayor term ends before the event, gotta check the election
-			if (electionEvent.isPresent() && electionEvent.get().end().isBefore(instance.start())) {
+			if (electionEvent.isPresent() && !electionEvent.get().end().isAfter(instance.start())) {
 				// give up if the event is after the next mayor term
 				if (EventManager.getNext(SkyblockEvents.MAYOR_ELECTION, electionEvent.get().end(), false)
 						.map(EventInstance::end)
 						.filter(end -> end.isBefore(instance.start())).isPresent()) return false;
-				if (MayorUtils.getElection().isEmpty()) return false;
-				Election election = MayorUtils.getElection().get();
+				if (MayorUtils.election().isEmpty()) return false;
+				Election election = MayorUtils.election().get();
 				return checkCandidate(election.mostVotes(), false) || checkCandidate(election.secondMostVotes(), true);
 			} else {
 				return MayorUtils.getActivePerks().hasPerk(perk, description.orElse(null));
