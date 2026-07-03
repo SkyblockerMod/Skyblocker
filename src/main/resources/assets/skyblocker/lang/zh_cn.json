@@ -639,7 +639,7 @@
     "skyblocker.waypoints.importWaypointsSkytils.tooltip": "从剪贴板导入路径点（Skytils格式）",
     "skyblocker.waypoints.importWaypointsSnoopy": "导入路径点（Snoopy）",
     "skyblocker.waypoints.exportWaypointsSkytils": "导出路径点（Skytils）",
-    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "将路径点导出至剪贴板（Skytils格式）",
+    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils路径点导出功能已被弃用并移除。由于路径点数据丢失，不推荐使用。",
     "skyblocker.waypoints.importSuccess": "路径点已导入",
     "skyblocker.waypoints.importError": "导入路径点失败",
     "skyblocker.waypoints.importErrorText": "导入路径点失败。详细信息请参阅日志。",
@@ -1753,5 +1753,14 @@
     "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "为Trevor the Trapper任务的动物添加发光轮廓。",
     "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "自动检测McGrubber Stacks",
     "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "高亮信标并用红色显示抵达信标的路径。",
-    "text.skyblocker.curseforge": "CurseForge"
+    "text.skyblocker.curseforge": "CurseForge",
+    "skyblocker.config.helpers.centuryRaffle": "世纪抽奖",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "启用世纪抽奖高亮",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "以红色高亮未领取的抽奖奖励，以绿色高亮已领取的奖励。",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "启用抽奖任务高亮",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "以红色高亮未完成的抽奖任务，以绿色高亮已完成的抽奖任务。",
+    "skyblocker.config.patches.updated.failed": "更新配置补丁失败。详情请参阅日志。",
+    "skyblocker.config.patches.updated.success": "成功更新配置补丁。",
+    "text.skyblocker.logsFolder": "打开日志文件夹",
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob的竞赛高亮"
 }
