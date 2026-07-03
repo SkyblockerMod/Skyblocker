@@ -2,13 +2,14 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 
 /**
  * Interface representing the methods needed to interact with the "display" part of a tab in the Skyblock recipe book.
  */
-public interface RecipeAreaDisplay {
+public interface RecipeAreaDisplay extends GuiEventListener {
 	void initialize(Minecraft client, int parentLeft, int parentTop);
 
 	void extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta);
@@ -30,7 +31,11 @@ public interface RecipeAreaDisplay {
 	 */
 	void updateSearchResults(String query, FilterOption filterOption, boolean refresh);
 
-	default boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+	@Override
+	default void setFocused(boolean focused) {}
+
+	@Override
+	default boolean isFocused() {
 		return false;
-	}
+	};
 }

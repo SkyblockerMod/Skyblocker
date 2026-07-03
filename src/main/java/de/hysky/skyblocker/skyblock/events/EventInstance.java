@@ -75,10 +75,10 @@ public record EventInstance(SkyblockEvent event, Instant start, Duration duratio
 		}
 	}
 
-	public List<ClientTooltipComponent> createTooltip() {
+	public List<ClientTooltipComponent> createTooltip(boolean showWarp) {
 		List<ClientTooltipComponent> components = new ArrayList<>();
 		eventData.ifPresent(data -> data.addInformation(components));
-		additionalInfo.warpCommand().ifPresent(_ -> components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.clickToWarp").withStyle(ChatFormatting.ITALIC).getVisualOrderText())));
+		if (showWarp) additionalInfo.warpCommand().ifPresent(_ -> components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.clickToWarp").withStyle(ChatFormatting.ITALIC).getVisualOrderText())));
 		components.add(ClientTooltipComponent.create(Component.literal(Formatters.DATE_FORMATTER.format(start)).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY).getVisualOrderText()));
 		return components;
 	}

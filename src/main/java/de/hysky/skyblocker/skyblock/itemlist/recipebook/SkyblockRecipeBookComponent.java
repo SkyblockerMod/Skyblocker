@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import com.google.common.collect.Lists;
 import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.events.UpcomingEventsTab;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 import it.unimi.dsi.fastutil.Pair;
