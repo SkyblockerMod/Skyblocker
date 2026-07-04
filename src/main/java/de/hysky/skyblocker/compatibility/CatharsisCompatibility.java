@@ -8,7 +8,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class CatharsisCompatibility {
-
 	private static BiConsumer<ItemStack, Identifier> idConsumer = (_, _) -> {};
 	private static BiConsumer<ItemStack, Boolean> disabledConsumer = (_, _) -> {};
 	private static Predicate<String> hiddenModElementsProvider = (_) -> false;
