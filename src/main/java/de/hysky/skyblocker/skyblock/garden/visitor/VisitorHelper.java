@@ -14,6 +14,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Area;
@@ -115,7 +116,7 @@ public class VisitorHelper extends AbstractWidget {
 	public static boolean shouldRender() {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.enabled;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.showInGardenOnly;
-		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR);
+		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR) && !CatharsisCompatibility.isGuiElementHidden("skyblocker:visitorHelper");
 	}
 
 	public static List<ScreenRectangle> getExclusionZones() {

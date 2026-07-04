@@ -36,6 +36,9 @@
     ],
 		"skyblock-item-list": [
 			"de.hysky.skyblocker.compatibility.ItemListCompatibility"
+		],
+		"catharsis:imc/hidden_mod_elements": [
+			"de.hysky.skyblocker.compatibility.CatharsisCompatibility::hiddenGuiElements"
 		]
   },
   "mixins": [

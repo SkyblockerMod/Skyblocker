@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
@@ -131,7 +132,7 @@ public class ChestValue {
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			hideChestNameLabel = false;
-			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
+			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen && !CatharsisCompatibility.isGuiElementHidden("skyblocker:chestValueButton")) {
 				Component title = screen.getTitle();
 				String titleString = title.getString();
 				RewardChestType chestType = DUNGEON_CHESTS.contains(titleString) ? RewardChestType.DUNGEON : KUUDRA_CHESTS.contains(titleString) ? RewardChestType.KUUDRA : null;
