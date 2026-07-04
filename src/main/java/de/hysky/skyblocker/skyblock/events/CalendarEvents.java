@@ -18,6 +18,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
+/**
+ * Handles events that are parsed from the in-game calendar
+ */
 public final class CalendarEvents {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static Map<SkyblockEvent, LinkedList<EventInstance>> events = new Reference2ObjectOpenHashMap<>();
