@@ -19,6 +19,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.TextTransformer;
 import net.azureaaron.legacyitemdfu.TypeReferences;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -59,7 +60,7 @@ public class LegacyItemStackFixer {
 				case FlexibleItemStack flexible -> flexible.set((DataComponentType<Object>) type, value);
 				case ItemStack normal -> normal.set((DataComponentType<Object>) type, value);
 				default -> throw new UnsupportedOperationException();
-			};
+			}
 		};
 
 		if (contains.test(DataComponents.CUSTOM_NAME)) {
@@ -86,6 +87,15 @@ public class LegacyItemStackFixer {
 				.withHidden(DataComponents.ATTRIBUTE_MODIFIERS, true)
 				.withHidden(DataComponents.ENCHANTMENTS, true);
 		setter.accept(DataComponents.TOOLTIP_DISPLAY, display);
+
+		// Parse item components
+		nbt.getCompound("components").ifPresent(compoundTag -> DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, compoundTag)
+				.ifSuccess(patch ->
+						patch.entrySet().forEach(entry -> {
+							if (entry.getValue().isEmpty()) return;
+							setter.accept(entry.getKey(), entry.getValue().get());
+						})
+				));
 
 		return (T) stack;
 	}
