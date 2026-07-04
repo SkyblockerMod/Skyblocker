@@ -79,7 +79,8 @@ public record EventInstance(SkyblockEvent event, Instant start, Duration duratio
 		List<ClientTooltipComponent> components = new ArrayList<>();
 		eventData.ifPresent(data -> data.addInformation(components));
 		if (showWarp) additionalInfo.warpCommand().ifPresent(_ -> components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.clickToWarp").withStyle(ChatFormatting.ITALIC).getVisualOrderText())));
-		components.add(ClientTooltipComponent.create(Component.literal(Formatters.DATE_FORMATTER.format(start)).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY).getVisualOrderText()));
+		components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.starts", Component.literal(Formatters.DATE_FORMATTER.format(start))).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText()));
+		if (duration.toHours() >= 2) components.add(ClientTooltipComponent.create(Component.translatable("skyblocker.events.tab.ends", Component.literal(Formatters.DATE_FORMATTER.format(end()))).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText()));
 		return components;
 	}
 
