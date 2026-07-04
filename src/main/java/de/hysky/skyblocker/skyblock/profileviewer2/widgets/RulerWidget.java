@@ -17,6 +17,9 @@ public final class RulerWidget extends AbstractWidget {
 
 	public RulerWidget() {
 		super(0, 0, 0, 0, Component.empty());
+
+		// Make the widget ignore clicks
+		this.active = false;
 	}
 
 	@Override
@@ -32,4 +35,9 @@ public final class RulerWidget extends AbstractWidget {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 }

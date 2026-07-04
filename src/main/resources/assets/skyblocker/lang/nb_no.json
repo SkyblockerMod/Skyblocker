@@ -268,5 +268,6 @@
     "skyblocker.config.mining.glacite.fossilSolver.toolTip.foundFossil": "Fant Fossil. ",
     "skyblocker.config.title.settings": "Innstillinger",
     "skyblocker.config.uiAndVisuals": "UI & Visuelle Elementer",
-    "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Aktiver i Rift"
+    "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Aktiver i Rift",
+    "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Demp Ulvelyder"
 }

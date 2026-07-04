@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.garden.GardenPlots;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -101,9 +102,8 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private static class InventoryContainerHandler implements IGuiContainerHandler<InventoryScreen> {
 		@Override
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
-			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
-			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
-			return List.of(new Rect2i(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
+			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden() || GardenPlots.widget == null) return List.of();
+			return List.of(new Rect2i(GardenPlots.widget.getX(), GardenPlots.widget.getY(), GardenPlots.widget.getWidth(), GardenPlots.widget.getHeight()));
 		}
 	}
 
