@@ -26,7 +26,6 @@ import java.util.function.Predicate;
  * @param routineStart When the routine starts
  * @param routine A routine represented by a list of duration, alternates between when the event is active and inactive. Length should be an even number.
  */
-// TODO condition (mayor, ...)
 public record RecurringEvent(String id, String name, Instant routineStart, List<Duration> routine, EventInstance.AdditionalInfo additionalInfo, Optional<Condition> condition) {
 	private static final Duration MAXIMUM_LOOK_AHEAD = Duration.ZERO.plus(12, SkyblockTimeUnit.YEARS);
 	public static final Codec<RecurringEvent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
