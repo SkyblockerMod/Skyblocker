@@ -11,16 +11,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.events.EventInstance;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.time.SkyblockTimeUnit;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -60,12 +57,12 @@ public final class RecurringEvents {
 	}
 
 	private static List<RecurringEvent> fetchRecurringEvents() {
-		Path path = FabricLoader.getInstance().getConfigDir().resolve("event_test.json");
-		try (Reader reader = Files.newBufferedReader(path)) {
-			DataResult<List<RecurringEvent>> parsed = RecurringEvent.CODEC.listOf().parse(JsonOps.INSTANCE, JsonParser.parseReader(reader));
-			return parsed.ifError(error -> LOGGER.error("Failed to parse file: {}", error.message())).result().orElse(List.of());
+		try {
+			String json = Http.sendGetRequest("https://hysky.de/api/recurringevents");
+			DataResult<List<RecurringEvent>> parsed = RecurringEvent.CODEC.listOf().parse(JsonOps.INSTANCE, JsonParser.parseString(json));
+			return parsed.ifError(error -> LOGGER.error("[Skyblocker] Failed to parse recurring events: {}", error.message())).result().orElse(List.of());
 		} catch (Exception e) {
-			LOGGER.error("Failed to load event_test.json", e);
+			LOGGER.error("[Skyblocker] Failed to fetch recurring events", e);
 			return List.of();
 		}
 	}
