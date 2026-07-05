@@ -1408,6 +1408,8 @@
   "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip": "How many slots each backpack/ender chest should have per row. (This will be capped based on GUI scale to the maximum that fits.)",
   "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "Enabled",
   "skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip": "Enables the overlay for ender chest and backpacks.",
+  "skyblocker.config.uiAndVisuals.storageOverlay.toolkitButton": "Toolkit",
+  "skyblocker.config.uiAndVisuals.storageOverlay.homeButton": "Home",
   "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Hide",
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Remember Search",
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Saves search and scroll position after closing backpack.",

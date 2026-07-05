@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -101,6 +102,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 
+	private void home(Button button) {
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
+	}
+
+	private void toolkit(Button button) {
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/farmingtoolkit", true);
+	}
+
+
 	private int getLeftPos() {
 		return this.width / 6;
 	}
@@ -125,13 +135,25 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
 
-		//add button to temperately disable menu
-		addRenderableWidget(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.hideButton"), this::hide)
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu.hideButton.@Tooltip")))
-				.pos(width - 50, height - 25)
+		//extra controll buttons out the way
+		LinearLayout extraButtons = new LinearLayout(width -50, height - 80, LinearLayout.Orientation.VERTICAL);
+		extraButtons.spacing(5);
+		//add toolkit button
+		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.toolkitButton"), this::toolkit)
 				.size(40, 15)
 				.build());
 
+
+		//add button to go home
+		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.homeButton"), this::home)
+				.size(40, 15)
+				.build());
+		//add button to temperately disable menu
+		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.hideButton"), this::hide)
+				.size(40, 15)
+				.build());
+		extraButtons.arrangeElements();
+		extraButtons.visitWidgets(this::addRenderableWidget);
 	}
 
 	@Override
@@ -186,7 +208,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		//render background
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, getLeftPos(), this.topPos, getWidth(), getHeight());
 		//render inventory
-		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 94, 0, 128, 175, 94, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 90, 0, 132, 175, 90, 256, 256);
 	}
 
 	private class BackpackGridWidget extends SearchableGridWidget {
