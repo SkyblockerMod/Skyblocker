@@ -25,30 +25,50 @@ public class ConfigFix10NewHud extends ConfigDataFix {
 	}
 
 	private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
-		return fixVersion(dynamic).renameAndFixField("positions", "configs", positions -> positions.updateMapValues(pair -> {
+		return fixVersion(dynamic).renameAndFixField("positions", "configs", locations -> locations.updateMapValues(location -> {
 			Map<Dynamic<?>, Dynamic<?>> layers = new HashMap<>(Map.of(
 					dynamic.createString("hud"), dynamic.emptyMap(),
 					dynamic.createString("tab"), dynamic.emptyMap(),
 					dynamic.createString("secondary_tab"), dynamic.emptyMap()
 			));
-			Map<String, Dynamic<?>> oldLayerToNewLayer = Map.of(
-					"HUD", dynamic.createString("hud"),
-					"MAIN_TAB", dynamic.createString("tab"),
-					"SECONDARY_TAB", dynamic.createString("secondary_tab"),
-					"DEFAULT", dynamic.createString("tab")
-			);
-			pair.getSecond().getMapValues().getOrThrow().forEach((key, widget) -> layers.computeIfPresent(
-					oldLayerToNewLayer.get(widget.get("layer").asString("DEFAULT")),
-					(_, widgets) -> widgets.set(key.asString(""), dynamic.emptyMap().set("config", dynamic.emptyMap()).set("position", widget
-							.remove("layer")
-							.remove("parent")
-							.setFieldIfPresent("parent", widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").result())))));
+			location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> layers.computeIfPresent(
+					fixWidgetLayer(widget, widgetId.asString("")),
+					(_, widgets) -> widgets.set(widgetId.asString(""), fixWidget(widget))
+			));
 			layers.replaceAll((_, widgets) -> dynamic.emptyMap().set("widgets", widgets));
-			return Pair.of(pair.getFirst(), dynamic.createMap(layers));
+			return Pair.of(location.getFirst(), dynamic.createMap(layers));
 		})).set("copies", dynamic.createMap(Map.of(
 				dynamic.createString("hud"), dynamic.emptyMap(),
 				dynamic.createString("tab"), dynamic.emptyMap(),
 				dynamic.createString("secondary_tab"), dynamic.emptyMap()
 		)));
+	}
+
+	/**
+	 * Returns the layer the widget should be on.
+	 */
+	private static Dynamic<?> fixWidgetLayer(Dynamic<?> widget, String widgetId) {
+		String layer = switch (widget.get("layer").asString("DEFAULT")) {
+			case "HUD" -> "hud";
+			case "MAIN_TAB" -> "tab";
+			case "SECONDARY_TAB" -> "secondary_tab";
+			default -> widgetId.contains("hud") ? "hud" : "tab";
+		};
+		return widget.createString(layer);
+	}
+
+	private static Dynamic<?> fixWidget(Dynamic<?> widget) {
+		return widget.emptyMap().set("config", widget.emptyMap()).set("position", widget
+				.remove("layer")
+				.remove("parent")
+				.setFieldIfPresent("parent", fixWidgetParent(widget))
+		);
+	}
+
+	/**
+	 * Returns the parent of the widget or empty if the parent is the screen.
+	 */
+	private static Optional<? extends Dynamic<?>> fixWidgetParent(Dynamic<?> widget) {
+		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").result();
 	}
 }

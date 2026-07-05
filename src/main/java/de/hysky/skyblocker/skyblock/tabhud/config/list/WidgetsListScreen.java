@@ -270,7 +270,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 					if (!stackName.startsWith("reset")) return;
 					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
 					if (slot == 51) {
-						buttonText = Component.literal("Reset").withStyle(ChatFormatting.RED);
+						buttonText = Component.translatable("text.skyblocker.reset").withStyle(ChatFormatting.RED);
 					}
 					resetButton.visible = true;
 					resetButton.setMessage(buttonText);

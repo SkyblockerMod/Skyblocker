@@ -1,0 +1,20 @@
+{
+  "positions": {
+    "hub": {
+      "hud_slayer": {
+        "parent": "screen",
+        "parent_anchor": {
+          "v": "TOP",
+          "h": "RIGHT"
+        },
+        "this_anchor": {
+          "v": "TOP",
+          "h": "RIGHT"
+        },
+        "relative_x": -2,
+        "relative_y": 2,
+        "layer": "DEFAULT"
+      }
+    }
+  }
+}

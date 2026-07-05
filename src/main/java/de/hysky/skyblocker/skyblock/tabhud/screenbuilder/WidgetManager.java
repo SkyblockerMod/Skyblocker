@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
@@ -64,7 +63,7 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
 	private static final int DEFAULTS_VERSION = 1;
-	private static final String VERSION_KEY = "_defaults_version";
+	private static final String DEFAULTS_VERSION_KEY = "_defaults_version";
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
 	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
@@ -197,8 +196,9 @@ public class WidgetManager {
 				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
 				showErrorToast();
 			}
-			if (input instanceof JsonObject object && object.has(VERSION_KEY)) {
-				fillDefaultConfig(object.get(VERSION_KEY).getAsInt());
+			// Do not fill defaults if migrating from old config
+			if (CONFIG.defaultsVersion > 0) {
+				fillDefaultConfig(CONFIG.defaultsVersion);
 			}
 		} catch (NoSuchFileException _) {
 			// Fill default config
@@ -309,9 +309,7 @@ public class WidgetManager {
 
 	public static void saveConfig() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			JsonElement element = Config.CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow();
-			element.getAsJsonObject().addProperty(VERSION_KEY, DEFAULTS_VERSION);
-			SkyblockerMod.GSON.toJson(element, writer);
+			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow(), writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
@@ -356,14 +354,16 @@ public class WidgetManager {
 		}
 	}
 
-	public record Config(Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker) {
+	public record Config(int version, Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker, int defaultsVersion) {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.fieldOf(ConfigDataFixer.VERSION_KEY).forGetter(Config::version),
 				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("configs"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
-				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker)
+				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker),
+				Codec.INT.optionalFieldOf(DEFAULTS_VERSION_KEY, 0).forGetter(_ -> DEFAULTS_VERSION)
 		).apply(instance, Config::new));
 
 		public Config() {
-			this(new Object2ObjectOpenHashMap<>(), new CopyTracker());
+			this(SkyblockerConfigManager.CONFIG_VERSION, new Object2ObjectOpenHashMap<>(), new CopyTracker(), 0);
 		}
 	}
 }

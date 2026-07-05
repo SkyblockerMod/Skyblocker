@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class ConfigDataFixer {
-	static final String VERSION_KEY = "version";
+	public static final String VERSION_KEY = "version";
 	protected static final Logger LOGGER = LogUtils.getLogger();
 	public static final DSL.TypeReference CONFIG_TYPE = () -> "config";
 	public static final DSL.TypeReference CHAT_RULES_TYPE = () -> "chat_rules";
