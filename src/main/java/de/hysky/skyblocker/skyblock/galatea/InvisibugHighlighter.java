@@ -9,7 +9,6 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +44,7 @@ public class InvisibugHighlighter {
 	 * @param packet the incoming particle packet from the server
 	 */
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (isActive() && packet.getParticle().getType() instanceof ParticleType<?> type && (ParticleTypes.CRIT.equals(type)) && client.level != null) {
+		if (isActive() && ParticleTypes.CRIT.equals(packet.getParticle().getType()) && client.level != null) {
 			Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 			// Exclude particles that are emitted from striking an NPC
 			if (client.level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(pos, 1, 1, 1), e -> !(e instanceof Player)).isEmpty()) {
