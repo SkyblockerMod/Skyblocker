@@ -60,7 +60,7 @@ public class InvisibugHighlighter {
 	 */
 	private static void handleInvisibugParticle(Vec3 pos) {
 		// As the invisibug moves, remove the previous location
-		invisibugLocations.object2LongEntrySet().removeIf(e -> e.getKey().distanceToSqr(pos) <= 1);
+		invisibugLocations.keySet().removeIf(e -> e.distanceToSqr(pos) <= 1);
 		// Add the new location to the map
 		invisibugLocations.put(pos, System.currentTimeMillis());
 	}
@@ -70,7 +70,7 @@ public class InvisibugHighlighter {
 	 *
 	 * @param collector the primitive collector to submit render geometry to
 	 */
-	public static void extractRendering(PrimitiveCollector collector) {
+	private static void extractRendering(PrimitiveCollector collector) {
 		if (!isActive() || invisibugLocations.isEmpty() || client.player == null) return;
 
 		long now = System.currentTimeMillis();
