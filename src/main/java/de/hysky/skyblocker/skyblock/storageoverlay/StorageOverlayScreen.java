@@ -1,18 +1,20 @@
 package de.hysky.skyblocker.skyblock.storageoverlay;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
 
@@ -40,6 +43,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("social_interactions/background");
+	private static final Pattern CHANGING_BACKPACK_REGEX = Pattern.compile("(Placing backpack)|(Removed backpack)");
 	//inventory texture key values
 	private static final int HEADER_H = 17;
 	private static final int SLOT_SIZE = 18;
@@ -51,11 +55,22 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	protected static int openStorage;
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
+	private static boolean changingBackpack = false;
 	@Nullable
 	private BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
+
+	@Init
+	public static void setup() { //already had init therefore called setup
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+			if (!overlay && CHANGING_BACKPACK_REGEX.matcher(message.getString()).find()){
+				changingBackpack = true;
+			}
+			return true;
+		});
+	}
 
 	public StorageOverlayScreen(StorageOverlayScreenHandler handler, ChestMenu defaultHandler, Component name, Inventory inventory, int height) {
 		super(handler, inventory, name, 176, height);
@@ -67,8 +82,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	public static boolean enabled(String title) {
 		openStorage = getStorageIndexFromTitle(title);
-
-		return SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1);
+		boolean enabled = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1) && !changingBackpack;
+		changingBackpack = false;
+		return enabled;
 	}
 
 	protected void switchOpenStorage(int index) {
