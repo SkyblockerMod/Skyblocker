@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,11 +18,11 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 	private static final Pattern PATTERN = Pattern.compile("You placed in the (?<bracket>DIAMOND|PLATINUM|GOLD|SILVER|BRONZE) bracket!");
 	private static final Map<String, Integer> BRACKET_COLORS = Map.of(
-			"DIAMOND", Objects.requireNonNull(ChatFormatting.AQUA.getColor()),
-			"PLATINUM", Objects.requireNonNull(ChatFormatting.DARK_AQUA.getColor()),
-			"GOLD", Objects.requireNonNull(ChatFormatting.GOLD.getColor()),
-			"SILVER", Objects.requireNonNull(ChatFormatting.WHITE.getColor()),
-			"BRONZE", Objects.requireNonNull(ChatFormatting.RED.getColor())
+			"DIAMOND", Objects.requireNonNull(TextColor.AQUA.getValue()),
+			"PLATINUM", Objects.requireNonNull(TextColor.DARK_AQUA.getValue()),
+			"GOLD", Objects.requireNonNull(TextColor.GOLD.getValue()),
+			"SILVER", Objects.requireNonNull(TextColor.WHITE.getValue()),
+			"BRONZE", Objects.requireNonNull(TextColor.RED.getValue())
 	);
 
 	@Override
@@ -56,9 +56,9 @@ public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 
 	@Override
 	protected void extract(GuiGraphicsExtractor context, int x, int y, Integer color) {
-		float r = ((color >> 16) & 0xFF) / 255F;
-		float g = ((color >> 8) & 0xFF) / 255F;
-		float b = (color & 0xFF) / 255F;
+		float r = ((color >> 16) & 0xFF) / 255f;
+		float g = ((color >> 8) & 0xFF) / 255f;
+		float b = (color & 0xFF) / 255f;
 
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ARGB.colorFromFloat(

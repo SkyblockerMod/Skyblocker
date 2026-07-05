@@ -73,13 +73,11 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	}
 
 	public FlexibleItemStack(ItemStack stack) {
-		this(stack.typeHolder(), stack.count(), stack.getComponentsPatch());
-
-		// This statement would be first however Checkstyle does not support flexible constructors and instead errors while parsing the file
-		// https://github.com/checkstyle/checkstyle/issues/17052
 		if (stack.isEmpty()) {
 			throw new IllegalStateException("Stack must be non-empty");
 		}
+
+		this(stack.typeHolder(), stack.count(), stack.getComponentsPatch());
 	}
 
 	@SuppressWarnings("deprecation")

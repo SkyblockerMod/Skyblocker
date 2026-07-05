@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.Holder;
@@ -46,6 +47,7 @@ public final class GardenPlots {
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("garden_plots");
 
 	public static final @Nullable GardenPlot[] GARDEN_PLOTS = new GardenPlot[25];
+	public static @Nullable GardenPlotsWidget widget;
 
 	@Init
 	public static void init() {
@@ -59,7 +61,7 @@ public final class GardenPlots {
 							if (i == 22) continue; // Barn icon
 							Slot slot = screenHandler.slots.get(i);
 							ItemStack stack = slot.getItem();
-							if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
+							if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.red()) || stack.is(Items.OAK_BUTTON) || stack.is(Items.STAINED_GLASS_PANE.black()))
 								continue;
 							// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
 							String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());
@@ -81,15 +83,22 @@ public final class GardenPlots {
 
 				});
 			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled) {
-				GardenPlotsWidget widget = new GardenPlotsWidget(
-						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((AbstractContainerScreenAccessor) inventoryScreen).getY());
+				ScreenEvents.remove(screen).register(_ -> widget = null);
+				AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) inventoryScreen;
+				widget = new GardenPlotsWidget(new ScreenRectangle(
+						accessor.getX(),
+						accessor.getY(),
+						accessor.getImageWidth(),
+						accessor.getImageHeight()
+				));
 				Screens.getWidgets(inventoryScreen).add(widget);
 
-				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
-						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((AbstractContainerScreenAccessor) inventoryScreen).getY()
-				));
+				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setInventoryRectangle(new ScreenRectangle(
+								accessor.getX(),
+								accessor.getY(),
+								accessor.getImageWidth(),
+								accessor.getImageHeight()
+						)));
 			}
 		});
 

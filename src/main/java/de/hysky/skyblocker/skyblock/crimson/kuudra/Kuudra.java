@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hysky.skyblocker.utils.RegexListUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -13,7 +14,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -85,7 +85,7 @@ public class Kuudra {
 		kuudraKeyPrices.putAll(KuudraProfileData.EMPTY.kuudraKeyPrices());
 
 		for (ItemStack kuudraKey : kuudraKeyItems) {
-			Matcher matcher = ItemUtils.getLoreLineIfMatch(kuudraKey, ChestValue.DUNGEON_CHEST_COIN_COST_PATTERN);
+			Matcher matcher = RegexListUtils.matchInList(kuudraKey.skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, ChestValue.DUNGEON_CHEST_COIN_COST_PATTERN);
 
 			if (matcher != null) {
 				// Same logic as getting coin value from dungeon chests

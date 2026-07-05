@@ -70,10 +70,10 @@ public class PreviewRoom extends Room {
 
 		Block block = switch (waypoint.category) {
 			case ENTRANCE, STONK, AOTV, PEARL, PRINCE, DEFAULT -> null;
-			case BAT -> Blocks.GREEN_STAINED_GLASS;
+			case BAT -> Blocks.STAINED_GLASS.green();
 			case CHEST -> Blocks.CHEST;
-			case FAIRYSOUL -> Blocks.PINK_STAINED_GLASS;
-			case ITEM -> Blocks.BLUE_STAINED_GLASS;
+			case FAIRYSOUL -> Blocks.STAINED_GLASS.pink();
+			case ITEM -> Blocks.STAINED_GLASS.blue();
 			case LEVER -> Blocks.LEVER;
 			case SUPERBOOM -> Blocks.TNT;
 			case WITHER, REDSTONE_KEY -> Blocks.PLAYER_HEAD;

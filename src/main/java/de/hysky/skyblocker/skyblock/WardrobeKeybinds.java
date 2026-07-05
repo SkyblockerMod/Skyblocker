@@ -56,7 +56,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		ItemStack itemStack = handledScreen.getMenu().getSlot(i).getItem();
 		// Check if the item in the slot is a swap/unequip item before going further.
 		// This prevents usage when the inventory hasn't loaded fully or when the slot pressed is locked or when the slot has no armor (which would be meaningless to click)
-		if (!itemStack.is(Items.PINK_DYE) && !itemStack.is(Items.LIME_DYE)) return true;
+		if (!itemStack.is(Items.DYE.pink()) && !itemStack.is(Items.DYE.lime())) return true;
 		assert client.gameMode != null;
 		client.gameMode.handleContainerInput(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ContainerInput.PICKUP, client.player);
 		return false;
@@ -64,7 +64,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (!stack.is(Items.PINK_DYE) && !stack.is(Items.LIME_DYE)) return List.of();
+		if (!stack.is(Items.DYE.pink()) && !stack.is(Items.DYE.lime())) return List.of();
 		if (!(slotId >= 36 && slotId <= 44)) return List.of();
 		return SlotText.bottomLeftList(Component.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));
 	}

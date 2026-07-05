@@ -18,7 +18,7 @@ public class HealingMelonIndicator {
 			return;
 		}
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.getHealth() <= SkyblockerConfigManager.get().slayers.vampireSlayer.healingMelonHealthThreshold * 2F) {
+		if (player != null && player.getHealth() <= SkyblockerConfigManager.get().slayers.vampireSlayer.healingMelonHealthThreshold * 2f) {
 			TitleContainer.addTitleAndPlaySound(title);
 		} else {
 			TitleContainer.removeTitle(title);

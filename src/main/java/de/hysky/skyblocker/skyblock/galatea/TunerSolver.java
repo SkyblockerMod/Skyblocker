@@ -37,20 +37,20 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	private static final Item[] COLOR_CYCLE = {
-			Items.MAGENTA_DYE, Items.LIGHT_BLUE_DYE, Items.YELLOW_DYE, Items.LIME_DYE,
-			Items.PINK_DYE, Items.CYAN_DYE, Items.PURPLE_DYE, Items.LAPIS_LAZULI,
-			Items.COCOA_BEANS, Items.GREEN_DYE, Items.RED_DYE, Items.BONE_MEAL,
-			Items.ORANGE_DYE
+			Items.DYE.magenta(), Items.DYE.lightBlue(), Items.DYE.yellow(), Items.DYE.lime(),
+			Items.DYE.pink(), Items.DYE.cyan(), Items.DYE.purple(), Items.LAPIS_LAZULI,
+			Items.COCOA_BEANS, Items.DYE.green(), Items.DYE.red(), Items.BONE_MEAL,
+			Items.DYE.orange()
 	};
 
 	private static final Item[] GLASS_CYCLE = {
-			Items.MAGENTA_STAINED_GLASS_PANE, Items.LIGHT_BLUE_STAINED_GLASS_PANE,
-			Items.YELLOW_STAINED_GLASS_PANE, Items.LIME_STAINED_GLASS_PANE,
-			Items.PINK_STAINED_GLASS_PANE, Items.CYAN_STAINED_GLASS_PANE,
-			Items.PURPLE_STAINED_GLASS_PANE, Items.BLUE_STAINED_GLASS_PANE,
-			Items.BROWN_STAINED_GLASS_PANE, Items.GREEN_STAINED_GLASS_PANE,
-			Items.RED_STAINED_GLASS_PANE, Items.WHITE_STAINED_GLASS_PANE,
-			Items.ORANGE_STAINED_GLASS_PANE
+			Items.STAINED_GLASS_PANE.magenta(), Items.STAINED_GLASS_PANE.lightBlue(),
+			Items.STAINED_GLASS_PANE.yellow(), Items.STAINED_GLASS_PANE.lime(),
+			Items.STAINED_GLASS_PANE.pink(), Items.STAINED_GLASS_PANE.cyan(),
+			Items.STAINED_GLASS_PANE.purple(), Items.STAINED_GLASS_PANE.blue(),
+			Items.STAINED_GLASS_PANE.brown(), Items.STAINED_GLASS_PANE.green(),
+			Items.STAINED_GLASS_PANE.red(), Items.STAINED_GLASS_PANE.white(),
+			Items.STAINED_GLASS_PANE.orange()
 	};
 
 	private static final String[] PITCH_CYCLE = {"Low", "Normal", "High"};

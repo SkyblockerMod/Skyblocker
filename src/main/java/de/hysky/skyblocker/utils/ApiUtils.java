@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class ApiUtils {
 	 * Similar to how the Auth Lib caches GameProfiles.
 	 */
 	private static final LoadingCache<String, String> NAME_2_UUID_CACHE = CacheBuilder.newBuilder()
-			.expireAfterWrite(20, TimeUnit.MINUTES)
+			.expireAfterWrite(Duration.ofMinutes(20L))
 			.build(new CacheLoader<>() {
 				@Override
 				public String load(String key) throws Exception {

@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -11,20 +13,31 @@ import net.minecraft.util.CommonColors;
  */
 // TODO maybe add some cool functionality to draw vertical/horizontal lines that move with scroll wheel when holding down option
 // TODO add ruler ticks every few px?
-public final class RulerWidget extends ProfileViewerWidget {
+public final class RulerWidget extends AbstractWidget {
 
 	public RulerWidget() {
 		super(0, 0, 0, 0, Component.empty());
+
+		// Make the widget ignore clicks
+		this.active = false;
 	}
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		int borderWidth = AbstractProfileViewerScreen.BACKGROUND_WIDTH - (CONTENT_PADDING * 2);
-		int borderHeight = AbstractProfileViewerScreen.BACKGROUND_HEIGHT - (CONTENT_PADDING * 2);
+		int borderWidth = AbstractProfileViewerScreen.BACKGROUND_WIDTH - (ProfileViewerWidget.CONTENT_PADDING * 2);
+		int borderHeight = AbstractProfileViewerScreen.BACKGROUND_HEIGHT - (ProfileViewerWidget.CONTENT_PADDING * 2);
 
 		// Content Border
 		GuiHelper.border(graphics, this.getX(), this.getY(), borderWidth, borderHeight, CommonColors.HIGH_CONTRAST_DIAMOND);
 		// Content Origin Point
 		graphics.fill(this.getX(), this.getY(), this.getX() + 1, this.getY() + 1, CommonColors.RED);
+	}
+
+	@Override
+	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
 	}
 }

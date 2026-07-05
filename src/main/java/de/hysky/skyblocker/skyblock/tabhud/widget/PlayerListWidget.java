@@ -10,6 +10,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
 import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
@@ -17,7 +19,7 @@ public class PlayerListWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Players").withStyle(ChatFormatting.BOLD);
 
 	public PlayerListWidget() {
-		super("Players", TITLE, ChatFormatting.AQUA.getColor());
+		super("Players", TITLE, TextColor.AQUA.getValue());
 	}
 
 	@Override

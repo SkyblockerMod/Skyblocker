@@ -701,6 +701,12 @@
   "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout Helper",
   "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the color depends on the kind of zombie.",
 
+  "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Enable Raffle Reward Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "Highlights unclaimed raffle prizes in red and claimed ones in green.",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Enable Raffle Task Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Highlights incomplete raffle tasks in red and completed ones in green.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
@@ -961,6 +967,7 @@
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.noFossilFound": "No fossil found",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.possiblePatterns": "Possible Patterns: ",
   "skyblocker.config.mining.glacite.fossilSolver.toolTip.probability": "Probability: ",
+  "skyblocker.config.mining.glacite.solveFossilMuncher": "Solve Fossil Muncher",
 
   "skyblocker.config.mining.pickobulusHelper": "Pickobulus Helper",
   "skyblocker.config.mining.pickobulusHelper.enable": "Enable Pickobulus Helper",
@@ -1033,6 +1040,9 @@
   "skyblocker.config.otherLocations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
   "skyblocker.config.otherLocations.spidersDen.relics.highlightFoundRelics": "Highlight Found Relics",
 
+  "skyblocker.config.patches.updated.failed": "Updating the config patches failed. See logs for details.",
+  "skyblocker.config.patches.updated.success": "Updated the config patches successfully.",
+
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %s",
   "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose SkyBlock Item",
@@ -1086,6 +1096,7 @@
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
   "skyblocker.config.slayer.endermanSlayer.highlightBeacons": "Beacon Highlighting",
+  "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "Highlights beacons and shows a path to them in red.",
   "skyblocker.config.slayer.endermanSlayer.highlightNukekubiHeads": "Nukekubi Head Highlighting",
   "skyblocker.config.slayer.endermanSlayer.lazerTimer": "Lazer Timer",
 
@@ -1146,6 +1157,9 @@
   "skyblocker.config.slayer.wolfSlayer.hideSvenPupNametag": "Hide Sven Pup's Nametag",
   "skyblocker.config.slayer.wolfSlayer.muteWolfSounds": "Mute Wolf Sounds",
 
+  "skyblocker.config.tag.keyBind": "Key Bind",
+  "skyblocker.config.tag.keyMapping": "Key Mapping",
+
   "skyblocker.config.title": "Skyblocker %s",
   "skyblocker.config.title.settings": "Settings",
 
@@ -1157,6 +1171,7 @@
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Enable in Rift",
   "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "Enable Vanilla Style Mana Bar",
+  "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Enable Vanilla Style Mana Bar Blinking",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
@@ -1164,6 +1179,7 @@
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
+  "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
@@ -1345,12 +1361,16 @@
   "skyblocker.config.uiAndVisuals.slotText.collectionLevel": "Collection Level",
   "skyblocker.config.uiAndVisuals.slotText.communityShop": "Community Shop",
   "skyblocker.config.uiAndVisuals.slotText.communityShop.@Tooltip": "Displays the level of the upgrades in the community shop.",
+  "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "Crop Milestones",
+  "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Displays the crop milestone levels.",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentAbbreviation": "Enchantment Abbreviation",
   "skyblocker.config.uiAndVisuals.slotText.enchantmentLevel": "Enchantment Book Level",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop": "Essence Shop",
   "skyblocker.config.uiAndVisuals.slotText.essenceShop.@Tooltip": "Displays the levels and your current amount of essence while in essence shops.",
   "skyblocker.config.uiAndVisuals.slotText.evolvingItems": "Evolving Items",
   "skyblocker.config.uiAndVisuals.slotText.evolvingItems.@Tooltip": "Displays the time held for Bottle of Jyrre, Moby Duck, Discrite, Dark Cacao Truffle, Training Weights.",
+  "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Garden Upgrades",
+  "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Displays the level of crop and greenhouse upgrades.",
   "skyblocker.config.uiAndVisuals.slotText.hotfPerkLevel": "HOTF Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.hotmPerkLevel": "HOTM Perk Level",
   "skyblocker.config.uiAndVisuals.slotText.huntingToolkitIndicator": "Toolkit Indicator",
@@ -1394,6 +1414,8 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.maximumAddedLag.@Tooltip": "Predictive:\nHow long the animation is allowed to get behind the game in milliseconds. (If set to 0, smoothing will not have any lag, but stuttering will likely occur. Increase this value if you're experiencing flashing.)\n\nPredictive disabled:\nduration of animation",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive": "Predictive Algorithm",
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
+  "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
@@ -1736,6 +1758,9 @@
 
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
+  "skyblocker.mayor.perkOverrides.update.failed": "Updating the perk overrides failed. See logs for details.",
+  "skyblocker.mayor.perkOverrides.update.success": "Updated the perk overrides successfully.",
+
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
@@ -1822,6 +1847,8 @@
 
   "skyblocker.rift.enigmaSouls.markAllFound": "Marked all enigma souls as found!",
   "skyblocker.rift.enigmaSouls.markAllMissing": "Marked all enigma souls as missing!",
+  "skyblocker.rift.enigmaSouls.markClosestFound": "Marked closest enigma soul as found!",
+  "skyblocker.rift.enigmaSouls.markClosestMissing": "Marked closest enigma soul as missing!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
@@ -1948,7 +1975,7 @@
   "skyblocker.waypoints.exportWaypointsSkyblocker": "Export Waypoints (Skyblocker)",
   "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints to Clipboard (Skyblocker Format)",
   "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
-  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Export Waypoints to Clipboard (Skytils Format)",
+  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils waypoint exports have been deprecated for removal and are unrecommended due to waypoint data loss.",
   "skyblocker.waypoints.groupType": "Group Type",
   "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.groupType.ordered": "Ordered",
@@ -1989,8 +2016,10 @@
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
   "text.skyblocker.config": "Open Config...",
   "text.skyblocker.confirm": "Confirm",
+  "text.skyblocker.curseforge": "CurseForge",
   "text.skyblocker.dead": "Dead",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.logsFolder": "Open Logs Folder",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.offline": "Offline",
   "text.skyblocker.open": "Open",

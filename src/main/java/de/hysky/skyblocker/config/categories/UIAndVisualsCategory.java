@@ -8,10 +8,12 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.item.ValueBreakdownPopup;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
@@ -22,6 +24,7 @@ import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.LabelOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionFlag;
@@ -188,6 +191,11 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.chestValue.incompleteColor = newValue)
 								.controller(ConfigUtils.createEnumDropdownController(ConfigUtils.FORMATTING_FORMATTER))
 								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.valueBreadownPopup"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ValueBreakdownPopup.KEY_BINDING)
+								.build())
 						.build())
 
 				//Item Cooldown
@@ -203,6 +211,7 @@ public class UIAndVisualsCategory {
 								.build())
 						.build())
 
+				// Slot Text
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.slotText"))
 						.collapsed(true)
@@ -214,13 +223,18 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.slotText.slotTextMode = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.slottext"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(SlotTextManager.KEY_MAPPING)
+								.build())
 						.option(LabelOption.createBuilder()
 								.label(Component.translatable("skyblocker.config.uiAndVisuals.slotText.separator"))
 								.build())
 						.options(createSlotTextToggles(config))
-						.build()
-				)
+						.build())
+
+				// Radial Menus
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
 						.collapsed(true)
@@ -287,7 +301,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.titleContainer.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new TitleContainerConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new TitleContainerConfigScreen(screen)))
 								.build())
 						.build())
 
@@ -324,6 +338,16 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.tabHud.showVanillaTabByDefault,
 										newValue -> config.uiAndVisuals.tabHud.showVanillaTabByDefault = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.defaultTgl"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(TabHud.defaultTgl)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.toggleA"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(TabHud.toggleSecondary)
 								.build())
 						.option(Option.<UIAndVisualsConfig.TabHudStyle>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style"))
@@ -442,10 +466,26 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarSprites"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.uiAndVisuals.bars.useHungerBarSprites,
+										() -> config.uiAndVisuals.bars.useHungerBarSprites,
+										newValue -> config.uiAndVisuals.bars.useHungerBarSprites = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(_ -> Minecraft.getInstance().setScreen(new StatusBarsConfigScreen()))
+								.action(_ -> Minecraft.getInstance().gui.setScreen(new StatusBarsConfigScreen()))
 								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
@@ -533,7 +573,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.waypoints.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WaypointsScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WaypointsScreen(screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.enableChatWaypoints"))
@@ -626,6 +666,15 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.smoothAOTE.predictive,
 										() -> config.uiAndVisuals.smoothAOTE.predictive,
 										newValue -> config.uiAndVisuals.smoothAOTE.predictive = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.uiAndVisuals.smoothAOTE.thirdPerson,
+										() -> config.uiAndVisuals.smoothAOTE.thirdPerson,
+										newValue -> config.uiAndVisuals.smoothAOTE.thirdPerson = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -986,7 +1035,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))

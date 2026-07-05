@@ -8,6 +8,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import it.unimi.dsi.fastutil.Pair;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,13 +77,13 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 
 		// Calculate and render path of water through the board
 		// If there is a prospective lever, instead find the path for if that lever was used
-		List<Tuple<BlockPos, BlockPos>> waterPath = new ArrayList<>();
-		waterPath.add(new Tuple<>(WATER_ENTRANCE_POSITION.above(5), WATER_ENTRANCE_POSITION.above(3)));
+		List<Pair<BlockPos, BlockPos>> waterPath = new ArrayList<>();
+		waterPath.add(Pair.of(WATER_ENTRANCE_POSITION.above(5), WATER_ENTRANCE_POSITION.above(3)));
 		findWaterPathVertical(WATER_ENTRANCE_POSITION.above(3), waterPath);
 
-		for (Tuple<BlockPos, BlockPos> pair : waterPath) {
-			Vec3 head = room.relativeToActual(pair.getA()).getCenter();
-			Vec3 tail = room.relativeToActual(pair.getB()).getCenter();
+		for (Pair<BlockPos, BlockPos> pair : waterPath) {
+			Vec3 head = Vec3.atCenterOf(room.relativeToActual(pair.left()));
+			Vec3 tail = Vec3.atCenterOf(room.relativeToActual(pair.right()));
 
 			List<Vec3[]> lines = new ArrayList<>();
 			if (prospective == null) {
@@ -104,18 +105,18 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 		}
 	}
 
-	private void findWaterPathVertical(BlockPos root, List<Tuple<BlockPos, BlockPos>> waterPath) {
+	private void findWaterPathVertical(BlockPos root, List<Pair<BlockPos, BlockPos>> waterPath) {
 		if (isWaterPassable(root.below())) {
 			BlockPos.MutableBlockPos tail = new BlockPos.MutableBlockPos().set(root.below());
 			while (isWaterPassable(tail.below())) {
 				tail.move(Direction.DOWN);
 			}
-			waterPath.add(new Tuple<>(root, new BlockPos(tail)));
+			waterPath.add(Pair.of(root, new BlockPos(tail)));
 			findWaterPathHorizontal(tail, waterPath);
 		}
 	}
 
-	private void findWaterPathHorizontal(BlockPos root, List<Tuple<BlockPos, BlockPos>> waterPath) {
+	private void findWaterPathHorizontal(BlockPos root, List<Pair<BlockPos, BlockPos>> waterPath) {
 		if (!isWaterPassable(root.below())) {
 			BlockPos.MutableBlockPos left = new BlockPos.MutableBlockPos().set(root);
 			int leftSteps = 0;
@@ -134,18 +135,18 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			// Skyblock only looks up to 5 blocks away when determining if there is an air block.
 			// If no air is found, the water flows in both directions up to a maximum of 7 blocks away.
 			if (isWaterPassable(left.below()) && leftSteps <= 5 && (leftSteps < rightSteps || !isWaterPassable(right.below()))) {
-				waterPath.add(new Tuple<>(root, new BlockPos(left)));
+				waterPath.add(Pair.of(root, new BlockPos(left)));
 				findWaterPathVertical(left, waterPath);
 			} else if (isWaterPassable(right.below()) && rightSteps <= 5 && (rightSteps < leftSteps || !isWaterPassable(left.below()))) {
-				waterPath.add(new Tuple<>(root, new BlockPos(right)));
+				waterPath.add(Pair.of(root, new BlockPos(right)));
 				findWaterPathVertical(right, waterPath);
 			} else {
 				if (leftSteps > 0) {
-					waterPath.add(new Tuple<>(root, new BlockPos(left)));
+					waterPath.add(Pair.of(root, new BlockPos(left)));
 					findWaterPathVertical(left, waterPath);
 				}
 				if (rightSteps > 0) {
-					waterPath.add(new Tuple<>(root, new BlockPos(right)));
+					waterPath.add(Pair.of(root, new BlockPos(right)));
 					findWaterPathVertical(right, waterPath);
 				}
 			}

@@ -7,7 +7,7 @@ import java.util.List;
 import org.lwjgl.system.MemoryUtil;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 
 import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -28,7 +28,7 @@ public abstract class AbstractUniformTexelBuffer<T> implements AutoCloseable {
 		this.prepareBuffer(states.size() * this.instanceBytes);
 		GpuBuffer texelBuffer = this.buffer.currentBuffer();
 
-		try (GpuBuffer.MappedView mappedView = RenderSystem.getDevice().createCommandEncoder().mapBuffer(texelBuffer, false, true)) {
+		try (GpuBufferSlice.MappedView mappedView = texelBuffer.map(false, true)) {
 			long address = MemoryUtil.memAddress(mappedView.data());
 			MemorySegment buffer = MemorySegment.ofAddress(address).reinterpret(this.buffer.size());
 

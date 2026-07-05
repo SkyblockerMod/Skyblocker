@@ -9,6 +9,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
@@ -19,7 +20,7 @@ public class ForgeWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public ForgeWidget() {
-		super("Forges", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Forges", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

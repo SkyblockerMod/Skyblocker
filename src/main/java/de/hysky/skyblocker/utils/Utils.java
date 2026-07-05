@@ -590,8 +590,8 @@ public class Utils {
 	public static void sendMessageToBypassEvents(Component message) {
 		Minecraft client = Minecraft.getInstance();
 
-		client.gui.getChat().addClientSystemMessage(message);
-		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
+		client.gui.hud.getChat().addClientSystemMessage(message);
+		((ChatListenerAccessor) client.gui.chatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
 	}
 

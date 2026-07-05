@@ -126,6 +126,22 @@ repositories {
 		}
 	}
 
+	maven {
+		url = "https://maven.operationpotato.com/releases"
+
+		content {
+			includeGroup "com.operationpotato"
+		}
+	}
+
+	maven {
+		url = "https://maven.operationpotato.com/snapshots"
+
+		content {
+			includeGroup "com.operationpotato"
+		}
+	}
+
 	//mavenLocal()
 }
 
@@ -172,6 +188,8 @@ dependencies {
 	compileOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 	//runtimeOnly "maven.modrinth:jei:${project.jei_version}-fabric"
 
+	compileOnly "com.operationpotato:skyblock-item-list-api:${project.skyblock_item_list_version}"
+
 	compileOnly "com.demonwav.mcdev:annotations:${project.mcdev_annotations_version}"
 
 	include implementation("meteordevelopment:discord-ipc:1.1")
@@ -198,15 +216,34 @@ dependencies {
 	implementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}")
 }
 
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skyblocker-test"
+		enableGameTests = false
+		eula = true
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/skyblocker.classtweaker")
 
 	decompilers {
 		vineflower {
 			options.put(
-					// Makes lambda names easy to find for Mixins
-					"mark-corresponding-synthetics", "1"
-					)
+			// Makes lambda names easy to find for Mixins
+			"mark-corresponding-synthetics", "1"
+			)
+		}
+	}
+
+	runs {
+		clientGameTest {
+			programArguments.add("--graphicsBackend=" + System.getenv().getOrDefault("GRAPHICS_BACKEND", "default"))
+		}
+
+		configureEach {
+			preferGradleTask = true
 		}
 	}
 }
@@ -219,24 +256,16 @@ sourceSets {
 	}
 }
 
-fabricApi {
-	configureTests {
-		createSourceSet = true
-		modId = "skyblocker-test"
-		enableGameTests = false
-		eula = true
-	}
-}
-
 base {
 	archivesName = project.archives_base_name
 }
 
 tasks.withType(ProcessResources).configureEach {
-	inputs.property "version", project.version
+	def version = project.version
+	inputs.property "version", version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand "version": version
 	}
 }
 
@@ -251,8 +280,11 @@ java {
 }
 
 jar {
+	def archivesName = project.base.archivesName
+	inputs.property "archivesName", archivesName.get()
+
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}" }
+		rename { "${it}_${archivesName.get()}" }
 	}
 }
 
@@ -302,7 +334,7 @@ spotless {
 				// The third and remaining stems are optional, allowing matching lines with only two stems (in this case "skyblocker.config"), and separating it from other keys that start with "skyblocker.config.[whatever]".
 				/^(  "skyblocker\.config(?:\.([^."]++)(?:\.[^"]++)?)?": "(?:[^\\"]++|\\.)*+",)$\n^(?=  "skyblocker\.config\.(?!\2[."]))/,
 				'$1\n\n'
-		final List<String> excludeCategories = ["commands", "debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title"]
+		final List<String> excludeCategories = ["commands", "debug", "eventNotifications", "quickNav", "shortcutToKeybindsSettings", "title", "tag"]
 		final String excludeCategoriesLookahead = /(?!(?:${excludeCategories.join('|')})(?=[."]))/
 		replaceRegex \
 				"Separate different fouth stems if the first three stems are skyblocker.config.[configCategory]",
@@ -353,7 +385,7 @@ publishMods {
 	file = jar.archiveFile
 	changelog = System.getenv('CHANGELOG_HIGHLIGHT')
 	version = "v${project.version}"
-	displayName = "Skyblocker ${mod_version} for ${minecraft_version}"
+	displayName = "Skyblocker ${project.mod_version} for ${project.minecraft_version}"
 	modLoaders.add("fabric")
 	type = project.version.contains("alpha") ? ALPHA : project.version.contains("beta") ? BETA : STABLE
 
@@ -367,8 +399,8 @@ publishMods {
 
 	modrinth {
 		accessToken = System.getenv("MODRINTH_TOKEN")
-		projectId = modrinth_id
-		minecraftVersions.add(minecraft_version)
+		projectId = project.modrinth_id
+		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:modrinth:1237114573354438696> Download from Modrinth"
 		requires("fabric-api", "fabric-language-kotlin")
 		optional("modmenu", "rei", "emi", "jei")
@@ -377,8 +409,8 @@ publishMods {
 
 	curseforge {
 		accessToken = System.getenv("CURSEFORGE_TOKEN")
-		projectId = curseforge_id
-		minecraftVersions.add(minecraft_version)
+		projectId = project.curseforge_id
+		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
 		requires("fabric-api", "fabric-language-kotlin")
@@ -390,7 +422,7 @@ publishMods {
 		webhookUrl = System.getenv("DISCORD_WEBHOOK")
 		username = "Changelog"
 		content = changelog.map {
-			def header = "<@&1134565945482948638>\n## Skyblocker v${mod_version} for ${minecraft_version}\n"
+			def header = "<@&1134565945482948638>\n## Skyblocker v${project.mod_version} for ${project.minecraft_version}\n"
 			def truncatedChangelog = truncateChangelog(it, 1850)
 			header + truncatedChangelog
 		}

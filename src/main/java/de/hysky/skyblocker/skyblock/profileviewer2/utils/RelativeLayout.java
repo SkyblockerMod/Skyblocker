@@ -19,7 +19,7 @@ public class RelativeLayout implements Layout {
 	@Override
 	public void setX(int i) {
 		this.x = i;
-		for (Child child : children) {
+		for (Child child : this.children) {
 			child.layoutElement.setX(this.x + child.relativeX);
 		}
 	}
@@ -27,19 +27,19 @@ public class RelativeLayout implements Layout {
 	@Override
 	public void setY(int i) {
 		this.y = i;
-		for (Child child : children) {
+		for (Child child : this.children) {
 			child.layoutElement.setY(this.y + child.relativeY);
 		}
 	}
 
 	@Override
 	public int getX() {
-		return x;
+		return this.x;
 	}
 
 	@Override
 	public int getY() {
-		return y;
+		return this.y;
 	}
 
 	// Leaving those unimplemented for now as I don't think they would be useful
@@ -55,14 +55,19 @@ public class RelativeLayout implements Layout {
 
 	@Override
 	public void arrangeElements() {
-		for (Child element : children) {
-			element.layoutElement.setPosition(x + element.relativeX, y + element.relativeY);
+		for (Child element : this.children) {
+			element.layoutElement.setPosition(this.x + element.relativeX, this.y + element.relativeY);
 		}
 	}
 
 	@Override
 	public void visitChildren(Consumer<LayoutElement> consumer) {
-		children.forEach(e -> consumer.accept(e.layoutElement));
+		this.children.forEach(e -> consumer.accept(e.layoutElement));
+	}
+
+	@Override
+	public void removeChildren() {
+		this.children.clear();
 	}
 
 	private record Child(LayoutElement layoutElement, int relativeX, int relativeY) {}

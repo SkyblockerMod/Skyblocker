@@ -8,6 +8,7 @@ import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeDisplayGenerat
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.garden.GardenPlots;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
@@ -137,10 +138,9 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		});
 
-		zones.register(InventoryScreen.class, screen -> {
-			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden()) return List.of();
-			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
+		zones.register(InventoryScreen.class, _ -> {
+			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden() || GardenPlots.widget == null) return List.of();
+			return List.of(new Rectangle(GardenPlots.widget.getX(), GardenPlots.widget.getY(), GardenPlots.widget.getWidth(), GardenPlots.widget.getHeight()));
 		});
 
 		zones.register(Screen.class, _ -> {

@@ -95,7 +95,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		ItemStack stack = slot.getItem();
 		if (slot.index == 23 && stack.is(Items.BARRIER)) return;
-		if (stack.is(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
+		if (stack.is(Items.STAINED_GLASS_PANE.gray()) && stack.getSkyblockId().isEmpty()) return;
 		super.extractSlot(graphics, slot, mouseX, mouseY);
 	}
 

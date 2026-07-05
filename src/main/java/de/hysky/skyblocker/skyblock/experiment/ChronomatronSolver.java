@@ -15,16 +15,16 @@ import net.minecraft.world.item.Items;
 
 public final class ChronomatronSolver extends ExperimentSolver implements ContainerListener {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMap.ofEntries(
-			Object2ObjectMap.entry(Items.RED_TERRACOTTA, Items.RED_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.ORANGE_TERRACOTTA, Items.ORANGE_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.YELLOW_TERRACOTTA, Items.YELLOW_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.LIME_TERRACOTTA, Items.LIME_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.GREEN_TERRACOTTA, Items.GREEN_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.CYAN_TERRACOTTA, Items.CYAN_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.LIGHT_BLUE_TERRACOTTA, Items.LIGHT_BLUE_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.BLUE_TERRACOTTA, Items.BLUE_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.PURPLE_TERRACOTTA, Items.PURPLE_STAINED_GLASS),
-			Object2ObjectMap.entry(Items.PINK_TERRACOTTA, Items.PINK_STAINED_GLASS)
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.red(), Items.STAINED_GLASS.red()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.orange(), Items.STAINED_GLASS.orange()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.yellow(), Items.STAINED_GLASS.yellow()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.lime(), Items.STAINED_GLASS.lime()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.green(), Items.STAINED_GLASS.green()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.cyan(), Items.STAINED_GLASS.cyan()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.lightBlue(), Items.STAINED_GLASS.lightBlue()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.blue(), Items.STAINED_GLASS.blue()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.purple(), Items.STAINED_GLASS.purple()),
+			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.pink(), Items.STAINED_GLASS.pink())
 	);
 
 	private ContainerScreen screen;

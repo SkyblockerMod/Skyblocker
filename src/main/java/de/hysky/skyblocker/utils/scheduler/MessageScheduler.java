@@ -44,7 +44,7 @@ public class MessageScheduler extends Scheduler {
 		}
 		message = StringUtil.trimChatMessage(StringUtils.normalizeSpace(message.trim()));
 
-		if (!hide) client.gui.getChat().addRecentChat(message);
+		if (!hide) client.gui.hud.getChat().addRecentChat(message);
 		if (message.startsWith("/")) {
 			client.player.connection.sendCommand(message.substring(1));
 		} else {

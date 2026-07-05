@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -22,6 +23,8 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -36,11 +39,15 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class GardenPlotsWidget extends AbstractContainerWidget {
+	private static final Supplier<ScreenPosition> POSITION = () -> new ScreenPosition(SkyblockerConfigManager.get().farming.plotsWidget.x, SkyblockerConfigManager.get().farming.plotsWidget.y);
+	private static final int SPACING = 4;
 	private static final Identifier SLOT_HIGHLIGHT_BACK_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_back");
 	private static final Identifier SLOT_HIGHLIGHT_FRONT_SPRITE = Identifier.withDefaultNamespace("container/slot_highlight_front");
 
@@ -105,10 +112,14 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	private int editingSlotIcon = -1;
 	private long updateFromTabTime = System.currentTimeMillis();
 	private ItemStack[] customIconOptionsItems = new ItemStack[0];
+	private boolean dragAreaHovered;
+	private @Nullable ScreenPosition dragging;
+	private ScreenRectangle inventoryRectangle;
 
 
-	public GardenPlotsWidget(int x, int y) {
-		super(x, y, 104, 132, Component.translatable("skyblocker.gardenPlots"), AbstractScrollArea.defaultSettings(8));
+	public GardenPlotsWidget(ScreenRectangle inventoryRectangle) {
+		super(0, 0, 104, 132, Component.translatable("skyblocker.gardenPlots"), AbstractScrollArea.defaultSettings(0));
+		this.inventoryRectangle = inventoryRectangle;
 		updatePlotItems();
 		updateInfestedFromTab();
 
@@ -125,10 +136,11 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		);
 		ItemButtonWidget setSpawnButton = new ItemButtonWidget(
 				getRight() - 7 - 20, getBottom() - 24,
-				new ItemStack(Math.random() < 0.001 ? Items.PINK_BED : Items.RED_BED), Component.translatable("skyblocker.gardenPlots.setSpawn"),
+				new ItemStack(Math.random() < 0.001 ? Items.BED.pink() : Items.BED.red()), Component.translatable("skyblocker.gardenPlots.setSpawn"),
 				_ -> MessageScheduler.INSTANCE.sendMessageAfterCooldown("/setspawn", true)
 		);
 		widgets = new ItemButtonWidget[]{deskButton, spawnButton, setSpawnButton};
+		setPositionFromConfig();
 	}
 
 	private void updatePlotItems() {
@@ -141,8 +153,9 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			itemStack.set(DataComponents.CUSTOM_NAME, Component.literal(gardenPlot.name()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD));
 			return itemStack;
 		}).toArray(ItemStack[]::new);
-		items[12] = new ItemStack(Items.LODESTONE);
-		items[12].set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
+		ItemStack barnIcon = new ItemStack(Items.LODESTONE);
+		barnIcon.set(DataComponents.ITEM_NAME, Component.literal("The Barn"));
+		items[12] = barnIcon;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -245,6 +258,9 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			updateFromTabTime = timeMillis;
 			updateInfestedFromTab();
 		}
+
+		dragAreaHovered = getX() + 4 < mouseX && getY() + 4 < mouseY && mouseX < getRight() - 4 && mouseY < getY() + 15;
+		if (dragAreaHovered) graphics.requestCursor(CursorTypes.RESIZE_ALL);
 	}
 
 	private void updateInfestedFromTab() {
@@ -263,9 +279,26 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 		}
 	}
 
+	private void setPositionFromConfig() {
+		setPosition(inventoryRectangle.right() + SPACING + POSITION.get().x(), inventoryRectangle.top() + POSITION.get().y());
+	}
+
+	public void setInventoryRectangle(ScreenRectangle inventoryRectangle) {
+		this.inventoryRectangle = inventoryRectangle;
+		setPositionFromConfig();
+	}
+
 	@Override
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
+		if (dragAreaHovered) {
+			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && Minecraft.getInstance().hasShiftDown()) {
+				setPosition(inventoryRectangle.right() + SPACING, inventoryRectangle.top());
+				savePositionToConfig();
+			} else {
+				dragging = new ScreenPosition((int) click.x() - getX(), (int) click.y() - getY());
+			}
+		}
 		if (hoveredSlot == -1) return;
 
 		if (editingSlotIcon >= 0) {
@@ -276,7 +309,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			return;
 		}
 
-		if (click.button() == 1) {
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			editingSlotIcon = hoveredSlot;
 			customIconOptionsItems = Arrays.stream(CUSTOM_ICON_OPTIONS).map(s -> {
 				if (s == null) return noneItem;
@@ -287,16 +320,39 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			return;
 		}
 
-		if (SkyblockerConfigManager.get().farming.plotsWidget.closeScreenOnPlotClick && Minecraft.getInstance().screen != null)
-			Minecraft.getInstance().screen.onClose();
+		if (SkyblockerConfigManager.get().farming.plotsWidget.closeScreenOnPlotClick && Minecraft.getInstance().gui.screen() != null)
+			Minecraft.getInstance().gui.screen().onClose();
 
 		if (hoveredSlot == 12) MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp barn", true);
 		else MessageScheduler.INSTANCE.sendMessageAfterCooldown("/plottp " + GardenPlots.GARDEN_PLOTS[hoveredSlot].name(), true);
 	}
 
 	@Override
+	public void onRelease(MouseButtonEvent event) {
+		super.onRelease(event);
+		if (dragging == null) return;
+		dragging = null;
+		savePositionToConfig();
+	}
+
+	private void savePositionToConfig() {
+		SkyblockerConfigManager.update(config -> {
+			config.farming.plotsWidget.x = getX() - inventoryRectangle.right() - SPACING;
+			config.farming.plotsWidget.y = getY() - inventoryRectangle.top();
+		});
+	}
+
+	@Override
+	protected void onDrag(MouseButtonEvent event, double dx, double dy) {
+		if (dragging == null) return;
+		setPosition(
+				Math.max((int) event.x() - dragging.x(), inventoryRectangle.right() + SPACING),
+				(int) event.y() - dragging.y());
+	}
+
+	@Override
 	protected boolean isValidClickButton(MouseButtonInfo input) {
-		return (super.isValidClickButton(input) || input.button() == 1) && hoveredSlot != -1;
+		return (super.isValidClickButton(input) || input.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) && (hoveredSlot != -1 || dragAreaHovered);
 	}
 
 	@Override
@@ -311,11 +367,6 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	@Override
 	protected int contentHeight() {
 		return getHeight();
-	}
-
-	@Override
-	protected double scrollRate() {
-		return 0;
 	}
 
 	@Override

@@ -86,10 +86,10 @@ public class ArrowAlign {
 								return false;
 							}
 							case Align.S -> {
-								if (!itemFrame.getItem().is(Items.LIME_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.WOOL.lime())) return false;
 							}
 							case Align.E -> {
-								if (!itemFrame.getItem().is(Items.RED_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.WOOL.red())) return false;
 							}
 							default -> {
 								if (!itemFrame.getItem().is(Items.ARROW)) return false;

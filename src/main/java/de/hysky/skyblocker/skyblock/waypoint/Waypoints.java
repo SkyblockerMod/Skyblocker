@@ -90,7 +90,7 @@ public class Waypoints {
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext access) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(Minecraft.getInstance().screen)))
+				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(Minecraft.getInstance().gui.screen())))
 						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
 				));
 	}

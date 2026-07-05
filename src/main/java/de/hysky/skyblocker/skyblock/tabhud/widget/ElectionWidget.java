@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 // this widget shows the status or results of the current election
 @RegisterWidget
@@ -42,7 +43,7 @@ public class ElectionWidget extends TabHudWidget {
 	private static final ChatFormatting[] COLS = { ChatFormatting.RED, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.AQUA, ChatFormatting.YELLOW };
 
 	public ElectionWidget() {
-		super("Election", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Election", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class ElectionWidget extends TabHudWidget {
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
 					Component candidate = Component.literal(mayorname).withStyle(COLS[i - 1]);
-					this.addComponent(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, COLS[i - 1].getColor()));
+					this.addComponent(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, TextColor.fromLegacyFormat(COLS[i - 1]).getValue()));
 				} else this.addComponent(new PlainTextElement(lines.get(i)));
 			}
 		}

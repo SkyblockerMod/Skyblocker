@@ -26,6 +26,7 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
@@ -227,7 +228,7 @@ public class WidgetsListTab implements Tab {
 			}
 		}
 
-		if (stack.isEmpty() || stack.is(Items.BLACK_STAINED_GLASS_PANE)) {
+		if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.black())) {
 			entries.remove(slot);
 			return;
 		}
@@ -237,7 +238,7 @@ public class WidgetsListTab implements Tab {
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
-		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.RED_STAINED_GLASS_PANE)) {
+		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.STAINED_GLASS_PANE.red())) {
 			entry = new EditableSlotEntry(this, slot, stack);
 		} else if (lowerCase.endsWith("widget")) {
 			entry = new WidgetSlotEntry(this, slot, stack);
@@ -276,5 +277,10 @@ public class WidgetsListTab implements Tab {
 	@Override
 	public Component getTabExtraNarration() {
 		return Component.empty();
+	}
+
+	@Override
+	public Layout getLayout() {
+		throw new UnsupportedOperationException();
 	}
 }

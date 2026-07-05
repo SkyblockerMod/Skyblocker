@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import java.util.Objects;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
-public abstract class HudWidget extends AbstractWidget {
+public abstract class HudWidget extends BasicWidget {
 	/**
 	 * Single constant set for representing all possible locations for a {@code HudWidget} to prevent unnecessarily
 	 * recreating this set many times over (not the best for efficiency).

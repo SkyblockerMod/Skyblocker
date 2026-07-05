@@ -33,7 +33,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.MinecraftAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
 import de.hysky.skyblocker.utils.Utils;
 import org.jspecify.annotations.Nullable;
 
@@ -102,7 +102,7 @@ public class CatPicture {
 	private static void extractRenderState(EmptyRenderState state, LevelRenderState levelState, SubmitNodeCollector submitNodeCollector) {
 		if (renderPosition == null) return;
 		ItemFrameRenderState itemFrameState = new ItemFrameRenderState();
-		((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
+		((EntityRenderDispatcherAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getBlockModelResolver().updateForItemFrame(itemFrameState.frameModel, false, true);
 
 		PoseStack matrices = new PoseStack();
 		matrices.pushPose();
@@ -115,14 +115,14 @@ public class CatPicture {
 
 		// Render Kitty
 		matrices.translate(1, 1, 0);
-		matrices.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		matrices.mulPose(Axis.ZP.rotationDegrees(180.0f));
 
 		submitNodeCollector.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
-			float z = 1F - 1 / 16f - 1 / 2048f;
-			buffer.addVertex(matricesEntry, 0.0F, 1, z).setColor(CommonColors.WHITE).setUv(0.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0F, 1.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 1, 0.0F, z).setColor(CommonColors.WHITE).setUv(1.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(matricesEntry, 0.0F, 0.0F, z).setColor(CommonColors.WHITE).setUv(0.0F, 0.0F).setLight(LightCoordsUtil.FULL_BRIGHT);
+			float z = 1f - 1 / 16f - 1 / 2048f;
+			buffer.addVertex(matricesEntry, 0.0f, 1, z).setColor(CommonColors.WHITE).setUv(0.0f, 1.0f).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 1, z).setColor(CommonColors.WHITE).setUv(1.0f, 1.0f).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 1, 0.0f, z).setColor(CommonColors.WHITE).setUv(1.0f, 0.0f).setLight(LightCoordsUtil.FULL_BRIGHT);
+			buffer.addVertex(matricesEntry, 0.0f, 0.0f, z).setColor(CommonColors.WHITE).setUv(0.0f, 0.0f).setLight(LightCoordsUtil.FULL_BRIGHT);
 		});
 
 		matrices.popPose();

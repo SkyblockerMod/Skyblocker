@@ -170,7 +170,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 
 	@Override
 	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
-		if (this.client.screen != null) {
+		if (this.client.gui.screen() != null) {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
