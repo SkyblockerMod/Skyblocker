@@ -1645,7 +1645,7 @@
     "skyblocker.customization.armor.pickDye.dyes.animated": "动态",
     "skyblocker.customization.armor.pickDye.dyes.static": "静态",
     "skyblocker.customization.armor.pickDye.title": "选择染料",
-    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "启用Pelt Animal高亮",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter": "启用Trapper Animal高亮",
     "skyblocker.config.helpers.buildersWand.previewOpacity": "预览不透明度",
     "skyblocker.config.helpers.buildersWand.enableBuildersWandPreview": "启用Builder's Wand和Builder's Ruler预览",
     "skyblocker.config.farming.farmingHud": "农耕HUD",
@@ -1739,5 +1739,18 @@
     "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "点击网站上的“链接”按钮，然后运行 /skyblocker garden greenhouse paste 命令，将地块布局粘贴到你的温室中！",
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "当粘贴布局时，高亮突变植物的位置。",
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy掉落效果",
-    "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "当首次钓上钻石级别的奖杯鱼/青蛙时，显示特殊的视觉效果！"
+    "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "当首次钓上钻石级别的奖杯鱼/青蛙时，显示特殊的视觉效果！",
+    "skyblocker.config.tag.keyBind": "按键绑定",
+    "skyblocker.config.tag.keyMapping": "按键映射",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "作物里程碑",
+    "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "显示作物里程碑等级。",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "花园升级",
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "显示作物和温室升级的等级。",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "使用第三人称时启用",
+    "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "当处于第三人称模式时，启用平滑的传送。",
+    "skyblocker.rift.enigmaSouls.markClosestFound": "将最近的enigma soul标记为已找到！",
+    "skyblocker.rift.enigmaSouls.markClosestMissing": "将最近的enigma soul标记为未找到！",
+    "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "为Trevor the Trapper任务的动物添加发光轮廓。",
+    "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "自动检测McGrubber Stacks",
+    "skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip": "高亮信标并用红色显示抵达信标的路径。"
 }

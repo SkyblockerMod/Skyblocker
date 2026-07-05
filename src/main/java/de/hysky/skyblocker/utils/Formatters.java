@@ -26,6 +26,13 @@ public class Formatters {
 	 */
 	public static final NumberFormat INTEGER_NUMBERS = NumberFormat.getIntegerInstance(Locale.US);
 	/**
+	 * Formats numbers as floats with up to three digits of precision.
+	 * This is closest to the default number format from {@link NumberFormat#getInstance()}.
+	 * <p>
+	 * Example: 100,000.158
+	 */
+	public static final NumberFormat TRIPLE_NUMBERS = Util.make(NumberFormat.getInstance(Locale.US), nf -> nf.setMaximumFractionDigits(3));
+	/**
 	 * Formats numbers as floats with up to two digits of precision.
 	 * This is closest to the default number format from {@link NumberFormat#getInstance()}.
 	 * <p>

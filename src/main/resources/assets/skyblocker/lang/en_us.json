@@ -701,6 +701,12 @@
   "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout Helper",
   "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the color depends on the kind of zombie.",
 
+  "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Enable Raffle Reward Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "Highlights unclaimed raffle prizes in red and claimed ones in green.",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Enable Raffle Task Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Highlights incomplete raffle tasks in red and completed ones in green.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
@@ -1034,6 +1040,9 @@
   "skyblocker.config.otherLocations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
   "skyblocker.config.otherLocations.spidersDen.relics.highlightFoundRelics": "Highlight Found Relics",
 
+  "skyblocker.config.patches.updated.failed": "Updating the config patches failed. See logs for details.",
+  "skyblocker.config.patches.updated.success": "Updated the config patches successfully.",
+
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %s",
   "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose SkyBlock Item",
@@ -1162,6 +1171,7 @@
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Enable in Rift",
   "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "Enable Vanilla Style Mana Bar",
+  "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Enable Vanilla Style Mana Bar Blinking",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
@@ -1169,6 +1179,7 @@
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
+  "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
@@ -1747,6 +1758,9 @@
 
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
+  "skyblocker.mayor.perkOverrides.update.failed": "Updating the perk overrides failed. See logs for details.",
+  "skyblocker.mayor.perkOverrides.update.success": "Updated the perk overrides successfully.",
+
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
@@ -1961,7 +1975,7 @@
   "skyblocker.waypoints.exportWaypointsSkyblocker": "Export Waypoints (Skyblocker)",
   "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints to Clipboard (Skyblocker Format)",
   "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
-  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Export Waypoints to Clipboard (Skytils Format)",
+  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils waypoint exports have been deprecated for removal and are unrecommended due to waypoint data loss.",
   "skyblocker.waypoints.groupType": "Group Type",
   "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.groupType.ordered": "Ordered",
@@ -2002,8 +2016,10 @@
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
   "text.skyblocker.config": "Open Config...",
   "text.skyblocker.confirm": "Confirm",
+  "text.skyblocker.curseforge": "CurseForge",
   "text.skyblocker.dead": "Dead",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.logsFolder": "Open Logs Folder",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.offline": "Offline",
   "text.skyblocker.open": "Open",

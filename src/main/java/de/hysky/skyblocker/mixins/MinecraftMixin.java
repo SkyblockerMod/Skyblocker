@@ -8,10 +8,12 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,9 +25,14 @@ public abstract class MinecraftMixin {
 	@Shadow
 	public @Nullable LocalPlayer player;
 
+	@Shadow
+	@Final
+	public Gui gui;
+
 	@Inject(method = "handleKeybinds", at = @At("HEAD"))
 	public void skyblocker$handleInputEvents(CallbackInfo ci) {
-		if (Utils.isOnSkyblock()) {
+		// screen == null prevents double-toggle when a container screen is open
+		if (player != null && gui.screen() == null && Utils.isOnSkyblock()) {
 			HotbarSlotLock.handleInputEvents(player);
 			ItemProtection.handleHotbarKeyPressed(player);
 		}

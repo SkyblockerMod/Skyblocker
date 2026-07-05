@@ -7,6 +7,8 @@ import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -97,7 +99,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 				showErrorToast();
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.importWaypointsSkytils.tooltip"))).build());
-		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.exportWaypointsSkytils"), _ -> {
+		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.exportWaypointsSkytils").withStyle(ChatFormatting.STRIKETHROUGH), _ -> {
 			try {
 				List<WaypointGroup> waypointGroups = waypoints.values().stream().filter(waypointGroup -> waypointGroup.island().equals(island)).map(waypointGroup -> waypointGroup.filterWaypoints(selectedWaypoints::contains)).filter(waypointGroup -> !waypointGroup.waypoints().isEmpty()).toList();
 				minecraft.keyboardHandler.setClipboard(Waypoints.toSkytilsBase64(waypointGroups));

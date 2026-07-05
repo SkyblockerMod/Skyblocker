@@ -442,5 +442,11 @@
     "skyblocker.bars.config.showOverflow": "Hiển thị phần tràn",
     "skyblocker.bars.config.explanation": "Chào mừng đến với màn hình cấu hình thanh trạng thái!\nKéo và thả các thanh để căn chúng vào điểm neo (các ô vuông trắng), vào các thanh đã có, hoặc bạn có thể đặt chúng ở bất kỳ vị trí nào.\nBạn có thể nhấp chuột phải vào chúng để chỉnh sửa nhiều thuộc tính khác nhau.\nKhi di chuột giữa 2 thanh (con trỏ chuột sẽ thay đổi), bạn có thể thay đổi kích thước của chúng.\n\nMọi thay đổi sẽ được lưu tự động khi bạn thoát ra.",
     "skyblocker.bars.config.overflowColor": "Màu tràn",
-    "skyblocker.bars.config.text": "Văn bản"
+    "skyblocker.bars.config.text": "Văn bản",
+    "skyblocker.accessoryHelper.allTiers": "Hiển thị tất cả các cấp độ",
+    "skyblocker.accessoryHelper.independent": "(Hold shift for independent)",
+    "emi.category.skyblocker.skyblock_kat_upgrade": "Nâng cấp Kat",
+    "skyblocker.api.token.noProfileKeys": "Không thể lấy được mã khóa hồ sơ của bạn! Một số tính năng của bản mod có thể tạm thời không hoạt động :( (Bạn đã mở trò chơi hơn 24 giờ chưa?). Để kích hoạt lại các tính năng này, hãy khởi động lại trò chơi.",
+    "skyblocker.bars.config.textPosition.BAR_CENTER": "Trung tâm Bar",
+    "skyblocker.config.helpers.enableAccessoriesHelperWidget": "Kích hoạt tiện ích hỗ trợ phụ kiện"
 }
