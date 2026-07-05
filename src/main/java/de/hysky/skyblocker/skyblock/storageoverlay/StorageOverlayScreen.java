@@ -50,7 +50,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	protected static int openStorage;
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
-	private static BackpackGridWidget grid;
+	@Nullable
+	private BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
@@ -69,7 +70,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		return SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1);
 	}
 
-	protected static void switchOpenStorage(int index) {
+	protected void switchOpenStorage(int index) {
+		if (grid == null) return;
+
 		savedScroll = grid.getScrollAmount();
 		if (index <= 8) {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/echest " + (index + 1), true);
@@ -186,7 +189,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 94, 0, 128, 175, 94, 256, 256);
 	}
 
-	private static class BackpackGridWidget extends SearchableGridWidget {
+	private class BackpackGridWidget extends SearchableGridWidget {
 
 		private final List<BackpackWidget> backpackWidgets = new ArrayList<>();
 		private StorageOverlayScreen.@Nullable BackpackWidget openBackpack = null;
@@ -237,7 +240,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 
-	private static class BackpackWidget extends AbstractWidget {
+	private class BackpackWidget extends AbstractWidget {
 		private final int rows;
 		private final int columns;
 		private final String label;
@@ -321,6 +324,13 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			Font textRenderer = CLIENT.font;
 			graphics.text(textRenderer, label, x + 8, y + 6, 0xFF404040, false);
 
+			//darken unused slots to show they don't actually exist
+			for (int i = storage.size() - 9; i < rows * columns; ++i) {
+				int itemX = x + i % columns * SLOT_SIZE + 8;
+				int itemY = y + i / columns * SLOT_SIZE + SLOT_SIZE;
+				graphics.fill(itemX, itemY, itemX + 16, itemY + 16, 0xB0_000000);
+
+			}
 
 			if (!open) {
 				//render cached items
@@ -350,13 +360,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + SLOT_SIZE, columns);
 			}
 
-			//darken other slots to show they don't actually exist
-			for (int i = storage.size() - 9; i < rows * columns; ++i) {
-				int itemX = x + i % columns * SLOT_SIZE + 8;
-				int itemY = y + i / columns * SLOT_SIZE + SLOT_SIZE;
-				graphics.fill(itemX, itemY, itemX + 16, itemY + 16, 0xB0_000000);
 
-			}
 		}
 
 		@Override
