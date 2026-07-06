@@ -54,13 +54,12 @@ public class ConfigFix10NewHud extends ConfigDataFix {
 				locationId.createString("tab"), locationId.emptyMap(),
 				locationId.createString("secondary_tab"), locationId.emptyMap()
 		));
-		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> fixWidgetAndLayer(widgetId, widget, layers));
+		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> fixWidgetAndLayer(fixWidgetId(widgetId), widget, layers));
 		layers.replaceAll((_, widgets) -> locationId.emptyMap().set("widgets", widgets));
 		return Pair.of(locationId, locationId.createMap(layers));
 	}
 
-	private static void fixWidgetAndLayer(Dynamic<?> widgetId, Dynamic<?> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
-		Dynamic<?> widgetIdNew = fixWidgetId(widgetId);
+	private static void fixWidgetAndLayer(Dynamic<?> widgetIdNew, Dynamic<?> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
 		layers.computeIfPresent(
 				fixWidgetLayer(widget, widgetIdNew.asString("")),
 				(_, widgets) -> widgets.set(widgetIdNew.asString(""), fixWidget(widget))
