@@ -55,6 +55,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
 	private static boolean disableOnNextLoad = false;
+	private static boolean hasReloaded = false;
 	@Nullable
 	private BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
@@ -64,7 +65,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	@Init
 	public static void setup() { //already had init therefore called setup
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (!overlay && CHANGING_BACKPACK_PATTERN.matcher(message.getString()).find()){
+			if (!overlay && CHANGING_BACKPACK_PATTERN.matcher(message.getString()).find()) {
 				disableOnNextLoad = true;
 			}
 			return true;
@@ -151,15 +152,13 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
 
-		//extra controll buttons out the way
-		LinearLayout extraButtons = new LinearLayout(width -50, height - 80, LinearLayout.Orientation.VERTICAL);
+		//extra control buttons out the way
+		LinearLayout extraButtons = new LinearLayout(width - 50, height - 80, LinearLayout.Orientation.VERTICAL);
 		extraButtons.spacing(5);
 		//add toolkit button
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.toolkitButton"), this::toolkit)
 				.size(40, 15)
 				.build());
-
-
 		//add button to go home
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.homeButton"), this::home)
 				.size(40, 15)
@@ -242,11 +241,13 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
 
 			//add backpacks
+			boolean storageLoaded = false;
 			BackpackPreview.Storage[] storages = BackpackPreview.getStorages();
 			for (int i = 0; i < storages.length; i++) {
 				BackpackPreview.Storage storage = storages[i];
 				boolean open = StorageOverlayScreen.openStorage == i;
 				if (storage != null) {
+					storageLoaded = true;
 					BackpackWidget widget = new BackpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
 					if (open) {
 						openBackpack = widget;
@@ -254,6 +255,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 					backpackWidgets.add(widget);
 				}
 			}
+			//if no storages found reload page to see if any are found
+			if (!storageLoaded && !hasReloaded) {
+				//make sure this is only done once so we don't get stuck in infinite cycle if there is an error
+				hasReloaded = true;
+
+				MessageScheduler.INSTANCE.queueMessage("/storage", true, 20);
+			}
+
 		}
 
 		@Override
@@ -292,7 +301,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			int rows = Math.ceilDiv(storage.size() - 9, columns);
 			// if the storage is open use the handler to work out size
-			if (open){
+			if (open) {
 				rows = Math.ceilDiv(handler.getContainer().getContainerSize() - 9, columns);
 			}
 			super(0, 0, columns * SLOT_SIZE + EDGE_PADDING * 2, rows * SLOT_SIZE + HEADER_H + EDGE_PADDING, Component.literal("Backpack preview"));
@@ -306,11 +315,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			this.screenLeft = screenLeft;
 			this.screenTop = screenTop;
 		}
+
 		private int size() {
 			if (open) {
 				return handler.getContainer().getContainerSize();
-			}
-			else {
+			} else {
 				return storage.size();
 			}
 		}

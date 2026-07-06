@@ -154,6 +154,10 @@ public class BackpackPreview {
 		}
 	}
 
+	/**
+	 * Creates blank storages from storage overlay when not initialized
+	 * @param handledScreen screen
+	 */
 	private static void initializeStorage(AbstractContainerScreen<?> handledScreen) {
 		NonNullList<Slot> slots = handledScreen.getMenu().slots;
 		//echests
