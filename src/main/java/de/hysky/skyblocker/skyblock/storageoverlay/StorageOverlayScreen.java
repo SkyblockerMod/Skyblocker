@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.storageoverlay;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.WishingCompassSolver;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -43,7 +42,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("social_interactions/background");
-	private static final Pattern CHANGING_BACKPACK_REGEX = Pattern.compile("(Placing backpack)|(Removed backpack)");
+	private static final Pattern CHANGING_BACKPACK_PATTERN = Pattern.compile("(Placing backpack)|(Removed backpack)");
 	//inventory texture key values
 	private static final int HEADER_H = 17;
 	private static final int SLOT_SIZE = 18;
@@ -55,7 +54,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	protected static int openStorage;
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
-	private static boolean changingBackpack = false;
+	private static boolean disableOnNextLoad = false;
 	@Nullable
 	private BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
@@ -65,8 +64,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	@Init
 	public static void setup() { //already had init therefore called setup
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (!overlay && CHANGING_BACKPACK_REGEX.matcher(message.getString()).find()){
-				changingBackpack = true;
+			if (!overlay && CHANGING_BACKPACK_PATTERN.matcher(message.getString()).find()){
+				disableOnNextLoad = true;
 			}
 			return true;
 		});
@@ -82,8 +81,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	public static boolean enabled(String title) {
 		openStorage = getStorageIndexFromTitle(title);
-		boolean enabled = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1) && !changingBackpack;
-		changingBackpack = false;
+		boolean enabled = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled && (title.equals("storage") || openStorage != -1) && !disableOnNextLoad;
+		disableOnNextLoad = false;
 		return enabled;
 	}
 
@@ -120,6 +119,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	private void home(Button button) {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
+		disableOnNextLoad = true;
 	}
 
 	private void toolkit(Button button) {
@@ -291,6 +291,10 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			int rows = Math.ceilDiv(storage.size() - 9, columns);
+			// if the storage is open use the handler to work out size
+			if (open){
+				rows = Math.ceilDiv(handler.getContainer().getContainerSize() - 9, columns);
+			}
 			super(0, 0, columns * SLOT_SIZE + EDGE_PADDING * 2, rows * SLOT_SIZE + HEADER_H + EDGE_PADDING, Component.literal("Backpack preview"));
 			this.rows = rows;
 			this.columns = columns;
@@ -302,13 +306,21 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			this.screenLeft = screenLeft;
 			this.screenTop = screenTop;
 		}
+		private int size() {
+			if (open) {
+				return handler.getContainer().getContainerSize();
+			}
+			else {
+				return storage.size();
+			}
+		}
 
 		public boolean matches(String filter) {
 			//keep open backpack displayed even if no match
 			if (open) return true;
 
 			//matches if any item in backpack contains the filter word
-			for (int i = 9; i < storage.size(); ++i) {
+			for (int i = 9; i < size(); ++i) {
 				ItemStack currentStack = storage.getStack(i);
 				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
 					return true;
@@ -363,7 +375,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			graphics.text(textRenderer, label, x + 8, y + 6, 0xFF404040, false);
 
 			//darken unused slots to show they don't actually exist
-			for (int i = storage.size() - 9; i < rows * columns; ++i) {
+			for (int i = size() - 9; i < rows * columns; ++i) {
 				int itemX = x + i % columns * SLOT_SIZE + 8;
 				int itemY = y + i / columns * SLOT_SIZE + SLOT_SIZE;
 				graphics.fill(itemX, itemY, itemX + 16, itemY + 16, 0xB0_000000);
@@ -372,7 +384,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 			if (!open) {
 				//render cached items
-				for (int i = 9; i < storage.size(); ++i) {
+				for (int i = 9; i < size(); ++i) {
 					ItemStack currentStack = storage.getStack(i);
 					if (currentStack.isEmpty()) continue;
 					int itemX = x + (i - 9) % columns * SLOT_SIZE + 8;

@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
@@ -25,7 +26,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,12 +41,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class BackpackPreview {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)", Pattern.CASE_INSENSITIVE);
 	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern STRORAGE_PATTERN = Pattern.compile("Storage", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_SIZE_PATTERN = Pattern.compile("has (\\d+) slots", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
 	private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
@@ -141,7 +148,49 @@ public class BackpackPreview {
 		if (index != -1) {
 			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
 		}
+
+		if (STRORAGE_PATTERN.matcher(title).matches()) {
+			initializeStorage(handledScreen);
+		}
 	}
+
+	private static void initializeStorage(AbstractContainerScreen<?> handledScreen) {
+		NonNullList<Slot> slots = handledScreen.getMenu().slots;
+		//echests
+		for (int i = 9; i < 18; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 9;
+			//ignore non-existent ender chest or if they are already created
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.red()) || storages[index] != null) continue;
+			storages[index] = new Storage(
+					new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+							.limit(10)
+							.toArray(ItemStack[]::new)),
+					"", true
+			);
+		}
+		//backpacks
+		for (int i = 27; i < 45; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 18;
+			//remove backpacks if they are no longer there
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.brown())) {
+				storages[index] = null;
+			}
+			//add new backpacks
+			if (storages[index] != null) continue;
+			Matcher size = ItemUtils.getLoreLineIfContainsMatch(slot.getItem(), BACKPACK_SIZE_PATTERN);
+			if (size != null) {
+				storages[index] = new Storage(
+						new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+								.limit(NumberUtils.toInt(size.group(1)) + 9)
+								.toArray(ItemStack[]::new)),
+						"", true
+				);
+			}
+		}
+	}
+
 	public static Storage[] getStorages() {
 		return storages;
 	}
@@ -194,7 +243,7 @@ public class BackpackPreview {
 		private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(Storage::name),
 				ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList)
-				).apply(instance, Storage::create));
+		).apply(instance, Storage::create));
 		private final Container inventory;
 		private final String name;
 		private boolean dirty;
