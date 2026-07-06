@@ -1,6 +1,78 @@
 {
 	"version": 11,
 	"configs": {
+		"crystal_hollows": {
+			"hud": {
+				"widgets": {
+					"hud_crystals": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 2,
+							"relative_y": 2
+						}
+					},
+					"hud_pickobulus": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 2,
+							"relative_y": 66
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 2,
+							"relative_y": 122
+						}
+					},
+					"item_pickup": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 2,
+							"relative_y": 90
+						}
+					}
+				}
+			},
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			}
+		},
 		"hub": {
 			"hud": {
 				"widgets": {
@@ -16,6 +88,37 @@
 								"h": "RIGHT"
 							},
 							"relative_x": -2,
+							"relative_y": 2
+						}
+					},
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent": "hud_fishing",
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 3,
 							"relative_y": 2
 						}
 					}
