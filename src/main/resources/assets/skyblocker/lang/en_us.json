@@ -853,6 +853,7 @@
   "skyblocker.config.hud.widgetsList.info.preview": "Hold CTRL to see a preview.",
   "skyblocker.config.hud.widgetsList.playerColumn": "This column is being used to display online players.\nEnable the 3rd column to have widgets instead!",
   "skyblocker.config.hud.widgetsList.reset": "Reset",
+  "skyblocker.config.hud.widgetsList.resetAll": "Reset ALL",
   "skyblocker.config.hud.widgetsList.thirdColumn": "3rd Column: %s",
   "skyblocker.config.hud.widgetsList.thirdColumn.@Tooltip": "It is recommended to have this enabled, to have more info be displayed!",
   "skyblocker.config.hud.widgetsList.waitingForServer": "Waiting for server...",

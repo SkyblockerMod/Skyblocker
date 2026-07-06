@@ -268,9 +268,9 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 				if (stack.is(Items.PLAYER_HEAD)) {
 					String stackName = stack.getHoverName().getString().toLowerCase(Locale.ENGLISH);
 					if (!stackName.startsWith("reset")) return;
-					Component buttonText = Component.literal("Reset ALL").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
+					Component buttonText = Component.translatable("skyblocker.config.hud.widgetsList.resetAll").withStyle(style -> style.withColor(ChatFormatting.RED).withUnderlined(true));
 					if (slot == 51) {
-						buttonText = Component.translatable("text.skyblocker.reset").withStyle(ChatFormatting.RED);
+						buttonText = Component.translatable("skyblocker.config.hud.widgetsList.reset").withStyle(ChatFormatting.RED);
 					}
 					resetButton.visible = true;
 					resetButton.setMessage(buttonText);
