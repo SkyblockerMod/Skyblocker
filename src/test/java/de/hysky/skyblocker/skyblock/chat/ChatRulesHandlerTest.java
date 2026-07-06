@@ -109,6 +109,7 @@ class ChatRulesHandlerTest {
 		var object = new JsonObject();
 		object.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
 		var encodedObject = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
+		encodedObject.getAsJsonObject().remove("version"); // remove version as it is not relevant for this test
 
 		Assertions.assertEquals(object, encodedObject);
 	}
