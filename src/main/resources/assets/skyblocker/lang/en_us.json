@@ -735,7 +735,7 @@
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
-  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armor Sets and Equipment Sets by pressing the corresponding Hotbar Slot.",
+  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armor Sets and Equipment Sets by pressing the corresponding Hotbar Slot key.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
