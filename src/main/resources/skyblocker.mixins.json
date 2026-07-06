@@ -16,6 +16,7 @@
 		"ClientCommonPacketListenerImplMixin",
 		"ClientLevelMixin",
 		"ClientPacketListenerMixin",
+		"ClientTooltipComponentMixin",
 		"ContainerScreenMixin",
 		"DataComponentHolderMixin",
 		"DyedItemColorMixin",
@@ -99,5 +100,8 @@
 	},
 	"mixinextras": {
 		"minVersion": "0.5.0"
-	}
+	},
+	"mixins": [
+		"MutableComponentMixin"
+	]
 }

@@ -4,6 +4,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -25,21 +27,20 @@ public class MuseumTooltip extends SimpleTooltipAdder {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MUSEUM.hasOrNullWarning(internalID)) {
 			String itemCategory = TooltipInfoType.MUSEUM.getData().get(internalID);
-			String format = "%-20s";
 
 			//Special case the special category so that it doesn't always display not donated
 			if (itemCategory.equals("Special")) {
-				lines.add(Component.literal(String.format(format, "Museum: (" + itemCategory + ")"))
-							.withStyle(ChatFormatting.LIGHT_PURPLE));
+				lines.add(Component.literal("Museum: (" + itemCategory + ")").withStyle(ChatFormatting.LIGHT_PURPLE));
 			} else {
 				boolean isInMuseum = MuseumItemCache.hasItemInMuseum(internalID);
 
 				ChatFormatting donatedIndicatorFormatting = isInMuseum ? ChatFormatting.GREEN : ChatFormatting.RED;
 
-				lines.add(Component.literal(String.format(format, "Museum (" + itemCategory + "):"))
-							.withStyle(ChatFormatting.LIGHT_PURPLE)
-							.append(Component.literal(isInMuseum ? "✔" : "✖").withStyle(donatedIndicatorFormatting, ChatFormatting.BOLD))
-							.append(Component.literal(isInMuseum ? " Donated" : " Not Donated").withStyle(donatedIndicatorFormatting)));
+				lines.add(GridComponent.of(
+						Component.literal("Museum (" + itemCategory + "):")
+								.withStyle(ChatFormatting.LIGHT_PURPLE),
+						Component.literal(isInMuseum ? "✔" : "✖").withStyle(donatedIndicatorFormatting, ChatFormatting.BOLD)
+								.append(Component.literal(isInMuseum ? " Donated" : " Not Donated").withStyle(donatedIndicatorFormatting))));
 			}
 		}
 	}
