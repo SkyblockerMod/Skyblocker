@@ -42,6 +42,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	}
 
 	private static boolean allowInput(Minecraft client, AbstractContainerScreen<?> handledScreen, Predicate<KeyMapping> predicate) {
+		if (client.gameMode == null || client.player == null) return true; // just in case
 		boolean found = false;
 		int i;
 		for (i = 0; i < client.options.keyHotbarSlots.length; i++) {
@@ -57,7 +58,6 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		// Check if the item in the slot is a swap/unequip item before going further.
 		// This prevents usage when the inventory hasn't loaded fully or when the slot pressed is locked or when the slot has no armor (which would be meaningless to click)
 		if (!itemStack.is(Items.DYE.gray()) && !itemStack.is(Items.DYE.lime())) return true;
-		assert client.gameMode != null;
 		client.gameMode.handleContainerInput(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ContainerInput.PICKUP, client.player);
 		return false;
 	}
