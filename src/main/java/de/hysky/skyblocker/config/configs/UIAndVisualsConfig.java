@@ -44,6 +44,8 @@ public class UIAndVisualsConfig {
 
 	public boolean trueQuiverCount = true;
 
+	public SkyBlockInventoryScreen skyblockInventoryScreen = new SkyBlockInventoryScreen();
+
 	public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
@@ -85,6 +87,12 @@ public class UIAndVisualsConfig {
 	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
 	public ItemPickup itemPickup = new ItemPickup();
+
+	public static class SkyBlockInventoryScreen {
+		// TODO: Move showEquipmentInInventory to here.
+
+		public boolean openEquipmentToStatsPage = false;
+	}
 
 	public static class ChestValue {
 		public boolean enableChestValue = true;
