@@ -31,16 +31,6 @@ public abstract class ChestMenuMixin extends AbstractContainerMenu {
 		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		switch (currentScreen) {
 			case PartyFinderScreen screen -> screen.markDirty();
-			case ContainerScreen screen when screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("equipment") -> {
-				int line = slot / 9;
-				if (line > 0 && line < 5 && slot % 9 == 1) {
-					boolean empty = stack.getHoverName().getString().trim().toLowerCase(Locale.ENGLISH).startsWith("empty");
-					if (Utils.isInTheRift())
-						SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
-					else
-						SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
-				}
-			}
 			case null, default -> {}
 		}
 		broadcastChanges();
