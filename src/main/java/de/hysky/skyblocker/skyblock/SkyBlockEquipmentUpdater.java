@@ -23,9 +23,9 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 		super(titlePattern);
 	}
 
-	public ItemStack[] getEquipmentInRow(Int2ObjectMap<ItemStack> slots, int slotIndex) {
+	public ItemStack[] getEquipmentInColumn(Int2ObjectMap<ItemStack> slots, int column) {
 		return slots.int2ObjectEntrySet().stream()
-				.filter(entry -> entry.getIntKey() % 9 == slotIndex)
+				.filter(entry -> entry.getIntKey() % 9 == column)
 				.filter(entry -> !entry.getValue().is(Items.STAINED_GLASS_PANE.black()))
 				.map(entry -> {
 					String name = entry.getValue().getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
@@ -37,7 +37,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		ItemStack[] equipment = getEquipmentInRow(slots, 1);
+		ItemStack[] equipment = getEquipmentInColumn(slots, 1);
 		if (equipment.length < 4) return List.of();
 		ItemStack[] destination = Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment;
 		System.arraycopy(equipment, 0, destination, 0, 4);
@@ -62,7 +62,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 					.map(entry -> entry.getIntKey() % 9)
 					.findFirst();
 			if (selectedSet.isEmpty()) return List.of();
-			ItemStack[] equipment = getEquipmentInRow(slots, selectedSet.get());
+			ItemStack[] equipment = getEquipmentInColumn(slots, selectedSet.get());
 			if (equipment.length < 4) return List.of();
 			System.arraycopy(equipment, 0, SkyblockInventoryScreen.equipment, 0, 4);
 			return List.of();
