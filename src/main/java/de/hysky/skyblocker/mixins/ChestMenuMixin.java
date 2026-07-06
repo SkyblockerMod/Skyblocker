@@ -1,17 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
