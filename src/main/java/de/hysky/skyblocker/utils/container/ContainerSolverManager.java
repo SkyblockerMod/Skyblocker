@@ -82,6 +82,7 @@ public class ContainerSolverManager {
 			new AnvilHelper(),
 			new RewardsHighlighter(),
 			new SkyBlockEquipmentUpdater(),
+			new SkyBlockEquipmentUpdater.EquipmentWardrobe(),
 	};
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;

@@ -7,25 +7,38 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.intellij.lang.annotations.Language;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
-public final class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
+public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public SkyBlockEquipmentUpdater() {
 		super("^Your Equipment and Stats|(?:\\(\\d/\\d\\) )?Loadouts$");
 	}
 
-	@Override
-	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		ItemStack[] equipment = slots.int2ObjectEntrySet().stream()
-				.filter(entry -> entry.getIntKey() % 9 == 1 && entry.getIntKey() > 9)
+	public SkyBlockEquipmentUpdater(@Language("RegExp") String titlePattern) {
+		super(titlePattern);
+	}
+
+	public ItemStack[] getEquipmentInRow(Int2ObjectMap<ItemStack> slots, int slotIndex) {
+		return slots.int2ObjectEntrySet().stream()
+				.filter(entry -> entry.getIntKey() % 9 == slotIndex)
+				.filter(entry -> !entry.getValue().is(Items.STAINED_GLASS_PANE.black()))
 				.map(entry -> {
-					boolean isEmpty = entry.getValue().getHoverName().getString().trim().toLowerCase(Locale.ENGLISH).startsWith("empty");
+					String name = entry.getValue().getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
+					boolean isEmpty = name.startsWith("empty") || name.startsWith("slot ");
 					if (!isEmpty) return entry.getValue();
 					return ItemStack.EMPTY;
 				}).toArray(ItemStack[]::new);
-		if (equipment.length == 0) return List.of();
+	}
+
+	@Override
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		ItemStack[] equipment = getEquipmentInRow(slots, 1);
+		if (equipment.length < 4) return List.of();
 		ItemStack[] destination = Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment;
 		System.arraycopy(equipment, 0, destination, 0, 4);
 		return List.of();
@@ -34,5 +47,25 @@ public final class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory;
+	}
+
+	public static final class EquipmentWardrobe extends SkyBlockEquipmentUpdater {
+		public EquipmentWardrobe() {
+			super("^(?:\\(\\d/\\d\\) )?Equipment Sets$");
+		}
+
+		@Override
+		public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+			Optional<Integer> selectedSet = slots.int2ObjectEntrySet().stream()
+					.filter(entry -> entry.getIntKey() > 35 && entry.getIntKey() < 45)
+					.filter(entry -> entry.getValue().is(Items.DYE.lime()))
+					.map(entry -> entry.getIntKey() % 9)
+					.findFirst();
+			if (selectedSet.isEmpty()) return List.of();
+			ItemStack[] equipment = getEquipmentInRow(slots, selectedSet.get());
+			if (equipment.length < 4) return List.of();
+			System.arraycopy(equipment, 0, SkyblockInventoryScreen.equipment, 0, 4);
+			return List.of();
+		}
 	}
 }
