@@ -126,6 +126,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private void toolkit(Button button) {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/farmingtoolkit", true);
 	}
+
 	private void huntingToolkit(Button button) {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/huntingtoolkit", true);
 	}
@@ -270,8 +271,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 						.size(300, 30)
 						.build();
 
-			}
-			else {
+			} else {
 				reloadButton = null;
 			}
 
