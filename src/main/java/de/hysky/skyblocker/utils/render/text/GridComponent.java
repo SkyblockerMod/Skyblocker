@@ -16,12 +16,14 @@ public class GridComponent {
 	 * GridComponent.of(Component.literal("very long thing:"), Component.literal("69"));
 	 * GridComponent.of(Component.literal("not long:"), Component.literal("420"));
 	 * </pre></blockquote>
-	 * <p>Will give:
+	 * <p>
+	 * Will give:
 	 * <blockquote><pre>
 	 * very long thing: 69
 	 * not long:        420
 	 * </pre></blockquote>
-	 * <p> Instead of:
+	 * <p>
+	 * Instead of:
 	 * <blockquote><pre>
 	 * very long thing: 69
 	 * not long: 420
