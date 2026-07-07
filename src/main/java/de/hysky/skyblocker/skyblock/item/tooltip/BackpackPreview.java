@@ -168,7 +168,7 @@ public class BackpackPreview {
 			if (slot.getItem().is(Items.STAINED_GLASS_PANE.red()) || storages[index] != null) continue;
 			storages[index] = new Storage(
 					new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
-							.limit(10)
+							.limit(18)
 							.toArray(ItemStack[]::new)),
 					"", true
 			);

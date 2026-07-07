@@ -31,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -55,7 +56,6 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
 	private static boolean disableOnNextLoad = false;
-	private static boolean hasReloaded = false;
 	@Nullable
 	private BackpackGridWidget grid;
 	private final StorageOverlayScreenHandler handler;
@@ -126,6 +126,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private void toolkit(Button button) {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/farmingtoolkit", true);
 	}
+	private void huntingToolkit(Button button) {
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/huntingtoolkit", true);
+	}
 
 
 	private int getLeftPos() {
@@ -153,19 +156,23 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		this.addRenderableWidget(grid);
 
 		//extra control buttons out the way
-		LinearLayout extraButtons = new LinearLayout(width - 50, height - 80, LinearLayout.Orientation.VERTICAL);
+		LinearLayout extraButtons = new LinearLayout(width - 90, height - 80, LinearLayout.Orientation.VERTICAL);
 		extraButtons.spacing(5);
 		//add toolkit button
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.toolkitButton"), this::toolkit)
-				.size(40, 15)
+				.size(80, 15)
+				.build());
+		//add hunting toolkit button
+		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton"), this::huntingToolkit)
+				.size(80, 15)
 				.build());
 		//add button to go home
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.homeButton"), this::home)
-				.size(40, 15)
+				.size(80, 15)
 				.build());
 		//add button to temperately disable menu
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.hideButton"), this::hide)
-				.size(40, 15)
+				.size(80, 15)
 				.build());
 		extraButtons.arrangeElements();
 		extraButtons.visitWidgets(this::addRenderableWidget);
@@ -230,6 +237,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		private final List<BackpackWidget> backpackWidgets = new ArrayList<>();
 		private StorageOverlayScreen.@Nullable BackpackWidget openBackpack = null;
+		@Nullable
+		private final Button reloadButton;
 
 		BackpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
 			// cut down number of columns if it will not fit on to the current gui size
@@ -255,19 +264,30 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 					backpackWidgets.add(widget);
 				}
 			}
-			//if no storages found reload page to see if any are found
-			if (!storageLoaded && !hasReloaded) {
-				//make sure this is only done once so we don't get stuck in infinite cycle if there is an error
-				hasReloaded = true;
+			//if no storages found add reload button instead
+			if (!storageLoaded) {
+				reloadButton = Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.reloadButton"), this::reload)
+						.size(300, 30)
+						.build();
 
-				MessageScheduler.INSTANCE.queueMessage("/storage", true, 20);
+			}
+			else {
+				reloadButton = null;
 			}
 
 		}
 
+		private void reload(Button button) {
+			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
+		}
+
+
 		@Override
 		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
 			savedSearch = input;
+			if (reloadButton != null) {
+				return Collections.singleton(reloadButton);
+			}
 			return backpackWidgets.stream().filter(backpack -> backpack.matches(input)).toList();
 		}
 
