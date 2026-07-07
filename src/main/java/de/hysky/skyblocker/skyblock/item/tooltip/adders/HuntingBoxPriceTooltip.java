@@ -33,7 +33,7 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(attribute.apiId());
 			boolean holdingShift = GuiHelper.hasShiftDown();
 			String shardText = count > 1 ? "Shards" : "Shard";
-			var price = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.BUY_ORDER ? product.buyPrice() : product.sellPrice();
+			var price = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.BUY_ORDER ? product.sellPrice() : product.buyPrice();
 
 			lines.add(Component.literal(shardText + " Sell Price: ")
 					.withStyle(ChatFormatting.GOLD)
