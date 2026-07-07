@@ -31,7 +31,7 @@ public class GridTooltipComponent implements ClientTooltipComponent {
 	@Override
 	public int getWidth(Font font) {
 		if (manager != null) {
-			manager.handle(this, font);
+			manager.updateWidths(this, font);
 			return manager.getTotalWidth(sequence.group());
 		}
 		return font.width(sequence);

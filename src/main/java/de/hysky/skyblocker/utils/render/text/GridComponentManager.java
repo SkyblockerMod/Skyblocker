@@ -18,7 +18,7 @@ public class GridComponentManager {
 		widths.defaultReturnValue(IntList.of());
 	}
 
-	void handle(GridTooltipComponent component, Font font) {
+	void updateWidths(GridTooltipComponent component, Font font) {
 		if (!handledComponents.add(component)) return;
 		GridFormattedCharSequence sequence = component.sequence();
 		IntList list = widths.computeIfAbsent(sequence.group(), _ -> new IntArrayList());
