@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
@@ -32,12 +33,13 @@ public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(attribute.apiId());
 			boolean holdingShift = GuiHelper.hasShiftDown();
 			String shardText = count > 1 ? "Shards" : "Shard";
+			var price = SkyblockerConfigManager.get().general.itemTooltip.enableCraftingCost == GeneralConfig.Craft.BUY_ORDER ? product.buyPrice() : product.sellPrice();
 
 			lines.add(Component.literal(shardText + " Sell Price: ")
 					.withStyle(ChatFormatting.GOLD)
-					.append(product.sellPrice().isEmpty()
+					.append(price.isEmpty()
 							? Component.literal("No data").withStyle(ChatFormatting.RED)
-							: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble() * count, holdingShift ? count : 1, true)));
+							: ItemTooltip.getCoinsMessage(price.getAsDouble() * count, holdingShift ? count : 1, true)));
 		}
 	}
 
