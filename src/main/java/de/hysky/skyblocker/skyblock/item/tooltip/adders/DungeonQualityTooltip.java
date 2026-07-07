@@ -14,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class DungeonQualityTooltip extends SimpleTooltipAdder {
-	private static final ChatFormatting[] MAXED = {ChatFormatting.RED, ChatFormatting.BOLD,};
+	private static final ChatFormatting[] MAXED = {ChatFormatting.RED, ChatFormatting.BOLD};
 	private static final ChatFormatting[] NOT_MAXED = {ChatFormatting.BLUE};
 
 	public DungeonQualityTooltip(int priority) {
