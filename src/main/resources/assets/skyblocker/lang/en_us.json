@@ -653,6 +653,8 @@
   "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
 
   "skyblocker.config.general.specialEffects": "Special Effects",
+  "skyblocker.config.general.specialEffects.displayItemName": "Display Item Name",
+  "skyblocker.config.general.specialEffects.displayItemName.@Tooltip": "The name of the item will be displayed below the special visual effect.",
   "skyblocker.config.general.specialEffects.rareDropEffects": "Rare RNG Drop Effects",
   "skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare drops such as RNGs!",
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "Rare Dungeon Drop Effects",
