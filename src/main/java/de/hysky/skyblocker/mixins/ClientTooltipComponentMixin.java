@@ -12,8 +12,11 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ClientTooltipComponent.class)
 public interface ClientTooltipComponentMixin {
 	@ModifyReturnValue(method = "create(Lnet/minecraft/util/FormattedCharSequence;)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;", at = @At("TAIL"))
-	private static ClientTooltipComponent create(ClientTooltipComponent original, @Local(argsOnly = true, name = "charSequence") FormattedCharSequence charSequence) {
-		if (charSequence instanceof GridFormattedCharSequence gridSequence) return new GridTooltipComponent(gridSequence);
-		return original;
+	private static ClientTooltipComponent create(ClientTooltipComponent original, @Local(name = "charSequence") FormattedCharSequence charSequence) {
+		if (charSequence instanceof GridFormattedCharSequence gridSequence) {
+			return new GridTooltipComponent(gridSequence);
+		} else {
+			return original;
+		}
 	}
 }

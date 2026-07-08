@@ -43,7 +43,9 @@ public class GridTooltipComponent implements ClientTooltipComponent {
 		for (int i = 0; i < sequence.columns().size(); i++) {
 			FormattedCharSequence column = sequence.columns().get(i);
 			textRenderer.accept(x, y, column);
-			if (manager == null) x += font.width(column);
+			if (manager == null) {
+				x += font.width(column);
+			}
 			else {
 				int width = manager.getWidth(sequence.group(), i);
 				x += width == 0 ? font.width(column) : width;

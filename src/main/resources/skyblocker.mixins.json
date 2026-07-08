@@ -45,6 +45,7 @@
 		"MinecraftMixin",
 		"MouseHandlerMixin",
 		"MultiPlayerGameModeMixin",
+		"MutableComponentMixin",
 		"OptionsMixin",
 		"PingDebugMonitorMixin",
 		"PlayerTabOverlayMixin",
@@ -100,8 +101,5 @@
 	},
 	"mixinextras": {
 		"minVersion": "0.5.0"
-	},
-	"mixins": [
-		"MutableComponentMixin"
-	]
+	}
 }
