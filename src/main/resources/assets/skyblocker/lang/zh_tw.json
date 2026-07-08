@@ -858,7 +858,7 @@
     "skyblocker.config.slayer.bossbar": "獵手Boss欄",
     "skyblocker.config.slayer.bossbar.@Tooltip": "為目前的Boss顯示Boss欄",
     "skyblocker.config.helpers.enableWardrobeHelper": "啟用衣櫃助手",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允許在衣櫃選單開啟時透過熱鍵1-9切換護甲。選單中對應的護甲將裝備至身上。",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允許在衣櫃和裝備選單開啟時透過熱鍵1-9切換護甲或裝備。",
     "skyblocker.config.crimsonIsle.kuudra": "Kuudra",
     "skyblocker.config.dungeons.professor": "教授（F3/M3）",
     "skyblocker.config.eventNotifications.monologue": "你能不能速速進入skyblock？能的話就太好了。如果你看到了這條訊息，這意味著：1. 你的配置被清除了2.你第一次使用本mod（如果是的話，感謝你選擇本mod，希望你能喜歡） 本mod允許你設定對skyblock所有事件的提醒，它們會在你遇到事件時被加入。所以，你需要先進入skyblock。希望你喜歡本mod",
@@ -1759,5 +1759,8 @@
     "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "以紅色突顯未完成的抽獎任務，以綠色突顯已完成的抽獎任務。",
     "skyblocker.config.patches.updated.failed": "更新配置補丁失敗。詳情請參閱日誌。",
     "skyblocker.config.patches.updated.success": "成功更新配置補丁。",
-    "text.skyblocker.logsFolder": "打開日誌檔案夾"
+    "text.skyblocker.logsFolder": "打開日誌檔案夾",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "點擊裝備時，是否打開「Your Stats」（/stats）或Equipment Wardrobe（/equipment）。",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "在物品欄顯示裝備",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "此顯示效果是快取，不會即時更新。"
 }
