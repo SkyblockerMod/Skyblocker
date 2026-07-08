@@ -104,6 +104,8 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	private static final String ALT_INPUT_SIGN_MARKER = "^^^^^^";
 	@Unique
 	private static final String BAZAAR_FLIP_MARKER = "^^Flipping^^";
+	@Unique
+	private static final String SET_NAME_MARKER = "Enter name";
 
 	@Unique
 	private boolean isSpeedInputSign() {
@@ -119,6 +121,11 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 		return messages[2].endsWith("your") || messages[2].endsWith("query");
 	}
 
+	@Unique
+	private boolean isSetNameSign() {
+		return messages[2].equals(SET_NAME_MARKER);
+	}
+
 	/**
 	 * Used to exclude search signs with {@link AbstractSignEditScreenMixin#ALT_INPUT_SIGN_MARKER}
 	 * <br> Works for the /bestiary sign
@@ -130,6 +137,6 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 
 	@Unique
 	private boolean isInputSign() {
-		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) && !isAltInputSearchSign() || messages[1].equals(BAZAAR_FLIP_MARKER);
+		return messages[1].equals(INPUT_SIGN_MARKER) && !isInputSearchSign() || messages[1].equals(ALT_INPUT_SIGN_MARKER) && !isAltInputSearchSign() && !isSetNameSign() || messages[1].equals(BAZAAR_FLIP_MARKER);
 	}
 }
