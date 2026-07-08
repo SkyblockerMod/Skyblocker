@@ -1,17 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -31,16 +27,6 @@ public abstract class ChestMenuMixin extends AbstractContainerMenu {
 		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		switch (currentScreen) {
 			case PartyFinderScreen screen -> screen.markDirty();
-			case ContainerScreen screen when screen.getTitle().getString().toLowerCase(Locale.ENGLISH).contains("equipment") -> {
-				int line = slot / 9;
-				if (line > 0 && line < 5 && slot % 9 == 1) {
-					boolean empty = stack.getHoverName().getString().trim().toLowerCase(Locale.ENGLISH).startsWith("empty");
-					if (Utils.isInTheRift())
-						SkyblockInventoryScreen.equipment_rift[line - 1] = empty ? ItemStack.EMPTY : stack;
-					else
-						SkyblockInventoryScreen.equipment[line - 1] = empty ? ItemStack.EMPTY : stack;
-				}
-			}
 			case null, default -> {}
 		}
 		broadcastChanges();

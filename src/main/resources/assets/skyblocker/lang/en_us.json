@@ -738,7 +738,7 @@
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
-  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armor Sets and Equipment Sets by pressing the corresponding Hotbar Slot key.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
@@ -1346,8 +1346,11 @@
   "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
   "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
 
-  "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
-  "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "This display is a cache of the /stats interface and is not updated in real time.\nThe slots are clickable and equivalent to /stats.",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "SkyBlock Inventory Screen",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats": "Open Equipment To '/stats'",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "When clicking the equipment, whether to open to 'Your Stats' (/stats) or to the Equipment Wardrobe (/equipment).",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "This display is a cache and is not updated in real time.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",

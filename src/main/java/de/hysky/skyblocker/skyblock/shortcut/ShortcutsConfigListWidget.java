@@ -245,7 +245,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		private ShortcutEntry(ShortcutCategoryEntry<T> category, T targetKey) {
 			this.category = category;
 			replacement = new EditBox(Minecraft.getInstance().font, width / 2 + 10, TEXT_Y_OFFSET, 150, 20, category.replacementName);
-			replacement.setMaxLength(48);
+			replacement.setMaxLength(256); // same as chat
 			replacement.setValue(category.shortcutsMap.getOrDefault(targetKey, ""));
 		}
 
@@ -280,7 +280,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		private CommandShortcutEntry(ShortcutCategoryEntry<String> category, String targetString) {
 			super(category, targetString);
 			target = new EditBox(Minecraft.getInstance().font, width / 2 - 160, TEXT_Y_OFFSET, 150, 20, category.targetName);
-			target.setMaxLength(48);
+			target.setMaxLength(256); // same as chat
 			target.setValue(targetString);
 			children = List.of(target, replacement);
 		}
