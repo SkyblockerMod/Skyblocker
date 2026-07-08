@@ -76,7 +76,7 @@ public class ConfigDataFixer {
 		return new Codec<>() {
 			@Override
 			public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
-				return baseCodec.encode(input, ops, prefix);
+				return baseCodec.encode(input, ops, prefix).flatMap(t -> ops.mergeToMap(t, ops.createString(VERSION_KEY), ops.createInt(SkyblockerConfigManager.CONFIG_VERSION)));
 			}
 
 			@Override
