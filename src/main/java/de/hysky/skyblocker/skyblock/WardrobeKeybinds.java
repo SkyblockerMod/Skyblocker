@@ -25,7 +25,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	public static final WardrobeKeybinds INSTANCE = new WardrobeKeybinds();
 
 	public WardrobeKeybinds() {
-		super("Wardrobe \\([123]/3\\)");
+		super("^(?:\\(\\d+/\\d+\\) )?(Armor Sets|Equipment Sets)$");
 	}
 
 	@Init
@@ -42,6 +42,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 	}
 
 	private static boolean allowInput(Minecraft client, AbstractContainerScreen<?> handledScreen, Predicate<KeyMapping> predicate) {
+		if (client.gameMode == null || client.player == null) return true; // just in case
 		boolean found = false;
 		int i;
 		for (i = 0; i < client.options.keyHotbarSlots.length; i++) {
@@ -56,15 +57,14 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 		ItemStack itemStack = handledScreen.getMenu().getSlot(i).getItem();
 		// Check if the item in the slot is a swap/unequip item before going further.
 		// This prevents usage when the inventory hasn't loaded fully or when the slot pressed is locked or when the slot has no armor (which would be meaningless to click)
-		if (!itemStack.is(Items.DYE.pink()) && !itemStack.is(Items.DYE.lime())) return true;
-		assert client.gameMode != null;
+		if (!itemStack.is(Items.DYE.gray()) && !itemStack.is(Items.DYE.lime())) return true;
 		client.gameMode.handleContainerInput(handledScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_1, ContainerInput.PICKUP, client.player);
 		return false;
 	}
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (!stack.is(Items.DYE.pink()) && !stack.is(Items.DYE.lime())) return List.of();
+		if (!stack.is(Items.DYE.gray()) && !stack.is(Items.DYE.lime())) return List.of();
 		if (!(slotId >= 36 && slotId <= 44)) return List.of();
 		return SlotText.bottomLeftList(Component.literal(String.valueOf(slotId - 35)).withColor(SlotText.MID_BLUE));
 	}
