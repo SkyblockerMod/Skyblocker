@@ -862,7 +862,7 @@
     "skyblocker.config.dungeons.professor": "教授（F3/M3）",
     "skyblocker.config.slayer.bossbar": "猎手Boss栏",
     "skyblocker.config.helpers.enableWardrobeHelper": "启用衣柜助手",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允许在衣柜菜单打开时通过热键1-9切换护甲。菜单中对应的护甲将被装备至身上。",
+    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允许在衣柜和装备菜单打开时通过热键1-9切换护甲或装备。",
     "skyblocker.config.slayer.bossbar.@Tooltip": "为当前的猎手Boss显示Boss栏",
     "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "紧凑的Effigy路径点",
     "skyblocker.dungeons.secrets.posMessage": "§r房间: %s，方向: %s, X: %s, Y: %s, Z: %s",
@@ -1760,5 +1760,8 @@
     "skyblocker.config.patches.updated.failed": "更新配置补丁失败。详情请参阅日志。",
     "skyblocker.config.patches.updated.success": "成功更新配置补丁。",
     "text.skyblocker.logsFolder": "打开日志文件夹",
-    "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob的竞赛高亮"
+    "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob的竞赛高亮",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "此显示效果是缓存，不会实时更新。",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "在物品栏显示装备",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "点击装备时，是否打开“Your Stats”（/stats）或Equipment Wardrobe（/equipment）。"
 }
