@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
@@ -136,7 +137,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
+				// The Equipment Wardrobe is not available in the Rift.
+				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() ? "/stats" : "/equipment";
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 				return true;
 			}
 		}
