@@ -26,7 +26,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public ItemStack[] getEquipmentInColumn(Int2ObjectMap<ItemStack> slots, int column) {
 		return slots.int2ObjectEntrySet().stream()
 				.filter(entry -> entry.getIntKey() % 9 == column)
-				.filter(entry -> !entry.getValue().is(Items.STAINED_GLASS_PANE.black()))
+				.filter(entry -> !entry.getValue().is(Items.BLACK_STAINED_GLASS_PANE))
 				.map(entry -> {
 					String name = entry.getValue().getHoverName().getString().trim().toLowerCase(Locale.ENGLISH);
 					boolean isEmpty = name.startsWith("empty") || name.startsWith("slot ");
@@ -58,7 +58,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 		public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 			Optional<Integer> selectedSet = slots.int2ObjectEntrySet().stream()
 					.filter(entry -> entry.getIntKey() > 35 && entry.getIntKey() < 45)
-					.filter(entry -> entry.getValue().is(Items.DYE.lime()))
+					.filter(entry -> entry.getValue().is(Items.LIME_DYE))
 					.map(entry -> entry.getIntKey() % 9)
 					.findFirst();
 			if (selectedSet.isEmpty()) return List.of();
