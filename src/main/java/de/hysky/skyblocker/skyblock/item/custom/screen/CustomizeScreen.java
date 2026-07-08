@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -63,7 +64,7 @@ public class CustomizeScreen extends Screen {
 				ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null, false))))
 		));
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen && !CatharsisCompatibility.isGuiElementHidden("skyblocker:customizeButton")) {
 				CustomizeButton button = new CustomizeButton(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
