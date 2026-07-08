@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleRewardHighlight;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
+import de.hysky.skyblocker.skyblock.SkyBlockEquipmentUpdater;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesContainerSolver;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -80,6 +81,8 @@ public class ContainerSolverManager {
 			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
 			new RewardsHighlighter(),
+			new SkyBlockEquipmentUpdater(),
+			new SkyBlockEquipmentUpdater.EquipmentWardrobe(),
 	};
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;
