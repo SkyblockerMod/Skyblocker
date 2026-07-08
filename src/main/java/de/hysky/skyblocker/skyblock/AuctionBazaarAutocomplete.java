@@ -9,6 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -37,10 +38,12 @@ public class AuctionBazaarAutocomplete {
 	}
 
 	private static void createNodes() {
-		ahsNode = createNode("ahs", SearchOverManager::getAuctionItems);
-		ahsearchNode = createNode("ahsearch", SearchOverManager::getAuctionItems);
-		bzNode = createNode("bz", SearchOverManager::getBazaarItems);
-		bazaarNode = createNode("bazaar", SearchOverManager::getBazaarItems);
+		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.commandAutocomplete) {
+			ahsNode = createNode("ahs", SearchOverManager::getAuctionItems);
+			ahsearchNode = createNode("ahsearch", SearchOverManager::getAuctionItems);
+			bzNode = createNode("bz", SearchOverManager::getBazaarItems);
+			bazaarNode = createNode("bazaar", SearchOverManager::getBazaarItems);
+		}
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> createNode(String command, Supplier<Iterable<String>> suggester) {

@@ -111,12 +111,20 @@ public class SearchOverManager {
 					.then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
-			dispatcher.register(literal("bzs")
-					.requires(_ -> Utils.isOnSkyblock())
-					.then(argument("item", StringArgumentType.greedyString())
-					.suggests(AuctionBazaarAutocomplete::suggestBzs)
-					.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
-					)));
+			if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.commandAutocomplete) {
+				dispatcher.register(literal("bzs")
+						.requires(_ -> Utils.isOnSkyblock())
+						.then(argument("item", StringArgumentType.greedyString())
+						.suggests(AuctionBazaarAutocomplete::suggestBzs)
+						.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+						)));
+			} else {
+				dispatcher.register(literal("bzs")
+						.requires(_ -> Utils.isOnSkyblock())
+						.then(argument("item", StringArgumentType.greedyString())
+						.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+						)));
+			}
 		}
 
 		if (!Debug.debugEnabled()) return;

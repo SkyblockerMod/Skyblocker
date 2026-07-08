@@ -386,6 +386,8 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class SearchOverlay {
+		public boolean commandAutocomplete = true;
+
 		public boolean enableBazaar = true;
 
 		public boolean enableAuctionHouse = true;

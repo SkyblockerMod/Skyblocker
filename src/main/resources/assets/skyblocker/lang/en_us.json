@@ -1344,6 +1344,8 @@
   "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "Wardrobe",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
+  "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Show autocomplete suggestions for auction house/bazaar commands.",
+  "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip": "A re-log is required for this setting to be updated.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the Auction House.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar": "Enable For Bazaar",
