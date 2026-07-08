@@ -828,7 +828,6 @@
     "skyblocker.bars.config.mainColor": "Cor Principal",
     "skyblocker.museum.hud.ratioText": "Moedas por EXP",
     "skyblocker.config.uiAndVisuals.showCustomizeButton": "Mostrar Botão de Customizar Armadura",
-    "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Mostrar Equipamento no Inventário",
     "skyblocker.config.uiAndVisuals.smoothAOTE": "AOTE Suave",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact": "Habilitar Wither Impact",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "Para: Necron's Blade, Hyperion, Astraea, Stella, e Valkyrie.",

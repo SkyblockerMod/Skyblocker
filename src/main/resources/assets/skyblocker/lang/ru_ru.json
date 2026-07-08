@@ -798,7 +798,6 @@
     "skyblocker.api.token.noProfileKeys": "Не удалось получить ключи вашего профиля! Некоторые функции мода могут временно не работать :( (Ваша игра была открыта более 24 часов?). Чтобы повторно активировать эти функции, перезапустите игру.",
     "skyblocker.api.token.authFailure": "Не удалось обновить ваш токен API Skyblocker. Некоторые функции могут временно не работать!",
     "skyblocker.waypoints.config": "Конфигурация меток",
-    "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Показать Экипировку в инвентаре",
     "skyblocker.config.slayer.blazeSlayer.attunementHighlights": "Основные моменты настройки",
     "skyblocker.config.uiAndVisuals.compactDamage": "Компактный урон",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Неполный цвет",
