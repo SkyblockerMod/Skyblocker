@@ -8,6 +8,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -82,7 +83,7 @@ public final class GardenPlots {
 						}
 
 				});
-			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled) {
+			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled && !CatharsisCompatibility.isGuiElementHidden("skyblocker:gardenPlots")) {
 				ScreenEvents.remove(screen).register(_ -> widget = null);
 				AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) inventoryScreen;
 				widget = new GardenPlotsWidget(new ScreenRectangle(
