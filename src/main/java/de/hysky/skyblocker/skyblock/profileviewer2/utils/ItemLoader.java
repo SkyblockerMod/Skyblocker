@@ -75,10 +75,8 @@ public class ItemLoader {
 		}
 
 		// When a wardrobe slot is selected the loadout has null for the pieces so we need to put them in the slots
-		// TODO check if this is actually -1 when a loadout is not selected
-		if (member.loadouts.armour.equippedSet != -1) {
+		if (member.loadouts.armour.equippedSet != null) {
 			// Note: The equipped slot is not zero-indexed
-			// TODO fallback handling for profiles that do not have this data
 			int startingIndex = Math.min((member.loadouts.armour.equippedSet - 1) * 4, armourSets.size());
 
 			armourSets.set(startingIndex + 0, armour.getFirst());
@@ -101,8 +99,8 @@ public class ItemLoader {
 			equipmentSets.add(braceletOrGloves.getFirst());
 		}
 
-		// TODO handling when this field is not there etc
-		if (member.loadouts.equipment.equippedSet != -1) {
+		// Insert the equipped equipment back into its original place (same as is done for armour)
+		if (member.loadouts.equipment.equippedSet != null) {
 			// Note: The equipped slot is not zero-indexed
 			int startingIndex = Math.min((member.loadouts.equipment.equippedSet - 1) * 4, equipmentSets.size());
 

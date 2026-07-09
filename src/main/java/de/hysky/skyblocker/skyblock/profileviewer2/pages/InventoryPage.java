@@ -66,7 +66,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				new ButtonWidget(Ico.E_CHEST, _ -> selectTab(1, tabContentLayouts)),
 				new ButtonWidget(Ico.JUMBO_BACKPACK, _ -> selectTab(2, tabContentLayouts)),
 				new ButtonWidget(Ico.L_CHESTPLATE, _ -> selectTab(3, tabContentLayouts)),
-				new ButtonWidget(Ico.BREWING_STAND, _ -> selectTab(4, tabContentLayouts)),
+				new ButtonWidget(Ico.BROWN_HARNESS, _ -> selectTab(4, tabContentLayouts)),
 				new ButtonWidget(Ico.BONE, _ -> selectTab(5, tabContentLayouts)),
 				new ButtonWidget(Ico.ACCESSORY_BAG, _ -> selectTab(6, tabContentLayouts))
 				// Fishing Bag

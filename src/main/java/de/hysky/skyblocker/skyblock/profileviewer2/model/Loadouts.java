@@ -68,7 +68,7 @@ public class Loadouts {
 		public ArmourLoadout twentySeven = new ArmourLoadout();
 		/// The non-zero index of the set equipped
 		@SerializedName("equipped_set")
-		public int equippedSet;
+		public @Nullable Integer equippedSet;
 
 		public List<ArmourLoadout> getLoadouts() {
 			return List.of(
@@ -154,7 +154,7 @@ public class Loadouts {
 		public EquipmentLoadout eighteen = new EquipmentLoadout();
 		/// The non-zero index of the set equipped
 		@SerializedName("equipped_set")
-		public int equippedSet;
+		public @Nullable Integer equippedSet;
 
 		public List<EquipmentLoadout> getLoadouts() {
 			return List.of(
