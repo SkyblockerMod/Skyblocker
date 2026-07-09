@@ -7,12 +7,15 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.Comparator;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -36,6 +39,22 @@ public class InvisibugHighlighter {
 		return SkyblockerConfigManager.get().hunting.huntingMobs.highlightInvisibug && Utils.isInGalatea();
 	}
 
+
+	/**
+	 * Checks for a pet near the given position.
+	 * Only the closest armor stand within range is considered, and it counts as a pet if it has a texture in its main hand.
+	 *
+	 * @param level the level to search
+	 * @param pos   the particle's spawn position
+	 * @return true if the closest nearby armor stand is a head-wearing pet
+	 */
+	private static boolean isNearPet(ClientLevel level, Vec3 pos) {
+		return level.getEntitiesOfClass(ArmorStand.class, AABB.ofSize(pos, 10, 10, 10)).stream()
+				.min(Comparator.comparingDouble(armorStand -> armorStand.distanceToSqr(pos)))
+				.map(armorStand -> armorStand.hasItemInSlot(EquipmentSlot.MAINHAND))
+				.orElse(false);
+	}
+
 	/**
 	 * Filters incoming crit particles and forwards valid ones to {@link #handleInvisibugParticle}.
 	 * Particles are ignored if a non-player {@link LivingEntity} is at the spawn position,
@@ -47,7 +66,7 @@ public class InvisibugHighlighter {
 		if (isActive() && ParticleTypes.CRIT.equals(packet.getParticle().getType()) && client.level != null) {
 			Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 			// Exclude particles that are emitted from striking an NPC
-			if (client.level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(pos, 1, 1, 1), e -> !(e instanceof Player)).isEmpty()) {
+			if (client.level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(pos, 1, 1, 1)).isEmpty() && !isNearPet(client.level, pos)) {
 				handleInvisibugParticle(pos);
 			}
 		}
