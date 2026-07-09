@@ -60,7 +60,7 @@ public class ItemLoader {
 			backpacks.put(Integer.valueOf(entry.getKey()), new ProfileItemStorage.Backpack(icon, contents));
 		}
 
-		List<ItemStack> wardrobeContents = new ArrayList<>();
+		List<ItemStack> armourSets = new ArrayList<>();
 
 		for (Loadouts.ArmourLoadout loadout : member.loadouts.armour.getLoadouts()) {
 			List<ItemStack> helmet = loadout.helmet != null ? decode(loadout.helmet.data) : List.of(ItemStack.EMPTY);
@@ -68,10 +68,10 @@ public class ItemLoader {
 			List<ItemStack> leggings = loadout.leggings != null ? decode(loadout.leggings.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> boots = loadout.boots != null ? decode(loadout.boots.data) : List.of(ItemStack.EMPTY);
 
-			wardrobeContents.add(helmet.getFirst());
-			wardrobeContents.add(chestplate.getFirst());
-			wardrobeContents.add(leggings.getFirst());
-			wardrobeContents.add(boots.getFirst());
+			armourSets.add(helmet.getFirst());
+			armourSets.add(chestplate.getFirst());
+			armourSets.add(leggings.getFirst());
+			armourSets.add(boots.getFirst());
 		}
 
 		// When a wardrobe slot is selected the loadout has null for the pieces so we need to put them in the slots
@@ -79,15 +79,40 @@ public class ItemLoader {
 		if (member.loadouts.armour.equippedSet != -1) {
 			// Note: The equipped slot is not zero-indexed
 			// TODO fallback handling for profiles that do not have this data
-			int startingIndex = Math.min((member.loadouts.armour.equippedSet - 1) * 4, wardrobeContents.size());
+			int startingIndex = Math.min((member.loadouts.armour.equippedSet - 1) * 4, armourSets.size());
 
-			wardrobeContents.set(startingIndex + 0, armour.getFirst());
-			wardrobeContents.set(startingIndex + 1, armour.get(1));
-			wardrobeContents.set(startingIndex + 2, armour.get(2));
-			wardrobeContents.set(startingIndex + 3, armour.getLast());
+			armourSets.set(startingIndex + 0, armour.getFirst());
+			armourSets.set(startingIndex + 1, armour.get(1));
+			armourSets.set(startingIndex + 2, armour.get(2));
+			armourSets.set(startingIndex + 3, armour.getLast());
 		}
 
-		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), PetLoader.parsePets(member.petsData.pets), new ProfileItemStorage.Bags(accessories));
+		List<ItemStack> equipmentSets = new ArrayList<>();
+
+		for (Loadouts.EquipmentLoadout loadout : member.loadouts.equipment.getLoadouts()) {
+			List<ItemStack> necklace = loadout.necklace != null ? decode(loadout.necklace.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> cloak = loadout.cloak != null ? decode(loadout.cloak.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> belt = loadout.belt != null ? decode(loadout.belt.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> braceletOrGloves = loadout.braceletOrGloves != null ? decode(loadout.braceletOrGloves.data) : List.of(ItemStack.EMPTY);
+
+			equipmentSets.add(necklace.getFirst());
+			equipmentSets.add(cloak.getFirst());
+			equipmentSets.add(belt.getFirst());
+			equipmentSets.add(braceletOrGloves.getFirst());
+		}
+
+		// TODO handling when this field is not there etc
+		if (member.loadouts.equipment.equippedSet != -1) {
+			// Note: The equipped slot is not zero-indexed
+			int startingIndex = Math.min((member.loadouts.equipment.equippedSet - 1) * 4, equipmentSets.size());
+
+			equipmentSets.set(startingIndex + 0, equipment.getFirst());
+			equipmentSets.set(startingIndex + 1, equipment.get(1));
+			equipmentSets.set(startingIndex + 2, equipment.get(2));
+			equipmentSets.set(startingIndex + 3, equipment.getLast());
+		}
+
+		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(armourSets), List.copyOf(equipmentSets), PetLoader.parsePets(member.petsData.pets), new ProfileItemStorage.Bags(accessories));
 	}
 
 	public static List<ItemStack> decode(String itemData) {
