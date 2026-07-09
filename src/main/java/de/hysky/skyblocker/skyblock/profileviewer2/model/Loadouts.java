@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Loadouts {
 	@SerializedName("armor")
 	public Armour armour = new Armour();
+	public Equipment equipment = new Equipment();
 
 	public static class Armour {
 		@SerializedName("1")
@@ -112,5 +113,82 @@ public class Loadouts {
 		public Inventories.@Nullable AbstractInventoryContents leggings;
 		@SerializedName("BOOTS")
 		public Inventories.@Nullable AbstractInventoryContents boots;
+	}
+
+	public static class Equipment {
+		@SerializedName("1")
+		public EquipmentLoadout one = new EquipmentLoadout();
+		@SerializedName("2")
+		public EquipmentLoadout two = new EquipmentLoadout();
+		@SerializedName("3")
+		public EquipmentLoadout three = new EquipmentLoadout();
+		@SerializedName("4")
+		public EquipmentLoadout four = new EquipmentLoadout();
+		@SerializedName("5")
+		public EquipmentLoadout five = new EquipmentLoadout();
+		@SerializedName("6")
+		public EquipmentLoadout six = new EquipmentLoadout();
+		@SerializedName("7")
+		public EquipmentLoadout seven = new EquipmentLoadout();
+		@SerializedName("8")
+		public EquipmentLoadout eight = new EquipmentLoadout();
+		@SerializedName("9")
+		public EquipmentLoadout nine = new EquipmentLoadout();
+		@SerializedName("10")
+		public EquipmentLoadout ten = new EquipmentLoadout();
+		@SerializedName("11")
+		public EquipmentLoadout eleven = new EquipmentLoadout();
+		@SerializedName("12")
+		public EquipmentLoadout twelve = new EquipmentLoadout();
+		@SerializedName("13")
+		public EquipmentLoadout thirteen = new EquipmentLoadout();
+		@SerializedName("14")
+		public EquipmentLoadout fourteen = new EquipmentLoadout();
+		@SerializedName("15")
+		public EquipmentLoadout fifteen = new EquipmentLoadout();
+		@SerializedName("16")
+		public EquipmentLoadout sixteen = new EquipmentLoadout();
+		@SerializedName("17")
+		public EquipmentLoadout seventeen = new EquipmentLoadout();
+		@SerializedName("18")
+		public EquipmentLoadout eighteen = new EquipmentLoadout();
+		/// The non-zero index of the set equipped
+		@SerializedName("equipped_set")
+		public int equippedSet;
+
+		public List<EquipmentLoadout> getLoadouts() {
+			return List.of(
+					this.one,
+					this.two,
+					this.three,
+					this.four,
+					this.five,
+					this.six,
+					this.seven,
+					this.eight,
+					this.nine,
+					this.ten,
+					this.eleven,
+					this.twelve,
+					this.thirteen,
+					this.fourteen,
+					this.fifteen,
+					this.sixteen,
+					this.seventeen,
+					this.eighteen
+					);
+		}
+	}
+
+	public static class EquipmentLoadout {
+		public int id;
+		@SerializedName("EQUIPMENT_SLOT_1")
+		public Inventories.@Nullable AbstractInventoryContents necklace;
+		@SerializedName("EQUIPMENT_SLOT_2")
+		public Inventories.@Nullable AbstractInventoryContents cloak;
+		@SerializedName("EQUIPMENT_SLOT_3")
+		public Inventories.@Nullable AbstractInventoryContents belt;
+		@SerializedName("EQUIPMENT_SLOT_4")
+		public Inventories.@Nullable AbstractInventoryContents braceletOrGloves;
 	}
 }
