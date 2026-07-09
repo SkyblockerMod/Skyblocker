@@ -1763,5 +1763,7 @@
     "skyblocker.config.farming.pestHighlighter.contestHighlighter": "Jacob的竞赛高亮",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "此显示效果是缓存，不会实时更新。",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "在物品栏显示装备",
-    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "点击装备时，是否打开“Your Stats”（/stats）或Equipment Wardrobe（/equipment）。"
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "点击装备时，是否打开“Your Stats”（/stats）或Equipment Wardrobe（/equipment）。",
+    "skyblocker.config.general.specialEffects.displayItemName": "显示物品名称",
+    "skyblocker.config.general.specialEffects.displayItemName.@Tooltip": "在视觉特效下显示物品的名称。"
 }
