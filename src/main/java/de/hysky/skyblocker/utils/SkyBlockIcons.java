@@ -12,4 +12,6 @@ public final class SkyBlockIcons {
 	// Scoreboard Icons
 	public static final String AREA = "\uE067";
 	public static final String RIFT_AREA = "\uE020";
+	// Mob Types
+	public static final String UNDEAD = "\uE084";
 }
