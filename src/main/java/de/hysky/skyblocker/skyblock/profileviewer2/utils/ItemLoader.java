@@ -60,13 +60,9 @@ public class ItemLoader {
 			backpacks.put(Integer.valueOf(entry.getKey()), new ProfileItemStorage.Backpack(icon, contents));
 		}
 
-		// Parse the wardrobe items into a format that can be worked with
-		TreeMap<String, Loadouts.Armour> wardrobeOrdered = new TreeMap<>((k1, k2) -> Integer.compare(Integer.parseInt(k1), Integer.parseInt(k2)));
-		wardrobeOrdered.putAll(member.loadouts.armour);
 		List<ItemStack> wardrobeContents = new ArrayList<>();
 
-		for (Map.Entry<String, Loadouts.Armour> entry : wardrobeOrdered.entrySet()) {
-			Loadouts.Armour loadout = entry.getValue();
+		for (Loadouts.ArmourLoadout loadout : member.loadouts.armour.getLoadouts()) {
 			List<ItemStack> helmet = loadout.helmet != null ? decode(loadout.helmet.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> chestplate = loadout.chestplate != null ? decode(loadout.chestplate.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> leggings = loadout.leggings != null ? decode(loadout.leggings.data) : List.of(ItemStack.EMPTY);
@@ -78,10 +74,17 @@ public class ItemLoader {
 			wardrobeContents.add(boots.getFirst());
 		}
 
-		// When a wardrobe slot is selected it does not appear so we have to add it back manually
-		if (member.inventories.equippedWardrobeSlot != -1) {
+		// When a wardrobe slot is selected the loadout has null for the pieces so we need to put them in the slots
+		// TODO check if this is actually -1 when a loadout is not selected
+		if (member.loadouts.armour.equippedSet != -1) {
 			// Note: The equipped slot is not zero-indexed
-			wardrobeContents.addAll(Math.min((member.inventories.equippedWardrobeSlot - 1) * 4, wardrobeContents.size()), armour);
+			// TODO fallback handling for profiles that do not have this data
+			int startingIndex = Math.min((member.loadouts.armour.equippedSet - 1) * 4, wardrobeContents.size());
+
+			wardrobeContents.set(startingIndex + 0, armour.getFirst());
+			wardrobeContents.set(startingIndex + 1, armour.get(1));
+			wardrobeContents.set(startingIndex + 2, armour.get(2));
+			wardrobeContents.set(startingIndex + 3, armour.getLast());
 		}
 
 		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), PetLoader.parsePets(member.petsData.pets), new ProfileItemStorage.Bags(accessories));
