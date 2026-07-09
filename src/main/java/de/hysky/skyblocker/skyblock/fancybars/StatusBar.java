@@ -450,6 +450,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		if (object.has("text_position"))
 			this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
+		if (object.has("direction")) this.direction = Direction.valueOf(object.get("direction").getAsString().trim());
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 	}
 
