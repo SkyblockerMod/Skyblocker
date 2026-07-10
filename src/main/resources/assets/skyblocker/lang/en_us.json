@@ -827,6 +827,7 @@
   "skyblocker.config.hud.globalScale": "Global Scale",
 
   "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nWidgets are per island. Widget options apply per island, use the 'Copy to...' button.\n\nFor Hypixel widgets, only the ones currently shown in the vanilla tab will automatically appear in the Fancy Tab preview.\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
+
   "skyblocker.config.hud.location.everywhere": "Everywhere",
 
   "skyblocker.config.hud.movedMessage": "To enable/disable this widget, click the button and either right click anywhere to add it, or right click on it and click 'remove' to delete.",
@@ -841,9 +842,9 @@
   "skyblocker.config.hud.position.pointParent": "Parent Point",
   "skyblocker.config.hud.position.pointThis": "This Point",
 
+  "skyblocker.config.hud.screen.locationWarning[0]": "You are currently configuring widgets for a different island.",
+  "skyblocker.config.hud.screen.locationWarning[1]": "Hypixel widgets in this preview will not be accurate!",
   "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
-	"skyblocker.config.hud.screen.locationWarning[0]": "You are currently configuring widgets for a different island.",
-	"skyblocker.config.hud.screen.locationWarning[1]": "Hypixel widgets in this preview will not be accurate!",
 
   "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
   "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatically change the anchor of the widget based on its position to avoid it going off screen when the screen is resized.",
@@ -1801,8 +1802,8 @@
 
   "skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
   "skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
-	"skyblocker.hud.missingTabWidget[2]": "Make sure it is visible in the vanilla tab,",
-	"skyblocker.hud.missingTabWidget[3]": "which is accessible via holding either %s or (%s and %s).",
+  "skyblocker.hud.missingTabWidget[2]": "Make sure it is visible in the vanilla tab,",
+  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding either %s or (%s and %s).",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",
