@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -42,7 +43,9 @@ class PositionRuleWidget extends AbstractContainerWidget {
 		this.widgetConfig = config;
 		this.modifiedWidget = modifiedWidget;
 		layout.defaultCellSetting().alignHorizontallyCenter();
-		parentButton = Button.builder(Component.translatable("skyblocker.config.hud.position.parent", getParentName()), _ -> config.promptSelectWidget(this::onWidgetSelected, false)).build();
+		parentButton = Button.builder(Component.translatable("skyblocker.config.hud.position.parent", getParentName()), _ -> config.promptSelectWidget(this::onWidgetSelected, false, Component.translatable("skyblocker.config.hud.position.parent.@Tooltip")))
+				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.position.parent.@Tooltip")))
+				.build();
 		coordsDisplay = new StringWidget(Component.literal("hi"), Minecraft.getInstance().font);
 		coordsDisplay.setHeight(coordsDisplay.getHeight() + 6);
 		AnchorSelectionWidget parentPoint = new AnchorSelectionWidget(Component.translatable("skyblocker.config.hud.position.pointParent"), true);

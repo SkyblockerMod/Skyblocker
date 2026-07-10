@@ -208,6 +208,9 @@ public class WidgetsConfigurationScreen extends Screen {
 			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[0]"), width / 2, 20, 0xFFFFFFFF);
 			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[1]"), width / 2, 30, 0xFFFFFFFF);
 		}
+		if (selectWidgetPrompt != null) {
+			context.setTooltipForNextFrame(selectWidgetPrompt.tooltip(), mouseX, mouseY);
+		}
 	}
 
 	@Override
@@ -430,8 +433,8 @@ public class WidgetsConfigurationScreen extends Screen {
 		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
 	}
 
-	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself) {
-		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself);
+	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {
+		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself, tooltip);
 		sidePanelWidget.close();
 	}
 
@@ -547,5 +550,5 @@ public class WidgetsConfigurationScreen extends Screen {
 		minecraft.gui.setScreen(popupCreator.apply(this));
 	}
 
-	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself) {}
+	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {}
 }

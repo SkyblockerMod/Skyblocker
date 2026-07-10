@@ -838,6 +838,7 @@
   "skyblocker.config.hud.otherOptions.visibleTabWidgets": "Edit visible Fancy TAB widgets",
 
   "skyblocker.config.hud.position.parent": "Parent: %s",
+  "skyblocker.config.hud.position.parent.@Tooltip": "Click to select a parent for this widget.",
   "skyblocker.config.hud.position.parent.screen": "Screen",
   "skyblocker.config.hud.position.pointParent": "Parent Point",
   "skyblocker.config.hud.position.pointThis": "This Point",
