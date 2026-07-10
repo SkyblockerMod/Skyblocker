@@ -120,7 +120,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 			lastRenderedConfig = false;
 			pack(elements);
 		}
-		extractInternal(context, elements);
+		extractInternal(context, elements, false);
 	}
 
 	@Override
@@ -129,16 +129,35 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 			lastRenderedConfig = true;
 			pack(configElements);
 		}
-		extractInternal(graphics, configElements);
+		extractInternal(graphics, configElements, true);
 	}
 
-	private void extractInternal(GuiGraphicsExtractor context, Collection<Element> elements) {
+	private void extractInternal(GuiGraphicsExtractor context, Collection<Element> elements, boolean config) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
 			context.fill(1, 0, w - 1, h, textBackgroundColor);
 			context.fill(0, 1, 1, h - 1, textBackgroundColor);
 			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
+		}
+
+		// Display Hypixel or Skyblocker widget in config mode.
+		Component title = this.title;
+		boolean isHypixelWidget = this instanceof TabHudWidget;
+		if (config) {
+			title = this.title.copy().append(" (").append(isHypixelWidget ? "Hypixel" : "Skyblocker").append(" Widget)");
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "Hypixel" : "Skyblocker").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "Hy" : "Skb").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "H" : "S").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" ").append(isHypixelWidget ? "H" : "S");
+			}
 		}
 
 		int strHeightHalf = txtRend.lineHeight / 2;

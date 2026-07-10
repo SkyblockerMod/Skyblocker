@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
@@ -66,9 +68,12 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	protected abstract void updateContent(PlayerListManager.Widget widget);
 
 	public List<Component> createErrorMessage() {
+		Component tabKey = Minecraft.getInstance().options.keyPlayerList.getTranslatedKeyMessage();
 		return List.of(
 				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(hypixelWidgetName).withStyle(ChatFormatting.YELLOW)),
-				Component.translatable("skyblocker.hud.missingTabWidget[1]")
+				Component.translatable("skyblocker.hud.missingTabWidget[1]"),
+				Component.translatable("skyblocker.hud.missingTabWidget[2]"),
+				Component.translatable("skyblocker.hud.missingTabWidget[3]", tabKey, tabKey, TabHud.defaultTgl.getTranslatedKeyMessage())
 		);
 	}
 
