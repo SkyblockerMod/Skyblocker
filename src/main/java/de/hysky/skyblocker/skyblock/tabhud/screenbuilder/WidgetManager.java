@@ -191,7 +191,7 @@ public class WidgetManager {
 		AtomicReference<@Nullable String> error = new AtomicReference<>();
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			JsonElement input = JsonParser.parseReader(reader);
-			CONFIG = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.HUD_WIDGETS_TYPE, Config.CODEC).decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
+			CONFIG = Config.DATA_FIXING_CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
 				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
 				showErrorToast();
@@ -309,7 +309,7 @@ public class WidgetManager {
 
 	public static void saveConfig() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(Config.CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow(), writer);
+			SkyblockerMod.GSON.toJson(Config.DATA_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow(), writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
@@ -354,16 +354,16 @@ public class WidgetManager {
 		}
 	}
 
-	public record Config(int version, Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker, int defaultsVersion) {
+	public record Config(Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker, int defaultsVersion) {
 		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.fieldOf(ConfigDataFixer.VERSION_KEY).forGetter(Config::version),
 				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("configs"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
 				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker),
 				Codec.INT.optionalFieldOf(DEFAULTS_VERSION_KEY, 0).forGetter(_ -> DEFAULTS_VERSION)
 		).apply(instance, Config::new));
+		public static final Codec<Config> DATA_FIXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.HUD_WIDGETS_TYPE, CODEC);
 
 		public Config() {
-			this(SkyblockerConfigManager.CONFIG_VERSION, new Object2ObjectOpenHashMap<>(), new CopyTracker(), 0);
+			this(new Object2ObjectOpenHashMap<>(), new CopyTracker(), 0);
 		}
 	}
 }
