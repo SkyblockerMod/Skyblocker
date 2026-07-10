@@ -46,8 +46,8 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class WidgetsConfigurationScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -156,7 +156,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		Component text = Component.translatable("skyblocker.config.hud.screen.rightClick");
 		int textWidth = font.width(text);
 		// FIXME transparency and shadow
-		context.textRenderer().accept((width - textWidth) / 2, (height - font.lineHeight) / 2, text);
+		context.text(font, text, (width - textWidth) / 2, (height - font.lineHeight) / 2, 0xFFFFFFFF);
 	}
 
 	@Override
@@ -203,6 +203,11 @@ public class WidgetsConfigurationScreen extends Screen {
 		// Render on top of everything
 		topBarWidget.extractRenderState(context, mouseX, mouseY, deltaTicks);
 		addWidgetWidget.extractRenderState(context, mouseX, mouseY, deltaTicks);
+
+		if (currentLocation != Utils.getLocation()) {
+			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[0]"), width / 2, 20, 0xFFFFFFFF);
+			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[1]"), width / 2, 30, 0xFFFFFFFF);
+		}
 	}
 
 	@Override

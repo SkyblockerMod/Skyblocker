@@ -834,6 +834,8 @@
   "skyblocker.config.hud.position.pointThis": "This Point",
 
   "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
+	"skyblocker.config.hud.screen.locationWarning[0]": "You are currently configuring widgets for a different island.",
+	"skyblocker.config.hud.screen.locationWarning[1]": "Hypixel widgets in this preview will not be accurate!",
 
   "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
   "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatically change the anchor of the widget based on its position to avoid it going off screen when the screen is resized.",
