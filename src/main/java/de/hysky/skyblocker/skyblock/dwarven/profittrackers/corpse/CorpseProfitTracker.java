@@ -13,6 +13,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -240,21 +241,21 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
 		// Gemstones
-		NAME2ID_MAP.put("☠ Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
-		NAME2ID_MAP.put("☠ Fine Onyx Gemstone", "FINE_ONYX_GEM");
-		NAME2ID_MAP.put("☠ Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Fine Onyx Gemstone", "FINE_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
 
-		NAME2ID_MAP.put("☘ Flawed Peridot Gemstone", "FLAWED_PERIDOT_GEM");
-		NAME2ID_MAP.put("☘ Fine Peridot Gemstone", "FINE_PERIDOT_GEM");
-		NAME2ID_MAP.put("☘ Flawless Peridot Gemstone", "FLAWLESS_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Flawed Peridot Gemstone", "FLAWED_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Fine Peridot Gemstone", "FINE_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Flawless Peridot Gemstone", "FLAWLESS_PERIDOT_GEM");
 
-		NAME2ID_MAP.put("☘ Flawed Citrine Gemstone", "FLAWED_CITRINE_GEM");
-		NAME2ID_MAP.put("☘ Fine Citrine Gemstone", "FINE_CITRINE_GEM");
-		NAME2ID_MAP.put("☘ Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Flawed Citrine Gemstone", "FLAWED_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Fine Citrine Gemstone", "FINE_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
 
-		NAME2ID_MAP.put("☂ Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("☂ Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("☂ Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
 
 		// Eggs
 		NAME2ID_MAP.put("Goblin Egg", "GOBLIN_EGG");
