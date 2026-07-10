@@ -11,4 +11,18 @@ public class SkyBlockColors {
 	public static final TextColor LIGHT_GRAY = TextColor.fromRgb(0xA8BFD2);
 	public static final TextColor GRAY = TextColor.fromRgb(0x707592);
 	public static final TextColor YELLOW = TextColor.fromRgb(0xFFDE2F);
+
+	public static int fromVanilla(int colour) {
+		return switch (colour) {
+			case 0xAA0000 -> DARK_RED.getValue();
+			case 0xFFAA00 -> GOLD.getValue();
+			case 0x0000AA -> DARK_BLUE.getValue();
+			case 0x5555FF -> BLUE.getValue();
+			case 0xAA00AA -> DARK_PURPLE.getValue();
+			case 0xAAAAAA -> LIGHT_GRAY.getValue();
+			case 0x555555 -> GRAY.getValue();
+			case 0xFFFF55 -> YELLOW.getValue();
+			default -> colour;
+		};
+	}
 }
