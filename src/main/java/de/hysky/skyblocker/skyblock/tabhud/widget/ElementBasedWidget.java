@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	public ElementBasedWidget(Component title, @Nullable Integer colorValue, String internalID) {
 		super(internalID);
 		this.title = title;
-		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
+		this.color = 0xFF000000 | (colorValue == null ? 0 : SkyBlockColors.fromVanilla(colorValue));
 	}
 
 	public void addComponent(Element c) {
