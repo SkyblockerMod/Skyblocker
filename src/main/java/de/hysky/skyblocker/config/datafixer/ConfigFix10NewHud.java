@@ -92,8 +92,7 @@ public class ConfigFix10NewHud extends ConfigDataFix {
 	private static Dynamic<?> fixWidget(Dynamic<?> widget) {
 		return widget.emptyMap().set("config", widget.emptyMap()).set("position", widget
 				.remove("layer")
-				.remove("parent")
-				.setFieldIfPresent("parent", fixWidgetParent(widget))
+				.replaceField("parent", "parent", fixWidgetParent(widget))
 		);
 	}
 
