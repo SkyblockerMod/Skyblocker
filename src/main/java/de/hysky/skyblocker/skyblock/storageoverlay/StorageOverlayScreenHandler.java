@@ -28,12 +28,7 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 		if (!isBackpack) {
 			for (int i = 0; i < rows * 9; i++) {
 				Slot slot = slots.get(i);
-				slots.set(i, new Slot(slot.container, slot.getContainerSlot(), slot.x, slot.y) {
-					@Override
-					public boolean isActive() {
-						return false;
-					}
-				});
+				slots.set(i, new InactiveSlot(slot.container, slot.getContainerSlot(), slot.x, slot.y));
 			}
 		}
 		// if backpack / echest
@@ -41,12 +36,7 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 			//disable top row (unneeded navigation)
 			for (int i = 0; i < 9; i++) {
 				Slot slot = slots.get(i);
-				slots.set(i, new Slot(slot.container, slot.getContainerSlot(), slot.x, slot.y) {
-					@Override
-					public boolean isActive() {
-						return false;
-					}
-				});
+				slots.set(i, new InactiveSlot(slot.container, slot.getContainerSlot(), slot.x, slot.y));
 			}
 			//disable slots when not in menu and set to of screen until moved
 			for (int i = 9; i < rows * 9; ++i) {
@@ -74,8 +64,9 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 
 	/**
 	 * Moves containers slots to new top left position
-	 * @param x left position
-	 * @param y top position
+	 *
+	 * @param x       left position
+	 * @param y       top position
 	 * @param columns how many columns the container has
 	 */
 	public void moveBackpackSlots(int x, int y, int columns) {
@@ -86,6 +77,18 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 			SlotAccessor slotAccessor = (SlotAccessor) slot;
 			slotAccessor.setX(itemX);
 			slotAccessor.setY(itemY);
+		}
+	}
+
+	private static class InactiveSlot extends Slot {
+
+		InactiveSlot(Container container, int slot, int x, int y) {
+			super(container, slot, x, y);
+		}
+
+		@Override
+		public boolean isActive() {
+			return false;
 		}
 	}
 }

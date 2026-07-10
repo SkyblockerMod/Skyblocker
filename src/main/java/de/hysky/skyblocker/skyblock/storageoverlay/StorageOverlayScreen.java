@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.storageoverlay;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -7,6 +8,7 @@ import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
@@ -42,7 +44,9 @@ import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStora
 public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlayScreenHandler> {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
-	private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("social_interactions/background");
+	private static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofGuiSprite(
+			SkyblockerMod.id("storage_overlay/background"),
+			Identifier.withDefaultNamespace("social_interactions/background"));
 	private static final Pattern CHANGING_BACKPACK_PATTERN = Pattern.compile("(Placing backpack)|(Removed backpack)");
 	//inventory texture key values
 	private static final int HEADER_H = 17;
@@ -160,7 +164,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		LinearLayout extraButtons = new LinearLayout(width - 90, height - 80, LinearLayout.Orientation.VERTICAL);
 		extraButtons.spacing(5);
 		//add toolkit button
-		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.toolkitButton"), this::toolkit)
+		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton"), this::toolkit)
 				.size(80, 15)
 				.build());
 		//add hunting toolkit button
@@ -229,7 +233,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractBackground(graphics, mouseX, mouseY, a);
 		//render background
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, getLeftPos(), this.topPos, getWidth(), getHeight());
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND.get(), getLeftPos(), this.topPos, getWidth(), getHeight());
 		//render inventory
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 90, 0, 132, 175, 90, 256, 256);
 	}
