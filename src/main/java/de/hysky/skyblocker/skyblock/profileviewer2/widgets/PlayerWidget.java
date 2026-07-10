@@ -26,6 +26,9 @@ public final class PlayerWidget extends AbstractWidget {
 	public PlayerWidget(GameProfile playerProfile) {
 		super(0, 0, WIDTH, HEIGHT, Component.empty());
 		this.entity = new ProfileViewerPlayer(playerProfile);
+
+		// Make the widget ignore clicks
+		this.active = false;
 	}
 
 	@Override
@@ -40,4 +43,9 @@ public final class PlayerWidget extends AbstractWidget {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 }

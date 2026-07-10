@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -41,9 +40,8 @@ public class DyeSpecialEffects {
 				if (matcher.matches() && matcher.group("player").equals(CLIENT.getUser().getName())) {
 					ItemStack stack = findDyeStack(matcher.group("dye"));
 
-					if (stack != null && !stack.isEmpty()) {
-						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, 30);
-						CLIENT.gameRenderer.displayItemActivation(stack);
+					if (!stack.isEmpty()) {
+						SpecialEffects.displaySpecialEffect(stack, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER);
 					}
 				}
 			} catch (Exception e) {
@@ -54,9 +52,9 @@ public class DyeSpecialEffects {
 		return true;
 	}
 
-	private static @Nullable ItemStack findDyeStack(String dyeName) {
+	private static ItemStack findDyeStack(String dyeName) {
 		Optional<FlexibleItemStack> dye = ItemRepository.getItemsStream()
-				.filter(stack -> stack.get(DataComponents.CUSTOM_NAME).getString().equals(dyeName))
+				.filter(stack -> stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString().equals(dyeName))
 				.findFirst();
 
 		return dye.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY);

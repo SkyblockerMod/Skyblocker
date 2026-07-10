@@ -146,6 +146,7 @@
     - Solver:
         - Fetchur
         - Puzzler
+        - Fossil Muncher
     - Unbreakable carpet highlighter
 - **Crystal Hollows:**
     - Crystal Hollows Map:
@@ -300,6 +301,8 @@
     - *Bestiary*
     - *Farming/Hunting Toolkit Indicator*
     - *Garden Chip Level*
+    - *Crop Milestones*
+    - *Crop/Greenhouse Upgrades*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -386,6 +389,7 @@
 - **Bits Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
+- **Raffle reward highlighter**
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla

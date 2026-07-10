@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
-import net.minecraft.client.gui.screens.DisconnectedScreen;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ServerTransferHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,28 +19,17 @@ public class ScreenMixin {
 	@Shadow
 	protected Minecraft minecraft;
 
-	@Unique
-	private static boolean skyblocker$isCursorHidden = false;
-
-	@Inject(method = "init(II)V", at = @At("TAIL"))
-	private void skyblocker$hideCursor(CallbackInfo ci) {
-		Object instance = this;
-
-		if ((instance instanceof DisconnectedScreen) && Utils.isOnHypixel() && skyblocker$isCursorHidden) {
-			InputConstants.grabOrReleaseMouse(this.minecraft.getWindow(), GLFW.GLFW_CURSOR_NORMAL, this.minecraft.mouseHandler.xpos(), this.minecraft.mouseHandler.ypos());
-		}
-
-		if ((instance instanceof LevelLoadingScreen || instance instanceof ServerReconfigScreen) && Utils.isOnHypixel()) {
-			//Prevents the mouse from being movable while we cancel the rendering of the screen
-			InputConstants.grabOrReleaseMouse(this.minecraft.getWindow(), GLFW.GLFW_CURSOR_DISABLED, this.minecraft.mouseHandler.xpos(), this.minecraft.mouseHandler.ypos());
-			skyblocker$isCursorHidden = true;
-		} else {
-			skyblocker$isCursorHidden = false;
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void skyblocker$releaseCursorWhileUnfocused(CallbackInfo ci) {
+		// If the window isn't focused while a transfer screen is up, give the cursor back so it isn't hidden when you come back
+		if (((Object) this instanceof ServerReconfigScreen || (Object) this instanceof LevelLoadingScreen) && Utils.isOnHypixel() && !this.minecraft.isWindowActive()) {
+			ServerTransferHelper.setInterrupted(true);
+			if (this.minecraft.mouseHandler.isMouseGrabbed()) this.minecraft.mouseHandler.releaseMouse();
 		}
 	}
 
 	@Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
 	private void skyblocker$hideReconfiguringScreen(CallbackInfo ci) {
-		if ((Object) this instanceof ServerReconfigScreen && Utils.isOnHypixel()) ci.cancel();
+		if ((Object) this instanceof ServerReconfigScreen && Utils.isOnHypixel() && !ServerTransferHelper.isInterrupted()) ci.cancel();
 	}
 }

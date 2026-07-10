@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
@@ -58,7 +59,10 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			.xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
 	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
-	private static final Identifier EMPTY_SLOT = SkyblockerMod.id("equipment/empty_icon");
+	private static final Identifier EMPTY_NECKLACE = SkyblockerMod.id("equipment/empty_necklace");
+	private static final Identifier EMPTY_CLOAK = SkyblockerMod.id("equipment/empty_cloak");
+	private static final Identifier EMPTY_BELT = SkyblockerMod.id("equipment/empty_belt");
+	private static final Identifier EMPTY_HAND = SkyblockerMod.id("equipment/empty_hand");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("equipment");
 	public static final FallbackedTexture<Identifier> BACKGROUND = FallbackedTexture.ofTexture(
 			SkyblockerMod.id("textures/gui/container/skyblock_inventory.png"),
@@ -123,8 +127,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public SkyblockInventoryScreen(Player player) {
 		super(player);
 		SimpleContainer inventory = new SimpleContainer(Utils.isInTheRift() ? equipment_rift : equipment);
+		Identifier[] textures = new Identifier[]{EMPTY_NECKLACE, EMPTY_CLOAK, EMPTY_BELT, EMPTY_HAND};
 		for (int i = 0; i < 4; i++) {
-			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18);
+			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18, textures[i]);
 		}
 	}
 
@@ -132,7 +137,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
+				// The Equipment Wardrobe is not available in the Rift.
+				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() ? "/stats" : "/equipment";
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 				return true;
 			}
 		}
@@ -215,9 +222,11 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	}
 
 	private static class EquipmentSlot extends Slot {
+		private final Identifier noItemIcon;
 
-		private EquipmentSlot(Container inventory, int index, int x, int y) {
+		private EquipmentSlot(Container inventory, int index, int x, int y, Identifier noItemIcon) {
 			super(inventory, index, x, y);
+			this.noItemIcon = noItemIcon;
 		}
 
 		@Override
@@ -232,7 +241,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 		@Override
 		public @Nullable Identifier getNoItemIcon() {
-			return EMPTY_SLOT;
+			return noItemIcon;
 		}
 	}
 }

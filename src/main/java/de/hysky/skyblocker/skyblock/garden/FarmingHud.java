@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
+	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?:(?<percent>[\\d,]+(?:\\.\\d+)?%)|(?<current>[\\d,]+)/(?<max>[\\d,]+k?))\\)");
 	private static final Minecraft client = Minecraft.getInstance();
 	private static final int STATS_WINDOW = 5_000;
 
@@ -90,7 +90,13 @@ public class FarmingHud {
 				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
-						farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
+						if (matcher.group("percent") != null) {
+							farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
+						} else if (matcher.group("current") != null) {
+							float max = NUMBER_FORMAT.parse(matcher.group("max")).floatValue();
+							if (matcher.group("max").endsWith("k")) max *= 1000;
+							farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("current")).floatValue() / max * 100;
+						}
 					} catch (ParseException e) {
 						LOGGER.error("[Skyblocker Farming HUD] Failed to parse farming xp", e);
 					}

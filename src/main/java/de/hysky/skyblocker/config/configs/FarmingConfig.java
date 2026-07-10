@@ -41,6 +41,10 @@ public class FarmingConfig {
 		public boolean enabled = true;
 
 		public boolean closeScreenOnPlotClick = false;
+
+		public int x = 0;
+
+		public int y = 0;
 	}
 
 	public static class VisitorHelper {

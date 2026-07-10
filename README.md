@@ -164,6 +164,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Solver:
         - Fetchur
         - Puzzler
+        - Fossil Muncher
     - Unbreakable carpet highlighter
 - **Crystal Hollows:**
     - Crystal Hollows Map:
@@ -318,6 +319,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Bestiary*
     - *Farming/Hunting Toolkit Indicator*
     - *Garden Chip Level*
+    - *Crop Milestones*
+    - *Crop/Greenhouse Upgrades*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
@@ -332,13 +335,13 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Accessories Helper*
     - *Craft Cost*
     - *Essence Shop Price*
-    - *True Hex Color for Dye items*
+  - *True Hex Color for Dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
     - *Evolution Item Progress*
 - **Quick Navigation:** Fully customizable fast navigation between pets, armor, storage, skill, collection, crafting, enchant, anvil, warp dungeon, and warp hub.
-    - Item Selector
+    - Item Selector 
 - **Recipe Book:** Lists all Skyblock items in the vanilla recipe book, allowing you to see the recipe of the item.
     - Crafting
     - Forge
@@ -372,7 +375,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
-    - *`/chapters` command*
+  - *`/chapters` command*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -404,6 +407,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Bits Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
+- **Raffle reward highlighter**
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
@@ -415,7 +419,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Crafting
     - Forge
     - NPC Shop Recipes
-    - Kat Pet Upgrade Recipes
+  - Kat Pet Upgrade Recipes
     - Skyblock Info
     - Collapsible Entries
 - **Item Protection**
@@ -440,6 +444,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Config Backups**
 - **Iris shader support**
 - **Block Break Prediction**
+
 
 </details>
 

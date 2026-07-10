@@ -53,6 +53,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -129,7 +130,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 			//item protection
 			if (ItemProtection.itemProtection.matches(input)) {
-				ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+				ItemProtection.itemProtection.consumeClick();
+				boolean ownItem = this.hoveredSlot.container == this.minecraft.player.getInventory()
+						|| ItemProtection.isPersonalStorage(this.getTitle().getString());
+				if (ownItem) {
+					ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+				}
 			}
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
@@ -213,8 +219,18 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		return skyblocker$modifyDisplayStack(hoveredSlot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
-	@ModifyVariable(method = "extractSlot", at = @At(value = "LOAD", ordinal = 3), ordinal = 0)
-	private ItemStack skyblocker$modifyDisplayStack(ItemStack stack, @Local(name = "slot") Slot slot) {
+	@ModifyArg(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;III)V"))
+	private ItemStack skyblocker$modifyDisplayStackFake(ItemStack stack, @Local(name = "slot") Slot slot) {
+		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
+	}
+
+	@ModifyArg(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;item(Lnet/minecraft/world/item/ItemStack;III)V"))
+	private ItemStack skyblocker$modifyDisplayStackReal(ItemStack stack, @Local(name = "slot") Slot slot) {
+		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
+	}
+
+	@ModifyArg(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;itemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V"))
+	private ItemStack skyblocker$modifyDisplayStackDecorations(ItemStack stack, @Local(name = "slot") Slot slot) {
 		return skyblocker$modifyDisplayStack(slot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 

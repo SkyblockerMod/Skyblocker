@@ -650,6 +650,8 @@
   "skyblocker.config.general.shortcuts.enableShortcuts.@Tooltip": "Works anywhere, even in vanilla! Edit shortcuts with \"/skyblocker shortcuts\". At least one of the following options must be enabled for this to take effect.",
 
   "skyblocker.config.general.specialEffects": "Special Effects",
+  "skyblocker.config.general.specialEffects.displayItemName": "Display Item Name",
+  "skyblocker.config.general.specialEffects.displayItemName.@Tooltip": "The name of the item will be displayed below the special visual effect.",
   "skyblocker.config.general.specialEffects.rareDropEffects": "Rare RNG Drop Effects",
   "skyblocker.config.general.specialEffects.rareDropEffects.@Tooltip": "Adds a special visual effect triggered upon obtaining rare drops such as RNGs!",
   "skyblocker.config.general.specialEffects.rareDungeonDropEffects": "Rare Dungeon Drop Effects",
@@ -698,6 +700,12 @@
   "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombie Shootout Helper",
   "skyblocker.config.helpers.carnival.zombieShootoutHelper.@Tooltip": "Outlines lit redstone lamps in red, and applies the glowing effect to zombies where the color depends on the kind of zombie.",
 
+  "skyblocker.config.helpers.centuryRaffle": "Century Raffle",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Enable Raffle Reward Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip": "Highlights unclaimed raffle prizes in red and claimed ones in green.",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight": "Enable Raffle Task Highlighter",
+  "skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip": "Highlights incomplete raffle tasks in red and completed ones in green.",
+
   "skyblocker.config.helpers.chocolateFactory": "Chocolate Factory",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "Enable Chocolate Factory Helper",
   "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper.@Tooltip": "Highlights the best upgrade when enabled. \n\nThe best upgrade is marked as green, but if you can't afford it, it's marked as yellow while marking the next best upgrade that you can afford as green.",
@@ -726,7 +734,7 @@
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
 
   "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
-  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing armor from the wardrobe by pressing hotbar keys 1-9 while the menu is open. The corresponding armor set in the wardrobe menu will be equipped.",
+  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armor Sets and Equipment Sets by pressing the corresponding Hotbar Slot key.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
@@ -1081,6 +1089,9 @@
   "skyblocker.config.otherLocations.spidersDen.relics.enableRelicsHelper": "Enable Hidden Relics Helper",
   "skyblocker.config.otherLocations.spidersDen.relics.highlightFoundRelics": "Highlight Found Relics",
 
+  "skyblocker.config.patches.updated.failed": "Updating the config patches failed. See logs for details.",
+  "skyblocker.config.patches.updated.success": "Updated the config patches successfully.",
+
   "skyblocker.config.quickNav": "Quick Navigation",
   "skyblocker.config.quickNav.button": "Button %s",
   "skyblocker.config.quickNav.button.chooseSkyblockItem": "Choose SkyBlock Item",
@@ -1207,6 +1218,7 @@
   "skyblocker.config.uiAndVisuals.bars.enableBars": "Enable Bars",
   "skyblocker.config.uiAndVisuals.bars.enableBarsRift": "Enable in Rift",
   "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBar": "Enable Vanilla Style Mana Bar",
+  "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "Enable Vanilla Style Mana Bar Blinking",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay": "Intelligence Display",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.ACCURATE": "Accurate",
   "skyblocker.config.uiAndVisuals.bars.intelligenceDisplay.IN_FRONT": "Smallest In Front",
@@ -1214,6 +1226,7 @@
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
+  "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
@@ -1380,8 +1393,11 @@
   "skyblocker.config.uiAndVisuals.showCustomizeButton": "Show Customize Armor Button",
   "skyblocker.config.uiAndVisuals.showCustomizeButton.@Tooltip": "Adds a little paint brush icon in your inventory next to the player model to open the Armor Customization screen.",
 
-  "skyblocker.config.uiAndVisuals.showEquipmentInInventory": "Show Equipment in Inventory",
-  "skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip": "This display is a cache of the /stats interface and is not updated in real time.\nThe slots are clickable and equivalent to /stats.",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "SkyBlock Inventory Screen",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats": "Open Equipment To '/stats'",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "When clicking the equipment, whether to open to 'Your Stats' (/stats) or to the Equipment Wardrobe (/equipment).",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "Show Equipment in Inventory",
+  "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "This display is a cache and is not updated in real time.",
 
   "skyblocker.config.uiAndVisuals.slotText": "Slot Text",
   "skyblocker.config.uiAndVisuals.slotText.@Tooltip": "Displays information such as enchantment book level, minion level, pet level, potion level, prehistoric egg blocks walked, rancher's boots speed cap, and skill level.",
@@ -1798,6 +1814,9 @@
 
   "skyblocker.itemTooltip.nullMessage": "Item price information on tooltip will renew in max 60 seconds. If not, check latest.log",
 
+  "skyblocker.mayor.perkOverrides.update.failed": "Updating the perk overrides failed. See logs for details.",
+  "skyblocker.mayor.perkOverrides.update.success": "Updated the perk overrides successfully.",
+
   "skyblocker.museum.attemptingResync": "Attempting to resync your museum item donations...",
   "skyblocker.museum.cannotResync": "Cannot resync your museum item donations! You can only do this once an hour.",
   "skyblocker.museum.hud.alreadyDonatedItem": "Donated Item",
@@ -2012,7 +2031,7 @@
   "skyblocker.waypoints.exportWaypointsSkyblocker": "Export Waypoints (Skyblocker)",
   "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints to Clipboard (Skyblocker Format)",
   "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
-  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Export Waypoints to Clipboard (Skytils Format)",
+  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils waypoint exports have been deprecated for removal and are unrecommended due to waypoint data loss.",
   "skyblocker.waypoints.groupType": "Group Type",
   "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.groupType.ordered": "Ordered",
@@ -2053,8 +2072,10 @@
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
   "text.skyblocker.config": "Open Config...",
   "text.skyblocker.confirm": "Confirm",
+  "text.skyblocker.curseforge": "CurseForge",
   "text.skyblocker.dead": "Dead",
   "text.skyblocker.discord": "Discord",
+  "text.skyblocker.logsFolder": "Open Logs Folder",
   "text.skyblocker.modrinth": "Modrinth",
   "text.skyblocker.offline": "Offline",
   "text.skyblocker.open": "Open",

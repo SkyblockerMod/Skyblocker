@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 	public ElementBasedWidget(Component title, @Nullable Integer colorValue, Information information) {
 		super(information);
 		this.title = title;
-		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
+		this.color = 0xFF000000 | (colorValue == null ? 0 : SkyBlockColors.fromVanilla(colorValue));
 		configElements = List.of(new PlainTextElement(title.plainCopy()));
 		pack(elements); // initial pack to limit weird rendering artifacts
 	}

@@ -70,7 +70,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 
 	@Override
 	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
-		// rows * 9 = 54
+		// 6 rows * 9 = 54
 		// hide stacks if the target colour is null to prevent the wrong colour items flashing when hypixel closes & reopens the screen
 		return slotIndex >= 54 || (targetColor != null && targetColor.equals(itemColor.get(stack.getItem()))) ? stack : ItemStack.EMPTY;
 	}

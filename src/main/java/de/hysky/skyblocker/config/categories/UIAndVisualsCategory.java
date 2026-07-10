@@ -117,14 +117,6 @@ public class UIAndVisualsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory"))
-						.description(Component.translatable("skyblocker.config.uiAndVisuals.showEquipmentInInventory.@Tooltip"))
-						.binding(defaults.uiAndVisuals.showEquipmentInInventory,
-								() -> config.uiAndVisuals.showEquipmentInInventory,
-								newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.museumOverlay"))
 						.description(Component.translatable("skyblocker.config.uiAndVisuals.museumOverlay.@Tooltip"))
 						.binding(defaults.uiAndVisuals.museumOverlay,
@@ -163,6 +155,28 @@ public class UIAndVisualsCategory {
 								() -> config.uiAndVisuals.trueQuiverCount,
 								newValue -> config.uiAndVisuals.trueQuiverCount = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				// SkyBlock Inventory Screen
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip"))
+								.binding(defaults.uiAndVisuals.showEquipmentInInventory,
+										() -> config.uiAndVisuals.showEquipmentInInventory,
+										newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip"))
+								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
+										() -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
+										newValue -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Chest Value FIXME change dropdown to color controller
@@ -468,6 +482,22 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBar = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										() -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking,
+										newValue -> config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.useHungerBarSprites"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.uiAndVisuals.bars.useHungerBarSprites,
+										() -> config.uiAndVisuals.bars.useHungerBarSprites,
+										newValue -> config.uiAndVisuals.bars.useHungerBarSprites = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
@@ -596,7 +626,7 @@ public class UIAndVisualsCategory {
 										newValue -> {
 											config.uiAndVisuals.teleportOverlay.teleportOverlayColor = newValue;
 											TeleportOverlay.configCallback(newValue);
-									})
+										})
 								.controller(ColourController.createBuilder().hasAlpha(true).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -657,6 +687,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
 								.binding(defaults.uiAndVisuals.smoothAOTE.thirdPerson,
 										() -> config.uiAndVisuals.smoothAOTE.thirdPerson,
 										newValue -> config.uiAndVisuals.smoothAOTE.thirdPerson = newValue)
@@ -1071,6 +1102,7 @@ public class UIAndVisualsCategory {
 				.map(configInfo -> configInfo.getOption(config))
 				.sorted(Comparator.comparing(option -> option.name().getString())).toList();
 	}
+
 	//
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 		Set<Object> seen = ConcurrentHashMap.newKeySet();

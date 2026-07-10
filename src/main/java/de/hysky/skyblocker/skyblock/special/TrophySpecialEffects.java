@@ -14,13 +14,11 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 
 public class TrophySpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DIAMOND_PATTERN = Pattern.compile("^NEW DISCOVERY:\\s+(?<item>.+?)\\s+DIAMOND$");
 
 	@Init
@@ -41,8 +39,7 @@ public class TrophySpecialEffects {
 				FlexibleItemStack stack = getStackFromName(matcher.group("item"));
 
 				if (stack != null && stack.getStack() != null && !stack.getStackOrThrow().isEmpty()) {
-					CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-					CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
+					SpecialEffects.displaySpecialEffect(stack.getStackOrThrow(), ParticleTypes.PORTAL);
 				}
 			}
 		} catch (Exception e) { // In case there's a regex failure or something else bad happens

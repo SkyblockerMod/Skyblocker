@@ -13,6 +13,7 @@ public sealed class BasicInfoBoxWidget extends AbstractWidget permits SkillsInfo
 
 	public BasicInfoBoxWidget(int width, int height) {
 		super(0, 0, width, height, Component.empty());
+		this.active = false;
 	}
 
 	@Override
@@ -22,4 +23,9 @@ public sealed class BasicInfoBoxWidget extends AbstractWidget permits SkillsInfo
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput output) {}
+
+	@Override
+	public boolean shouldTakeFocusAfterInteraction() {
+		return false;
+	}
 }

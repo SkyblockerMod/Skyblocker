@@ -68,15 +68,20 @@ public class BeaconHighlighter {
 
 	@SuppressWarnings("ConstantValue")
 	public static <T> void onThrowBeacon(SyncedDataHolder dataHolder, SynchedEntityData.DataItem<T> dataItem, SynchedEntityData.DataValue<T> newValue) {
-		if (Utils.isInTheEnd() && SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification
+		if (Utils.isInTheEnd() && (SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification || SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons)
 				&& dataHolder instanceof Entity entity && SlayerManager.isSelectedBoss(entity.getUUID())
 				&& dataItem.getAccessor() == EnderManAccessor.getDATA_CARRY_STATE()
 				&& dataItem.getValue() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.is(Blocks.BEACON)
 				&& ((Optional<?>) newValue.value()).isEmpty()) {
-			beaconThrown = true;
-			CLIENT.gui.hud.setTimes(5, 20, 10);
-			CLIENT.gui.hud.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
-			CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
+				beaconThrown = true;
+			}
+
+			if (SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification) {
+				CLIENT.gui.hud.setTimes(5, 20, 10);
+				CLIENT.gui.hud.setTitle(Component.literal("Yang Glyph!").withStyle(ChatFormatting.RED));
+				CLIENT.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+			}
 		}
 	}
 
@@ -88,7 +93,7 @@ public class BeaconHighlighter {
 	}
 
 	private static void updateBeaconEntities() {
-		if (CLIENT.level == null || !Utils.isInTheEnd() || !SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) return;
+		if (CLIENT.level == null || !Utils.isInTheEnd() || !SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) || !SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) return;
 
 		for (Map.Entry<UUID, List<Vec3>> beaconEntityPath : BEACON_ENTITY_PATHS.entrySet()) {
 			Entity entity = CLIENT.level.getEntity(beaconEntityPath.getKey());
@@ -99,7 +104,7 @@ public class BeaconHighlighter {
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, @Nullable BlockState oldState, BlockState newState) {
-		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM)) {
+		if (Utils.isInTheEnd() && SlayerManager.isFightingSlayerType(SlayerType.VOIDGLOOM) && SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {
 			BEACONS.removeLong(pos);
 
 			if (newState.is(Blocks.BEACON)) {

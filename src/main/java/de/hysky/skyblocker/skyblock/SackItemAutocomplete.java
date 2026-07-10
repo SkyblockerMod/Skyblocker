@@ -24,6 +24,7 @@ import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.data.NEUItem;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -32,7 +33,11 @@ import net.minecraft.commands.SharedSuggestionProvider;
 
 public class SackItemAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Pattern BAD_CHARACTERS = Pattern.compile("[☂☘☠✎✧❁❂❈❤⸕]");
+	private static final Pattern BAD_CHARACTERS = Pattern.compile(String.format("[%s%s%s%s%s%s%s%s%s%s%s%s]",
+			SkyBlockIcons.MINING_FORTUNE, SkyBlockIcons.MINING_SPEED, SkyBlockIcons.PRISTINE, SkyBlockIcons.INTELLIGENCE,
+			SkyBlockIcons.DEFENSE, SkyBlockIcons.STRENGTH, SkyBlockIcons.HEALTH, SkyBlockIcons.TRUE_DEFENSE,
+			SkyBlockIcons.CRIT_DAMAGE, SkyBlockIcons.FISHING_SPEED, SkyBlockIcons.FORAGING_FORTUNE, SkyBlockIcons.FARMING_FORTUNE
+			));
 
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommandNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommandNode;

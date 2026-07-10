@@ -56,8 +56,8 @@ class ChatRulesHandlerTest {
 		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
 
 		Assertions.assertEquals("&eNew buff&r: &fGain &a+5% &2∮ Sweep&f.", TextTransformer.toLegacy(newBuff));
-		Assertions.assertEquals("&fWatchdog has banned &c&l5,565&f players in the last 7 days.", TextTransformer.toLegacy(watchdog));
-		Assertions.assertEquals("&c ☠ &aNOT_LEGEND_&7 fainted from pressure.", TextTransformer.toLegacy(pressure));
+		Assertions.assertEquals("&fWatchdog has banned &c&l5,565 &fplayers in the last 7 days.", TextTransformer.toLegacy(watchdog));
+		Assertions.assertEquals(" &c☠ &aNOT_LEGEND_ &7fainted from pressure.", TextTransformer.toLegacy(pressure));
 		Assertions.assertEquals("       ", TextTransformer.toLegacy(spacer));
 	}
 
@@ -109,6 +109,7 @@ class ChatRulesHandlerTest {
 		var object = new JsonObject();
 		object.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
 		var encodedObject = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
+		encodedObject.getAsJsonObject().remove("version"); // remove version as it is not relevant for this test
 
 		Assertions.assertEquals(object, encodedObject);
 	}

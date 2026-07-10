@@ -60,31 +60,57 @@ public class ItemLoader {
 			backpacks.put(Integer.valueOf(entry.getKey()), new ProfileItemStorage.Backpack(icon, contents));
 		}
 
-		// Parse the wardrobe items into a format that can be worked with
-		TreeMap<String, Loadouts.Armour> wardrobeOrdered = new TreeMap<>((k1, k2) -> Integer.compare(Integer.parseInt(k1), Integer.parseInt(k2)));
-		wardrobeOrdered.putAll(member.loadouts.armour);
-		List<ItemStack> wardrobeContents = new ArrayList<>();
+		List<ItemStack> armourSets = new ArrayList<>();
 
-		for (Map.Entry<String, Loadouts.Armour> entry : wardrobeOrdered.entrySet()) {
-			Loadouts.Armour loadout = entry.getValue();
+		for (Loadouts.ArmourLoadout loadout : member.loadouts.armour.getLoadouts()) {
 			List<ItemStack> helmet = loadout.helmet != null ? decode(loadout.helmet.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> chestplate = loadout.chestplate != null ? decode(loadout.chestplate.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> leggings = loadout.leggings != null ? decode(loadout.leggings.data) : List.of(ItemStack.EMPTY);
 			List<ItemStack> boots = loadout.boots != null ? decode(loadout.boots.data) : List.of(ItemStack.EMPTY);
 
-			wardrobeContents.add(helmet.getFirst());
-			wardrobeContents.add(chestplate.getFirst());
-			wardrobeContents.add(leggings.getFirst());
-			wardrobeContents.add(boots.getFirst());
+			armourSets.add(helmet.getFirst());
+			armourSets.add(chestplate.getFirst());
+			armourSets.add(leggings.getFirst());
+			armourSets.add(boots.getFirst());
 		}
 
-		// When a wardrobe slot is selected it does not appear so we have to add it back manually
-		if (member.inventories.equippedWardrobeSlot != -1) {
+		// When a wardrobe slot is selected the loadout has null for the pieces so we need to put them in the slots
+		if (member.loadouts.armour.equippedSet != null) {
 			// Note: The equipped slot is not zero-indexed
-			wardrobeContents.addAll(Math.min((member.inventories.equippedWardrobeSlot - 1) * 4, wardrobeContents.size()), armour);
+			int startingIndex = Math.min((member.loadouts.armour.equippedSet - 1) * 4, armourSets.size());
+
+			armourSets.set(startingIndex + 0, armour.getFirst());
+			armourSets.set(startingIndex + 1, armour.get(1));
+			armourSets.set(startingIndex + 2, armour.get(2));
+			armourSets.set(startingIndex + 3, armour.getLast());
 		}
 
-		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(wardrobeContents), new ProfileItemStorage.Bags(accessories));
+		List<ItemStack> equipmentSets = new ArrayList<>();
+
+		for (Loadouts.EquipmentLoadout loadout : member.loadouts.equipment.getLoadouts()) {
+			List<ItemStack> necklace = loadout.necklace != null ? decode(loadout.necklace.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> cloak = loadout.cloak != null ? decode(loadout.cloak.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> belt = loadout.belt != null ? decode(loadout.belt.data) : List.of(ItemStack.EMPTY);
+			List<ItemStack> braceletOrGloves = loadout.braceletOrGloves != null ? decode(loadout.braceletOrGloves.data) : List.of(ItemStack.EMPTY);
+
+			equipmentSets.add(necklace.getFirst());
+			equipmentSets.add(cloak.getFirst());
+			equipmentSets.add(belt.getFirst());
+			equipmentSets.add(braceletOrGloves.getFirst());
+		}
+
+		// Insert the equipped equipment back into its original place (same as is done for armour)
+		if (member.loadouts.equipment.equippedSet != null) {
+			// Note: The equipped slot is not zero-indexed
+			int startingIndex = Math.min((member.loadouts.equipment.equippedSet - 1) * 4, equipmentSets.size());
+
+			equipmentSets.set(startingIndex + 0, equipment.getFirst());
+			equipmentSets.set(startingIndex + 1, equipment.get(1));
+			equipmentSets.set(startingIndex + 2, equipment.get(2));
+			equipmentSets.set(startingIndex + 3, equipment.getLast());
+		}
+
+		return new ProfileItemStorage(inventory, armour, equipment, enderChest, backpacks, List.copyOf(armourSets), List.copyOf(equipmentSets), PetLoader.parsePets(member.petsData.pets), new ProfileItemStorage.Bags(accessories));
 	}
 
 	public static List<ItemStack> decode(String itemData) {
