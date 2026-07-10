@@ -198,7 +198,7 @@
     "skyblocker.end.hud.protectorLocations.center": "中央",
     "skyblocker.end.hud.protectorLocations.rightFront": "右前",
     "skyblocker.end.hud.protectorLocations.rightBack": "右後",
-    "skyblocker.end.hud.protectorLocations.back": "后",
+    "skyblocker.end.hud.protectorLocations.back": "後",
     "skyblocker.config.uiAndVisuals.flameOverlay.flameOpacity": "火焰不透明度",
     "skyblocker.shortcuts.commandArg.target": "目標指令參數",
     "skyblocker.shortcuts.new": "新的快捷指令",
