@@ -29,6 +29,9 @@ public final class SkyBlockIcons {
 	// Rift Stats
 	public static final String RIFT_TIME = "\uE020";
 
+	//Misc Stats
+	public static final String MAGIC_FIND = "\uE01A";
+
 	// Scoreboard Icons
 	public static final String AREA = "\uE067";
 	public static final String RIFT_AREA = "\uE020";
