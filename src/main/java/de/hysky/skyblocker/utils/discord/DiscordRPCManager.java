@@ -5,6 +5,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiscConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import meteordevelopment.discordipc.DiscordIPC;
 import meteordevelopment.discordipc.RichPresence;
@@ -107,19 +108,23 @@ public class DiscordRPCManager {
 	}
 
 	@SuppressWarnings("deprecation")
+	private static String islandArea() {
+		return Utils.getIslandArea().replace(SkyBlockIcons.AREA, "⏣").replace(SkyBlockIcons.RIFT_AREA, "ф");
+	}
+
 	public static String getInfo() {
 		String info = null;
 		if (!SkyblockerConfigManager.get().misc.richPresence.cycleMode) {
 			switch (SkyblockerConfigManager.get().misc.richPresence.info) {
 				case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
 				case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-				case LOCATION -> info = Utils.getIslandArea();
+				case LOCATION -> info = islandArea();
 			}
 		} else if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) {
 			switch (cycleCount) {
 				case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
 				case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-				case 2 -> info = Utils.getIslandArea();
+				case 2 -> info = islandArea();
 			}
 		}
 		return info;
