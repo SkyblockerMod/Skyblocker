@@ -5,9 +5,12 @@ import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.debug.SkyBlockResourcePackDownloader;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.OptionListener;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.network.chat.Component;
 
@@ -69,6 +72,25 @@ public class DebugCategory {
 								() -> config.debug.enableRepoDev,
 								newValue -> config.debug.enableRepoDev = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				// SkyBlock Resource Pack
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.debug.skyblockResourcePack"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.debug.skyblockResourcePack.downloadResourcePack"))
+								.description(Component.translatable("skyblocker.config.debug.skyblockResourcePack.downloadResourcePack.@Tooltip"))
+								.binding(defaults.debug.skyblockResourcePack.downloadResourcePack,
+										() -> config.debug.skyblockResourcePack.downloadResourcePack,
+										newValue -> config.debug.skyblockResourcePack.downloadResourcePack = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.listener((option, updateType) -> {
+									if (updateType == OptionListener.UpdateType.VALUE_CHANGE && option.binding().get()) {
+										SkyBlockResourcePackDownloader.downloadResourcePack();
+									}
+								})
+								.build())
 						.build())
 				.build();
 	}

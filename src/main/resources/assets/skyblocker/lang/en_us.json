@@ -214,6 +214,9 @@
   "skyblocker.config.debug.dumpRange.@Tooltip": "The range in blocks around the player to dump entities within.",
   "skyblocker.config.debug.enableRepoDev": "Enable Repo Developer Options",
   "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armor Stands",
+  "skyblocker.config.debug.skyblockResourcePack": "SkyBlock Resource Pack",
+  "skyblocker.config.debug.skyblockResourcePack.downloadResourcePack": "Download Resource Pack",
+  "skyblocker.config.debug.skyblockResourcePack.downloadResourcePack.@Tooltip": "Automatically downloads the latest version of the SkyBlock Resource Pack into your resource packs folder.",
 
   "skyblocker.config.dungeons": "Dungeons",
 
