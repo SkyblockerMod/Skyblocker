@@ -1199,6 +1199,8 @@
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
   "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
+	"skyblocker.config.uiAndVisuals.bars.predictManaUsage": "Predict Mana Usage",
+	"skyblocker.config.uiAndVisuals.bars.predictManaUsage.@Tooltip": "Updates Mana Bar Client-Side as Soon as an Ability is Used Without Waiting for Server Update",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",

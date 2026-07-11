@@ -101,6 +101,7 @@ public class StatusBarTracker {
 
 	@SuppressWarnings("SameReturnValue")
 	private static InteractionResult interactItem(Player player, Level world, InteractionHand hand) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.predictManaUsage) return InteractionResult.PASS;
 		if (MINECRAFT.player == null) return InteractionResult.PASS;
 		ItemStack handStack = MINECRAFT.player.getMainHandItem();
 		int manaCost = 0;

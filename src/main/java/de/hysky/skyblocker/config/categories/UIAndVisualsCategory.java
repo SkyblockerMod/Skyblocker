@@ -496,6 +496,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.useHungerBarSprites = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.predictManaUsage"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.predictManaUsage.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bars.predictManaUsage,
+										() -> config.uiAndVisuals.bars.predictManaUsage,
+										newValue -> config.uiAndVisuals.bars.predictManaUsage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
