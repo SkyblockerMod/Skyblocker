@@ -386,8 +386,6 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class SearchOverlay {
-		public boolean commandAutocomplete = true;
-
 		public boolean enableBazaar = true;
 
 		public boolean enableAuctionHouse = true;
@@ -401,6 +399,8 @@ public class UIAndVisualsConfig {
 		public int historyLength = 3;
 
 		public boolean enableCommands = false;
+
+		public boolean commandAutocomplete = true;
 
 		public List<String> bazaarHistory = new ArrayList<>();
 
