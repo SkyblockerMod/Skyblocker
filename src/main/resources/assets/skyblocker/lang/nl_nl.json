@@ -6,5 +6,9 @@
     "text.skyblocker.modrinth": "Modrinth",
     "argument.color.rgb.incomplete": "Onvolledig (3 kleurwaarden verwacht).",
     "argument.color.hex.invalidString": "Hex nummer moet precies 6 karakters lang zij, %s gevonden .",
-    "argument.color.hex.invalidChar": "Ongeldig karakter voor hex nummer: %s. Geldige karakters: [0-9a-fA-F]"
+    "argument.color.hex.invalidChar": "Ongeldig karakter voor hex nummer: %s. Geldige karakters: [0-9a-fA-F]",
+    "emi.category.skyblocker.skyblock_crafting": "Vervaardigen (SkyBlock)",
+    "text.skyblocker.website": "Website",
+    "key.skyblocker.defaultTgl": "Schakel HUD tab naar standaardweergave",
+    "text.skyblocker.quit_config_sure": "Weet je zeker dat je wil stoppen met het wijzigen van de instellingen? Veranderingen worden niet opgeslagen!"
 }
