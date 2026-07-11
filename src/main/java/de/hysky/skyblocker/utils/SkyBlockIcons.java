@@ -26,11 +26,11 @@ public final class SkyBlockIcons {
 	// Fishing Stats
 	public static final String FISHING_SPEED = "\uE00C";
 
+	// Misc Stats
+	public static final String MAGIC_FIND = "\uE01A";
+
 	// Rift Stats
 	public static final String RIFT_TIME = "\uE020";
-
-	//Misc Stats
-	public static final String MAGIC_FIND = "\uE01A";
 
 	// Scoreboard Icons
 	public static final String AREA = "\uE067";

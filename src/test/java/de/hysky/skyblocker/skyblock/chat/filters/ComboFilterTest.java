@@ -10,7 +10,7 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
 
 	@Test
 	void testComboMF() {
-		assertMatches("+5 Kill Combo +3% "+ SkyBlockIcons.MAGIC_FIND+ " Magic Find");
+		assertMatches(String.format("+5 Kill Combo +3%% %s Magic Find", SkyBlockIcons.MAGIC_FIND));
 	}
 
 	@Test
