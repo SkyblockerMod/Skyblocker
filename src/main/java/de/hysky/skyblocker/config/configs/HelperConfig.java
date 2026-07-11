@@ -122,6 +122,11 @@ public class HelperConfig {
 		}
 	}
 
+	// Placeholder!
+	public static class Loadouts {
+
+	}
+
 	public static class FairySouls {
 		public boolean enableFairySoulsHelper = false;
 
