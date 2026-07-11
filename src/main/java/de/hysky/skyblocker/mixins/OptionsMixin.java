@@ -4,6 +4,11 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.Options;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,6 +24,8 @@ public class OptionsMixin {
 		skyblocker$update("hotbarSlotLock", nbt);
 		skyblocker$update("itemPriceLookup", nbt);
 		skyblocker$update("itemProtection", nbt);
+		migrateToLoadoutKeybinds(nbt);
+
 		return nbt;
 	}
 
@@ -35,5 +42,35 @@ public class OptionsMixin {
 
 		Tag element = nbt.get("key_key.skyblocker." + oldKey);
 		if (element != null) nbt.put(newEntry, element);
+	}
+
+	@Unique
+	private void migrateToLoadoutKeybinds(CompoundTag nbt) {
+		Set<String> usedLoadoutKeys = new HashSet<>();
+
+		// Copy hotbar keys to loadout keys
+		for (int i = 1; i <= 9; i++) {
+			String loadoutKey = "key_key.skyblocker.loadout." + i;
+			String hotbarKey = "key_key.hotbar." + i;
+
+			if (!nbt.contains(loadoutKey) && nbt.contains(hotbarKey)) {
+				nbt.put(loadoutKey, nbt.get(hotbarKey));
+				usedLoadoutKeys.add(nbt.get(hotbarKey).asString().get());
+			}
+		}
+
+		// Reset keys for loadouts 10, 11, and 12 if they conflict with a hotbar key
+		Map<String, String> newLoadoutKeys = Map.of(
+				"key_key.skyblocker.loadout.10", "key.keyboard.0",
+				"key_key.skyblocker.loadout.11", "key.keyboard.minus",
+				"key_key.skyblocker.loadout.12", "key.keyboard.equal"
+				);
+
+		for (Map.Entry<String, String> entry : newLoadoutKeys.entrySet()) {
+			// If the options does not have this loadout key and it is already taken then reset it
+			if (!nbt.contains(entry.getKey()) && usedLoadoutKeys.contains(entry.getValue())) {
+				nbt.putString(entry.getKey(), "key.keyboard.unknown");
+			}
+		}
 	}
 }
