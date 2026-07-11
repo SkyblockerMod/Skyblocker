@@ -40,6 +40,15 @@ accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
 # Quick Nav
 accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 
+# Text
+accessible	field	net/minecraft/ChatFormatting	code	C
+
+# Server Resource Packs
+accessible	field	net/minecraft/client/resources/server/DownloadedPackSource	manager	Lnet/minecraft/client/resources/server/ServerPackManager;
+accessible	field	net/minecraft/client/resources/server/ServerPackManager packs Ljava/util/List;
+accessible	class	net/minecraft/client/resources/server/ServerPackManager$ServerPackData
+accessible	field	net/minecraft/client/resources/server/ServerPackManager$ServerPackData	url	Ljava/net/URL;
+
 # Interface Injections
 inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity
 inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack
