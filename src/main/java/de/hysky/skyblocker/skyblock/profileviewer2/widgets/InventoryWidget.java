@@ -72,6 +72,11 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 		// Draw label
 		graphics.text(font, this.getMessage(), x + 8, y + 6, 0xFF404040, false);
 
+		// Sometimes there may be no pages so we should skip the rest of the rendering
+		if (this.pages.isEmpty()) {
+			return;
+		}
+
 		// Draw Items
 		List<ItemStack> stacks = this.pages.get(this.index);
 
