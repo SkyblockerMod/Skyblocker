@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -73,6 +74,7 @@ public class Inventory implements ProfileViewerPage {
 		int startIndex = activePage * itemsPerPage;
 		int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
 		List<Component> tooltip = Collections.emptyList();
+		Identifier tooltipStyle = null;
 		for (int i = 0; i < endIndex - startIndex; i++) {
 			ItemStack stack = containerList.get(startIndex + i);
 			if (stack.isEmpty()) continue;
@@ -95,10 +97,13 @@ public class Inventory implements ProfileViewerPage {
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
 				tooltip = stack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
+				tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 			}
 		}
 
-		if (!tooltip.isEmpty()) graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+		if (!tooltip.isEmpty()) {
+			graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY, tooltipStyle);
+		}
 	}
 
 	public void nextPage() {
