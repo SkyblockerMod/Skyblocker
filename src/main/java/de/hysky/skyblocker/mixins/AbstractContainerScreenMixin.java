@@ -75,7 +75,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@Unique
 	private static final Set<String> FILLER_ITEMS = Set.of(
-			" ", // Empty menu item
+			"", // Empty menu item
 			"Locked Page",
 			"Quick Crafting Slot",
 			"Locked Backpack Slot 2", //Regular expressions won't be utilized here since the search by contains is based on plain text rather than regex syntax
