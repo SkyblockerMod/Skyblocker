@@ -62,7 +62,7 @@ public class Ico {
 	public static final FlexibleItemStack FURNACE = new FlexibleItemStack(Items.FURNACE);
 	public static final FlexibleItemStack CHESTPLATE = new FlexibleItemStack(Items.IRON_CHESTPLATE);
 	public static final FlexibleItemStack L_CHESTPLATE = new FlexibleItemStack(Items.LEATHER_CHESTPLATE);
-	public static final FlexibleItemStack BROWN_HARNESS = new FlexibleItemStack(Items.HARNESS.brown());
+	public static final FlexibleItemStack BROWN_HARNESS = new FlexibleItemStack(Items.BROWN_HARNESS);
 	public static final FlexibleItemStack B_ROD = new FlexibleItemStack(Items.BLAZE_ROD);
 	public static final FlexibleItemStack B_POWDER = new FlexibleItemStack(Items.BLAZE_POWDER);
 	public static final FlexibleItemStack BOW = new FlexibleItemStack(Items.BOW);

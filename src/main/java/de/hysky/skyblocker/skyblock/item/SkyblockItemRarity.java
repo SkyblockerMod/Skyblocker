@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item;
 import java.util.Arrays;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.StringRepresentable;
 import com.google.common.collect.Streams;

@@ -112,7 +112,7 @@ public class LoadoutKeybinds extends SimpleSlotTextAdder {
 
 	private static boolean isItemInvalid(ItemStack stack) {
 		// Skip loadouts that aren't customized, unlocked, or non-existent
-		return stack.is(Items.DYE.gray()) || stack.is(Items.DYE.red()) || stack.is(Items.STAINED_GLASS_PANE.black()) || stack.isEmpty();
+		return stack.is(Items.GRAY_DYE) || stack.is(Items.RED_DYE) || stack.is(Items.BLACK_STAINED_GLASS_PANE) || stack.isEmpty();
 	}
 
 	@Override

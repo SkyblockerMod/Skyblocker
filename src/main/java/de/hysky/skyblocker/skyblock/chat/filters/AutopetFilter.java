@@ -28,7 +28,7 @@ public class AutopetFilter extends ChatPatternListener {
 							message.getString().replace("VIEW RULE", "")
 					));
 		} else if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.TOAST) {
-			Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(Component.literal(message.getString().replace("VIEW RULE", "")), (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), ICON.getStack()));
+			Minecraft.getInstance().getToastManager().addToast(new BasicToast(Component.literal(message.getString().replace("VIEW RULE", "")), (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), ICON.getStack()));
 		}
 		return true;
 	}
