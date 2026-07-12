@@ -99,7 +99,13 @@ public class VerifyJsonTest {
 		@SuppressWarnings("DataFlowIssue")
 		JsonObject waypoints = GSON.fromJson(new InputStreamReader(this.getClass().getResourceAsStream("/assets/skyblocker/rift/enigma_soul_waypoints.json")), JsonObject.class);
 
-		verifyBlockPosObjectArray(waypoints.get("waypoints"));
+		Assertions.assertTrue(waypoints.get("zones").isJsonObject());
+		JsonObject zones = waypoints.get("zones").getAsJsonObject();
+		Assertions.assertFalse(zones.isEmpty());
+
+		zones.asMap().values().forEach(zoneElement -> {
+			verifyBlockPosObjectArray(zoneElement);
+		});
 	}
 
 	@Test
