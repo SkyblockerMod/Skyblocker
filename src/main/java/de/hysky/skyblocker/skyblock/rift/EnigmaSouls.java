@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
@@ -49,6 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static de.hysky.skyblocker.utils.command.CommandUtils.failOnMissingProfile;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -171,30 +173,40 @@ public class EnigmaSouls {
 				.then(literal("rift")
 						.then(literal("enigmaSouls")
 								.then(literal("markAllFound").executes(context -> {
+									if (failOnMissingProfile(context)) return 0;
+
 									streamWaypoints().forEach(Waypoint::setFound);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markAllFound")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markAllMissing").executes(context -> {
+									if (failOnMissingProfile(context)) return 0;
+
 									streamWaypoints().forEach(Waypoint::setMissing);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markAllMissing")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markClosestFound").executes(context -> {
+									if (failIfNotInRift(context)) return 0;
+
 									markClosestSoul(true);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestFound")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markClosestMissing").executes(context -> {
+									if (failIfNotInRift(context)) return 0;
+
 									markClosestSoul(false);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestMissing")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markZoneFound").then(argument("zone", RiftZone.RiftZoneArgumentType.riftZone()).executes(context -> {
+									if (failOnMissingProfile(context)) return 0;
+
 									RiftZone zone = context.getArgument("zone", RiftZone.class);
 									SOUL_WAYPOINTS.get(zone).values().forEach(Waypoint::setFound);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(
@@ -203,6 +215,8 @@ public class EnigmaSouls {
 									return Command.SINGLE_SUCCESS;
 								})))
 								.then(literal("markZoneMissing").then(argument("zone", RiftZone.RiftZoneArgumentType.riftZone()).executes(context -> {
+									if (failOnMissingProfile(context)) return 0;
+
 									RiftZone zone = context.getArgument("zone", RiftZone.class);
 									SOUL_WAYPOINTS.get(zone).values().forEach(Waypoint::setMissing);
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(
@@ -216,12 +230,20 @@ public class EnigmaSouls {
 	private static void markClosestSoul(boolean asFound) {
 		LocalPlayer player = Minecraft.getInstance().player;
 
-		if (!soulsLoaded.isDone() || player == null) return;
+		if (!soulsLoaded.isDone() || player == null || !Utils.isInTheRift()) return;
 
 		streamWaypoints()
 				.min(Comparator.comparingDouble(soul -> soul.pos.distToCenterSqr(player.position())))
 				.filter(soul -> soul.pos.distToCenterSqr(player.position()) <= 16)
 				.ifPresent(asFound ? Waypoint::setFound : Waypoint::setMissing);
+	}
+
+	public static boolean failIfNotInRift(CommandContext<FabricClientCommandSource> context) {
+		if (!Utils.isInTheRift()) {
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.notInRift").withStyle(ChatFormatting.RED)));
+			return true;
+		}
+		return false;
 	}
 
 	private static Stream<ProfileAwareWaypoint> streamWaypoints() {
