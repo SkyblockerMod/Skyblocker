@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
@@ -20,6 +21,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -47,6 +49,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EnigmaSouls {
@@ -190,7 +193,24 @@ public class EnigmaSouls {
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestMissing")));
 
 									return Command.SINGLE_SUCCESS;
-								})))));
+								}))
+								.then(literal("markZoneFound").then(argument("zone", RiftZone.RiftZoneArgumentType.riftZone()).executes(context -> {
+									RiftZone zone = context.getArgument("zone", RiftZone.class);
+									SOUL_WAYPOINTS.get(zone).values().forEach(Waypoint::setFound);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(
+											Component.translatableEscape("skyblocker.rift.enigmaSouls.markZoneFound", zone.displayName())));
+
+									return Command.SINGLE_SUCCESS;
+								})))
+								.then(literal("markZoneMissing").then(argument("zone", RiftZone.RiftZoneArgumentType.riftZone()).executes(context -> {
+									RiftZone zone = context.getArgument("zone", RiftZone.class);
+									SOUL_WAYPOINTS.get(zone).values().forEach(Waypoint::setMissing);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(
+										Component.translatableEscape("skyblocker.rift.enigmaSouls.markZoneMissing", zone.displayName())));
+
+									return Command.SINGLE_SUCCESS;
+								})))
+								)));
 	}
 
 	private static void markClosestSoul(boolean asFound) {
@@ -252,6 +272,8 @@ public class EnigmaSouls {
 		STILLGORE_CHATEAU,
 		MOUNTAINTOP;
 
+		private static final Codec<RiftZone> CODEC = StringRepresentable.fromEnum(RiftZone::values);
+
 		@Override
 		public String getSerializedName() {
 			return name().toLowerCase(Locale.ENGLISH);
@@ -263,6 +285,16 @@ public class EnigmaSouls {
 
 		public static RiftZone fromSerializedName(String name) {
 			return valueOf(name.toUpperCase(Locale.ENGLISH));
+		}
+
+		public static class RiftZoneArgumentType extends StringRepresentableArgument<RiftZone> {
+			private RiftZoneArgumentType() {
+				super(CODEC, RiftZone::values);
+			}
+
+			public static RiftZoneArgumentType riftZone() {
+				return new RiftZoneArgumentType();
+			}
 		}
 	}
 }
