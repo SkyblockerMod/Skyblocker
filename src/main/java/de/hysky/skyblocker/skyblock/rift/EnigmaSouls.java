@@ -250,6 +250,15 @@ public class EnigmaSouls {
 		return SOUL_WAYPOINTS.values().stream().flatMap(zone -> zone.values().stream());
 	}
 
+	private static String canonicalProfileName(String profile) {
+		if (Character.isUpperCase(profile.charAt(0))) {
+			// profile is a normal profile name, reverse it into a rift profile name
+			return new StringBuilder(profile).reverse().toString();
+		} else {
+			return profile;
+		}
+	}
+
 	private static class EnigmaSoul extends ProfileAwareWaypoint {
 		public final RiftZone zone;
 		public final String name;
@@ -266,20 +275,17 @@ public class EnigmaSouls {
 		}
 
 		@Override
-		public void setFound() {
-			setFound(Utils.getProfile());
-		}
-
-		@Override
 		public void setFound(String profile) {
+			profile = canonicalProfileName(profile);
 			LOGGER.debug("[Skyblocker] Set enigma soul found for {}: {}/{}", profile, zone.displayName(), name);
 			super.setFound(profile);
 		}
 
 		@Override
-		public void setMissing() {
-			LOGGER.debug("[Skyblocker] Set enigma soul missing: {}/{}", zone.displayName(), name);
-			super.setMissing();
+		public void setMissing(String profile) {
+			profile = canonicalProfileName(profile);
+			LOGGER.debug("[Skyblocker] Set enigma soul missing for {}: {}/{}", profile, zone.displayName(), name);
+			super.setMissing(profile);
 		}
 	}
 
