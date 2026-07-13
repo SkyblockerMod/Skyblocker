@@ -1,20 +1,19 @@
 package de.hysky.skyblocker.skyblock.special;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
 
 public class SpecialEffects {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	public static final Set<ItemStack> ITEMS = Collections.newSetFromMap(new WeakHashMap<>());
+	public static WeakReference<ItemStack> ITEM = new WeakReference<>(ItemStack.EMPTY);
 
 	protected static void displaySpecialEffect(ItemStack stack, SimpleParticleType particle) {
-		ITEMS.add(stack);
+		ITEM = new WeakReference<>(SkyblockerConfigManager.get().general.specialEffects.displayItemName ? stack : ItemStack.EMPTY);
 		CLIENT.gameRenderer.displayItemActivation(stack);
 		if (CLIENT.player != null) {
 			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, particle, 30);
