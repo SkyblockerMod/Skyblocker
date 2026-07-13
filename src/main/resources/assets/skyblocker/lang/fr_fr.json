@@ -1768,5 +1768,22 @@
     "skyblocker.config.general.specialEffects.displayItemName": "Afficher le nom de l’objet",
     "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Activer la téléportation fluide en mode 3ème personne.",
     "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades.@Tooltip": "Afficher le niveau des améliorations de plantes et Greenhouse.",
-    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Améliorations du Garden"
+    "skyblocker.config.uiAndVisuals.slotText.gardenUpgrades": "Améliorations du Garden",
+    "key.skyblocker.loadout.01": "Arsenal 01",
+    "key.skyblocker.loadout.02": "Arsenal 02",
+    "key.skyblocker.loadout.03": "Arsenal 03",
+    "key.skyblocker.loadout.04": "Arsenal 04",
+    "key.skyblocker.loadout.05": "Arsenal 05",
+    "key.skyblocker.loadout.06": "Arsenal 06",
+    "key.skyblocker.loadout.07": "Arsenal 07",
+    "key.skyblocker.loadout.08": "Arsenal 08",
+    "key.skyblocker.loadout.09": "Arsenal 09",
+    "key.skyblocker.loadout.10": "Arsenal 10",
+    "key.skyblocker.loadout.11": "Arsenal 11",
+    "key.skyblocker.loadout.12": "Arsenal 12",
+    "skyblocker.config.debug.skyblockResourcePack": "Pack de Ressources SkyBlock",
+    "skyblocker.config.debug.skyblockResourcePack.downloadResourcePack": "Télécharger le Pack de Ressources",
+    "skyblocker.config.debug.skyblockResourcePack.downloadResourcePack.@Tooltip": "Télécharge automatiquement la dernière version du pack de ressources SkyBlock dans votre dossier de packs de ressources.",
+    "skyblocker.config.general.specialEffects.displayItemName.@Tooltip": "Le nom de l'objet s'affichera sous l'effet visuel spécial.",
+    "skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight": "Activer l'Overlay des Récompenses de Raffle"
 }
