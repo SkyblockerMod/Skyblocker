@@ -50,7 +50,8 @@ public class OptionsMixin {
 
 		// Copy hotbar keys to loadout keys
 		for (int i = 1; i <= 9; i++) {
-			String loadoutKey = "key_key.skyblocker.loadout." + i;
+			String numberString = i < 10 ? "0" + String.valueOf(i) : String.valueOf(i);
+			String loadoutKey = "key_key.skyblocker.loadout." + numberString;
 			String hotbarKey = "key_key.hotbar." + i;
 
 			if (!nbt.contains(loadoutKey) && nbt.contains(hotbarKey)) {
