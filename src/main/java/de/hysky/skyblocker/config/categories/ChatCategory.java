@@ -146,6 +146,14 @@ public class ChatCategory {
 										newValue -> config.chat.hideToggleLottery = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideToggleBeeKeeper"))
+								.description(Component.translatable("skyblocker.config.chat.filter.hideToggleBeeKeeper.@Tooltip"))
+								.binding(defaults.chat.hideToggleBeeKeeper,
+										() -> config.chat.hideToggleBeeKeeper,
+										newValue -> config.chat.hideToggleBeeKeeper = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideMana"))
 								.description(Component.translatable("skyblocker.config.chat.filter.hideMana.@Tooltip"))

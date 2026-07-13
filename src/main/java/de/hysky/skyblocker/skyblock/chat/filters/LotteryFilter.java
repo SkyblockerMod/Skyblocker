@@ -16,6 +16,6 @@ public class LotteryFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return !Utils.isInGalatea() ? SkyblockerConfigManager.get().chat.hideToggleLottery : ChatFilterResult.PASS;
+		return !Utils.isInGalatea() || !Utils.isInTorrhusCanyon() ? SkyblockerConfigManager.get().chat.hideToggleLottery : ChatFilterResult.PASS;
 	}
 }
