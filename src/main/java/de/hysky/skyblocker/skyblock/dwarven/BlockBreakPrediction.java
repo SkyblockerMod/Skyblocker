@@ -12,6 +12,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
@@ -49,7 +50,7 @@ public class BlockBreakPrediction {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final EnumMap<Location, Map<Block, IntIntPair>> blockStrengths = new EnumMap<>(Location.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile("Mining Speed: ⸕(\\d+)");
+	private static final Pattern MINING_SPEED_PATTERN = Pattern.compile(String.format("Mining Speed: %s(\\d+)", SkyBlockIcons.MINING_SPEED));
 	private static final Pattern BREAKING_POWER_PATTERN = Pattern.compile("Breaking Power (\\d+)");
 
 	private static boolean newBlock = false;
