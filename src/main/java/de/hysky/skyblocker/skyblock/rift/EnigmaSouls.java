@@ -145,7 +145,7 @@ public class EnigmaSouls {
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
 			streamWaypoints().forEach(soul -> {
-				if (soul.shouldRender() || config.highlightFoundEnigmaSouls) {
+				if (soul.shouldRender()) {
 					soul.extractRendering(collector);
 				}
 			});
@@ -199,7 +199,6 @@ public class EnigmaSouls {
 		if (!soulsLoaded.isDone() || player == null) return;
 
 		streamWaypoints()
-				.filter(Waypoint::shouldRender)
 				.min(Comparator.comparingDouble(soul -> soul.pos.distToCenterSqr(player.position())))
 				.filter(soul -> soul.pos.distToCenterSqr(player.position()) <= 16)
 				.ifPresent(asFound ? Waypoint::setFound : Waypoint::setMissing);
