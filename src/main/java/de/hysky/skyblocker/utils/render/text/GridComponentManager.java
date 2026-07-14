@@ -21,10 +21,10 @@ public class GridComponentManager {
 	void updateWidths(GridTooltipComponent component, Font font) {
 		if (!handledComponents.add(component)) return;
 		GridFormattedCharSequence sequence = component.sequence();
-		IntList list = widths.computeIfAbsent(sequence.group(), _ -> new IntArrayList());
-		list.size(sequence.columns().size());
-		for (int i = 0; i < sequence.columns().size(); i++) {
-			list.set(i, Math.max(list.getInt(i), font.width(sequence.columns().get(i))));
+		IntList list = widths.computeIfAbsent(sequence.gridContents().group(), _ -> new IntArrayList());
+		list.size(sequence.gridContents().components().size());
+		for (int i = 0; i < sequence.gridContents().components().size(); i++) {
+			list.set(i, Math.max(list.getInt(i), font.width(sequence.gridContents().components().get(i))));
 		}
 	}
 
