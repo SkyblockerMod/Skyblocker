@@ -1775,5 +1775,14 @@
     "skyblocker.config.helpers.loadouts": "角色配置助手",
     "skyblocker.config.helpers.loadouts.enableLoadoutsHelper": "角色配置助手",
     "skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tag": "衣柜助手",
-    "skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip": "允许通过相应按键切换角色配置、护甲、装备。"
+    "skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip": "允许通过相应按键切换角色配置、护甲、装备。",
+    "key.skyblocker.loadout.01": "角色配置01",
+    "key.skyblocker.loadout.02": "角色配置02",
+    "key.skyblocker.loadout.03": "角色配置03",
+    "key.skyblocker.loadout.04": "角色配置04",
+    "key.skyblocker.loadout.05": "角色配置05",
+    "key.skyblocker.loadout.06": "角色配置06",
+    "key.skyblocker.loadout.07": "角色配置07",
+    "key.skyblocker.loadout.08": "角色配置08",
+    "key.skyblocker.loadout.09": "角色配置09"
 }
