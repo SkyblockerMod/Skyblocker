@@ -92,6 +92,7 @@
 		"accessors.ScreenAccessor",
 		"accessors.SlotAccessor",
 		"accessors.SpriteContentsAccessor",
+		"adaptivetooltips.ScrollTrackerMixin",
 		"discordipc.ConnectionMixin",
 		"jgit.SystemReaderMixin",
 		"jgit.UrlConfigMixin"

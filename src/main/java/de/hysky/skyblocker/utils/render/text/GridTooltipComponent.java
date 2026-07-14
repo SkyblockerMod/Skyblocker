@@ -4,7 +4,7 @@ import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 public class GridTooltipComponent implements ClientTooltipComponent {
@@ -32,7 +32,7 @@ public class GridTooltipComponent implements ClientTooltipComponent {
 	public int getWidth(Font font) {
 		if (manager != null) {
 			manager.updateWidths(this, font);
-			return manager.getTotalWidth(sequence.group());
+			return manager.getTotalWidth(sequence.gridContents().group());
 		}
 		return font.width(sequence);
 	}
@@ -40,14 +40,14 @@ public class GridTooltipComponent implements ClientTooltipComponent {
 	@Override
 	public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
 		ActiveTextCollector textRenderer = graphics.textRenderer();
-		for (int i = 0; i < sequence.columns().size(); i++) {
-			FormattedCharSequence column = sequence.columns().get(i);
+		for (int i = 0; i < sequence.gridContents().components().size(); i++) {
+			Component column = sequence.gridContents().components().get(i);
 			textRenderer.accept(x, y, column);
 			if (manager == null) {
 				x += font.width(column);
 			}
 			else {
-				int width = manager.getWidth(sequence.group(), i);
+				int width = manager.getWidth(sequence.gridContents().group(), i);
 				x += width == 0 ? font.width(column) : width;
 			}
 		}
