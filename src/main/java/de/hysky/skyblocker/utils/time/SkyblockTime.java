@@ -98,6 +98,25 @@ public class SkyblockTime {
 		return (int) (Math.floor(getSkyblockMillis() / HOUR_LENGTH) % 24);
 	}
 
+	/**
+	 * Year, month and day do NOT start at 0.
+	 */
+	public static Instant instantOf(int year, int month, int day, int hour) {
+		return SKYBLOCK_EPOCH
+				.plus(hour, SkyblockTimeField.HOUR_OF_DAY.getBaseUnit())
+				.plus(day - 1, SkyblockTimeField.DAY_OF_MONTH.getBaseUnit())
+				.plus(month - 1, SkyblockTimeField.MONTH_OF_YEAR.getBaseUnit())
+				.plus(year- 1, SkyblockTimeField.YEAR.getBaseUnit());
+	}
+
+	public static Instant instantOf(long year, long month, long day, long hour) {
+		return instantOf((int) year, (int) month, (int) day, (int) hour);
+	}
+
+	public static Instant instantOf(int year, Month month, int day, int hour) {
+		return instantOf(year, month.ordinal() + 1, day, hour);
+	}
+
 	//This could probably be compacted by abstracting the logic into a method that takes a Supplier and a Consumer, etc. but there's really no need
 	private static void updateTime() {
 		int year = calculateSkyblockYear();
@@ -166,10 +185,15 @@ public class SkyblockTime {
 		EARLY_WINTER, WINTER, LATE_WINTER;
 
 		private final String name;
+		private static final String[] SHORT_NAMES = new String[]{"ESP", "SP", "LSP", "ESU", "SU", "LSU", "EAU", "AU", "LAU", "EWI", "WI", "LWI"};
 
 		Month() {
 			// can't be bothered defining all of them manually
 			this.name = WordUtils.capitalizeFully(this.name().replace("_", " "));
+		}
+
+		public String getShortName() {
+			return SHORT_NAMES[ordinal()];
 		}
 
 		@Override

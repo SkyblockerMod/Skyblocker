@@ -20,10 +20,12 @@ import net.minecraft.network.chat.Component;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
@@ -32,6 +34,7 @@ public class MayorUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MayorUtils.class);
 	private static Mayor mayor = Mayor.EMPTY;
 	private static Minister minister = Minister.EMPTY;
+	private static @Nullable Election election;
 	private static List<PerkOverride> mayorPerkOverrides = List.of();
 	private static boolean mayorTickScheduled = false;
 	private static int mayorTickRetryAttempts = 0;
@@ -41,15 +44,24 @@ public class MayorUtils {
 	/**
 	 * Returns the perks that are currently active from the mayor, minister, and any overrides.
 	 */
-	public static List<String> getActivePerks() {
-		Stream<String> mayorPerks = mayor.perks().stream()
-				.map(Perk::name);
-		Stream<String> ministerPerk = Stream.of(minister.perk().name());
-		Stream<String> overriddenMayorPerks = mayorPerkOverrides.stream()
-				.filter(PerkOverride::isActive)
-				.map(PerkOverride::perk);
+	public static List<String> getActivePerkNames() {
+		return getActivePerks().perks().stream().map(Perk::name).toList();
+	}
 
-		return Stream.concat(Stream.concat(mayorPerks, ministerPerk), overriddenMayorPerks).toList();
+	public static ActivePerks getActivePerks() {
+		Stream<Perk> mayorPerks = mayor.perks().stream();
+		Stream<Perk> ministerPerk = Stream.of(minister.perk());
+		Stream<Perk> overriddenMayorPerks = mayorPerkOverrides.stream()
+				.filter(PerkOverride::isActive)
+				.map(PerkOverride::perk)
+				.map(s -> new Perk(s, ""));
+
+		return new ActivePerks(Stream.concat(Stream.concat(mayorPerks, ministerPerk), overriddenMayorPerks).toList());
+	}
+
+	@SuppressWarnings("NullableProblems")
+	public static Optional<Election> election() {
+		return Optional.ofNullable(election);
 	}
 
 	@Init
@@ -119,7 +131,7 @@ public class MayorUtils {
 					throw new RuntimeException("No mayor object found in response!");
 				}
 
-				return mayorObject;
+				return json;
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
@@ -137,10 +149,11 @@ public class MayorUtils {
 				LOGGER.warn("[Skyblocker] Failed to get mayor status after 5 retries! Stopping further retries until next reboot.");
 			}
 			return new JsonObject(); //Have to return a value for the thenAccept block.
-		}).thenAccept(result -> {
-			if (!result.isEmpty()) {
+		}).thenAccept(json -> {
+			JsonObject mayorObject = json.getAsJsonObject("mayor");
+			if (!mayorObject.isEmpty()) {
 				try {
-					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, result)
+					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, mayorObject)
 							.setPartial(Mayor.EMPTY)
 							.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response. Error: {}", error))
 							.get();
@@ -150,7 +163,7 @@ public class MayorUtils {
 				}
 
 				try {
-					JsonObject ministerObject = result.getAsJsonObject("minister");
+					JsonObject ministerObject = mayorObject.getAsJsonObject("minister");
 
 					// Check if ministerObject is not null stops NPE caused by Derpy
 					if (ministerObject != null) {
@@ -170,6 +183,18 @@ public class MayorUtils {
 				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
 				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}
+
+			if (json.has("current")) {
+				try {
+					election = Election.CODEC.parse(JsonOps.INSTANCE, json.get("current"))
+							.ifError(error -> LOGGER.warn("[Skyblocker] Failed to parse election from the API response. Error: {}", error.message()))
+							.result().orElse(null);
+				} catch (Exception e) {
+					LOGGER.warn("[Skyblocker] Failed to parse election from the API response.", e);
+					election = null;
+				}
+			}
+			System.out.println("election: " + election);
 		});
 	}
 
