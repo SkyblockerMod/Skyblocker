@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -18,10 +19,12 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,7 +72,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	@Init
 	public static void setup() { //already had init therefore called setup
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (!overlay && CHANGING_BACKPACK_PATTERN.matcher(message.getString()).find()) {
+			if (Utils.isOnSkyblock() && !overlay && CHANGING_BACKPACK_PATTERN.matcher(message.getString()).find()) {
 				disableOnNextLoad = true;
 			}
 			return true;
@@ -435,7 +438,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 					//draw tooltip if hovered
 					if (mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE) {
-						graphics.setTooltipForNextFrame(CLIENT.font, currentStack, mouseX, mouseY);
+						Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
+
+						graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
 					}
 				}
 			} else {
