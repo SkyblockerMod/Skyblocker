@@ -166,6 +166,7 @@
   "skyblocker.config.chat.filter.hideMimicKill": "Hide Mimic Kill Messages",
   "skyblocker.config.chat.filter.hideMimicKill.@Tooltip": "Filters the \"Mimic dead!\" and \"Mimic killed!\" messages from chat.",
   "skyblocker.config.chat.filter.hideMoltenWave": "Hide Molten Wave Message",
+  "skyblocker.config.chat.filter.hideRareCrops": "Hide Rare Crop Messages",
   "skyblocker.config.chat.filter.hideShowOff": "Hide Show Off Messages",
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideSpiritSceptre": "Hide Spirit Sceptre Message",
