@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 public class PrehistoricEggAdder extends SimpleSlotTextAdder {
@@ -23,7 +22,7 @@ public class PrehistoricEggAdder extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (!stack.is(Items.PLAYER_HEAD) || !stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
+		if (!stack.getSkyblockId().equals("PREHISTORIC_EGG")) return List.of();
 		CompoundTag nbt = ItemUtils.getCustomData(stack);
 		if (!nbt.contains("blocks_walked")) return List.of();
 		int walked = nbt.getIntOr("blocks_walked", 0);
