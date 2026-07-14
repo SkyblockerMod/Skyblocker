@@ -42,7 +42,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private SkyblockKatUpgradeRecipeCategory skyblockKatUpgradeRecipe;
 
 	public static void trickJEIIntoLoadingRecipes() {
-		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
+		JeiLifecycleEvents.AFTER_RECIPES_UPDATED.invoker().run();
 	}
 
 	@Override

@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -13,7 +11,6 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.RegexUtils;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -21,7 +18,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -29,20 +25,19 @@ import net.minecraft.world.item.Items;
 
 public class LoadoutKeybinds extends SimpleSlotTextAdder {
 	public static final LoadoutKeybinds INSTANCE = new LoadoutKeybinds();
-	public static final KeyMapping LOADOUT_1 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.1", GLFW.GLFW_KEY_1, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.2", GLFW.GLFW_KEY_2, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_3 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.3", GLFW.GLFW_KEY_3, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_4 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.4", GLFW.GLFW_KEY_4, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_5 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.5", GLFW.GLFW_KEY_5, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_6 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.6", GLFW.GLFW_KEY_6, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_7 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.7", GLFW.GLFW_KEY_7, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_8 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.8", GLFW.GLFW_KEY_8, SkyblockerMod.KEYBINDING_CATEGORY));
-	public static final KeyMapping LOADOUT_9 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.9", GLFW.GLFW_KEY_9, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_1 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.01", GLFW.GLFW_KEY_1, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.02", GLFW.GLFW_KEY_2, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_3 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.03", GLFW.GLFW_KEY_3, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_4 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.04", GLFW.GLFW_KEY_4, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_5 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.05", GLFW.GLFW_KEY_5, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_6 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.06", GLFW.GLFW_KEY_6, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_7 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.07", GLFW.GLFW_KEY_7, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_8 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.08", GLFW.GLFW_KEY_8, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping LOADOUT_9 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.09", GLFW.GLFW_KEY_9, SkyblockerMod.KEYBINDING_CATEGORY));
 	public static final KeyMapping LOADOUT_10 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.10", GLFW.GLFW_KEY_0, SkyblockerMod.KEYBINDING_CATEGORY));
 	public static final KeyMapping LOADOUT_11 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.11", GLFW.GLFW_KEY_MINUS, SkyblockerMod.KEYBINDING_CATEGORY));
 	public static final KeyMapping LOADOUT_12 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.loadout.12", GLFW.GLFW_KEY_EQUAL, SkyblockerMod.KEYBINDING_CATEGORY));
 	protected static final KeyMapping[] LOADOUT_KEY_MAPPINGS = { LOADOUT_1, LOADOUT_2, LOADOUT_3, LOADOUT_4, LOADOUT_5, LOADOUT_6, LOADOUT_7, LOADOUT_8, LOADOUT_9, LOADOUT_10, LOADOUT_11, LOADOUT_12 };
-	private static final Pattern LOADOUT_PATTERN = Pattern.compile("Loadout (?<index>\\d+)");
 
 	private LoadoutKeybinds() {
 		// ^(?:\(\d+/\d+\) )?(Loadouts)$
@@ -110,6 +105,25 @@ public class LoadoutKeybinds extends SimpleSlotTextAdder {
 		};
 	}
 
+	private static int slotIdToLoadoutIndex(int slotId) {
+		// The most efficient way of doing this! I totally wasn't too lazy to do the math or anything...
+		return switch (slotId) {
+			case 14 -> 0;
+			case 15 -> 1;
+			case 16 -> 2;
+			case 23 -> 3;
+			case 24 -> 4;
+			case 25 -> 5;
+			case 32 -> 6;
+			case 33 -> 7;
+			case 34 -> 8;
+			case 41 -> 9;
+			case 42 -> 10;
+			case 43 -> 11;
+			default -> -1;
+		};
+	}
+
 	private static boolean isItemInvalid(ItemStack stack) {
 		// Skip loadouts that aren't customized, unlocked, or non-existent
 		return stack.is(Items.DYE.gray()) || stack.is(Items.DYE.red()) || stack.is(Items.STAINED_GLASS_PANE.black()) || stack.isEmpty();
@@ -117,28 +131,13 @@ public class LoadoutKeybinds extends SimpleSlotTextAdder {
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		// We use the custom name because ItemStack#getHoverName can return the customized item name which causes
-		// this to stop working
-		Component customName = stack.getCustomName();
+		int loadoutIndex = slotIdToLoadoutIndex(slotId);
 
-		if (slotId > 43 || isItemInvalid(stack) || customName == null) {
+		if (loadoutIndex == -1 || isItemInvalid(stack)) {
 			return List.of();
 		}
 
-		// Note: The pattern implictly excludes locked loadouts
-		Matcher matcher = LOADOUT_PATTERN.matcher(customName.getString());
-
-		if (matcher.matches()) {
-			int loadoutIndex = RegexUtils.parseIntFromMatcher(matcher, "index");
-			int keyMappingIndex = (loadoutIndex - 1) % LOADOUT_KEY_MAPPINGS.length;
-
-			// Ensure its between [0, 12]
-			if (keyMappingIndex >= 0 && keyMappingIndex <= (LOADOUT_KEY_MAPPINGS.length - 1)) {
-				return SlotText.bottomLeftList(LOADOUT_KEY_MAPPINGS[keyMappingIndex].getTranslatedKeyMessage().plainCopy().withColor(SlotText.MID_BLUE));
-			}
-		}
-
-		return List.of();
+		return SlotText.bottomLeftList(LOADOUT_KEY_MAPPINGS[loadoutIndex].getTranslatedKeyMessage().plainCopy().withColor(SlotText.MID_BLUE));
 	}
 
 	@Override

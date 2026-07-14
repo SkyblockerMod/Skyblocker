@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import org.junit.jupiter.api.Test;
 
 public class SkyMallFilterTest extends ChatFilterTest<SkyMallFilter> {
@@ -15,8 +16,8 @@ public class SkyMallFilterTest extends ChatFilterTest<SkyMallFilter> {
 
 	@Test
 	void testBuff() {
-		assertMatches("New buff: Gain +100⸕ Mining Speed.");
-		assertMatches("New buff: Gain +50☘ Mining Fortune.");
+		assertMatches(String.format("New buff: Gain +100%s Mining Speed.", SkyBlockIcons.MINING_SPEED));
+		assertMatches(String.format("New buff: Gain +50%s Mining Fortune.", SkyBlockIcons.MINING_FORTUNE));
 		assertMatches("New buff: Gain +15% more Powder while mining.");
 		assertMatches("New buff: -20% Pickaxe Ability cooldowns.");
 		assertMatches("New buff: 10x chance to find Golden and Diamond Goblins.");
