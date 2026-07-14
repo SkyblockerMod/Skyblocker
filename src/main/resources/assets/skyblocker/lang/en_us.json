@@ -170,8 +170,10 @@
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideSpiritSceptre": "Hide Spirit Sceptre Message",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
-  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Foraging islands",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of foraging islands.",
+  "skyblocker.config.chat.filter.hideToggleBeeKeeper": "Hides BeeKeeper Messages outside Foraging islands",
+  "skyblocker.config.chat.filter.hideToggleBeeKeeper.@Tooltip": "Hides BeeKeeper HOTF perk messages while you're outside of foraging islands.",
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Sky Mall Messages outside Mining Islands",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides Sky Mall HOTM perk messages while you're outside of a mining island.",
 
