@@ -6,6 +6,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -25,16 +27,16 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(ItemUtils.getItemCountInSuperpairs(stack).orElse(ItemUtils.getCompostCountInComposter(stack.skyblocker$getLoreStrings()).orElse(stack.getCount())))), 1);
 
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
-			lines.add(Component.literal(String.format("%-18s", "Bazaar Buy Price:"))
-						.withStyle(ChatFormatting.GOLD)
-						.append(product.buyPrice().isEmpty()
-								? Component.literal("No data").withStyle(ChatFormatting.RED)
-								: ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
-			lines.add(Component.literal(String.format("%-19s", "Bazaar Sell Price:"))
-						.withStyle(ChatFormatting.GOLD)
-						.append(product.sellPrice().isEmpty()
-								? Component.literal("No data").withStyle(ChatFormatting.RED)
-								: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
+			lines.add(GridComponent.of(
+					Component.literal("Bazaar Buy Price:").withStyle(ChatFormatting.GOLD),
+					product.buyPrice().isEmpty()
+							? Component.literal("No data").withStyle(ChatFormatting.RED)
+							: ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
+			lines.add(GridComponent.of(
+					Component.literal("Bazaar Sell Price:").withStyle(ChatFormatting.GOLD),
+					product.sellPrice().isEmpty()
+							? Component.literal("No data").withStyle(ChatFormatting.RED)
+							: ItemTooltip.getCoinsMessage(product.sellPrice().getAsDouble(), count)));
 		}
 	}
 

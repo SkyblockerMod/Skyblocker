@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -41,9 +42,9 @@ public class ObtainedDateTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String timestamp = getTimestamp(stack);
 		if (!timestamp.isEmpty()) {
-			lines.add(Component.empty()
-						.append(Component.literal(String.format("%-21s", "Obtained: ")).withStyle(ChatFormatting.LIGHT_PURPLE))
-						.append(Component.literal(timestamp).withStyle(ChatFormatting.RED)));
+			lines.add(GridComponent.of(
+						Component.literal("Obtained:").withStyle(ChatFormatting.LIGHT_PURPLE),
+						Component.literal(timestamp).withStyle(ChatFormatting.RED)));
 		}
 	}
 
