@@ -10,11 +10,11 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +27,8 @@ import java.util.Map;
 
 public class GlowingMushrooms {
 	private static final Minecraft client = Minecraft.getInstance();
-	private static final Map<BlockPos, GlowingMushrooms.GlowingMushroom> glowingMushrooms = new HashMap<>();
+	private static final Map<BlockPos, GlowingMushroom> glowingMushrooms = new HashMap<>();
+	private static final long HIGHLIGHT_DURATION_MS = 4000L;
 
 	@Init
 	public static void init() {
@@ -43,35 +44,53 @@ public class GlowingMushrooms {
 
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!shouldProcess() || client.level == null) return;
-		if (!ParticleTypes.ENTITY_EFFECT.equals(packet.getParticle().getType())) return;
+		ParticleType<?> type = packet.getParticle().getType();
+		if (type != ParticleTypes.ENTITY_EFFECT
+				&& type != ParticleTypes.EFFECT
+				&& type != ParticleTypes.INSTANT_EFFECT
+				&& type != ParticleTypes.WITCH) {
+			return;
+		}
 
 		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
 
-		Block block = client.level.getBlockState(pos).getBlock();
-		if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) return;
+		if (!isMushroom(pos)) {
+			pos = pos.below();
+			if (!isMushroom(pos)) return;
+		}
 
-		GlowingMushroom mushroom = glowingMushrooms.computeIfAbsent(pos, GlowingMushroom::new);
-		mushroom.addParticle();
+		glowingMushrooms.computeIfAbsent(pos, GlowingMushroom::new).refresh();
 	}
 
 	private static void update() {
-		if (!shouldProcess()) return;
-		for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
-			glowingMushroom.updateWaypoint();
+		if (!shouldProcess()) {
+			if (!glowingMushrooms.isEmpty()) glowingMushrooms.clear();
+			return;
 		}
+
+		long now = System.currentTimeMillis();
+		glowingMushrooms.entrySet().removeIf(entry -> !entry.getValue().isActive(now) || !isMushroom(entry.getKey()));
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (!shouldProcess() || client.level == null) return;
+		if (!shouldProcess() || client.level == null || glowingMushrooms.isEmpty()) return;
+
+		long now = System.currentTimeMillis();
 		for (GlowingMushroom glowingMushroom : glowingMushrooms.values()) {
-			if (!glowingMushroom.shouldRender()) continue;
-
-			Block block = client.level.getBlockState(glowingMushroom.pos).getBlock();
-			if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) continue;
-
-			AABB boundingBox = RenderHelper.getBlockBoundingBox(client.level, glowingMushroom.pos);
-			collector.submitOutlinedBox(boundingBox, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, glowingMushroom.shouldRenderThroughWalls());
+			if (glowingMushroom.isActive(now) && isMushroom(glowingMushroom.pos)) {
+				AABB box = RenderHelper.getBlockBoundingBox(client.level, glowingMushroom.pos);
+				if (box == null) {
+					box = new AABB(glowingMushroom.pos);
+				}
+				collector.submitOutlinedBox(box, ColorUtils.getFloatComponents(DyeColor.YELLOW), 3, false);
+			}
 		}
+	}
+
+	private static boolean isMushroom(BlockPos pos) {
+		if (client.level == null) return false;
+		Block block = client.level.getBlockState(pos).getBlock();
+		return block == Blocks.RED_MUSHROOM || block == Blocks.BROWN_MUSHROOM;
 	}
 
 	private static boolean shouldProcess() {
@@ -82,33 +101,21 @@ public class GlowingMushrooms {
 		glowingMushrooms.clear();
 	}
 
-	public static class GlowingMushroom extends SeenWaypoint {
-		private int particleCount = 0;
-		private long lastConfirmed;
+	private static final class GlowingMushroom {
+		private final BlockPos pos;
+		private long lastSeen;
 
 		private GlowingMushroom(BlockPos pos) {
-			super(pos, () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType, ColorUtils.getFloatComponents(DyeColor.CYAN));
+			this.pos = pos;
+			this.lastSeen = System.currentTimeMillis();
 		}
 
-		private void updateWaypoint() {
-			super.tick(client);
-
-			if (particleCount < 1) return;
-
-			long now = System.currentTimeMillis();
-			if (lastConfirmed + 2000 > now) return;
-
-			lastConfirmed = now;
-			particleCount = 0;
+		private void refresh() {
+			this.lastSeen = System.currentTimeMillis();
 		}
 
-		public void addParticle() {
-			particleCount++;
-		}
-
-		@Override
-		public boolean shouldRender() {
-			return super.shouldRender() && lastConfirmed + 5000 > System.currentTimeMillis();
+		private boolean isActive(long now) {
+			return lastSeen + HIGHLIGHT_DURATION_MS > now;
 		}
 	}
 }
