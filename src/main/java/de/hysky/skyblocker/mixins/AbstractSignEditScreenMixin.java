@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,14 +42,14 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isInputSign() && messages[3].equals("to order") && config.uiAndVisuals.bazaarQuickQuantities.enabled) {
-				Button[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
+				@Nullable Button[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
 				for (Button button : buttons) if (button != null) addRenderableWidget(button);
 			}
 		}
 	}
 
 	@Inject(method = "extractRenderState", at = @At("HEAD"))
-	private void skyblocker$extractRenderStateSign(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
+	private void skyblocker$extractRenderStateSign(CallbackInfo ci, @Local(name = "graphics", argsOnly = true) GuiGraphicsExtractor graphics) {
 		if (Utils.isOnSkyblock()) {
 			var config = SkyblockerConfigManager.get();
 			if (isSpeedInputSign() && config.general.speedPresets.enableSpeedPresets) {
