@@ -27,7 +27,7 @@ public class BazaarQuickQuantities {
 		buttons[2] = Button.builder(Component.nullToEmpty(String.valueOf(config.slot3Quantity)),
 				_ -> onButtonPressed(messages, config.slot3Quantity)).bounds(x, y + 60, 50, 20).build();
 
-		String clipboard = client.keyboardHandler.getClipboard();
+		String clipboard = client.keyboardHandler.getClipboard().replace(",", "");
 		if (clipboard.length() <= 5 && NumberUtils.isCreatable(clipboard)) { // Only show option if clipboard is numeric
 			MutableComponent text = Component.literal(clipboard);
 			text.withStyle(style -> style.withColor(ChatFormatting.AQUA));
