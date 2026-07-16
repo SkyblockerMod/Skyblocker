@@ -1782,5 +1782,9 @@
     "key.skyblocker.loadout.06": "角色配置06",
     "key.skyblocker.loadout.07": "角色配置07",
     "key.skyblocker.loadout.08": "角色配置08",
-    "key.skyblocker.loadout.09": "角色配置09"
+    "key.skyblocker.loadout.09": "角色配置09",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "SkyBlock物品栏界面",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats": "点击装备时跳转到“/stats”",
+    "skyblocker.mayor.perkOverrides.update.failed": "更新perk失败。详情请参阅日志。",
+    "skyblocker.mayor.perkOverrides.update.success": "更新perk成功。"
 }
