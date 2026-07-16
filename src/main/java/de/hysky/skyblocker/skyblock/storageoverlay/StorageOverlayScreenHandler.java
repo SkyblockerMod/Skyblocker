@@ -14,15 +14,7 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 		super(type, syncId, playerInventory, inventory, rows);
 		this.rows = rows;
 		int yOffset = rows * 18;
-		int shift = height - 113;
-		// Shift inventory slots to line up with storage overlay
-		for (int i = rows * 9; i < slots.size(); i++) {
-			Slot originalSlot = slots.get(i);
-			Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), originalSlot.x, originalSlot.y - yOffset + shift);
-			slot.index = i;
-			slots.set(i, slot);
-
-		}
+		shiftInventory(height - yOffset - 113);
 
 		// disable all slots on main "Storage" page
 		if (!isBackpack) {
@@ -39,22 +31,40 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 				slots.set(i, new InactiveSlot(slot.container, slot.getContainerSlot(), slot.x, slot.y));
 			}
 			//disable slots when not in menu and set to of screen until moved
-			for (int i = 9; i < rows * 9; ++i) {
-				Slot originalSlot = slots.get(i);
-				Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), 0, -20) {
-					@Override
-					public boolean isActive() {
-						return this.y > 8 && this.y < height - 94;
-					}
+			updateBackpackSlots(height);
 
-					@Override
-					public boolean isHighlightable() {
-						return this.y > 8 && this.y < height - 94;
-					}
-				};
-				slot.index = i;
-				slots.set(i, slot);
-			}
+		}
+	}
+
+	public void shiftInventory(int shift) {
+
+		// Shift inventory slots to line up with storage overlay
+		for (int i = rows * 9; i < slots.size(); i++) {
+			Slot originalSlot = slots.get(i);
+			Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), originalSlot.x, originalSlot.y + shift);
+			slot.index = i;
+			slots.set(i, slot);
+
+		}
+	}
+
+	public void updateBackpackSlots(int height) {
+
+		for (int i = 9; i < rows * 9; ++i) {
+			Slot originalSlot = slots.get(i);
+			Slot slot = new Slot(originalSlot.container, originalSlot.getContainerSlot(), 0, -20) {
+				@Override
+				public boolean isActive() {
+					return this.y > 8 && this.y < height - 94;
+				}
+
+				@Override
+				public boolean isHighlightable() {
+					return this.y > 8 && this.y < height - 94;
+				}
+			};
+			slot.index = i;
+			slots.set(i, slot);
 		}
 	}
 
@@ -77,6 +87,7 @@ public class StorageOverlayScreenHandler extends ChestMenu {
 			SlotAccessor slotAccessor = (SlotAccessor) slot;
 			slotAccessor.setX(itemX);
 			slotAccessor.setY(itemY);
+
 		}
 	}
 

@@ -65,6 +65,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static boolean disableOnNextLoad = false;
 	@Nullable
 	private BackpackGridWidget grid;
+	private int oldHeight;
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
@@ -82,9 +83,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	public StorageOverlayScreen(StorageOverlayScreenHandler handler, ChestMenu defaultHandler, Component name, Inventory inventory, int height) {
 		super(handler, inventory, name, 176, height);
 		this.titleLabelY = -1000; //let title exist for backpack previews caching to work.
+		this.inventoryLabelY += 2;
 		this.handler = handler;
 		this.defaultHandler = defaultHandler;
 		this.name = name;
+		this.oldHeight = height - 87;
 	}
 
 	public static boolean enabled(String title) {
@@ -148,9 +151,26 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	private int getHeight() {
-		return this.imageHeight - 87;
+		return this.height - (this.height / 5) - 87;
 	}
 
+	@Override
+	protected void repositionElements() {
+		super.repositionElements();
+		//work out new size for gui and change height and size respectively
+
+		this.topPos = (this.height / 10);
+		if (grid != null) {
+			grid.setY(this.topPos + 8);
+		}
+		handler.updateBackpackSlots(height);
+
+		//shift inventory slots and label
+		int change = getHeight() - oldHeight;
+		oldHeight = getHeight();
+		handler.shiftInventory(change);
+		this.inventoryLabelY += change;
+	}
 
 	@Override
 	protected void init() {
@@ -158,7 +178,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		//setup backpack widgets
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
-		grid = new BackpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols, handler, this.leftPos, this.topPos);
+		grid = new BackpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
@@ -238,7 +258,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		//render background
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND.get(), getLeftPos(), this.topPos, getWidth(), getHeight());
 		//render inventory
-		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + this.imageHeight - 90, 0, 132, 175, 90, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos + getHeight() - 3, 0, 132, 175, 90, 256, 256);
 	}
 
 	private class BackpackGridWidget extends SearchableGridWidget {
@@ -248,7 +268,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Nullable
 		private final Button reloadButton;
 
-		BackpackGridWidget(int x, int y, int width, int height, int internalCols, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+		BackpackGridWidget(int x, int y, int width, int height, int internalCols) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - 6) {
@@ -265,7 +285,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				boolean open = StorageOverlayScreen.openStorage == i;
 				if (storage != null) {
 					storageLoaded = true;
-					BackpackWidget widget = new BackpackWidget(internalCols, i, storage, open, handler, screenLeft, screenTop);
+					BackpackWidget widget = new BackpackWidget(internalCols, i, storage, open);
 					if (open) {
 						openBackpack = widget;
 					}
@@ -311,6 +331,17 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		protected double scrollRate() {
 			return 15;
 		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+			super.extractWidgetRenderState(context, mouseX, mouseY, deltaTicks);
+
+			//make sure that when the open backpack is not being rendered the slots are also not rendered.
+			if (openBackpack != null && (openBackpack.getBottom() < getY() + HEADER_H || openBackpack.getY() >= getBottom())) {
+				handler.moveBackpackSlots(0, -1000, 9);
+			}
+
+		}
 	}
 
 
@@ -321,11 +352,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private final int index;
 		private final BackpackPreview.Storage storage;
 		private final boolean open;
-		private final StorageOverlayScreenHandler handler;
-		private final int screenLeft;
-		private final int screenTop;
 
-		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open, StorageOverlayScreenHandler handler, int screenLeft, int screenTop) {
+
+		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open) {
 			int rows = Math.ceilDiv(storage.size() - 9, columns);
 			// if the storage is open use the handler to work out size
 			if (open) {
@@ -338,9 +367,6 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			this.index = index;
 			this.storage = storage;
 			this.open = open;
-			this.handler = handler;
-			this.screenLeft = screenLeft;
-			this.screenTop = screenTop;
 		}
 
 		private int size() {
@@ -437,7 +463,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 					SlotTextManager.extractSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
 
 					//draw tooltip if hovered
-					if (mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE) {
+					if (mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE && mouseY > topPos && mouseY < topPos + StorageOverlayScreen.this.getHeight()) {
 						Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
 
 						graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
@@ -445,7 +471,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				}
 			} else {
 				//move slots to fit this open backpack
-				handler.moveBackpackSlots(getX() - screenLeft + 8, getY() - screenTop + SLOT_SIZE, columns);
+				handler.moveBackpackSlots(getX() - leftPos + 8, getY() - topPos + SLOT_SIZE, columns);
 			}
 
 
