@@ -35,9 +35,9 @@ import java.util.Set;
 public class NineFTMSolver extends SimpleContainerSolver implements ContainerListener, SlotTextAdder {
 	public static final NineFTMSolver INSTANCE = new NineFTMSolver();
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Item UNKNOWN_SLOT = Items.STAINED_GLASS.yellow();
-	private static final Item CORRECT_SLOT = Items.STAINED_GLASS.green();
-	private static final Item SOLVED_SLOT = Items.STAINED_GLASS.lime();
+	private static final Item UNKNOWN_SLOT = Items.STAINED_GLASS_PANE.yellow();
+	private static final Item CORRECT_SLOT = Items.STAINED_GLASS_PANE.green();
+	private static final Item SOLVED_SLOT = Items.STAINED_GLASS_PANE.lime();
 	private static final String BOMB_CUSTOM_NAME = "BOMB";
 	private static final Identifier BOMB_SOUND = SoundEvents.LAVA_POP.location();
 	private static final int CHOICES = 4;
