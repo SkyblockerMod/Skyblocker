@@ -638,8 +638,6 @@
     "skyblocker.waypoints.shareWaypoints": "分享路径点",
     "skyblocker.waypoints.importWaypointsSkytils.tooltip": "从剪贴板导入路径点（Skytils格式）",
     "skyblocker.waypoints.importWaypointsSnoopy": "导入路径点（Snoopy）",
-    "skyblocker.waypoints.exportWaypointsSkytils": "导出路径点（Skytils）",
-    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils路径点导出功能已被弃用并移除。由于路径点数据丢失，不推荐使用。",
     "skyblocker.waypoints.importSuccess": "路径点已导入",
     "skyblocker.waypoints.importError": "导入路径点失败",
     "skyblocker.waypoints.importErrorText": "导入路径点失败。详细信息请参阅日志。",

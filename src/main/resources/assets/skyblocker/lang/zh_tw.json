@@ -641,8 +641,6 @@
     "skyblocker.waypoints.importWaypointsSkytils": "匯入路徑點（Skytils）",
     "skyblocker.waypoints.importWaypointsSnoopy": "匯入路徑點（Snoopy）",
     "skyblocker.waypoints.importWaypointsSnoopy.tooltip": "從剪貼簿匯入路徑點（Snoopy格式）",
-    "skyblocker.waypoints.exportWaypointsSkytils": "匯出路徑點（Skytils）",
-    "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils路徑點導出功能已被棄用並移除。由於路徑點資料丟失，不推薦使用。",
     "skyblocker.waypoints.importSuccess": "路徑點已匯入",
     "skyblocker.waypoints.importSuccessText": "成功從%s個組匯入%s個路徑點。",
     "skyblocker.waypoints.importError": "匯入路徑點失敗",
