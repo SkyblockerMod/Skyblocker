@@ -508,6 +508,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.specialEffects.displayItemName"))
 								.description(Component.translatable("skyblocker.config.general.specialEffects.displayItemName.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_7_0)
 								.binding(defaults.general.specialEffects.displayItemName,
 										() -> config.general.specialEffects.displayItemName,
 										newValue -> config.general.specialEffects.displayItemName = newValue)
