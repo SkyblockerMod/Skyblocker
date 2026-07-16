@@ -34,13 +34,14 @@
 * Fix Prehistoric Egg Slot Text
 * Fix some items showing as paper in the Profile Viewer
 * Fix area detection which broke numerous features not listed here
-* Fix wardrobe Quick Navigation regex and tooltip
+* Fix Wardrobe Quick Navigation regex and tooltip
 * Fix custom GUIs ignoring tooltip styles
 * Fix blocking clicks on empty GUI items
 * Fix Skyblocker Screen layout
 * Fix Farming XP not being detected in the Farming HUD
 * Fix "Enter Name" signs being treated as equations
 * Fix Quick Navigation being hidden by Blur+
+* Fix Stereo Harmony Helper & Jacob's Contest Pest Highlighter not working
 
 ## What's Changed
 * fix quick nav being hidden by blur+ by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2511
@@ -63,7 +64,7 @@
 * fix prehistoric egg adder after hypixel update by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2543
 * update JEI compat by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2536
 * Aligned tooltip text by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2520
-
+* fix anita crop symbol by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2551
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.6.0+26.2...v6.7.0+26.2
 
