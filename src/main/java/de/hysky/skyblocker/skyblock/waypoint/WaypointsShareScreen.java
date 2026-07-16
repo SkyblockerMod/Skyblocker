@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -32,7 +31,8 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 	protected void init() {
 		super.init();
 		int rowSpacing = 2;
-		GridLayout gridWidget = new GridLayout().columnSpacing(5).rowSpacing(rowSpacing);
+		int columnSpacing = 5;
+		GridLayout gridWidget = new GridLayout().columnSpacing(columnSpacing).rowSpacing(rowSpacing);
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 		// First row
 		adder.addChild(Checkbox.builder(Component.translatable("skyblocker.waypoints.importOptions.overrideLocation"), font)
@@ -99,16 +99,6 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 				showErrorToast();
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.importWaypointsSkytils.tooltip"))).build());
-		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.exportWaypointsSkytils").withStyle(ChatFormatting.STRIKETHROUGH), _ -> {
-			try {
-				List<WaypointGroup> waypointGroups = waypoints.values().stream().filter(waypointGroup -> waypointGroup.island().equals(island)).map(waypointGroup -> waypointGroup.filterWaypoints(selectedWaypoints::contains)).filter(waypointGroup -> !waypointGroup.waypoints().isEmpty()).toList();
-				minecraft.keyboardHandler.setClipboard(Waypoints.toSkytilsBase64(waypointGroups));
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportSuccess"), Component.translatable("skyblocker.waypoints.exportSuccessText", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size()));
-			} catch (Exception e) {
-				Waypoints.LOGGER.error("[Skyblocker Waypoints] Encountered exception while serializing Skytils waypoint data", e);
-				SystemToast.addOrUpdate(minecraft.getToastManager(), Waypoints.WAYPOINTS_TOAST_TYPE, Component.translatable("skyblocker.waypoints.exportError"), Component.translatable("skyblocker.waypoints.exportErrorText"));
-			}
-		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.exportWaypointsSkytils.tooltip"))).build());
 
 		// Fourth row
 		adder.addChild(Button.builder(Component.translatable("skyblocker.waypoints.importWaypointsSnoopy"), _ -> {
@@ -125,7 +115,7 @@ public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScree
 				showErrorToast();
 			}
 		}).tooltip(Tooltip.create(Component.translatable("skyblocker.waypoints.importWaypointsSnoopy.tooltip"))).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).width((Button.DEFAULT_WIDTH * 2) + columnSpacing).build(), 2);
 		layout.addToFooter(gridWidget);
 		int rows = 4;
 		layout.setFooterHeight(20 * rows + rowSpacing * (rows - 1) + 8);
