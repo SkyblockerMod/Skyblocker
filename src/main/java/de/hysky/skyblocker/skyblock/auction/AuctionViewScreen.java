@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import org.joml.Matrix3x2fStack;
@@ -284,13 +285,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		// This really shouldn't be possible to be null in its ACTUAL use case.
 		//noinspection DataFlowIssue
 		return new PopupScreen.Builder(this, title)
-				.addButton(Component.translatable("text.skyblocker.confirm"), _ -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player))
+				.addButton(Component.translatable("text.skyblocker.confirm"), _ -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, minecraft.player))
 				.addButton(Component.translatable("gui.cancel"), PopupScreen::onClose)
 				.addMessage((isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.price") : Component.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
 				.onClose(() -> {
 					// This really shouldn't be possible to be null in its ACTUAL use case.
 					//noinspection DataFlowIssue
-					this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 15, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
+					this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 15, ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, minecraft.player);
 				})
 				.build();
 	}
