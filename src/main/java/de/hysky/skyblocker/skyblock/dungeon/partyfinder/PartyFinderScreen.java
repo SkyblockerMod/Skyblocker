@@ -8,6 +8,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
@@ -528,7 +529,7 @@ public class PartyFinderScreen extends Screen {
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
 		assert minecraft.gameMode != null;
-		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 

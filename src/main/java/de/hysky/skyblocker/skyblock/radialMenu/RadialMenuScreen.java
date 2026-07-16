@@ -7,6 +7,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import de.hysky.skyblocker.utils.ContainerUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -215,7 +217,7 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 
 	private void clickSlot(int slotId, int button) {
 		if (CLIENT.gameMode == null) return;
-		CLIENT.gameMode.handleContainerInput(handler.containerId, slotId + menuType.clickSlotOffset(slotId), menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId)), ContainerInput.PICKUP, CLIENT.player);
+		CLIENT.gameMode.handleContainerInput(handler.containerId, slotId + menuType.clickSlotOffset(slotId), ContainerUtils.getContainerClickButton(menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId))), ContainerInput.PICKUP, CLIENT.player);
 	}
 
 	@Override
