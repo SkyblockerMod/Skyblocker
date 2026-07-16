@@ -55,7 +55,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +103,7 @@ public class SlotTextManager {
 			new GardenUpgradesAdder(),
 	};
 	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
-	public static final KeyMapping KEY_MAPPING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", GLFW.GLFW_KEY_LEFT_ALT, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static final KeyMapping KEY_MAPPING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", InputConstants.KEY_LALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
 	private SlotTextManager() {

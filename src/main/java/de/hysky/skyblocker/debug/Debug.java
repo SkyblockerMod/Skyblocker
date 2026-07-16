@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.debug;
 
 import com.google.gson.JsonElement;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
@@ -41,7 +42,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -76,8 +76,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
-		dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", InputConstants.KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", InputConstants.KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())

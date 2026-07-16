@@ -4,7 +4,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,11 +133,11 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	@Override
 	public boolean keyPressed(KeyEvent keyEvent) {
 		switch (keyEvent.key()) {
-			case GLFW.GLFW_KEY_RIGHT -> this.navigateDirection(ScreenDirection.RIGHT);
-			case GLFW.GLFW_KEY_LEFT -> this.navigateDirection(ScreenDirection.LEFT);
-			case GLFW.GLFW_KEY_DOWN -> this.navigateDirection(ScreenDirection.DOWN);
-			case GLFW.GLFW_KEY_UP -> this.navigateDirection(ScreenDirection.UP);
-			case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
+			case InputConstants.KEY_RIGHT -> this.navigateDirection(ScreenDirection.RIGHT);
+			case InputConstants.KEY_LEFT -> this.navigateDirection(ScreenDirection.LEFT);
+			case InputConstants.KEY_DOWN -> this.navigateDirection(ScreenDirection.DOWN);
+			case InputConstants.KEY_UP -> this.navigateDirection(ScreenDirection.UP);
+			case InputConstants.KEY_RETURN, InputConstants.KEY_SPACE -> this.clickSlot();
 			default -> {
 				if (CLIENT.options.keyUp.matches(keyEvent)) this.navigateDirection(ScreenDirection.UP);
 				else if (CLIENT.options.keyDown.matches(keyEvent)) this.navigateDirection(ScreenDirection.DOWN);

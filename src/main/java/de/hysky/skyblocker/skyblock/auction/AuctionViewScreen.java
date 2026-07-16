@@ -33,6 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	protected static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/view.png");
 
@@ -282,13 +284,13 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 		// This really shouldn't be possible to be null in its ACTUAL use case.
 		//noinspection DataFlowIssue
 		return new PopupScreen.Builder(this, title)
-				.addButton(Component.translatable("text.skyblocker.confirm"), _ -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, 0, ContainerInput.PICKUP, minecraft.player))
+				.addButton(Component.translatable("text.skyblocker.confirm"), _ -> this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 11, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player))
 				.addButton(Component.translatable("gui.cancel"), PopupScreen::onClose)
 				.addMessage((isBinAuction ? Component.translatable("skyblocker.fancyAuctionHouse.price") : Component.translatable("skyblocker.fancyAuctionHouse.newBid")).append(" ").append(priceText))
 				.onClose(() -> {
 					// This really shouldn't be possible to be null in its ACTUAL use case.
 					//noinspection DataFlowIssue
-					this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 15, 0, ContainerInput.PICKUP, minecraft.player);
+					this.minecraft.gameMode.handleContainerInput(this.minecraft.player.containerMenu.containerId, 15, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
 				})
 				.build();
 	}

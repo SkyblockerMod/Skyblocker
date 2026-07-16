@@ -18,6 +18,8 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.joml.Matrix3x2fStack;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 public class RarityWidget extends AbstractWidget {
 
 	private static final Identifier LEFT_TEXTURE = SkyblockerMod.id("auctions_gui/rarity_widget/left");
@@ -94,9 +96,9 @@ public class RarityWidget extends AbstractWidget {
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (slotId == -1) return;
 		if (isOnLeftArrow(click.x())) {
-			onClick.click(slotId, 1);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_RIGHT);
 		} else if (isOnRightArrow(click.x())) {
-			onClick.click(slotId, 0);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_LEFT);
 		}
 	}
 }

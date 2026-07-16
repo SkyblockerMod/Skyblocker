@@ -23,7 +23,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.Locale;
 
@@ -42,7 +43,7 @@ public class InventorySearch {
 			if (inventorySearchConfig.clickableText) Screens.getWidgets(handledScreen).add(new SearchTextWidget(handledScreen));
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((_, input) -> {
-				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
+				if (input.key() == (inventorySearchConfig.ctrlK ? InputConstants.KEY_K : InputConstants.KEY_F) && input.hasControlDownWithQuirk()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -151,7 +152,7 @@ public class InventorySearch {
 		public boolean keyPressed(KeyEvent input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isFocused());
+			return super.keyPressed(input) || (!input.isEscape() && this.isFocused());
 		}
 
 		// Unfocus when clicking outside

@@ -11,6 +11,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 /**
  * A screen for configuring the positions of HUD widgets.
  * <p>
@@ -80,7 +82,7 @@ public abstract class HudConfigScreen extends Screen {
 
 	@Override
 	public final boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
-		if (click.button() == 0 && draggingWidget != null) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && draggingWidget != null) {
 			draggingWidget.setX((int) Math.clamp(click.x() - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()) - getWidgetXOffset(draggingWidget));
 			draggingWidget.setY((int) Math.clamp(click.y() - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
 		}
@@ -89,7 +91,7 @@ public abstract class HudConfigScreen extends Screen {
 
 	@Override
 	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (click.button() == 0) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 			for (BasicWidget widget : widgets) {
 				if (GuiHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
@@ -98,7 +100,7 @@ public abstract class HudConfigScreen extends Screen {
 					break;
 				}
 			}
-		} else if (click.button() == 1) {
+		} else if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			resetPos();
 		}
 		return super.mouseClicked(click, doubled);

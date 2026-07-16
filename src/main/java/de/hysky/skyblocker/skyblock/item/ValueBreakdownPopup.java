@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -37,7 +38,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
-			GLFW.GLFW_KEY_I,
+			InputConstants.KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 

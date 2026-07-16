@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -526,7 +528,7 @@ public class PartyFinderScreen extends Screen {
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
 		assert minecraft.gameMode != null;
-		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, 0, ContainerInput.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 

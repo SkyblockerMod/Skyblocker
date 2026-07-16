@@ -6,7 +6,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class HotbarSlotLock {
 	public static void init() {
 		hotbarSlotLock = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.hotbarSlotLock",
-				GLFW.GLFW_KEY_H,
+				InputConstants.KEY_H,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 	}

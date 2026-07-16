@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
@@ -44,14 +43,14 @@ public final class WikiLookupManager {
 		officialWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.official",
 				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_F4,
+				InputConstants.KEY_F4,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 
 		independentWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.independent",
 				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_F1,
+				InputConstants.KEY_F1,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 	}

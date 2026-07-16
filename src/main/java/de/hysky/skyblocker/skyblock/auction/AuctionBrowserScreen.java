@@ -18,6 +18,8 @@ import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import java.awt.Color;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -125,7 +127,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 	private void onResetPressed(Button buttonWidget) {
 		buttonWidget.setFocused(false); // Annoying.
-		this.clickSlot(RESET_BUTTON_SLOT, 0);
+		this.clickSlot(RESET_BUTTON_SLOT, InputConstants.MOUSE_BUTTON_LEFT);
 	}
 
 	@Override
