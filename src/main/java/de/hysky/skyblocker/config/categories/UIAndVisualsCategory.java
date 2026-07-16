@@ -171,6 +171,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_7_0)
 								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
 										() -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
 										newValue -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage = newValue)
