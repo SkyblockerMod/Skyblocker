@@ -445,13 +445,11 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		// these are optional too, why not
 		if (object.has("icon_position")) this.iconPosition = IconPosition.valueOf(object.get("icon_position").getAsString().trim());
 		// backwards compat teehee
-		if (object.has("show_text"))
-			this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
-		if (object.has("text_position"))
-			this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
+		if (object.has("show_text")) this.textPosition = object.get("show_text").getAsBoolean() ? TextPosition.BAR_CENTER : TextPosition.OFF;
+		if (object.has("text_position")) this.textPosition = TextPosition.valueOf(object.get("text_position").getAsString().trim());
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
-		if (object.has("direction")) this.direction = Direction.valueOf(object.get("direction").getAsString().trim());
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
+		if (object.has("direction")) this.direction = Direction.valueOf(object.get("direction").getAsString().trim());
 	}
 
 	public JsonObject toJson() {
@@ -549,6 +547,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 			} else {
 				fillColor = getColors()[0].getRGB();
 			}
+
 			renderBarFill(graphics, barX, barWidth, fill, transparency(fillColor));
 			if (hasOverflow() && overflowFill > 0) {
 				renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));

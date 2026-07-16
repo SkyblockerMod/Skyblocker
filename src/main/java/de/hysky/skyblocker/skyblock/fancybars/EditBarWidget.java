@@ -139,18 +139,19 @@ public class EditBarWidget extends AbstractContainerWidget {
 		iconOption.setOnChange(statusBar::setIconPosition);
 		textOption.setCurrent(statusBar.getTextPosition());
 		textOption.setOnChange(statusBar::setTextPosition);
-		directionOption.setCurrent(statusBar.getDirection());
-		directionOption.setOnChange(statusBar::setDirection);
 
 		color1.setCurrent(statusBar.getColors()[0].getRGB());
 		color1.setOnChange(color -> statusBar.getColors()[0] = color);
 
 		showMaxOption.active = statusBar.hasMax();
 		showMaxOption.setCurrent(statusBar.showMax);
+		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
 		showOverflowOption.active = statusBar.hasOverflow();
 		showOverflowOption.setCurrent(statusBar.showOverflow);
-		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
 		showOverflowOption.setOnChange(showOverflow -> statusBar.showOverflow = showOverflow);
+
+		directionOption.setCurrent(statusBar.getDirection());
+		directionOption.setOnChange(statusBar::setDirection);
 
 		color2.active = statusBar.hasOverflow();
 		if (color2.active) {
