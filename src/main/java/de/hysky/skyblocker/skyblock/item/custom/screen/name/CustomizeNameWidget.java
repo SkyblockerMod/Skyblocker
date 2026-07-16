@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -397,7 +398,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(TextColor.fromLegacyFormat(color).getValue());
+			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(TextColor.fromLegacyFormat(color).getValue()));
 		}
 
 		@Override

@@ -16,6 +16,7 @@
 		"ClientCommonPacketListenerImplMixin",
 		"ClientLevelMixin",
 		"ClientPacketListenerMixin",
+		"ClientTooltipComponentMixin",
 		"ContainerScreenMixin",
 		"DataComponentHolderMixin",
 		"DyedItemColorMixin",
@@ -44,6 +45,7 @@
 		"MinecraftMixin",
 		"MouseHandlerMixin",
 		"MultiPlayerGameModeMixin",
+		"MutableComponentMixin",
 		"OptionsMixin",
 		"PingDebugMonitorMixin",
 		"PlayerTabOverlayMixin",
@@ -90,6 +92,7 @@
 		"accessors.ScreenAccessor",
 		"accessors.SlotAccessor",
 		"accessors.SpriteContentsAccessor",
+		"adaptivetooltips.ScrollTrackerMixin",
 		"discordipc.ConnectionMixin",
 		"jgit.SystemReaderMixin",
 		"jgit.UrlConfigMixin"

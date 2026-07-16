@@ -505,6 +505,14 @@ public class GeneralCategory {
 										newValue -> config.general.specialEffects.trophyDropEffects = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.specialEffects.displayItemName"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.displayItemName.@Tooltip"))
+								.binding(defaults.general.specialEffects.displayItemName,
+										() -> config.general.specialEffects.displayItemName,
+										newValue -> config.general.specialEffects.displayItemName = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				.build();

@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.NineFTMSolver;
+import de.hysky.skyblocker.skyblock.LoadoutKeybinds;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -91,6 +92,7 @@ public class SlotTextManager {
 			new EvolvingItemAdder(),
 			new NewYearCakeAdder(),
 			WardrobeKeybinds.INSTANCE,
+			LoadoutKeybinds.INSTANCE,
 			new SkyblockGuideAdder(),
 			SameColorTerminal.INSTANCE,
 			AttributeLevelHelper.INSTANCE,

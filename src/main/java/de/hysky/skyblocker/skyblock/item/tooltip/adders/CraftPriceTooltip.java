@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import io.github.moulberry.repo.data.NEUMobDropRecipe;
@@ -52,8 +53,9 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			double craftPrice = cachedCraftCosts.computeIfAbsent(itemId, CraftPriceTooltip::getItemCost);
 			if (craftPrice <= 0) return;
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
-			lines.add(Component.literal(String.format("%-20s", "Crafting Price:")).withStyle(ChatFormatting.GOLD)
-						.append(ItemTooltip.getCoinsMessage(craftPrice, count)));
+			lines.add(GridComponent.of(
+					Component.literal("Crafting Price:").withStyle(ChatFormatting.GOLD),
+					ItemTooltip.getCoinsMessage(craftPrice, count)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Craft Price] Error calculating craft price for: {}", stack.getNeuName(), e);
 		}

@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import java.util.Map;
 import java.util.Objects;
+
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import net.minecraft.client.Minecraft;
 
 public class DisciplineTestHelper {
@@ -11,10 +13,10 @@ public class DisciplineTestHelper {
 	 * Stores what sword is needed for the name of a zombie
 	 */
 	private static final Map<String, String> SWORD_TO_NAME_LOOKUP = Map.of(
-			"WOOD_SWORD", "༕ Wood",
-			"IRON_SWORD", "༕ Iron",
-			"GOLD_SWORD", "༕ Gold",
-			"DIAMOND_SWORD", "༕ Diamond"
+			"WOOD_SWORD", SkyBlockIcons.UNDEAD + " Wood",
+			"IRON_SWORD", SkyBlockIcons.UNDEAD + " Iron",
+			"GOLD_SWORD", SkyBlockIcons.UNDEAD + " Gold",
+			"DIAMOND_SWORD", SkyBlockIcons.UNDEAD + " Diamond"
 	);
 
 	/**

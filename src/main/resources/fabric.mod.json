@@ -36,6 +36,9 @@
     ],
 		"skyblock-item-list": [
 			"de.hysky.skyblocker.compatibility.ItemListCompatibility"
+		],
+		"catharsis:imc/hidden_mod_elements": [
+			"de.hysky.skyblocker.compatibility.CatharsisCompatibility::hiddenGuiElements"
 		]
   },
   "mixins": [
@@ -57,6 +60,10 @@
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
     "skyblockmod": "<=1.10.7",
+		"jei": [
+			"<29.14.0.43",
+			"<30.8.0.51 ^30"
+		],
 	"sodium": "<=0.8.7"
   },
   "custom": {

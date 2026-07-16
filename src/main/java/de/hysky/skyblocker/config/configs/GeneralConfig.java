@@ -233,6 +233,8 @@ public class GeneralConfig {
 		public boolean rareDyeDropEffects = true;
 
 		public boolean trophyDropEffects = true;
+
+		public boolean displayItemName = true;
 	}
 
 	@Deprecated

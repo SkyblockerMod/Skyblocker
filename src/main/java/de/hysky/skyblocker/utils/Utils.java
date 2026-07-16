@@ -67,6 +67,7 @@ public class Utils {
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
+	private static final String AREA_ICON_REGEX = String.format("[%s%s]", SkyBlockIcons.AREA, SkyBlockIcons.RIFT_AREA);
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
@@ -308,7 +309,7 @@ public class Utils {
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
-				if (sidebarLine.contains("⏣") || sidebarLine.contains("ф") /* Rift */) {
+				if (sidebarLine.contains(SkyBlockIcons.AREA) || sidebarLine.contains(SkyBlockIcons.RIFT_AREA) /* Rift */) {
 					return sidebarLine.strip();
 				}
 			}
@@ -391,7 +392,7 @@ public class Utils {
 	}
 
 	private static void updateArea() {
-		String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+		String areaName = getIslandArea().replaceAll(AREA_ICON_REGEX, "").strip();
 		Area oldArea = area;
 		area = Area.from(areaName);
 

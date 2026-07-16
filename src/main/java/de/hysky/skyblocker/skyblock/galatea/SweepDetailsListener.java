@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
@@ -16,7 +17,7 @@ import net.minecraft.network.chat.Component;
 public class SweepDetailsListener implements ChatMessageListener {
 	// Used to keep cancelled sweep messages in logs
 	private static final Logger LOGGER = LogUtils.getLogger();
-	protected static final Pattern SWEEP_DETAILS = Pattern.compile("Sweep Details: ([\\d.]+)∮ Sweep");
+	protected static final Pattern SWEEP_DETAILS = Pattern.compile(String.format("Sweep Details: ([\\d.]+)[∮%s] Sweep", SkyBlockIcons.SWEEP));
 	protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
 	protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
 	protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep ([\\d.]+) Logs ([a-zA-Z ]*)!!");

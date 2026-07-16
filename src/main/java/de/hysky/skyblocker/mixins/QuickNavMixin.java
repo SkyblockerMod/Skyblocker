@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
 import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
@@ -25,7 +26,7 @@ public abstract class QuickNavMixin extends QuickNavScreenMixin {
 	@Inject(method = "init()V", at = @At(value = "TAIL"))
 	protected void skyblocker$initQuickNav(CallbackInfo ci) {
 		Screen instance = (Screen) (Object) this;
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative()) {
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().quickNav.enableQuickNav && Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative() && !CatharsisCompatibility.isGuiElementHidden("skyblocker:quickNavigation")) {
 			for (QuickNavButton quickNavButton : this.quickNavButtons = QuickNav.init(instance.getTitle().getString().trim())) {
 				instance.addWidget(quickNavButton);
 			}

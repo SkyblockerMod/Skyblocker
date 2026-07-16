@@ -72,11 +72,12 @@ public class SkyblockerScreen extends Screen {
 	protected void init() {
 		// Slightly larger footer than header to move body content higher
 		// because the body content is positioned at footer height + 30 for some reason
-		this.layout = new HeaderAndFooterLayout(this, height < 280 ? 48 : 64, height < 280 ? 64 : 100);
+		// 320 is default height at gui scale 3
+		this.layout = new HeaderAndFooterLayout(this, this.height < 320 ? 48 : 64, this.height < 320 ? 64 : 100);
 		this.layout.addToHeader(new IconTextWidget(this.getTitle(), this.font, ICON));
 
 		GridLayout gridWidget = this.layout.addToContents(new GridLayout()).spacing(SPACING);
-		if (height < 320) gridWidget = gridWidget.rowSpacing(4); // 320 is default height at gui scale 3
+		if (this.height < 360) gridWidget = gridWidget.rowSpacing(4);
 		gridWidget.defaultCellSetting().alignHorizontallyCenter();
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 

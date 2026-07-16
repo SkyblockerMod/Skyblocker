@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import net.minecraft.world.item.ItemStack;
 
-public record ProfileItemStorage(List<ItemStack> inventory, List<ItemStack> armour, List<ItemStack> equipment, List<ItemStack> enderChestContents, TreeMap<Integer, Backpack> backpacks, List<ItemStack> wardrobe, List<ItemStack> pets, Bags bags) {
+public record ProfileItemStorage(List<ItemStack> inventory, List<ItemStack> armour, List<ItemStack> equipment, List<ItemStack> enderChestContents, TreeMap<Integer, Backpack> backpacks, List<ItemStack> armourSets, List<ItemStack> equipmentSets, List<ItemStack> pets, Bags bags) {
 	public record Backpack(ItemStack icon, List<ItemStack> contents) {}
 
 	public record Bags(List<ItemStack> accessories) {}
