@@ -35,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {
 	public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId(1_000);
@@ -76,29 +78,29 @@ public class WidgetsListTab implements Tab {
 		this.client = client;
 		this.handler = handler;
 		back = Button.builder(Component.translatable("gui.back"), _ -> {
-			clickAndWaitForServer(48, 0);
+			clickAndWaitForServer(48, InputConstants.MOUSE_BUTTON_LEFT);
 			this.resetScrollOnLoad();
 		}).size(64, 15).build();
 		widgetsElementList.setBackButton(back);
-		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), _ -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), _ -> clickAndWaitForServer(50, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
 		previousPage = Button.builder(Component.translatable("book.page_button.previous"), _ -> {
-					clickAndWaitForServer(45, 0);
+					clickAndWaitForServer(45, InputConstants.MOUSE_BUTTON_LEFT);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
 		nextPage = Button.builder(Component.translatable("book.page_button.next"), _ -> {
-					clickAndWaitForServer(53, 0);
+					clickAndWaitForServer(53, InputConstants.MOUSE_BUTTON_LEFT);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
 		resetButton = Button.builder(Component.literal("Reset"), _ -> {
 			if (resetSlotId == -1) return;
-			clickAndWaitForServer(resetSlotId, 0);
+			clickAndWaitForServer(resetSlotId, InputConstants.MOUSE_BUTTON_LEFT);
 		}).size(60, 15).build();
 		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), client.font);
 		waitingForServerText.setWidth(client.font.width(waitingForServerText.getMessage()));

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -28,7 +30,7 @@ public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> 
 	}
 
 	protected void clickSlot(int slotID) {
-		clickSlot(slotID, 0);
+		clickSlot(slotID, InputConstants.MOUSE_BUTTON_LEFT);
 	}
 
 	public void changeHandler(AuctionHouseScreenHandler newHandler) {

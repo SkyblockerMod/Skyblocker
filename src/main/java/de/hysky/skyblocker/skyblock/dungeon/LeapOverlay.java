@@ -11,7 +11,8 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.Comparator;
 import java.util.Locale;
@@ -127,10 +128,10 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			return true;
 		} else if (CONFIG.get().leapKeybinds) {
 			return switch (input.key()) {
-				case GLFW.GLFW_KEY_1 -> leapToPlayer(0);
-				case GLFW.GLFW_KEY_2 -> leapToPlayer(1);
-				case GLFW.GLFW_KEY_3 -> leapToPlayer(2);
-				case GLFW.GLFW_KEY_4 -> leapToPlayer(3);
+				case InputConstants.KEY_1 -> leapToPlayer(0);
+				case InputConstants.KEY_2 -> leapToPlayer(1);
+				case InputConstants.KEY_3 -> leapToPlayer(2);
+				case InputConstants.KEY_4 -> leapToPlayer(3);
 				default -> false;
 			};
 		}
@@ -277,7 +278,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		private void clickSlot() {
-			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, CLIENT.player);
+			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}

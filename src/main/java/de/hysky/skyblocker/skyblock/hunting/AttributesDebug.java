@@ -11,9 +11,9 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 
@@ -42,9 +42,9 @@ public class AttributesDebug {
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			ScreenKeyboardEvents.afterKeyPress(screen).register((_, input) -> {
-				if (input.key() == GLFW.GLFW_KEY_G) {
+				if (input.key() == InputConstants.KEY_G) {
 					dumpAttributes();
-				} else if (input.key() == GLFW.GLFW_KEY_J) {
+				} else if (input.key() == InputConstants.KEY_J) {
 					exportAttributes();
 				}
 			});

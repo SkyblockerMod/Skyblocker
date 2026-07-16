@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -16,10 +19,10 @@ public class DefaultSlotEntry extends WidgetsListSlotEntry {
 
 	public DefaultSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		leftClick = Button.builder(Component.literal("LEFT"), _ -> this.parent.clickAndWaitForServer(this.slotId, 0))
+		leftClick = Button.builder(Component.literal("LEFT"), _ -> this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(32, 12)
 				.build();
-		rightClick = Button.builder(Component.literal("RIGHT"), _ -> this.parent.clickAndWaitForServer(this.slotId, 1))
+		rightClick = Button.builder(Component.literal("RIGHT"), _ -> this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_RIGHT))
 				.size(32, 12)
 				.build();
 	}

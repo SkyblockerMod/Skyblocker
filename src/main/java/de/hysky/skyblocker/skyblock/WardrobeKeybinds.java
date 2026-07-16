@@ -15,7 +15,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -69,7 +70,7 @@ public class WardrobeKeybinds extends SimpleSlotTextAdder {
 			return true;
 		}
 
-		minecraft.gameMode.handleContainerInput(containerScreen.getMenu().containerId, i, GLFW.GLFW_MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(containerScreen.getMenu().containerId, i, InputConstants.MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, minecraft.player);
 		return false;
 	}
 
