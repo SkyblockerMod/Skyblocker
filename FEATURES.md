@@ -384,7 +384,8 @@
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe Keybinds**
+- **Loadouts Helper**
+    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**

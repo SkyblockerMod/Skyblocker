@@ -1,3 +1,74 @@
+# Release 6.7.0
+
+## Highlight
+* Add Loadouts Helper
+  * Replaces the Wardrobe Helper and allows for binding keys to equip Loadouts, Armour Sets, and Equipment Sets.
+  * Each key bind is now configurable and no longer tied to your hotbar keys.
+  * Your hotbar keys are automatically copied over for you.
+* Add aligned tooltip text
+  * All of Skyblocker's item tooltips are now aligned with pixel perfection!
+* Add ability to switch to `/stats` over `/eq` for the inventory equipment preview
+* Add command to update perk overrides (`/skyblocker updatePerkOverrides`)
+* Add Catharsis resource pack compatibility
+* Add item name display to Special Effects (configurable)
+* Change shortcut character limit to 256
+* Change the colour of Rarity Backgrounds, Tab Widgets, and text colours to match SkyBlock
+* Change whitespace handling with Chat Rules format codes
+* Change Auto Pet chat filter toasts to include an icon
+* Change Nukekubi Highlight colour to green
+* Remove Skytils Waypoint Exporting
+* Fix equipment in the inventory screen
+* Fix Fancy Bars
+  * Fix Overflow Mana detection
+* Fix Rare Drop Effects
+* Fix JEI compatibility
+* Fix Sweep Overlay
+* Fix Dojo Discipline Test Helper
+* Fix Glowing Mushroom Highlighter
+* Fix Metal Detector Solver
+* Fix Sack Autocomplete
+* Fix Corpse Profit Tracker
+* Fix Powder Mining Profit Tracker
+* Fix Block Break Prediction
+* Fix Combo Filter
+* Fix Prehistoric Egg Slot Text
+* Fix some items showing as paper in the Profile Viewer
+* Fix area detection which broke numerous features not listed here
+* Fix wardrobe Quick Navigation regex and tooltip
+* Fix custom GUIs ignoring tooltip styles
+* Fix blocking clicks on empty GUI items
+* Fix Skyblocker Screen layout
+* Fix Farming XP not being detected in the Farming HUD
+* Fix "Enter Name" signs being treated as equations
+* Fix Quick Navigation being hidden by Blur+
+
+## What's Changed
+* fix quick nav being hidden by blur+ by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2511
+* save version in data fixing codec by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2516
+* increase shortcut character limit by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2519
+* Improve consistency of whitespace around formatting chars by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2485
+* Add support for new Resource Pack icons by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2499
+* Exclude "Enter Name" Signs from Calculator by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2515
+* Fix Wardrobe Keybinds and Add Support for Equipment Sets by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2514
+* Allow Switching Equipment Command by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2513
+* Fix Equipment In Inventory Screen by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2512
+* catharsis compatibility by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2508
+* Special Effects: display item name and play sound by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2509
+* fix farming hud xp regex by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2522
+* fix wardrobe quick nav regex by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2524
+* Improve autopet chat filter toasts by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2510
+* fix the fix for area detection by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2529
+* Update ComboFilter.java and RareDropSpecialEffects.java by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2527
+* Fix BlockBreakPrediction Mining Speed Pattern by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2532
+* fix prehistoric egg adder after hypixel update by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2543
+* update JEI compat by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2536
+* Aligned tooltip text by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2520
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.6.0+26.2...v6.7.0+26.2
+
+___
+
 # Release 6.6.0
 
 ## Highlight
