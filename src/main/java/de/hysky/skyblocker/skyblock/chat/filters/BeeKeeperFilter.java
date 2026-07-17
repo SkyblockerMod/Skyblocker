@@ -16,6 +16,6 @@ public class BeeKeeperFilter extends SimpleChatFilter {
 
 	@Override
 	protected ChatFilterResult state() {
-		return !Utils.isInGalatea() || !Utils.isInTorrhusCanyon() ? SkyblockerConfigManager.get().chat.hideToggleBeeKeeper : ChatFilterResult.PASS;
+		return !Utils.isInGalatea() && !Utils.isInTorrhusCanyon() ? SkyblockerConfigManager.get().chat.hideToggleBeeKeeper : ChatFilterResult.PASS;
 	}
 }
