@@ -9,11 +9,12 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
 
 public class BazaarQuickQuantities {
 	private static final Minecraft client = Minecraft.getInstance();
 
-	public static Button[] getButtons(int width, String[] messages) {
+	public static @Nullable Button[] getButtons(int width, String[] messages) {
 		Button[] buttons = new Button[4];
 		UIAndVisualsConfig.BazaarQuickQuantities config = SkyblockerConfigManager.get().uiAndVisuals.bazaarQuickQuantities;
 
@@ -27,7 +28,7 @@ public class BazaarQuickQuantities {
 		buttons[2] = Button.builder(Component.nullToEmpty(String.valueOf(config.slot3Quantity)),
 				_ -> onButtonPressed(messages, config.slot3Quantity)).bounds(x, y + 60, 50, 20).build();
 
-		String clipboard = client.keyboardHandler.getClipboard();
+		String clipboard = client.keyboardHandler.getClipboard().replace(",", "");
 		if (clipboard.length() <= 5 && NumberUtils.isCreatable(clipboard)) { // Only show option if clipboard is numeric
 			MutableComponent text = Component.literal(clipboard);
 			text.withStyle(style -> style.withColor(ChatFormatting.AQUA));
