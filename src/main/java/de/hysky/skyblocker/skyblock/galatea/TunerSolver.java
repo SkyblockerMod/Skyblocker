@@ -159,9 +159,9 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
 		if (!isInMenu) return false;
 
-		if (button != 0 && button != 1) return false;
+		if (button != 0 && button != 1 && button != 2) return false;
 
-		int delta = button == 0 ? -1 : 1;
+		int delta = button == 1 ? 1 : -1;
 
 		if (colorSolved && slotId == 46) {
 			colorClicks = updateClicks(colorClicks, COLOR_CYCLE.length, delta);
