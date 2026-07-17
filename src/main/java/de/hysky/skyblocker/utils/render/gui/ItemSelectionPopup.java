@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,6 +26,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.jspecify.annotations.Nullable;
+
+import com.google.common.base.Predicates;
 /**
  * A popup allowing the user to select a skyblock item.
  */
@@ -73,6 +76,7 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	);
 
 	private final Consumer<@Nullable ItemStack> onDone;
+	private final Predicate<FlexibleItemStack> filter;
 	private @Nullable ItemWidget selectedItem = null;
 
 	private final GridLayout gridWidget = new GridLayout();
@@ -83,8 +87,13 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 	 * @param onDone The action to perform with the selected item after the popup has been closed. {@code null} is passed if "cancel" has been pressed.
 	 */
 	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone) {
+		this(backgroundScreen, onDone, Predicates.alwaysTrue());
+	}
+
+	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone, Predicate<FlexibleItemStack> filter) {
 		super(Component.literal("Select Item"), backgroundScreen);
 		this.onDone = onDone;
+		this.filter = filter;
 	}
 
 	private void setSelectedItem(ItemWidget selectedItem) {
@@ -131,7 +140,10 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 						skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
 						return skull;
 			});
-			items = Stream.concat(icons, ItemRepository.getItemsStream()).map(ItemWidget::new).toList();
+			items = Stream.concat(icons, ItemRepository.getItemsStream())
+					.filter(ItemSelectionPopup.this.filter)
+					.map(ItemWidget::new)
+					.toList();
 			setSearch("");
 		}
 
