@@ -307,7 +307,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			super.onClick(click, doubled);
-			Minecraft.getInstance().gui.setScreen(new EditBarColorPopup(Component.literal("Edit ").append(getMessage()), parent, this::setAndUpdate));
+			Minecraft.getInstance().gui.setScreen(new EditBarColorPopup(Component.literal("Edit ").append(getMessage()), parent, this::setAndUpdate, current.getRGB()));
 		}
 	}
 

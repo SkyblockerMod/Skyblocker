@@ -23,9 +23,10 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 
 	private LinearLayout layout = LinearLayout.vertical();
 
-	protected EditBarColorPopup(Component title, Screen backgroundScreen, Consumer<Color> setColor) {
+	protected EditBarColorPopup(Component title, Screen backgroundScreen, Consumer<Color> setColor, int initialColor) {
 		super(title, backgroundScreen);
 		this.setColor = setColor;
+		this.currentColor = initialColor;
 	}
 
 	@Override
@@ -38,6 +39,8 @@ public class EditBarColorPopup extends AbstractPopupScreen {
 		LinearLayout colorLayout = layout.addChild(LinearLayout.horizontal().spacing(4));
 		ColorPickerWidget colorPicker = new ColorPickerWidget(0, 0, 200, 100);
 		ARGBTextInput argb = new ARGBTextInput(0, 0, font, true, false);
+		colorPicker.setARGBColor(currentColor);
+		argb.setARGBColor(currentColor);
 
 		argb.setOnChange(color -> {
 			colorPicker.setARGBColor(color);
