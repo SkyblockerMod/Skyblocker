@@ -60,7 +60,7 @@ public class JacobsContestWidget extends TabHudWidget {
 					String crop = matcher.group("crop");
 					String percentage = matcher.group("percentage");
 					MutableComponent cropText = Component.empty().append(crop);
-					if (matcher.group("fortune").equals(SkyBlockIcons.FARMING_FORTUNE)) cropText.append(Component.literal(" " + SkyBlockIcons.FARMING_FORTUNE).withStyle(ChatFormatting.GOLD));
+					if (matcher.group("fortune").equals(String.valueOf(SkyBlockIcons.FARMING_FORTUNE))) cropText.append(Component.literal(" " + SkyBlockIcons.FARMING_FORTUNE).withStyle(ChatFormatting.GOLD));
 
 					this.addComponent(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
 					if (percentage != null) this.addComponent(new PlainTextElement(Component.literal(percentage)));

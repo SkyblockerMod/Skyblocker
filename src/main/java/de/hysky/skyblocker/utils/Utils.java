@@ -309,7 +309,7 @@ public class Utils {
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
-				if (sidebarLine.contains(SkyBlockIcons.AREA) || sidebarLine.contains(SkyBlockIcons.RIFT_AREA) /* Rift */) {
+				if (sidebarLine.indexOf(SkyBlockIcons.AREA) >= 0 || sidebarLine.indexOf(SkyBlockIcons.RIFT_AREA) >= 0 /* Rift */) {
 					return sidebarLine.strip();
 				}
 			}
