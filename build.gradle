@@ -404,6 +404,7 @@ publishMods {
 		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
+		client = true
 		requires("fabric-api", "fabric-language-kotlin")
 		optional("roughly-enough-items", "emi", "jei")
 		embeds("yacl")
