@@ -5,9 +5,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -24,7 +22,6 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -35,7 +32,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -84,19 +80,12 @@ public class ItemTab extends GridLayoutTab {
 		linearLayout.addChild(glintButton);
 		linearLayout.addChild(ButtonWidget.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
 			Minecraft minecraft = Minecraft.getInstance();
-			Consumer<@Nullable ItemStack> applyItemModel = stack -> {
-				if (stack != null && stack.has(DataComponents.ITEM_MODEL)) {
-					//noinspection DataFlowIssue
-					modelField.setValue(stack.get(DataComponents.ITEM_MODEL).toString());
+			Consumer<@Nullable Identifier> applyItemModel = stack -> {
+				if (stack != null) {
+					modelField.setValue(stack.toString());
 				}
 			};
-			Predicate<FlexibleItemStack> hasSkyblockModel = stack -> {
-				Identifier itemModel = stack.get(DataComponents.ITEM_MODEL);
-
-				return itemModel != null && itemModel.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE);
-			};
-
-			minecraft.gui.setScreen(new ItemSelectionPopup(parentScreen, applyItemModel, hasSkyblockModel));
+			minecraft.gui.setScreen(new ModelSelectionPopup(parentScreen, applyItemModel));
 		}).width(120).build(), p -> p.paddingTop(4));
 		linearLayout.addChild(modelField);
 
