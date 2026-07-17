@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.render.gui.BasicToast;
@@ -22,7 +23,7 @@ public class RareCropFilter extends ChatPatternListener {
 	private static final Map<String, FlexibleItemStack> ICONS = new HashMap<>();
 
 	public RareCropFilter() {
-		super("^RARE CROP! (?<crop>[\\w\\s]+) \\(.*$");
+		super("^RARE CROP!\\s+(?<crop>[\\w\\s]+)\\s+\\(\\+\\d+" + SkyBlockIcons.OVERBLOOM + "\\)$");
 	}
 
 	private @Nullable ItemStack getCropIcon(Matcher matcher) {
@@ -73,7 +74,6 @@ public class RareCropFilter extends ChatPatternListener {
 		IDS.put("Salted Sunflower Seeds", "SALTED_SUNFLOWER_SEEDS");
 		IDS.put("Crystalized Moonlight", "CRYSTALIZED_MOONLIGHT");
 		IDS.put("Floral Gelatin", "FLORAL_GELATIN");
-		IDS.put("Wild Strawberry Dye", "DYE_WILD_STRAWBERRY");
-		IDS.put("Ray of Helios", "RAY_OF_HELIOS");
+		// Wild Strawberry Dye and Ray of Helios are handled as rare drops instead
 	}
 }

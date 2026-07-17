@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
 	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? "+SkyBlockIcons.MAGIC_FIND+" Magic Find\\))?$");
+	private static final Pattern OVERBLOOM_PATTERN = Pattern.compile("^RARE CROP!\\s+(?<crop>[\\w\\s]+)\\s+\\(\\+\\d+" + SkyBlockIcons.OVERBLOOM + "\\)$");
 
 	@Init
 	public static void init() {
@@ -34,6 +35,14 @@ public class RareDropSpecialEffects {
 
 				if (magicFindMatcher.matches()) {
 					triggerDropEffect(magicFindMatcher.group("item"));
+
+					return true;
+				}
+
+				Matcher overbloomMatcher = OVERBLOOM_PATTERN.matcher(stringForm);
+
+				if (overbloomMatcher.matches()) {
+					triggerDropEffect(overbloomMatcher.group("crop"));
 				}
 			} catch (Exception e) { //In case there's a regex failure or something else bad happens
 				LOGGER.error("[Skyblocker Special Effects] An unexpected exception was encountered: ", e);
@@ -85,6 +94,8 @@ public class RareDropSpecialEffects {
 			case "Radioactive Vial" -> "RADIOACTIVE_VIAL";
 			case "Tiki Mask" -> "TIKI_MASK";
 			case "Titanoboa Shed" -> "TITANOBOA_SHED";
+			//Farming
+			case "Ray of Helios" -> "RAY_OF_HELIOS";
 			default -> "NONE";
 		};
 
