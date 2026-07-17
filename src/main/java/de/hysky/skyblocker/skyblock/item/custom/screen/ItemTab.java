@@ -4,7 +4,10 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -21,14 +24,18 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -70,11 +77,30 @@ public class ItemTab extends GridLayoutTab {
 		modelField.setHint(Component.translatable("skyblocker.customization.item.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		nameWidget = new CustomizeNameWidget(parentScreen);
 
-		layout.addChild(new ItemSelector(), 0, 0, 2, 1);
+		layout.addChild(new ItemSelector(), 0, 0, 1, 1);
 		layout.addChild(new BackgroundRenderer(), 0, 1);
-		layout.addChild(glintButton, 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).alignVerticallyTop().paddingTop(3));
-		layout.addChild(modelField, 1, 1, p -> p.alignHorizontallyRight().paddingRight(3).alignVerticallyBottom().paddingBottom(3));
-		layout.addChild(nameWidget, 2, 0, 1, 2);
+
+		LinearLayout linearLayout = layout.addChild(LinearLayout.vertical(), 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).paddingVertical(3));
+		linearLayout.addChild(glintButton);
+		linearLayout.addChild(ButtonWidget.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
+			Minecraft minecraft = Minecraft.getInstance();
+			Consumer<@Nullable ItemStack> applyItemModel = stack -> {
+				if (stack != null && stack.has(DataComponents.ITEM_MODEL)) {
+					//noinspection DataFlowIssue
+					modelField.setValue(stack.get(DataComponents.ITEM_MODEL).toString());
+				}
+			};
+			Predicate<FlexibleItemStack> hasSkyblockModel = stack -> {
+				Identifier itemModel = stack.get(DataComponents.ITEM_MODEL);
+
+				return itemModel != null && itemModel.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE);
+			};
+
+			minecraft.gui.setScreen(new ItemSelectionPopup(parentScreen, applyItemModel, hasSkyblockModel));
+		}).width(120).build(), p -> p.paddingTop(4));
+		linearLayout.addChild(modelField);
+
+		layout.addChild(nameWidget, 1, 0, 1, 2);
 
 		LocalPlayer player = Minecraft.getInstance().player;
 		ItemStack handStack = player.getMainHandItem();
