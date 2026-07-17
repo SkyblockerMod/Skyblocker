@@ -156,7 +156,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private static abstract class AbstractOption<T> extends AbstractWidget {
 
-		protected T current;
+		protected @Nullable T current;
 		protected final Function<StatusBar, @Nullable T> getter;
 		protected final BiConsumer<StatusBar, T> setter;
 		protected @Nullable StatusBar activeBar;
@@ -177,6 +177,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 				current = apply;
 				active = true;
 			} else {
+				current = null;
 				active = false;
 			}
 			this.activeBar = statusBar;
@@ -232,7 +233,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		@Override
 		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			Font textRenderer = Minecraft.getInstance().font;
-			String string = current.toString();
+			String string = current != null ? current.toString() : "???";
 			int valueWidth = textRenderer.width(string) + 1;
 			graphics.text(textRenderer, string, getRight() - valueWidth, getY() + 1, CommonColors.WHITE, true);
 			return valueWidth;
@@ -240,7 +241,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			setAndUpdate(EnumUtils.cycle(current));
+			setAndUpdate(current != null ? EnumUtils.cycle(current): values[0]);
 			super.onClick(click, doubled);
 		}
 
@@ -264,7 +265,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		@Override
 		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
-			if (current && active) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
+			if (active && Boolean.TRUE.equals(current)) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
 			return 10;
 		}
 
@@ -275,7 +276,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			setAndUpdate(!current);
+			setAndUpdate(current == null || !current);
 			super.onClick(click, doubled);
 		}
 
@@ -295,7 +296,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		@Override
 		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
-			graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current.getRGB() : CommonColors.GRAY);
+			graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active && current != null ? current.getRGB() : CommonColors.GRAY);
 			return 10;
 		}
 
@@ -307,7 +308,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			super.onClick(click, doubled);
-			Minecraft.getInstance().gui.setScreen(new EditBarColorPopup(Component.literal("Edit ").append(getMessage()), parent, this::setAndUpdate, current.getRGB()));
+			Minecraft.getInstance().gui.setScreen(new EditBarColorPopup(Component.literal("Edit ").append(getMessage()), parent, this::setAndUpdate, current != null ? current.getRGB() : -1));
 		}
 	}
 
