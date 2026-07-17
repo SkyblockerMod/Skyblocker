@@ -154,20 +154,20 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 	}
 
-	private static abstract class AbstractOption<T> extends AbstractWidget {
+	private abstract static class AbstractOption<T> extends AbstractWidget {
 
 		protected @Nullable T current;
 		protected final Function<StatusBar, @Nullable T> getter;
 		protected final BiConsumer<StatusBar, T> setter;
 		protected @Nullable StatusBar activeBar;
 
-		public AbstractOption(int height, Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
+		private AbstractOption(int height, Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
 			super(0, 0, BASE_WIDTH, height, message);
 			this.getter = getter;
 			this.setter = setter;
 		}
 
-		public AbstractOption(Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
+		private AbstractOption(Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
 			this(DEFAULT_OPTION_HEIGHT, message, getter, setter);
 		}
 
@@ -207,9 +207,9 @@ public class EditBarWidget extends AbstractContainerWidget {
 		/**
 		 * @return the width taken by the value
 		 */
-		abstract protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a);
+		protected abstract int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a);
 
-		abstract protected int expectedValueWidth();
+		protected abstract int expectedValueWidth();
 
 		public final int expectedWidth() {
 			return expectedValueWidth() + Minecraft.getInstance().font.width(getMessage()) + 2;
@@ -241,7 +241,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			setAndUpdate(current != null ? EnumUtils.cycle(current): values[0]);
+			setAndUpdate(current != null ? EnumUtils.cycle(current) : values[0]);
 			super.onClick(click, doubled);
 		}
 
