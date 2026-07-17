@@ -13,6 +13,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
@@ -52,6 +53,7 @@ public class EventNotifications {
 			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
 			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
 			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
+			Map.entry("Cult of the Fallen Star", Ico.NETHER_STAR),
 			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
 	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
