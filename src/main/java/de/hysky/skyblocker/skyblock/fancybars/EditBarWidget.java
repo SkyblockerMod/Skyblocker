@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.fancybars;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -31,6 +33,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private final BooleanOption showMaxOption;
 	private final BooleanOption showOverflowOption;
+	private final EnumCyclingOption<StatusBar.Direction> directionOption;
 
 	private final ColorOption color1;
 	private final ColorOption color2;
@@ -45,7 +48,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 	private int contentsWidth = 0;
 
 	public EditBarWidget(int x, int y, Screen parent) {
-		super(x, y, 100, 99, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
+		super(x, y, 100, 110, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
 
 		Font textRenderer = Minecraft.getInstance().font;
 
@@ -67,24 +70,28 @@ public class EditBarWidget extends AbstractContainerWidget {
 		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
 
+		translatable = Component.translatable("skyblocker.bars.config.direction");
+		directionOption = new EnumCyclingOption<>(0, 55, getWidth(), translatable, StatusBar.Direction.class);
+		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + textOption.getLongestOptionWidth() + 20);
+
 		// COLO(u)RS
 		translatable = Component.translatable("skyblocker.bars.config.mainColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		color1 = new ColorOption(0, 55, getWidth(), translatable, parent);
+		color1 = new ColorOption(0, 66, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.overflowColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		color2 = new ColorOption(0, 66, getWidth(), translatable, parent);
+		color2 = new ColorOption(0, 77, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.textColor");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		textColor = new ColorOption(0, 77, getWidth(), translatable, parent);
+		textColor = new ColorOption(0, 88, getWidth(), translatable, parent);
 
 		translatable = Component.translatable("skyblocker.bars.config.hide");
 		contentsWidth = Math.max(contentsWidth, textRenderer.width(translatable) + 9 + 10);
-		hideOption = new RunnableOption(0, 88, getWidth(), translatable);
+		hideOption = new RunnableOption(0, 99, getWidth(), translatable);
 
-		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
+		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, directionOption, color1, color2, textColor, hideOption);
 
 		setWidth(contentsWidth);
 	}
@@ -138,10 +145,13 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		showMaxOption.active = statusBar.hasMax();
 		showMaxOption.setCurrent(statusBar.showMax);
+		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
 		showOverflowOption.active = statusBar.hasOverflow();
 		showOverflowOption.setCurrent(statusBar.showOverflow);
-		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
 		showOverflowOption.setOnChange(showOverflow -> statusBar.showOverflow = showOverflow);
+
+		directionOption.setCurrent(statusBar.getDirection());
+		directionOption.setOnChange(statusBar::setDirection);
 
 		color2.active = statusBar.hasOverflow();
 		if (color2.active) {
@@ -241,8 +251,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {
-		}
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
 		public void setOnChange(Consumer<T> onChange) {
 			this.onChange = onChange;
