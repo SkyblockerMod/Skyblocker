@@ -581,6 +581,8 @@
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.SQUARE": "Square",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Background",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item. The color represents the item's rarity.",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Item Rarity Background Legacy Colors",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Use the rarity colors from before the resource pack update.",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Jacob's Contest Medal Background",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
   "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "Legacy Attribute Background",

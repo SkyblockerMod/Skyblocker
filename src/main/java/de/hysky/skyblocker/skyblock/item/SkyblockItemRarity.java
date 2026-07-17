@@ -16,15 +16,15 @@ import net.minecraft.util.StringRepresentable;
 public enum SkyblockItemRarity implements StringRepresentable {
 	COMMON(TextColor.WHITE),
 	UNCOMMON(TextColor.GREEN),
-	RARE(SkyBlockColors.BLUE),
-	EPIC(SkyBlockColors.DARK_PURPLE),
-	LEGENDARY(SkyBlockColors.GOLD),
+	RARE(SkyBlockColors.BLUE, TextColor.BLUE),
+	EPIC(SkyBlockColors.DARK_PURPLE, TextColor.DARK_PURPLE),
+	LEGENDARY(SkyBlockColors.GOLD, TextColor.GOLD),
 	MYTHIC(TextColor.LIGHT_PURPLE),
 	DIVINE(TextColor.AQUA),
 	SPECIAL(TextColor.RED),
 	VERY_SPECIAL(TextColor.RED),
-	ULTIMATE(SkyBlockColors.DARK_RED),
-	ADMIN(SkyBlockColors.DARK_RED),
+	ULTIMATE(SkyBlockColors.DARK_RED, TextColor.DARK_RED),
+	ADMIN(SkyBlockColors.DARK_RED, TextColor.DARK_RED),
 	UNKNOWN(TextColor.DARK_GRAY);
 
 	public static final Codec<SkyblockItemRarity> CODEC = StringRepresentable.fromEnum(SkyblockItemRarity::values);
@@ -33,15 +33,20 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	public final float r;
 	public final float g;
 	public final float b;
+	public final RarityColor legacyColor;
 
-	SkyblockItemRarity(TextColor textColor) {
+	SkyblockItemRarity(TextColor color, TextColor legacyColor) {
 		this.name = this.name().replace("_", " ");
-		//noinspection DataFlowIssue
-		this.color = textColor.getValue();
+		this.color = color.getValue();
 
-		this.r = ((this.color >> 16) & 0xFF) / 255f;
-		this.g = ((this.color >> 8) & 0xFF) / 255f;
-		this.b = (this.color & 0xFF) / 255f;
+		this.r = ARGB.redFloat(this.color);
+		this.g = ARGB.greenFloat(this.color);
+		this.b = ARGB.blueFloat(this.color);
+		this.legacyColor = new RarityColor(legacyColor);
+	}
+
+	SkyblockItemRarity(TextColor color) {
+		this(color, color);
 	}
 
 	/**
@@ -112,8 +117,14 @@ public enum SkyblockItemRarity implements StringRepresentable {
 
 	public static SkyblockItemRarity fromColor(int color) {
 		return Arrays.stream(SkyblockItemRarity.values())
-				.filter(rarity -> ARGB.colorFromFloat(1f, rarity.r, rarity.g, rarity.b) == ARGB.opaque(color))
+				.filter(rarity -> ARGB.opaque(rarity.color) == ARGB.opaque(color))
 				.findFirst()
 				.orElse(UNKNOWN);
+	}
+
+	public record RarityColor(int rgb, float r, float g, float b) {
+		public RarityColor(TextColor textColor) {
+			this(textColor.getValue(), ARGB.redFloat(textColor.getValue()), ARGB.greenFloat(textColor.getValue()), ARGB.blueFloat(textColor.getValue()));
+		}
 	}
 }

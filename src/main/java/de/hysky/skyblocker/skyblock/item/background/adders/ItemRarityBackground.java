@@ -23,10 +23,20 @@ public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRari
 	@Override
 	protected void extract(GuiGraphicsExtractor context, int x, int y, SkyblockItemRarity rarity) {
 		if (rarity == SkyblockItemRarity.UNKNOWN) return;
+		float r, g, b;
+		if (SkyblockerConfigManager.get().general.itemInfoDisplay.itemRarityBackgroundsLegacyColors) {
+			r = rarity.legacyColor.r();
+			g = rarity.legacyColor.g();
+			b = rarity.legacyColor.b();
+		} else {
+			r = rarity.r;
+			g = rarity.g;
+			b = rarity.b;
+		}
 		context.blitSprite(RenderPipelines.GUI_TEXTURED, getSprite(), x, y, 16, 16,
 				ARGB.colorFromFloat(
 						SkyblockerConfigManager.get().general.itemInfoDisplay.itemBackgroundOpacity,
-						rarity.r, rarity.g, rarity.b
+						r, g, b
 				)
 		);
 	}
