@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -100,9 +100,9 @@ public class SkyblockerCreditsScreen extends Screen {
 	public boolean keyPressed(KeyEvent keyEvent) {
 		if (keyEvent.isUp()) {
 			this.direction = -1;
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_LEFT_CONTROL || keyEvent.key() == GLFW.GLFW_KEY_RIGHT_CONTROL) {
+		} else if (keyEvent.key() == InputConstants.KEY_LCONTROL || keyEvent.key() == InputConstants.KEY_RCONTROL) {
 			this.speedupModifiers.add(keyEvent.key());
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_SPACE) {
+		} else if (keyEvent.key() == InputConstants.KEY_SPACE) {
 			this.speedupActive = true;
 		}
 
@@ -116,9 +116,9 @@ public class SkyblockerCreditsScreen extends Screen {
 			this.direction = 1;
 		}
 
-		if (keyEvent.key() == GLFW.GLFW_KEY_SPACE) {
+		if (keyEvent.key() == InputConstants.KEY_SPACE) {
 			this.speedupActive = false;
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_LEFT_CONTROL || keyEvent.key() == GLFW.GLFW_KEY_RIGHT_CONTROL) {
+		} else if (keyEvent.key() == InputConstants.KEY_LCONTROL || keyEvent.key() == InputConstants.KEY_RCONTROL) {
 			this.speedupModifiers.remove(keyEvent.key());
 		}
 

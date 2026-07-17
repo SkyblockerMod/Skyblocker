@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -20,7 +23,7 @@ public class EditableSlotEntry extends WidgetsListSlotEntry {
 	public EditableSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		editButton = Button.builder(Component.literal("EDIT"), _ -> {
-			this.parent.clickAndWaitForServer(this.slotId, 0);
+			this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_LEFT);
 			this.parent.resetScrollOnLoad();
 		}).size(32, 12).build();
 		this.locked = ItemUtils.getLoreLineIf(icon, s -> s.startsWith("Click to edit")) == null || icon.is(Items.STAINED_GLASS_PANE.red());

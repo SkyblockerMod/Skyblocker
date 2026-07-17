@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -15,7 +16,6 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -346,7 +346,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			return true;
 		}
 
-		if (this.recipeView && click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		if (this.recipeView && click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			// The crafting result button
 			var result = resultButtons.get(14);
 			var rawID = result.getDisplayStack().getSkyblockId();

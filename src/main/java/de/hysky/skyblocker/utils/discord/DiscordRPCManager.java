@@ -109,7 +109,7 @@ public class DiscordRPCManager {
 
 	@SuppressWarnings("deprecation")
 	private static String islandArea() {
-		return Utils.getIslandArea().replace(SkyBlockIcons.AREA, "⏣").replace(SkyBlockIcons.RIFT_AREA, "ф");
+		return Utils.getIslandArea().replace(SkyBlockIcons.AREA, '⏣').replace(SkyBlockIcons.RIFT_AREA, 'ф');
 	}
 
 	public static String getInfo() {

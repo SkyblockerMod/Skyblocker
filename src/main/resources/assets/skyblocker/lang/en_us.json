@@ -1999,8 +1999,6 @@
   "skyblocker.waypoints.exportSuccessText": "Successfully exported %s waypoint(s) from %s group(s).",
   "skyblocker.waypoints.exportWaypointsSkyblocker": "Export Waypoints (Skyblocker)",
   "skyblocker.waypoints.exportWaypointsSkyblocker.tooltip": "Export Waypoints to Clipboard (Skyblocker Format)",
-  "skyblocker.waypoints.exportWaypointsSkytils": "Export Waypoints (Skytils)",
-  "skyblocker.waypoints.exportWaypointsSkytils.tooltip": "Skytils waypoint exports have been deprecated for removal and are unrecommended due to waypoint data loss.",
   "skyblocker.waypoints.groupType": "Group Type",
   "skyblocker.waypoints.groupType.normal": "Normal",
   "skyblocker.waypoints.groupType.ordered": "Ordered",

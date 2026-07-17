@@ -9,7 +9,8 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +226,7 @@ public class PreviewWidget extends AbstractWidget {
 		if (!(this.active && this.visible && isMouseOver(click.x(), click.y()))) return false;
 		double localMouseX = (click.x() - getX()) / scaledRatio;
 		double localMouseY = (click.y() - getY()) / scaledRatio;
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			List<HudWidget> hoveredThingies = new ArrayList<>();
 			for (HudWidget hudWidget : WidgetManager.getScreenBuilder(tab.getCurrentLocation()).getHudWidgets(tab.getCurrentScreenLayer())) {
 				if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
@@ -282,13 +283,13 @@ public class PreviewWidget extends AbstractWidget {
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		if (hoveredWidget != null && hoveredWidget.equals(selectedWidget)) {
-			int multiplier = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
+			int multiplier = input.hasControlDown() ? 5 : 1;
 			int x = 0, y = 0;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_UP -> y = -multiplier;
-				case GLFW.GLFW_KEY_DOWN -> y = multiplier;
-				case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
-				case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
+				case InputConstants.KEY_UP -> y = -multiplier;
+				case InputConstants.KEY_DOWN -> y = multiplier;
+				case InputConstants.KEY_LEFT -> x = -multiplier;
+				case InputConstants.KEY_RIGHT -> x = multiplier;
 			}
 			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());

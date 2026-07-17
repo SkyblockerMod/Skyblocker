@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
+import de.hysky.skyblocker.utils.ContainerUtils;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,13 +25,13 @@ public abstract class AbstractCustomHypixelGUI<T extends AbstractContainerMenu> 
 	protected void clickSlot(int slotID, int button) {
 		if (isWaitingForServer) return;
 		if (minecraft.gameMode == null || minecraft.player == null) return;
-		this.minecraft.gameMode.handleContainerInput(menu.containerId, slotID, button, ContainerInput.PICKUP, minecraft.player);
+		this.minecraft.gameMode.handleContainerInput(menu.containerId, slotID, ContainerUtils.getContainerClickButton(button), ContainerInput.PICKUP, minecraft.player);
 		menu.getCarried().setCount(0);
 		isWaitingForServer = true;
 	}
 
 	protected void clickSlot(int slotID) {
-		clickSlot(slotID, 0);
+		clickSlot(slotID, InputConstants.MOUSE_BUTTON_LEFT);
 	}
 
 	public void changeHandler(AuctionHouseScreenHandler newHandler) {
