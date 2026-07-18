@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
@@ -78,7 +77,7 @@ public class ItemTab extends GridLayoutTab {
 
 		LinearLayout linearLayout = layout.addChild(LinearLayout.vertical(), 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).paddingVertical(3));
 		linearLayout.addChild(glintButton);
-		linearLayout.addChild(ButtonWidget.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
+		linearLayout.addChild(Button.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
 			Minecraft minecraft = Minecraft.getInstance();
 			Consumer<@Nullable Identifier> applyItemModel = stack -> {
 				if (stack != null) {
@@ -157,7 +156,7 @@ public class ItemTab extends GridLayoutTab {
 
 		private ItemSelector() {
 			super(0, 20, 0, 0, Component.literal("Item Selector"), AbstractScrollArea.defaultSettings(8));
-			layout.addChild(SpacerElement.height(32)); // ITEM
+			layout.addChild(SpacerElement.height(32 + 7)); // ITEM (+7 is to ensure its aligned with the item model field area)
 			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), _ ->
 					Minecraft.getInstance().gui.setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
 			).width(Button.SMALL_WIDTH).build());
