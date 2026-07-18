@@ -73,14 +73,7 @@ public class ItemSelectionPopup extends AbstractSelectionPopup<ItemSelectionPopu
 	);
 
 	private final Predicate<FlexibleItemStack> filter;
-	private final List<ItemWidget> items = Stream.concat(skullIcons.stream().map(pair -> {
-				FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
-				skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
-				return skull;
-			}), ItemRepository.getItemsStream())
-			.filter(ItemSelectionPopup.this.filter)
-			.map(ItemWidget::new)
-			.toList();
+	private final List<ItemWidget> items;
 
 	/**
 	 * @param backgroundScreen The screen to display in the background.
@@ -93,6 +86,14 @@ public class ItemSelectionPopup extends AbstractSelectionPopup<ItemSelectionPopu
 	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone, Predicate<FlexibleItemStack> filter) {
 		super(Component.literal("Select Item"), backgroundScreen, opt -> onDone.accept(opt.map(ItemWidget::getItem).orElse(null)), 20);
 		this.filter = filter;
+		this.items = Stream.concat(skullIcons.stream().map(pair -> {
+			FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
+			skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
+			return skull;
+		}), ItemRepository.getItemsStream())
+		.filter(ItemSelectionPopup.this.filter)
+		.map(ItemWidget::new)
+		.toList();
 	}
 
 	@Override
