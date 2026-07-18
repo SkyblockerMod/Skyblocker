@@ -1801,11 +1801,15 @@
     "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Utiliser les Icônes de Barre de Faim Vanilla",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "Écran d'inventaire de SkyBlock",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats": "Ouvrir l'Équipement Vers '/stats'",
-    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "Lorsque vous cliquez sur un équipement, vous pouvez choisir d'accéder à 'Vos Statistiques' (/stats) ou à la Garde-Robe d'Équipement (/equipment).",
+    "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip": "Lorsque vous cliquez sur un équipement, vous pouvez choisir d'accéder à 'Your Stats' (/stats) ou à la Equipment Wardrobe (/equipment).",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "Afficher les Équipements dans l'Inventaire",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "Cet affichage est un cache et n'est pas mis à jour en temps réel.",
     "skyblocker.config.uiAndVisuals.slotText.cropMilestones": "Crop Milestones",
     "skyblocker.config.uiAndVisuals.slotText.cropMilestones.@Tooltip": "Affiche les niveaux de crop milestone.",
     "skyblocker.mayor.perkOverrides.update.failed": "Mise à jour des bonus échouée. Consultez les journaux pour plus de détails.",
-    "skyblocker.mayor.perkOverrides.update.success": "Mise à jour des bonus réussie."
+    "skyblocker.mayor.perkOverrides.update.success": "Mise à jour des bonus réussie.",
+    "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "De gauche à droite",
+    "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "De droite à gauche",
+    "skyblocker.bars.config.direction.FROM_MIDDLE": "Du milieu",
+    "skyblocker.bars.config.direction": "Direction"
 }
