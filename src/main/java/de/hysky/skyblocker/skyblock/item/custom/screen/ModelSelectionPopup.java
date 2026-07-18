@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -56,6 +57,12 @@ public class ModelSelectionPopup extends AbstractSelectionPopup<ModelSelectionPo
 			graphics.item(icon, getX() + 2, getY() + 2);
 			if (selectedItem == this) graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x3000FF00);
 			if (isHovered()) graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x20FFFFFF);
+		}
+
+		@Override
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			super.onClick(click, doubled);
+			ModelSelectionPopup.this.setSelectedItem(this);
 		}
 
 		@Override
