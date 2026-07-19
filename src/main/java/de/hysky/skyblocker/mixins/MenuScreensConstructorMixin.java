@@ -1,19 +1,21 @@
 package de.hysky.skyblocker.mixins;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.dungeon.LeapOverlay;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreen;
+import de.hysky.skyblocker.skyblock.item.SkyblockCraftingTableScreenHandler;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,6 +27,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Locale;
 
 @Mixin(MenuScreens.ScreenConstructor.class)
 public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
@@ -123,6 +127,19 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 				client.gui.setScreen(new RadialMenuScreen(containerScreenHandler, menuType, name));
 
 				ci.cancel();
+			}
+
+			//storage overlay
+			case ChestMenu containerScreenHandler when StorageOverlayScreen.enabled(nameLowercase) -> {
+				int height = client.getWindow().getGuiScaledHeight() - (client.getWindow().getGuiScaledHeight() / 5);
+				boolean isBackpack = BackpackPreview.getStorageIndexFromTitle(nameLowercase) != -1;
+				StorageOverlayScreenHandler storageOverlayScreenHandler = new StorageOverlayScreenHandler(containerScreenHandler, isBackpack, height, player.getInventory());
+				client.player.containerMenu = storageOverlayScreenHandler;
+				client.gui.setScreen(new StorageOverlayScreen(storageOverlayScreenHandler, containerScreenHandler, name, client.player.getInventory(), height));
+
+				ci.cancel();
+
+
 			}
 
 			case null, default -> {}

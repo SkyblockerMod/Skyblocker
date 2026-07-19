@@ -249,6 +249,37 @@ public class UIAndVisualsCategory {
 						.options(createSlotTextToggles(config))
 						.build())
 
+				// Storage Overlay
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.enabled"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.storageOverlay.enabled,
+										() -> config.uiAndVisuals.storageOverlay.enabled,
+										newValue -> config.uiAndVisuals.storageOverlay.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip"))
+								.binding(defaults.uiAndVisuals.storageOverlay.backpackWidth,
+										() -> config.uiAndVisuals.storageOverlay.backpackWidth,
+										newValue -> config.uiAndVisuals.storageOverlay.backpackWidth = newValue)
+								.controller(IntegerController.createBuilder().range(4, 45).slider(1).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip"))
+								.binding(defaults.uiAndVisuals.storageOverlay.rememberSearch,
+										() -> config.uiAndVisuals.storageOverlay.rememberSearch,
+										newValue -> config.uiAndVisuals.storageOverlay.rememberSearch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build()
+				)
+
 				// Radial Menus
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.radialMenu"))
