@@ -63,6 +63,7 @@ public class Utils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 	private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
+	public static final String HYPIXEL_SKYBLOCK_NAMESPACE = "hypixel_skyblock";
 	private static final String PROFILE_PREFIX = "Profile: ";
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";

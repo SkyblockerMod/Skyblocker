@@ -1610,6 +1610,7 @@
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
   "skyblocker.customization.item.modelOverride": "Item Model Override",
+  "skyblocker.customization.item.selectModel": "Select Model",
   "skyblocker.customization.nothingCustomizable": "Nothing customizable.",
   "skyblocker.customization.title": "Customize Your Gear",
   "skyblocker.customization.titleSecret": "Pimp Your Gear",
