@@ -374,8 +374,6 @@
     "skyblocker.config.helpers.enableBitsHelper": "最も良いBits Shopのアイテムをハイライトする",
     "skyblocker.config.general.itemProtection": "アイテムを保護",
     "skyblocker.config.general.itemProtection.protectValuableConsumables": "貴重な消耗品の保護",
-    "skyblocker.config.helpers.enableWardrobeHelper": "Wardrobe Helperを有効にする",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "メニューを開いている間にホットバーキーの1～9を押すことで、Wardrobeからアーマーを変更できるようになり、Wardrobe menuの対応するArmor setが装備されます。",
     "skyblocker.config.helpers.enableDateCalculator": "日付計算を有効にする",
     "skyblocker.config.helpers.enableDateCalculator.@Tooltip": "カレンダーのイベントなど、未来のイベントの日時を表示します。",
     "skyblocker.config.helpers.fishing.fishingTimerScale.@Tooltip": "Fishing timerの表示サイズ。",

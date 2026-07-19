@@ -90,7 +90,6 @@
     "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Colour",
     "skyblocker.config.debug.showInvisibleArmorStands": "Show Invisible Armour Stands",
     "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Colour",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armour Sets and Equipment Sets by pressing the corresponding Hotbar Slot key.",
     "skyblocker.config.uiAndVisuals.chestValue.color": "Chest Value Colour",
     "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Colour",
     "skyblocker.config.dungeons.livid.customColor": "Custom Livid Colour",

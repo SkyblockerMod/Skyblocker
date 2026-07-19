@@ -299,8 +299,6 @@
     "skyblocker.bars.config.speed": "Vitesse",
     "skyblocker.config.slayer.bossbar.@Tooltip": "Affiche une barre de boss pour le boss de slayer actif",
     "skyblocker.config.slayer.bossbar": "Barre de Boss de Slayer",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Permet de changer d'Ensemble d'Armure et d'Équipement en appuyant sur la Touche correspondant à l'Emplacement de la Barre d'Action.",
-    "skyblocker.config.helpers.enableWardrobeHelper": "Activer l'Assistant de la Garde-Robe",
     "skyblocker.profileviewer.inventory.backpack": "Sac à dos",
     "skyblocker.profileviewer.inventory.enderchest": "Coffre de l'Ender",
     "skyblocker.profileviewer.inventory.inactive.description.backpack": "Le sac à dos sélectionné",

@@ -859,8 +859,6 @@
     "skyblocker.config.helpers.itemPrice.itemPriceLookupFailed": "在集市和拍卖行中找不到该物品",
     "skyblocker.config.dungeons.professor": "教授（F3/M3）",
     "skyblocker.config.slayer.bossbar": "猎手Boss栏",
-    "skyblocker.config.helpers.enableWardrobeHelper": "启用衣柜助手",
-    "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "允许在衣柜和装备菜单打开时通过热键1-9切换护甲或装备。",
     "skyblocker.config.slayer.bossbar.@Tooltip": "为当前的猎手Boss显示Boss栏",
     "skyblocker.config.slayer.vampireSlayer.compactEffigyWaypoints": "紧凑的Effigy路径点",
     "skyblocker.dungeons.secrets.posMessage": "§r房间: %s，方向: %s, X: %s, Y: %s, Z: %s",
