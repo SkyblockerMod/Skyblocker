@@ -71,7 +71,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 
 		@Override
 		public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-			if (stack.is(Items.DYE.lime())) {
+			if (stack.is(Items.DYE.lime()) && slot > 35 && slot < 45) {
 				Arrays.fill(SkyblockInventoryScreen.equipment, ItemStack.EMPTY);
 			}
 			return false;
