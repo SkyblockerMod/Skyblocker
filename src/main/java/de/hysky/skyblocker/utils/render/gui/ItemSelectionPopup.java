@@ -8,27 +8,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import org.jspecify.annotations.Nullable;
+
+import com.google.common.base.Predicates;
 /**
  * A popup allowing the user to select a skyblock item.
  */
-public class ItemSelectionPopup extends AbstractPopupScreen {
+public class ItemSelectionPopup extends AbstractSelectionPopup<ItemSelectionPopup.ItemWidget> {
 
 	private final List<Pair<String, String>> skullIcons = List.of(
 			Pair.of("Accessory Bag", "1a11a7f11bcd5784903c5201d08261c4df8379109d6e611c1cd3ededf031afed"),
@@ -72,81 +72,36 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 			Pair.of("Base Camp", "2461ec3bd654f62ca9a393a32629e21b4e497c877d3f3380bcf2db0e20fc0244")
 	);
 
-	private final Consumer<@Nullable ItemStack> onDone;
-	private @Nullable ItemWidget selectedItem = null;
-
-	private final GridLayout gridWidget = new GridLayout();
-	private @Nullable Button doneButton;
+	private final Predicate<FlexibleItemStack> filter;
+	private final List<ItemWidget> items;
 
 	/**
 	 * @param backgroundScreen The screen to display in the background.
 	 * @param onDone The action to perform with the selected item after the popup has been closed. {@code null} is passed if "cancel" has been pressed.
 	 */
 	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone) {
-		super(Component.literal("Select Item"), backgroundScreen);
-		this.onDone = onDone;
+		this(backgroundScreen, onDone, Predicates.alwaysTrue());
 	}
 
-	private void setSelectedItem(ItemWidget selectedItem) {
-		this.selectedItem = selectedItem;
-		if (doneButton != null) doneButton.active = true;
-	}
-
-	@Override
-	protected void init() {
-		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
-		addRenderableWidget(adder.addChild(new ItemList(300, (int) (height * 0.8f)), 2));
-		addRenderableWidget(adder.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
-			onClose();
-			onDone.accept(null);
-		}).build()));
-		doneButton = Button.builder(CommonComponents.GUI_DONE, _ -> {
-			onClose();
-			onDone.accept(selectedItem == null ? null : selectedItem.item);
-		}).build();
-		doneButton.active = false;
-		addRenderableWidget(adder.addChild(doneButton));
-		gridWidget.arrangeElements();
-		repositionElements();
+	public ItemSelectionPopup(Screen backgroundScreen, Consumer<@Nullable ItemStack> onDone, Predicate<FlexibleItemStack> filter) {
+		super(Component.literal("Select Item"), backgroundScreen, opt -> onDone.accept(opt.map(ItemWidget::getItem).orElse(null)), 20);
+		this.filter = filter;
+		this.items = Stream.concat(skullIcons.stream().map(pair -> {
+			FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
+			skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
+			return skull;
+		}), ItemRepository.getItemsStream())
+		.filter(ItemSelectionPopup.this.filter)
+		.map(ItemWidget::new)
+		.toList();
 	}
 
 	@Override
-	protected void repositionElements() {
-		gridWidget.setPosition((width - gridWidget.getWidth()) / 2, (height - gridWidget.getHeight()) / 2);
+	protected Collection<ItemWidget> filterWidgets(String input) {
+		return items.stream().filter(w -> w.getMessage().getString().toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))).toList();
 	}
 
-	@Override
-	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-		super.extractBackground(context, mouseX, mouseY, delta);
-		extractPopupBackground(context, gridWidget.getX(), gridWidget.getY(), gridWidget.getWidth(), gridWidget.getHeight());
-	}
-
-	private class ItemList extends SearchableGridWidget {
-		private final List<ItemWidget> items;
-
-		private ItemList(int width, int height) {
-			super(0, 0, width, height, Component.literal("Item List"), 20);
-			Stream<FlexibleItemStack> icons = skullIcons.stream().map(pair -> {
-				FlexibleItemStack skull = ItemUtils.createSkull(ItemUtils.toTextureBase64(pair.right()));
-						skull.set(DataComponents.CUSTOM_NAME, Component.literal(pair.left()).withStyle(style -> style.withItalic(false)));
-						return skull;
-			});
-			items = Stream.concat(icons, ItemRepository.getItemsStream()).map(ItemWidget::new).toList();
-			setSearch("");
-		}
-
-		@Override
-		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
-			return items.stream().filter(w -> w.getMessage().getString().toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))).toList();
-		}
-
-		@Override
-		protected double scrollRate() {
-			return 15;
-		}
-	}
-
-	private class ItemWidget extends AbstractWidget {
+	protected class ItemWidget extends AbstractWidget {
 		private final ItemStack item;
 
 		private ItemWidget(FlexibleItemStack stack) {
@@ -160,6 +115,10 @@ public class ItemSelectionPopup extends AbstractPopupScreen {
 			customData.putString(ItemUtils.ID, itemId);
 			item.set(DataComponents.CUSTOM_DATA, CustomData.of(customData));
 			setTooltip(Tooltip.create(getMessage()));
+		}
+
+		protected ItemStack getItem() {
+			return item;
 		}
 
 		@Override
