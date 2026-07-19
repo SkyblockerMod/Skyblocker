@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
@@ -159,9 +160,9 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
 		if (!isInMenu) return false;
 
-		if (button != 0 && button != 1) return false;
+		if (button != InputConstants.MOUSE_BUTTON_LEFT && button != InputConstants.MOUSE_BUTTON_RIGHT && button != InputConstants.MOUSE_BUTTON_MIDDLE) return false;
 
-		int delta = button == 0 ? -1 : 1;
+		int delta = button == InputConstants.MOUSE_BUTTON_RIGHT ? 1 : -1;
 
 		if (colorSolved && slotId == 46) {
 			colorClicks = updateClicks(colorClicks, COLOR_CYCLE.length, delta);
