@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.mixins.ModelManagerAccessor;
+import de.hysky.skyblocker.mixins.accessors.ModelManagerAccessor;
 import de.hysky.skyblocker.utils.render.gui.AbstractSelectionPopup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

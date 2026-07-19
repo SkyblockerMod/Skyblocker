@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.mixins;
+package de.hysky.skyblocker.mixins.accessors;
 
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelManager;
