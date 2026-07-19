@@ -1811,5 +1811,6 @@
     "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "De gauche à droite",
     "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "De droite à gauche",
     "skyblocker.bars.config.direction.FROM_MIDDLE": "Du milieu",
-    "skyblocker.bars.config.direction": "Direction"
+    "skyblocker.bars.config.direction": "Direction",
+    "skyblocker.customization.item.selectModel": "Sélectionner le model"
 }
