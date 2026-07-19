@@ -1793,5 +1793,6 @@
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "Felszerelés Mutatása az Eszköztárban",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "A mutató gyorsítótárazott, nem frissül valós időben.",
     "skyblocker.mayor.perkOverrides.update.failed": "A perk felülírások frissítése sikertelen. Nézd meg a naplófájlt további információkért.",
-    "skyblocker.mayor.perkOverrides.update.success": "A perk felülírások frissítése sikeres volt."
+    "skyblocker.mayor.perkOverrides.update.success": "A perk felülírások frissítése sikeres volt.",
+    "skyblocker.customization.item.selectModel": "Model Kiválasztása"
 }
