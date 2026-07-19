@@ -165,7 +165,7 @@ public class BackpackPreview {
 			Slot slot = slots.get(i);
 			int index = i - 9;
 			//ignore non-existent ender chest or if they are already created
-			if (slot.getItem().is(Items.STAINED_GLASS_PANE.red()) || storages[index] != null) continue;
+			if (slot.getItem().is(Items.RED_STAINED_GLASS_PANE) || storages[index] != null) continue;
 			storages[index] = new Storage(
 					new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
 							.limit(18)
@@ -178,7 +178,7 @@ public class BackpackPreview {
 			Slot slot = slots.get(i);
 			int index = i - 18;
 			//remove backpacks if they are no longer there
-			if (slot.getItem().is(Items.STAINED_GLASS_PANE.brown())) {
+			if (slot.getItem().is(Items.BROWN_STAINED_GLASS_PANE)) {
 				storages[index] = null;
 			}
 			//add new backpacks

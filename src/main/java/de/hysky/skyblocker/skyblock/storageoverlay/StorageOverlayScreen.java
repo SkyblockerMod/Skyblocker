@@ -124,7 +124,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private void hide(Button button) {
 		if (CLIENT.player == null) return;
 		CLIENT.player.containerMenu = defaultHandler;
-		CLIENT.gui.setScreen(new ContainerScreen(defaultHandler, CLIENT.player.getInventory(), name));
+		CLIENT.setScreen(new ContainerScreen(defaultHandler, CLIENT.player.getInventory(), name));
 	}
 
 

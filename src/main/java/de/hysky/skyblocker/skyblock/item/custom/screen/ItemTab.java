@@ -84,7 +84,7 @@ public class ItemTab extends GridLayoutTab {
 					modelField.setValue(stack.toString());
 				}
 			};
-			minecraft.gui.setScreen(new ModelSelectionPopup(parentScreen, applyItemModel));
+			minecraft.setScreen(new ModelSelectionPopup(parentScreen, applyItemModel));
 		}).width(120).build(), p -> p.paddingTop(4));
 		linearLayout.addChild(modelField);
 
