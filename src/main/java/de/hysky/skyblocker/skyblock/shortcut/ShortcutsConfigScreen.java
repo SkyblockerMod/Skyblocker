@@ -69,8 +69,13 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	private void deleteEntry(boolean confirmedAction, ShortcutsConfigListWidget.AbstractShortcutEntry entry) {
-		if (confirmedAction && entry instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
-			shortcutsConfigListWidget.removeEntry(shortcutEntry);
+		if (confirmedAction) {
+			if (entry instanceof ShortcutsConfigListWidget.ShortcutEntry<?> shortcutEntry) {
+				shortcutsConfigListWidget.removeEntry(shortcutEntry);
+			}
+			if (entry instanceof ShortcutsConfigListWidget.KeybindShortcutEntry) {
+				shortcutsConfigListWidget.updateKeybinds();
+			}
 		}
 		minecraft.gui.setScreen(this); // Re-inits the screen and keeps the old instance of ShortcutsConfigListWidget
 		shortcutsConfigListWidget.setScrollAmount(scrollAmount);
