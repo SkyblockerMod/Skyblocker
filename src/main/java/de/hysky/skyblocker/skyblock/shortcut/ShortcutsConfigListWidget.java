@@ -391,7 +391,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 
 		/**
-		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#renderContent(GuiGraphics, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
+		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#extractRenderState(GuiGraphicsExtractor, int, int, float)}  ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
 		 */
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
@@ -413,7 +413,6 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		/**
 		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#resetMappingAndUpdateButtons() ControlsListWidget.KeyBindingEntry#update()}.
 		 */
-		@SuppressWarnings("JavadocReference")
 		protected void update() {
 			keybindButton.setMessage(keyBinding.getBoundKeysText());
 			conflicting = false;
