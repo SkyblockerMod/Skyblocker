@@ -22,6 +22,7 @@ public class ShortcutsConfigScreen extends Screen {
 	private Button buttonDone;
 	private boolean initialized;
 	private double scrollAmount;
+	private boolean hasDuplicates;
 
 	public ShortcutsConfigScreen() {
 		this(null);
@@ -93,7 +94,9 @@ public class ShortcutsConfigScreen extends Screen {
 		if (wasEditing) {
 			shortcutsConfigListWidget.updateKeybinds();
 		}
-		return super.mouseClicked(click, doubled);
+		boolean bl = super.mouseClicked(click, doubled);
+		checkForDuplicates();
+		return bl;
 	}
 
 	@Override
@@ -125,5 +128,19 @@ public class ShortcutsConfigScreen extends Screen {
 		buttonDelete.active = Shortcuts.isShortcutsLoaded() && shortcutsConfigListWidget.getSelected() instanceof ShortcutsConfigListWidget.ShortcutEntry;
 		buttonNew.active = Shortcuts.isShortcutsLoaded() && shortcutsConfigListWidget.getCategory().isPresent();
 		buttonDone.active = Shortcuts.isShortcutsLoaded();
+	}
+
+	protected void checkForDuplicates() {
+		hasDuplicates = shortcutsConfigListWidget.hasDuplicates();
+
+		if (hasDuplicates) {
+			buttonDone.active = false;
+			buttonDone.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.hasDuplicates")));
+			// set button text
+		} else {
+			buttonDone.active = true;
+			buttonDone.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.commandSuggestionTooltip")));
+			// set button text
+		}
 	}
 }

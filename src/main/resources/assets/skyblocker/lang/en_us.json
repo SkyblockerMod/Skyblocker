@@ -1904,6 +1904,7 @@
   "skyblocker.shortcuts.keyBinding.target": "Key Bind",
   "skyblocker.shortcuts.keyBinding.tooltip": "Run a command when a key is pressed.",
 	"skyblocker.shortcuts.keyBinding.duplicate": "⚠ This key is used by another shortcut, which is not allowed! ⚠\n\nRemove this shortcut or:\n%s",
+	"skyblocker.shortcuts.hasDuplicates": "Cannot save as there are entries with the same target command or keybind!",
   "skyblocker.shortcuts.new": "New Shortcut",
   "skyblocker.shortcuts.notLoaded": "§c§lShortcuts not loaded yet",
 

@@ -7,9 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -128,6 +131,18 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 	protected boolean hasChanges() {
 		ShortcutEntry<?>[] notEmptyShortcuts = getNotEmptyShortcuts().toArray(ShortcutEntry[]::new);
 		return notEmptyShortcuts.length != Shortcuts.shortcuts.getData().size() || Arrays.stream(notEmptyShortcuts).anyMatch(ShortcutEntry::isChanged);
+	}
+
+	protected boolean hasDuplicates() {
+		Set<String> keys = new ObjectOpenHashSet<>();
+		for (AbstractShortcutEntry entry : children()) {
+			if (entry instanceof ShortcutEntry<?> shortcutEntry) {
+				String key = shortcutEntry.key();
+				if (keys.contains(key)) return true;
+				keys.add(key);
+			}
+		}
+		return false;
 	}
 
 	protected void saveShortcuts() {
@@ -256,6 +271,8 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		protected abstract void save();
 
+		protected abstract String key();
+
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
@@ -314,6 +331,11 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		@Override
 		protected void save() {
 			category.shortcutsMap.put(target.getValue(), replacement.getValue());
+		}
+
+		@Override
+		protected String key() {
+			return target.getValue();
 		}
 
 		@Override
@@ -388,6 +410,11 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		@Override
 		protected void save() {
 			category.shortcutsMap.put(keyBinding, replacement.getValue());
+		}
+
+		@Override
+		protected String key() {
+			return keyBinding.getBoundKeysText().getString();
 		}
 
 		/**
