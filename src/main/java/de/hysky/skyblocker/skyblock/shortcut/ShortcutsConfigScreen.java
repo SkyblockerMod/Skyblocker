@@ -136,11 +136,9 @@ public class ShortcutsConfigScreen extends Screen {
 		if (hasDuplicates) {
 			buttonDone.active = false;
 			buttonDone.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.hasDuplicates")));
-			// set button text
 		} else {
 			buttonDone.active = true;
 			buttonDone.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.commandSuggestionTooltip")));
-			// set button text
 		}
 	}
 }
