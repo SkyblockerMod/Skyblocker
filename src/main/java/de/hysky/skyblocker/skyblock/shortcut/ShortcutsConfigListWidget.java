@@ -25,6 +25,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
@@ -333,6 +334,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		private final List<AbstractWidget> children;
 		private final ShortcutKeyBinding keyBinding;
 		private final KeybindWidget keybindButton;
+		private boolean conflicting = false;
 		private boolean duplicate = false;
 
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category) {
@@ -396,8 +398,9 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 			super.extractContent(graphics, mouseX, mouseY, hovered, a);
 			keybindButton.setY(this.getY() + TEXT_FIELD_PADDING);
 			keybindButton.extractRenderState(graphics, mouseX, mouseY, a);
-			if (duplicate) {
-				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), CommonColors.YELLOW);
+			if (conflicting || duplicate) {
+				int color = duplicate ? CommonColors.RED : CommonColors.YELLOW;
+				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), color);
 			}
 		}
 
@@ -413,28 +416,31 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		@SuppressWarnings("JavadocReference")
 		protected void update() {
 			keybindButton.setMessage(keyBinding.getBoundKeysText());
+			conflicting = false;
 			duplicate = false;
-			MutableComponent text = Component.empty();
+			MutableComponent conflictText = Component.empty();
+			MutableComponent duplicateText = Component.empty();
+
 			if (!keyBinding.isUnbound()) {
 				// Check for conflicts with regular keybinds
 				for (KeyMapping otherKeyBinding : minecraft.options.keyMappings) {
 					if (keyBinding.getBoundKeysTranslationKey().contains(otherKeyBinding.saveString())) {
-						if (duplicate) {
-							text.append(", ");
+						if (conflicting) {
+							conflictText.append(", ");
 						}
-						duplicate = true;
-						text.append(Component.translatable(otherKeyBinding.getName()));
+						conflicting = true;
+						conflictText.append(Component.translatable(otherKeyBinding.getName()));
 					}
 				}
 				// Check for conflicts with other keybind shortcuts
 				for (AbstractShortcutEntry shortcut : ShortcutsConfigListWidget.this.children()) {
 					if (shortcut instanceof KeybindShortcutEntry keyBindingShortcut && keyBinding != keyBindingShortcut.keyBinding && keyBinding.equals(keyBindingShortcut.keyBinding)) {
 						if (duplicate) {
-							text.append(", ");
+							duplicateText.append(", ");
 						}
 						duplicate = true;
 						// We display the replacement command to help users identify which shortcuts have conflicting keybinds.
-						text.append(keyBindingShortcut.replacement.getValue());
+						duplicateText.append(keyBindingShortcut.replacement.getValue());
 					}
 				}
 			}
@@ -443,8 +449,14 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 				keybindButton.setMessage(Component.literal("[ ")
 						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
 						.append(" ]")
-						.withStyle(ChatFormatting.RED));
-				keybindButton.setTooltip(Tooltip.create(Component.translatable("controls.keybinds.duplicateKeybinds", text)));
+						.withColor(TextColor.RED));
+				keybindButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.keyBinding.duplicate", duplicateText)));
+			} else if (conflicting) {
+				keybindButton.setMessage(Component.literal("[ ")
+						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
+						.append(" ]")
+						.withColor(TextColor.YELLOW));
+				keybindButton.setTooltip(Tooltip.create(Component.translatable("controls.keybinds.duplicateKeybinds", conflictText)));
 			} else {
 				keybindButton.setTooltip(null);
 			}
