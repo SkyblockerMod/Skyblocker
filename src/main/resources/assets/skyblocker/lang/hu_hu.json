@@ -1792,5 +1792,17 @@
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "A mutató gyorsítótárazott, nem frissül valós időben.",
     "skyblocker.mayor.perkOverrides.update.failed": "A perk felülírások frissítése sikertelen. Nézd meg a naplófájlt további információkért.",
     "skyblocker.mayor.perkOverrides.update.success": "A perk felülírások frissítése sikeres volt.",
-    "skyblocker.customization.item.selectModel": "Model Kiválasztása"
+    "skyblocker.customization.item.selectModel": "Model Kiválasztása",
+    "skyblocker.config.uiAndVisuals.storageOverlay": "Tároló Átfedés",
+    "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth": "Hátizsák Szélesség",
+    "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip": "Hány rekesze legyen az egyes hátizsákoknak/ender chesteknek soronkén. (Ez korlátozva lesz a GUI mérete alapján a legnagyobb elférő méretre.)",
+    "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "Engedélyezve",
+    "skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip": "Engedélyezi az átfedést az ender chestekre és hátizsákokra.",
+    "skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton": "Farming Toolkit",
+    "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Elrejtés",
+    "skyblocker.config.uiAndVisuals.storageOverlay.homeButton": "Kezdőlap",
+    "skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton": "Hunting Toolkit",
+    "skyblocker.config.uiAndVisuals.storageOverlay.reloadButton": "Nem találtam egy hátizsákot sem :(. Kattints a tároló újratöltéséhez.",
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Keresés Megjegyzése",
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Megjegyzi a keresést és a görgetés helyzetét a hátizsák bezárása után."
 }
