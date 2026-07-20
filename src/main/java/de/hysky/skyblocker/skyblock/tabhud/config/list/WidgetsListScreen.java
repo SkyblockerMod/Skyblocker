@@ -8,6 +8,7 @@ import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.DefaultSlotE
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.EditableSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -161,7 +162,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer) return;
 		if (minecraft.gameMode == null || this.minecraft.player == null) return;
-		minecraft.gameMode.handleContainerInput(handler.containerId, slot, button, ContainerInput.PICKUP, this.minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slot, ContainerUtils.getContainerClickButton(button), ContainerInput.PICKUP, this.minecraft.player);
 		waitingForServer = true;
 		waitingForServerText.visible = true;
 	}
@@ -169,7 +170,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 	public void shiftClickAndWaitForServer(int slot, int button) {
 		if (waitingForServer) return;
 		if (minecraft.gameMode == null || this.minecraft.player == null) return;
-		minecraft.gameMode.handleContainerInput(handler.containerId, slot, button, ContainerInput.QUICK_MOVE, this.minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slot, ContainerUtils.getContainerClickButton(button), ContainerInput.QUICK_MOVE, this.minecraft.player);
 		// When moving a widget down it gets stuck sometimes
 		Scheduler.INSTANCE.schedule(() -> {
 			this.waitingForServer = false;
