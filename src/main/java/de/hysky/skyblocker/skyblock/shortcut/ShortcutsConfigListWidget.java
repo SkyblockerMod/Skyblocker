@@ -115,7 +115,9 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 	}
 
 	protected boolean stopEditing() {
-		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
+		boolean bl = children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
+		screen.checkForDuplicates();
+		return bl;
 	}
 
 	@Override
