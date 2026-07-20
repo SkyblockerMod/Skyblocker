@@ -52,9 +52,9 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
-		ShortcutCategoryEntry<String> commandArgCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commandArgs(), CommandShortcutEntry::new, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
+		ShortcutCategoryEntry<String> commandArgCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commandArgs(), CommandArgShortcutEntry::new, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
 		if (Shortcuts.isShortcutsLoaded()) {
-			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new CommandShortcutEntry(commandArgCategory, commandArgTarget)));
+			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new CommandArgShortcutEntry(commandArgCategory, commandArgTarget)));
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
@@ -349,6 +349,21 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		protected void updatePositions() {
 			super.updatePositions();
 			target.setX(width / 2 - 160);
+		}
+	}
+
+	protected class CommandArgShortcutEntry extends CommandShortcutEntry {
+		private CommandArgShortcutEntry(ShortcutCategoryEntry<String> category) {
+			super(category);
+		}
+
+		private CommandArgShortcutEntry(ShortcutCategoryEntry<String> category, String targetString) {
+			super(category, targetString);
+		}
+
+		@Override
+		protected String key() {
+			return "arg" + super.key();
 		}
 	}
 
