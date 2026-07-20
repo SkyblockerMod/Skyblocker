@@ -20,8 +20,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class ItemPrice {
 	public static final KeyMapping ITEM_PRICE_LOOKUP = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.itemPriceLookup",
-			GLFW.GLFW_KEY_F6,
+			InputConstants.KEY_F6,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 

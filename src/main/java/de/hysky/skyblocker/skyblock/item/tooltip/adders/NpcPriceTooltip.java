@@ -5,6 +5,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -35,8 +37,8 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 
 		int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(ItemUtils.getCompostCountInComposter(stack.skyblocker$getLoreStrings()).orElse(stack.getCount()))), 1);
 
-		lines.add(Component.literal(String.format("%-21s", "NPC Sell Price:"))
-					.withStyle(ChatFormatting.YELLOW)
-					.append(ItemTooltip.getCoinsMessage(price, count)));
+		lines.add(GridComponent.of(
+				Component.literal("NPC Sell Price:").withStyle(ChatFormatting.YELLOW),
+				ItemTooltip.getCoinsMessage(price, count)));
 	}
 }

@@ -5,6 +5,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import java.util.List;
 import java.util.Locale;
+
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,9 +23,9 @@ public class MotesTooltip extends SimpleTooltipAdder {
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		final String internalID = stack.getSkyblockId();
 		if (TooltipInfoType.MOTES.hasOrNullWarning(internalID)) {
-			lines.add(Component.literal(String.format("%-20s", "Motes Price:"))
-						.withStyle(ChatFormatting.LIGHT_PURPLE)
-						.append(getMotesMessage(TooltipInfoType.MOTES.getData().getInt(internalID), stack.getCount())));
+			lines.add(GridComponent.of(
+					Component.literal("Motes Price:").withStyle(ChatFormatting.LIGHT_PURPLE),
+					getMotesMessage(TooltipInfoType.MOTES.getData().getInt(internalID), stack.getCount())));
 		}
 	}
 

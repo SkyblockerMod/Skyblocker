@@ -63,10 +63,12 @@ public class Utils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 	private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
+	public static final String HYPIXEL_SKYBLOCK_NAMESPACE = "hypixel_skyblock";
 	private static final String PROFILE_PREFIX = "Profile: ";
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
+	private static final String AREA_ICON_REGEX = String.format("[%s%s]", SkyBlockIcons.AREA, SkyBlockIcons.RIFT_AREA);
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
@@ -308,10 +310,8 @@ public class Utils {
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
-				if (sidebarLine.contains(SkyBlockIcons.AREA) || sidebarLine.contains(SkyBlockIcons.RIFT_AREA) /* Rift */) {
-					// FIXME this replace logic should be "fixed" properly, this is just to quickly make it like the old pre-sb-rp format
-					// so that other features still function the way they did before without extra changes
-					return sidebarLine.strip().replace(SkyBlockIcons.AREA, "⏣").replace(SkyBlockIcons.RIFT_AREA, "ф");
+				if (sidebarLine.indexOf(SkyBlockIcons.AREA) >= 0 || sidebarLine.indexOf(SkyBlockIcons.RIFT_AREA) >= 0 /* Rift */) {
+					return sidebarLine.strip();
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -393,7 +393,7 @@ public class Utils {
 	}
 
 	private static void updateArea() {
-		String areaName = getIslandArea().replaceAll(String.format("[%s%s]", SkyBlockIcons.AREA, SkyBlockIcons.RIFT_AREA), "").strip();
+		String areaName = getIslandArea().replaceAll(AREA_ICON_REGEX, "").strip();
 		Area oldArea = area;
 		area = Area.from(areaName);
 

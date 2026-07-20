@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
@@ -148,19 +150,19 @@ public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsList
 		if (backButton != null && backButton.mouseClicked(click, doubled)) return true;
 		if (!enableEditing || this.getSelected() == null) return super.mouseClicked(click, doubled);
 		if (rightUpArrowHovered) {
-			parent.shiftClickAndWaitForServer(13, 1);
+			parent.shiftClickAndWaitForServer(13, InputConstants.MOUSE_BUTTON_RIGHT);
 			return true;
 		}
 		if (rightDownArrowHovered) {
-			parent.shiftClickAndWaitForServer(13, 0);
+			parent.shiftClickAndWaitForServer(13, InputConstants.MOUSE_BUTTON_LEFT);
 			return true;
 		}
 		if (leftUpArrowHovered) {
-			parent.clickAndWaitForServer(13, 1);
+			parent.clickAndWaitForServer(13, InputConstants.MOUSE_BUTTON_RIGHT);
 			return true;
 		}
 		if (leftDownArrowHovered) {
-			parent.clickAndWaitForServer(13, 0);
+			parent.clickAndWaitForServer(13, InputConstants.MOUSE_BUTTON_LEFT);
 			return true;
 		}
 		return super.mouseClicked(click, doubled);

@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Locale;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button editButton;
 	private final State state;
@@ -26,7 +28,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	public WidgetSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		editButton = Button.builder(Component.literal("EDIT"), _ -> {
-					this.parent.clickAndWaitForServer(this.slotId, 1);
+					this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_RIGHT);
 					this.parent.resetScrollOnLoad();
 				})
 				.size(32, 12)
@@ -38,7 +40,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		} else if (string.startsWith("✖")) {
 			state = State.DISABLED;
 		} else state = State.LOCKED;
-		enableButton = Button.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, _ -> this.parent.clickAndWaitForServer(this.slotId, 0))
+		enableButton = Button.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, _ -> this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(64, 12)
 				.build();
 		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase(Locale.ENGLISH).contains("always enable")) != null;
@@ -89,7 +91,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
 		if (super.mouseClicked(event, doubled) || parent.isWaitingForServer()) return true;
-		boolean isSelect = event.button() == 0;
+		boolean isSelect = event.button() == InputConstants.MOUSE_BUTTON_LEFT;
 		if (isSelect && state != State.ENABLED) {
 			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget"));
 			return false;
@@ -109,9 +111,9 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 
 		boolean isGreater = WidgetsElementList.editingPosition > relativePosition;
 		if (isSelect) {
-			parent.clickAndWaitForServer(13, isGreater ? 1 : 0);
+			parent.clickAndWaitForServer(13, isGreater ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT);
 		} else {
-			parent.shiftClickAndWaitForServer(13, isGreater ? 1 : 0);
+			parent.shiftClickAndWaitForServer(13, isGreater ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT);
 		}
 
 		final int remainingClicks = Math.abs(WidgetsElementList.editingPosition - relativePosition) - 1;

@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.util.Locale;
@@ -171,24 +171,24 @@ public class ARGBTextInput extends AbstractWidget {
 	public boolean keyPressed(KeyEvent keyInput) {
 		if (!isFocused()) return false;
 		boolean bl = switch (keyInput.key()) {
-			case GLFW.GLFW_KEY_DELETE -> {
+			case InputConstants.KEY_DELETE -> {
 				StringBuilder builder = new StringBuilder(input);
 				builder.setCharAt(index, '0');
 				input = builder.toString();
 				yield true;
 			}
-			case GLFW.GLFW_KEY_BACKSPACE -> {
+			case InputConstants.KEY_BACKSPACE -> {
 				StringBuilder builder = new StringBuilder(input);
 				builder.setCharAt(index, '0');
 				input = builder.toString();
 				index = Math.max(0, index - 1);
 				yield true;
 			}
-			case GLFW.GLFW_KEY_LEFT -> {
+			case InputConstants.KEY_LEFT -> {
 				index = Math.max(0, index - 1);
 				yield true;
 			}
-			case GLFW.GLFW_KEY_RIGHT -> {
+			case InputConstants.KEY_RIGHT -> {
 				index = Math.min(length - 1, index + 1);
 				yield true;
 			}

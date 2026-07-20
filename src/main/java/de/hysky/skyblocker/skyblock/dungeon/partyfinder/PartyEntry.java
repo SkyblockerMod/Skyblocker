@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
@@ -267,7 +269,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		if (slotID == -1) {
 			PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
 		}
-		if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && !screen.isWaitingForServer() && slotID != -1) {
 			screen.clickAndWaitForServer(slotID);
 			return true;
 		}

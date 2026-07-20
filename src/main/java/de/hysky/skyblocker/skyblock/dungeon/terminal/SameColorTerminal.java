@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -17,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Solver for the "Change all to same color!" terminal.
@@ -103,7 +104,7 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 			} else {
 				boolean positive = Integer.signum(clicks) == 1;
 				//Require that positive moves use left click, and negative moves use right click
-				boolean usingCorrectButton = (positive && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) || (!positive && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+				boolean usingCorrectButton = (positive && button == InputConstants.MOUSE_BUTTON_LEFT) || (!positive && button == InputConstants.MOUSE_BUTTON_RIGHT);
 
 				if (!usingCorrectButton) {
 					return shouldBlockIncorrectClicks();

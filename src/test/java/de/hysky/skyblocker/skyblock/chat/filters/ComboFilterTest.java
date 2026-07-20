@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
 import org.junit.jupiter.api.Test;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
 	public ComboFilterTest() {
@@ -9,7 +10,7 @@ public class ComboFilterTest extends ChatFilterTest<ComboFilter> {
 
 	@Test
 	void testComboMF() {
-		assertMatches("+5 Kill Combo +3% ✯ Magic Find");
+		assertMatches(String.format("+5 Kill Combo +3%% %s Magic Find", SkyBlockIcons.MAGIC_FIND));
 	}
 
 	@Test

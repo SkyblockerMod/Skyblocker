@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -207,7 +209,7 @@ public class OptionDropdownWidget extends AbstractSelectionList<OptionDropdownWi
 		@Override
 		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 			if (screen.isWaitingForServer()) return false;
-			if (click.button() == 0) {
+			if (click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 				screen.clickAndWaitForServer(this.optionSlotId);
 				setSelectedOption(this);
 			}

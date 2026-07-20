@@ -168,7 +168,9 @@ dependencies {
 	include implementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
 	// Mod Menu
-	implementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	// implementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+	// temporary until their maven is fixed
+	implementation "maven.modrinth:modmenu:${project.mod_menu_version}"
 
 	// REI
 	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
@@ -413,6 +415,7 @@ publishMods {
 		minecraftVersions.add(project.minecraft_version)
 		announcementTitle = "<:curseforge:900697838453936149> Download from CurseForge"
 		projectSlug = "skyblocker"
+		client = true
 		requires("fabric-api", "fabric-language-kotlin")
 		optional("roughly-enough-items", "emi", "jei")
 		embeds("yacl")

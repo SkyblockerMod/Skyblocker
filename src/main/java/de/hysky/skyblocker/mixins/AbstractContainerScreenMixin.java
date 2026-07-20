@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -46,7 +47,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -76,7 +76,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@Unique
 	private static final Set<String> FILLER_ITEMS = Set.of(
-			" ", // Empty menu item
+			"", // Empty menu item
 			"Locked Page",
 			"Quick Crafting Slot",
 			"Locked Backpack Slot 2", //Regular expressions won't be utilized here since the search by contains is based on plain text rather than regex syntax
@@ -329,7 +329,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 
 		//Pet Caching
-		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && title.startsWith("Pets")) {
+		if (button == InputConstants.MOUSE_BUTTON_LEFT && title.startsWith("Pets")) {
 			PetCache.handlePetEquip(slot, slotId);
 		}
 

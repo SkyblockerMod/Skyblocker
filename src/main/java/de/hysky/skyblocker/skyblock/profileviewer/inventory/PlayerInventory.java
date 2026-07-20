@@ -11,11 +11,15 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -28,6 +32,7 @@ public class PlayerInventory implements ProfileViewerPage {
 	private static final Font textRenderer = CLIENT.font;
 	private final List<ItemStack> containerList;
 	private List<Component> tooltip = Collections.emptyList();
+	private @Nullable Identifier tooltipStyle = null;
 
 	public PlayerInventory(JsonObject inventory) {
 		this.containerList = new InventoryItemLoader().loadItems(inventory);
@@ -43,7 +48,7 @@ public class PlayerInventory implements ProfileViewerPage {
 		extractContainerItems(graphics, rootX, rootY + 108, IntIntPair.of(1, 4), 36, 40, mouseX, mouseY);
 		extractContainerItems(graphics, rootX, rootY + 2, IntIntPair.of(4, 9), 0, 36, mouseX, mouseY);
 		extractContainerItems(graphics, rootX + 90, rootY + 108, IntIntPair.of(1, 4), 40, containerList.size(), mouseX, mouseY);
-		if (!tooltip.isEmpty()) graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+		if (!tooltip.isEmpty()) graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY, tooltipStyle);
 	}
 
 	private void extractContainerTextures(GuiGraphicsExtractor graphics, String containerName, int rootX, int rootY, IntIntPair dimensions) {
@@ -84,6 +89,7 @@ public class PlayerInventory implements ProfileViewerPage {
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
 				tooltip = stack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
+				tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 			}
 		}
 	}

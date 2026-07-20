@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -12,6 +13,7 @@ import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisi
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
 import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -47,7 +49,6 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -397,7 +398,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(TextColor.fromLegacyFormat(color).getValue());
+			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(TextColor.fromLegacyFormat(color).getValue()));
 		}
 
 		@Override
@@ -476,10 +477,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		public boolean keyPressed(KeyEvent input) {
 			boolean captured = true;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
+				case InputConstants.KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case InputConstants.KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case InputConstants.KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
+				case InputConstants.KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
 				default -> captured = false;
 			}
 			if (captured) return true;

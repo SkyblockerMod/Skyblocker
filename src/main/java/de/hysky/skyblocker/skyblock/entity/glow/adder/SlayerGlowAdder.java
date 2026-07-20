@@ -21,7 +21,7 @@ import net.minecraft.world.entity.monster.zombie.ZombifiedPiglin;
 public class SlayerGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
 	private static final SlayerGlowAdder INSTANCE = new SlayerGlowAdder();
-	private static final int NUKEKUBI_COLOUR = 0x990099;
+	private static final int NUKEKUBI_COLOUR = 0xFF00FF00;
 
 	@Init
 	public static void init() {}

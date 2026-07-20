@@ -402,8 +402,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe Keybinds**
-- **Carnival Helpers**
+- **Loadouts Helper**
+    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe- **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**

@@ -9,7 +9,6 @@ import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,7 +36,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//   V This part is so that it short-circuits if not necessary
-		if ((slot == 11 || slot == 13) && stack.is(Items.DYED_TERRACOTTA.green()) && InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
+		if ((slot == 11 || slot == 13) && stack.is(Items.DYED_TERRACOTTA.green()) && InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), InputConstants.KEY_LCONTROL)) {
 			Matcher matcher;
 			// The terracotta is at slot 13 on sell orders and at slot 11 on buy orders
 			if (slot == 13) matcher = ItemUtils.getLoreLineIfContainsMatch(stack, SELL_PATTERN);

@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.Minecraft;
 
 public class TabHud {
 	public static KeyMapping toggleSecondary;
@@ -21,12 +21,12 @@ public class TabHud {
 		toggleSecondary = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.toggleA",
 						InputConstants.Type.KEYSYM,
-						GLFW.GLFW_KEY_Z,
+						InputConstants.KEY_Z,
 						SkyblockerMod.KEYBINDING_CATEGORY));
 		defaultTgl = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.defaultTgl",
 						InputConstants.Type.KEYSYM,
-						GLFW.GLFW_KEY_M,
+						InputConstants.KEY_M,
 						SkyblockerMod.KEYBINDING_CATEGORY));
 
 		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, hudElement -> {

@@ -55,7 +55,7 @@ public class ScreenEffectRendererMixin {
 	@Inject(method = "renderItemActivationAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
 	private void skyblocker$renderSpecialEffectsItemName(PoseStack poseStack, float partialTicks, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
 		// Render item names for all special effect items
-		if (!SpecialEffects.ITEMS.contains(itemActivationItem) || itemActivationItem == null) return;
+		if (SpecialEffects.ITEM.get() != itemActivationItem) return;
 
 		Component name = itemActivationItem.getHoverName();
 		int x = -minecraft.font.width(name) / 2;

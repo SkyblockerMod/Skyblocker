@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -7,7 +8,6 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -236,7 +236,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 
 		@Override
 		public boolean keyPressed(KeyEvent input) {
-			if (input.key() == GLFW.GLFW_KEY_DELETE) {
+			if (input.key() == InputConstants.KEY_DELETE) {
 				deleteThis(false);
 			}
 			return super.keyPressed(input);
@@ -244,7 +244,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 
 		@Override
 		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
+			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
 				deleteThis(true);
 				return true;
 			}

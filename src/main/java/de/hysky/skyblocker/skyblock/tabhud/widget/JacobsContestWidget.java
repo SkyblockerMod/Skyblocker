@@ -7,7 +7,14 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,7 +33,7 @@ public class JacobsContestWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Jacob's Contest").withStyle(ChatFormatting.YELLOW,
 			ChatFormatting.BOLD);
 
-	private static final Pattern CROP_PATTERN = Pattern.compile("(?<fortune>[☘○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%)?");
+	private static final Pattern CROP_PATTERN = Pattern.compile(String.format("(?<fortune>[%s○]) (?<crop>.+?)(?: ◆ )?(?<percentage>Top [\\d.]+%%)?", SkyBlockIcons.FARMING_FORTUNE));
 
 	// Ordered the same as "Unique Brackets Reached" in Anita NPC shop
 	public static final Map<String, FlexibleItemStack> FARM_DATA = Map.ofEntries(
@@ -61,7 +68,7 @@ public class JacobsContestWidget extends TabHudWidget {
 					String crop = matcher.group("crop");
 					String percentage = matcher.group("percentage");
 					MutableComponent cropText = Component.empty().append(crop);
-					if (matcher.group("fortune").equals("☘")) cropText.append(Component.literal(" ☘").withStyle(ChatFormatting.GOLD));
+					if (matcher.group("fortune").equals(String.valueOf(SkyBlockIcons.FARMING_FORTUNE))) cropText.append(Component.literal(" " + SkyBlockIcons.FARMING_FORTUNE).withStyle(ChatFormatting.GOLD));
 
 					this.addElement(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
 					if (percentage != null) this.addElement(new PlainTextElement(Component.literal(percentage)));

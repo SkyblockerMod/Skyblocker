@@ -11,6 +11,8 @@ import net.minecraft.util.CommonColors;
 
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.render.GuiHelper;
@@ -47,10 +49,10 @@ public class DungeonMapConfigScreen extends Screen {
 		float scoreScaling = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
 		int scoreWidth = (int) (font.width(DungeonScoreHUD.getFormattedScoreText()) * scoreScaling);
 		int scoreHeight = (int) (font.lineHeight * scoreScaling);
-		if (GuiHelper.pointIsInArea(click.x(), click.y(), mapX, mapY, mapX + mapSize, mapY + mapSize) && click.button() == 0) {
+		if (GuiHelper.pointIsInArea(click.x(), click.y(), mapX, mapY, mapX + mapSize, mapY + mapSize) && click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 			mapX = (int) Math.max(Math.min(click.x() - (mapSize >> 1), this.width - mapSize), 0);
 			mapY = (int) Math.max(Math.min(click.y() - (mapSize >> 1), this.height - mapSize), 0);
-		} else if (GuiHelper.pointIsInArea(click.x(), click.y(), scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && click.button() == 0) {
+		} else if (GuiHelper.pointIsInArea(click.x(), click.y(), scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight) && click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 			scoreX = (int) Math.max(Math.min(click.x() - (scoreWidth >> 1), this.width - scoreWidth), 0);
 			scoreY = (int) Math.max(Math.min(click.y() - (scoreHeight >> 1), this.height - scoreHeight), 0);
 		}
@@ -59,7 +61,7 @@ public class DungeonMapConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (click.button() == 1) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			mapX = 2;
 			mapY = 2;
 			scoreX = Math.max((int) ((mapX + (64 * SkyblockerConfigManager.get().dungeons.dungeonMap.mapScaling)) - font.width(DungeonScoreHUD.getFormattedScoreText()) * SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling / 2), 0);
