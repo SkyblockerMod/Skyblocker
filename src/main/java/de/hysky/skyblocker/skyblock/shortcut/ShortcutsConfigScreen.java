@@ -84,15 +84,11 @@ public class ShortcutsConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (super.mouseClicked(click, doubled)) {
-			return true;
-		}
-		// Only stop editing if super didn't consume the click
 		boolean wasEditing = shortcutsConfigListWidget.stopEditing();
 		if (wasEditing) {
 			shortcutsConfigListWidget.updateKeybinds();
 		}
-		return wasEditing;
+		return super.mouseClicked(click, doubled);
 	}
 
 	@Override
