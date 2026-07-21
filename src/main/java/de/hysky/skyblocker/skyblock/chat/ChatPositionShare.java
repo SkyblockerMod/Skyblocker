@@ -25,11 +25,11 @@ import java.util.regex.Pattern;
 
 public class ChatPositionShare {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatPositionShare.class);
-	private static final Pattern SIMPLE_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)\\.?\\d* (?<y>\\d+)\\.?\\d* (?<z>-?\\d+)\\.?\\d*");
-	private static final Pattern SIMPLE_COMMA_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)\\.?\\d*, (?<y>\\d+)\\.?\\d*, (?<z>-?\\d+)\\.?\\d*");
-	private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)\\.?\\d*, y: (?<y>\\d+)\\.?\\d*, z: (?<z>-?\\d+)\\.?\\d*");
-	private static final Pattern SKYBLOCKER_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)\\.?\\d*, y: (?<y>\\d+)\\.?\\d*, z: (?<z>-?\\d+)\\.?\\d*(?: \\| (?<area>[^|]+))");
-	private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?\\d+)\\.?\\d* (?<y>\\d+)\\.?\\d* (?<z>-?\\d+)\\.?\\d*");
+	private static final Pattern SIMPLE_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)(?:\\.\\d*)? (?<y>\\d+)(?:\\.\\d*)? (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern SIMPLE_COMMA_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)(?:\\.\\d*)?, (?<y>\\d+)(?:\\.\\d*)?, (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)(?:\\.\\d*)?, y: (?<y>\\d+)(?:\\.\\d*)?, z: (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern SKYBLOCKER_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)(?:\\.\\d*)?, y: (?<y>\\d+)(?:\\.\\d*)?, z: (?<z>-?\\d+)(?:\\.\\d*)?(?: \\| (?<area>[^|]+))");
+	private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?\\d+)(?:\\.\\d*)? (?<y>\\d+)(?:\\.\\d*)? (?<z>-?\\d+)(?:\\.\\d*)?");
 	private static final List<Pattern> PATTERNS = List.of(SKYBLOCKER_COORDS_PATTERN, SKYHANNI_DIANA_PATTERN, GENERIC_COORDS_PATTERN, SIMPLE_COMMA_COORDS_PATTERN, SIMPLE_COORDS_PATTERN);
 
 	@Init
