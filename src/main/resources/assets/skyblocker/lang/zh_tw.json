@@ -1783,5 +1783,11 @@
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "SkyBlock物品欄介面",
     "skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats": "點擊裝備時跳轉到「/stats」",
     "skyblocker.mayor.perkOverrides.update.failed": "更新perk失敗。詳情請參閱日誌。",
-    "skyblocker.mayor.perkOverrides.update.success": "更新perk成功。"
+    "skyblocker.mayor.perkOverrides.update.success": "更新perk成功。",
+    "skyblocker.bars.config.direction": "方向",
+    "skyblocker.bars.config.direction.FROM_MIDDLE": "從中間",
+    "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "從左至右",
+    "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "從右至左",
+    "skyblocker.config.helpers.buildersWand": "建築師魔杖",
+    "skyblocker.config.helpers.hoppitysHunt": "Hoppity的狩獵活動"
 }
