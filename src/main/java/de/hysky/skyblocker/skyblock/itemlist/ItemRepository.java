@@ -160,7 +160,7 @@ public class ItemRepository {
 		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
 	}
 
-	public static @Nullable String getWikiLink(String neuId, boolean useOfficial) {
+	public static @Nullable String getWikiLink(String neuId) {
 		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
 		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
 			return null;
@@ -169,7 +169,7 @@ public class ItemRepository {
 		List<String> info = item.getInfo();
 		String wikiLink0 = info.getFirst();
 		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-		String wikiDomain = getWikiLink(useOfficial);
+		String wikiDomain = getWikiLink();
 		if (wikiLink0.startsWith(wikiDomain)) {
 			return wikiLink0;
 		} else if (wikiLink1.startsWith(wikiDomain)) {
@@ -178,8 +178,8 @@ public class ItemRepository {
 		return null;
 	}
 
-	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
+	public static String getWikiLink() {
+		return "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {

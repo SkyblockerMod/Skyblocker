@@ -449,16 +449,11 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
 								.description(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
+										WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
 								.binding(defaults.general.wikiLookup.enableWikiLookup,
 										() -> config.general.wikiLookup.enableWikiLookup,
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(KeyMappingOption.createBuilder()
-								.name(Component.translatable("key.skyblocker.wikiLookup.official"))
-								.tags(CommonTags.KEY_MAPPING)
-								.keyMapping(WikiLookupManager.officialWikiLookup)
 								.build())
 						.option(KeyMappingOption.createBuilder()
 								.name(Component.translatable("key.skyblocker.wikiLookup.independent"))

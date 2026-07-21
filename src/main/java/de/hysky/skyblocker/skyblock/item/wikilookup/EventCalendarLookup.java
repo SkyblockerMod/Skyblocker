@@ -19,7 +19,7 @@ public class EventCalendarLookup implements WikiLookup {
 	private EventCalendarLookup() {}
 
 	@Override
-	public void open(ItemStack itemStack, Player player, boolean useOfficial) {
+	public void open(ItemStack itemStack, Player player) {
 		Matcher matcher = CALENDAR_EVENT_NAME.matcher(itemStack.getHoverName().getString());
 
 		if (matcher.matches()) {
@@ -35,7 +35,7 @@ public class EventCalendarLookup implements WikiLookup {
 			}
 
 			String formattedEvent = REPLACING_FUNCTION.apply(eventName);
-			WikiLookupManager.openWikiLinkName(formattedEvent, player, useOfficial);
+			WikiLookupManager.openWikiLinkName(formattedEvent, player);
 		}
 	}
 

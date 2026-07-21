@@ -26,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 public final class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static KeyMapping officialWikiLookup;
 	public static KeyMapping independentWikiLookup;
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
@@ -40,13 +39,6 @@ public final class WikiLookupManager {
 
 	@Init
 	public static void init() {
-		officialWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.skyblocker.wikiLookup.official",
-				InputConstants.Type.KEYSYM,
-				InputConstants.KEY_F4,
-				SkyblockerMod.KEYBINDING_CATEGORY
-		));
-
 		independentWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.independent",
 				InputConstants.Type.KEYSYM,
@@ -56,14 +48,13 @@ public final class WikiLookupManager {
 	}
 
 	public static String getKeysText() {
-		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getTranslatedKeyMessage().getString();
 		String independent = independentWikiLookup.isUnbound() ? null : independentWikiLookup.getTranslatedKeyMessage().getString();
 
-		if (official == null && independent == null) return "";
-		if (official == null) return independent.toUpperCase(Locale.ENGLISH);
-		if (independent == null) return official.toUpperCase(Locale.ENGLISH);
+		if (independent == null) {
+			return "";
+		}
 
-		return (official + "/" + independent).toUpperCase(Locale.ENGLISH);
+		return independent.toUpperCase(Locale.ENGLISH);
 	}
 
 	public static boolean handleWikiLookup(Either<Slot, ItemStack> either, Player player, KeyEvent input) {
@@ -72,31 +63,30 @@ public final class WikiLookupManager {
 
 	public static boolean handleWikiLookup(@Nullable String title, Either<Slot, ItemStack> either, Player player, KeyEvent input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean official = officialWikiLookup.matches(input);
-			if (official || independentWikiLookup.matches(input)) {
-				openWiki(title, either, player, official);
+			if (independentWikiLookup.matches(input)) {
+				openWiki(title, either, player);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static void openWiki(ItemStack itemStack, Player player, boolean useOfficial) {
-		openWiki(null, Either.right(itemStack), player, useOfficial);
+	public static void openWiki(ItemStack itemStack, Player player) {
+		openWiki(null, Either.right(itemStack), player);
 	}
 
-	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, Player player, boolean useOfficial) {
+	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, Player player) {
 		for (WikiLookup lookup : LOOKUPS) {
 			if (lookup.canSearch(title, either)) {
 				ItemStack itemStack = mapEitherToItemStack(either);
-				lookup.open(itemStack, player, useOfficial);
+				lookup.open(itemStack, player);
 				break;
 			}
 		}
 	}
 
-	public static void openWikiLinkName(String name, Player player, boolean useOfficial) {
-		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + name;
+	public static void openWikiLinkName(String name, Player player) {
+		String wikiLink = ItemRepository.getWikiLink() + "/" + name;
 		openWikiLink(wikiLink, player);
 	}
 
