@@ -398,7 +398,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private static class Source implements MagicPowerSource {
 			private static final Component smoothLine = LineSmoothener.createSmoothLine();
 			private static final Component wikiLine = Component.translatable("skyblocker.accessoryHelper.openWiki").withStyle(ChatFormatting.YELLOW);
-			private static final Component independentLine = Component.translatable("skyblocker.accessoryHelper.independent").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
 			private final @Nullable List<FormattedCharSequence> afterSelling;
@@ -443,7 +442,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				tooltip.add(independentLine.getVisualOrderText());
 				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
@@ -470,7 +468,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				if (icon == null) return;
 				LocalPlayer player = Minecraft.getInstance().player;
 				if (player == null) return;
-				WikiLookupManager.openWiki(icon.getStackOrThrow(), player, !Minecraft.getInstance().hasShiftDown());
+				WikiLookupManager.openWiki(icon.getStackOrThrow(), player);
 			}
 		}
 	}
@@ -514,7 +512,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		public void click() {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
-			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player, !Minecraft.getInstance().hasShiftDown());
+			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player);
 		}
 	}
 

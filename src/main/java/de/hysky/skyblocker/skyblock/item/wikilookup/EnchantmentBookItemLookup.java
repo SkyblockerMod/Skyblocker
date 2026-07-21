@@ -28,14 +28,14 @@ public class EnchantmentBookItemLookup implements WikiLookup {
 	private EnchantmentBookItemLookup() {}
 
 	@Override
-	public void open(ItemStack itemStack, Player player, boolean useOfficial) {
+	public void open(ItemStack itemStack, Player player) {
 		CompoundTag nbt = ItemUtils.getCustomData(itemStack);
 		CompoundTag enchantments = nbt.getCompoundOrEmpty("enchantments");
 		String firstEnchantment = Iterables.getFirst(enchantments.keySet(), null)
 				.replace("ultimate_", "") // Stripped out ultimate prefix
 				.replace("_", " ").trim();
 		String enchantment = REPLACING_FUNCTION.apply(WordUtils.capitalizeFully(firstEnchantment + " enchantment"));
-		WikiLookupManager.openWikiLinkName(enchantment, player, useOfficial);
+		WikiLookupManager.openWikiLinkName(enchantment, player);
 	}
 
 	@Override
