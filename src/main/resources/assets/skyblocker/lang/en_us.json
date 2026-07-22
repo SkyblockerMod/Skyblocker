@@ -66,6 +66,8 @@
   "skyblocker.bars.config.intelligence": "Intelligence",
   "skyblocker.bars.config.mainColor": "Main Color",
   "skyblocker.bars.config.overflowColor": "Overflow Color",
+  "skyblocker.bars.config.reset": "This will reset the status bars to their default positions.\nThis cannot be undone.",
+  "skyblocker.bars.config.resetTitle": "Reset Status Bars?",
   "skyblocker.bars.config.showMax": "Show Max",
   "skyblocker.bars.config.showOverflow": "Show Overflow",
   "skyblocker.bars.config.speed": "Speed",
