@@ -1460,7 +1460,7 @@
     "skyblocker.config.general.backup.restore": "Visszaállítás",
     "skyblocker.config.general.backup.title": "Biztonsági Mentések Beállítása",
     "skyblocker.config.general.shortcuts.enableKeyBindingShortcuts.@Tooltip": "Gyorsbillentyűk, amik billentyű nyomására futtatnak parancsot. Szerkeszd a gyorsbillentyűket a \"/skyblocker shortcuts\" paranccsal. A gyorsbillentyűknek bekapcsolva kell lenniük, hogy ez működjön.",
-    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Megnyitja a wiki bejegyzését a rámutatott tárgynak.\n\n'%s' a hivatalos Hypixel wiki megnyitásához.\n'%s' a közösségi wiki megnyitásához.",
+    "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Megnyitja a wiki bejegyzését a rámutatott tárgynak.\n\n'%s' a közösségi wiki megnyitásához.",
     "skyblocker.config.general.updateNotifications.updateChannel.channel.RELEASE": "Stabil Kiadás",
     "skyblocker.config.helpers.carnival.zombieShootoutHelper": "Zombi Kilövés (Shootout) Segítő",
     "skyblocker.config.helpers.chocolateFactory": "Csokoládégyár",
@@ -1598,7 +1598,7 @@
     "skyblocker.accessoryHelper.filter": "Szűrő",
     "skyblocker.accessoryHelper.filter.ALL": "Összes",
     "skyblocker.accessoryHelper.filter.MISSING": "Hiányzók",
-    "skyblocker.accessoryHelper.openWiki": "Kattints a wiki megnyitásához!",
+    "skyblocker.accessoryHelper.openWiki": "Kattints a közösségi wiki megnyitásához!",
     "skyblocker.accessoryHelper.recombobulate": "Recombobulálj egy %s accessory-t.",
     "skyblocker.accessoryHelper.highestTierOnly": "Csak a legmagasabb szint mutatása",
     "skyblocker.accessoryHelper.filter.UPGRADES": "Fejlesztések",
@@ -1801,5 +1801,7 @@
     "skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton": "Hunting Toolkit",
     "skyblocker.config.uiAndVisuals.storageOverlay.reloadButton": "Nem találtam egy hátizsákot sem :(. Kattints a tároló újratöltéséhez.",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Keresés Megjegyzése",
-    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Megjegyzi a keresést és a görgetés helyzetét a hátizsák bezárása után."
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Megjegyzi a keresést és a görgetés helyzetét a hátizsák bezárása után.",
+    "skyblocker.shortcuts.hasDuplicates": "Nem lehet menteni, mivel más átkötésnek ugyanaz a célparancsa vagy -billentyűleütése!",
+    "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Ez a billentyű egy másik gyorsbillentyűhöz van használva, ami nem megengedett! ⚠\n\nTávolítsd el ezt a gyorsbillentyűt, vagy:\n%s"
 }
