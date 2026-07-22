@@ -427,7 +427,7 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.@Tooltip": "Joue un son lorsque le message est envoyé.",
     "skyblocker.config.chat.filter": "Filtre",
     "skyblocker.config.chat.chatRules.screen": "Configuration des règles de chat...",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "Syntaxe RegEx",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.regex": "Utiliser une RegEx (%s)",
     "skyblocker.config.chat.chatRules.screen.deleteQuestion": "Êtes-vous sûr de vouloir supprimer cette règle ?",
     "skyblocker.config.chat.chatRules.screen.ruleEnabled": "Règle activée",
     "skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip": "Recherche dans le Bazaar et l'Hôtel des Ventes de l'objet actuellement survolé à l'aide de la touche F6.",
@@ -1819,5 +1819,7 @@
     "skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton": "Hunting Toolkit",
     "skyblocker.config.uiAndVisuals.storageOverlay.reloadButton": "Aucun sac à dos trouvé :(. Cliquez pour actualiser le stockage.",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Mémoriser la Recherche",
-    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Mémorise la recherche et la position dans la page après la fermeture du sac à dos."
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Mémorise la recherche et la position dans la page après la fermeture du sac à dos.",
+    "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Cette touche est utilisée par un autre raccourci, ce qui n'est pas autorisé ! ⚠\n\nSupprimez ce raccourci ou:\n%s",
+    "skyblocker.shortcuts.hasDuplicates": "Impossible de sauvegarder car il y a des entrées ayant la meme commande ou touche !"
 }
