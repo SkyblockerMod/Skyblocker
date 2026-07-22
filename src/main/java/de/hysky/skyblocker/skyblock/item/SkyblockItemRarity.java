@@ -55,6 +55,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 			case EPIC -> 12;
 			case LEGENDARY -> 16;
 			case MYTHIC -> 22;
+			case DIVINE -> 28;
 			default -> 1;
 		};
 	}
