@@ -1900,7 +1900,7 @@
   "skyblocker.shortcuts.config": "Shortcuts Config",
   "skyblocker.shortcuts.deleteQuestion": "Are you sure you want to remove this shortcut?",
   "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
-  "skyblocker.shortcuts.hasDuplicates": "Cannot save as there are entries with the same target command or keybind!",
+  "skyblocker.shortcuts.hasDuplicates": "Cannot save as there are entries with the same target command or key bind!",
   "skyblocker.shortcuts.keyBinding.duplicate": "⚠ This key is used by another shortcut, which is not allowed! ⚠\n\nRemove this shortcut or:\n%s",
   "skyblocker.shortcuts.keyBinding.replacement": "Execute Command",
   "skyblocker.shortcuts.keyBinding.target": "Key Bind",
