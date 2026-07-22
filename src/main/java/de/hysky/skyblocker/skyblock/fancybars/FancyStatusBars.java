@@ -206,6 +206,15 @@ public class FancyStatusBars {
 		}
 	}
 
+	public static void resetBarPositions() {
+		statusBars.forEach((type, bar) -> {
+			bar.anchor = type.getDefaultAnchor();
+			bar.gridY = type.getDefaultGridY();
+			bar.size = type.getDefaultAnchor().getSizeRule().minSize();
+		});
+		placeBarsInPositioner();
+	}
+
 	public static @Nullable JsonObject loadBarConfig() {
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			return SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
