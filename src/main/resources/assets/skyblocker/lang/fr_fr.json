@@ -1711,7 +1711,7 @@
     "skyblocker.config.farming.visitorHelper.enabled.@Tooltip": "Facilite la gestion des visiteurs en groupant les requêtes similaires, en copiant les quantités demandées et en ouvrant rapidement le Bazaar pour les acheter.",
     "skyblocker.config.farming.visitorHelper.showInGardenOnly": "N’afficher que dans le Garden",
     "skyblocker.config.farming.visitorHelper.showInStacks": "Afficher les stacks dans l'assistant des visiteurs",
-    "skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip": "Condense l’affichage des objets requis en stacks plutôt qu’en nombre brut. Par exemple : «5 stacks + 45» au lieu de «365»\nUtile pour les joueurs Ironman !",
+    "skyblocker.config.farming.visitorHelper.showInStacks.@Tooltip": "Condense l’affichage des objets requis en stacks plutôt qu’en nombre brut. Par exemple : \"5 stacks + 45\" au lieu de \"365\"\nUtile pour les joueurs Ironman !",
     "skyblocker.config.general.itemList.enableItemList.@Tooltip": "Rend la liste des obets et recettes de SkyBlock disponible pour des mods spécialisés (REI et JEI).",
     "skyblocker.config.general.itemList.enableRecipeBook": "Activer le Livre des Recettes",
     "skyblocker.config.general.itemList.enableRecipeBook.@Tooltip": "Importe la liste d’objets et de recettes SkyBlock dans le Livre des Recettes vanilla de l’inventaire.",
@@ -1821,5 +1821,7 @@
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Mémoriser la Recherche",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Mémorise la recherche et la position dans la page après la fermeture du sac à dos.",
     "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Cette touche est utilisée par un autre raccourci, ce qui n'est pas autorisé ! ⚠\n\nSupprimez ce raccourci ou:\n%s",
-    "skyblocker.shortcuts.hasDuplicates": "Impossible de sauvegarder car il y a des entrées ayant la meme commande ou touche !"
+    "skyblocker.shortcuts.hasDuplicates": "Impossible de sauvegarder car il y a des entrées ayant la meme commande ou touche !",
+    "skyblocker.bars.config.reset": "Cela va réinitialiser les barres d'état à leur position par défaut.\nCela ne peut pas être annulé.",
+    "skyblocker.bars.config.resetTitle": "Réinitialiser les barres d'état ?"
 }
