@@ -40,7 +40,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.UnaryOperator;
 
 public class UpdateNotifications {
@@ -110,7 +109,7 @@ public class UpdateNotifications {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void introduceNewUpdate() {

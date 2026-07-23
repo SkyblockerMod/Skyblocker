@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -65,7 +65,7 @@ public class SecretsTracker {
 				}
 
 				currentRun = newlyStartedRun;
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 			case END -> CompletableFuture.runAsync(() -> {
 				TrackedRun thisRun = currentRun;
@@ -96,7 +96,7 @@ public class SecretsTracker {
 				} else {
 					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 

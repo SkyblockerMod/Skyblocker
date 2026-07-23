@@ -43,7 +43,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 /**
@@ -51,6 +50,7 @@ import java.util.function.Supplier;
  * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
+@SuppressWarnings("JavadocReference")
 public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
 	private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
@@ -99,11 +99,11 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			}
 			return EMPTY_EQUIPMENT.get();
 			// Schedule on main thread to avoid any async weirdness
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(itemStacks -> {
 			System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
 			if (itemStacks.length <= 4) return;
 			System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
-		}));
+		}, Minecraft.getInstance());
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Init
 	public static void initEquipment() {
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
+			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
@@ -205,7 +205,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.isWindowActive()) {
+		if (client.isWindowActive() && client.player != null) {
 			var mouse = client.mouseHandler;
 			var window = client.getWindow();
 			var mouseX = MouseHandler.getScaledXPos(window, mouse.xpos());
@@ -241,7 +241,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		}
 
 		@Override
-		public @Nullable Identifier getNoItemIcon() {
+		public Identifier getNoItemIcon() {
 			return noItemIcon;
 		}
 	}

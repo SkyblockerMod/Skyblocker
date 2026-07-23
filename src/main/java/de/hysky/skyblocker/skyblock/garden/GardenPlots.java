@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 public final class GardenPlots {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Garden Plots");
@@ -105,14 +104,14 @@ public final class GardenPlots {
 
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
 			if (!prevProfileId.isEmpty())
-				CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
+				CompletableFuture.runAsync(() -> save(prevProfileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRun(() -> load(profileId));
 			else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
+				CompletableFuture.runAsync(() -> save(profileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 			}
 		});
 	}
@@ -153,7 +152,7 @@ public final class GardenPlots {
 			}
 			return new GardenPlot[25];
 			// Schedule on main thread to avoid any async weirdness
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25))));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(newPlots -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25)), Minecraft.getInstance());
 	}
 
 	public record GardenPlot(Either<Item, String> icon, String name, Optional<String> customIcon) {

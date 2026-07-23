@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -101,10 +102,10 @@ public class ItemPrice {
 		CompletableFuture.allOf(Stream.of(TooltipInfoType.NPC, TooltipInfoType.BAZAAR, TooltipInfoType.LOWEST_BINS, TooltipInfoType.ONE_DAY_AVERAGE, TooltipInfoType.THREE_DAY_AVERAGE)
 						.map(DataTooltipInfoType::downloadIfEnabled)
 						.toArray(CompletableFuture[]::new)
-		).thenRun(() -> {
+		).thenRunAsync(() -> {
 			ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker().onPriceUpdate();
 			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.refreshedItemPrices")));
-		}).exceptionally(e -> {
+		}, Minecraft.getInstance()).exceptionally(e -> {
 			ItemTooltip.LOGGER.error("[Skyblocker Item Price] Failed to refresh item prices", e);
 			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.config.helpers.itemPrice.itemPriceRefreshFailed")));
 			return null;

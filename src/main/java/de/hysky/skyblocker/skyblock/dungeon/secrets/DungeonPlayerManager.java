@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
@@ -19,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
@@ -133,7 +133,7 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), Executors.newVirtualThreadPerTaskExecutor());
+			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 
 		private static @Nullable UUID findPlayerUuid(String name) {

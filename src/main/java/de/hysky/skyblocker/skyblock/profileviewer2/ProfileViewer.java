@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 
@@ -104,7 +103,7 @@ public class ProfileViewer {
 	/// {@return a {@link Pair} optionally containing the user's {@link ApiProfileResponse} and {@link GameProfile}}
 	private static CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> loadData(String name) {
 		Minecraft minecraft = Minecraft.getInstance();
-		CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> dataFuture = CompletableFuture.supplyAsync(() -> ApiUtils.name2Uuid(name), Executors.newVirtualThreadPerTaskExecutor())
+		CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> dataFuture = CompletableFuture.supplyAsync(() -> ApiUtils.name2Uuid(name), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 				.thenComposeAsync(uuid -> {
 					if (uuid.isEmpty()) {
 						return CompletableFuture.failedStage(new IllegalStateException("Invalid username"));
@@ -117,8 +116,8 @@ public class ProfileViewer {
 							.thenApply(optional -> optional.map(PlayerSkinRenderCache.RenderInfo::gameProfile));
 
 					return skyblockProfileFuture.thenCombine(gameProfileFuture, Pair::of);
-				}, Executors.newVirtualThreadPerTaskExecutor())
-				.thenApplyAsync(pair -> Pair.of(pair.left().map(json -> GSON.fromJson(json, ApiProfileResponse.class)), pair.right()), Executors.newVirtualThreadPerTaskExecutor());
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
+				.thenApplyAsync(pair -> Pair.of(pair.left().map(json -> GSON.fromJson(json, ApiProfileResponse.class)), pair.right()), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 		return dataFuture;
 	}

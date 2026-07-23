@@ -105,7 +105,7 @@ public class ItemTooltip {
 					.map(DataTooltipInfoType.class::cast)
 					.map(DataTooltipInfoType::downloadIfEnabled)
 					.toArray(CompletableFuture[]::new)
-			).thenRun(ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker()::onPriceUpdate
+			).thenRunAsync(ItemPriceUpdateEvent.ON_PRICE_UPDATE.invoker()::onPriceUpdate, Minecraft.getInstance()
 			).exceptionally(e -> {
 				LOGGER.error("[Skyblocker] Encountered unknown error while downloading tooltip data", e);
 				return null;
