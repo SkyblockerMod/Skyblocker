@@ -119,20 +119,10 @@ public class ItemRepository {
 		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
-		afterImportTasks.forEach(task -> {
-			if (task.async) {
-				CompletableFuture.runAsync(task.runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
-					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
-					return null;
-				});
-			} else {
-				try {
-					task.runnable.run();
-				} catch (Exception e) {
-					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
-				}
-			}
-		});
+		afterImportTasks.forEach(task -> CompletableFuture.runAsync(task.runnable, task.async ? SkyblockerMod.VIRTUAL_THREAD_EXECUTOR : Minecraft.getInstance()).exceptionally(e -> {
+			LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+			return null;
+		}));
 	}
 
 	private static void loadItem(NEUItem item) {

@@ -25,13 +25,13 @@ import com.mojang.logging.LogUtils;
 
 public class ItemStackBuilder {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static Map<String, Map<Rarity, PetNumbers>> petNums;
+	private static Map<String, Map<Rarity, PetNumbers>> petNums = Map.of();
 
 	protected static void loadPetNums() {
 		try {
 			petNums = NEURepoManager.getConstants().getPetNumbers();
 		} catch (Exception _) {
-			ItemRepository.LOGGER.error("Failed to load petnums.json");
+			ItemRepository.LOGGER.error("[Skyblocker ItemStackBuilder] Failed to load petnums.json");
 		}
 	}
 

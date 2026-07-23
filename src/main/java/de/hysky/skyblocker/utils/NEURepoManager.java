@@ -38,10 +38,9 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -79,7 +78,7 @@ public class NEURepoManager {
 	/**
 	 * Store after load runnables so we can execute them after each time the repository is (re)loaded.
 	 */
-	private static final Queue<Runnable> afterLoadTasks = new ConcurrentLinkedQueue<>();
+	private static final List<Runnable> afterLoadTasks = new CopyOnWriteArrayList<>();
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
