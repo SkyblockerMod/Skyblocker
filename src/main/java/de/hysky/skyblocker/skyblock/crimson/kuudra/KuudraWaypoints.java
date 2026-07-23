@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -79,7 +78,7 @@ public class KuudraWaypoints {
 
 				return List.<Waypoint>of();
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list::addAll);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(list::addAll);
 	}
 
 	private static JsonElement getWaypoints(BufferedReader reader) {

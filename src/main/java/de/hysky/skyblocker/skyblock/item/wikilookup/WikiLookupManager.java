@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -91,7 +90,7 @@ public final class WikiLookupManager {
 	}
 
 	public static void openWikiLink(String wikiLink, Player player) {
-		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
 			player.sendSystemMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."));
 			return null;

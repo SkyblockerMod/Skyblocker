@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
 import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
@@ -34,7 +35,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
@@ -121,7 +121,7 @@ public class ItemRepository {
 
 		afterImportTasks.forEach(task -> {
 			if (task.async) {
-				CompletableFuture.runAsync(task.runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+				CompletableFuture.runAsync(task.runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
 					return null;
 				});
@@ -265,7 +265,7 @@ public class ItemRepository {
 	public static void runAfterImport(Runnable runnable, boolean async) {
 		if (filesImported) {
 			if (async) {
-				CompletableFuture.runAsync(runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+				CompletableFuture.runAsync(runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
 					return null;
 				});

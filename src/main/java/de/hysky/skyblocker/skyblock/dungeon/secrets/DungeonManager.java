@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -347,11 +346,11 @@ public class DungeonManager {
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
 			ROOMS_DATA.computeIfAbsent(dungeon, _ -> new ConcurrentHashMap<>());
 			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, _ -> new ConcurrentHashMap<>());
-			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(blocks -> {
+			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(blocks -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
 				roomsMap.put(room, blocks);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -373,7 +372,7 @@ public class DungeonManager {
 					throw new RuntimeException(ex);
 				}
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -389,7 +388,7 @@ public class DungeonManager {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load custom dungeon secret waypoints", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR));
 		roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker Dungeon Secrets] Loaded dungeon secrets for {} dungeon(s), {} room shapes, {} rooms, and {} custom secret waypoints total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), customWaypoints.size(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
 			return null;

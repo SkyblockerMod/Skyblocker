@@ -32,7 +32,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
@@ -59,7 +58,7 @@ public class WarpAutocomplete {
 				LOGGER.error("[Skyblocker] Failed to download warps list", e);
 			}
 			return Object2BooleanMaps.<String>emptyMap();
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(warps -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(warps -> {
 					if (warps.isEmpty()) {
 						getWarpsFromFile();
 					} else {
@@ -72,7 +71,7 @@ public class WarpAutocomplete {
 							} catch (Exception e) {
 								LOGGER.error("[Skyblocker] Failed to save warps auto complete", e);
 							}
-						}, Executors.newVirtualThreadPerTaskExecutor());
+						}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 						createCommandNode(warps);
 					}
 				}
@@ -91,7 +90,7 @@ public class WarpAutocomplete {
 				return Object2BooleanMaps.<String>emptyMap();
 			}
 			return MAP_CODEC.parse(JsonOps.INSTANCE, object).result().orElse(Object2BooleanMaps.emptyMap());
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(WarpAutocomplete::createCommandNode);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(WarpAutocomplete::createCommandNode);
 	}
 
 	private static void createCommandNode(Object2BooleanMap<String> warps) {

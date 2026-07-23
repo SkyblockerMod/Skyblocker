@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 /**
@@ -36,7 +35,7 @@ public class ConfigBackupManager {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to create backup directory!", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> backupConfig());
 	}

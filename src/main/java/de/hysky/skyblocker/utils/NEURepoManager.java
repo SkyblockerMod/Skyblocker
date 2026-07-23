@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -157,13 +156,13 @@ public class NEURepoManager {
 				success = false;
 			}
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenApplyAsync(success -> {
-			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor())).toArray(CompletableFuture[]::new)).exceptionally(e -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(success -> {
+			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)).toArray(CompletableFuture[]::new)).exceptionally(e -> {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
 				return null;
 			});
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**
@@ -189,7 +188,7 @@ public class NEURepoManager {
 	}
 
 	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
-		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
+		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		REPO_LOADING = runner.apply(() -> {
 			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
