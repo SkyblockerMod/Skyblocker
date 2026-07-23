@@ -205,8 +205,8 @@ public class WidgetsConfigurationScreen extends Screen {
 		addWidgetWidget.extractRenderState(context, mouseX, mouseY, deltaTicks);
 
 		if (currentLocation != Utils.getLocation()) {
-			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[0]"), width / 2, 20, 0xFFFFFFFF);
-			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[1]"), width / 2, 30, 0xFFFFFFFF);
+			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[0]"), width / 2, height - 30, 0xFFFFFFFF);
+			context.centeredText(font, Component.translatable("skyblocker.config.hud.screen.locationWarning[1]"), width / 2, height - 20, 0xFFFFFFFF);
 		}
 		if (selectWidgetPrompt != null) {
 			context.setTooltipForNextFrame(selectWidgetPrompt.tooltip(), mouseX, mouseY);

@@ -143,6 +143,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		}
 
 		// Display Hypixel or Skyblocker widget in config mode.
+		/*
 		Component title = this.title;
 		boolean isHypixelWidget = this instanceof TabHudWidget;
 		if (config) {
@@ -160,6 +161,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 				title = this.title.copy().append(" ").append(isHypixelWidget ? "H" : "S");
 			}
 		}
+		 */
 
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
