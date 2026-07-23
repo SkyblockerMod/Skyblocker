@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.scheduler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -29,7 +30,7 @@ public class Scheduler {
 	public static final Scheduler INSTANCE = new Scheduler();
 	private int currentTick = 0;
 	private final AbstractInt2ObjectMap<List<Runnable>> tasks = new Int2ObjectOpenHashMap<>();
-	private final ExecutorService executors = ForkJoinPool.commonPool();
+	private final ExecutorService executors = SkyblockerMod.VIRTUAL_THREAD_EXECUTOR;
 
 	protected Scheduler() {
 	}

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -44,7 +43,7 @@ public class SecretsTracker {
 	private static void calculate(RunPhase phase) {
 		if (!SkyblockerConfigManager.get().dungeons.playerSecretsTracker) return;
 		switch (phase) {
-			case START -> CompletableFuture.runAsync(() -> {
+			case START -> SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 				TrackedRun newlyStartedRun = new TrackedRun();
 
 				//Initialize players in new run
@@ -65,9 +64,9 @@ public class SecretsTracker {
 				}
 
 				currentRun = newlyStartedRun;
-			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			});
 
-			case END -> CompletableFuture.runAsync(() -> {
+			case END -> SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 				TrackedRun thisRun = currentRun;
 				if (thisRun != null) {
 					Object2ObjectOpenHashMap<String, SecretData> secretsFound = new Object2ObjectOpenHashMap<>();
@@ -86,7 +85,7 @@ public class SecretsTracker {
 
 					//Print the results all in one go, so its clean and less of a chance of it being broken up
 					for (Map.Entry<String, SecretData> entry : secretsFound.entrySet()) {
-						RenderHelper.runOnRenderThread(() -> sendResultMessage(entry.getKey(), entry.getValue()));
+						Minecraft.getInstance().execute(() -> sendResultMessage(entry.getKey(), entry.getValue()));
 					}
 
 					//Swap the current and last run as well as mark the run end time
@@ -94,9 +93,9 @@ public class SecretsTracker {
 					lastRun = thisRun;
 					currentRun = null;
 				} else {
-					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
+					Minecraft.getInstance().execute(SecretsTracker::sendFailureMessage);
 				}
-			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			});
 		}
 	}
 

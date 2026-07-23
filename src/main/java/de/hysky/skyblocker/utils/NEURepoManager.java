@@ -156,10 +156,15 @@ public class NEURepoManager {
 			}
 			return success;
 		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(success -> {
-			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)).toArray(CompletableFuture[]::new)).exceptionally(e -> {
-				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
-				return null;
-			});
+			for (Runnable task : afterLoadTasks) {
+				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+					try {
+						task.run();
+					} catch (java.lang.Exception e) {
+						LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
+					}
+				});
+			}
 			return success;
 		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}

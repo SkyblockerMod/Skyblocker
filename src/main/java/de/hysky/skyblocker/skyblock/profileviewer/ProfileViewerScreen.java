@@ -244,14 +244,14 @@ public class ProfileViewerScreen extends Screen {
 	}
 
 	private static void fetchCollectionsData() {
-		CompletableFuture.runAsync(() -> {
+		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 			try {
 				JsonObject jsonObject = JsonParser.parseString(Http.sendGetRequest(HYPIXEL_COLLECTIONS)).getAsJsonObject();
 				collections = Collection.parse(jsonObject);
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		});
 	}
 
 	public static Map<String, List<Collection>> getCollections() {

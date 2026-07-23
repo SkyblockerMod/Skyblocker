@@ -115,7 +115,12 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Init
 	public static void initEquipment() {
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRun(() -> load(profileId));
+			if (!prevProfileId.isEmpty()) {
+				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+					save(prevProfileId);
+					load(profileId);
+				});
+			}
 			else load(profileId);
 		}));
 

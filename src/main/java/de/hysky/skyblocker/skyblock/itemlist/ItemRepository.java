@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
@@ -119,10 +119,16 @@ public class ItemRepository {
 		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
-		afterImportTasks.forEach(task -> CompletableFuture.runAsync(task.runnable, task.async ? SkyblockerMod.VIRTUAL_THREAD_EXECUTOR : Minecraft.getInstance()).exceptionally(e -> {
-			LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
-			return null;
-		}));
+		afterImportTasks.forEach(task -> {
+			Executor executor = task.async ? SkyblockerMod.VIRTUAL_THREAD_EXECUTOR : Minecraft.getInstance();
+			executor.execute(() -> {
+				try {
+					task.runnable.run();
+				} catch (Exception e) {
+					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+				}
+			});
+		});
 	}
 
 	private static void loadItem(NEUItem item) {
@@ -255,9 +261,12 @@ public class ItemRepository {
 	public static void runAfterImport(Runnable runnable, boolean async) {
 		if (filesImported) {
 			if (async) {
-				CompletableFuture.runAsync(runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
-					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
-					return null;
+				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+					try {
+						runnable.run();
+					} catch (Exception e) {
+						LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
+					}
 				});
 			} else {
 				try {

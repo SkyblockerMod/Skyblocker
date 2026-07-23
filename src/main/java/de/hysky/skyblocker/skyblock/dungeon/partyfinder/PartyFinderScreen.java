@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
@@ -125,7 +124,7 @@ public class PartyFinderScreen extends Screen {
 	public static void initClass() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			//Checking when this is loaded probably isn't necessary as the maps are always null checked
-			CompletableFuture.runAsync(() -> {
+			SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 				floorIconsNormal = new HashMap<>();
 				floorIconsMaster = new HashMap<>();
 				try (BufferedReader skullTextureReader = client.getResourceManager().openAsReader(SkyblockerMod.id("dungeons/catacombs/floorskulls.json"))) {
@@ -136,7 +135,7 @@ public class PartyFinderScreen extends Screen {
 				} catch (Exception e) {
 					LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
 				}
-			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			});
 		});
 		ClientSendMessageEvents.COMMAND.register(command -> {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;

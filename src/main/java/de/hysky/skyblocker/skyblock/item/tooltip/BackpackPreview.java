@@ -78,13 +78,13 @@ public class BackpackPreview {
 			if (!id.equals(loaded)) {
 				saveDir = SkyblockerMod.CONFIG_DIR.resolve("backpack-preview/" + id);
 
-				CompletableFuture.runAsync(() -> {
+				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 					try {
 						Files.createDirectories(saveDir);
 					} catch (Exception e) {
 						LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
 					}
-				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+				});
 
 				// load storage again because profile id changed
 				loaded = id;

@@ -31,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
@@ -49,22 +48,22 @@ public class WarpAutocomplete {
 
 	@Init
 	public static void init() {
-		CompletableFuture.supplyAsync(() -> {
+		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+			Object2BooleanMap<String> warps = Object2BooleanMaps.<String>emptyMap();
 			try {
-				String warps = Http.sendGetRequest("https://hysky.de/api/locations");
+				String warpsString = Http.sendGetRequest("https://hysky.de/api/locations");
 
-				return MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(warps)).getOrThrow();
+				warps = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(warpsString)).getOrThrow();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to download warps list", e);
 			}
-			return Object2BooleanMaps.<String>emptyMap();
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(warps -> {
+
 			if (warps.isEmpty()) {
 				warps = getWarpsFromFile();
 			}
 			createCommandNode(warps);
 			saveWarpsToFile(warps);
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		});
 	}
 
 	private static Object2BooleanMap<String> getWarpsFromFile() {

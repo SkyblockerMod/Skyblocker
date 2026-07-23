@@ -269,9 +269,12 @@ public class DungeonManager {
 	@Init
 	public static void init() {
 		// Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
-		CompletableFuture.runAsync(DungeonManager::load, CLIENT).exceptionally(e -> {
-			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
-			return null;
+		CLIENT.execute(() -> {
+			try {
+				DungeonManager.load();
+			} catch (Exception e) {
+				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
+			}
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
@@ -346,9 +349,9 @@ public class DungeonManager {
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
 			ROOMS_DATA.computeIfAbsent(dungeon, _ -> new ConcurrentHashMap<>());
 			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, _ -> new ConcurrentHashMap<>());
-			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(blocks -> {
+			dungeonFutures.add(CompletableFuture.runAsync(() -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
-				roomsMap.put(room, blocks);
+				roomsMap.put(room, readRoom(resourceEntry.getValue()));
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
 			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);

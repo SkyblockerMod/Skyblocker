@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -31,7 +30,7 @@ public final class ChaptersAutocomplete {
 
 	@Init
 	public static void init() {
-		CompletableFuture.runAsync(() -> {
+		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
 			try {
 				String json = Http.sendGetRequest("https://hysky.de/api/chapters");
 				ChaptersData data = ChaptersData.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
@@ -41,7 +40,7 @@ public final class ChaptersAutocomplete {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Chapters Autocomplete] Failed to load Chapters data...", e);
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		});
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {

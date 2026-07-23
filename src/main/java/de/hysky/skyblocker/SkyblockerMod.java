@@ -20,7 +20,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import java.nio.file.Path;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -36,7 +36,7 @@ public class SkyblockerMod implements ClientModInitializer {
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	public static final Gson GSON_COMPACT = new GsonBuilder().create();
 	public static final KeyMapping.Category KEYBINDING_CATEGORY = KeyMapping.Category.register(id("main"));
-	public static final Executor VIRTUAL_THREAD_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
+	public static final ExecutorService VIRTUAL_THREAD_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(NAMESPACE, path);
