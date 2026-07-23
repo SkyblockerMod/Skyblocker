@@ -662,5 +662,15 @@
     "skyblocker.rift.healNow": "회복!",
     "skyblocker.rift.iceNow": "아이스!",
     "skyblocker.rift.mania": "마니아!",
-    "skyblocker.rift.stakeNow": "스테이크!"
+    "skyblocker.rift.stakeNow": "스테이크!",
+    "skyblocker.bars.config.resetTitle": "상태 바를 초기화 할까요?",
+    "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "캠핑을 돕기 위해 Blood Room 몹의 이동을 예측합니다.",
+    "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage.@Tooltip": "Crypts를 5개 이상 획득하기 전에 기준 점수에 도달할때 채팅으로 전송할 메시지 입니다. [crypts]라는 문자열은 실제 crypts 개수로 대체됩니다.",
+    "skyblocker.config.dungeons.dungeonScore.dungeonScoreMessage.@Tooltip": "던전에서 %s 점에 도달했을때 채팅으로 전송할 메시지 입니다. [score]라는 문자열은 %s점으로 대체됩니다.",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage": "던전 Crypts 메시지 활성화",
+    "skyblocker.config.dungeons.dungeonScore.enableDungeonCryptsMessage.@Tooltip": "점수 한계점에 도달했을때 획득한 crypts 수가 5개 미만이면 채팅으로 메시지를 보냅니다.",
+    "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Wither Door와 Blood Door의 열쇠를 청록색으로 강조합니다.",
+    "skyblocker.config.dungeons.map.backgroundBlur": "배경 블러",
+    "skyblocker.config.dungeons.map.hideCheckmarks": "체크 표시 가리기",
+    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "비밀 발견됨"
 }
