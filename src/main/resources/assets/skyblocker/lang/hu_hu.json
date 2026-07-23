@@ -1803,5 +1803,7 @@
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Keresés Megjegyzése",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Megjegyzi a keresést és a görgetés helyzetét a hátizsák bezárása után.",
     "skyblocker.shortcuts.hasDuplicates": "Nem lehet menteni, mivel más átkötésnek ugyanaz a célparancsa vagy -billentyűleütése!",
-    "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Ez a billentyű egy másik gyorsbillentyűhöz van használva, ami nem megengedett! ⚠\n\nTávolítsd el ezt a gyorsbillentyűt, vagy:\n%s"
+    "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Ez a billentyű egy másik gyorsbillentyűhöz van használva, ami nem megengedett! ⚠\n\nTávolítsd el ezt a gyorsbillentyűt, vagy:\n%s",
+    "skyblocker.bars.config.reset": "Ez visszaállítja a státusz sávokat az alapértelmezett helyzetükbe.\nA művelet nem vonható vissza.",
+    "skyblocker.bars.config.resetTitle": "Státusz Sávok Visszaállítása?"
 }
