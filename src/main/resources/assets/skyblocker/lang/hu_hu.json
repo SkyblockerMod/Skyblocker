@@ -910,7 +910,7 @@
     "skyblocker.config.general.itemTooltip.avg.@Tooltip": "Kiválaszthatod, hogy hány napos legyen az átlag",
     "skyblocker.config.general.itemTooltip.enableMotesPrice.@Tooltip": "Jelzi a tárgy Mote-beli eladási árát a Riftben.",
     "skyblocker.config.general.itemTooltip.enableMotesPrice": "Mote Ár Engedélyezése",
-    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Mutat egy becslést a tárgyak teljes értékére a leírásban, §lnem feltétlenül 100% pontos.§r\n\nTárgyak eladásakor mindig magadtól is nézd meg a tárgy árát!",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Mutat egy becslést a tárgyak teljes értékére a leírásban.\nAz ár az egyes elemek BZ/AH árán alapul, és nem lehet pontosan számolni ha az áradatok nincsnek betöltve. Lehetséges, hogy az árak mesterségesen meg lettek növelve vagy le lettek csökkentve, ezért tárgyak eladása előtt mindig magadtól is nézd meg az árakat!",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "NPC Ár Engedélyezése",
     "skyblocker.config.general.searchOverlay.maxPet": "Max Háziállat Szint",
     "skyblocker.config.general.searchOverlay.maxPet.@Tooltip": "Csak legmagasabb (100/200-as szintű) szintű háziállatok mutatása",
@@ -1805,5 +1805,7 @@
     "skyblocker.shortcuts.hasDuplicates": "Nem lehet menteni, mivel más átkötésnek ugyanaz a célparancsa vagy -billentyűleütése!",
     "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Ez a billentyű egy másik gyorsbillentyűhöz van használva, ami nem megengedett! ⚠\n\nTávolítsd el ezt a gyorsbillentyűt, vagy:\n%s",
     "skyblocker.bars.config.reset": "Ez visszaállítja a státusz sávokat az alapértelmezett helyzetükbe.\nA művelet nem vonható vissza.",
-    "skyblocker.bars.config.resetTitle": "Státusz Sávok Visszaállítása?"
+    "skyblocker.bars.config.resetTitle": "Státusz Sávok Visszaállítása?",
+    "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "A funkció nem működik, ha a felhasználó /nick-et használ megnehezítve kilétének meghatározását.",
+    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Az áradatok API-on keresztül vannak betöltve. Ha a hálózat nem tölti be az adatokat, próbáld meg manuálisan újratölteni azt a /skyblocker refreshPrices paranccsal, illetve győződj meg, hogy a hálózat hozzá tud férni az alábbi oldalhoz: https://api.azureaaron.net/authenticate/."
 }
