@@ -308,7 +308,7 @@
     "skyblocker.waypoints.type.WAYPOINT": "웨이포인트",
     "skyblocker.waypoints.waypointType": "웨이포인트 유형",
     "skyblocker.waypoints.waypointsOptions": "웨이포인트 설정",
-    "skyblocker.webSocket.receivedCrystalsWaypoint": "%s개의 웨이포인트를 Skyblocker 웹소켓을 통해 수신받았습니다.",
+    "skyblocker.webSocket.receivedCrystalsWaypoint": "%s 웨이포인트를 Skyblocker 웹 소켓을 통해 수신 받았습니다.",
     "skyblocker.wikiLookup.noArticleFound.independent": "이 아이템을 독립된 위키에서 찾을 수 없습니다...",
     "skyblocker.waypoints.type.OUTLINED_WAYPOINT": "윤곽선있는 웨이포인트",
     "skyblocker.waypoints.new": "새로운 웨이포인트",
@@ -334,7 +334,7 @@
     "skyblocker.updateNotifications.newUpdateToast.title": "Skyblocker 업데이트가 가능합니다!",
     "skyblocker.updateNotifications.newUpdateToast.description": "%s 버전 다운로드!",
     "skyblocker.updateNotifications.newUpdateMessage": "새로운 Skyblocker 업데이트가 있습니다! %s",
-    "skyblocker.updateNotifications.configureNewVersionHere": "새로운 버전으로 설정하려면 여기를 클릭하세요.",
+    "skyblocker.updateNotifications.configureNewVersionHere": "새로운 버전의 설정을 구성하려면 클릭하세요.",
     "skyblocker.tips.tip": "§a도움말: %s\n",
     "skyblocker.tips.previous": "이전 도움말",
     "skyblocker.tips.next": "다음 도움말",
@@ -672,5 +672,12 @@
     "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Wither Door와 Blood Door의 열쇠를 청록색으로 강조합니다.",
     "skyblocker.config.dungeons.map.backgroundBlur": "배경 블러",
     "skyblocker.config.dungeons.map.hideCheckmarks": "체크 표시 가리기",
-    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "비밀 발견됨"
+    "skyblocker.config.dungeons.map.roomLabelType.SECRETS_FOUND": "비밀 발견됨",
+    "skyblocker.config.dungeons.map.showOutline": "외곽선 보이기",
+    "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Mimic 메시지 활성화",
+    "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "미믹을 처치했을때 점수 계산 모드에서 사용할 수 있도록 채팅으로 메시지를 전송합니다.",
+    "skyblocker.config.dungeons.playerSecretsTracker": "플레이어 비밀 추적기",
+    "skyblocker.config.dungeons.puzzle": "퍼즐 해결",
+    "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "순간이동 미로 퍼즐 해결",
+    "skyblocker.config.dungeons.secretSync": "비밀 동기화"
 }
