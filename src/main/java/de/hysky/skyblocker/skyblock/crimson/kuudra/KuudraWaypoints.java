@@ -78,7 +78,7 @@ public class KuudraWaypoints {
 
 				return List.<Waypoint>of();
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(list::addAll);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(list::addAll, client);
 	}
 
 	private static JsonElement getWaypoints(BufferedReader reader) {

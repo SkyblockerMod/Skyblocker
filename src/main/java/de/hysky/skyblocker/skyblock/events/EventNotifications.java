@@ -112,7 +112,7 @@ public class EventNotifications {
 				LOGGER.error("[Skyblocker] Failed to download events list", e);
 			}
 			return null;
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(response -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(response -> {
 			events.clear();
 			if (response == null) {
 				LOGGER.error("[Skyblocker] Failed to get events list");
@@ -135,7 +135,7 @@ public class EventNotifications {
 					config.eventNotifications.events.computeIfAbsent(s, _ -> DEFAULT_REMINDERS);
 				}
 			});
-		}).exceptionally(EventNotifications::itBorked);
+		}, Minecraft.getInstance()).exceptionally(EventNotifications::itBorked);
 	}
 
 	private static Void itBorked(Throwable throwable) {

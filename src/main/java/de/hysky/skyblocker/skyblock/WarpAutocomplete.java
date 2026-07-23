@@ -58,39 +58,37 @@ public class WarpAutocomplete {
 				LOGGER.error("[Skyblocker] Failed to download warps list", e);
 			}
 			return Object2BooleanMaps.<String>emptyMap();
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(warps -> {
-					if (warps.isEmpty()) {
-						getWarpsFromFile();
-					} else {
-						CompletableFuture.runAsync(() -> {
-							Optional<JsonElement> result = MAP_CODEC.encodeStart(JsonOps.INSTANCE, warps).result();
-							if (result.isEmpty()) return;
-							JsonElement warpsJson = result.get();
-							try (BufferedWriter writer = Files.newBufferedWriter(FILE, StandardCharsets.UTF_8)) {
-								SkyblockerMod.GSON.toJson(warpsJson, writer);
-							} catch (Exception e) {
-								LOGGER.error("[Skyblocker] Failed to save warps auto complete", e);
-							}
-						}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
-						createCommandNode(warps);
-					}
-				}
-		);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(warps -> {
+			if (warps.isEmpty()) {
+				warps = getWarpsFromFile();
+			}
+			createCommandNode(warps);
+			saveWarpsToFile(warps);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
-	private static void getWarpsFromFile() {
-		CompletableFuture.supplyAsync(() -> {
-			JsonObject object;
-			try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-				object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-			} catch (NoSuchFileException _) {
-				return Object2BooleanMaps.<String>emptyMap();
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker] Failed to read warp autocomplete file", e);
-				return Object2BooleanMaps.<String>emptyMap();
-			}
-			return MAP_CODEC.parse(JsonOps.INSTANCE, object).result().orElse(Object2BooleanMaps.emptyMap());
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(WarpAutocomplete::createCommandNode);
+	private static Object2BooleanMap<String> getWarpsFromFile() {
+		JsonObject object;
+		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
+			object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
+		} catch (NoSuchFileException _) {
+			return Object2BooleanMaps.emptyMap();
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Failed to read warp autocomplete file", e);
+			return Object2BooleanMaps.emptyMap();
+		}
+		return MAP_CODEC.parse(JsonOps.INSTANCE, object).result().orElse(Object2BooleanMaps.emptyMap());
+	}
+
+	private static void saveWarpsToFile(Object2BooleanMap<String> warps) {
+		Optional<JsonElement> result = MAP_CODEC.encodeStart(JsonOps.INSTANCE, warps).result();
+		if (result.isEmpty()) return;
+		JsonElement warpsJson = result.get();
+		try (BufferedWriter writer = Files.newBufferedWriter(FILE, StandardCharsets.UTF_8)) {
+			SkyblockerMod.GSON.toJson(warpsJson, writer);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker] Failed to save warps auto complete", e);
+		}
 	}
 
 	private static void createCommandNode(Object2BooleanMap<String> warps) {

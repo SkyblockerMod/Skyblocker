@@ -152,7 +152,7 @@ public final class GardenPlots {
 			}
 			return new GardenPlot[25];
 			// Schedule on main thread to avoid any async weirdness
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25))));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(newPlots -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25)), Minecraft.getInstance());
 	}
 
 	public record GardenPlot(Either<Item, String> icon, String name, Optional<String> customIcon) {

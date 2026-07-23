@@ -98,11 +98,11 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			}
 			return EMPTY_EQUIPMENT.get();
 			// Schedule on main thread to avoid any async weirdness
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(itemStacks -> {
 			System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
 			if (itemStacks.length <= 4) return;
 			System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
-		}));
+		}, Minecraft.getInstance());
 	}
 
 	@Override

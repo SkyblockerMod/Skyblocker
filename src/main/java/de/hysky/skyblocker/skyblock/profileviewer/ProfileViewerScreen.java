@@ -100,11 +100,8 @@ public class ProfileViewerScreen extends Screen {
 		CompletableFuture<Void> collectionsFuture = CompletableFuture.runAsync(() -> profileViewerPages[4] = new CollectionsPage(hypixelProfile, playerProfile));
 
 		CompletableFuture.allOf(skillsFuture, slayersFuture, dungeonsFuture, inventoriesFuture, collectionsFuture)
-				.thenRun(() -> {
-					synchronized (this) {
-						rebuildWidgets();
-					}
-				}).exceptionally(err -> {
+				.thenRunAsync(this::rebuildWidgets, Minecraft.getInstance())
+				.exceptionally(err -> {
 					LOGGER.error("[Skyblocker Profile Viewer] An error occurred while initializing widgets!", err);
 					errorMessage = "Unable to process player data!";
 					profileNotFound = true;
@@ -114,9 +111,7 @@ public class ProfileViewerScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		synchronized (this) {
-			super.extractRenderState(graphics, mouseX, mouseY, delta);
-		}
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;

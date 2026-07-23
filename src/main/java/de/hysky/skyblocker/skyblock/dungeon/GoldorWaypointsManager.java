@@ -93,13 +93,13 @@ public class GoldorWaypointsManager {
 
 				return List.<GoldorWaypoint>of();
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAccept(list -> list.forEach(waypoint -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(list -> list.forEach(waypoint -> {
 			switch (waypoint.kind) {
 				case TERMINAL -> TERMINALS.add(waypoint);
 				case DEVICE -> DEVICES.add(waypoint);
 				case LEVER -> LEVERS.add(waypoint);
 			}
-		}));
+		}), client);
 	}
 
 	/**
