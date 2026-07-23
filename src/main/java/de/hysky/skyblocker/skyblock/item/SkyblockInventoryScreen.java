@@ -50,6 +50,7 @@ import java.util.function.Supplier;
  * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
+@SuppressWarnings("JavadocReference")
 public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
 	private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
@@ -204,7 +205,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.isWindowActive()) {
+		if (client.isWindowActive() && client.player != null) {
 			var mouse = client.mouseHandler;
 			var window = client.getWindow();
 			var mouseX = MouseHandler.getScaledXPos(window, mouse.xpos());
@@ -240,7 +241,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		}
 
 		@Override
-		public @Nullable Identifier getNoItemIcon() {
+		public Identifier getNoItemIcon() {
 			return noItemIcon;
 		}
 	}
