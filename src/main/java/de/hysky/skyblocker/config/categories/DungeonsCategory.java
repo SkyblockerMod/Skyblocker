@@ -160,6 +160,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.showSelfHead"))
+								.description(Component.translatable("skyblocker.config.dungeons.map.showSelfHead.@Tooltip"))
 								.binding(defaults.dungeons.dungeonMap.showSelfHead,
 										() -> config.dungeons.dungeonMap.showSelfHead,
 										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
