@@ -111,9 +111,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		@Override
 		public List<Rect2i> getGuiExtraAreas() {
 			if (!Utils.isOnSkyblock() || !VisitorHelper.shouldRender()) return List.of();
-			return VisitorHelper.getExclusionZones().stream()
-					.map(rect -> new Rect2i(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
-					.toList();
+			return VisitorHelper.getExclusionZones();
 		}
 	}
 }

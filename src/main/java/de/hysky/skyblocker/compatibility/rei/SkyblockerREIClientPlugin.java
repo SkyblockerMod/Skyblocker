@@ -148,7 +148,7 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		zones.register(Screen.class, _ -> {
 			if (!VisitorHelper.shouldRender()) return List.of();
 			return VisitorHelper.getExclusionZones().stream()
-					.map(rect -> new Rectangle(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
+					.map(this::rectangleFromRectangle)
 					.toList();
 		});
 

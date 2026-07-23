@@ -44,9 +44,7 @@ public class ItemListCompatibility implements Plugin {
 
 		zones.addProvider(Screen.class, _ -> {
 			if (!VisitorHelper.shouldRender()) return List.of();
-			return VisitorHelper.getExclusionZones().stream()
-					.map(rect -> new Rect2i(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
-					.toList();
+			return VisitorHelper.getExclusionZones();
 		});
 
 		zones.addProvider(AuctionBrowserScreen.class, screen -> {

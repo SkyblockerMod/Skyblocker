@@ -40,10 +40,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -119,10 +118,10 @@ public class VisitorHelper extends AbstractWidget {
 		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR) && !CatharsisCompatibility.isGuiElementHidden("skyblocker:visitorHelper");
 	}
 
-	public static List<ScreenRectangle> getExclusionZones() {
+	public static List<Rect2i> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new ScreenRectangle(new ScreenPosition(xOffset, yOffset), exclusionZoneWidth, exclusionZoneHeight));
+		return List.of(new Rect2i(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
 	}
 
 	/**
