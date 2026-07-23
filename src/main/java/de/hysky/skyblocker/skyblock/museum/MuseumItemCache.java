@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -308,7 +309,7 @@ public class MuseumItemCache {
 	private static void updateData4ProfileMember(UUID uuid, String profileId, @Nullable FabricClientCommandSource source) {
 		if (MUSEUM_DONATIONS.isEmpty()) return;
 
-		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+		CompletableFuture.runAsync(() -> {
 			try (ApiResponse response = Http.sendHypixelRequest("skyblock/museum", "?profile=" + profileId)) {
 				//The request was successful
 				if (response.ok()) {
@@ -364,7 +365,7 @@ public class MuseumItemCache {
 				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
-		});
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void putEmpty(UUID uuid, String profileId) {

@@ -104,17 +104,17 @@ public final class GardenPlots {
 
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
 			if (!prevProfileId.isEmpty()) {
-				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+				CompletableFuture.runAsync(() -> {
 					save(prevProfileId);
 					load(profileId);
-				});
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 			} else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> save(profileId));
+				CompletableFuture.runAsync(() -> save(profileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 			}
 		});
 	}

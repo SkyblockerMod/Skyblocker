@@ -269,12 +269,9 @@ public class DungeonManager {
 	@Init
 	public static void init() {
 		// Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
-		CLIENT.execute(() -> {
-			try {
-				DungeonManager.load();
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
-			}
+		CompletableFuture.runAsync(DungeonManager::load, CLIENT).exceptionally(e -> {
+			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
+			return null;
 		});
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);

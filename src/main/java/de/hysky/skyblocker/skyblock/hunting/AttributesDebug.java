@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,13 +92,13 @@ public class AttributesDebug {
 		if (CLIENT.gui.screen() instanceof AbstractContainerScreen screen && screen.getTitle().getString().equals("Attribute Menu")) {
 			List<Attribute> copy = DUMPED_ATTRIBUTES.stream().distinct().toList();
 
-			SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+			CompletableFuture.runAsync(() -> {
 				try {
 					Files.writeString(ATTRIBUTE_EXPORT_DEST, Attribute.LIST_CODEC.encodeStart(JsonOps.INSTANCE, copy).getOrThrow().toString());
 				} catch (Exception e) {
 					LOGGER.error("[Skyblocker Attributes Debug] Failed to export attributes!", e);
 				}
-			});
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 }

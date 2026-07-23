@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -38,7 +39,7 @@ public class ImageRepoLoader {
 	 * Attempts to update/load the image repository, if any errors are encountered it will try 3 times.
 	 */
 	private static void update(int retries) {
-		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+		CompletableFuture.runAsync(() -> {
 			if (retries < 3) {
 				try {
 					long start = System.currentTimeMillis();
@@ -84,7 +85,7 @@ public class ImageRepoLoader {
 					update(retries + 1);
 				}
 			}
-		});
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**

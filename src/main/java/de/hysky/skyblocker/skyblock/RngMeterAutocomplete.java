@@ -6,6 +6,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class RngMeterAutocomplete {
 
 	@Init
 	public static void init() {
-		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+		CompletableFuture.runAsync(() -> {
 			try {
 				String json = Http.sendGetRequest("https://hysky.de/api/rngmeters");
 				rngMeters = CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
@@ -44,7 +45,7 @@ public class RngMeterAutocomplete {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker RNG Meter Autocomplete] Failed to load RNG Meter data.", e);
 			}
-		});
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {

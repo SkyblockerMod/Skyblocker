@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
@@ -48,7 +49,7 @@ public class WarpAutocomplete {
 
 	@Init
 	public static void init() {
-		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> {
+		CompletableFuture.runAsync(() -> {
 			Object2BooleanMap<String> warps = Object2BooleanMaps.<String>emptyMap();
 			try {
 				String warpsString = Http.sendGetRequest("https://hysky.de/api/locations");
@@ -63,7 +64,7 @@ public class WarpAutocomplete {
 			}
 			createCommandNode(warps);
 			saveWarpsToFile(warps);
-		});
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static Object2BooleanMap<String> getWarpsFromFile() {

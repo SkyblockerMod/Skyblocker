@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
@@ -132,7 +133,7 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.execute(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false));
+			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 
 		private static @Nullable UUID findPlayerUuid(String name) {
