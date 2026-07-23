@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility;
 
 import com.mojang.datafixers.util.Either;
+import com.operationpotato.itemlist.api.ExcludedScreensManager;
 import com.operationpotato.itemlist.api.ExclusionZoneManager;
 import com.operationpotato.itemlist.api.HoveredItemManager;
 import com.operationpotato.itemlist.api.Plugin;
@@ -12,6 +13,7 @@ import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackUtils;
 import net.minecraft.client.Minecraft;
@@ -22,6 +24,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemListCompatibility implements Plugin {
 
@@ -50,6 +53,16 @@ public class ItemListCompatibility implements Plugin {
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
 			return List.of(new Rect2i(accessor.getX() - 31, accessor.getY() + 2, 32, 28 * 6));
 		});
+
+		zones.addProvider(StorageOverlayScreen.class, screen -> List.of(
+				screen.getMainExclusionZone(),
+				screen.getButtonsExclusionZone()
+		));
+	}
+
+	@Override
+	public void registerExcludedScreens(ExcludedScreensManager manager) {
+		manager.addProvider(StorageOverlayScreen.class, _ -> Optional.of("Skyblocker Storage Overlay"));
 	}
 
 	@Override

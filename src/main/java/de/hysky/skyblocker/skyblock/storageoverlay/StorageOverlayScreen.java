@@ -26,6 +26,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -155,6 +156,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	private int getHeight() {
 		return this.height - (this.height / 5) - 87;
+	}
+
+	public Rect2i getMainExclusionZone() {
+		return new Rect2i(getLeftPos(), 0, getWidth(), height);
+	}
+
+	public Rect2i getButtonsExclusionZone() {
+		return new Rect2i(width - 90, height - 80, width, height);
 	}
 
 	@Override
