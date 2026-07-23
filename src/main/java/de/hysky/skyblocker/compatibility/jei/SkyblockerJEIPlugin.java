@@ -14,6 +14,7 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -55,8 +56,8 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		@SuppressWarnings("unused")
 		SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
 		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack.getStackOrThrow())).map(FlexibleItemStack::getStackOrThrow).distinct().forEach(item ->
-		registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
-				);
+				registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
+		);
 	}
 
 	@Override
@@ -78,6 +79,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
 		registration.addGuiContainerHandler(ContainerScreen.class, new GenericContainerHandler());
 		registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
+		registration.addGuiContainerHandler(StorageOverlayScreen.class, new StorageOverlayHandler());
 		registration.addGlobalGuiHandler(new GlobalHandler());
 	}
 
@@ -104,6 +106,13 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		public List<Rect2i> getGuiExtraAreas(InventoryScreen containerScreen) {
 			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden() || GardenPlots.widget == null) return List.of();
 			return List.of(new Rect2i(GardenPlots.widget.getX(), GardenPlots.widget.getY(), GardenPlots.widget.getWidth(), GardenPlots.widget.getHeight()));
+		}
+	}
+
+	private static class StorageOverlayHandler implements IGuiContainerHandler<StorageOverlayScreen> {
+		@Override
+		public List<Rect2i> getGuiExtraAreas(StorageOverlayScreen screen) {
+			return List.of(screen.getMainExclusionZone(), screen.getButtonsExclusionZone());
 		}
 	}
 
