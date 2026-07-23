@@ -28,7 +28,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
@@ -492,13 +491,13 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 				keybindButton.setMessage(Component.literal("[ ")
 						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
 						.append(" ]")
-						.withColor(TextColor.RED));
+						.withStyle(ChatFormatting.RED));
 				keybindButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.keyBinding.duplicate", duplicateText)));
 			} else if (conflicting) {
 				keybindButton.setMessage(Component.literal("[ ")
 						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
 						.append(" ]")
-						.withColor(TextColor.YELLOW));
+						.withStyle(ChatFormatting.YELLOW));
 				keybindButton.setTooltip(Tooltip.create(Component.translatable("controls.keybinds.duplicateKeybinds", conflictText)));
 			} else {
 				keybindButton.setTooltip(null);

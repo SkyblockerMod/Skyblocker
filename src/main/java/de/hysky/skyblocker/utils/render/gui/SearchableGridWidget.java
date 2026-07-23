@@ -68,6 +68,10 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		searchField.setValue(search);
 	}
 
+	public boolean isSearchFocused() {
+		return searchField.isFocused();
+	}
+
 	public void setScrollAmount(double amount) {
 		widgetsContainer.setScrollAmount(amount);
 	}

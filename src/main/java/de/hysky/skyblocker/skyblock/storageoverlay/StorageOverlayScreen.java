@@ -13,12 +13,10 @@ import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -257,12 +255,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		ComponentPath focusPath = this.getCurrentFocusPath();
-
-		if (this.minecraft.options.keyInventory.matches(event) && focusPath != null && focusPath.leafComponent() instanceof EditBox) {
-			return true;
-		}
-
+		if (grid == null) return super.keyPressed(event);
+		if (this.minecraft.options.keyInventory.matches(event) && grid.isSearchFocused()) return true;
 		return super.keyPressed(event);
 	}
 

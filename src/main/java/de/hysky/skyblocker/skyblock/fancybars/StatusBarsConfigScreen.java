@@ -282,7 +282,7 @@ public class StatusBarsConfigScreen extends Screen {
 				.bounds(width - 20, height / 2 - 17, 15, 15)
 				.build());
 		this.addRenderableWidget(Button.builder(Component.literal("⟲"),
-						_ -> minecraft.gui.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.resetTitle"))
+						_ -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.resetTitle"))
 								.addButton(CommonComponents.GUI_NO, PopupScreen::onClose)
 								.addButton(CommonComponents.GUI_YES, popup -> {
 									FancyStatusBars.resetBarPositions();
