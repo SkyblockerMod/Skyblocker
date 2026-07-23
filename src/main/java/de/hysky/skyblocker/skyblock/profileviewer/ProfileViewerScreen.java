@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.extractEntityInInventoryFollowsMouse;
 
@@ -101,11 +100,8 @@ public class ProfileViewerScreen extends Screen {
 		CompletableFuture<Void> collectionsFuture = CompletableFuture.runAsync(() -> profileViewerPages[4] = new CollectionsPage(hypixelProfile, playerProfile));
 
 		CompletableFuture.allOf(skillsFuture, slayersFuture, dungeonsFuture, inventoriesFuture, collectionsFuture)
-				.thenRun(() -> {
-					synchronized (this) {
-						rebuildWidgets();
-					}
-				}).exceptionally(err -> {
+				.thenRunAsync(this::rebuildWidgets, Minecraft.getInstance())
+				.exceptionally(err -> {
 					LOGGER.error("[Skyblocker Profile Viewer] An error occurred while initializing widgets!", err);
 					errorMessage = "Unable to process player data!";
 					profileNotFound = true;
@@ -115,9 +111,7 @@ public class ProfileViewerScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		synchronized (this) {
-			super.extractRenderState(graphics, mouseX, mouseY, delta);
-		}
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
@@ -207,7 +201,7 @@ public class ProfileViewerScreen extends Screen {
 				this.profileNotFound = true;
 				return null;
 			}).join();
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 		return CompletableFuture.allOf(profileFuture, playerFuture);
 	}
@@ -257,7 +251,7 @@ public class ProfileViewerScreen extends Screen {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	public static Map<String, List<Collection>> getCollections() {

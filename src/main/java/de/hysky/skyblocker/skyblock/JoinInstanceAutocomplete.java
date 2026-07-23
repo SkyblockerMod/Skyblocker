@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
@@ -50,7 +50,7 @@ public class JoinInstanceAutocomplete {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load joininstance list", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> buildCommand(String command, java.util.function.Predicate<String> filter) {

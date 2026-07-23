@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 
@@ -58,7 +57,7 @@ public class ConfigPatchLoader {
 				LOGGER.error(LogUtils.FATAL_MARKER, "[Skyblocker Config Patch Loader] Failed to load config patches!", e);
 				return null;
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor())
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 		.thenApplyAsync(json -> {
 			List<ConfigPatch> patches = ConfigPatch.PATCH_LIST_CODEC.parse(JsonOps.INSTANCE, json)
 					.setPartial(List.of())

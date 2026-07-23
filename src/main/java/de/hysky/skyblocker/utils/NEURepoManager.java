@@ -11,14 +11,14 @@ import io.github.moulberry.repo.NEUConstants;
 import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
-import io.github.moulberry.repo.data.ItemOverlays;
 import io.github.moulberry.repo.NEURepositoryException;
+import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
-import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.util.NEUId;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -35,13 +35,12 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -79,7 +78,7 @@ public class NEURepoManager {
 	/**
 	 * Store after load runnables so we can execute them after each time the repository is (re)loaded.
 	 */
-	private static final List<Runnable> afterLoadTasks = new ArrayList<>();
+	private static final List<Runnable> afterLoadTasks = new CopyOnWriteArrayList<>();
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
@@ -103,9 +102,8 @@ public class NEURepoManager {
 		runAsyncAfterLoad(NEURepoManager::loadNameToNEUItemMap); // Loads the NEUItem name cache after the repository is loaded.
 	}
 
-
 	public static boolean isLoading() {
-		return REPO_LOADING != null && !REPO_LOADING.isDone();
+		return !REPO_LOADING.isDone();
 	}
 
 	private static CompletableFuture<Boolean> loadRepository() {
@@ -157,13 +155,13 @@ public class NEURepoManager {
 				success = false;
 			}
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenApplyAsync(success -> {
-			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor())).toArray(CompletableFuture[]::new)).exceptionally(e -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(success -> {
+			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)).toArray(CompletableFuture[]::new)).exceptionally(e -> {
 				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
 				return null;
 			});
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**
@@ -189,7 +187,7 @@ public class NEURepoManager {
 	}
 
 	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
-		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
+		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		REPO_LOADING = runner.apply(() -> {
 			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
@@ -221,7 +219,7 @@ public class NEURepoManager {
 	 * @return a completable future of the given runnable
 	 */
 	public static CompletableFuture<Void> runAsyncAfterLoad(Runnable runnable) {
-		return REPO_LOADING.thenRunAsync(runnable).exceptionally(e -> {
+		return REPO_LOADING.thenRunAsync(runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 			LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load task", e);
 			return null;
 		}).thenRun(() -> afterLoadTasks.add(runnable)); // Add to the list after so it doesn't get executed twice.

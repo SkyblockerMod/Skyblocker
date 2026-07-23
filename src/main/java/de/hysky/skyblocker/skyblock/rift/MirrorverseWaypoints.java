@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -53,7 +52,7 @@ public class MirrorverseWaypoints {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static Waypoint[] loadWaypoints(JsonArray waypointsJson) {

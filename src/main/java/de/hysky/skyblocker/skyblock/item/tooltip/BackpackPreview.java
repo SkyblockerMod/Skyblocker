@@ -38,7 +38,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -85,7 +84,7 @@ public class BackpackPreview {
 					} catch (Exception e) {
 						LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
 					}
-				}, Executors.newVirtualThreadPerTaskExecutor());
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 				// load storage again because profile id changed
 				loaded = id;
@@ -112,7 +111,7 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
 		}
 	}
 
@@ -139,7 +138,7 @@ public class BackpackPreview {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to save backpack preview file: {}", storageFile.getFileName(), e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
 	}
 
 	private static void updateStorage(AbstractContainerScreen<?> handledScreen) {

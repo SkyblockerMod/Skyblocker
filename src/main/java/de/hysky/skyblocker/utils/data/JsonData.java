@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class JsonData<T> {
@@ -110,7 +109,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> load() {
 		if (loadAsync) {
-			loaded = CompletableFuture.runAsync(this::loadInternal, Executors.newVirtualThreadPerTaskExecutor());
+			loaded = CompletableFuture.runAsync(this::loadInternal, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		} else {
 			loadInternal();
 			loaded = CompletableFuture.completedFuture(null);
@@ -160,7 +159,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> save() {
 		if (saveAsync && Minecraft.getInstance().isRunning()) { // Do not save async if we are closing the game
-			return CompletableFuture.runAsync(this::saveInternal, Executors.newVirtualThreadPerTaskExecutor());
+			return CompletableFuture.runAsync(this::saveInternal, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		} else {
 			saveInternal();
 			return CompletableFuture.completedFuture(null);
