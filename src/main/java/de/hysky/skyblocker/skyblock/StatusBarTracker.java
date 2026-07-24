@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock;
 
+import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
@@ -23,12 +24,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +44,7 @@ public class StatusBarTracker {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
 	private static Resource mana = new Resource(100, 100, 0);
+	private static Resource actionBarMana = new Resource(100, 100, 0); // this only exists for showing server side mana
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
@@ -70,6 +69,10 @@ public class StatusBarTracker {
 
 	public static Resource getMana() {
 		return mana;
+	}
+
+	public static Resource getActionBarMana() {
+		return actionBarMana;
 	}
 
 	public static boolean isManaEstimated() {
@@ -237,6 +240,7 @@ public class StatusBarTracker {
 		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
 		int max = RegexUtils.parseIntFromMatcher(m, "max");
 		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
+		StatusBarTracker.actionBarMana = new Resource(mana, max, overflow);
 		StatusBarTracker.mana = new Resource(mana, max, overflow);
 		if (mana != max && lastMana < mana) manaPerSecond = Math.max(mana - lastMana, 0);
 		if (lastMana != mana || mana == max) lastManaTick = ticks;

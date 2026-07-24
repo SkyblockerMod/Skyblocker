@@ -395,7 +395,7 @@ public class FancyStatusBars {
 			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
 		}
 
-		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
+		StatusBarTracker.Resource intelligence = SkyblockerConfigManager.get().uiAndVisuals.bars.predictManaUsage ? StatusBarTracker.getMana() : StatusBarTracker.getActionBarMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
 			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
