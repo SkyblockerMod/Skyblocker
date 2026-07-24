@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.DataResult.Error;
 
@@ -34,12 +33,12 @@ import net.minecraft.world.item.Items;
 /// Allows for the flexibility when working with {@link ItemStack ItemStacks} in any situation.
 public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	public static final MapCodec<FlexibleItemStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	private static final Codec<FlexibleItemStack> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Item.CODEC.fieldOf(FIELD_ID).forGetter(FlexibleItemStack::typeHolder),
 			ExtraCodecs.intRange(1, Item.ABSOLUTE_MAX_STACK_SIZE).optionalFieldOf(FIELD_COUNT, 1).forGetter(FlexibleItemStack::count),
 			DataComponentPatch.CODEC.optionalFieldOf(FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(FlexibleItemStack::components)
-			).apply(instance, FlexibleItemStack::new));
-	public static final Codec<FlexibleItemStack> CODEC = Codec.withAlternative(MAP_CODEC.codec(), Item.CODEC, item -> new FlexibleItemStack(item.value()));
+	).apply(instance, FlexibleItemStack::new));
+	public static final Codec<FlexibleItemStack> CODEC = Codec.withAlternative(MAP_CODEC, Item.CODEC, item -> new FlexibleItemStack(item.value()));
 	public static final FlexibleItemStack EMPTY = new FlexibleItemStack((Void) null);
 	private static final DataComponentGetter FALLBACK_COMPONENT_GETTER = new FallbackComponentGetter();
 	private final Holder<Item> item;
