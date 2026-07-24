@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 public final class SkyBlockIcons {
 	// Combat Stats
 	public static final char HEALTH = '\uE010';
+	public static final char VITALITY = '\uE028';
 	public static final char DEFENSE = '\uE008';
 	public static final char TRUE_DEFENSE = '\uE027';
 	public static final char STRENGTH = '\uE00D';

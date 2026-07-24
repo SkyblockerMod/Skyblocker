@@ -38,6 +38,7 @@ public class StatusBarTracker {
 	private static final Pattern STATUS_PATTERN = Pattern.compile("(?<status>.+?)(?: {2,}|$)");
 	private static final Pattern RIFT_TIME_STATUS = Pattern.compile(String.format("(?:[\\d,]+m)?[\\d,]+s[ф%s] Left", SkyBlockIcons.RIFT_TIME));
 	private static final Pattern HEALTH_STATUS = Pattern.compile(String.format("(?<health>[\\d,]+)/(?<max>[\\d,]+)[❤%s](?<healing>\\+([\\d,]+)[▁-▆])?", SkyBlockIcons.HEALTH));
+	private static final Pattern VITALITY_STATUS = Pattern.compile(String.format("(?<vitality>[\\d,]+)/(?<max>[\\d,]+)%s", SkyBlockIcons.VITALITY));
 	private static final Pattern HEALING = Pattern.compile(String.format("(?:§[\\da-z])*[❤%s]", SkyBlockIcons.HEALTH));
 	private static final Pattern DEFENSE_STATUS = Pattern.compile(String.format("(?<defense>[\\d,]+)[❈%s]( Defense)?", SkyBlockIcons.DEFENSE));
 	private static final Pattern MANA_USE = Pattern.compile("-([\\d,]+) Mana \\(.*?\\)");
@@ -45,6 +46,7 @@ public class StatusBarTracker {
 
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
+	private static @Nullable Resource vitality = null;
 	private static Resource mana = new Resource(100, 100, 0);
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
@@ -66,6 +68,10 @@ public class StatusBarTracker {
 
 	public static Resource getHealth() {
 		return health;
+	}
+
+	public static @Nullable Resource getVitality() {
+		return vitality;
 	}
 
 	public static Resource getMana() {
@@ -188,6 +194,17 @@ public class StatusBarTracker {
 						statuses.appendReplacement(output, "");
 					else
 						statuses.appendReplacement(output, "$0");
+				} else {
+					if (status.usePattern(VITALITY_STATUS).find()) {
+						updateVitality(status);
+						if (FancyStatusBars.isBarEnabled(StatusBarType.VITALITY))
+							statuses.appendReplacement(output, "");
+						else
+							statuses.appendReplacement(output, "$0");
+					} else {
+						vitality = null;
+					}
+
 				}
 			}
 			// Mana use
@@ -231,6 +248,10 @@ public class StatusBarTracker {
 			value = (int) (MINECRAFT.player.getHealth() * max / MINECRAFT.player.getMaxHealth());
 		}
 		health = new Resource(Math.min(value, max), max, absorption);
+	}
+
+	private static void updateVitality(Matcher m) {
+		vitality = new Resource(RegexUtils.parseIntFromMatcher(m, "vitality"), RegexUtils.parseIntFromMatcher(m, "max"), 0);
 	}
 
 	private static void updateMana(Matcher m) {
