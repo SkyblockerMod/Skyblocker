@@ -15,15 +15,14 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
-
-import java.util.Objects;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 @RegisterWidget
 public class FishingHudWidget extends ElementBasedWidget {
@@ -37,7 +36,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), "hud_fishing");
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), new Information("hud_fishing", Component.literal("Fishing HUD")));
 		instance = this;
 	}
 
@@ -47,25 +46,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return ALL_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		SkyblockerConfigManager.update(config -> config.helpers.fishing.enableFishingHud = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return SkyblockerConfigManager.get().helpers.fishing.enableFishingHud;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		if (!super.shouldRender(location)) {
-			return false;
-		}
+	public boolean shouldRender() {
 		// sea creature tracker
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
@@ -88,8 +69,8 @@ public class FishingHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
-			addComponent(Elements.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
-			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
+			addElement(Elements.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
+			addElement(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;
 		}
 		//creature counter
@@ -98,8 +79,8 @@ public class FishingHudWidget extends ElementBasedWidget {
 			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
 			int seaCreatureCap = SeaCreatureTracker.SEA_CREATURE_CAP;
 			float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
-			addComponent(Elements.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
-			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
+			addElement(Elements.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
+			addElement(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));
 		}
 		//bobber timer
 		if (SkyblockerConfigManager.get().helpers.fishing.enableFishingTimer && FishingHelper.startTime != 0) {
@@ -113,7 +94,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 				maxTime = 20;
 			}
 			time = Math.clamp(time, 0, maxTime);
-			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
+			addElement(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Bobber Time"), SkyblockTime.formatTime(maxTime - time),  100 - (time / maxTime) * 100));
 		}
 		// rod reel timer
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.HUD && FishingHookDisplayHelper.fishingHookArmorStand != null) {
@@ -121,11 +102,6 @@ public class FishingHudWidget extends ElementBasedWidget {
 			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", rodReelTimer.equals("!!!") ? ChatFormatting.RED : ChatFormatting.YELLOW, rodReelTimer);
 		}
 
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Fishing Hud");
 	}
 
 	private static boolean isBarnFishing() {

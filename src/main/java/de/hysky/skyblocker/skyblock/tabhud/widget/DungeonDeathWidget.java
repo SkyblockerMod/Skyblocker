@@ -3,15 +3,16 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // this widget shows various dungeon info
 // deaths, healing, dmg taken, milestones
@@ -26,18 +27,18 @@ public class DungeonDeathWidget extends TabHudWidget {
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Deaths", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 		} else {
 			ChatFormatting f = (m.group("deathnum").equals("0")) ? ChatFormatting.GREEN : ChatFormatting.RED;
-			Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
-			this.addComponent(Elements.iconTextComponent(Ico.SKULL, d));
+			Component d = ElementCollector.simpleEntryText(m.group("deathnum"), "Deaths: ", f);
+			this.addElement(Elements.iconTextComponent(Ico.SKULL, d));
 		}
 
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", ChatFormatting.RED, 26);

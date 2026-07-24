@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries;
+package de.hysky.skyblocker.skyblock.tabhud.config.list.entries;
 
 import java.util.List;
 import net.minecraft.ChatFormatting;

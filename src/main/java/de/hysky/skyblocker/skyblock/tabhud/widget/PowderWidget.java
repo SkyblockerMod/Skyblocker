@@ -3,8 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.Location;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -12,7 +14,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,15 +43,15 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, TextColor.DARK_AQUA.getValue());
+		super("Powders", TITLE, TextColor.DARK_AQUA.getValue(), Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
 		Matcher matcher = Pattern.compile("").matcher(""); // Placeholder pattern and input to construct a matcher that can be reused
 		long msAfterLastUpdate = Util.getMillis() - lastUpdate;
 
-		for (Component line : lines) {
+		for (Component line : widget.lines()) {
 			switch (matcher.reset(line.getString())) {
 				case Matcher m when m.usePattern(MITHRIL_PATTERN).matches() -> {
 					int mithril = parseAmount(m);
@@ -58,10 +59,10 @@ public class PowderWidget extends TabHudWidget {
 					if (mithril != lastMithril || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastMithrilDiff = mithril - lastMithril;
 						updated |= 0b1000;
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 						lastMithril = mithril;
 					} else {
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), getTextToDisplay(lastMithrilDiff, line, ChatFormatting.DARK_GREEN)));
 					}
 					updated |= 0b001;
 				}
@@ -71,10 +72,10 @@ public class PowderWidget extends TabHudWidget {
 					if (gemstone != lastGemstone || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGemstoneDiff = gemstone - lastGemstone;
 						updated |= 0b1000;
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 						lastGemstone = gemstone;
 					} else {
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), getTextToDisplay(lastGemstoneDiff, line, ChatFormatting.LIGHT_PURPLE)));
 					}
 					updated |= 0b010;
 				}
@@ -84,10 +85,10 @@ public class PowderWidget extends TabHudWidget {
 					if (glacite != lastGlacite || msAfterLastUpdate > UPDATE_INTERVAL) {
 						lastGlaciteDiff = glacite - lastGlacite;
 						updated |= 0b1000;
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 						lastGlacite = glacite;
 					} else {
-						addComponent(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
+						addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), getTextToDisplay(lastGlaciteDiff, line, ChatFormatting.AQUA)));
 					}
 					updated |= 0b100;
 				}

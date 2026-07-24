@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.SlayerHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -57,17 +56,11 @@ public class SlayersCategory {
 								newValue -> config.slayers.highlightColor = newValue)
 						.controller(ColourController.createBuilder().hasAlpha(true).build())
 						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.slayer.enableHud"))
-						.binding(defaults.slayers.enableHud,
-								() -> config.slayers.enableHud,
-								newValue -> config.slayers.enableHud = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.slayerHud"))
+						.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.bossbar"))

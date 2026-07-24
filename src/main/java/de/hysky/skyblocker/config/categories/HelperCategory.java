@@ -9,7 +9,6 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 import de.hysky.skyblocker.skyblock.LoadoutKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -194,17 +193,11 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.enableFishingHud"))
-								.binding(defaults.helpers.fishing.enableFishingHud,
-										() -> config.helpers.fishing.enableFishingHud,
-										newValue -> config.helpers.fishing.enableFishingHud = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 								.build())
 						.option(Option.<HelperConfig.Fishing.FishingHookDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.fishingHookDisplay"))

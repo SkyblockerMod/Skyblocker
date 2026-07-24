@@ -482,7 +482,6 @@
   "skyblocker.config.farming.farmingHud.coins": "Show Calculated Hourly Profits",
   "skyblocker.config.farming.farmingHud.config": "Farming HUD Config...",
   "skyblocker.config.farming.farmingHud.counter": "Show Counter & Crops per Minute",
-  "skyblocker.config.farming.farmingHud.enabled": "Enable Farming HUD",
   "skyblocker.config.farming.farmingHud.experience": "Show Farming Skill Progress",
   "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Include Seeds in Wheat Hoe's Coins per Hour",
   "skyblocker.config.farming.farmingHud.type": "Use Price Value From",
@@ -541,8 +540,6 @@
   "skyblocker.config.foraging.galatea.enableSweepDetailsWidget": "Enable Sweep Details Widget",
   "skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\nSweep Details are removed from the chat but are still saved to the logs.\n\nRequires enabling Sweep Details at Swoop in Galatea!",
   "skyblocker.config.foraging.galatea.enableTreeBreakHud": "Tree Break Progress HUD",
-  "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
-  "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
   "skyblocker.config.foraging.galatea.enableTunerSolver": "Enable Tuner Solver",
   "skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip": "Shows the required clicks for the Tune Frequency puzzle in the Moonglade Beacon.",
   "skyblocker.config.foraging.galatea.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",
@@ -774,7 +771,6 @@
   "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Changes timer to green after 20 seconds has passed",
   "skyblocker.config.helpers.fishing.enableFishingHelper": "Enable Fishing Helper",
   "skyblocker.config.helpers.fishing.enableFishingHelper.@Tooltip": "Displays title message when a fish is on the hook. This relies on SkyBlock setting → Fishing Status Holograms being enabled.",
-  "skyblocker.config.helpers.fishing.enableFishingHud": "Enable Fishing HUD",
   "skyblocker.config.helpers.fishing.enableFishingTimer": "Enable Bobber Timer",
   "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "Adds bobber lifetime to HUD.",
   "skyblocker.config.helpers.fishing.fishingHookDisplay": "Fishing Hook Display",
@@ -837,6 +833,64 @@
   "skyblocker.config.helpers.mythologicalRitual": "Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper": "Enable Mythological Ritual Helper",
   "skyblocker.config.helpers.mythologicalRitual.enableMythologicalRitualHelper.@Tooltip": "Adds waypoints for nearby Griffin Burrows during Diana's Mythological Ritual event.",
+
+  "skyblocker.config.hud.copy.copyPosition": "Copy Position",
+  "skyblocker.config.hud.copy.copyPosition.@Tooltip": "If unchecked will not copy the position and only affect locations where the widget is already present.",
+  "skyblocker.config.hud.copy.copyTo": "Copy to...",
+  "skyblocker.config.hud.copy.copyTo.@Tooltip": "Copy this widget to other locations",
+  "skyblocker.config.hud.copy.delete": "Delete Copies",
+  "skyblocker.config.hud.copy.delete.description": "Do you want to delete copies of this widget in other locations?",
+  "skyblocker.config.hud.copy.selectAll": "Select All",
+  "skyblocker.config.hud.copy.targetLocations": "Target Locations",
+
+  "skyblocker.config.hud.fancyTab.enable": "Enable Fancy Tab",
+  "skyblocker.config.hud.fancyTab.hiddenWidgets": "Hidden Widgets",
+  "skyblocker.config.hud.fancyTab.positioner": "Positioner: %s",
+
+  "skyblocker.config.hud.globalScale": "Global Scale",
+
+  "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nWidgets are per island. Widget options apply per island, use the 'Copy to...' button.\n\nFor Hypixel widgets, only the ones currently shown in the vanilla tab will automatically appear in the Fancy Tab preview.\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
+
+  "skyblocker.config.hud.location.everywhere": "Everywhere",
+
+  "skyblocker.config.hud.movedMessage": "To enable/disable this widget, click the button and either right click anywhere to add it, or right click on it and click 'remove' to delete.",
+
+  "skyblocker.config.hud.otherOptions.globalOptions": "Global Options",
+  "skyblocker.config.hud.otherOptions.locationOptions": "%s's options",
+  "skyblocker.config.hud.otherOptions.title": "Skyblock HUD and TAB options",
+  "skyblocker.config.hud.otherOptions.visibleTabWidgets": "Edit visible Fancy TAB widgets",
+
+  "skyblocker.config.hud.position.parent": "Parent: %s",
+  "skyblocker.config.hud.position.parent.@Tooltip": "Click to select a parent for this widget.",
+  "skyblocker.config.hud.position.parent.screen": "Screen",
+  "skyblocker.config.hud.position.pointParent": "Parent Point",
+  "skyblocker.config.hud.position.pointThis": "This Point",
+
+  "skyblocker.config.hud.screen.locationWarning[0]": "You are currently configuring widgets for a different island.",
+  "skyblocker.config.hud.screen.locationWarning[1]": "Hypixel widgets in this preview will not be accurate!",
+  "skyblocker.config.hud.screen.rightClick": "Right click to add widgets and edit things.",
+
+  "skyblocker.config.hud.topBar.autoAnchor": "Auto Screen Anchor",
+  "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatically change the anchor of the widget based on its position to avoid it going off screen when the screen is resized.",
+  "skyblocker.config.hud.topBar.help": "Help",
+  "skyblocker.config.hud.topBar.options": "Options",
+  "skyblocker.config.hud.topBar.options.@Tooltip": "More Options",
+
+  "skyblocker.config.hud.widget.copy": "Create Copy",
+  "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",
+  "skyblocker.config.hud.widget.remove": "Remove",
+
+  "skyblocker.config.hud.widgetsList.applyToAllLocations": "Apply to all locations",
+  "skyblocker.config.hud.widgetsList.info.overflowWarning": "It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!",
+  "skyblocker.config.hud.widgetsList.info.overflowWarning.columnTip": "Be sure to enabled the third column with the button to the right.",
+  "skyblocker.config.hud.widgetsList.info.overflowWarning.wrappingSpacingTip": "Enable wrapping and disable spacing on widgets to save on space.",
+  "skyblocker.config.hud.widgetsList.info.preview": "Hold CTRL to see a preview.",
+  "skyblocker.config.hud.widgetsList.playerColumn": "This column is being used to display online players.\nEnable the 3rd column to have widgets instead!",
+  "skyblocker.config.hud.widgetsList.reset": "Reset",
+  "skyblocker.config.hud.widgetsList.resetAll": "Reset ALL",
+  "skyblocker.config.hud.widgetsList.thirdColumn": "3rd Column: %s",
+  "skyblocker.config.hud.widgetsList.thirdColumn.@Tooltip": "It is recommended to have this enabled, to have more info be displayed!",
+  "skyblocker.config.hud.widgetsList.waitingForServer": "Waiting for server...",
 
   "skyblocker.config.hunting": "Hunting",
 
@@ -914,7 +968,6 @@
   "skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle": "Shown Items",
 
   "skyblocker.config.mining.crystalsHud": "Crystal Hollows Map",
-  "skyblocker.config.mining.crystalsHud.enabled": "Enabled",
   "skyblocker.config.mining.crystalsHud.mapScaling": "Map Scaling",
   "skyblocker.config.mining.crystalsHud.screen": "Crystal Hollows Map Placement Config...",
   "skyblocker.config.mining.crystalsHud.showLocations": "Show Waypoints",
@@ -1036,7 +1089,6 @@
   "skyblocker.config.otherLocations.end": "The End",
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Ender Node Waypoint Type",
-  "skyblocker.config.otherLocations.end.hudEnabled": "HUD Enabled",
   "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
   "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
   "skyblocker.config.otherLocations.end.resetName": "Reset stored End stats",
@@ -1112,8 +1164,6 @@
   "skyblocker.config.slayer.callMaddox.sendMessageOnFail": "Send Message on Slayer Boss Failed",
   "skyblocker.config.slayer.callMaddox.sendMessageOnFail.@Tooltip": "Sends a message that can be clicked to quickly call Maddox the Slayer.\n\nThis requires having him as an Abiphone contact, and an Abiphone in your inventory!",
   "skyblocker.config.slayer.callMaddox.sendMessageOnKill": "Send Message on Slayer Boss Kill",
-
-  "skyblocker.config.slayer.enableHud": "Slayer HUD",
 
   "skyblocker.config.slayer.endermanSlayer": "Enderman Slayer",
   "skyblocker.config.slayer.endermanSlayer.enableYangGlyphsNotification": "Enable Yang Glyphs Notification",
@@ -1462,13 +1512,15 @@
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Display widgets in a compact form.",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Widget Config Screen",
-  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Use this to move Tab and HUD widgets.\nUse `/skyblocker hud` to get here quicker!",
+  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Add, edit and remove HUD widgets here!\n\nCan also be accessed with /skyblocker hud.",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centered",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "Top",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPositioning": "Default Positioning Behavior",
   "skyblocker.config.uiAndVisuals.tabHud.displayIcons": "Display Icons",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter": "Effects from footer",
   "skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip": "If on, will fetch current effects from the tab footer if the Hypixel Effects Widget is disabled.",
+  "skyblocker.config.uiAndVisuals.tabHud.enableFancyTab": "Enable Fancy TAB",
+  "skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip": "Replaces the vanilla tab with a fancier version.",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground": "Enable HUD Background",
   "skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip": "Enables the background of the non-tab HUD.",
   "skyblocker.config.uiAndVisuals.tabHud.nameSorting": "Player Name Sorting Method",
@@ -1484,8 +1536,7 @@
   "skyblocker.config.uiAndVisuals.tabHud.style.FANCY": "Fancy",
   "skyblocker.config.uiAndVisuals.tabHud.style.MINIMAL": "Minimal",
   "skyblocker.config.uiAndVisuals.tabHud.style.SIMPLE": "Simple",
-  "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "Enable fancy tab HUD",
-  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Scale factor of fancy tab HUD",
+  "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "Global scale factor of the HUD",
   "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "Value in %, relative to your vanilla GUI scale",
 
   "skyblocker.config.uiAndVisuals.teleportOverlay": "Teleport Overlay",
@@ -1786,6 +1837,11 @@
   "skyblocker.helpers.hoppitysHunt.newEggDiscovered": "Found a %s at %s!",
   "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "Click to share this egg's location in chat!",
   "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "Unable to share this egg.",
+
+  "skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
+  "skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
+  "skyblocker.hud.missingTabWidget[2]": "Make sure it is visible in the vanilla tab,",
+  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding either %s or (%s and %s).",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",
