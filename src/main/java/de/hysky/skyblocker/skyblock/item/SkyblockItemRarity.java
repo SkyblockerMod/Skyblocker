@@ -33,7 +33,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	public final float r;
 	public final float g;
 	public final float b;
-	public final RarityColor legacyColor;
+	public final int legacyColor;
 
 	SkyblockItemRarity(TextColor color, TextColor legacyColor) {
 		this.name = this.name().replace("_", " ");
@@ -42,7 +42,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 		this.r = ARGB.redFloat(this.color);
 		this.g = ARGB.greenFloat(this.color);
 		this.b = ARGB.blueFloat(this.color);
-		this.legacyColor = new RarityColor(legacyColor);
+		this.legacyColor = legacyColor.getValue();
 	}
 
 	SkyblockItemRarity(TextColor color) {
@@ -120,11 +120,5 @@ public enum SkyblockItemRarity implements StringRepresentable {
 				.filter(rarity -> ARGB.opaque(rarity.color) == ARGB.opaque(color))
 				.findFirst()
 				.orElse(UNKNOWN);
-	}
-
-	public record RarityColor(int rgb, float r, float g, float b) {
-		public RarityColor(TextColor textColor) {
-			this(textColor.getValue(), ARGB.redFloat(textColor.getValue()), ARGB.greenFloat(textColor.getValue()), ARGB.blueFloat(textColor.getValue()));
-		}
 	}
 }
