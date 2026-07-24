@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public SkyBlockEquipmentUpdater() {
-		super("^Your Equipment and Stats|(?:\\(\\d/\\d\\) )?Loadouts$");
+		super("^Stats & Equipment|(?:\\(\\d/\\d\\) )?Loadouts$");
 	}
 
 	public SkyBlockEquipmentUpdater(@Language("RegExp") String titlePattern) {
