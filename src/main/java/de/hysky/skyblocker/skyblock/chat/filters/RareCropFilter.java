@@ -18,8 +18,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import static java.util.Map.entry;
+
 public class RareCropFilter extends ChatPatternListener {
-	private static final Map<String, String> IDS;
+	private static final Map<String, String> IDS = Map.ofEntries(
+			entry("Cropie", "CROPIE"),
+			entry("Squash", "SQUASH"),
+			entry("Fermento", "FERMENTO"),
+			entry("Helianthus", "HELIANTHUS"),
+			entry("Warty", "WARTY"),
+			entry("Burrowing Spores", "BURROWING_SPORES"),
+			entry("Overclocker 3000", "OVERCLOCKER_3000"),
+			entry("Ethereal Vine", "ETHEREAL_VINE"),
+			entry("Rarefinder Chip", "RAREFINDER_GARDEN_CHIP"),
+			// Seasoning has no item to display, so it's excluded here
+			entry("Cornucopia", "CORNUCOPIA"),
+			entry("Carrot Zest", "CARROT_ZEST"),
+			entry("Deepfries", "DEEPFRIES"),
+			entry("Aggourdian", "AGGOURDIAN"),
+			entry("Cane Knot", "CANE_KNOT"),
+			entry("Melon Juice", "MELON_JUICE"),
+			entry("Cactus Flower", "CACTUS_FLOWER"),
+			entry("Designer Coffee Beans", "DESIGNER_COFFEE_BEANS"),
+			entry("Feastfungus", "FEASTFUNGUS"),
+			entry("Botroot", "BOTROOT"),
+			entry("Salted Sunflower Seeds", "SALTED_SUNFLOWER_SEEDS"),
+			entry("Crystalized Moonlight", "CRYSTALIZED_MOONLIGHT"),
+			entry("Floral Gelatin", "FLORAL_GELATIN")
+			// Wild Strawberry Dye and Ray of Helios are handled as rare drops instead
+	);
 	private static final Map<String, FlexibleItemStack> ICONS = new HashMap<>();
 
 	public RareCropFilter() {
@@ -47,33 +74,5 @@ public class RareCropFilter extends ChatPatternListener {
 			return ChatFilterResult.FILTER;
 		else
 			return SkyblockerConfigManager.get().chat.hideRareCrops;
-	}
-
-	static {
-		IDS = new HashMap<>();
-		IDS.put("Cropie", "CROPIE");
-		IDS.put("Squash", "SQUASH");
-		IDS.put("Fermento", "FERMENTO");
-		IDS.put("Helianthus", "HELIANTHUS");
-		IDS.put("Warty", "WARTY");
-		IDS.put("Burrowing Spores", "BURROWING_SPORES");
-		IDS.put("Overclocker 3000", "OVERCLOCKER_3000");
-		IDS.put("Ethereal Vine", "ETHEREAL_VINE");
-		IDS.put("Rarefinder Chip", "RAREFINDER_GARDEN_CHIP");
-		// Seasoning has no item to display, so it's excluded here
-		IDS.put("Cornucopia", "CORNUCOPIA");
-		IDS.put("Carrot Zest", "CARROT_ZEST");
-		IDS.put("Deepfries", "DEEPFRIES");
-		IDS.put("Aggourdian", "AGGOURDIAN");
-		IDS.put("Cane Knot", "CANE_KNOT");
-		IDS.put("Melon Juice", "MELON_JUICE");
-		IDS.put("Cactus Flower", "CACTUS_FLOWER");
-		IDS.put("Designer Coffee Beans", "DESIGNER_COFFEE_BEANS");
-		IDS.put("Feastfungus", "FEASTFUNGUS");
-		IDS.put("Botroot", "BOTROOT");
-		IDS.put("Salted Sunflower Seeds", "SALTED_SUNFLOWER_SEEDS");
-		IDS.put("Crystalized Moonlight", "CRYSTALIZED_MOONLIGHT");
-		IDS.put("Floral Gelatin", "FLORAL_GELATIN");
-		// Wild Strawberry Dye and Ray of Helios are handled as rare drops instead
 	}
 }
