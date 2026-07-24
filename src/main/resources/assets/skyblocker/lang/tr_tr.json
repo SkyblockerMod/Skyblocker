@@ -113,7 +113,6 @@
     "argument.color.rgb.incomplete": "Tamamlanmamış (3 renk değeri bekleniyor).",
     "argument.color.hex.invalidString": "Hex değeri tam olarak 6 karakter uzunluğunda olmalı, %s karakter bulundu.",
     "argument.color.hex.invalidChar": "Hex değeri için uygunsuz karakter: %s. Uygun karakterler: [0-9a-fA-F]",
-    "key.skyblocker.wikiLookup.official": "Hypixel Wiki'sinde arat",
     "text.skyblocker.confirm": "Onayla",
     "text.skyblocker.reset": "Sıfırla",
     "text.skyblocker.config": "Ayarları Aç...",
@@ -274,7 +273,6 @@
     "skyblocker.api.cache.HIT": "Bu veri belleğe alındı!\nBu veri %sn kadar eski.",
     "skyblocker.accessoryHelper.recombobulate": "Bu %s aksesuarın nadirliğini arttır.",
     "skyblocker.bars.config.explanation": "Durum çubuğu yapılandırma ekranına hoş geldiniz!\n\nÇubukları sürükleyip bırakarak bir sabitleme noktasına (beyaz kareler), mevcut çubuklara veya istediğiniz yere yerleştirebilirsiniz.\nÇubuklara sağ tıklayarak bir çok özelliğini düzenleyebilirsiniz.\nİki çubuğun arasına fare imlecinizi üzerine getirerek (İşaretçi değişecektir), yeniden boyutlandırabilirsiniz.\n\nÇıktığınız zaman her şey kaydedilecektir.",
-    "skyblocker.accessoryHelper.independent": "(Serbest bırakmak için Shift tuşuna basılı tutun)",
     "skyblocker.config.chat.filter.hideDungeonBreaker": "Dungeonbreaker mesajlarını gizle",
     "skyblocker.config.chat.filter.hideDeath.@Tooltip": "Oyuncu ölüm mesajlarını sohbetten filtreler.",
     "skyblocker.config.chat.filter.hideDeath": "Oyuncu Ölüm Mesajlarını Gizle"
