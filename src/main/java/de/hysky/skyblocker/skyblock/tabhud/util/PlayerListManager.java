@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.util;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.mojang.authlib.GameProfile;
 import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -21,6 +22,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -39,7 +42,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.TextColor;
 
 /**
  * This class may be used to get data from the player list. It doesn't get its
@@ -57,7 +59,7 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	private static @Nullable List<PlayerInfo> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static List<PlayerInfo> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerInfo}s.
@@ -126,6 +128,47 @@ public class PlayerListManager {
 					.toList();
 		}
 
+		if (Utils.isInDungeons()) updateDungeons(null);
+		else updateWidgetsFrom(playerList);
+	}
+
+	/**
+	 * Update specifically for dungeons cuz they don't use the new system I HATE THEM
+	 *
+	 * @param lines used for the config screen
+	 */
+	public static void updateDungeons(@Nullable List<Component> lines) {
+		if (lines != null) {
+			// This is so wack I hate this
+			// I hate this too
+			playerList = new ArrayList<>();
+			for (int i = 0; i < lines.size(); i++) {
+				playerList.add(new PlayerInfo(new GameProfile(UUID.randomUUID(), String.valueOf(i)), false));
+				playerList.getLast().setTabListDisplayName(lines.get(i));
+			}
+		}
+
+		WIDGET_MAP.clear();
+		WIDGET_MAP.put("Dungeon Buffs", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Deaths", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Downed", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Puzzles", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Discoveries", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Info", Widget.EMPTY);
+		for (int i = 1; i < 6; i++) {
+			WIDGET_MAP.put("Dungeon Player " + i, Widget.EMPTY);
+		}
+
+		TAB_LISTENERS.forEach(Runnable::run);
+		WIDGET_MAP.forEach((key, value) -> TAB_WIDGET_LISTENERS.get(key).forEach(c -> c.accept(value)));
+	}
+
+	/**
+	 * Update the tab widgets using a list of text representing the lines of the in-game TAB
+	 *
+	 * @param lines in-game TAB
+	 */
+	public static void updateWidgetsFrom(List<PlayerInfo> lines) {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
@@ -138,7 +181,7 @@ public class PlayerListManager {
 		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
 
 		WIDGET_MAP.clear();
-		for (PlayerInfo playerListEntry : playerList) {
+		for (PlayerInfo playerListEntry : lines) {
 			Component displayName = playerListEntry.getTabListDisplayName();
 			if (displayName == null) continue;
 			String string = displayName.getString();
@@ -149,7 +192,6 @@ public class PlayerListManager {
 				if (playersColumnPredicate.test(string)) {
 					if (!doingPlayers) {
 						doingPlayers = true;
-						// noinspection DataFlowIssue
 						hypixelWidgetName = IntObjectPair.of(TextColor.AQUA.getValue(), "Players");
 					}
 					continue;
@@ -264,7 +306,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	public static @Nullable List<PlayerInfo> getPlayerList() {
+	public static List<PlayerInfo> getPlayerList() {
 		return playerList;
 	}
 
@@ -321,11 +363,6 @@ public class PlayerListManager {
 	 * only
 	 */
 	public static @Nullable String strAt(int idx) {
-
-		if (playerList == null) {
-			return null;
-		}
-
 		if (playerList.size() <= idx) {
 			return null;
 		}
@@ -350,11 +387,6 @@ public class PlayerListManager {
 	 * modification for other stuff. you've been warned!
 	 */
 	public static @Nullable Component textAt(int idx) {
-
-		if (playerList == null) {
-			return null;
-		}
-
 		if (playerList.size() <= idx) {
 			return null;
 		}
@@ -364,7 +396,7 @@ public class PlayerListManager {
 			return null;
 		}
 
-		// Rebuild the text object to remove leading space thats in all faction quest
+		// Rebuild the text object to remove leading space that's in all faction quest
 		// stuff (also removes trailing space just in case)
 		MutableComponent newText = Component.empty();
 		int size = txt.getSiblings().size();
