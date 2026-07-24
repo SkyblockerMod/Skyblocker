@@ -75,6 +75,7 @@
   "skyblocker.bars.config.textColor": "Text Color",
   "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Center",
   "skyblocker.bars.config.textPosition.CENTER": "Center",
+  "skyblocker.bars.config.vitality": "Vitality",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
