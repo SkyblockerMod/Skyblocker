@@ -36,7 +36,7 @@ public class ItemLoader {
 				continue;
 			}
 
-			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, ItemStack.CODEC);
+			ItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, ItemStack.CODEC, ItemStack.EMPTY, ItemStack::set);
 
 			if (stack.isEmpty()) {
 				ItemStack fallback = Ico.BARRIER.getStackOrThrow().copy();
