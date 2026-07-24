@@ -42,7 +42,7 @@ public class QuickNavButton extends AbstractWidget {
 	@SuppressWarnings("unchecked")
 	private static final @Nullable FallbackedTexture<Identifier>[] TAB_TEXTURES_SELECTED = new FallbackedTexture[14];
 
-	private final int index;
+	protected final int index;
 	private final boolean toggled;
 	private final String command;
 	private final ItemStack icon;
@@ -106,7 +106,7 @@ public class QuickNavButton extends AbstractWidget {
 		setTooltipDelay(Duration.ofMillis(100));
 	}
 
-	private void updateCoordinates() {
+	protected void updateCoordinates() {
 		Screen screen = Minecraft.getInstance().gui.screen();
 		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
 			if (screen instanceof PopupScreen) {
@@ -127,9 +127,13 @@ public class QuickNavButton extends AbstractWidget {
 			int h = accessibleScreen.getImageHeight();
 			if (handledScreen instanceof ContainerScreen) h--; // they messed up the height on these.
 			int w = accessibleScreen.getImageWidth();
-			this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
-			this.setY(this.index < 7 ? y - 28 : y + h - 4);
+			setPositionFrom(x, y, w, h);
 		}
+	}
+
+	protected void setPositionFrom(int backgroundX, int backgroundY, int imageWidth, int imageHeight) {
+		this.setX(backgroundX + this.index % 7 * 25 + imageWidth / 2 - 176 / 2);
+		this.setY(this.index < 7 ? backgroundY - 28 : backgroundY + imageHeight - 4);
 	}
 
 	/**
