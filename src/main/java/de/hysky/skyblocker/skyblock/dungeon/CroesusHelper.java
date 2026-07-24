@@ -14,7 +14,8 @@ public class CroesusHelper extends SimpleContainerSolver {
 	public static final CroesusHelper INSTANCE = new CroesusHelper();
 
 	private CroesusHelper() {
-		super("^Croesus|Vesuvius$");
+		// ^(?:\(\d+\/\d+\) )?(?:Croesus|Vesuvius)$
+		super("^(?:\\(\\d+\\/\\d+\\) )?(?:Croesus|Vesuvius)$");
 	}
 
 	@Override
