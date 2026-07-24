@@ -410,6 +410,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableCommands = false;
 
+		public boolean commandAutocomplete = true;
+
 		public List<String> bazaarHistory = new ArrayList<>();
 
 		public List<String> auctionHistory = new ArrayList<>();
