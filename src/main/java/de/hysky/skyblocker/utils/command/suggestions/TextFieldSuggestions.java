@@ -2,6 +2,8 @@ package de.hysky.skyblocker.utils.command.suggestions;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.SuggestionContext;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -13,12 +15,18 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class TextFieldSuggestions extends CommandSuggestions {
 
 	private final CommandDispatcher<ClientSuggestionProvider> dispatcher;
+	private @Nullable CommandContext<ClientSuggestionProvider> context;
 
 	public TextFieldSuggestions(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
 		super(minecraft, screen, input, font, true, onlyShowIfCursorPastError, 0, suggestionLineLimit, false, ARGB.black(0.5f));
@@ -49,6 +57,9 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		}
 	}
 
+	/**
+	 * Overridden to change the position.
+	 */
 	@Override
 	public void extractUsage(GuiGraphicsExtractor graphics) {
 		int y = 0;
@@ -61,11 +72,16 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		}
 	}
 
+	public <V> Optional<V> getArgument(String argument, Class<V> type) {
+		return Optional.ofNullable(context).map(c -> c.getArgument(argument, type));
+	}
+
 	@Override
 	public void updateCommandInfo() {
 		String command = this.input.getValue();
 		if (this.currentParse != null && !this.currentParse.getReader().getString().equals(command)) {
 			this.currentParse = null;
+			this.context = null;
 		}
 
 		if (!this.keepSuggestions) {
@@ -79,6 +95,7 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		CommandDispatcher<ClientSuggestionProvider> commands = dispatcher;
 		if (this.currentParse == null) {
 			this.currentParse = commands.parse(reader, this.minecraft.player.connection.getSuggestionsProvider());
+			if (currentParse.getExceptions().isEmpty()) this.context = currentParse.getContext().build(command);
 		}
 
 		int parseStart = this.onlyShowIfCursorPastError ? reader.getCursor() : 1;
@@ -90,5 +107,13 @@ public class TextFieldSuggestions extends CommandSuggestions {
 				}
 			});
 		}
+	}
+
+	/**
+	 * Overridden to hide the {@code <argument>} usage hint that shows up if your cursor is at the end
+	 */
+	@Override
+	protected List<FormattedCharSequence> fillNodeUsage(SuggestionContext<ClientSuggestionProvider> suggestionContext, Style usageFormat) {
+		return List.of();
 	}
 }
