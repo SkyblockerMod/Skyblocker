@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
@@ -63,53 +62,54 @@ public class UpdateNotifications {
 	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> loaded = CONFIG.init());
-		SkyblockEvents.JOIN.register(() -> Objects.requireNonNull(loaded).thenRunAsync(UpdateNotifications::tryCheckForNewVersion, Minecraft.getInstance()));
+		SkyblockEvents.JOIN.register(() -> {
+			if (loaded == null) loaded = CONFIG.init();
+			loaded.thenRunAsync(UpdateNotifications::tryCheckForNewVersion, Minecraft.getInstance());
+		});
 	}
 
 	private static void tryCheckForNewVersion() {
 		if (getConfig().enabled() && !sentUpdateNotification) {
 			// Wait a minute since when you join Skyblock there's usually a bunch of chat messages that pop up
 			// so that this doesn't get buried
-			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20);
+			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20, true);
 			Scheduler.INSTANCE.schedule(UpdateNotifications::introduceNewUpdate, 60 * 20);
 		}
 	}
 
 	private static void checkForNewVersion() {
-		CompletableFuture.runAsync(() -> {
-			try {
-				// The cast would only fail because someone compiled the mod with a non-compliant version
-				SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
-				SemanticVersion currentMinecraftVersion = parseMinecraftVersion(SharedConstants.getCurrentVersion().id()).getOrThrow();
-				String response = Http.sendGetRequest(VERSIONS_URL);
-				List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
+		try {
+			// The cast would only fail because someone compiled the mod with a non-compliant version
+			SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
+			SemanticVersion currentMinecraftVersion = parseMinecraftVersion(SharedConstants.getCurrentVersion().id()).getOrThrow();
+			String response = Http.sendGetRequest(VERSIONS_URL);
+			List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
-				// Set it to true now so that we don't keep re-checking if the data should be discarded
-				sentUpdateNotification = true;
+			// Set it to true now so that we don't keep re-checking if the data should be discarded
+			sentUpdateNotification = true;
 
-				Optional<MrVersion> optimalVersion = getOptimalVersion(currentModVersion, currentMinecraftVersion, mrVersions);
+			Optional<MrVersion> optimalVersion = getOptimalVersion(currentModVersion, currentMinecraftVersion, mrVersions);
 
-				if (optimalVersion.isPresent() && !shouldDiscard(currentModVersion, optimalVersion.get().version())) {
-					MrVersion newVersion = optimalVersion.get();
-					String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
-					Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
-							.applyFormat(ChatFormatting.GRAY)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
+			if (optimalVersion.isPresent() && !shouldDiscard(currentModVersion, optimalVersion.get().version())) {
+				MrVersion newVersion = optimalVersion.get();
+				String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
+				Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
+						.applyFormat(ChatFormatting.GRAY)
+						.withUnderlined(true)
+						.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
 
-					MINECRAFT.execute(() -> {
-						if (MINECRAFT.player == null) {
-							return;
-						}
+				MINECRAFT.execute(() -> {
+					if (MINECRAFT.player == null) {
+						return;
+					}
 
-						MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
-						SystemToast.add(MINECRAFT.gui.toastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
-					});
-				}
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
+					MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
+					SystemToast.add(MINECRAFT.gui.toastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
+				});
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
+		}
 	}
 
 	private static void introduceNewUpdate() {

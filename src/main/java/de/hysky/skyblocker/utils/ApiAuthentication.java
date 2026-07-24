@@ -99,7 +99,7 @@ public class ApiAuthentication {
 						int refreshAtTicks = (int) (((tokenInfo.expiresAt() - tokenInfo.issuedAt()) / 1000L) - 300L) * 20; //Refresh 5 minutes before expiry date
 
 						LOGGER.info("[Skyblocker Api Auth] Successfully refreshed api token.");
-						Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, refreshAtTicks, true);
+						Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, refreshAtTicks);
 					});
 				} catch (Exception e) {
 					//Try again in 15 minutes
@@ -109,7 +109,7 @@ public class ApiAuthentication {
 				//The Minecraft Services API is probably down so we will retry in 5 minutes, either that or if your access token has expired (game open for 24h) you will need to restart.
 				logErrorAndScheduleRetry(Component.translatable("skyblocker.api.token.noProfileKeys"), expired ? -1 : 300 * 20, "[Skyblocker Api Auth] Failed to fetch profile keys! Some features may not work temporarily :( (Has your game been open for more than 24 hours? If so restart.)");
 			}
-		}).exceptionally(throwable -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(throwable -> {
 			//Try again in 5 minutes
 			logErrorAndScheduleRetry(Component.translatable("skyblocker.api.token.authFailure"), 300 * 20, "[Skyblocker Api Auth] Encountered an unexpected exception while refreshing the api token!", throwable);
 
@@ -148,7 +148,7 @@ public class ApiAuthentication {
 	private static void logErrorAndScheduleRetry(Component warningMessage, int retryAfter, String logMessage, Object... logArgs) {
 		RenderHelper.runOnRenderThread(() -> {
 			LOGGER.error(logMessage, logArgs);
-			if (retryAfter != -1) Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter, true);
+			if (retryAfter != -1) Scheduler.INSTANCE.schedule(ApiAuthentication::updateToken, retryAfter);
 
 			if (CLIENT.player != null && !sentWarningOnce) {
 				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(warningMessage));

@@ -5,17 +5,14 @@ import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
 import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
 
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.TextTransformer;
 import net.azureaaron.legacyitemdfu.TypeReferences;
@@ -27,7 +24,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
@@ -37,57 +33,45 @@ public class LegacyItemStackFixer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	// Static import things to avoid class name conflicts
-	@SuppressWarnings("unchecked")
-	public static <T extends ItemInstance> T fixLegacyStack(CompoundTag nbt, Codec<T> codec) {
+	public static <T extends ItemInstance> T fixLegacyStack(CompoundTag nbt, Codec<T> codec, T defaultValue, @SuppressWarnings("rawtypes") TriConsumer<T, DataComponentType, Object> setComponent) {
 		RegistryOps<Tag> ops = RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 		Dynamic<Tag> fixed = getFixer().update(TypeReferences.LEGACY_ITEM_STACK, new Dynamic<>(ops, nbt), getFirstVersion(), getLatestVersion());
-		ItemInstance stack = codec.parse(fixed)
-				.setPartial((T) ItemStack.EMPTY)
+		T stack = codec.parse(fixed)
 				.resultOrPartial(LegacyItemStackFixer::log)
-				.get();
+				.orElse(defaultValue);
 
 		// Don't continue fixing up if it failed
-		if (stack.is(Items.AIR)) return (T) stack;
+		if (stack.is(Items.AIR)) return stack;
 
-		Predicate<DataComponentType<?>> contains = type -> switch (stack) {
-			case FlexibleItemStack flexible -> flexible.get(type) != null;
-			case ItemStack normal -> normal.has(type);
-			default -> throw new UnsupportedOperationException();
-		};
-		BiConsumer<DataComponentType<?>, @Nullable Object> setter = (type, value) -> {
-			switch (stack) {
-				case FlexibleItemStack flexible -> flexible.set((DataComponentType<Object>) type, value);
-				case ItemStack normal -> normal.set((DataComponentType<Object>) type, value);
-				default -> throw new UnsupportedOperationException();
-			};
-		};
-
-		if (contains.test(DataComponents.CUSTOM_NAME)) {
-			setter.accept(DataComponents.CUSTOM_NAME, TextTransformer.fromLegacy(stack.get(DataComponents.CUSTOM_NAME).getString()));
+		Component name = stack.get(DataComponents.CUSTOM_NAME);
+		if (name != null) {
+			setComponent.accept(stack, DataComponents.CUSTOM_NAME, TextTransformer.fromLegacy(name.getString()));
 		}
 
-		if (contains.test(DataComponents.LORE)) {
-			List<Component> fixedLore = stack.get(DataComponents.LORE).lines().stream()
+		ItemLore lore = stack.get(DataComponents.LORE);
+		if (lore != null) {
+			List<Component> fixedLore = lore.lines().stream()
 					.map(Component::getString)
 					.map(TextTransformer::fromLegacy)
 					.map(Component.class::cast)
 					.toList();
 
-			setter.accept(DataComponents.LORE, new ItemLore(fixedLore));
+			setComponent.accept(stack, DataComponents.LORE, new ItemLore(fixedLore));
 		}
 
 		// Remap Custom Data
-		if (contains.test(DataComponents.CUSTOM_DATA)) {
-			setter.accept(DataComponents.CUSTOM_DATA, CustomData.of(stack.get(DataComponents.CUSTOM_DATA).copyTag().getCompoundOrEmpty("ExtraAttributes")));
+		CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+		if (customData != null) {
+			setComponent.accept(stack, DataComponents.CUSTOM_DATA, CustomData.of(customData.copyTag().getCompoundOrEmpty("ExtraAttributes")));
 		}
 
 		// Hide Attributes & Vanilla Enchantments
 		TooltipDisplay display = stack.getOrDefault(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
 				.withHidden(DataComponents.ATTRIBUTE_MODIFIERS, true)
 				.withHidden(DataComponents.ENCHANTMENTS, true);
-		setter.accept(DataComponents.TOOLTIP_DISPLAY, display);
+		setComponent.accept(stack, DataComponents.TOOLTIP_DISPLAY, display);
 
-		return (T) stack;
+		return stack;
 	}
 
 	private static void log(String error) {

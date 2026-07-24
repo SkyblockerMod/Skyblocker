@@ -83,17 +83,15 @@ public class MayorUtils {
 		long currentYearMillis = SkyblockTime.getSkyblockMillis() % 446400000L; //446400000ms is 1 year, 105600000ms is the amount of time from early spring 1st to late spring 27th
 		// If current time is past late spring 27th, the next mayor change is at next year's spring 27th, otherwise it's at this year's spring 27th
 		long millisUntilNextMayorChange = currentYearMillis > 105600000L ? 446400000L - currentYearMillis + 105600000L : 105600000L - currentYearMillis;
-		RenderHelper.runOnRenderThread(() -> {
-			// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
-			Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
-			// Reset the instances as soon as the new mayor is elected to prevent Paul's +10 score from being applied when its not actually active (within the extra 5 minutes above)
-			Scheduler.INSTANCE.schedule(() -> {
-				mayor = Mayor.EMPTY;
-				minister = Minister.EMPTY;
-				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
-			}, (int) (millisUntilNextMayorChange / 50));
-		});
+		// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
+		Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
+		// Reset the instances as soon as the new mayor is elected to prevent Paul's +10 score from being applied when its not actually active (within the extra 5 minutes above)
+		Scheduler.INSTANCE.schedule(() -> {
+			mayor = Mayor.EMPTY;
+			minister = Minister.EMPTY;
+			LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
+			SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+		}, (int) (millisUntilNextMayorChange / 50));
 	}
 
 	private static void tickMayorCache() {
@@ -166,10 +164,11 @@ public class MayorUtils {
 					minister = Minister.EMPTY;
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
-				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}
-		});
+		}).thenRunAsync(() -> {
+			scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
+			SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+		}, Minecraft.getInstance());
 	}
 
 	private static CompletableFuture<Boolean> loadMayorPerkOverrides() {
@@ -179,7 +178,6 @@ public class MayorUtils {
 				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 
 				return true;
 			} catch (Exception e) {
@@ -187,7 +185,10 @@ public class MayorUtils {
 
 				return false;
 			}
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(loaded -> {
+			if (loaded) SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+			return loaded;
+		}, Minecraft.getInstance());
 	}
 
 	private record PerkOverride(String perk, long from, long to) {

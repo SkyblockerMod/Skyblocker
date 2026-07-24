@@ -49,16 +49,16 @@ public class WarpAutocomplete {
 
 	@Init
 	public static void init() {
-		CompletableFuture.supplyAsync(() -> {
+		CompletableFuture.runAsync(() -> {
+			Object2BooleanMap<String> warps = Object2BooleanMaps.<String>emptyMap();
 			try {
-				String warps = Http.sendGetRequest("https://hysky.de/api/locations");
+				String warpsString = Http.sendGetRequest("https://hysky.de/api/locations");
 
-				return MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(warps)).getOrThrow();
+				warps = MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(warpsString)).getOrThrow();
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to download warps list", e);
 			}
-			return Object2BooleanMaps.<String>emptyMap();
-		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(warps -> {
+
 			if (warps.isEmpty()) {
 				warps = getWarpsFromFile();
 			}

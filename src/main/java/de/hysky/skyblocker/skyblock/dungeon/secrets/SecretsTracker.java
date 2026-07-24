@@ -10,7 +10,6 @@ import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Http.ApiResponse;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -86,7 +85,7 @@ public class SecretsTracker {
 
 					//Print the results all in one go, so its clean and less of a chance of it being broken up
 					for (Map.Entry<String, SecretData> entry : secretsFound.entrySet()) {
-						RenderHelper.runOnRenderThread(() -> sendResultMessage(entry.getKey(), entry.getValue()));
+						Minecraft.getInstance().execute(() -> sendResultMessage(entry.getKey(), entry.getValue()));
 					}
 
 					//Swap the current and last run as well as mark the run end time
@@ -94,7 +93,7 @@ public class SecretsTracker {
 					lastRun = thisRun;
 					currentRun = null;
 				} else {
-					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
+					Minecraft.getInstance().execute(SecretsTracker::sendFailureMessage);
 				}
 			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}

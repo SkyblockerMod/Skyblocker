@@ -131,7 +131,7 @@ public class ItemLoader {
 					continue;
 				}
 
-				ItemStack stack = LegacyItemStackFixer.fixLegacyStack(tag, ItemStack.CODEC);
+				ItemStack stack = LegacyItemStackFixer.fixLegacyStack(tag, ItemStack.CODEC, ItemStack.EMPTY, ItemStack::set);
 
 				// Add a placeholder if the stack failed to load
 				if (stack.isEmpty()) {
