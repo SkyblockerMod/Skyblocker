@@ -121,7 +121,8 @@ public class BackpackPreview {
 
 	private static void saveStorages() {
 		for (int index = 0; index < STORAGE_SIZE; ++index) {
-			if (storages[index] != null && storages[index].dirty) {
+			Storage storage = storages[index];
+			if (storage != null && storage.dirty) {
 				saveStorage(index);
 			}
 		}
@@ -203,8 +204,9 @@ public class BackpackPreview {
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;
 
-		if (storages[index] == null) return false;
-		int rows = (storages[index].size() - 9) / 9;
+		Storage storage = storages[index];
+		if (storage == null) return false;
+		int rows = (storage.size() - 9) / 9;
 
 		int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
 		int y = Math.max(0, mouseY - 16);
@@ -213,10 +215,10 @@ public class BackpackPreview {
 		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
 		Font textRenderer = Minecraft.getInstance().font;
-		graphics.text(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
+		graphics.text(textRenderer, storage.name(), x + 8, y + 6, 0xFF404040, false);
 
-		for (int i = 9; i < storages[index].size(); ++i) {
-			ItemStack currentStack = storages[index].getStack(i);
+		for (int i = 9; i < storage.size(); ++i) {
+			ItemStack currentStack = storage.getStack(i);
 			int itemX = x + (i - 9) % 9 * 18 + 8;
 			int itemY = y + (i - 9) / 9 * 18 + 18;
 
