@@ -78,6 +78,8 @@
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
+  "skyblocker.command.profileMissing": "Failed to detect current profile, please check you are in Skyblock.",
+
   "skyblocker.config.chat": "Chat",
 
   "skyblocker.config.chat.chatRules": "Custom Chat Rules",
@@ -1888,9 +1890,12 @@
   "skyblocker.rift.enigmaSouls.markAllMissing": "Marked all enigma souls as missing!",
   "skyblocker.rift.enigmaSouls.markClosestFound": "Marked closest enigma soul as found!",
   "skyblocker.rift.enigmaSouls.markClosestMissing": "Marked closest enigma soul as missing!",
+  "skyblocker.rift.enigmaSouls.markZoneFound": "Marked all enigma souls in %s as found!",
+  "skyblocker.rift.enigmaSouls.markZoneMissing": "Marked all enigma souls in %s as missing!",
   "skyblocker.rift.healNow": "Heal now!",
   "skyblocker.rift.iceNow": "Ice now!",
   "skyblocker.rift.mania": "Mania!",
+  "skyblocker.rift.notInRift": "This command only works in the rift!",
   "skyblocker.rift.stakeNow": "Stake now!",
 
   "skyblocker.shortcuts.command.replacement": "Replacement Command",
