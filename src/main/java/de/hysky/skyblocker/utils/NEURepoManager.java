@@ -31,7 +31,6 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.merge.ContentMergeStrategy;
-import org.eclipse.jgit.merge.MergeStrategy;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +84,7 @@ public class NEURepoManager {
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
-	private static Multimap<String, NEUItem> nameToNEUItem = HashMultimap.create();
+	private static Multimap<@Nullable String, @Nullable NEUItem> nameToNEUItem = HashMultimap.create();
 
 	/**
 	 * Adds command to update the repository manually from ingame.
@@ -125,7 +124,6 @@ public class NEURepoManager {
 						Ref ref = localRepo.reset()
 								.setRef("refs/remotes/origin/master")
 								.setMode(ResetCommand.ResetType.HARD)
-								.disableRefLog(true)
 								.call();
 						if (stashed) {
 							localRepo.stashApply()
@@ -248,7 +246,7 @@ public class NEURepoManager {
 	/**
 	 * Gets the {@link NEUItem} by display name.
 	 */
-	public static Collection<NEUItem> getItemByName(String displayName) {
+	public static Collection<@Nullable NEUItem> getItemByName(String displayName) {
 		return nameToNEUItem.get(displayName);
 	}
 

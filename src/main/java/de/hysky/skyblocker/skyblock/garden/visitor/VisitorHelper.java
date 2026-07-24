@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -192,6 +193,7 @@ public class VisitorHelper extends AbstractWidget {
 
 			return NEURepoManager.getItemByName(itemName)
 					.stream()
+					.filter(Objects::nonNull)
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)
