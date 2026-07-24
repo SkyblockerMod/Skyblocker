@@ -1,0 +1,91 @@
+{
+  "info": {
+    "name": "Museum"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Lever",
+      "category": "lever",
+      "x": 26,
+      "y": 84,
+      "z": 9
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 70,
+      "z": 9
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 25,
+      "y": 82,
+      "z": 11
+    },
+    {
+      "secretName": "2 - Superboom",
+      "category": "superboom",
+      "x": 43,
+      "y": 68,
+      "z": 5
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 48,
+      "y": 62,
+      "z": 6
+    },
+    {
+      "secretName": "3 - Entrance",
+      "category": "entrance",
+      "x": 55,
+      "y": 83,
+      "z": 28
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 34,
+      "y": 83,
+      "z": 11
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 35,
+      "y": 83,
+      "z": 16
+    },
+    {
+      "secretName": "4 - Wither Essence",
+      "category": "wither",
+      "x": 42,
+      "y": 93,
+      "z": 53
+    },
+    {
+      "secretName": "5 - Superboom",
+      "category": "superboom",
+      "x": 31,
+      "y": 70,
+      "z": 57
+    },
+    {
+      "secretName": "5 - Stonk",
+      "category": "stonk",
+      "x": 31,
+      "y": 69,
+      "z": 57
+    },
+    {
+      "secretName": "5 - Chest",
+      "category": "chest",
+      "x": 31,
+      "y": 70,
+      "z": 60
+    }
+  ]
+}

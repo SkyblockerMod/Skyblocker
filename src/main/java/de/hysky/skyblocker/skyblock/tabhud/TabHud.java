@@ -1,31 +1,41 @@
 package de.hysky.skyblocker.skyblock.tabhud;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Utils;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 
 public class TabHud {
-	public static KeyBinding toggleSecondary;
-	private static KeyBinding defaultTgl;
+	public static KeyMapping toggleSecondary;
+	public static KeyMapping defaultTgl;
 
 	@Init
 	public static void init() {
-		toggleSecondary = KeyBindingHelper.registerKeyBinding(
-				new KeyBinding("key.skyblocker.toggleA",
-						InputUtil.Type.KEYSYM,
-						GLFW.GLFW_KEY_Z,
-						"key.categories.skyblocker"));
-		defaultTgl = KeyBindingHelper.registerKeyBinding(
-				new KeyBinding("key.skyblocker.defaultTgl",
-						InputUtil.Type.KEYSYM,
-						GLFW.GLFW_KEY_M,
-						"key.categories.skyblocker"));
+		toggleSecondary = KeyMappingHelper.registerKeyMapping(
+				new KeyMapping("key.skyblocker.toggleA",
+						InputConstants.Type.KEYSYM,
+						InputConstants.KEY_Z,
+						SkyblockerMod.KEYBINDING_CATEGORY));
+		defaultTgl = KeyMappingHelper.registerKeyMapping(
+				new KeyMapping("key.skyblocker.defaultTgl",
+						InputConstants.Type.KEYSYM,
+						InputConstants.KEY_M,
+						SkyblockerMod.KEYBINDING_CATEGORY));
+
+		HudElementRegistry.replaceElement(VanillaHudElements.PLAYER_LIST, hudElement -> {
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled || TabHud.shouldRenderVanilla() || Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) return hudElement;
+			return (_, _) -> {};
+		});
 	}
 
 	public static boolean shouldRenderVanilla() {
-		return defaultTgl.isPressed() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
+		return defaultTgl.isDown() != SkyblockerConfigManager.get().uiAndVisuals.tabHud.showVanillaTabByDefault;
 	}
 }

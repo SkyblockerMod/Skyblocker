@@ -1,0 +1,77 @@
+{
+  "info": {
+    "name": "Diagonal"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance Ladder",
+      "category": "entrance",
+      "x": 11,
+      "y": 68,
+      "z": 21
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 11,
+      "y": 60,
+      "z": 9
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 36,
+      "y": 71,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Bat",
+      "category": "bat",
+      "x": 32,
+      "y": 71,
+      "z": 3
+    },
+    {
+      "secretName": "3 - Entrance Vines",
+      "category": "entrance",
+      "x": 69,
+      "y": 69,
+      "z": 13
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 69,
+      "y": 60,
+      "z": 29
+    },
+    {
+      "secretName": "4 - Entrance Vines",
+      "category": "entrance",
+      "x": 85,
+      "y": 78,
+      "z": 11
+    },
+    {
+      "secretName": "4 - Chest",
+      "category": "chest",
+      "x": 90,
+      "y": 77,
+      "z": 14
+    },
+    {
+      "secretName": "4 - Stonk",
+      "category": "stonk",
+      "x": 86,
+      "y": 78,
+      "z": 14
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 31,
+      "y": 68,
+      "z": 3
+    }
+  ]
+}

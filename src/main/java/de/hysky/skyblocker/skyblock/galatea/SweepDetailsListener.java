@@ -2,21 +2,22 @@ package de.hysky.skyblocker.skyblock.galatea;
 
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
 
 @SuppressWarnings("RegExpRepeatedSpace") // followup messages have 2 leading spaces
 public class SweepDetailsListener implements ChatMessageListener {
 	// Used to keep cancelled sweep messages in logs
 	private static final Logger LOGGER = LogUtils.getLogger();
-	protected static final Pattern SWEEP_DETAILS = Pattern.compile("Sweep Details: ([\\d.]+)∮ Sweep");
+	protected static final Pattern SWEEP_DETAILS = Pattern.compile(String.format("Sweep Details: ([\\d.]+)[∮%s] Sweep", SkyBlockIcons.SWEEP));
 	protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
 	protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
 	protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep ([\\d.]+) Logs ([a-zA-Z ]*)!!");
@@ -67,7 +68,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 	}
 
 	@Override
-	public ChatFilterResult onMessage(Text message, String asString) {
+	public ChatFilterResult onMessage(Component message, String asString) {
 		if (!SweepDetailsHudWidget.LOCATIONS.contains(Utils.getLocation())) return ChatFilterResult.PASS;
 		if (!SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget) return ChatFilterResult.PASS;
 		String msg = message.getString();

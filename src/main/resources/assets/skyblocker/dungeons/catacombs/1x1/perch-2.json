@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Perch"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 20,
+      "y": 76,
+      "z": 19
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 74,
+      "z": 1
+    }
+  ]
+}

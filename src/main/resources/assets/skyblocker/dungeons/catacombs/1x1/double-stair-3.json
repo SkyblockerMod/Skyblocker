@@ -1,0 +1,42 @@
+{
+  "info": {
+    "name": "Double Stair"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Pearl",
+      "category": "pearl",
+      "x": 24,
+      "y": 72,
+      "z": 11
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 22,
+      "y": 75,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 11,
+      "y": 78,
+      "z": 27
+    },
+    {
+      "secretName": "3 - Superboom",
+      "category": "superboom",
+      "x": 24,
+      "y": 66,
+      "z": 6
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 28,
+      "y": 66,
+      "z": 3
+    }
+  ]
+}

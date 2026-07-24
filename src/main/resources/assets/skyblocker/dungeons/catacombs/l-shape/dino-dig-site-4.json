@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Dino Dig Site"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 24,
+      "y": 93,
+      "z": 35
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 24,
+      "y": 92,
+      "z": 29
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 46,
+      "y": 57,
+      "z": 35
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 41,
+      "y": 58,
+      "z": 39
+    },
+    {
+      "secretName": "3 - Chest",
+      "category": "chest",
+      "x": 54,
+      "y": 52,
+      "z": 51
+    },
+    {
+      "secretName": "3 - Stonk",
+      "category": "stonk",
+      "x": 54,
+      "y": 51,
+      "z": 51
+    },
+    {
+      "secretName": "4 - Entrance",
+      "category": "entrance",
+      "x": 6,
+      "y": 48,
+      "z": 42
+    },
+    {
+      "secretName": "4 - Bat",
+      "category": "bat",
+      "x": 8,
+      "y": 47,
+      "z": 35
+    }
+  ]
+}

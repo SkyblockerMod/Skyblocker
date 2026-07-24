@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public interface Renderable {
-    void render(WorldRenderContext context);
+	void extractRendering(PrimitiveCollector collector);
 }

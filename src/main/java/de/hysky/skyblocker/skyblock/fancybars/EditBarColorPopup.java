@@ -1,128 +1,76 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
-import java.awt.*;
-import java.util.List;
+import java.awt.Color;
 import java.util.function.Consumer;
 
-// TODO use the new color things after collapse buttons is merged
 public class EditBarColorPopup extends AbstractPopupScreen {
 
-    private final Consumer<Color> setColor;
+	private final Consumer<Color> setColor;
+	private int currentColor = -1;
 
-    private DirectionalLayoutWidget layout = DirectionalLayoutWidget.vertical();
-    private BasicColorSelector colorSelector;
+	private LinearLayout layout = LinearLayout.vertical();
 
-    protected EditBarColorPopup(Text title, Screen backgroundScreen, Consumer<Color> setColor) {
-        super(title, backgroundScreen);
-        this.setColor = setColor;
-    }
+	protected EditBarColorPopup(Component title, Screen backgroundScreen, Consumer<Color> setColor, int initialColor) {
+		super(title, backgroundScreen);
+		this.setColor = setColor;
+		this.currentColor = initialColor;
+	}
 
-    @Override
-    protected void init() {
-        super.init();
-        layout = DirectionalLayoutWidget.vertical();
-        layout.spacing(8).getMainPositioner().alignHorizontalCenter();
-        layout.add(new TextWidget(title.copy().fillStyle(Style.EMPTY.withBold(true)), MinecraftClient.getInstance().textRenderer));
-        colorSelector = new BasicColorSelector(0, 0, 150, () -> done(null));
-        layout.add(colorSelector);
+	@Override
+	protected void init() {
+		super.init();
+		layout = LinearLayout.vertical();
+		layout.spacing(8).defaultCellSetting().alignHorizontallyCenter();
+		layout.addChild(new StringWidget(title.copy().withStyle(Style.EMPTY.withBold(true)), Minecraft.getInstance().font));
 
-        DirectionalLayoutWidget horizontal = DirectionalLayoutWidget.horizontal();
-        ButtonWidget buttonWidget = ButtonWidget.builder(Text.literal("Cancel"), button -> close()).width(80).build();
-        horizontal.add(buttonWidget);
-        horizontal.add(ButtonWidget.builder(Text.literal("Done"), this::done).width(80).build());
+		LinearLayout colorLayout = layout.addChild(LinearLayout.horizontal().spacing(4));
+		ColorPickerWidget colorPicker = new ColorPickerWidget(0, 0, 200, 100);
+		ARGBTextInput argb = new ARGBTextInput(0, 0, font, true, false);
+		colorPicker.setARGBColor(currentColor);
+		argb.setARGBColor(currentColor);
 
-        layout.add(horizontal);
-        layout.forEachChild(this::addDrawableChild);
-        this.layout.refreshPositions();
-        SimplePositioningWidget.setPos(layout, this.getNavigationFocus());
-    }
+		argb.setOnChange(color -> {
+			colorPicker.setARGBColor(color);
+			currentColor = color;
+		});
+		colorPicker.setOnColorChange((color, _) -> {
+			argb.setARGBColor(color);
+			currentColor = color;
+		});
 
-    private void done(Object object) {
-        if (colorSelector.validColor) setColor.accept(new Color(colorSelector.getColor()));
-        close();
-    }
+		colorLayout.addChild(colorPicker);
+		colorLayout.addChild(argb);
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
-        drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
-    }
+		LinearLayout horizontal = LinearLayout.horizontal();
+		Button buttonWidget = Button.builder(Component.literal("Cancel"), _ -> onClose()).width(80).build();
+		horizontal.addChild(buttonWidget);
+		horizontal.addChild(Button.builder(Component.literal("Done"), _ -> {
+			setColor.accept(new Color(currentColor));
+			onClose();
+		}).width(80).build());
 
-    private static class BasicColorSelector extends ContainerWidget {
+		layout.addChild(horizontal);
+		layout.visitWidgets(this::addRenderableWidget);
+		this.layout.arrangeElements();
+		FrameLayout.centerInRectangle(layout, this.getRectangle());
+	}
 
-        private final EnterConfirmTextFieldWidget textFieldWidget;
-
-        private BasicColorSelector(int x, int y, int width, Runnable onEnter) {
-            super(x, y, width, 15, Text.literal("edit color"));
-            textFieldWidget = new EnterConfirmTextFieldWidget(MinecraftClient.getInstance().textRenderer, getX() + 16, getY(), width - 16, 15, Text.empty(), onEnter);
-            textFieldWidget.setChangedListener(this::onTextChange);
-            textFieldWidget.setTextPredicate(s -> s.length() <= 6);
-        }
-
-        @Override
-        public List<? extends Element> children() {
-            return List.of(textFieldWidget);
-        }
-
-        private int getColor() {
-            return color;
-        }
-
-        private int color = 0xFF000000;
-        private boolean validColor = false;
-
-        private void onTextChange(String text) {
-            try {
-                color = Integer.parseInt(text, 16) | 0xFF000000;
-                validColor = true;
-            } catch (NumberFormatException e) {
-                color = 0;
-                validColor = false;
-            }
-        }
-
-        @Override
-        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            context.drawBorder(getX(), getY(), 15, 15, validColor ? -1 : 0xFFDD0000);
-            context.fill(getX() + 1, getY() + 1, getX() + 14, getY() + 14, color);
-            textFieldWidget.renderWidget(context, mouseX, mouseY, delta);
-        }
-
-        @Override
-        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-        }
-
-        @Override
-        public void setX(int x) {
-            super.setX(x);
-            textFieldWidget.setX(getX() + 16);
-        }
-
-        @Override
-        public void setY(int y) {
-            super.setY(y);
-            textFieldWidget.setY(getY());
-        }
-
-		@Override
-		protected int getContentsHeightWithPadding() {
-			return 0;
-		}
-
-		@Override
-		protected double getDeltaYPerScroll() {
-			return 0;
-		}
-    }
+	@Override
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	}
 }

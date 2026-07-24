@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
@@ -9,17 +11,14 @@ import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.*;
+import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Solver for the "Change all to same color!" terminal.
@@ -29,11 +28,11 @@ import java.util.*;
 public final class SameColorTerminal extends SimpleContainerSolver implements TerminalSolver, SlotTextAdder {
 	public static final SameColorTerminal INSTANCE = new SameColorTerminal();
 	private static final Item[] ORDER = new Item[]{
-			Items.RED_STAINED_GLASS_PANE,
-			Items.ORANGE_STAINED_GLASS_PANE,
-			Items.YELLOW_STAINED_GLASS_PANE,
-			Items.GREEN_STAINED_GLASS_PANE,
-			Items.BLUE_STAINED_GLASS_PANE
+			Items.STAINED_GLASS_PANE.red(),
+			Items.STAINED_GLASS_PANE.orange(),
+			Items.STAINED_GLASS_PANE.yellow(),
+			Items.STAINED_GLASS_PANE.green(),
+			Items.STAINED_GLASS_PANE.blue()
 	};
 	private static final ImmutableMap<Item, Integer> INDEX;
 
@@ -105,7 +104,7 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 			} else {
 				boolean positive = Integer.signum(clicks) == 1;
 				//Require that positive moves use left click, and negative moves use right click
-				boolean usingCorrectButton = (positive && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) || (!positive && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+				boolean usingCorrectButton = (positive && button == InputConstants.MOUSE_BUTTON_LEFT) || (!positive && button == InputConstants.MOUSE_BUTTON_RIGHT);
 
 				if (!usingCorrectButton) {
 					return shouldBlockIncorrectClicks();
@@ -116,9 +115,9 @@ public final class SameColorTerminal extends SimpleContainerSolver implements Te
 	}
 
 	@Override
-	public @NotNull List<SlotText> getText(@Nullable Slot slot, @NotNull ItemStack stack, int slotId) {
+	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		int clicks = clickMap.getOrDefault(slotId, 0);
 		if (clicks == 0) return List.of();
-		return SlotText.topLeftList(Text.literal(String.valueOf(clicks)).formatted(Formatting.GOLD));
+		return SlotText.topLeftList(Component.literal(String.valueOf(clicks)).withStyle(ChatFormatting.GOLD));
 	}
 }

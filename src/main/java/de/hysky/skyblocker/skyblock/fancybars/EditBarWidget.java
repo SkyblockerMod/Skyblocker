@@ -1,95 +1,84 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import com.google.common.collect.ImmutableList;
 import de.hysky.skyblocker.utils.EnumUtils;
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ContainerWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-
-import java.awt.*;
-import java.util.List;
-import java.util.function.Consumer;
-
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Unit;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 
-public class EditBarWidget extends ContainerWidget {
+import java.awt.Color;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-	private final EnumCyclingOption<StatusBar.IconPosition> iconOption;
-	private final EnumCyclingOption<StatusBar.TextPosition> textOption;
+public class EditBarWidget extends AbstractContainerWidget {
+	private static final int BASE_WIDTH = 100;
+	private static final int DEFAULT_OPTION_HEIGHT = 11;
 
-	private final BooleanOption showMaxOption;
-	private final BooleanOption showOverflowOption;
+	private final StringWidget nameWidget;
 
-	private final ColorOption color1;
-	private final ColorOption color2;
-	private final ColorOption textColor;
+	private final List<? extends AbstractOption<?>> options;
 
-	private final RunnableOption hideOption;
-
-	private final TextWidget nameWidget;
-
-	private final List<? extends ClickableWidget> options;
-
-	private int contentsWidth = 0;
+	private final int contentsWidth;
 
 	public EditBarWidget(int x, int y, Screen parent) {
-		super(x, y, 100, 99, Text.literal("Edit bar"));
+		super(x, y, BASE_WIDTH, 110, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
 
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 
-		nameWidget = new TextWidget(Text.empty(), textRenderer);
+		nameWidget = new StringWidget(Component.empty(), textRenderer);
+		LinearLayout layout = LinearLayout.vertical();
 
-		MutableText translatable = Text.translatable("skyblocker.bars.config.icon");
-		iconOption = new EnumCyclingOption<>(0, 11, getWidth(), translatable, StatusBar.IconPosition.class);
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + iconOption.getLongestOptionWidth() + 10);
-
-		translatable = Text.translatable("skyblocker.bars.config.text");
-		textOption = new EnumCyclingOption<>(0, 22, getWidth(), translatable, StatusBar.TextPosition.class);
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + textOption.getLongestOptionWidth() + 10);
-
-		translatable = Text.translatable("skyblocker.bars.config.showMax");
-		showMaxOption = new BooleanOption(0, 33, getWidth(), translatable);
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-
-		translatable = Text.translatable("skyblocker.bars.config.showOverflow");
-		showOverflowOption = new BooleanOption(0, 44, getWidth(), translatable);
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
+		layout.addChild(new EnumCyclingOption<>(Component.translatable("skyblocker.bars.config.icon"), StatusBar.IconPosition.class, StatusBar::getIconPosition, StatusBar::setIconPosition));
+		layout.addChild(new EnumCyclingOption<>(Component.translatable("skyblocker.bars.config.text"), StatusBar.TextPosition.class, StatusBar::getTextPosition, StatusBar::setTextPosition));
+		layout.addChild(new BooleanOption(Component.translatable("skyblocker.bars.config.showMax"), bar -> bar.hasMax() ? bar.showMax : null, (bar, showMax) -> bar.showMax = showMax));
+		layout.addChild(new BooleanOption(Component.translatable("skyblocker.bars.config.showOverflow"), bar -> bar.hasOverflow() ? bar.showOverflow : null, (bar, showOverflow) -> bar.showOverflow = showOverflow));
+		layout.addChild(new EnumCyclingOption<>(Component.translatable("skyblocker.bars.config.direction"), StatusBar.Direction.class, StatusBar::getDirection, StatusBar::setDirection));
 
 		// COLO(u)RS
-		translatable = Text.translatable("skyblocker.bars.config.mainColor");
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		color1 = new ColorOption(0, 55, getWidth(), translatable, parent);
+		layout.addChild(new ColorOption(Component.translatable("skyblocker.bars.config.mainColor"), parent, bar -> bar.getColors()[0], (bar, color) -> bar.getColors()[0] = color));
+		layout.addChild(new ColorOption(Component.translatable("skyblocker.bars.config.overflowColor"), parent, bar -> bar.hasOverflow() ? bar.getColors()[1] : null, (bar, color) -> bar.getColors()[1] = color));
+		layout.addChild(new ColorOption(Component.translatable("skyblocker.bars.config.textColor"), parent, StatusBar::getTextColor, StatusBar::setTextColor));
 
-		translatable = Text.translatable("skyblocker.bars.config.overflowColor");
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		color2 = new ColorOption(0, 66, getWidth(), translatable, parent);
+		layout.addChild(new RunnableOption(Component.translatable("skyblocker.bars.config.hide"), bar -> bar.enabled, bar -> {
+			if (bar.anchor != null)
+				FancyStatusBars.barPositioner.removeBar(bar.anchor, bar.gridY, bar);
+			bar.enabled = false;
+			FancyStatusBars.updatePositions(true);
+		}));
 
-		translatable = Text.translatable("skyblocker.bars.config.textColor");
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		textColor = new ColorOption(0, 77, getWidth(), translatable, parent);
-
-		translatable = Text.translatable("skyblocker.bars.config.hide");
-		contentsWidth = Math.max(contentsWidth, textRenderer.getWidth(translatable) + 9 + 10);
-		hideOption = new RunnableOption(0, 88, getWidth(), translatable);
-
-		options = List.of(iconOption, textOption, showMaxOption, showOverflowOption, color1, color2, textColor, hideOption);
-
-		setWidth(contentsWidth);
+		ImmutableList.Builder<AbstractOption<?>> builder = ImmutableList.builder();
+		layout.visitWidgets(w -> builder.add((AbstractOption<?>) w));
+		options = builder.build();
+		contentsWidth = options.stream().mapToInt(AbstractOption::expectedWidth).max().orElse(BASE_WIDTH);
+		layout.visitWidgets(w -> w.setWidth(contentsWidth));
+		layout.arrangeElements();
+		layout.setPosition(0, 11);
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return options;
 	}
 
@@ -97,7 +86,7 @@ public class EditBarWidget extends ContainerWidget {
 	public int insideMouseY = 0;
 
 	@Override
-	protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (isHovered()) {
 			insideMouseX = mouseX;
 			insideMouseY = mouseY;
@@ -106,251 +95,230 @@ public class EditBarWidget extends ContainerWidget {
 			int j = mouseY - insideMouseY;
 			if (i * i + j * j > 30 * 30) visible = false;
 		}
-		Matrix3x2fStack matrices = context.getMatrices();
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
-		TooltipBackgroundRenderer.render(context, 0, 0, getWidth(), getHeight(), null);
-		nameWidget.render(context, mouseX, mouseY, delta);
-		for (ClickableWidget option : options) option.render(context, mouseX - getX(), mouseY - getY(), delta);
+		TooltipRenderUtil.extractTooltipBackground(graphics, 0, 0, getWidth(), getHeight(), null);
+		nameWidget.extractRenderState(graphics, mouseX, mouseY, a);
+		for (AbstractWidget option : options) option.extractRenderState(graphics, mouseX - getX(), mouseY - getY(), a);
 		matrices.popMatrix();
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput builder) {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (!visible) return false;
 		if (!isHovered()) visible = false;
-		return super.mouseClicked(mouseX - getX(), mouseY - getY(), button);
+		return super.mouseClicked(new MouseButtonEvent(click.x() - getX(), click.y() - getY(), click.buttonInfo()), doubled);
 	}
 
 	public void setStatusBar(StatusBar statusBar) {
-		iconOption.setCurrent(statusBar.getIconPosition());
-		iconOption.setOnChange(statusBar::setIconPosition);
-		textOption.setCurrent(statusBar.getTextPosition());
-		textOption.setOnChange(statusBar::setTextPosition);
-
-		color1.setCurrent(statusBar.getColors()[0].getRGB());
-		color1.setOnChange(color -> statusBar.getColors()[0] = color);
-
-		showMaxOption.active = statusBar.hasMax();
-		showMaxOption.setCurrent(statusBar.showMax);
-		showOverflowOption.active = statusBar.hasOverflow();
-		showOverflowOption.setCurrent(statusBar.showOverflow);
-		showMaxOption.setOnChange(showMax -> statusBar.showMax = showMax);
-		showOverflowOption.setOnChange(showOverflow -> statusBar.showOverflow = showOverflow);
-
-		color2.active = statusBar.hasOverflow();
-		if (color2.active) {
-			color2.setCurrent(statusBar.getColors()[1].getRGB());
-			color2.setOnChange(color -> statusBar.getColors()[1] = color);
-		}
-
-		if (statusBar.getTextColor() != null) {
-			textColor.setCurrent(statusBar.getTextColor().getRGB());
-		}
-		textColor.setOnChange(statusBar::setTextColor);
-		hideOption.active = statusBar.enabled;
-		hideOption.setRunnable(() -> {
-			if (statusBar.anchor != null)
-				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
-			statusBar.enabled = false;
-			FancyStatusBars.updatePositions(true);
-		});
-
-		MutableText formatted = statusBar.getName().copy().formatted(Formatting.BOLD);
+		options.forEach(opt -> opt.updateFromBar(statusBar));
+		MutableComponent formatted = statusBar.getName().copy().withStyle(ChatFormatting.BOLD);
 		nameWidget.setMessage(formatted);
-		setWidth(Math.max(MinecraftClient.getInstance().textRenderer.getWidth(formatted), contentsWidth));
+		setWidth(Math.max(Minecraft.getInstance().font.width(formatted), contentsWidth));
 	}
 
 	@Override
 	public void setWidth(int width) {
 		super.setWidth(width);
-		for (ClickableWidget option : options) option.setWidth(width);
+		for (AbstractWidget option : options) option.setWidth(width);
 		nameWidget.setWidth(width);
 
 	}
 
-	public class RunnableOption extends ClickableWidget {
+	public class RunnableOption extends AbstractOption<Unit> {
 
-		private Runnable runnable;
-
-		public RunnableOption(int x, int y, int width, Text message) {
-			super(x, y, width, 11, message);
-		}
-
-		public void setRunnable(Runnable runnable) {
-			this.runnable = runnable;
+		public RunnableOption(Component message, Predicate<StatusBar> isEnabled, Consumer<StatusBar> action) {
+			super(message, bar -> isEnabled.test(bar) ? Unit.INSTANCE : null, (s, _) -> action.accept(s));
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			if (isMouseOver(mouseX, mouseY)) {
-				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
-			}
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? Colors.WHITE : Colors.GRAY, true);
+		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			return 0;
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
+		protected int expectedValueWidth() {
+			return 0;
+		}
+
+		@Override
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			super.onClick(click, doubled);
 			EditBarWidget.this.visible = false;
-			if (runnable != null) runnable.run();
+			setAndUpdate(Unit.INSTANCE);
 		}
-
-		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
 	}
 
-	public static class EnumCyclingOption<T extends Enum<T>> extends ClickableWidget {
+	private abstract static class AbstractOption<T> extends AbstractWidget {
 
-		private T current;
+		protected @Nullable T current;
+		protected final Function<StatusBar, @Nullable T> getter;
+		protected final BiConsumer<StatusBar, T> setter;
+		protected @Nullable StatusBar activeBar;
+
+		private AbstractOption(int height, Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
+			super(0, 0, BASE_WIDTH, height, message);
+			this.getter = getter;
+			this.setter = setter;
+		}
+
+		private AbstractOption(Component message, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
+			this(DEFAULT_OPTION_HEIGHT, message, getter, setter);
+		}
+
+		public void updateFromBar(StatusBar statusBar) {
+			T apply = getter.apply(statusBar);
+			if (apply != null) {
+				current = apply;
+				active = true;
+			} else {
+				current = null;
+				active = false;
+			}
+			this.activeBar = statusBar;
+		}
+
+		protected void setAndUpdate(T value) {
+			this.current = value;
+			if (activeBar != null) setter.accept(activeBar, value);
+		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			if (isMouseOver(mouseX, mouseY)) {
+				graphics.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
+			}
+			Font font = Minecraft.getInstance().font;
+			ActiveTextCollector textRenderer = graphics.textRenderer();
+			int valueWidth = extractValue(graphics, mouseX, mouseY, a);
+			Component message = getMessage().copy().withColor(active ? CommonColors.WHITE : CommonColors.GRAY);
+			if (font.width(getMessage()) > getWidth() - valueWidth - 2) {
+				textRenderer.acceptScrollingWithDefaultCenter(message, getX() + 1, getRight() - valueWidth - 1, getY(), getBottom());
+			} else {
+				textRenderer.accept(getX() + 1, getY() + 1, message);
+			}
+		}
+
+		/**
+		 * @return the width taken by the value
+		 */
+		protected abstract int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a);
+
+		protected abstract int expectedValueWidth();
+
+		public final int expectedWidth() {
+			return expectedValueWidth() + Minecraft.getInstance().font.width(getMessage()) + 2;
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput output) {
+
+		}
+	}
+
+	public static class EnumCyclingOption<T extends Enum<T>> extends AbstractOption<T> {
 		private final T[] values;
-		private Consumer<T> onChange = null;
 
-		public EnumCyclingOption(int x, int y, int width, Text message, Class<T> enumClass) {
-			super(x, y, width, 11, message);
+		public EnumCyclingOption(Component message, Class<T> enumClass, Function<StatusBar, @Nullable T> getter, BiConsumer<StatusBar, T> setter) {
+			super(message, getter, setter);
 			values = enumClass.getEnumConstants();
 			current = values[0];
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			if (isMouseOver(mouseX, mouseY)) {
-				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
-			}
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, Colors.WHITE, true);
-			String string = current.toString();
-			context.drawText(textRenderer, string, getRight() - textRenderer.getWidth(string) - 1, getY() + 1, Colors.WHITE, true);
-		}
-
-		public void setCurrent(T current) {
-			this.current = current;
+		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			Font textRenderer = Minecraft.getInstance().font;
+			String string = current != null ? current.toString() : "???";
+			int valueWidth = textRenderer.width(string) + 1;
+			graphics.text(textRenderer, string, getRight() - valueWidth, getY() + 1, CommonColors.WHITE, true);
+			return valueWidth;
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			current = EnumUtils.cycle(current);
-			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			setAndUpdate(current != null ? EnumUtils.cycle(current) : values[0]);
+			super.onClick(click, doubled);
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-		}
-
-		public void setOnChange(Consumer<T> onChange) {
-			this.onChange = onChange;
-		}
-
-		int getLongestOptionWidth() {
+		protected int expectedValueWidth() {
 			int m = 0;
 			for (T value : values) {
-				int i = MinecraftClient.getInstance().textRenderer.getWidth(value.toString());
+				int i = Minecraft.getInstance().font.width(value.toString());
 				m = Math.max(m, i);
 			}
 			return m;
 		}
 	}
 
-	public static class BooleanOption extends ClickableWidget {
+	public static class BooleanOption extends AbstractOption<Boolean> {
 
-		private boolean current = false;
-		private BooleanConsumer onChange = null;
-
-		public BooleanOption(int x, int y, int width, Text message) {
-			super(x, y, width, 11, message);
+		public BooleanOption(Component message, Function<StatusBar, @Nullable Boolean> getter, BiConsumer<StatusBar, Boolean> setter) {
+			super(message, getter, setter);
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			if (isMouseOver(mouseX, mouseY)) {
-				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
-			}
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
-			if (current && active) context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, Colors.WHITE);
+		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
+			if (active && Boolean.TRUE.equals(current)) graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, CommonColors.WHITE);
+			return 10;
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			current = !current;
-			if (onChange != null) onChange.accept(current);
-			super.onClick(mouseX, mouseY);
+		protected int expectedValueWidth() {
+			return 10;
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			setAndUpdate(current == null || !current);
+			super.onClick(click, doubled);
 		}
 
 		public void setCurrent(boolean current) {
 			this.current = current;
 		}
-
-		public void setOnChange(BooleanConsumer onChange) {
-			this.onChange = onChange;
-		}
 	}
 
-	public static class ColorOption extends ClickableWidget {
-
-		public void setCurrent(int current) {
-			this.current = current;
-		}
-
-		private int current = 0;
-		private Consumer<Color> onChange = null;
+	public static class ColorOption extends AbstractOption<Color> {
 		private final Screen parent;
 
-		public ColorOption(int x, int y, int width, Text message, Screen parent) {
-			super(x, y, width, 11, message);
+		public ColorOption(Component message, Screen parent, Function<StatusBar, @Nullable Color> getter, BiConsumer<StatusBar, Color> setter) {
+			super(message, getter, setter);
 			this.parent = parent;
 		}
 
 		@Override
-		protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			if (isMouseOver(mouseX, mouseY)) {
-				context.fill(getX(), getY(), getRight(), getBottom(), 0x20FFFFFF);
-			}
-			TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-			context.drawText(textRenderer, getMessage(), getX() + 1, getY() + 1, active ? -1 : Colors.GRAY, true);
-			context.drawBorder(getRight() - 10, getY() + 1, 9, 9, active ? -1 : Colors.GRAY);
-			context.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active ? current : Colors.GRAY);
+		protected int extractValue(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			GuiHelper.border(graphics, getRight() - 10, getY() + 1, 9, 9, active ? -1 : CommonColors.GRAY);
+			graphics.fill(getRight() - 8, getY() + 3, getRight() - 3, getY() + 8, active && current != null ? current.getRGB() : CommonColors.GRAY);
+			return 10;
 		}
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
-			super.onClick(mouseX, mouseY);
-			MinecraftClient.getInstance().setScreen(new EditBarColorPopup(Text.literal("Edit ").append(getMessage()), parent, this::set));
-		}
-
-		private void set(Color color) {
-			current = color.getRGB();
-			if (onChange != null) onChange.accept(color);
+		protected int expectedValueWidth() {
+			return 10;
 		}
 
 		@Override
-		protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-
-		}
-
-		public void setOnChange(Consumer<Color> onChange) {
-			this.onChange = onChange;
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			super.onClick(click, doubled);
+			Minecraft.getInstance().gui.setScreen(new EditBarColorPopup(Component.literal("Edit ").append(getMessage()), parent, this::setAndUpdate, current != null ? current.getRGB() : -1));
 		}
 	}
 
 	@Override
-	protected int getContentsHeightWithPadding() {
+	protected int contentHeight() {
 		return 0;
 	}
 
 	@Override
-	protected double getDeltaYPerScroll() {
+	protected double scrollRate() {
 		return 0;
 	}
 }

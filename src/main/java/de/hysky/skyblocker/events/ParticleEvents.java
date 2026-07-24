@@ -4,11 +4,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 
 public class ParticleEvents {
 	/**
-	 * Called upon receiving a {@link ParticleS2CPacket} from the server.
+	 * Called upon receiving a {@link ClientboundLevelParticlesPacket} from the server.
 	 */
 	public static final Event<FromServer> FROM_SERVER = EventFactory.createArrayBacked(FromServer.class, callbacks -> packet -> {
 		for (FromServer callback : callbacks) {
@@ -19,6 +19,6 @@ public class ParticleEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface FromServer {
-		void onParticleFromServer(ParticleS2CPacket packet);
+		void onParticleFromServer(ClientboundLevelParticlesPacket packet);
 	}
 }

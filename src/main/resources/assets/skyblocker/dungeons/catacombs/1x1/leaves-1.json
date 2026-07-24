@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Leaves"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 15,
+      "y": 82,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 14,
+      "y": 81,
+      "z": 27
+    },
+    {
+      "secretName": "Fairy Soul",
+      "category": "fairysoul",
+      "x": 2,
+      "y": 74,
+      "z": 28
+    },
+    {
+      "secretName": "Prince",
+      "category": "prince",
+      "x": 14,
+      "y": 82,
+      "z": 21
+    }
+  ]
+}

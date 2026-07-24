@@ -1,7 +1,7 @@
 {
   "source": {
-    "link": "https://hypixel-skyblock.fandom.com/wiki/Relics",
-    "license": "CC-BY-SA <https://www.fandom.com/licensing>"
+    "link": "https://hypixelskyblock.minecraft.wiki/w/Relics",
+    "license": "(CC BY-NC-SA 3.0)<https://meta.weirdgloop.org/w/Licensing>"
   },
   "total": 28,
   "locations": [
@@ -36,9 +36,9 @@
       "z": -346
     },
     {
-      "x": -206,
-      "y": 63,
-      "z": -301
+      "x": -183,
+      "y": 68,
+      "z": -283
     },
     {
       "x": -342,

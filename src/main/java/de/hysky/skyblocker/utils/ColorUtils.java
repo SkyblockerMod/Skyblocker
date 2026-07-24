@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 
 public class ColorUtils {
 	/**
@@ -13,9 +13,9 @@ public class ColorUtils {
 	 */
 	public static float[] getFloatComponents(int color) {
 		return new float[] {
-				ColorHelper.getRedFloat(color),
-				ColorHelper.getGreenFloat(color),
-				ColorHelper.getBlueFloat(color),
+				ARGB.redFloat(color),
+				ARGB.greenFloat(color),
+				ARGB.blueFloat(color),
 		};
 	}
 
@@ -23,7 +23,7 @@ public class ColorUtils {
 	 * @param dye The dye from which the entity color will be used for the components.
 	 */
 	public static float[] getFloatComponents(DyeColor dye) {
-		return getFloatComponents(dye.getEntityColor());
+		return getFloatComponents(dye.getTextureDiffuseColor());
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class ColorUtils {
 	 * @return an int representing a color, where 100% = green and 0% = red
 	 */
 	public static int percentToColor(float pcnt) {
-		return MathHelper.hsvToRgb(pcnt / 300, 1, 1);
+		return Mth.hsvToRgb(pcnt / 300, 1, 1);
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class ColorUtils {
 	 * @link <a href="https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color/56678483#56678483">Stackoverflow explanation</a>
 	 */
 	private static double luminance(float red, float green, float blue) {
-		double r = (red <= 0.04045F) ? red / 12.92F : Math.pow((red + 0.055F) / 1.055F, 2.4F);
-		double g = (green <= 0.04045F) ? green / 12.92F : Math.pow((green + 0.055F) / 1.055F, 2.4F);
-		double b = (blue <= 0.04045F) ? blue / 12.92F : Math.pow((blue + 0.055F) / 1.055F, 2.4F);
+		double r = (red <= 0.04045f) ? red / 12.92f : Math.pow((red + 0.055f) / 1.055f, 2.4f);
+		double g = (green <= 0.04045f) ? green / 12.92f : Math.pow((green + 0.055f) / 1.055f, 2.4f);
+		double b = (blue <= 0.04045f) ? blue / 12.92f : Math.pow((blue + 0.055f) / 1.055f, 2.4f);
 
 		return Math.fma(0.2126, r, Math.fma(0.7152, g, 0.0722 * b));
 	}

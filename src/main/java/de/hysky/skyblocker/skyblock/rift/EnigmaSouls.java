@@ -13,18 +13,18 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.PosUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.DyeColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,24 +34,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
 	private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType;
-	private static final Identifier WAYPOINTS_JSON = Identifier.of(SkyblockerMod.NAMESPACE, "rift/enigma_soul_waypoints.json");
-	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(42);
+	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/enigma_soul_waypoints.json");
+	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(52);
 	private static final Path FOUND_SOULS_FILE = SkyblockerMod.CONFIG_DIR.resolve("found_enigma_souls.json");
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.GREEN);
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	private static CompletableFuture<Void> soulsLoaded;
 
-	static void load(MinecraftClient client) {
+	static void load(Minecraft client) {
 		//Load waypoints
 		soulsLoaded = CompletableFuture.runAsync(() -> {
 			try (BufferedReader reader = client.getResourceManager().openAsReader(WAYPOINTS_JSON)) {
@@ -75,18 +79,18 @@ public class EnigmaSouls {
 						SOUL_WAYPOINTS.get(PosUtils.parsePosString(foundSoul.getAsString())).setFound(profile.getKey());
 					}
 				}
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] There was an error while loading found enigma souls!", e);
 			}
-		});
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
-	static void save(MinecraftClient client) {
+	static void save(Minecraft client) {
 		Map<String, Set<BlockPos>> foundSouls = new HashMap<>();
 		for (ProfileAwareWaypoint soul : SOUL_WAYPOINTS.values()) {
 			for (String profile : soul.foundProfiles) {
-				foundSouls.computeIfAbsent(profile, profile_ -> new HashSet<>());
+				foundSouls.computeIfAbsent(profile, _ -> new HashSet<>());
 				foundSouls.get(profile).add(soul.pos);
 			}
 		}
@@ -109,57 +113,69 @@ public class EnigmaSouls {
 		}
 	}
 
-	static void render(WorldRenderContext context) {
+	static void extractRendering(PrimitiveCollector collector) {
 		OtherLocationsConfig.Rift config = SkyblockerConfigManager.get().otherLocations.rift;
 
 		if (Utils.isInTheRift() && config.enigmaSoulWaypoints && soulsLoaded.isDone()) {
 			for (Waypoint soul : SOUL_WAYPOINTS.values()) {
 				if (soul.shouldRender() || config.highlightFoundEnigmaSouls) {
-					soul.render(context);
+					soul.extractRendering(collector);
 				}
 			}
 		}
 	}
 
-	static boolean onMessage(Text text, boolean overlay) {
+	static boolean onMessage(Component text, boolean overlay) {
 		if (Utils.isInTheRift() && !overlay) {
 			String message = text.getString();
 
-			if (message.equals("You have already found that Enigma Soul!") || Formatting.strip(message).equals("SOUL! You unlocked an Enigma Soul!"))
-				markClosestSoulAsFound();
+			if (message.equals("You have already found that Enigma Soul!") || ChatFormatting.stripFormatting(message).equals("SOUL! You unlocked an Enigma Soul!"))
+				markClosestSoul(true);
 		}
 
 		return true;
 	}
 
-	static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rift")
 						.then(literal("enigmaSouls")
 								.then(literal("markAllFound").executes(context -> {
 									SOUL_WAYPOINTS.values().forEach(Waypoint::setFound);
-									context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.rift.enigmaSouls.markAllFound")));
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markAllFound")));
 
 									return Command.SINGLE_SUCCESS;
 								}))
 								.then(literal("markAllMissing").executes(context -> {
 									SOUL_WAYPOINTS.values().forEach(Waypoint::setMissing);
-									context.getSource().sendFeedback(Constants.PREFIX.get().append(Text.translatable("skyblocker.rift.enigmaSouls.markAllMissing")));
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markAllMissing")));
+
+									return Command.SINGLE_SUCCESS;
+								}))
+								.then(literal("markClosestFound").executes(context -> {
+									markClosestSoul(true);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestFound")));
+
+									return Command.SINGLE_SUCCESS;
+								}))
+								.then(literal("markClosestMissing").executes(context -> {
+									markClosestSoul(false);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestMissing")));
 
 									return Command.SINGLE_SUCCESS;
 								})))));
 	}
 
-	private static void markClosestSoulAsFound() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+	private static void markClosestSoul(boolean asFound) {
+		LocalPlayer player = Minecraft.getInstance().player;
 
 		if (!soulsLoaded.isDone() || player == null) return;
 
 		SOUL_WAYPOINTS.values().stream()
 				.filter(Waypoint::shouldRender)
-				.min(Comparator.comparingDouble(soul -> soul.pos.getSquaredDistance(player.getPos())))
-				.filter(soul -> soul.pos.getSquaredDistance(player.getPos()) <= 16)
-				.ifPresent(Waypoint::setFound);
+				.min(Comparator.comparingDouble(soul -> soul.pos.distToCenterSqr(player.position())))
+				.filter(soul -> soul.pos.distToCenterSqr(player.position()) <= 16)
+				.ifPresent(asFound ? Waypoint::setFound : Waypoint::setMissing);
 	}
 
 	private static class EnigmaSoul extends ProfileAwareWaypoint {

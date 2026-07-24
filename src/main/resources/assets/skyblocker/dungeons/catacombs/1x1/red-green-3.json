@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Red Green"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Entrance",
+      "category": "entrance",
+      "x": 5,
+      "y": 70,
+      "z": 10
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 1,
+      "y": 61,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Lever",
+      "category": "lever",
+      "x": 29,
+      "y": 61,
+      "z": 15
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 29,
+      "y": 75,
+      "z": 15
+    },
+    {
+      "secretName": "3 - Superboom",
+      "category": "superboom",
+      "x": 13,
+      "y": 78,
+      "z": 24
+    },
+    {
+      "secretName": "3 - Item",
+      "category": "item",
+      "x": 13,
+      "y": 77,
+      "z": 28
+    }
+  ]
+}

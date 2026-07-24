@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.utils.networth;
 
-import com.mojang.serialization.Dynamic;
+import java.util.List;
 
-import de.hysky.skyblocker.utils.ItemUtils;
+import com.mojang.serialization.Dynamic;
 import net.azureaaron.networth.ItemCalculator;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.item.SkyblockItemStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 public class NetworthCalculator {
 	public static NetworthResult getItemNetworth(ItemStack stack) {
@@ -19,11 +19,16 @@ public class NetworthCalculator {
 	}
 
 	public static NetworthResult getItemNetworth(ItemStack stack, int count) {
-		String itemId = ItemUtils.getItemId(stack);
-		NbtCompound customData = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-		Dynamic<NbtElement> customDataDynamic = new Dynamic<>(NbtOps.INSTANCE, customData);
-		SkyblockItemStack skyblockItemStack = SkyblockItemStack.of(itemId, count, customDataDynamic, SkyblockItemMetadataRetriever.of(customData, itemId));
+		// TODO remove this try catch when I update this library next (it needs to handle mythic tier boosted eman pet)
+		try {
+			String itemId = stack.getSkyblockId();
+			CompoundTag customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			Dynamic<Tag> customDataDynamic = new Dynamic<>(NbtOps.INSTANCE, customData);
+			SkyblockItemStack skyblockItemStack = SkyblockItemStack.of(itemId, count, customDataDynamic, SkyblockItemMetadataRetriever.of(customData, itemId));
 
-		return ItemCalculator.calculate(skyblockItemStack, NetworthDataSuppliers::getPrice, NetworthDataSuppliers.getSkyblockItemData());
+			return ItemCalculator.calculate(skyblockItemStack, NetworthDataSuppliers::getPrice, NetworthDataSuppliers.getSkyblockItemData());
+		} catch (Exception _) {
+			return new NetworthResult(0, 0, List.of());
+		}
 	}
 }

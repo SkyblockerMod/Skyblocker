@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Knight"
+  },
+  "secrets": [
+    {
+      "secretName": "1/2 - Lever",
+      "category": "lever",
+      "x": 3,
+      "y": 70,
+      "z": 9
+    },
+    {
+      "secretName": "1 - Chest (click both sides)",
+      "category": "chest",
+      "x": 25,
+      "y": 69,
+      "z": 29
+    },
+    {
+      "secretName": "2 - Chest (click both sides)",
+      "category": "chest",
+      "x": 24,
+      "y": 69,
+      "z": 29
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 7,
+      "y": 70,
+      "z": 25
+    }
+  ]
+}

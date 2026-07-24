@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "*Higher* or Lower"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 9,
+      "y": 70,
+      "z": 23
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 2,
+      "y": 68,
+      "z": 27
+    }
+  ]
+}

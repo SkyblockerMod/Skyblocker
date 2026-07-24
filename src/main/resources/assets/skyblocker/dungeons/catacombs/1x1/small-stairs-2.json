@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Small Stairs"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 18,
+      "y": 66,
+      "z": 4
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 24,
+      "y": 63,
+      "z": 3
+    },
+    {
+      "secretName": "2 - Superboom",
+      "category": "superboom",
+      "x": 3,
+      "y": 82,
+      "z": 13
+    },
+    {
+      "secretName": "2 - Chest",
+      "category": "chest",
+      "x": 3,
+      "y": 82,
+      "z": 6
+    }
+  ]
+}

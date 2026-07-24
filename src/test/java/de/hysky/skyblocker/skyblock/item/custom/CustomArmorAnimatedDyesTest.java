@@ -12,14 +12,14 @@ public class CustomArmorAnimatedDyesTest {
 		CustomArmorAnimatedDyes.AnimatedDyeStateTracker tracker = new CustomArmorAnimatedDyes.AnimatedDyeStateTracker(animatedDye);
 		// Expected values at 0, 0.25, 0.5, 0.75, and 1 progress
 		// See https://observablehq.com/@aras-p/oklab-interpolation-test for an online interpolation tool
-		Assertions.assertEquals(0xFE0000, tracker.interpolate(animatedDye, 0));
-		Assertions.assertEquals(0xC5496C, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0xFF0000, tracker.interpolate(animatedDye, 0));
+		Assertions.assertEquals(0xC6496D, tracker.interpolate(animatedDye, 5));
 		Assertions.assertEquals(0x8C53A2, tracker.interpolate(animatedDye, 5));
-		Assertions.assertEquals(0x5047D1, tracker.interpolate(animatedDye, 5));
-		Assertions.assertEquals(0x0000FE, tracker.interpolate(animatedDye, 5));
-		Assertions.assertEquals(0x5047D1, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0x5147D2, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0x0000FF, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0x5147D2, tracker.interpolate(animatedDye, 5));
 		Assertions.assertEquals(0x8C53A2, tracker.interpolate(animatedDye, 5));
-		Assertions.assertEquals(0xC5496C, tracker.interpolate(animatedDye, 5));
-		Assertions.assertEquals(0xFE0000, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0xC6496D, tracker.interpolate(animatedDye, 5));
+		Assertions.assertEquals(0xFF0000, tracker.interpolate(animatedDye, 5));
 	}
 }

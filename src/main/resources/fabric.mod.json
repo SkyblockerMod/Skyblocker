@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Skyblocker",
   "description": "Hypixel Skyblock Mod",
-  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron", "viciscat", "Emirlol", "olim88"],
+  "authors": ["LifeIsAParadox/wohlhabend", "kevinthegreat1", "AzureAaron", "viciscat", "Emirlol", "olim88", "Alex33856"],
   "contributors": ["xMrVizzy", "d3dx9", "ExternalTime", "Zailer43", "TacoMonkey", "KonaeAkira", "Fix3dll", "null2264",
     "HyperSoop", "edgarogh", "TheColdPot", "Julienraptor01", "ADON15c", "catandA", "msg-programs", "lantice3720",
     "Futuremappermydud", "koloiyolo", "Grayray75", "alexiayaa", "KhafraDev", "btwonion", "Kaluub",
@@ -25,39 +25,46 @@
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
-    "rei_client": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
-    ],
-    "rei_common": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
-    ],
-    "emi": [
-      "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
-    ],
+	"rei_client": [
+	  "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
+	],
+	"rei_common": [
+	   "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+	],
     "jei_mod_plugin": [
       "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
-    ]
+    ],
+		"skyblock-item-list": [
+			"de.hysky.skyblocker.compatibility.ItemListCompatibility"
+		],
+		"catharsis:imc/hidden_mod_elements": [
+			"de.hysky.skyblocker.compatibility.CatharsisCompatibility::hiddenGuiElements"
+		]
   },
   "mixins": [
     "skyblocker.mixins.json"
   ],
-  "accessWidener": "skyblocker.accesswidener",
+  "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.17.2",
-    "fabric-api": ">=0.127.0+1.21.6",
-	"dandelion": ">=1.0.0-alpha.5+1.21.8",
-    "yet_another_config_lib_v3": ">=3.7.1+1.21.6",
+    "fabricloader": ">=0.19.3",
+    "fabric-api": ">=0.152.1+26.2",
+	"dandelion": ">=1.0.0-alpha.22+26.2",
+	"yet_another_config_lib_v3": ">=3.9.4+26.2",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.1+1.21.2",
-    "minecraft": "~1.21.6",
-    "java": ">=21"
+    "hm-api": ">=1.0.4+26.2",
+    "minecraft": "~26.2",
+    "java": ">=25"
   },
   "conflicts": {
-    "iris": "*"
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
-    "skyblockmod": "<=1.10.7"
+    "skyblockmod": "<=1.10.7",
+		"jei": [
+			"<29.14.0.43",
+			"<30.8.0.51 ^30"
+		],
+	"sodium": "<=0.8.7"
   },
   "custom": {
     "modmenu": {
@@ -66,11 +73,6 @@
         "modmenu.modrinth": "https://modrinth.com/mod/skyblocker-liap",
         "text.skyblocker.translate": "https://translate.hysky.de"
       }
-    },
-    "loom:injected_interfaces": {
-      "net/minecraft/class_1799": [
-        "de/hysky/skyblocker/injected/SkyblockerStack"
-      ]
     }
   }
 }

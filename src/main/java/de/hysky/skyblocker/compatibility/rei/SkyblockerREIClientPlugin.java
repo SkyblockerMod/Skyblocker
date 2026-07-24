@@ -7,14 +7,19 @@ import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeCategory;
 import de.hysky.skyblocker.compatibility.rei.recipe.SkyblockRecipeDisplayGenerator;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.mixins.accessors.HandledScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.garden.GardenPlots;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
 import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import me.shedaniel.math.Rectangle;
@@ -24,18 +29,19 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,11 +57,15 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	public void registerCategories(CategoryRegistry categoryRegistry) {
 		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.IDENTIFIER), EntryStacks.of(Items.CRAFTING_TABLE));
-		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.IDENTIFIER), EntryStacks.of(Items.ANVIL));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack(), 73));
-		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.IDENTIFIER, Text.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack(), 84));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.ID), EntryStacks.of(Items.CRAFTING_TABLE));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.ID), EntryStacks.of(Items.ANVIL));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockNpcShopRecipe.ID), EntryStacks.of(Items.GOLD_NUGGET));
+		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockKatUpgradeRecipe.ID), EntryStacks.of(Items.BONE));
 
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockCraftingRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_crafting"), ItemUtils.getSkyblockerStack().getStackOrThrow(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockForgeRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_forge"), ItemUtils.getSkyblockerForgeStack().getStackOrThrow(), 84));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockNpcShopRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_npc_shop"), Items.GOLD_NUGGET.getDefaultInstance(), 73));
+		categoryRegistry.add(new SkyblockRecipeCategory(SkyblockKatUpgradeRecipe.ID, Component.translatable("emi.category.skyblocker.skyblock_kat_upgrade"), ItemUtils.getSkyblockerKatStack().getStackOrThrow(), 64));
 		categoryRegistry.add(new SkyblockInfoCategory());
 	}
 
@@ -70,11 +80,17 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 	}
 
 	@Override
+	public void registerScreens(ScreenRegistry registry) {
+		if (!Utils.isOnSkyblock()) return;
+		registry.registerFocusedStack(new SkyblockerFocusedStackProvider());
+	}
+
+	@Override
 	public void registerEntries(EntryRegistry entryRegistry) {
 		if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
-		entryRegistry.removeEntryIf(entryStack -> true);
-		entryRegistry.addEntries(ItemRepository.getItemsStream().map(EntryStacks::of).toList());
+		entryRegistry.removeEntryIf(_ -> true);
+		entryRegistry.addEntries(ItemRepository.getItemsStream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).toList());
 	}
 
 	@SuppressWarnings("UnstableApiUsage")
@@ -86,10 +102,10 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 		if (!ItemRepository.filesImported() || NEURepoManager.isLoading()) return;
 
 		NEURepoManager.getConstants().getParents().getParents().forEach((parentId, childrenList) -> {
-			Optional<ItemStack> parentItem = ItemRepository.getItemsStream().filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
+			Optional<ItemStack> parentItem = ItemRepository.getItemsStream().map(FlexibleItemStack::getStackOrThrow).filter(itemStack -> itemStack.getNeuName().equals(parentId)).findFirst();
 			if (parentItem.isEmpty()) return;
 
-			List<EntryStack<ItemStack>> allItems = Stream.concat(parentItem.stream(), ItemRepository.getItemsStream().filter(itemStack -> childrenList.contains(itemStack.getNeuName())))
+			List<EntryStack<ItemStack>> allItems = Stream.concat(parentItem.stream(), ItemRepository.getItemsStream().map(FlexibleItemStack::getStackOrThrow).filter(itemStack -> childrenList.contains(itemStack.getNeuName())))
 					.map(EntryStacks::of)
 					.toList();
 
@@ -100,38 +116,50 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 			}
 
 			// For Enchanted Books, change the name of the category to the enchant name
-			Text name;
-			if (parentItem.get().isOf(Items.ENCHANTED_BOOK)) {
-				String enchantName = ItemUtils.getLore(parentItem.get()).getFirst().getString();
-				enchantName = enchantName.substring(0, enchantName.lastIndexOf(' ')); // drop level
-				name = Text.literal(enchantName).formatted(parentId.startsWith("ULTIMATE") ? Formatting.LIGHT_PURPLE : Formatting.BLUE);
+			Component name;
+			if (parentItem.get().is(Items.ENCHANTED_BOOK)) {
+				String enchantName = EnchantedBookUtils.getEnchantNameFromLore(parentItem.get().skyblocker$getLoreStrings());
+				// drop level
+				int levelSeparator = enchantName.lastIndexOf(' ');
+				enchantName = levelSeparator == -1 ? enchantName : enchantName.substring(0, levelSeparator);
+				name = Component.literal(enchantName).withStyle(parentId.startsWith("ULTIMATE") ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.BLUE);
 			} else {
-				name = parentItem.get().getName();
+				name = parentItem.get().getHoverName();
 			}
 
-			registry.group(Identifier.of(SkyblockerMod.NAMESPACE, "rei_category/" + categoryPath), name, allItems);
+			registry.group(SkyblockerMod.id("rei_category/" + categoryPath), name, allItems);
 		});
 	}
 
 	@Override
 	public void registerExclusionZones(ExclusionZones zones) {
 		if (!Utils.isOnSkyblock()) return;
-		zones.register(GenericContainerScreen.class, containerScreen -> {
+		zones.register(ContainerScreen.class, containerScreen -> {
 			if (!SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) containerScreen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
+			return List.of(new Rectangle(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), MuseumManager.BACKGROUND_WIDTH, MuseumManager.BACKGROUND_HEIGHT));
 		});
 
-		zones.register(InventoryScreen.class, screen -> {
-			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return List.of();
-			HandledScreenAccessor accessor = (HandledScreenAccessor) screen;
-			return List.of(new Rectangle(accessor.getX() + accessor.getBackgroundWidth() + 4, accessor.getY(), 104, 127));
+		zones.register(InventoryScreen.class, _ -> {
+			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.isInGarden() || GardenPlots.widget == null) return List.of();
+			return List.of(new Rectangle(GardenPlots.widget.getX(), GardenPlots.widget.getY(), GardenPlots.widget.getWidth(), GardenPlots.widget.getHeight()));
 		});
 
-		zones.register(Screen.class, screen -> {
+		zones.register(Screen.class, _ -> {
 			if (!VisitorHelper.shouldRender()) return List.of();
-			return VisitorHelper.getExclusionZones();
+			return VisitorHelper.getExclusionZones().stream()
+					.map(this::rectangleFromRectangle)
+					.toList();
 		});
+
+		zones.register(StorageOverlayScreen.class, screen -> List.of(
+				rectangleFromRectangle(screen.getMainExclusionZone()),
+				rectangleFromRectangle(screen.getButtonsExclusionZone())
+		));
+	}
+
+	public Rectangle rectangleFromRectangle(Rect2i rect2i) {
+		return new Rectangle(rect2i.getX(), rect2i.getY(), rect2i.getWidth(), rect2i.getHeight());
 	}
 
 	@Override

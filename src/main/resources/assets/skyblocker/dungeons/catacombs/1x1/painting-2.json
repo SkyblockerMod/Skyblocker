@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Painting"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance behind Painting",
+      "category": "entrance",
+      "x": 21,
+      "y": 75,
+      "z": 14
+    },
+    {
+      "secretName": "1 - Item",
+      "category": "item",
+      "x": 24,
+      "y": 68,
+      "z": 22
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 9,
+      "y": 80,
+      "z": 25
+    },
+    {
+      "secretName": "2 - Wither Essence",
+      "category": "wither",
+      "x": 6,
+      "y": 80,
+      "z": 21
+    }
+  ]
+}

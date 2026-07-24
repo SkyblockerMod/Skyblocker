@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Beams"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 4,
+      "y": 82,
+      "z": 11
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 7,
+      "y": 81,
+      "z": 2
+    },
+    {
+      "secretName": "2 - Entrance",
+      "category": "entrance",
+      "x": 12,
+      "y": 93,
+      "z": 25
+    },
+    {
+      "secretName": "2 - Item",
+      "category": "item",
+      "x": 9,
+      "y": 92,
+      "z": 25
+    }
+  ]
+}

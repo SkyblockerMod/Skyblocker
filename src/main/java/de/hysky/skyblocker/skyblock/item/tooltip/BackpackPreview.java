@@ -8,24 +8,28 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +40,15 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class BackpackPreview {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
-	private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/generic_54.png");
-	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
-	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
+	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
+	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern STRORAGE_PATTERN = Pattern.compile("Storage", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_SIZE_PATTERN = Pattern.compile("has (\\d+) slots", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
 	private static final Storage[] storages = new Storage[STORAGE_SIZE];
 
@@ -55,9 +62,9 @@ public class BackpackPreview {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-			if (screen instanceof HandledScreen<?> handledScreen) {
-				ScreenEvents.remove(screen).register(screen1 -> updateStorage(handledScreen));
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
+				ScreenEvents.remove(screen).register(_ -> updateStorage(handledScreen));
 			}
 		});
 	}
@@ -67,7 +74,7 @@ public class BackpackPreview {
 			// save all dirty storages
 			saveStorages();
 			// update save dir based on sb profile id
-			String id = MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", "") + "/" + Utils.getProfileId();
+			String id = Minecraft.getInstance().getUser().getProfileId().toString().replaceAll("-", "") + "/" + Utils.getProfileId();
 			if (!id.equals(loaded)) {
 				saveDir = SkyblockerMod.CONFIG_DIR.resolve("backpack-preview/" + id);
 
@@ -77,7 +84,7 @@ public class BackpackPreview {
 					} catch (Exception e) {
 						LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
 					}
-				});
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 				// load storage again because profile id changed
 				loaded = id;
@@ -104,12 +111,12 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}).thenAcceptAsync(storage -> storages[index2] = storage, MinecraftClient.getInstance());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
 		}
 	}
 
-	private static RegistryOps<NbtElement> getOps() {
-		return Utils.getRegistryWrapperLookup().getOps(NbtOps.INSTANCE);
+	private static RegistryOps<Tag> getOps() {
+		return RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 	}
 
 	private static void saveStorages() {
@@ -127,22 +134,71 @@ public class BackpackPreview {
 		CompletableFuture.runAsync(() -> {
 			Path storageFile = saveDir.resolve(index + ".nbt");
 			try {
-				NbtIo.write((NbtCompound) Storage.CODEC.encodeStart(getOps(), storage).getOrThrow(), storageFile);
+				NbtIo.write((CompoundTag) Storage.CODEC.encodeStart(getOps(), storage).getOrThrow(), storageFile);
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to save backpack preview file: {}", storageFile.getFileName(), e);
 			}
-		}).thenRunAsync(() -> storage.markClean(), MinecraftClient.getInstance());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
 	}
 
-	private static void updateStorage(HandledScreen<?> handledScreen) {
+	private static void updateStorage(AbstractContainerScreen<?> handledScreen) {
 		String title = handledScreen.getTitle().getString();
 		int index = getStorageIndexFromTitle(title);
 		if (index != -1) {
-			storages[index] = new Storage(handledScreen.getScreenHandler().slots.getFirst().inventory, title, true);
+			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
+		}
+
+		if (STRORAGE_PATTERN.matcher(title).matches()) {
+			initializeStorage(handledScreen);
 		}
 	}
 
-	public static boolean renderPreview(DrawContext context, Screen screen, int index, int mouseX, int mouseY) {
+	/**
+	 * Creates blank storages from storage overlay when not initialized
+	 * @param handledScreen screen
+	 */
+	private static void initializeStorage(AbstractContainerScreen<?> handledScreen) {
+		NonNullList<Slot> slots = handledScreen.getMenu().slots;
+		//echests
+		for (int i = 9; i < 18; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 9;
+			//ignore non-existent ender chest or if they are already created
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.red()) || storages[index] != null) continue;
+			storages[index] = new Storage(
+					new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+							.limit(18)
+							.toArray(ItemStack[]::new)),
+					"", true
+			);
+		}
+		//backpacks
+		for (int i = 27; i < 45; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 18;
+			//remove backpacks if they are no longer there
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.brown())) {
+				storages[index] = null;
+			}
+			//add new backpacks
+			if (storages[index] != null) continue;
+			Matcher size = ItemUtils.getLoreLineIfContainsMatch(slot.getItem(), BACKPACK_SIZE_PATTERN);
+			if (size != null) {
+				storages[index] = new Storage(
+						new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+								.limit(NumberUtils.toInt(size.group(1)) + 9)
+								.toArray(ItemStack[]::new)),
+						"", true
+				);
+			}
+		}
+	}
+
+	public static Storage[] getStorages() {
+		return storages;
+	}
+
+	public static boolean extractPreview(GuiGraphicsExtractor graphics, Screen screen, int index, int mouseX, int mouseY) {
 		if (index >= 9 && index < 18) index -= 9;
 		else if (index >= 27 && index < 45) index -= 18;
 		else return false;
@@ -153,32 +209,32 @@ public class BackpackPreview {
 		int x = mouseX + 184 >= screen.width ? mouseX - 188 : mouseX + 8;
 		int y = Math.max(0, mouseY - 16);
 
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
-		context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 176, rows * 18 + 17, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y + rows * 18 + 17, 0, 215, 176, 7, 256, 256);
 
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		context.drawText(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
+		Font textRenderer = Minecraft.getInstance().font;
+		graphics.text(textRenderer, storages[index].name(), x + 8, y + 6, 0xFF404040, false);
 
 		for (int i = 9; i < storages[index].size(); ++i) {
 			ItemStack currentStack = storages[index].getStack(i);
 			int itemX = x + (i - 9) % 9 * 18 + 8;
 			int itemY = y + (i - 9) / 9 * 18 + 18;
 
-			ItemBackgroundManager.drawBackgrounds(currentStack, context, itemX, itemY);
+			ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
 			if (ItemProtection.isItemProtected(currentStack)) {
-				context.drawTexture(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, itemX, itemY);
 			}
 
-			context.drawItem(currentStack, itemX, itemY);
-			context.drawStackOverlay(textRenderer, currentStack, itemX, itemY);
-			SlotTextManager.renderSlotText(context, textRenderer, null, currentStack, i, itemX, itemY);
+			graphics.item(currentStack, itemX, itemY);
+			graphics.itemDecorations(textRenderer, currentStack, itemX, itemY);
+			SlotTextManager.extractSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
 		}
 
 		return true;
 	}
 
-	private static int getStorageIndexFromTitle(String title) {
+	public static int getStorageIndexFromTitle(String title) {
 		Matcher echest = ECHEST_PATTERN.matcher(title);
 		if (echest.find()) return Integer.parseInt(echest.group(1)) - 1;
 		Matcher backpack = BACKPACK_PATTERN.matcher(title);
@@ -186,16 +242,16 @@ public class BackpackPreview {
 		return -1;
 	}
 
-	private static class Storage {
+	public static class Storage {
 		private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(Storage::name),
 				ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList)
-				).apply(instance, Storage::create));
-		private final Inventory inventory;
+		).apply(instance, Storage::create));
+		private final Container inventory;
 		private final String name;
 		private boolean dirty;
 
-		private Storage(Inventory inventory, String name, boolean dirty) {
+		private Storage(Container inventory, String name, boolean dirty) {
 			this.inventory = inventory;
 			this.name = name;
 			this.dirty = dirty;
@@ -205,12 +261,12 @@ public class BackpackPreview {
 			return name;
 		}
 
-		private int size() {
-			return inventory.size();
+		public int size() {
+			return inventory.getContainerSize();
 		}
 
-		private ItemStack getStack(int index) {
-			return inventory.getStack(index);
+		public ItemStack getStack(int index) {
+			return inventory.getItem(index);
 		}
 
 		private void markClean() {
@@ -218,7 +274,7 @@ public class BackpackPreview {
 		}
 
 		private static Storage create(String name, List<ItemStack> items) {
-			SimpleInventory inventory = new SimpleInventory(items.toArray(ItemStack[]::new));
+			SimpleContainer inventory = new SimpleContainer(items.toArray(ItemStack[]::new));
 			return new Storage(inventory, name, false);
 		}
 

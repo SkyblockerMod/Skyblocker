@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Sarcophagus"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Superboom",
+      "category": "superboom",
+      "x": 15,
+      "y": 70,
+      "z": 8
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 15,
+      "y": 69,
+      "z": 4
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 15,
+      "y": 70,
+      "z": 8
+    },
+    {
+      "secretName": "2/3 - Entrance",
+      "category": "entrance",
+      "x": 24,
+      "y": 72,
+      "z": 20
+    },
+    {
+      "secretName": "2 - Wither Essence",
+      "category": "wither",
+      "x": 18,
+      "y": 68,
+      "z": 27
+    },
+    {
+      "secretName": "3 - Bat",
+      "category": "bat",
+      "x": 22,
+      "y": 70,
+      "z": 25
+    }
+  ]
+}

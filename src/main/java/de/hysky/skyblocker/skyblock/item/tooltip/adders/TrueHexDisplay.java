@@ -2,14 +2,13 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
-import org.jetbrains.annotations.Nullable;
-
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 
 /**
  * Changes the color of HEX colors codes on dye items to reflect their actual color
@@ -22,18 +21,24 @@ public class TrueHexDisplay extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		String itemId = stack.getSkyblockId();
 
 		//Nice job on item id consistency Hypixel
-		if (itemId != null && !itemId.isEmpty() && (itemId.startsWith("DYE_") || itemId.endsWith("_DYE"))) {
-			for (Text line : lines) {
-				//The hex part is inside of the siblings
-				for (Text text : line.getSiblings()) {
+		if (!itemId.isEmpty() && (itemId.startsWith("DYE_") || itemId.endsWith("_DYE"))) {
+			for (int i = 0; i < lines.size(); i++) {
+				Component line = lines.get(i).copy();
+
+				//The hex part is inside the siblings
+				List<Component> siblings = line.getSiblings();
+				for (int j = 0; j < siblings.size(); j++) {
+					Component text = siblings.get(j);
 					String stringified = text.getString();
 
 					if (HEX_PATTERN.matcher(stringified).matches()) {
-						((MutableText) text).withColor(Integer.decode(stringified));
+						text = text.copy().withColor(Integer.decode(stringified));
+						siblings.set(j, text);
+						lines.set(i, line);
 					}
 				}
 			}
@@ -42,6 +47,6 @@ public class TrueHexDisplay extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return !SkyblockerConfigManager.get().debug.enableRepoDev;
 	}
 }

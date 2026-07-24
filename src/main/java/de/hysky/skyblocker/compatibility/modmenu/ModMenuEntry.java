@@ -8,8 +8,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class ModMenuEntry implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return SkyblockerConfigManager::createGUI;
-    }
+	@Override
+	public ConfigScreenFactory<?> getModConfigScreenFactory() {
+		return SkyblockerConfigManager::createGUI;
+	}
 }

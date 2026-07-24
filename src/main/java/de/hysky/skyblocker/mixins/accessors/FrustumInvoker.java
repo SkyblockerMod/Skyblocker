@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.render.Frustum;
+import net.minecraft.client.renderer.culling.Frustum;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
  */
 @Mixin(Frustum.class)
 public interface FrustumInvoker {
-    @Invoker
-    int invokeIntersectAab(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
+	@Invoker
+	int invokeCubeInFrustum(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
 }

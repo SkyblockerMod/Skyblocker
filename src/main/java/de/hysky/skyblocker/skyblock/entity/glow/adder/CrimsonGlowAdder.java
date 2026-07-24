@@ -5,8 +5,8 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DojoManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 
 public class CrimsonGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -17,7 +17,7 @@ public class CrimsonGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
-		return entity instanceof ZombieEntity zombie && DojoManager.inArena && DojoManager.shouldGlow(MobGlow.getArmorStandName(zombie)) ? DojoManager.getColor() : NO_GLOW;
+		return entity instanceof Zombie zombie && DojoManager.inArena && DojoManager.shouldGlow(MobGlow.getArmorStandName(zombie)) ? DojoManager.getColor() : NO_GLOW;
 	}
 
 	@Override

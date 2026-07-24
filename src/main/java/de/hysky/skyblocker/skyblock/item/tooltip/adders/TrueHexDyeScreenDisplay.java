@@ -3,15 +3,15 @@ package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
-import org.jetbrains.annotations.Nullable;
-
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 /**
  * Changes the color of HEX color codes on dye items inside of Vincent.
@@ -25,21 +25,24 @@ public class TrueHexDyeScreenDisplay extends SimpleTooltipAdder {
 	}
 
 	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Text> lines) {
-		String name = stack.getName().getString();
+	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+		String name = stack.getHoverName().getString();
 
-		if (stack.isOf(Items.PLAYER_HEAD) && name.endsWith("Dye")) {
-			for (Text line : lines) {
+		if (stack.is(Items.PLAYER_HEAD) && name.endsWith("Dye")) {
+			for (int i = 0; i < lines.size(); i++) {
+				Component line = lines.get(i);
 				Matcher matcher = HEX_PATTERN.matcher(line.getString());
 
 				if (matcher.matches()) {
 					String hex = matcher.group("hex");
-					List<Text> siblings = line.getSiblings();
+					line = line.copy();
+					List<Component> siblings = line.getSiblings();
 
 					siblings.clear();
-					siblings.add(Text.literal("Hex ").formatted(Formatting.DARK_GRAY));
-					siblings.add(Text.literal(hex).withColor(Integer.decode(hex)));
+					siblings.add(Component.literal("Hex ").withStyle(ChatFormatting.DARK_GRAY));
+					siblings.add(Component.literal(hex).withColor(Integer.decode(hex)));
 
+					lines.set(i, line);
 					return;
 				}
 			}
@@ -48,6 +51,6 @@ public class TrueHexDyeScreenDisplay extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return !SkyblockerConfigManager.get().debug.enableRepoDev;
 	}
 }

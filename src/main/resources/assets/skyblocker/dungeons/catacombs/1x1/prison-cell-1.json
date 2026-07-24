@@ -1,0 +1,21 @@
+{
+  "info": {
+    "name": "Prison Cell"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance Vines",
+      "category": "entrance",
+      "x": 2,
+      "y": 71,
+      "z": 19
+    },
+    {
+      "secretName": "1 - Chest",
+      "category": "chest",
+      "x": 10,
+      "y": 76,
+      "z": 23
+    }
+  ]
+}

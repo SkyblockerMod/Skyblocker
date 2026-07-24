@@ -1,0 +1,28 @@
+{
+  "info": {
+    "name": "Gold"
+  },
+  "secrets": [
+    {
+      "secretName": "1 - Entrance",
+      "category": "entrance",
+      "x": 50,
+      "y": 74,
+      "z": 18
+    },
+    {
+      "secretName": "1 - Stonk",
+      "category": "stonk",
+      "x": 11,
+      "y": 70,
+      "z": 15
+    },
+    {
+      "secretName": "1 - Wither Essence",
+      "category": "wither",
+      "x": 14,
+      "y": 69,
+      "z": 13
+    }
+  ]
+}
