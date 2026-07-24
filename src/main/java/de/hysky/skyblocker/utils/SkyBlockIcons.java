@@ -18,6 +18,7 @@ public final class SkyBlockIcons {
 
 	// Farming Stats
 	public static final char FARMING_FORTUNE = '\uE051';
+	public static final char OVERBLOOM = '\uE02B';
 
 	// Foraging stats
 	public static final char SWEEP = '\uE023';
