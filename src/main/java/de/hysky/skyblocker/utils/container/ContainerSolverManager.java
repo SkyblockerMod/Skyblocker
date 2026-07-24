@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.container;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.NineFTMSolver;
 import de.hysky.skyblocker.skyblock.RaffleRewardHighlight;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
 import de.hysky.skyblocker.skyblock.SkyBlockEquipmentUpdater;
@@ -81,6 +82,7 @@ public class ContainerSolverManager {
 			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
 			new RewardsHighlighter(),
+			NineFTMSolver.INSTANCE,
 			new SkyBlockEquipmentUpdater(),
 			new SkyBlockEquipmentUpdater.EquipmentWardrobe(),
 	};
