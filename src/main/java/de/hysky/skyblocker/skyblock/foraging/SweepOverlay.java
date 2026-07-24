@@ -40,8 +40,7 @@ public class SweepOverlay {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
-	// TODO do not include formatting codes with the regex
-	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s]|§[0-9a-fk-or])*(\\d+)", SkyBlockIcons.SWEEP));
+	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
