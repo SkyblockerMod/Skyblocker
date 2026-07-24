@@ -94,6 +94,21 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightInvisibug"))
+								.description(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightInvisibug.@Tooltip"))
+								.binding(defaults.hunting.huntingMobs.highlightInvisibug,
+										() -> config.hunting.huntingMobs.highlightInvisibug,
+										newValue -> config.hunting.huntingMobs.highlightInvisibug = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Invisibug"))
+								.binding(defaults.hunting.huntingMobs.invisibugGlowColor,
+										() -> config.hunting.huntingMobs.invisibugGlowColor,
+										newValue -> config.hunting.huntingMobs.invisibugGlowColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				//Lasso Hud
