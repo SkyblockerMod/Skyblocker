@@ -31,6 +31,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
+import net.minecraft.ChatFormatting;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector2i;
@@ -797,7 +798,7 @@ public class DungeonManager {
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!shouldProcess()) return true;
-		String message = text.getString();
+		String message = ChatFormatting.stripFormatting(text.getString());
 
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
@@ -821,7 +822,7 @@ public class DungeonManager {
 
 		// Dungeon Events
 
-		if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
+		if (message.equals("[NPC] Mort: Here, I found this map when I first entered the dungeon.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 		}
 
