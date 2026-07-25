@@ -6,7 +6,6 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import java.util.Objects;
 import java.util.regex.Matcher;
 
 import de.hysky.skyblocker.utils.render.gui.BasicToast;
@@ -23,10 +22,10 @@ public class AutopetFilter extends ChatPatternListener {
 	@Override
 	public boolean onMatch(Component message, Matcher matcher) {
 		if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.ACTION_BAR) {
-			Objects.requireNonNull(Minecraft.getInstance().player).sendOverlayMessage(
+			Minecraft.getInstance().gui.hud.setOverlayMessage(
 					Component.literal(
 							message.getString().replace("VIEW RULE", "")
-					));
+					), true);
 		} else if (SkyblockerConfigManager.get().chat.hideAutopet == ChatFilterResult.TOAST) {
 			Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(Component.literal(message.getString().replace("VIEW RULE", "")), (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), ICON.getStack()));
 		}
