@@ -520,7 +520,7 @@
     "skyblocker.events.tab.endsIn": "Termine dans %s",
     "skyblocker.events.tab.startsIn": "Commence dans %s",
     "skyblocker.slayer.hud.levelMaxed": "AU MAX",
-    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Affiche une estimation de la valeur totale de l'objet dans l'info-bulle, §lce n'est pas forcément 100% précis tout le temps.§r\n\nEn vendant des objets, vérifiez toujours manuellement le prix !",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Affiche une estimation de la valeur totale de l'objet dans l'info-bulle. \nLe prix est basé sur le prix au BZ/AH de chaque partie, il ne peut pas être précisément estimé si les données de prix ne sont pas chargées. Les prix peuvent avoir été artificiellement gonflé ou dégonflé alors veuillez vérifier les prix manuellement avant de vendre des objets !",
     "skyblocker.config.general.specialEffects.rareDyeDropEffects.@Tooltip": "Ajoute un effet visuel spécial activé en obtenant un colorant rare !",
     "skyblocker.config.dungeons.secretWaypoints.enableFairySoulWaypoints": "Activer les Marqueurs de Fairy Soul",
     "skyblocker.config.dungeons.dungeonScore.scoreScaling": "Taille du Score",
@@ -1823,5 +1823,8 @@
     "skyblocker.shortcuts.keyBinding.duplicate": "⚠ Cette touche est utilisée par un autre raccourci, ce qui n'est pas autorisé ! ⚠\n\nSupprimez ce raccourci ou:\n%s",
     "skyblocker.shortcuts.hasDuplicates": "Impossible de sauvegarder car il y a des entrées ayant la meme commande ou touche !",
     "skyblocker.bars.config.reset": "Cela va réinitialiser les barres d'état à leur position par défaut.\nCela ne peut pas être annulé.",
-    "skyblocker.bars.config.resetTitle": "Réinitialiser les barres d'état ?"
+    "skyblocker.bars.config.resetTitle": "Réinitialiser les barres d'état ?",
+    "skyblocker.bars.config.vitality": "Vitality",
+    "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "Cette fonctionnalité ne marchera pas si l'utilisateur utilise /nick car cela rend difficile de déterminer son identité.",
+    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Les données des prix sont chargés via l'API. Si il y a une erreur de réseau et que l'opération échoue, veuillez essayer de rafraîchir manuellement les données en utilisant /skyblocker refreshPrices, ou vérifiez si le réseau peux accéder https://api.azureaaron.net/authenticate/."
 }
