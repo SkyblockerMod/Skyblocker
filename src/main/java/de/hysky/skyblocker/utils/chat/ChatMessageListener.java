@@ -115,7 +115,7 @@ public interface ChatMessageListener {
 					LocalPlayer player = Minecraft.getInstance().player;
 
 					if (player != null) {
-						player.sendOverlayMessage(message);
+						Minecraft.getInstance().gui.hud.setOverlayMessage(message, true);
 
 						return false;
 					}
