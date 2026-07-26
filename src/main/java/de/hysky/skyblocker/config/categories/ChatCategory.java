@@ -5,6 +5,7 @@ import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
+import de.hysky.skyblocker.skyblock.foraging.ForagingUtils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
@@ -146,12 +147,12 @@ public class ChatCategory {
 										newValue -> config.chat.hideToggleLottery = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-						.option(Option.<ChatFilterResult>createBuilder()
-								.name(Component.translatable("skyblocker.config.chat.filter.hideToggleBeeKeeper"))
-								.description(Component.translatable("skyblocker.config.chat.filter.hideToggleBeeKeeper.@Tooltip"))
-								.binding(defaults.chat.hideToggleBeeKeeper,
-										() -> config.chat.hideToggleBeeKeeper,
-										newValue -> config.chat.hideToggleBeeKeeper = newValue)
+						.optionIf(ForagingUtils.SHOW_TORRHUS_SAFARI_OPTIONS, Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideToggleBeekeeper"))
+								.description(Component.translatable("skyblocker.config.chat.filter.hideToggleBeekeeper.@Tooltip"))
+								.binding(defaults.chat.hideToggleBeekeeper,
+										() -> config.chat.hideToggleBeekeeper,
+										newValue -> config.chat.hideToggleBeekeeper = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

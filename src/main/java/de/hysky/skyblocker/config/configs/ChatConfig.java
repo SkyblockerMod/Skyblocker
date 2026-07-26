@@ -35,7 +35,7 @@ public class ChatConfig {
 
 	public ChatFilterResult hideToggleLottery = ChatFilterResult.PASS;
 
-	public ChatFilterResult hideToggleBeeKeeper = ChatFilterResult.PASS;
+	public ChatFilterResult hideToggleBeekeeper = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
