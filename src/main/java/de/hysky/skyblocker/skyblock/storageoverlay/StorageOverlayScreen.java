@@ -145,11 +145,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 
 	private int getLeftPos() {
-		return this.width / 6;
+		return this.width / 16;
 	}
 
 	private int getWidth() {
-		return (this.width / 3) * 2;
+		return (this.width / 8) * 7;
 	}
 
 	private int getHeight() {
