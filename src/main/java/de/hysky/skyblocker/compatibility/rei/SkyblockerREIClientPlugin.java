@@ -55,7 +55,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerCategories(CategoryRegistry categoryRegistry) {
-		if (!Utils.isOnSkyblock()) return;
+		if (!SkyblockerConfigManager.get().general.itemList.enableLoadOnGameLaunch)
+			if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockCraftingRecipe.ID), EntryStacks.of(Items.CRAFTING_TABLE));
 		categoryRegistry.addWorkstations(CategoryIdentifier.of(SkyblockForgeRecipe.ID), EntryStacks.of(Items.ANVIL));
@@ -71,7 +72,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry displayRegistry) {
-		if (!Utils.isOnSkyblock()) return;
+		if (!SkyblockerConfigManager.get().general.itemList.enableLoadOnGameLaunch)
+			if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		if (displayRegistry.getGlobalDisplayGenerators().stream().noneMatch(generator -> generator instanceof SkyblockRecipeDisplayGenerator))
 			displayRegistry.registerGlobalDisplayGenerator(new SkyblockRecipeDisplayGenerator());
@@ -87,7 +89,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerEntries(EntryRegistry entryRegistry) {
-		if (!Utils.isOnSkyblock()) return;
+		if (!SkyblockerConfigManager.get().general.itemList.enableLoadOnGameLaunch)
+			if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		entryRegistry.removeEntryIf(_ -> true);
 		entryRegistry.addEntries(ItemRepository.getItemsStream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).toList());
@@ -164,7 +167,8 @@ public class SkyblockerREIClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerTransferHandlers(TransferHandlerRegistry registry) {
-		if (!Utils.isOnSkyblock()) return;
+		if (!SkyblockerConfigManager.get().general.itemList.enableLoadOnGameLaunch)
+			if (!Utils.isOnSkyblock()) return;
 		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		registry.register(new SkyblockTransferHandler());
 	}
