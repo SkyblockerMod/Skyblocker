@@ -34,14 +34,18 @@ public record CrystalsWaypointSubscribeMessage(long timestamp) implements Messag
 
 		if (timeline.isPresent()) {
 			int dayCount = timeline.get().value().getPeriodCount(clockManager);
-			long closeTime = System.currentTimeMillis() + ((MAX_LOBBY_LIFETIME - dayCount) * MILLIS_PER_MINECRAFT_DAY);
 
 			// Makes it easy to debug day count related problems
 			if (Debug.debugEnabled() && Debug.webSocketDebug()) {
 				LOGGER.info("[Skyblocker WebSocket] CH Day Count: {}", dayCount);
 			}
 
-			return new CrystalsWaypointSubscribeMessage(closeTime / MILLIS_TO_SECONDS);
+			// Require the day count to be in the range [0, 26)
+			if (dayCount >= 0 && dayCount < MAX_LOBBY_LIFETIME) {
+				long closeTime = System.currentTimeMillis() + ((MAX_LOBBY_LIFETIME - dayCount) * MILLIS_PER_MINECRAFT_DAY);
+
+				return new CrystalsWaypointSubscribeMessage(closeTime / MILLIS_TO_SECONDS);
+			}
 		}
 
 		// If the timeline isn't present (for whatever weird reason) then just default to sending a close date 26 mc days later.
