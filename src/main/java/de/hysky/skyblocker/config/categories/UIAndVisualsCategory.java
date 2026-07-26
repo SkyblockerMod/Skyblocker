@@ -833,6 +833,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.searchOverlay.enableCommands = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.commandAutocomplete,
+										() -> config.uiAndVisuals.searchOverlay.commandAutocomplete,
+										newValue -> config.uiAndVisuals.searchOverlay.commandAutocomplete = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Bazaar Quick Quantities
