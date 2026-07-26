@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.museum.Donation;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -176,7 +177,7 @@ public class SearchOverManager {
 					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 					if (neuItem == null) continue;
 
-					String name = ChatFormatting.stripFormatting(neuItem.getLore().getFirst());
+					String name = ChatFormatting.stripFormatting(EnchantedBookUtils.getEnchantNameFromLore(neuItem.getLore()));
 					bazaarItems.add(name);
 					namesToNeuId.put(name, neuId);
 					continue;
