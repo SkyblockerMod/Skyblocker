@@ -1807,6 +1807,8 @@
     "skyblocker.bars.config.reset": "Ez visszaállítja a státusz sávokat az alapértelmezett helyzetükbe.\nA művelet nem vonható vissza.",
     "skyblocker.bars.config.resetTitle": "Státusz Sávok Visszaállítása?",
     "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "A funkció nem működik, ha a felhasználó /nick-et használ megnehezítve kilétének meghatározását.",
-    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Az áradatok API-on keresztül vannak betöltve. Ha a hálózat nem tölti be az adatokat, próbáld meg manuálisan újratölteni azt a /skyblocker refreshPrices paranccsal, illetve győződj meg, hogy a hálózat hozzá tud férni az alábbi oldalhoz: https://api.azureaaron.net/authenticate/.",
-    "skyblocker.bars.config.vitality": "Vitality"
+    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Az áradatok API-on keresztül vannak betöltve. Ha a hálózat nem tölti be az adatokat, próbáld meg manuálisan újratölteni azt a /skyblocker refreshPrices paranccsal, illetve győződj meg, hogy a hálózat hozzá tud férni az alábbi oldalakhoz: https://hysky.de/ és https://api.azureaaron.net/.",
+    "skyblocker.bars.config.vitality": "Vitality",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Tárgy Ritkaság Háttér Klasszikus Színek",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "A forráscsomag-frissítés előtti ritkasági színek használata."
 }
