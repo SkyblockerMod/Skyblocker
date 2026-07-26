@@ -15,15 +15,15 @@ import io.github.moulberry.repo.data.Rarity;
 public enum SkyblockItemRarity implements StringRepresentable {
 	COMMON(ChatFormatting.WHITE),
 	UNCOMMON(ChatFormatting.GREEN),
-	RARE(ChatFormatting.BLUE, SkyBlockColors.BLUE),
-	EPIC(ChatFormatting.DARK_PURPLE, SkyBlockColors.DARK_PURPLE),
-	LEGENDARY(ChatFormatting.GOLD, SkyBlockColors.GOLD),
+	RARE(ChatFormatting.BLUE, SkyBlockColors.BLUE, TextColor.BLUE),
+	EPIC(ChatFormatting.DARK_PURPLE, SkyBlockColors.DARK_PURPLE, TextColor.DARK_PURPLE),
+	LEGENDARY(ChatFormatting.GOLD, SkyBlockColors.GOLD, TextColor.GOLD),
 	MYTHIC(ChatFormatting.LIGHT_PURPLE),
 	DIVINE(ChatFormatting.AQUA),
 	SPECIAL(ChatFormatting.RED),
 	VERY_SPECIAL(ChatFormatting.RED),
-	ULTIMATE(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED),
-	ADMIN(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED),
+	ULTIMATE(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED, TextColor.DARK_RED),
+	ADMIN(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED, TextColor.DARK_RED),
 	UNKNOWN(ChatFormatting.DARK_GRAY);
 
 	public static final Codec<SkyblockItemRarity> CODEC = StringRepresentable.fromEnum(SkyblockItemRarity::values);
@@ -33,20 +33,25 @@ public enum SkyblockItemRarity implements StringRepresentable {
 	public final float r;
 	public final float g;
 	public final float b;
+	public final int legacyColor;
 
 	SkyblockItemRarity(ChatFormatting formatting) {
 		this(formatting, TextColor.fromLegacyFormat(formatting));
 	}
 
-	SkyblockItemRarity(ChatFormatting formatting, TextColor textColor) {
+	SkyblockItemRarity(ChatFormatting formatting, TextColor color, TextColor legacyColor) {
 		this.name = name().replace("_", " ");
 		this.formatting = formatting;
-		//noinspection DataFlowIssue
-		this.color = textColor.getValue();
+		this.color = color.getValue();
 
-		this.r = ((this.color >> 16) & 0xFF) / 255f;
-		this.g = ((this.color >> 8) & 0xFF) / 255f;
-		this.b = (this.color & 0xFF) / 255f;
+		this.r = ARGB.redFloat(this.color);
+		this.g = ARGB.greenFloat(this.color);
+		this.b = ARGB.blueFloat(this.color);
+		this.legacyColor = legacyColor.getValue();
+	}
+
+	SkyblockItemRarity(TextColor color) {
+		this(color, color);
 	}
 
 	/**
@@ -118,7 +123,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 
 	public static SkyblockItemRarity fromColor(int color) {
 		return Arrays.stream(SkyblockItemRarity.values())
-				.filter(rarity -> ARGB.colorFromFloat(1f, rarity.r, rarity.g, rarity.b) == ARGB.opaque(color))
+				.filter(rarity -> ARGB.opaque(rarity.color) == ARGB.opaque(color))
 				.findFirst()
 				.orElse(UNKNOWN);
 	}
