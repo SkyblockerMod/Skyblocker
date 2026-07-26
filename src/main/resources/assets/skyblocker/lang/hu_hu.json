@@ -1810,5 +1810,7 @@
     "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Az áradatok API-on keresztül vannak betöltve. Ha a hálózat nem tölti be az adatokat, próbáld meg manuálisan újratölteni azt a /skyblocker refreshPrices paranccsal, illetve győződj meg, hogy a hálózat hozzá tud férni az alábbi oldalakhoz: https://hysky.de/ és https://api.azureaaron.net/.",
     "skyblocker.bars.config.vitality": "Vitality",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Tárgy Ritkaság Háttér Klasszikus Színek",
-    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "A forráscsomag-frissítés előtti ritkasági színek használata."
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "A forráscsomag-frissítés előtti ritkasági színek használata.",
+    "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Automatikus kitöltés ötletek mutatása auction house/bazaar parancsokhoz.",
+    "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip": "A beállítás frissítéséhez újra be kell lépni a játékba."
 }
