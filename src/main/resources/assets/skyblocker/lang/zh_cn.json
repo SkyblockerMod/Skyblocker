@@ -787,7 +787,7 @@
     "skyblocker.config.mining.crystalsWaypoints.addedWaypoint": "为%s在 %s %s %s 处添加了路径点。",
     "skyblocker.crimson.kuudra.danger": "危险！",
     "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "启用物品估价",
-    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "在工具提示中显示物品估计的总价值。\n这一数值基于各部分的BZ/AH价格，当价格缺失时无法准确估计。价格可能并非总是100%准确。出售商品时，请务必手动检查商品价格！",
+    "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "在工具提示中显示物品估计的总价值。\n这一数值基于各部分的BZ/AH价格，当价格缺失时无法准确估计。价格可能被人为抬高或压低。出售商品时，请务必手动检查商品价格！",
     "skyblocker.config.quickNav.button.tooltip": "工具提示",
     "skyblocker.config.quickNav.button.tooltip.@Tooltip": "将鼠标悬停在按钮上时显示工具提示。\n\n可以使用文本json格式。\n若不放置任何内容会使工具提示无法呈现。",
     "skyblocker.tips.gardenMouseLock": "在Skyblocker设置→花园中可以设置在耕种时锁定鼠标。",
@@ -1786,7 +1786,7 @@
     "skyblocker.bars.config.direction.FROM_MIDDLE": "从中间",
     "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "从左至右",
     "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "从右至左",
-    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "价格数据是通过API加载的。如果当前网络无法加载数据，请使用 /skyblocker refreshPrices 手动刷新数据，或检查当前网络能否访问https://api.azureaaron.net/authenticate/。",
+    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "价格数据是通过API加载的。如果当前网络无法加载数据，请使用 /skyblocker refreshPrices 手动刷新数据，或检查当前网络能否访问https://hysky.de/和https://api.azureaaron.net/。",
     "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "已启用",
     "skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton": "狩猎工具包",
     "skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton": "农耕工具包",
@@ -1794,5 +1794,14 @@
     "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth": "背包宽度",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "记住搜索历史",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "关闭背包后记住上次的搜索和位置。",
-    "skyblocker.customization.item.selectModel": "选择模型"
+    "skyblocker.customization.item.selectModel": "选择模型",
+    "skyblocker.bars.config.reset": "这将把状态条重置为默认位置。\n此操作无法撤销。",
+    "skyblocker.bars.config.resetTitle": "要重置状态条吗？",
+    "skyblocker.bars.config.vitality": "活力",
+    "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "如果玩家使用/nick导致无法判断身份，该功能无法生效。",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "物品稀有度背景旧版颜色",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "使用资源包更新之前的稀有度颜色。",
+    "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip": "需要重新进入服务器才能更新此设置。",
+    "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "隐藏",
+    "skyblocker.config.uiAndVisuals.storageOverlay.homeButton": "主界面"
 }
