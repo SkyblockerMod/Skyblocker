@@ -40,6 +40,7 @@ public enum Location implements StringRepresentable {
 	 */
 	GALATEA("foraging_2", "Galatea"),
 	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll"),
+	TORRHUS_CANYON("foraging_3", "Torrhus Canyon"),
 	/**
 	 * Unknown Skyblock location
 	 */
