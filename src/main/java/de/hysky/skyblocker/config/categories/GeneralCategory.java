@@ -392,6 +392,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors"))
 								.description(Component.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
 								.binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors,
 										() -> config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors,
 										newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors = newValue)

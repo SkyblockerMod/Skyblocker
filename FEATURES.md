@@ -114,6 +114,8 @@
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
     - *Custom Head Textures*
+    - *Custom Item Models*
+    - *Custom Glint*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -123,6 +125,7 @@
     - *XP*
     - *Speed*
     - *Oxygen*
+    - *Vitality*
 - **Vanilla health/xp and fancy bar shown in parallel**
 - Place the bars on anchors or anywhere on screen
 
@@ -270,6 +273,7 @@
     - Auction House
     - Bazaar
     - Museum
+- **Storage Overlay**
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -357,7 +361,8 @@
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
-  - *`/chapters` command*
+    - *`/chapters` command*
+    - */ahs, /bz commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
