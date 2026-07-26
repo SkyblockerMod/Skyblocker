@@ -1,26 +1,22 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import de.hysky.skyblocker.utils.SkyBlockColors;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Abstract base class for a element based Widget.
@@ -28,7 +24,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
  * Their size is dependent on the elements inside,
  * the position may be changed after construction.
  */
-public abstract class ElementBasedWidget extends HudWidget {
+public abstract class ElementBasedWidget extends HudWidget implements ElementCollector {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final Font txtRend = Minecraft.getInstance().font;
@@ -37,8 +33,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	private static final List<Element> ERROR_ELEMENTS = List.of(new PlainTextElement(Component.literal("An error occurred! Please check logs.").withColor(0xFFFF0000)));
 
 	private final ArrayList<Element> elements = new ArrayList<>();
-
-	private int prevW = 0, prevH = 0;
+	private List<Element> configElements;
 
 	public static final int BORDER_SZE_N = txtRend.lineHeight + 2;
 	public static final int BORDER_SZE_S = 4;
@@ -51,22 +46,26 @@ public abstract class ElementBasedWidget extends HudWidget {
 	private final int color;
 	private final Component title;
 
+	private boolean lastRenderedConfig = false;
+
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
 	 * @param title      title
 	 * @param colorValue the colour
-	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public ElementBasedWidget(Component title, @Nullable Integer colorValue, String internalID) {
-		super(internalID);
+	public ElementBasedWidget(Component title, @Nullable Integer colorValue, Information information) {
+		super(information);
 		this.title = title;
 		this.color = 0xFF000000 | (colorValue == null ? 0 : SkyBlockColors.fromVanilla(colorValue));
+		configElements = List.of(new PlainTextElement(title.plainCopy()));
+		pack(elements); // initial pack to limit weird rendering artifacts
 	}
 
-	public void addComponent(Element c) {
+	public <T extends Element> T addElement(T c) {
 		c.setParent(this);
 		this.elements.add(c);
+		return c;
 	}
 
 	public final boolean isEmpty() {
@@ -85,66 +84,104 @@ public abstract class ElementBasedWidget extends HudWidget {
 			this.elements.clear();
 			this.elements.addAll(ERROR_ELEMENTS);
 		}
-		this.pack();
+		if (!lastRenderedConfig) this.pack(elements);
+	}
+
+	protected final void updateConfig() {
+		ElementCollection collector = new ElementCollection();
+		updateConfigContent(collector);
+		if (!collector.getElements().isEmpty()) {
+			configElements = collector.getElements();
+		}
+		this.pack(configElements);
+	}
+
+	@Override
+	public void updateConfigPreview() {
+		super.updateConfigPreview();
+		updateConfig();
 	}
 
 	public abstract void updateContent();
 
-	/**
-	 * Shorthand function for simple elements.
-	 * If the entry at idx has the format "[textA]: [textB]", an IcoTextComponent is
-	 * added as such:
-	 * [ico] [string] [textB.formatted(fmt)]
-	 */
-	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, int idx) {
-		Component txt = simpleEntryText(idx, string, fmt);
-		this.addComponent(Elements.iconTextComponent(ico, txt));
+	protected void updateConfigContent(ElementCollector collector) {
+		// very basic default impl
+		update();
+		elements.forEach(collector::addElement);
 	}
 
-	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, String content) {
-		Component txt = simpleEntryText(content, string, fmt);
-		this.addComponent(Elements.iconTextComponent(ico, txt));
-	}
-
-	public final void addSimpleIconTranslatableText(@Nullable FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
-		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Elements.iconTextComponent(icon, text));
-	}
-
-	public final void addSimpleIconTranslatableText(FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
-		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
-		this.addComponent(Elements.iconTextComponent(icon, text));
+	public boolean shouldUpdateBeforeRendering() {
+		return false;
 	}
 
 	@Override
-	public final void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+	protected final void extractWidgetRenderState(GuiGraphicsExtractor context, float delta) {
+		if (shouldUpdateBeforeRendering()) update();
+		if (lastRenderedConfig) {
+			lastRenderedConfig = false;
+			pack(elements);
+		}
+		extractInternal(context, elements, false);
+	}
+
+	@Override
+	protected void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+		if (!lastRenderedConfig) {
+			lastRenderedConfig = true;
+			pack(configElements);
+		}
+		extractInternal(graphics, configElements, true);
+	}
+
+	private void extractInternal(GuiGraphicsExtractor context, Collection<Element> elements, boolean config) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
-			context.fill(x + 1, y, x + w - 1, y + h, textBackgroundColor);
-			context.fill(x, y + 1, x + 1, y + h - 1, textBackgroundColor);
-			context.fill(x + w - 1, y + 1, x + w, y + h - 1, textBackgroundColor);
+			context.fill(1, 0, w - 1, h, textBackgroundColor);
+			context.fill(0, 1, 1, h - 1, textBackgroundColor);
+			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
 		}
+
+		// Display Hypixel or Skyblocker widget in config mode.
+		/*
+		Component title = this.title;
+		boolean isHypixelWidget = this instanceof TabHudWidget;
+		if (config) {
+			title = this.title.copy().append(" (").append(isHypixelWidget ? "Hypixel" : "Skyblocker").append(" Widget)");
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "Hypixel" : "Skyblocker").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "Hy" : "Skb").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" (").append(isHypixelWidget ? "H" : "S").append(")");
+			}
+			if (txtRend.width(title) + 8 >= w) {
+				title = this.title.copy().append(" ").append(isHypixelWidget ? "H" : "S");
+			}
+		}
+		 */
 
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.text(txtRend, title, x + 8, y + 2, this.color, false);
+		context.text(txtRend, title, 8, 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.extractHorizontalLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.extractHorizontalLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.extractHorizontalLine(context, x + 2, y + h - 2, w - 4);
+			this.extractHorizontalLine(context, 2, 1 + strHeightHalf, 4);
+			this.extractHorizontalLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.extractHorizontalLine(context, 2, h - 2, w - 4);
 
-			this.extractVerticalLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.extractVerticalLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, 1, 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
-		int yOffs = y + BORDER_SZE_N;
+		int yOffs = BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.extractRenderState(context, x + BORDER_SZE_W, yOffs);
+			c.extractRenderState(context, BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
@@ -154,7 +191,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	 * <b>Must be called before returning from the widget constructor and after all
 	 * elements are added!</b>
 	 */
-	private void pack() {
+	private void pack(Collection<Element> elements) {
 		h = 0;
 		w = 0;
 		for (Element c : elements) {
@@ -168,10 +205,6 @@ public abstract class ElementBasedWidget extends HudWidget {
 
 		// min width is dependent on title
 		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.width(title) + 4 + 4 + 1);
-		// update the positions so it doesn't wait for the next tick or something
-		if (h != prevH || w != prevW) ScreenBuilder.markDirty();
-		prevW = w;
-		prevH = h;
 	}
 
 	private void extractHorizontalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {
@@ -182,40 +215,4 @@ public abstract class ElementBasedWidget extends HudWidget {
 		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
-	/**
-	 * If the entry at idx has the format "[textA]: [textB]", the following is
-	 * returned:
-	 * [entryName] [textB.formatted(contentFmt)]
-	 */
-	public static @Nullable Component simpleEntryText(int idx, String entryName, ChatFormatting contentFmt) {
-
-		String src = PlayerListManager.strAt(idx);
-
-		if (src == null) {
-			return null;
-		}
-
-		int cidx = src.indexOf(':');
-		if (cidx == -1) {
-			return null;
-		}
-
-		src = src.substring(src.indexOf(':') + 1);
-		return simpleEntryText(src, entryName, contentFmt);
-	}
-
-	/**
-	 * @return [entryName] [entryContent.formatted(contentFmt)]
-	 */
-	public static Component simpleEntryText(String entryContent, String entryName, ChatFormatting contentFmt) {
-		return Component.literal(entryName).append(Component.literal(entryContent).withStyle(contentFmt));
-	}
-
-	public static Component simpleEntryTranslatableText(String translationKey, String content, ChatFormatting contentFormatting) {
-		return Component.translatable(translationKey, Component.literal(content).withStyle(contentFormatting));
-	}
-
-	public static Component simpleEntryTranslatableText(String translationKey, Component content, ChatFormatting contentFormatting) {
-		return Component.translatable(translationKey, content.copy().withStyle(contentFormatting));
-	}
 }

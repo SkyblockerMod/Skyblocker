@@ -8,10 +8,8 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
@@ -66,11 +64,11 @@ public class MiningCategory {
 								newValue -> config.mining.redialOnBadSignal = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.dwarvenHud.screen"))
+						.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, screen)))
 						.build())
 
 				//Pickobulus Helper
@@ -202,17 +200,11 @@ public class MiningCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.crystalsHud"))
 						.collapsed(false)
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.mining.crystalsHud.enabled"))
-								.binding(defaults.mining.crystalsHud.enabled,
-										() -> config.mining.crystalsHud.enabled,
-										newValue -> config.mining.crystalsHud.enabled = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, screen)))
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))

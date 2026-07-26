@@ -1,94 +1,92 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import com.google.gson.JsonObject;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.JsonValueInput;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.BasicWidget;
-import java.util.Objects;
-import java.util.Set;
-import net.minecraft.client.Minecraft;
+import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
-public abstract class HudWidget extends BasicWidget {
-	/**
-	 * Single constant set for representing all possible locations for a {@code HudWidget} to prevent unnecessarily
-	 * recreating this set many times over (not the best for efficiency).
-	 */
-	protected static final Set<Location> ALL_LOCATIONS = Set.of(Location.values());
-	private final String internalID;
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+public abstract class HudWidget implements LayoutElement {
+	protected int w = 0, h = 0;
+	protected int x = 0, y = 0;
+	protected float scale = 1;
+	private final Information information;
 
 
 	/**
 	 * Most often than not this should be instantiated only once.
 	 *
-	 * @param internalID the internal ID, for config, positioning depending on other widgets, all that good stuff
+	 * @param information the internal ID, for config, positioning depending on other widgets, all that good stuff
 	 */
-	public HudWidget(String internalID) {
-		this.internalID = internalID;
+	public HudWidget(Information information) {
+		this.information = information;
 	}
 
 
-	/**
-	 * Whether the widget should render in this location. Using this instead of rendering nothing will
-	 * allow "child" widgets to take this one's spot when not rendered. <br><br>
-	 * {@link de.hysky.skyblocker.utils.Utils#getLocation()} should not be used unless you know what you're doing.
-	 * (might not be true anymore, need testing still c: )
-	 *
-	 * @param location the location
-	 * @return true if the widget should render in the specified location
-	 */
-	public boolean shouldRender(Location location) {
-		return isEnabledIn(location);
+	protected abstract void extractWidgetRenderState(GuiGraphicsExtractor graphics, float delta);
+
+	protected abstract void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta);
+
+	public final void extractRenderState(GuiGraphicsExtractor graphics, float delta) {
+		graphics.pose().pushMatrix();
+		graphics.pose().scale(scale);
+		extractWidgetRenderState(graphics, delta);
+		graphics.pose().popMatrix();
+	}
+
+	public final void extractRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+		graphics.pose().pushMatrix();
+		graphics.pose().scale(scale);
+		extractWidgetRenderStateForConfig(graphics, delta);
+		graphics.pose().popMatrix();
+	}
+
+	public boolean shouldRender() {
+		return true;
+	}
+
+	public void load(JsonValueInput input) {
+		scale = input.readFloatOr("scale", 1);
+	}
+
+	public void save(JsonObject output) {
+		output.addProperty("scale", scale);
+	}
+
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		collector.addWidget(RangedSliderWidget.builder()
+				.defaultValue(scale)
+				.optionFormatter(Component.literal("Scale"), Formatters.FLOAT_NUMBERS)
+				.minMax(0.1, 5)
+				.step(0.1)
+				.callback(d -> scale = (float) d)
+				.build());
 	}
 
 	/**
-	 * @return the locations where this widget can be enabled/disabled in the widgets configuration screen
+	 * Called when the config preview should be updated.
+	 * Such as when the user changes location in the dropdown or when they edit an option on the widget.
 	 */
-	public abstract Set<Location> availableLocations();
-
-	public abstract void setEnabledIn(Location location, boolean enabled);
-
-	/**
-	 * @param location the location
-	 * @return if the widget is enabled in this location in general. If this is true, this widget will be shown
-	 * as enabled in the WidgetsConfigScreen and will render in the preview tab regardless if {@link #shouldRender(Location)}
-	 * is true or not.
-	 */
-	public abstract boolean isEnabledIn(Location location);
-
-	/**
-	 * Perform all your logic here. Or in the {@link #renderWidget(GuiGraphics, int, int, float)} method if you feel like it.
-	 * But this will be called much less often. See usages of it.
-	 *
-	 * @see #shouldUpdateBeforeRendering()
-	 */
-	public abstract void update();
-
-	/**
-	 * Returns true if the update method should be called right before rendering.
-	 *
-	 * @return true if it should update
-	 */
-	public boolean shouldUpdateBeforeRendering() {
-		return false;
-	}
-
-	protected abstract void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta);
-
-	public final void extractRenderState(GuiGraphicsExtractor graphics) {
-		extractRenderState(graphics, -1, -1, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaTicks());
-	}
-
-	@Override
-	public final void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		extractWidgetRenderState(graphics, mouseX, mouseY, delta);
-	}
+	public void updateConfigPreview() {}
 
 	/**
 	 * @param object the other HudWidget
 	 * @return true if they are the same instance or the internal id is the same.
 	 */
 	@Override
-	public boolean equals(Object object) {
+	public final boolean equals(Object object) {
 		if (this == object) return true;
 		if (object == null || getClass() != object.getClass()) return false;
 
@@ -97,37 +95,79 @@ public abstract class HudWidget extends BasicWidget {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(internalID);
+	public final int hashCode() {
+		return getInternalID().hashCode();
 	}
 
-	public String getInternalID() {
-		return internalID;
+	public final String getInternalID() {
+		return information.id();
 	}
 
-	public Component getDisplayName() {
-		return Component.nullToEmpty(getInternalID());
+	public final Information getInformation() {
+		return information;
 	}
 
-	// Positioner shenanigans
-
-	private boolean positioned = false;
-	private boolean visible = false;
-
-
-	public final boolean isPositioned() {
-		return positioned;
+	public final int getX() {
+		return this.x;
 	}
 
-	public final void setPositioned(boolean positioned) {
-		this.positioned = positioned;
+	public final void setX(int x) {
+		this.x = x;
 	}
 
-	public final boolean isVisible() {
-		return visible;
+	public final int getY() {
+		return this.y;
 	}
 
-	public final void setVisible(boolean visible) {
-		this.visible = visible;
+	public final void setY(int y) {
+		this.y = y;
+	}
+
+	public final int getWidth() {
+		return Math.round(this.w * scale);
+	}
+
+	public final int getHeight() {
+		return Math.round(this.h * scale);
+	}
+
+	public final boolean isMouseOver(double mouseX, double mouseY) {
+		return mouseX >= getX() && mouseX <= getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
+	}
+
+	@Override
+	public final void visitWidgets(Consumer<AbstractWidget> widgetVisitor) {}
+
+	/**
+	 * @param id          the id for the config file
+	 * @param displayName the name that will be shown in the config screen
+	 * @param available   in which locations the widget can be added. If not available everywhere, {@link java.util.EnumSet} and {@code contains} are recommended
+	 */
+	public record Information(String id, Component displayName, Predicate<Location> available) {
+		/**
+		 * Shorter constructor that makes the widget available everywhere
+		 *
+		 * @see Information#Information(String, Component, Predicate)
+		 */
+		public Information(String id, Component displayName) {
+			this(id, displayName, _ -> true);
+		}
+
+		public Information(String id, Component displayName, Set<Location> allowedLocations) {
+			this(id, displayName, allowedLocations::contains);
+		}
+
+		public Information(String id, Component displayName, Location allowedLocation) {
+			this(id, displayName, EnumSet.of(allowedLocation));
+		}
+
+		public Information(String id, Component displayName, Location allowedLocation, Location... allowedLocations) {
+			this(id, displayName, EnumSet.of(allowedLocation, allowedLocations));
+		}
+
+	}
+
+	public static String nameToId(String name) {
+		return name.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", "");
 	}
 }

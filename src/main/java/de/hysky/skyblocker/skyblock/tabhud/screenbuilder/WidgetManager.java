@@ -1,32 +1,39 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
+import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.DungeonPlayerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -35,29 +42,68 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.EnumMap;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Pretty much the entry point for anything widget related. Decides which screen should be rendered.
+ */
 public class WidgetManager {
+	@SuppressWarnings("deprecation")
+	public static final Set<Location> ALLOWED_LOCATIONS = Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.BLAZING_FORTRESS)));
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
-	@SuppressWarnings("unused")
-	private static final int VERSION = 2;
+	private static final int DEFAULTS_VERSION = 1;
+	private static final String DEFAULTS_VERSION_KEY = "_defaults_version";
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
-	private static final Map<Location, ScreenBuilder> BUILDER_MAP = new EnumMap<>(Arrays.stream(Location.values()).collect(Collectors.toMap(Function.identity(), ScreenBuilder::new)));
+	public static final ScreenBuilder SCREEN_BUILDER = new ScreenBuilder();
 
-	public static final Map<String, HudWidget> widgetInstances = new HashMap<>();
+	private static Config CONFIG = new Config();
 
-	public static ScreenBuilder getScreenBuilder(Location location) {
-		return BUILDER_MAP.get(location);
+	public static final Map<String, HudWidget> WIDGET_INSTANCES = new HashMap<>();
+
+	private static boolean hasFancyTab = false;
+
+	public static ScreenConfig getScreenConfig(Location screenId) {
+		return CONFIG.screenConfigs().computeIfAbsent(screenId, _ -> new ScreenConfig());
 	}
+
+	public static CopyTracker getCopyTracker() {
+		return CONFIG.copyTracker();
+	}
+
+	public static boolean hasFancyTab() {
+		return hasFancyTab;
+	}
+
+	public static HudWidget getWidgetOrPlaceholder(String id) {
+		return WIDGET_INSTANCES.computeIfAbsent(id, PlaceholderWidget::new);
+	}
+
+	public static boolean isWidgetInCurrentScreen(HudWidget widget) {
+		return SCREEN_BUILDER.contains(widget);
+	}
+
+	public static boolean isWidgetInCurrentLayer(HudWidget widget) {
+		return currentLayer != null && SCREEN_BUILDER.get(currentLayer).contains(widget);
+	}
+
+	public static List<HudWidget> getWidgetsAvailableIn(Location location) {
+		return WIDGET_INSTANCES.values().stream().filter(w -> w.getInformation().available().test(location)).toList();
+	}
+
+	private static @Nullable Location currentLocation;
+	private static @Nullable ScreenLayer currentLayer;
 
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
@@ -71,6 +117,7 @@ public class WidgetManager {
 			}
 			loadConfig();
 
+			PlayerListManager.registerTabListener(WidgetManager::onPlayerListUpdate);
 		});
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveConfig());
@@ -95,102 +142,178 @@ public class WidgetManager {
 		matrices.popMatrix();
 	}
 
+	public static void onPlayerListUpdate() {
+		boolean fancyTab = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
+		if (!fancyTab && hasFancyTab) {
+			SCREEN_BUILDER.clearFancyTab();
+		} else if (fancyTab) {
+			SCREEN_BUILDER.updateFancyTab();
+			hasFancyTab = true;
+		}
+	}
+
 	/**
 	 * Top level render method.
-	 * Calls the appropriate ScreenBuilder with the screen's dimensions
+	 * Renders the appropriate LayerBuilder with the screen's dimensions and updates it when its LayerConfig is changed.
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
 	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
-		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
+		ScreenLayer layer;
+		// Figure out which layer should be used
 		if (client.options.keyPlayerList.isDown()) {
 			if (hud || TabHud.shouldRenderVanilla()) return;
 			if (TabHud.toggleSecondary.isDown()) {
-				screenBuilder.run(context, w, h, ScreenLayer.SECONDARY_TAB);
+				layer = ScreenLayer.SECONDARY_TAB;
 			} else {
-				screenBuilder.run(context, w, h, ScreenLayer.MAIN_TAB);
+				layer = ScreenLayer.MAIN_TAB;
 			}
 		} else if (hud) {
-			screenBuilder.run(context, w, h, ScreenLayer.HUD);
+			layer = ScreenLayer.HUD;
+		} else return;
+
+		Location location = Utils.getLocation();
+
+		if (currentLocation != location) {
+			currentLocation = location;
+			SCREEN_BUILDER.setConfig(getScreenConfig(currentLocation));
+			currentLayer = null; // force second condition to trigger
 		}
+		if (currentLayer != layer) {
+			currentLayer = layer;
+			SCREEN_BUILDER.get(layer).update();
+		}
+		SCREEN_BUILDER.get(currentLayer).extractRenderStates(context, w, h, false);
 	}
 
 	public static void loadConfig() {
+		AtomicReference<@Nullable String> error = new AtomicReference<>();
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
-			JsonObject object = SkyblockerMod.GSON.fromJson(reader, JsonObject.class);
-			JsonObject positions = object.getAsJsonObject("positions");
-			for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
-				Location location = builderEntry.getKey();
-				ScreenBuilder screenBuilder = builderEntry.getValue();
-				if (positions.has(location.id())) {
-					JsonObject locationObject = positions.getAsJsonObject(location.id());
-					for (Map.Entry<String, JsonElement> entry : locationObject.entrySet()) {
-						PositionRule.CODEC.decode(JsonOps.INSTANCE, entry.getValue())
-								.ifSuccess(pair -> screenBuilder.setPositionRule(entry.getKey(), pair.getFirst()))
-								.ifError(pairError -> LOGGER.error("[Skyblocker] Failed to parse position rule: {}", pairError.messageSupplier().get()));
-					}
-				}
+			JsonElement input = JsonParser.parseReader(reader);
+			CONFIG = Config.DATA_FIXING_CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
+			if (error.get() != null) { // separate it to not run when the config fully cannot load
+				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
+				showErrorToast();
+			}
+			// Do not fill defaults if migrating from old config
+			if (CONFIG.defaultsVersion > 0) {
+				fillDefaultConfig(CONFIG.defaultsVersion);
 			}
 		} catch (NoSuchFileException _) {
-			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
-			fillDefaultConfig();
+			// Fill default config
+			fillDefaultConfig(0);
 		} catch (Exception e) {
-			LOGGER.error("[Skyblocker] Failed to load hud widgets config", e);
+			LOGGER.error("[Skyblocker] Failed to HUD load config: {}", error.get(), e);
+			showErrorToast();
+		}
+	}
+
+	private static void showErrorToast() {
+		SystemToast.add(Minecraft.getInstance().gui.toastManager(), new SystemToast.SystemToastId(), Component.literal("Error reading Skyblocker HUD Config"), Component.literal("Check your logs!"));
+	}
+
+	/**
+	 * When adding something do not forget to bump {@link WidgetManager#DEFAULTS_VERSION}!
+	 */
+	private static void fillDefaultConfig(int comingFromVersion) {
+		if (comingFromVersion < 1) {
+			EditableScreenBuilder editableScreenBuilder = new EditableScreenBuilder();
+			LayerBuilderEditor hud = editableScreenBuilder.getEditor(ScreenLayer.HUD);
+			// Mining related stuff
+
+			HudWidget commissions = getWidgetOrPlaceholder("commissions");
+			HudWidget powders = getWidgetOrPlaceholder("powders");
+			EnumSet<Location> miningLocations = EnumSet.of(Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS);
+			getCopyTracker().hud().getOrCreate(commissions.getInternalID()).track(miningLocations);
+			getCopyTracker().hud().getOrCreate(powders.getInternalID()).track(miningLocations);
+
+			PositionRule commsRule = new PositionRule(
+					Optional.empty(),
+					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.LEFT),
+					5,
+					5
+			);
+			PositionRule powderRule = new PositionRule(
+					"commissions",
+					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.LEFT),
+					0,
+					2
+			);
+			editableScreenBuilder.setConfig(getScreenConfig(Location.DWARVEN_MINES));
+			hud.add(commissions, commsRule);
+			hud.add(powders, powderRule);
+			hud.serializeConfig();
+
+
+			editableScreenBuilder.setConfig(getScreenConfig(Location.CRYSTAL_HOLLOWS));
+			hud.add(commissions, commsRule);
+			hud.add(powders, powderRule);
+			hud.add(getWidgetOrPlaceholder("hud_crystals"), new PositionRule(
+					Optional.empty(),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.RIGHT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.RIGHT),
+					-5,
+					-5
+			));
+			hud.serializeConfig();
+
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GLACITE_MINESHAFTS));
+			hud.add(commissions, commsRule);
+			hud.add(powders, powderRule);
+			hud.serializeConfig();
+
+			// Sweep details
+			HudWidget sweepDetails = getWidgetOrPlaceholder("sweep_details");
+			for (Location location : SweepDetailsHudWidget.LOCATIONS) {
+				editableScreenBuilder.setConfig(getScreenConfig(location));
+				hud.add(sweepDetails);
+				hud.serializeConfig();
+			}
+			getCopyTracker().hud().getOrCreate(sweepDetails.getInternalID()).track(SweepDetailsHudWidget.LOCATIONS);
+
+			// Galatea
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
+			hud.add(getWidgetOrPlaceholder("hud_treeprogress"), new PositionRule(
+					"sweep_details",
+					new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.TOP, PositionRule.HorizontalPoint.LEFT),
+					0,
+					2
+			));
+			hud.serializeConfig();
+
+			// Garden
+			editableScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
+			hud.add(getWidgetOrPlaceholder("hud_farming"));
+			hud.serializeConfig();
+
+			// The end
+			editableScreenBuilder.setConfig(getScreenConfig(Location.THE_END));
+			hud.add(getWidgetOrPlaceholder("hud_end"));
+			hud.serializeConfig();
+
+			editableScreenBuilder.setConfig(getScreenConfig(Location.DUNGEON));
+			hud.add(getWidgetOrPlaceholder("dungeon_splits"), new PositionRule(
+					Optional.empty(),
+					new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+					new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
+					5,
+					0)
+			);
+			hud.serializeConfig();
 		}
 	}
 
 	public static void saveConfig() {
-		JsonObject output = new JsonObject();
-		JsonObject positions = new JsonObject();
-		for (Map.Entry<Location, ScreenBuilder> builderEntry : BUILDER_MAP.entrySet()) {
-			Location location = builderEntry.getKey();
-			ScreenBuilder screenBuilder = builderEntry.getValue();
-			JsonObject locationObject = new JsonObject();
-			screenBuilder.forEachPositionRuleEntry((s, positionRule) -> locationObject.add(s, PositionRule.CODEC.encodeStart(JsonOps.INSTANCE, positionRule).getOrThrow()));
-			if (locationObject.isEmpty()) continue;
-			positions.add(location.id(), locationObject);
-		}
-		output.add("positions", positions);
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
-			SkyblockerMod.GSON.toJson(output, writer);
+			SkyblockerMod.GSON.toJson(Config.DATA_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow(), writer);
 			LOGGER.info("[Skyblocker] Saved hud widget config");
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker] Failed to save hud widget config", e);
 		}
-	}
-
-	// All non-tab HUDs should have a position rule initialised here, because they don't have an auto positioning
-	private static void fillDefaultConfig() {
-		ScreenBuilder screenBuilder = getScreenBuilder(Location.THE_END);
-		screenBuilder.setPositionRule(
-				"hud_end",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
-		);
-
-		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {
-			screenBuilder = getScreenBuilder(loc);
-			screenBuilder.setPositionRule(
-					CommsWidget.ID,
-					new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, 5, 5, WidgetManager.ScreenLayer.HUD)
-			);
-			screenBuilder.setPositionRule(
-					"powders",
-					new PositionRule(CommsWidget.ID, new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, PositionRule.HorizontalPoint.LEFT), PositionRule.Point.DEFAULT, 0, 2, WidgetManager.ScreenLayer.HUD)
-			);
-		}
-
-		screenBuilder = getScreenBuilder(Location.DUNGEON);
-		screenBuilder.setPositionRule(
-				"Dungeon Splits",
-				new PositionRule(
-						"screen",
-						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
-						new PositionRule.Point(PositionRule.VerticalPoint.CENTER, PositionRule.HorizontalPoint.LEFT),
-						5,
-						0,
-						WidgetManager.ScreenLayer.HUD)
-		);
 	}
 
 
@@ -205,24 +328,14 @@ public class WidgetManager {
 	 * Do not change the signature unless you know what you're doing.
 	 */
 	public static void addWidgetInstance(HudWidget widget) {
-		HudWidget put = widgetInstances.put(widget.getInternalID(), widget);
-		if (widget instanceof TabHudWidget tabHudWidget) {
-			PlayerListManager.tabWidgetInstances.put(tabHudWidget.getHypixelWidgetName(), tabHudWidget);
-		}
-		if (put != null) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
+		HudWidget put = WIDGET_INSTANCES.put(widget.getInternalID(), widget);
+		if (put != null && !(put instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
 	}
 
-	/**
-	 * @implNote !! The 3 first ones shouldn't be moved, ordinal is used in some places
-	 */
 	public enum ScreenLayer implements StringRepresentable {
 		MAIN_TAB,
 		SECONDARY_TAB,
-		HUD,
-		/**
-		 * Default is only present for config and isn't used anywhere else
-		 */
-		DEFAULT;
+		HUD;
 
 		public static final Codec<ScreenLayer> CODEC = StringRepresentable.fromEnum(ScreenLayer::values);
 
@@ -232,13 +345,25 @@ public class WidgetManager {
 				case MAIN_TAB -> "Main Tab";
 				case SECONDARY_TAB -> "Secondary Tab";
 				case HUD -> "HUD";
-				case DEFAULT -> "Default";
 			};
 		}
 
 		@Override
 		public String getSerializedName() {
-			return name();
+			return name().toLowerCase(Locale.ENGLISH);
+		}
+	}
+
+	public record Config(Map<Location, ScreenConfig> screenConfigs, CopyTracker copyTracker, int defaultsVersion) {
+		public static final Codec<Config> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				CodecUtils.mutableOptional(Codec.unboundedMap(Location.CODEC, ScreenConfig.CODEC).fieldOf("configs"), Object2ObjectOpenHashMap::new).forGetter(Config::screenConfigs),
+				CopyTracker.CODEC.fieldOf("copies").forGetter(Config::copyTracker),
+				Codec.INT.optionalFieldOf(DEFAULTS_VERSION_KEY, 0).forGetter(_ -> DEFAULTS_VERSION)
+		).apply(instance, Config::new));
+		public static final Codec<Config> DATA_FIXING_CODEC = ConfigDataFixer.createDataFixingCodec(ConfigDataFixer.HUD_WIDGETS_TYPE, CODEC);
+
+		public Config() {
+			this(new Object2ObjectOpenHashMap<>(), new CopyTracker(), 0);
 		}
 	}
 }

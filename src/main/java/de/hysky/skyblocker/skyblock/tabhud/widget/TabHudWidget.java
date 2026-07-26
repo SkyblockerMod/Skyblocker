@@ -1,24 +1,50 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
+
+/**
+ * An {@link ElementBasedWidget} specialized to replace/use information from one hypixel TAB widget. <p>
+ * {@link TabHudWidget#updateContent(PlayerListManager.Widget)} is automatically called when the player list updates with the specified
+ * hypixel TAB widget's contents.
+ */
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;
-	private final List<Element> cachedElements = new ArrayList<>();
 
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Information information) {
+		super(title, colorValue, information);
+		this.hypixelWidgetName = hypixelWidgetName;
+		registerAutoUpdate();
+		PlayerListManager.addHandledTabWidget(hypixelWidgetName, this);
+	}
 
 	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue) {
-		super(title, colorValue, hypixelWidgetName.toLowerCase(Locale.ENGLISH).replace(' ', '_').replace("'", ""));
-		this.hypixelWidgetName = hypixelWidgetName;
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy()));
+	}
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Location location) {
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy(), location));
+	}
+
+	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Location location, Location... otherLocations) {
+		this(hypixelWidgetName, title, colorValue, new Information(nameToId(hypixelWidgetName), title.plainCopy(), location, otherLocations));
+	}
+
+	protected void registerAutoUpdate() {
+		PlayerListManager.registerTabListener(() -> {
+			if (WidgetManager.isWidgetInCurrentScreen(this)) update();
+		});
 	}
 
 	public String getHypixelWidgetName() {
@@ -26,80 +52,29 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal(getHypixelWidgetName());
-	}
-
-	@Override
 	public void updateContent() {
-		cachedElements.forEach(super::addComponent);
+		PlayerListManager.Widget widget = PlayerListManager.getListWidget(hypixelWidgetName);
+		if (widget != null) updateContent(widget);
+		else updateContentMissing();
 	}
 
-	public void updateFromTab(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
-		cachedElements.clear();
-		updateContent(lines, playerListEntries);
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final boolean shouldRender(Location location) {
-		return false;
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final Set<Location> availableLocations() {
-		return Set.of();
-	}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final void setEnabledIn(Location location, boolean enabled) {}
-
-	/**
-	 * Controlled by Hypixel and {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager PlayerListManager}.
-	 * {@link de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder#updateWidgetLists(boolean) ScreenBuilder#updateWidgetLists}
-	 * take the widgets directly from {@link de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager#tabWidgetsToShow PlayerListManager#tabWidgetsToShow}.
-	 */
-	@Override
-	public final boolean isEnabledIn(Location location) {
-		return false;
-	}
-
-	/**
-	 * Same as {@link #updateContent(List)} but only override if you need access to {@code playerListEntries}.
-	 *
-	 * @param playerListEntries the player list entries, which should match the lines.
-	 *                          Null in dungeons.
-	 * @see #updateContent(List)
-	 */
-	protected void updateContent(List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
-		updateContent(lines);
+	protected void updateContentMissing() {
+		for (Component component : createErrorMessage()) addElement(new PlainTextElement(component));
 	}
 
 	/**
 	 * Updates the content from the hypixel widget's lines
-	 *
-	 * @param lines the lines, they are formatted and trimmed, no blank lines will be present.
-	 *              If the vanilla tab widget has text right after the : they will be put on the first line.
 	 */
-	protected abstract void updateContent(List<Component> lines);
+	protected abstract void updateContent(PlayerListManager.Widget widget);
 
-	@Override
-	public final void addComponent(Element c) {
-		cachedElements.add(c);
+	public List<Component> createErrorMessage() {
+		Component tabKey = Minecraft.getInstance().options.keyPlayerList.getTranslatedKeyMessage();
+		return List.of(
+				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(hypixelWidgetName).withStyle(ChatFormatting.YELLOW)),
+				Component.translatable("skyblocker.hud.missingTabWidget[1]"),
+				Component.translatable("skyblocker.hud.missingTabWidget[2]"),
+				Component.translatable("skyblocker.hud.missingTabWidget[3]", tabKey, tabKey, TabHud.defaultTgl.getTranslatedKeyMessage())
+		);
 	}
 
 }

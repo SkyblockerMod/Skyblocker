@@ -2,18 +2,19 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
 
 // this widget shows the status or results of the current election
 @RegisterWidget
@@ -47,31 +48,32 @@ public class ElectionWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		String status = lines.getFirst().getString();
+	public void updateContent(PlayerListManager.Widget widget) {
+		List<Component> lines = widget.lines();
+		String status = widget.detail().getString();
 
 		if (status.contains("Over!")) {
 			// election is over
-			this.addComponent(Elements.iconTextComponent(Ico.BARRIER, EL_OVER));
+			this.addElement(Elements.iconTextComponent(Ico.BARRIER, EL_OVER));
 
-			for (int i = 1; i < lines.size(); i++) {
-				this.addComponent(new PlainTextElement(lines.get(i)));
+			for (Component line : lines) {
+				this.addElement(new PlainTextElement(line));
 			}
 
 		} else {
 			// election is going on
-			this.addSimpleIcoText(Ico.CLOCK, "Ends in: ", ChatFormatting.GOLD, lines.getFirst().getString().trim());
+			this.addSimpleIcoText(Ico.CLOCK, "Ends in: ", ChatFormatting.GOLD, status.trim());
 
-			for (int i = 1; i < lines.size(); i++) {
+			for (int i = 0; i < lines.size(); i++) {
 				String string = lines.get(i).getString();
 				Matcher m = VOTE_PATTERN.matcher(string);
 				if (m.matches()) {
 					String mayorname = m.group("mayor");
 					String pcntstr = m.group("pcnt");
 					float pcnt = Float.parseFloat(pcntstr);
-					Component candidate = Component.literal(mayorname).withStyle(COLS[i - 1]);
-					this.addComponent(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, TextColor.fromLegacyFormat(COLS[i - 1]).getValue()));
-				} else this.addComponent(new PlainTextElement(lines.get(i)));
+					Component candidate = Component.literal(mayorname).withStyle(COLS[i]);
+					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, TextColor.fromLegacyFormat(COLS[i]).getValue()));
+				} else this.addElement(new PlainTextElement(lines.get(i)));
 			}
 		}
 	}

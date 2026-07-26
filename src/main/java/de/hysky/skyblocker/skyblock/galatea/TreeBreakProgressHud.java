@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
@@ -22,13 +21,11 @@ import org.jspecify.annotations.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @RegisterWidget
 public class TreeBreakProgressHud extends ElementBasedWidget {
 
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
 	private static @Nullable TreeBreakProgressHud instance;
 	private static final Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<>();
 
@@ -37,7 +34,7 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	}
 
 	public TreeBreakProgressHud() {
-		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), TextColor.GREEN.getValue(), "hud_treeprogress");
+		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), TextColor.GREEN.getValue(), new Information("hud_treeprogress", Component.literal("Tree Break Progress"), Location.GALATEA));
 		instance = this;
 		update();
 	}
@@ -58,25 +55,8 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!availableLocations().contains(location))
-			return;
-		SkyblockerConfigManager.update(config -> config.foraging.galatea.enableTreeBreakProgress = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && isOwnTree(getClosestTree());
+	public boolean shouldRender() {
+		return isOwnTree(getClosestTree());
 	}
 
 	private @Nullable ArmorStand getClosestTree() {
@@ -131,11 +111,6 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
 		FlexibleItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
 		addSimpleIcoText(woodIcon, treeName + " ", ChatFormatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Tree Break Progress HUD");
 	}
 
 }
