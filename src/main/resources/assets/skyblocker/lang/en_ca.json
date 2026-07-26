@@ -108,5 +108,7 @@
     "skyblocker.customization.armor": "Armour",
     "skyblocker.config.slayer.highlightColor": "Boss/Miniboss Highlight Colour",
     "skyblocker.config.misc.cat.@Tooltip": "Adds a cat picture to the Hub's Community Centre.",
-    "skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip": "Allows changing Loadouts, Armour Sets, and Equipment Sets by pressing the corresponding key."
+    "skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip": "Allows changing Loadouts, Armour Sets, and Equipment Sets by pressing the corresponding key.",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Item Rarity Background Legacy Colours",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Use the rarity colours from before the resource pack update."
 }
