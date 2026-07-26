@@ -1785,8 +1785,6 @@
     "skyblocker.bars.config.direction.FROM_MIDDLE": "從中間",
     "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "從左至右",
     "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "從右至左",
-    "skyblocker.config.helpers.buildersWand": "",
-    "skyblocker.config.helpers.hoppitysHunt": "",
     "skyblocker.bars.config.reset": "這將把狀態條重設為預設位置。\n此操作無法撤銷。",
     "skyblocker.bars.config.resetTitle": "要重置狀態條嗎？",
     "skyblocker.bars.config.vitality": "活力",
