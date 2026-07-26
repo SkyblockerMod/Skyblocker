@@ -15,9 +15,11 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.flag.FeatureFlagSet;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -38,9 +40,9 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		this(Minecraft.getInstance(), screen, input, Minecraft.getInstance().font, onlyShowIfCursorPastError, suggestionLineLimit, node);
 	}
 
-	// FIXME nullable shit
 	public static CommandBuildContext getContext() {
 		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null) return CommandBuildContext.simple(VanillaRegistries.createLookup(), FeatureFlagSet.of());
 		return CommandBuildContext.simple(player.connection.registryAccess(), player.connection.enabledFeatures());
 	}
 

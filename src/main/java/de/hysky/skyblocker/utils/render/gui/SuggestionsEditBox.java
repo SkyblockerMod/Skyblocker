@@ -21,14 +21,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class AutocompleteEditBox extends EditBox {
+public class SuggestionsEditBox extends EditBox {
 
 	private final TextFieldSuggestions suggestions;
 	private final boolean autoTrim;
 	private final @Nullable String argument;
 	private @Nullable Consumer<String> responder;
 
-	public AutocompleteEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node, boolean autoTrim) {
+	public SuggestionsEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node, boolean autoTrim) {
 		super(font, width, height, narration);
 		this.suggestions = new TextFieldSuggestions(minecraft, screen, this, font, onlyShowIfCursorPastError, suggestionLineLimit, node);
 		this.autoTrim = autoTrim;
@@ -89,6 +89,12 @@ public class AutocompleteEditBox extends EditBox {
 	}
 
 	@Override
+	public void onClick(MouseButtonEvent event, boolean doubleClick) {
+		super.onClick(event, doubleClick);
+		suggestions.updateCommandInfo();
+	}
+
+	@Override
 	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 		if (visible) suggestions.extractRenderState(graphics, mouseX, mouseY);
@@ -140,11 +146,11 @@ public class AutocompleteEditBox extends EditBox {
 			return this;
 		}
 
-		public AutocompleteEditBox build(Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
+		public SuggestionsEditBox build(Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
 			return build(Minecraft.getInstance(), Minecraft.getInstance().font,  screen, narration, node);
 		}
 
-		public AutocompleteEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentBuilder<ClientSuggestionProvider, ?> builder) {
+		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentBuilder<ClientSuggestionProvider, ?> builder) {
 			return build(minecraft, font, screen, narration, builder.build());
 		}
 
@@ -152,12 +158,12 @@ public class AutocompleteEditBox extends EditBox {
 			return new Argument<>(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, argumentType, autoTrim);
 		}
 
-		public AutocompleteEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
-			return new AutocompleteEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, node, autoTrim);
+		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
+			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, node, autoTrim);
 		}
 	}
 
-	public static class Argument<T> extends AutocompleteEditBox {
+	public static class Argument<T> extends SuggestionsEditBox {
 
 		public Argument(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, ArgumentType<T> argumentType, boolean autoTrim) {
 			super(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, RequiredArgumentBuilder.<ClientSuggestionProvider, T>argument("argument", argumentType).build(), autoTrim);

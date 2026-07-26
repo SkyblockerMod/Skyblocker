@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -15,6 +16,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class AbstractPopupScreen extends Screen {
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("popup/background");
+	private static final Identifier LIGHTER_BACKGROUND_TEXTURE = SkyblockerMod.id("background");
 	public final Screen backgroundScreen;
 
 	protected AbstractPopupScreen(Component title, Screen backgroundScreen) {
@@ -41,6 +43,10 @@ public class AbstractPopupScreen extends Screen {
 	 */
 	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+	}
+
+	public static void extractLighterPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIGHTER_BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
 	}
 
 	@Override

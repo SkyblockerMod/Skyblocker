@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -23,6 +24,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +38,7 @@ public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 	private final CustomizeScreen parentScreen;
-	private final CustomizeNameWidget nameWidget;
+	private final ComponentEditWidget nameWidget;
 	private final Button glintButton;
 	private final IdentifierTextField modelField;
 
@@ -70,12 +72,19 @@ public class ItemTab extends GridLayoutTab {
 			});
 		});
 		modelField.setHint(Component.translatable("skyblocker.customization.item.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-		nameWidget = new CustomizeNameWidget(parentScreen);
+		nameWidget = new ComponentEditWidget(parentScreen, Component.literal("Customize Item Name"), component -> {
+			String uuid = currentItem.getUuid();
+			if (uuid.isEmpty()) return;
+			SkyblockerConfigManager.updateOnly(config -> {
+				if (component.getString().isBlank()) config.general.customItemNames.remove(currentItem.getUuid());
+				else config.general.customItemNames.put(currentItem.getUuid(), component.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
+			});
+		});
 
 		layout.addChild(new ItemSelector(), 0, 0, 1, 1);
-		layout.addChild(new BackgroundRenderer(), 0, 1);
 
-		LinearLayout linearLayout = layout.addChild(LinearLayout.vertical(), 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).paddingVertical(3));
+
+		LinearLayout linearLayout = LinearLayout.vertical();
 		linearLayout.addChild(glintButton);
 		linearLayout.addChild(Button.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
 			Minecraft minecraft = Minecraft.getInstance();
@@ -87,8 +96,15 @@ public class ItemTab extends GridLayoutTab {
 			minecraft.gui.setScreen(new ModelSelectionPopup(parentScreen, applyItemModel));
 		}).width(120).build(), p -> p.paddingTop(4));
 		linearLayout.addChild(modelField);
+		layout.addChild(new BackgroundRenderer(linearLayout, 3), 0, 1);
+		layout.addChild(linearLayout, 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).paddingVertical(3));
 
-		layout.addChild(nameWidget, 1, 0, 1, 2);
+		LinearLayout nameLayout = LinearLayout.vertical().spacing(2);
+		nameLayout.addChild(nameWidget);
+		nameLayout.addChild(new StringWidget(20 * 16, parentScreen.getFont().lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), parentScreen.getFont()));
+		layout.addChild(new BackgroundRenderer(nameLayout, 3), 1, 0);
+		layout.addChild(nameLayout, 1, 0, 1, 2, p -> p.padding(3));
+
 
 		LocalPlayer player = Minecraft.getInstance().player;
 		ItemStack handStack = player.getMainHandItem();
@@ -120,7 +136,7 @@ public class ItemTab extends GridLayoutTab {
 		visitChildren(clickableWidget -> clickableWidget.visible = !empty);
 		if (empty) return;
 		parentScreen.backupConfigs(itemStack);
-		nameWidget.setItem(itemStack);
+		nameWidget.setText(itemStack.getHoverName().copy(), false);
 		if (SkyblockerConfigManager.get().general.customItemModel.containsKey(uuid)) {
 			Identifier identifier = SkyblockerConfigManager.get().general.customItemModel.get(uuid);
 			String string = identifier.toString();
@@ -217,23 +233,25 @@ public class ItemTab extends GridLayoutTab {
 		}
 	}
 
-	private class BackgroundRenderer extends AbstractWidget {
+	private static class BackgroundRenderer extends AbstractWidget {
+		private final Layout layout;
+		private final int padding;
 
-		BackgroundRenderer() {
+		BackgroundRenderer(Layout layout, int padding) {
 			super(0, 0, 0, 0, Component.empty());
 			active = false;
+			this.layout = layout;
+			this.padding = padding;
 		}
 
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-			int x = glintButton.getX() - 3;
-			int y = glintButton.getY() - 3;
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
-					x,
-					y,
-					modelField.getRight() + 3 - x,
-					modelField.getBottom() + 3 - y
+					layout.getX() - padding,
+					layout.getY() - padding,
+					layout.getWidth() + padding * 2,
+					layout.getHeight() + padding * 2
 			);
 		}
 
