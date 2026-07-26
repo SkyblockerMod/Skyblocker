@@ -25,10 +25,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.merge.ContentMergeStrategy;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +84,7 @@ public class NEURepoManager {
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
-	private static Multimap<String, NEUItem> nameToNEUItem = HashMultimap.create();
+	private static Multimap<@Nullable String, @Nullable NEUItem> nameToNEUItem = HashMultimap.create();
 
 	/**
 	 * Adds command to update the repository manually from ingame.
@@ -113,16 +115,24 @@ public class NEURepoManager {
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
 					try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
-						PullResult result = localRepo.pull().setRebase(false).setFastForward(MergeCommand.FastForwardMode.FF_ONLY).call();
-						if (result.isSuccessful()) {
-							LOGGER.info("[Skyblocker NEU Repo] NEU Repository updated with merge status: {}", result.getMergeResult().getMergeStatus());
-						} else {
-							LOGGER.error("[Skyblocker NEU Repo] Update failed with merge status: {}. Downloading new repository", result.getMergeResult().getMergeStatus());
-							client.execute(() ->
-								Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
-							);
-							success = false;
+						boolean stashed = localRepo.stashCreate().call() != null;
+						localRepo.fetch()
+								.setRefSpecs("+refs/heads/master:refs/remotes/origin/master")
+								.setThin(true)
+								.setDepth(1)
+								.call();
+						Ref ref = localRepo.reset()
+								.setRef("refs/remotes/origin/master")
+								.setMode(ResetCommand.ResetType.HARD)
+								.call();
+						if (stashed) {
+							localRepo.stashApply()
+									.setContentMergeStrategy(ContentMergeStrategy.THEIRS)
+									.call();
+							localRepo.stashDrop().call();
+							LOGGER.info("[Skyblocker NEU Repo] Auto stash has been applied to the NEU Repository");
 						}
+						LOGGER.info("[Skyblocker NEU Repo] NEU Repository was updated to {}", ref.getObjectId().getName());
 					}
 				} else {
 					Git.cloneRepository()
@@ -130,14 +140,14 @@ public class NEURepoManager {
 							.setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile())
 							.setBranchesToClone(List.of("refs/heads/master"))
 							.setBranch("refs/heads/master")
-							.setDepth(1) // do shallow clone
+							.setDepth(1)
 							.call().close();
 					LOGGER.info("[Skyblocker NEU Repo] NEU Repository Downloaded");
 				}
 			} catch (TransportException e) {
 				LOGGER.error("[Skyblocker NEU Repo] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
 				success = false;
-			} catch (RepositoryNotFoundException e) {
+			} catch (GitAPIException | RepositoryNotFoundException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
 				client.execute(() ->
 						Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
@@ -236,7 +246,7 @@ public class NEURepoManager {
 	/**
 	 * Gets the {@link NEUItem} by display name.
 	 */
-	public static Collection<NEUItem> getItemByName(String displayName) {
+	public static Collection<@Nullable NEUItem> getItemByName(String displayName) {
 		return nameToNEUItem.get(displayName);
 	}
 

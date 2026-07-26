@@ -69,6 +69,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return ItemUtils.getNamedPlaceholder(itemName);
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
+				.filter(Objects::nonNull)
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.map(ItemRepository::getItemStack)

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
@@ -147,6 +148,7 @@ public class SackMessagePrice {
 	private static @Nullable String getNeuId(String itemName) {
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
+				.filter(Objects::nonNull)
 				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
 				.orElseGet(() -> {
