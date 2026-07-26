@@ -77,9 +77,7 @@ public class GoldorWaypointsManager {
 	}
 
 	private static void load(Minecraft client) {
-		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
-
-		terminals.whenComplete((_, _) -> loaded = true);
+		loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json")).thenRun(() -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {

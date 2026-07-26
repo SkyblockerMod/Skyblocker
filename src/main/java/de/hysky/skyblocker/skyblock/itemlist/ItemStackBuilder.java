@@ -46,7 +46,7 @@ public class ItemStackBuilder {
 			nbt.putShort("Damage", (short) item.getDamage());
 			nbt.putInt("Count", 1);
 
-			FlexibleItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, FlexibleItemStack.CODEC);
+			FlexibleItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, FlexibleItemStack.CODEC, FlexibleItemStack.EMPTY, FlexibleItemStack::set);
 
 			//The item couldn't be fixed up
 			if (stack.is(Items.AIR)) {
