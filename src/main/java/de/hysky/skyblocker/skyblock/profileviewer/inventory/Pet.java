@@ -150,12 +150,12 @@ public class Pet {
 			petStack.set(DataComponents.PROFILE, skinTexture.get());
 		}
 
-		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD, getRarity().next().formatting));
+		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD).withColor(getRarity().next().color));
 
 		// Update the lore and name
 		petStack.set(DataComponents.LORE, new ItemLore(formattedLore));
 		String displayName = ChatFormatting.stripFormatting(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withStyle((boosted() ? getRarity().next() : getRarity()).formatting));
+		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withColor((boosted() ? getRarity().next() : getRarity()).color));
 		return petStack;
 	}
 

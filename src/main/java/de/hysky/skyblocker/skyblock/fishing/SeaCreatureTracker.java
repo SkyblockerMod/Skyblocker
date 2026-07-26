@@ -83,7 +83,7 @@ public class SeaCreatureTracker {
 		SeaCreature lastCreature = seaCreatures.sequencedValues().getLast().seaCreature;
 		SkyblockItemRarity lastCreatureRarity = lastCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
-			TitleContainer.addTitle(new Title(Component.literal(lastCreature.name).withStyle(lastCreatureRarity.formatting)), 60);
+			TitleContainer.addTitle(new Title(Component.literal(lastCreature.name).withColor(lastCreatureRarity.color)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
 		}

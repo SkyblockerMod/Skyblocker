@@ -15,43 +15,45 @@ import io.github.moulberry.repo.data.Rarity;
 public enum SkyblockItemRarity implements StringRepresentable {
 	COMMON(ChatFormatting.WHITE),
 	UNCOMMON(ChatFormatting.GREEN),
-	RARE(ChatFormatting.BLUE, SkyBlockColors.BLUE, TextColor.BLUE),
-	EPIC(ChatFormatting.DARK_PURPLE, SkyBlockColors.DARK_PURPLE, TextColor.DARK_PURPLE),
-	LEGENDARY(ChatFormatting.GOLD, SkyBlockColors.GOLD, TextColor.GOLD),
+	RARE(SkyBlockColors.BLUE, ChatFormatting.BLUE),
+	EPIC(SkyBlockColors.DARK_PURPLE, ChatFormatting.DARK_PURPLE),
+	LEGENDARY(SkyBlockColors.GOLD, ChatFormatting.GOLD),
 	MYTHIC(ChatFormatting.LIGHT_PURPLE),
 	DIVINE(ChatFormatting.AQUA),
 	SPECIAL(ChatFormatting.RED),
 	VERY_SPECIAL(ChatFormatting.RED),
-	ULTIMATE(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED, TextColor.DARK_RED),
-	ADMIN(ChatFormatting.DARK_RED, SkyBlockColors.DARK_RED, TextColor.DARK_RED),
+	ULTIMATE(SkyBlockColors.DARK_RED, ChatFormatting.DARK_RED),
+	ADMIN(SkyBlockColors.DARK_RED, ChatFormatting.DARK_RED),
 	UNKNOWN(ChatFormatting.DARK_GRAY);
 
 	public static final Codec<SkyblockItemRarity> CODEC = StringRepresentable.fromEnum(SkyblockItemRarity::values);
 	public final String name;
-	public final ChatFormatting formatting;
 	public final int color;
 	public final float r;
 	public final float g;
 	public final float b;
 	public final int legacyColor;
 
-	SkyblockItemRarity(ChatFormatting formatting) {
-		this(formatting, TextColor.fromLegacyFormat(formatting));
-	}
-
-	SkyblockItemRarity(ChatFormatting formatting, TextColor color, TextColor legacyColor) {
+	SkyblockItemRarity(Integer color, Integer legacyColor) {
 		this.name = name().replace("_", " ");
-		this.formatting = formatting;
-		this.color = color.getValue();
+		this.color = color;
 
 		this.r = ARGB.redFloat(this.color);
 		this.g = ARGB.greenFloat(this.color);
 		this.b = ARGB.blueFloat(this.color);
-		this.legacyColor = legacyColor.getValue();
+		this.legacyColor = legacyColor;
 	}
 
-	SkyblockItemRarity(TextColor color) {
+	SkyblockItemRarity(ChatFormatting formatting) {
+		Integer color = formatting.getColor();
+		assert color != null;
 		this(color, color);
+	}
+
+	SkyblockItemRarity(TextColor color, ChatFormatting legacyFormatting) {
+		Integer legacyColor = legacyFormatting.getColor();
+		assert legacyColor != null;
+		this(color.getValue(), legacyColor);
 	}
 
 	/**
