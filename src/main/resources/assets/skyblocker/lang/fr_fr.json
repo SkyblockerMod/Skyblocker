@@ -1826,5 +1826,7 @@
     "skyblocker.bars.config.resetTitle": "Réinitialiser les barres d'état ?",
     "skyblocker.bars.config.vitality": "Vitality",
     "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "Cette fonctionnalité ne marchera pas si l'utilisateur utilise /nick car cela rend difficile de déterminer son identité.",
-    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Les données des prix sont chargés via l'API. Si il y a une erreur de réseau et que l'opération échoue, veuillez essayer de rafraîchir manuellement les données en utilisant /skyblocker refreshPrices, ou vérifiez si le réseau peux accéder https://hysky.de/ et https://api.azureaaron.net/."
+    "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Les données des prix sont chargés via l'API. Si il y a une erreur de réseau et que l'opération échoue, veuillez essayer de rafraîchir manuellement les données en utilisant /skyblocker refreshPrices, ou vérifiez si le réseau peux accéder https://hysky.de/ et https://api.azureaaron.net/.",
+    "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Utiliser les couleurs de rareté d'avant la mise a jour du pack de ressource.",
+    "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Montrer des suggestions d'autocompletion pour les commandes de l'auction house et du bazaar."
 }
