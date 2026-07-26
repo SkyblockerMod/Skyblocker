@@ -362,7 +362,7 @@
     - *RNG Meter*
     - *`/call` command*
     - *`/chapters` command*
-    - */ahs, /bz commands*
+    - *`/ahs`, `/bz` commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*

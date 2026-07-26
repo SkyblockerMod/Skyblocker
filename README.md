@@ -380,7 +380,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *RNG Meter*
     - *`/call` command*
     - *`/chapters` command*
-    - */ahs, /bz commands*
+    - *`/ahs`, `/bz` commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
