@@ -132,6 +132,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
     - *Custom Head Textures*
+    - *Custom Item Models*
+    - *Custom Glint*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -141,6 +143,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *XP*
     - *Speed*
     - *Oxygen*
+    - *Vitality*
 - **Vanilla health/xp and fancy bar shown in parallel**
 - Place the bars on anchors or anywhere on screen
 
@@ -288,6 +291,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Auction House
     - Bazaar
     - Museum
+- **Storage Overlay**
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -375,7 +379,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
-  - *`/chapters` command*
+    - *`/chapters` command*
+    - *`/ahs`, `/bz` commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -403,7 +408,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
 - **Loadouts Helper**
-    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe- **Carnival Helpers**
+    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe
+- **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
@@ -444,6 +450,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Config Backups**
 - **Iris shader support**
 - **Block Break Prediction**
+
 
 
 </details>
