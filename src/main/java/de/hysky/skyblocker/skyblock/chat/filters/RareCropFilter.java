@@ -50,7 +50,7 @@ public class RareCropFilter extends ChatPatternListener {
 	private static final Map<String, FlexibleItemStack> ICONS = new HashMap<>();
 
 	public RareCropFilter() {
-		super("^RARE CROP!\\s+(?<crop>[\\w\\s]+)\\s+\\(\\+\\d+" + SkyBlockIcons.OVERBLOOM + "\\)$");
+		super("^RARE CROP!\\s+(?<crop>[\\w\\s]+)\\s+\\(\\+\\d+(?:\\.\\d+)?" + SkyBlockIcons.OVERBLOOM + "\\).*");
 	}
 
 	private @Nullable ItemStack getCropIcon(Matcher matcher) {
