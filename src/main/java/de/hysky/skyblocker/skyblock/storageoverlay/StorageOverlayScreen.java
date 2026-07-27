@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -38,7 +39,6 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -143,13 +143,24 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/huntingtoolkit", true);
 	}
 
-
-	private int getLeftPos() {
-		return this.width / 16;
+	/// This should only be used for init
+	private int getMinLeftPos() {
+		return (this.width - this.getMaxWidth()) / 2;
 	}
 
-	private int getWidth() {
+	/// The actual left pos of the overlay once it's initialized
+	private int getLeftPos() {
+		return (this.width - this.getWidth()) / 2;
+	}
+
+	/// This should only be used for init
+	private int getMaxWidth() {
 		return (this.width / 8) * 7;
+	}
+
+	/// The actual width of the overlay once it's initialized
+	private int getWidth() {
+		return this.grid != null ? this.grid.getWidth() + 16 : getMaxWidth();
 	}
 
 	private int getHeight() {
@@ -188,29 +199,29 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		//setup backpack widgets
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
-		grid = new BackpackGridWidget(getLeftPos() + 8, this.topPos + 8, getWidth() - 16, getHeight() - 16, internalCols);
+		grid = new BackpackGridWidget(getMinLeftPos() + 8, this.topPos + 8, getMaxWidth() - 16, getHeight() - 16, internalCols, true);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
 
 		//extra control buttons out the way
-		LinearLayout extraButtons = new LinearLayout(width - 90, height - 80, LinearLayout.Orientation.VERTICAL);
+		LinearLayout extraButtons = new LinearLayout(width - 90, height - 84, LinearLayout.Orientation.VERTICAL);
 		extraButtons.spacing(5);
 		//add toolkit button
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton"), this::toolkit)
-				.size(80, 15)
+				.size(80, 16)
 				.build());
 		//add hunting toolkit button
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton"), this::huntingToolkit)
-				.size(80, 15)
+				.size(80, 16)
 				.build());
 		//add button to go home
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.homeButton"), this::home)
-				.size(80, 15)
+				.size(80, 16)
 				.build());
 		//add button to temperately disable menu
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.hideButton"), this::hide)
-				.size(80, 15)
+				.size(80, 16)
 				.build());
 		extraButtons.arrangeElements();
 		extraButtons.visitWidgets(this::addRenderableWidget);
@@ -224,9 +235,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	@Override
 	public void onClose() {
-		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch && grid != null) {
 			savedScroll = grid.getScrollAmount();
-
 		} else {
 			savedSearch = "";
 			savedScroll = 0;
@@ -285,18 +295,24 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Nullable
 		private final Button reloadButton;
 
-		BackpackGridWidget(int x, int y, int width, int height, int internalCols) {
+		private BackpackGridWidget(int x, int y, int width, int height, int internalCols, boolean packed) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
-			while (expectedWidth > width - 6) {
+			while (expectedWidth > width - AbstractScrollArea.SCROLLBAR_WIDTH) {
 				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
+			}
+
+			if (packed) {
+				int diff = (width - AbstractScrollArea.SCROLLBAR_WIDTH) % expectedWidth;
+				width -= diff;
+				x += diff / 2;
 			}
 
 			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
 
 			//add backpacks
 			boolean storageLoaded = false;
-			BackpackPreview.Storage[] storages = BackpackPreview.getStorages();
+			BackpackPreview.@Nullable Storage[] storages = BackpackPreview.getStorages();
 			for (int i = 0; i < storages.length; i++) {
 				BackpackPreview.Storage storage = storages[i];
 				boolean open = StorageOverlayScreen.openStorage == i;
@@ -330,7 +346,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
 			savedSearch = input;
 			if (reloadButton != null) {
-				return Collections.singleton(reloadButton);
+				return List.of(reloadButton);
 			}
 			return backpackWidgets.stream().filter(backpack -> backpack.matches(input)).toList();
 		}
@@ -371,7 +387,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private final boolean open;
 
 
-		BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open) {
+		private BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open) {
 			int rows = Math.ceilDiv(storage.size() - 9, columns);
 			// if the storage is open use the handler to work out size
 			if (open) {
