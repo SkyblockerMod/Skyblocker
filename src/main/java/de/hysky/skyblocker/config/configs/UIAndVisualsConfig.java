@@ -125,6 +125,9 @@ public class UIAndVisualsConfig {
 		public int backpackWidth = 9;
 
 		public boolean rememberSearch = false;
+
+		// present in case we need to patch it out for x or y reason
+		public transient boolean doNotResetCursor = true;
 	}
 
 	public static class RadialMenu {

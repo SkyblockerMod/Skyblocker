@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
 import org.joml.Vector2dc;
 import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MouseHandler.class)
-@Debug(export = true)
 public class MouseHandlerMixin {
 	@Final
 	@Shadow

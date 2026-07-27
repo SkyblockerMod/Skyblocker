@@ -120,7 +120,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		} else {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/backpack " + (index - 8), true);
 		}
-		saveMousePosition = true;
+		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
 	}
 
 	protected static String getStorageName(int index) {
