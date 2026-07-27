@@ -8,21 +8,63 @@ public class HuntingConfig {
 
 	public HuntingMobs huntingMobs = new HuntingMobs();
 
+	public TorrhusMobs torrhusMobs = new TorrhusMobs();
+
+	public Safari safari = new Safari();
+
+	public HauntedBiome hauntedBiome = new HauntedBiome();
+
+	public ForestBiome forestBiome = new ForestBiome();
+
+	public CanyonBiome canyonBiome = new CanyonBiome();
+
+	public IcyBiome icyBiome = new IcyBiome();
+
 	public LassoHud lassoHud = new LassoHud();
 
 	public static class HuntingBox {
 		public boolean enabled = true;
 	}
 
+	// TODO rename to MoongladeMobs
 	public static class HuntingMobs {
 		public boolean silencePhantoms = true;
 
 		public boolean highlightHideonleaf = true;
+
 		public Color hideonleafGlowColor = new Color(DyeColor.YELLOW.getTextColor(), false);
+
 		public boolean highlightShellwise = true;
+
 		public Color shellwiseGlowColor = new Color(DyeColor.ORANGE.getTextColor(), false);
+
 		public boolean highlightCoralot = true;
+
 		public Color coralotGlowColor = new Color(DyeColor.BLUE.getTextColor(), false);
+	}
+
+	public static class TorrhusMobs {
+
+	}
+
+	public static class Safari {
+
+	}
+
+	public static class HauntedBiome {
+
+	}
+
+	public static class ForestBiome {
+
+	}
+
+	public static class CanyonBiome {
+
+	}
+
+	public static class IcyBiome {
+
 	}
 
 	public static class LassoHud {

@@ -106,7 +106,13 @@ public class ForagingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				//Sweep Overlays
+
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon"))
+						.collapsed(false)
+						.build())
+
+				// Sweep Overlay
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.foraging.sweepOverlay"))
 						.collapsed(true)

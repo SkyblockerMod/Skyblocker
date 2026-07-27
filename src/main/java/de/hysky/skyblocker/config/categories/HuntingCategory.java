@@ -31,7 +31,7 @@ public class HuntingCategory {
 						.description(Component.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
 
-				//Hunting Mob Features
+				// Moonglade Mob Features
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.huntingMobs"))
 						.collapsed(false)
@@ -94,6 +94,42 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.build())
+
+				// Torrhus Mobs
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.torrhusMobs"))
+						.collapsed(false)
+						.build())
+
+				// Safari
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.safari"))
+						.collapsed(false)
+						.build())
+
+				// Haunted Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.hauntedBiome"))
+						.collapsed(false)
+						.build())
+
+				// Forest Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.forestBiome"))
+						.collapsed(false)
+						.build())
+
+				// Canyon Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.canyonBiome"))
+						.collapsed(false)
+						.build())
+
+				// Icy Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.icyBiome"))
+						.collapsed(false)
 						.build())
 
 				//Lasso Hud
