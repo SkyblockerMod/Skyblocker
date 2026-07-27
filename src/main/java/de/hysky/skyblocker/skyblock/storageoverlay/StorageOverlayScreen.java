@@ -34,6 +34,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
@@ -71,6 +73,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
+	private boolean saveMousePosition;
+	private static @Nullable Vector2dc previousMousePosition;
+
+	public static @Nullable Vector2dc getPreviousMousePosition() {
+		Vector2dc screenPosition = previousMousePosition;
+		previousMousePosition = null;
+		return screenPosition;
+	}
 
 	@Init
 	public static void setup() { //already had init therefore called setup
@@ -108,6 +118,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		} else {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/backpack " + (index - 8), true);
 		}
+		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
 	}
 
 	protected static String getStorageName(int index) {
@@ -279,6 +290,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		if (grid == null) return super.keyPressed(event);
 		if (this.minecraft.options.keyInventory.matches(event) && grid.isSearchFocused()) return true;
 		return super.keyPressed(event);
+	}
+
+	@Override
+	public void removed() {
+		super.removed();
+		if (saveMousePosition) {
+			previousMousePosition = new Vector2d(minecraft.mouseHandler.xpos(), minecraft.mouseHandler.ypos());
+		}
 	}
 
 	@Override
