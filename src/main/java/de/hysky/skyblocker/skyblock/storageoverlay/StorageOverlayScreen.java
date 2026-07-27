@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -206,7 +207,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		this.addRenderableWidget(grid);
 
 		//extra control buttons out the way
-		LinearLayout extraButtons = new LinearLayout(width - 90, height - 80, LinearLayout.Orientation.VERTICAL);
+		LinearLayout extraButtons = new LinearLayout(width - 90, height - 84, LinearLayout.Orientation.VERTICAL);
 		extraButtons.spacing(5);
 		//add toolkit button
 		extraButtons.addChild(Button.builder(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton"), this::toolkit)
@@ -303,12 +304,12 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private BackpackGridWidget(int x, int y, int width, int height, int internalCols, boolean packed) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
-			while (expectedWidth > width - 6) {
+			while (expectedWidth > width - AbstractScrollArea.SCROLLBAR_WIDTH) {
 				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			}
 
 			if (packed) {
-				int diff = (width - 6) % expectedWidth;
+				int diff = (width - AbstractScrollArea.SCROLLBAR_WIDTH) % expectedWidth;
 				width -= diff;
 				x += diff / 2;
 			}
