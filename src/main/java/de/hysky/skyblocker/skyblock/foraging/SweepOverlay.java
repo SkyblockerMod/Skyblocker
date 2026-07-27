@@ -43,11 +43,11 @@ public class SweepOverlay {
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
 	private static final Set<String> VALID_AXES = Set.of(
-			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
+			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE", "HELIX_CHOPPER",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
 	);
 	private static final Set<String> THROWABLE_AXES = Set.of(
-			"FIG_AXE", "FIGSTONE_AXE", "JUNGLE_AXE", "TREECAPITATOR_AXE"
+			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE", "HELIX_CHOPPER"
 	);
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
@@ -65,10 +65,14 @@ public class SweepOverlay {
 	};
 
 	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
-			Blocks.STRIPPED_SPRUCE_LOG, 7.0f,
-			Blocks.STRIPPED_SPRUCE_WOOD, 7.0f,
-			Blocks.MANGROVE_LOG, 50.0f,
-			Blocks.MANGROVE_WOOD, 50.0f
+			Blocks.STRIPPED_SPRUCE_LOG, 10f,
+			Blocks.STRIPPED_SPRUCE_WOOD, 10f,
+			Blocks.MANGROVE_LOG, 50f,
+			Blocks.MANGROVE_WOOD, 50f,
+			Blocks.STRIPPED_BIRCH_LOG, 200f,
+			Blocks.STRIPPED_BIRCH_WOOD, 200f,
+			Blocks.STRIPPED_MANGROVE_LOG, 200f,
+			Blocks.STRIPPED_MANGROVE_WOOD, 200f
 	);
 
 	@Init
@@ -146,6 +150,11 @@ public class SweepOverlay {
 					|| state.is(Blocks.STRIPPED_SPRUCE_WOOD)
 					|| state.is(Blocks.MANGROVE_LOG)
 					|| state.is(Blocks.MANGROVE_WOOD);
+		} else if (Utils.isInTorrhusCanyon()) {
+			return state.is(Blocks.STRIPPED_BIRCH_LOG)
+					|| state.is(Blocks.STRIPPED_BIRCH_WOOD)
+					|| state.is(Blocks.STRIPPED_MANGROVE_LOG)
+					|| state.is(Blocks.STRIPPED_MANGROVE_WOOD);
 		} else if (Utils.isInHub()) {
 			return state.is(Blocks.OAK_LOG) || state.is(Blocks.OAK_WOOD);
 		}
