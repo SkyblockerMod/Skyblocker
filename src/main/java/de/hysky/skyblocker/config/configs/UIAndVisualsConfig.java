@@ -120,7 +120,7 @@ public class UIAndVisualsConfig {
 	public static class StorageOverlay {
 		public boolean enabled = false;
 
-		public int storagesPerRow = 0;
+		public int storagesPerRow = 3;
 
 		public int backpackWidth = 9;
 
