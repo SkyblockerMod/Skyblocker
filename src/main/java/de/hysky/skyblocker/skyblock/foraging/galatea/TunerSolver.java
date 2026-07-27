@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

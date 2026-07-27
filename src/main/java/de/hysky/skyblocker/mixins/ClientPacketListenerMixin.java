@@ -21,7 +21,7 @@ import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
-import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.foraging.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
