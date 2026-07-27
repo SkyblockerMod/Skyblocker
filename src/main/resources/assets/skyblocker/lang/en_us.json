@@ -1207,7 +1207,7 @@
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
   "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde": "Show Estimated Value Tilde",
-  "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "Displays a tilde (~) before a bar's value when it is estimated by skyblocker because it is not visible in the action bar.",
+  "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "Displays a tilde (~) before a bar's value when it is estimated by Skyblocker because it is not visible in the action bar.",
   "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
@@ -1464,7 +1464,7 @@
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Remember Search",
   "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Saves search and scroll position after closing backpack.",
   "skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow": "Storages Per Row",
-  "skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow.@Tooltip": "The maximum number of end chests/backpacks to display per row. (0 for unlimited.)",
+  "skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow.@Tooltip": "The maximum number of ender chests/backpacks to display per row. (0 for unlimited.)",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
