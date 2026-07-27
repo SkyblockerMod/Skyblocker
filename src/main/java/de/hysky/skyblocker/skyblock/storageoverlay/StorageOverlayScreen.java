@@ -40,7 +40,6 @@ import org.jspecify.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -226,9 +225,8 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	@Override
 	public void onClose() {
-		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch && grid != null) {
 			savedScroll = grid.getScrollAmount();
-
 		} else {
 			savedSearch = "";
 			savedScroll = 0;
@@ -302,7 +300,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 			//add backpacks
 			boolean storageLoaded = false;
-			BackpackPreview.Storage[] storages = BackpackPreview.getStorages();
+			BackpackPreview.@Nullable Storage[] storages = BackpackPreview.getStorages();
 			for (int i = 0; i < storages.length; i++) {
 				BackpackPreview.Storage storage = storages[i];
 				boolean open = StorageOverlayScreen.openStorage == i;
@@ -336,7 +334,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		protected Collection<? extends AbstractWidget> filterWidgets(String input) {
 			savedSearch = input;
 			if (reloadButton != null) {
-				return Collections.singleton(reloadButton);
+				return List.of(reloadButton);
 			}
 			return backpackWidgets.stream().filter(backpack -> backpack.matches(input)).toList();
 		}

@@ -30,6 +30,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class BackpackPreview {
 	private static final Pattern STRORAGE_PATTERN = Pattern.compile("Storage", Pattern.CASE_INSENSITIVE);
 	private static final Pattern BACKPACK_SIZE_PATTERN = Pattern.compile("has (\\d+) slots", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
-	private static final Storage[] storages = new Storage[STORAGE_SIZE];
+	private static final @Nullable Storage[] storages = new Storage[STORAGE_SIZE];
 
 	/**
 	 * The profile id of the currently loaded backpack preview.
@@ -194,7 +195,7 @@ public class BackpackPreview {
 		}
 	}
 
-	public static Storage[] getStorages() {
+	public static @Nullable Storage[] getStorages() {
 		return storages;
 	}
 

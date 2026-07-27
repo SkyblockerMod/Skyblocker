@@ -31,6 +31,8 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private final int expectedWidgetWidth;
 	private final boolean spaceElementsOut;
 
+	/// A grid of searchable widgets
+	/// @param expectedWidgetWidth The expected width of each widget in the grid. This class may place multiple grid widgets in the same row.
 	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, boolean spaceElementsOut) {
 		super(x, y, width, height, message, AbstractScrollArea.defaultSettings(8));
 		searchField = new EditBox(Minecraft.getInstance().font, width, TEXT_FIELD_HEIGHT, Component.translatable("gui.recipebook.search_hint"));
