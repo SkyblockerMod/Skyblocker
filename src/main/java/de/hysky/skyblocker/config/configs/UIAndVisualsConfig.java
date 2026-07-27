@@ -298,6 +298,10 @@ public class UIAndVisualsConfig {
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
+		public boolean showEstimatedTilde = true;
+
+		public boolean hasSeenVitalityAtLeastOnce = false;
+
 		// Kept in for backwards compatibility, remove if needed
 		@SuppressWarnings("DeprecatedIsStillUsed")
 		@Deprecated

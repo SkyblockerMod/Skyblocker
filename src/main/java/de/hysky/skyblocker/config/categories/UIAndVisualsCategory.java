@@ -543,7 +543,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
 								.controller(ConfigUtils.createEnumController(intelligenceDisplay -> Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
 								.build()
-						)
+						).option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bars.showEstimatedTilde,
+										() -> config.uiAndVisuals.bars.showEstimatedTilde,
+										newValue -> config.uiAndVisuals.bars.showEstimatedTilde = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Waypoints

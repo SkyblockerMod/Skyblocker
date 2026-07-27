@@ -1206,6 +1206,8 @@
   "skyblocker.config.uiAndVisuals.bars.openScreen": "Status Bars Config screen",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP": "Rift Health: HP instead of hearts",
   "skyblocker.config.uiAndVisuals.bars.riftHealthHP.@Tooltip": "In the rift, if enabled, the health status bar will display HP (20, 19, 18, ...) instead of Hearts (10, 9.5, 9, ...)",
+  "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde": "Show Estimated Value Tilde",
+  "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "Displays a tilde (~) before a bar's value when it is estimated by skyblocker because it is not visible in the action bar.",
   "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
