@@ -20,11 +20,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -162,6 +165,23 @@ public class SweepOverlay {
 		return state.is(BlockTags.LOGS);
 	}
 
+	/// Checks if the {@code destination} block should be chopped based on the {@code source} block.
+	///
+	/// With Helix Trees you only chop one colour of wood at a time so this is needed to prevent
+	/// the overlay from highlighting the wrong colour of wood.
+	private static boolean shouldBeChopped(BlockState source, BlockState destination) {
+		if (Utils.isInTorrhusCanyon()) {
+			// These tags include non-stripped logs but it doesn't matter since at this point
+			// we have already checked for whether they are stripped in #isLog
+			TagKey<Block> birchLogs = BlockItemTags.BIRCH_LOGS.block();
+			TagKey<Block> mangroveLogs = BlockItemTags.MANGROVE_LOGS.block();
+
+			return (source.is(birchLogs) && destination.is(birchLogs)) || (source.is(mangroveLogs) && destination.is(mangroveLogs));
+		}
+
+		return true;
+	}
+
 	/**
 	 * Retrieves the player's Sweep stat.
 	 * <p>
@@ -280,7 +300,9 @@ public class SweepOverlay {
 				BlockPos neighbor = pos.offset(offset);
 				if (visited.contains(neighbor) || queue.contains(neighbor)) continue;
 
-				if (isLog(world.getBlockState(neighbor))) {
+				BlockState neighborState = world.getBlockState(neighbor);
+
+				if (isLog(world.getBlockState(neighbor)) && shouldBeChopped(currentState, neighborState)) {
 					queue.add(neighbor);
 					visited.add(neighbor);
 				}
