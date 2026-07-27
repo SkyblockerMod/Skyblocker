@@ -263,6 +263,15 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
+								.binding(defaults.uiAndVisuals.storageOverlay.storagesPerRow,
+										() -> config.uiAndVisuals.storageOverlay.storagesPerRow,
+										newValue -> config.uiAndVisuals.storageOverlay.storagesPerRow = newValue)
+								.controller(IntegerController.createBuilder().range(0, 20).slider(1).build())
+								.build())
+						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip"))
 								.tags(CommonTags.ADDED_IN_6_8_0)
