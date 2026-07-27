@@ -174,6 +174,17 @@ public class Utils {
 		return location == Location.TORRHUS_CANYON;
 	}
 
+	/// {@return whether the user is in Galatea, the Torrhus Canyon, or the Park}
+	///
+	/// @implNote This intentionally excludes foraging areas in non-foraging islands.
+	public static boolean isInForagingIsland() {
+		return isInGalatea() || isInTorrhusCanyon() || isInPark();
+	}
+
+	public static boolean isInSafari() {
+		return location == Location.SAFARI;
+	}
+
 	public static boolean isInHub() {
 		return location == Location.HUB;
 	}

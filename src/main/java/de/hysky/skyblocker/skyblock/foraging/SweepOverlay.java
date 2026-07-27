@@ -78,7 +78,7 @@ public class SweepOverlay {
 	}
 
 	private static boolean isValidLocation() {
-		return Utils.isInGalatea() || Utils.isInPark() || Utils.isInHub() || Utils.isInPrivateIsland();
+		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
+		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
 			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
 							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.withStyle(ChatFormatting.RED)));
