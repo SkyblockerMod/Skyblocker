@@ -547,7 +547,6 @@ public class UIAndVisualsCategory {
 								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
-								.tags(CommonTags.ADDED_IN_6_8_1)
 								.binding(defaults.uiAndVisuals.bars.intelligenceDisplay,
 										() -> config.uiAndVisuals.bars.intelligenceDisplay,
 										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
@@ -556,6 +555,7 @@ public class UIAndVisualsCategory {
 						).option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_1)
 								.binding(defaults.uiAndVisuals.bars.showEstimatedTilde,
 										() -> config.uiAndVisuals.bars.showEstimatedTilde,
 										newValue -> config.uiAndVisuals.bars.showEstimatedTilde = newValue)
