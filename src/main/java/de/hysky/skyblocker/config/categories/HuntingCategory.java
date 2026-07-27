@@ -100,6 +100,21 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.torrhusMobs"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun"))
+								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun.@Tooltip"))
+								.binding(defaults.hunting.torrhusMobs.highlightHideonsun,
+										() -> config.hunting.torrhusMobs.highlightHideonsun,
+										newValue -> config.hunting.torrhusMobs.highlightHideonsun = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor"))
+								.binding(defaults.hunting.torrhusMobs.hideonsunHighlightColor,
+										() -> config.hunting.torrhusMobs.hideonsunHighlightColor,
+										newValue -> config.hunting.torrhusMobs.hideonsunHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Safari

@@ -44,6 +44,9 @@ public class HuntingConfig {
 	}
 
 	public static class TorrhusMobs {
+		public boolean highlightHideonsun = true;
+
+		public Color hideonsunHighlightColor = new Color(DyeColor.CYAN.getTextColor(), false);
 	}
 
 	public static class Safari {
