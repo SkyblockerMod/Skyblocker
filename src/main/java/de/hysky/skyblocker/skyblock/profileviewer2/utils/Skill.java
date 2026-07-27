@@ -14,7 +14,7 @@ public enum Skill {
 	FARMING("Farming", 50, 60, Ico.GOLDEN_HOE),
 	FISHING("Fishing", 50, Ico.FISH_ROD),
 	FORAGING("Foraging", 50, 54, Ico.JUNGLE_SAPLING),
-	HUNTING("Hunting", 25, Ico.LEAD),
+	HUNTING("Hunting", 50, Ico.LEAD),
 	MINING("Mining", 60, Ico.STONE_PICKAXE),
 	RUNECRAFTING("Runecrafting", 25, Ico.MAGMA_CREAM),
 	SOCIAL("Social", 25, Ico.EMERALD),
