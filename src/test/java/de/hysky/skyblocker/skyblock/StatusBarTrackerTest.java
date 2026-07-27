@@ -20,7 +20,7 @@ class StatusBarTrackerTest {
 		if (def != -1) {
 			assertEquals(def, StatusBarTracker.getDefense());
 		}
-		assertEquals(new StatusBarTracker.Resource(mana, maxMana, overflowMana), StatusBarTracker.getMana());
+		assertEquals(new StatusBarTracker.Resource(mana, maxMana, overflowMana), StatusBarTracker.getMana().resource());
 	}
 
 	@Test

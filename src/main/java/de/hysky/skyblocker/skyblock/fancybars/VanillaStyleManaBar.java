@@ -95,7 +95,7 @@ public class VanillaStyleManaBar {
 	}
 
 	public static boolean extractRenderState(GuiGraphicsExtractor graphics) {
-		StatusBarTracker.Resource mana = StatusBarTracker.getMana();
+		StatusBarTracker.EstimatedResource mana = StatusBarTracker.getMana();
 
 		// Detect loss of mana to start blinking
 		long currentTime = Util.getMillis();

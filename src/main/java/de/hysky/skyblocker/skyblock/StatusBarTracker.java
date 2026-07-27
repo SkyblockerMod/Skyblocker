@@ -46,17 +46,14 @@ public class StatusBarTracker {
 
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static Resource health = new Resource(100, 100, 0);
-	private static @Nullable Resource vitality = null;
-	private static Resource mana = new Resource(100, 100, 0);
+	private static final EstimatedResource vitality = new EstimatedResource(new Resource(100, 100, 0));
+	private static final EstimatedResource mana = new EstimatedResource(new Resource(100, 100, 0));
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
 	private static int absorption = 0;
 
 	private static int ticks;
-	private static int lastManaTick;
-	private static int lastMana;
-	private static int manaPerSecond;
 
 	@Init
 	public static void init() {
@@ -70,16 +67,12 @@ public class StatusBarTracker {
 		return health;
 	}
 
-	public static @Nullable Resource getVitality() {
+	public static EstimatedResource getVitality() {
 		return vitality;
 	}
 
-	public static Resource getMana() {
+	public static EstimatedResource getMana() {
 		return mana;
-	}
-
-	public static boolean isManaEstimated() {
-		return ticks - lastManaTick > 30;
 	}
 
 	public static int getDefense() {
@@ -100,9 +93,8 @@ public class StatusBarTracker {
 		updateHealth(health.value, health.max);
 		updateSpeed();
 		updateAir();
-		if (ticks - lastManaTick > 0 && (ticks - lastManaTick) % 20 == 0) {
-			mana = new Resource(Math.min(mana.value() + manaPerSecond, mana.max()), mana.max(), mana.overflow());
-		}
+		mana.tick();
+		vitality.tick();
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -116,8 +108,8 @@ public class StatusBarTracker {
 				break;
 			}
 		}
-		if (manaCost > 0 && manaCost <= mana.value()) {
-			mana = new Resource(Math.max(mana.value() - manaCost, 0), mana.max(), mana.overflow());
+		if (manaCost > 0 && manaCost <= mana.resource().value()) {
+			mana.resource = new Resource(Math.max(mana.resource().value() - manaCost, 0), mana.resource().max(), mana.resource().overflow());
 		}
 		return InteractionResult.PASS;
 	}
@@ -194,17 +186,13 @@ public class StatusBarTracker {
 						statuses.appendReplacement(output, "");
 					else
 						statuses.appendReplacement(output, "$0");
-				} else {
-					if (status.usePattern(VITALITY_STATUS).find()) {
-						updateVitality(status);
-						if (FancyStatusBars.isBarEnabled(StatusBarType.VITALITY))
-							statuses.appendReplacement(output, "");
-						else
-							statuses.appendReplacement(output, "$0");
-					} else {
-						vitality = null;
-					}
-
+				// Vitality
+				} else if (status.usePattern(VITALITY_STATUS).find()) {
+					updateVitality(status);
+					if (FancyStatusBars.isBarEnabled(StatusBarType.VITALITY))
+						statuses.appendReplacement(output, "");
+					else
+						statuses.appendReplacement(output, "$0");
 				}
 			}
 			// Mana use
@@ -251,17 +239,18 @@ public class StatusBarTracker {
 	}
 
 	private static void updateVitality(Matcher m) {
-		vitality = new Resource(RegexUtils.parseIntFromMatcher(m, "vitality"), RegexUtils.parseIntFromMatcher(m, "max"), 0);
+		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.hasSeenVitalityAtLeastOnce) {
+			SkyblockerConfigManager.updateOnly(config -> config.uiAndVisuals.bars.hasSeenVitalityAtLeastOnce = true);
+			FancyStatusBars.makeVitalityVisible();
+		}
+		vitality.update(new Resource(RegexUtils.parseIntFromMatcher(m, "vitality"), RegexUtils.parseIntFromMatcher(m, "max"), 0));
 	}
 
 	private static void updateMana(Matcher m) {
 		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
 		int max = RegexUtils.parseIntFromMatcher(m, "max");
 		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
-		StatusBarTracker.mana = new Resource(mana, max, overflow);
-		if (mana != max && lastMana < mana) manaPerSecond = Math.max(mana - lastMana, 0);
-		if (lastMana != mana || mana == max) lastManaTick = ticks;
-		lastMana = mana;
+		StatusBarTracker.mana.update(new Resource(mana, max, overflow));
 	}
 
 	private static void updateSpeed() {
@@ -304,4 +293,46 @@ public class StatusBarTracker {
 	}
 
 	public record Resource(int value, int max, int overflow) {}
+
+	public static class EstimatedResource {
+		private Resource resource;
+		private int perSecond;
+		private int lastTick;
+		private int lastValue;
+
+		public EstimatedResource(Resource baseValue) {
+			this.resource = baseValue;
+		}
+
+		private void update(Resource newValue) {
+			this.resource = newValue;
+			if (resource.value() != resource.max() && lastValue < resource.value()) perSecond = Math.max(resource.value() - lastValue, 0);
+			if (lastValue != resource.value() || resource.value() == resource.max()) lastTick = ticks;
+			lastValue = resource.value();
+		}
+
+		private void tick() {
+			if (ticks - lastTick > 0 && (ticks - lastTick) % 20 == 0) {
+				resource = new Resource(Math.min(resource.value() + perSecond, resource.max()), resource.max(), resource.overflow());
+			}
+		}
+
+		public boolean isEstimated() {
+			return ticks - lastTick > 30;
+		}
+
+		public Resource resource() {
+			return resource;
+		}
+
+		public int value() {
+			return resource.value();
+		}
+		public int max() {
+			return resource.max();
+		}
+		public int overflow() {
+			return resource.overflow();
+		}
+	}
 }
