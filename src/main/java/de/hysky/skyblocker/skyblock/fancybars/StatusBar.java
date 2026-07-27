@@ -486,7 +486,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public static class ManaStatusBar extends StatusBar {
 
 		public ManaStatusBar(StatusBarType type) {
-			super(type, mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString());
+			super(type, mana -> StatusBarTracker.getMana().isEstimated() && SkyblockerConfigManager.get().uiAndVisuals.bars.showEstimatedTilde ? "~" + mana : mana.toString());
 		}
 
 		@Override
@@ -562,6 +562,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				else if (client.player.hasEffect(MobEffects.POISON)) return POISON_ICON;
 			}
 			return super.getIcon();
+		}
+	}
+
+	public static class VitalityStatusBar extends StatusBar {
+		public VitalityStatusBar(StatusBarType type) {
+			super(type, vitality -> StatusBarTracker.getVitality().isEstimated() && SkyblockerConfigManager.get().uiAndVisuals.bars.showEstimatedTilde ? "~" + vitality : vitality.toString());
 		}
 	}
 }
