@@ -14,6 +14,7 @@ import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -60,10 +61,17 @@ class ItemEditPopup extends AbstractPopupScreen {
 		CommandBuildContext context = TextFieldSuggestions.getContext();
 		LinearLayout commandLayout = layout.addChild(LinearLayout.vertical().spacing(2));
 		addTitle(commandLayout, "Tooltip");
-		SuggestionsEditBox commandBox = SuggestionsEditBox.builder().autoTrim(false).width(250).onlyShowIfCursorPastError(false).build(
-				minecraft, font, this, Component.empty(),
-				minecraft.player.connection.getCommands().getRoot()
-		);
+		EditBox commandBox;
+		if (minecraft.player != null) {
+			commandBox = SuggestionsEditBox.builder().autoTrim(false).width(250).onlyShowIfCursorPastError(false).build(
+					minecraft, font, this, Component.empty(),
+					minecraft.player.connection.getCommands().getRoot()
+			);
+		} else {
+			commandBox = new EditBox(font, 250, 20, Component.empty());
+		}
+		commandBox.setValue(item.clickEvent.startsWith("/") ? item.clickEvent.substring(1) : item.clickEvent);
+		commandBox.setTooltip(Tooltip.create(Component.literal("Command to run.")));
 		commandLayout.addChild(commandBox);
 		renderAroundLayout(commandLayout);
 
@@ -82,7 +90,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 				minecraft, font, this, Component.empty(),
 				new RegexArgumentType()
 		);
-		patternBox.setTooltip(Tooltip.create(Component.literal("The button will appear pressed in the menu matching this title. This supports Regex!")));
+		patternBox.setTooltip(Tooltip.create(Component.literal("The button will appear pressed in the menu matching this title.\nThis supports Regex!\nCan be left empty if button doesn't open a menu.")));
 		patternBox.setMaxLength(2048);
 		patternBox.setValue(item.uiTitle);
 		regexLayout.addChild(patternBox);
@@ -172,8 +180,6 @@ class ItemEditPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput output) {
-
-		}
+		protected void updateWidgetNarration(NarrationElementOutput output) {}
 	}
 }

@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.utils.command.suggestions;
 
+import com.google.common.base.Suppliers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.SuggestionContext;
+import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,20 +17,30 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class TextFieldSuggestions extends CommandSuggestions {
 
 	private final CommandDispatcher<ClientSuggestionProvider> dispatcher;
 	private @Nullable CommandContext<ClientSuggestionProvider> context;
+	private static final Supplier<ClientSuggestionProvider> FAKE_PROVIDER_SUPPLIER = Suppliers.memoize(FakeClientSuggestionProvider::new);
 
 	public TextFieldSuggestions(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
 		super(minecraft, screen, input, font, true, onlyShowIfCursorPastError, 0, suggestionLineLimit, false, ARGB.black(0.5f));
@@ -96,7 +108,7 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		int cursorPosition = this.input.getCursorPosition();
 		CommandDispatcher<ClientSuggestionProvider> commands = dispatcher;
 		if (this.currentParse == null) {
-			this.currentParse = commands.parse(reader, this.minecraft.player.connection.getSuggestionsProvider());
+			this.currentParse = commands.parse(reader, minecraft.player != null ? minecraft.player.connection.getSuggestionsProvider() : FAKE_PROVIDER_SUPPLIER.get());
 			if (currentParse.getExceptions().isEmpty()) this.context = currentParse.getContext().build(command);
 		}
 
@@ -117,5 +129,45 @@ public class TextFieldSuggestions extends CommandSuggestions {
 	@Override
 	protected List<FormattedCharSequence> fillNodeUsage(SuggestionContext<ClientSuggestionProvider> suggestionContext, Style usageFormat) {
 		return List.of();
+	}
+
+	private static class FakeClientSuggestionProvider extends ClientSuggestionProvider {
+		private final RegistryAccess registryAccess;
+
+		public FakeClientSuggestionProvider() {
+			// maybe dangerous? either that or 20 new imports to create a fake connection
+			super(null, Minecraft.getInstance(), PermissionSet.NO_PERMISSIONS);
+			this.registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		}
+
+		@Override
+		public Set<ResourceKey<Level>> levels() {
+			return Set.of();
+		}
+
+		@Override
+		public Collection<String> getOnlinePlayerNames() {
+			return List.of();
+		}
+
+		@Override
+		public RegistryAccess registryAccess() {
+			return registryAccess;
+		}
+
+		@Override
+		public FeatureFlagSet enabledFeatures() {
+			return FeatureFlagSet.of();
+		}
+
+		@Override
+		public Collection<String> getAllTeams() {
+			return List.of();
+		}
+
+		@Override
+		public CompletableFuture<Suggestions> customSuggestion(CommandContext<?> context) {
+			return Suggestions.empty();
+		}
 	}
 }
