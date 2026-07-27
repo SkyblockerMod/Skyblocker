@@ -44,15 +44,13 @@ public class HuntingConfig {
 	}
 
 	public static class TorrhusMobs {
-
 	}
 
 	public static class Safari {
-
+		public boolean silencePhantoms = true;
 	}
 
 	public static class HauntedBiome {
-
 	}
 
 	public static class ForestBiome {

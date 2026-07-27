@@ -106,6 +106,14 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.safari"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms.@Tooltip"))
+								.binding(defaults.hunting.safari.silencePhantoms,
+										() -> config.hunting.safari.silencePhantoms,
+										newValue -> config.hunting.safari.silencePhantoms = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Haunted Biome

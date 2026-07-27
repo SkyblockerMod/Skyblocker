@@ -878,6 +878,8 @@
   "skyblocker.config.hunting.lassoHud.wait": "Wait",
 
   "skyblocker.config.hunting.safari": "Safari",
+  "skyblocker.config.hunting.safari.silencePhantoms": "Silence Phantoms",
+  "skyblocker.config.hunting.safari.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while in the Safari Zone.",
 
   "skyblocker.config.hunting.torrhusMobs": "Torrhus Mobs",
 

@@ -13,11 +13,17 @@ public class SilencePhantoms {
 		PlaySoundEvents.ALLOW_SOUND.register(SilencePhantoms::onSound);
 	}
 
-	private static boolean onSound(SoundEvent sound) {
-		if (Utils.isInGalatea() && SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms && sound.location().getPath().startsWith("entity.phantom")) {
-			return false;
+	private static boolean shouldProcess() {
+		if (Utils.isInGalatea()) {
+			return SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms;
+		} else if (Utils.isInSafari()) {
+			return SkyblockerConfigManager.get().hunting.safari.silencePhantoms;
 		}
 
-		return true;
+		return false;
+	}
+
+	private static boolean onSound(SoundEvent sound) {
+		return !(shouldProcess() && sound.location().getPath().startsWith("entity.phantom"));
 	}
 }
