@@ -298,6 +298,8 @@ public class UIAndVisualsConfig {
 
 		public boolean useHungerBarSprites = false;
 
+		public boolean predictManaUsage = true;
+
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
 
 		// Kept in for backwards compatibility, remove if needed
