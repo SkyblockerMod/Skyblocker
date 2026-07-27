@@ -89,7 +89,7 @@ public class ItemPrice {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/bz " + itemName, true);
 				return;
 			} else if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId)) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahsearch " + itemName, true);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/ahSearch " + itemName, true);
 				return;
 			}
 		}
