@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

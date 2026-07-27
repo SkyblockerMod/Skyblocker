@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
 import java.util.ArrayList;
 import java.util.List;

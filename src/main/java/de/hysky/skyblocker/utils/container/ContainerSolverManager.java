@@ -26,7 +26,7 @@ import de.hysky.skyblocker.skyblock.end.EndStatsBestiaryUpdater;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
+import de.hysky.skyblocker.skyblock.foraging.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.garden.StereoHarmonyHelper;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.AnvilHelper;
