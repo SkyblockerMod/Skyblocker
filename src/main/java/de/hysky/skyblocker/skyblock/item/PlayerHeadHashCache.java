@@ -15,6 +15,8 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 
 public class PlayerHeadHashCache {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -27,9 +29,10 @@ public class PlayerHeadHashCache {
 			HeadTextures.ADAPTIVE_BELT_BERSERK,
 			HeadTextures.ADAPTIVE_BELT_ARCHER,
 			HeadTextures.ADAPTIVE_BELT_TANK);
-	private static final IntOpenHashSet CACHE = new IntOpenHashSet();
+	private static IntSet CACHE = IntSets.emptySet();
 
 	protected static void loadSkins(JsonArray items) {
+		IntSet cache = new IntOpenHashSet();
 		try {
 			Stream<String> apiItemTextures = items.asList().stream()
 					.map(JsonElement::getAsJsonObject)
@@ -39,15 +42,16 @@ public class PlayerHeadHashCache {
 			Stream<String> overrideTextures = MANUAL_CACHES.stream();
 
 			Stream.concat(apiItemTextures, overrideTextures)
-			.map(PlayerHeadHashCache::getSkinHashFromBase64)
-			.filter(hash -> hash != null && !hash.isEmpty())
-			.mapToInt(String::hashCode)
-			.forEach(CACHE::add);
+					.map(PlayerHeadHashCache::getSkinHashFromBase64)
+					.filter(hash -> hash != null && !hash.isEmpty())
+					.mapToInt(String::hashCode)
+					.forEach(cache::add);
 
 			LOGGER.info("[Skyblocker Player Head Hash Cache] Successfully cached the hashes of all player head items!");
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Player Head Hash Cache] Failed to cache skin hashes!", e);
 		}
+		CACHE = cache;
 	}
 
 	public static String getSkinHashFromBase64(String base64) {

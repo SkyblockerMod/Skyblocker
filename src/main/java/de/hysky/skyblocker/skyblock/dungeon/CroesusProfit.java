@@ -118,7 +118,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	@SuppressWarnings("deprecation")
 	private DoubleBooleanPair getChestValue(ItemStack chest) {
 		double chestValue = 0;
-		int chestPrice = 0;
+		double chestPrice = 0;
 		boolean hasIncompleteData = false;
 
 		boolean processingContents = false;
@@ -138,9 +138,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 					// This check is in a separate block because Java does not allow us to put it into the when statement
 					// mean effectively final restrictions!!!
 					if (!processingContents) {
-						String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
+						String chestCost = lineString.replace(",", "").replaceAll("[^\\d.]", "");
 						if (!NumberUtils.isCreatable(chestCost)) continue;
-						chestPrice = Integer.parseInt(chestCost);
+						chestPrice = Double.parseDouble(chestCost);
 					}
 				}
 
@@ -149,7 +149,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						// Remove any whitespace from the line with the key name
 						String trimmed = lineString.trim();
 
-						chestPrice = (int) ChestValue.computeKuudraKeyPrice(trimmed).leftDouble();
+						chestPrice = ChestValue.computeKuudraKeyPrice(trimmed).leftDouble();
 					}
 				}
 

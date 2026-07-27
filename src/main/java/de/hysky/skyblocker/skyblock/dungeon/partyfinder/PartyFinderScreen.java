@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
@@ -137,7 +136,7 @@ public class PartyFinderScreen extends Screen {
 				} catch (Exception e) {
 					LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		});
 		ClientSendMessageEvents.COMMAND.register(command -> {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;

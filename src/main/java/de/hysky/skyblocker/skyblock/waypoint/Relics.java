@@ -41,7 +41,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -93,7 +92,7 @@ public class Relics {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found relics", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void saveFoundRelics(Minecraft client) {

@@ -52,10 +52,10 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		return ICON;
 	}
 
-	private Button getWikiLookupButton(Component text, boolean isOfficial, ItemStack itemStack, LocalPlayer player) {
-		Button btn = Button.builder(text, _ -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
+	private Button getWikiLookupButton(Component text, ItemStack itemStack, LocalPlayer player) {
+		Button btn = Button.builder(text, _ -> WikiLookupManager.openWiki(itemStack, player)).build();
 
-		if (ItemRepository.getWikiLink(itemStack.getNeuName(), isOfficial) == null) {
+		if (ItemRepository.getWikiLink(itemStack.getNeuName()) == null) {
 			btn.setMessage(btn.getMessage().copy().withColor(RED_ERROR_COLOR));
 			btn.active = false;
 		}
@@ -92,8 +92,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 			}, 10);
 		}).build());
 
-		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.independent"), false, itemStack, player));
-		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
+		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.independent"), itemStack, player));
 
 		layoutWidget.visitWidgets(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
 		layoutWidget.arrangeElements();

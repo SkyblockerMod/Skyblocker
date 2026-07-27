@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -35,7 +36,7 @@ public class SkyblockerWebSocket {
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
-			.executor(Executors.newVirtualThreadPerTaskExecutor())
+			.executor(SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 			.version(Version.HTTP_2)
 			.build();
 	private static final ExecutorService MESSAGE_SEND_QUEUE = Executors.newSingleThreadExecutor(Thread.ofVirtual()
@@ -72,7 +73,7 @@ public class SkyblockerWebSocket {
 					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
 				}
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void closeSocket() {

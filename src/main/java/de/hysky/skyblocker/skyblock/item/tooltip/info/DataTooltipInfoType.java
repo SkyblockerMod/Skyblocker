@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
@@ -39,7 +39,7 @@ public interface DataTooltipInfoType<T> extends TooltipInfoType, Runnable {
 	 * Downloads the data.
 	 */
 	default CompletableFuture<Void> download() {
-		return CompletableFuture.runAsync(this, Executors.newVirtualThreadPerTaskExecutor());
+		return CompletableFuture.runAsync(this, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**

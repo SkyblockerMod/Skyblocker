@@ -37,24 +37,24 @@ public class CommunityShopAdder extends SimpleSlotTextAdder {
 	}
 
 	private static List<SlotText> getTextForUpgradesScreen(ItemStack stack, int slotId) {
-		return switch (slotId) {
-			case 30, 31, 32, 33, 34, 38, 39, 40, 41, 42, 43, 44 -> {
-				String name = stack.getHoverName().getString();
-				int lastIndex = name.lastIndexOf(' ');
-				String roman = name.substring(lastIndex + 1); // + 1 as we don't want the space
-				if (!RomanNumerals.isValidRomanNumeral(roman)) yield List.of();
+		// Exclude top two category rows and bottom info row.
+		if (slotId >= 18 && slotId <= 44) {
+			String name = stack.getHoverName().getString();
+			int lastIndex = name.lastIndexOf(' ');
+			String roman = name.substring(lastIndex + 1); // + 1 as we don't want the space
+			if (!RomanNumerals.isValidRomanNumeral(roman)) return List.of();
 
-				List<String> lore = stack.skyblocker$getLoreStrings();
-				if (lore.isEmpty()) yield List.of();
-				String lastLine = lore.getLast();
-				yield SlotText.bottomLeftList(switch (lastLine) {
-					case "Maxed out!" -> Component.literal("Max").withColor(SlotText.LIGHT_ORANGE);
-					case "Currently upgrading!", "Click to instantly upgrade!" -> Component.literal("⏰").withColor(SlotText.LIGHT_YELLOW).withStyle(ChatFormatting.BOLD);
-					case "Click to claim!" -> Component.literal("✅").withColor(0xA6E3A1).withStyle(ChatFormatting.BOLD);
-					default -> Component.literal(String.valueOf(RomanNumerals.romanToDecimal(roman))).withColor(SlotText.LIGHT_PURPLE);
-				});
-			}
-			default -> List.of();
-		};
+			List<String> lore = stack.skyblocker$getLoreStrings();
+			if (lore.isEmpty()) return List.of();
+			String lastLine = lore.getLast();
+			return SlotText.bottomLeftList(switch (lastLine) {
+				case "Maxed out!" -> Component.literal("Max").withColor(SlotText.LIGHT_ORANGE);
+				case "Currently upgrading!", "Click to instantly upgrade!" -> Component.literal("⏰").withColor(SlotText.LIGHT_YELLOW).withStyle(ChatFormatting.BOLD);
+				case "Click to claim!" -> Component.literal("✅").withColor(0xA6E3A1).withStyle(ChatFormatting.BOLD);
+				default -> Component.literal(String.valueOf(RomanNumerals.romanToDecimal(roman))).withColor(SlotText.LIGHT_PURPLE);
+			});
+		}
+
+		return List.of();
 	}
 }

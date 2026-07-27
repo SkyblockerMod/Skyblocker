@@ -42,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 public class FancyStatusBars {
@@ -108,24 +107,21 @@ public class FancyStatusBars {
 			if (Utils.isOnSkyblock()) extractRenderState(context, Minecraft.getInstance());
 		});
 
-		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
-		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
-		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
-		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
-		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
-		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
+		for (StatusBarType type : StatusBarType.values()) {
+			statusBars.put(type, type.newStatusBar());
+		}
+		// Fill defaults
+		resetBarPositions();
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
 		UIAndVisualsConfig.LegacyBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
-		initBarPosition(statusBars.get(StatusBarType.HEALTH), counts, barPositions.healthBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.INTELLIGENCE), counts, barPositions.manaBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
-		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		updateLegacyPosition(statusBars.get(StatusBarType.HEALTH), counts, barPositions.healthBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.INTELLIGENCE), counts, barPositions.manaBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 
-		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(object -> {
+		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
 					StatusBarType type = StatusBarType.from(s);
@@ -142,7 +138,7 @@ public class FancyStatusBars {
 			}
 			placeBarsInPositioner();
 			configLoaded = true;
-		}).exceptionally(throwable -> {
+		}, Minecraft.getInstance()).exceptionally(throwable -> {
 			LOGGER.error("[Skyblocker] Failed reading status bars config", throwable);
 			return null;
 		});
@@ -163,7 +159,7 @@ public class FancyStatusBars {
 	 * @param position the position to load
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
+	private static void updateLegacyPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:
 				bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
@@ -204,6 +200,15 @@ public class FancyStatusBars {
 				barPositioner.addBar(barAnchor, rowNum, statusBar);
 			}
 		}
+	}
+
+	public static void resetBarPositions() {
+		statusBars.forEach((type, bar) -> {
+			bar.anchor = type.getDefaultAnchor();
+			bar.gridY = type.getDefaultGridY();
+			bar.size = type.getDefaultAnchor().getSizeRule().minSize();
+		});
+		placeBarsInPositioner();
 	}
 
 	public static @Nullable JsonObject loadBarConfig() {
@@ -403,6 +408,14 @@ public class FancyStatusBars {
 			airBar.visible = player.isUnderWater();
 			updatePositionsNextFrame = true;
 		}
+		StatusBar vitality = statusBars.get(StatusBarType.VITALITY);
+		StatusBarTracker.Resource vitalityResource = StatusBarTracker.getVitality();
+		boolean hasVitality = vitalityResource != null;
+		if (hasVitality != vitality.visible) {
+			vitality.visible = hasVitality;
+			updatePositionsNextFrame = true;
+		}
+		if (hasVitality) vitality.updateWithResource(vitalityResource);
 		if (updatePositionsNextFrame) {
 			updatePositions(false);
 			updatePositionsNextFrame = false;

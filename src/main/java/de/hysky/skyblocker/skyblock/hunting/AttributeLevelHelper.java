@@ -20,7 +20,8 @@ public class AttributeLevelHelper extends SimpleSlotTextAdder {
 
 
 	private AttributeLevelHelper() {
-		super("Attribute Menu", CONFIG_INFORMATION);
+		// ^(?:\(\d+\/\d+\) )?Attribute Menu$
+		super("^(?:\\(\\d+\\/\\d+\\) )?Attribute Menu$", CONFIG_INFORMATION);
 	}
 
 	@Override

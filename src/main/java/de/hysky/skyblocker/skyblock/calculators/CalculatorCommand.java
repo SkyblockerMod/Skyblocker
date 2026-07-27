@@ -41,6 +41,8 @@ public class CalculatorCommand {
 	private static int doCalculation(String calculation) {
 		MutableComponent text = Constants.PREFIX.get();
 		try {
+			text.append(Component.literal(calculation).withStyle(ChatFormatting.AQUA));
+			text.append(" = ");
 			text.append(Component.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).withStyle(ChatFormatting.GREEN));
 		} catch (Calculator.CalculatorException e) {
 			text.append(Component.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").withStyle(ChatFormatting.RED));

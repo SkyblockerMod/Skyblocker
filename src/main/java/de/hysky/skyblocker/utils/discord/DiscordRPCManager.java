@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.discord;
 
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiscConfig;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 /**
  * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
@@ -94,7 +94,7 @@ public class DiscordRPCManager {
 				} else if (initialization) {
 					LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 

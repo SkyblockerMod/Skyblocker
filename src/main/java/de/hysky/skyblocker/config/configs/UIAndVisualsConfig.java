@@ -54,6 +54,8 @@ public class UIAndVisualsConfig {
 
 	public SlotText slotText = new SlotText();
 
+	public StorageOverlay storageOverlay = new StorageOverlay();
+
 	public RadialMenu radialMenu = new RadialMenu();
 
 	public InventorySearchConfig inventorySearch = new InventorySearchConfig();
@@ -113,6 +115,14 @@ public class UIAndVisualsConfig {
 
 		public boolean slotTextToggled = true;
 
+	}
+
+	public static class StorageOverlay {
+		public boolean enabled = false;
+
+		public int backpackWidth = 9;
+
+		public boolean rememberSearch = false;
 	}
 
 	public static class RadialMenu {
@@ -399,6 +409,8 @@ public class UIAndVisualsConfig {
 		public int historyLength = 3;
 
 		public boolean enableCommands = false;
+
+		public boolean commandAutocomplete = true;
 
 		public List<String> bazaarHistory = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.jei.JEICompatibility;
 import de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin;
@@ -34,7 +35,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
@@ -119,20 +119,10 @@ public class ItemRepository {
 		RecipeItemStackCache.CACHE.clear();
 		filesImported = true;
 
-		afterImportTasks.forEach(task -> {
-			if (task.async) {
-				CompletableFuture.runAsync(task.runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
-					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
-					return null;
-				});
-			} else {
-				try {
-					task.runnable.run();
-				} catch (Exception e) {
-					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
-				}
-			}
-		});
+		afterImportTasks.forEach(task -> CompletableFuture.runAsync(task.runnable, task.async ? SkyblockerMod.VIRTUAL_THREAD_EXECUTOR : Minecraft.getInstance()).exceptionally(e -> {
+			LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import tasks", e);
+			return null;
+		}));
 	}
 
 	private static void loadItem(NEUItem item) {
@@ -160,7 +150,7 @@ public class ItemRepository {
 		NEURepoManager.getConstants().getBazaarStocks().getStocks().forEach((String neuId, String skyblockId) -> bazaarStocks.put(skyblockId, neuId));
 	}
 
-	public static @Nullable String getWikiLink(String neuId, boolean useOfficial) {
+	public static @Nullable String getWikiLink(String neuId) {
 		NEUItem item = NEURepoManager.getItemByNeuId(neuId);
 		if (item == null || item.getInfo() == null || item.getInfo().isEmpty()) {
 			return null;
@@ -169,7 +159,7 @@ public class ItemRepository {
 		List<String> info = item.getInfo();
 		String wikiLink0 = info.getFirst();
 		String wikiLink1 = info.size() > 1 ? info.get(1) : "";
-		String wikiDomain = getWikiLink(useOfficial);
+		String wikiDomain = getWikiLink();
 		if (wikiLink0.startsWith(wikiDomain)) {
 			return wikiLink0;
 		} else if (wikiLink1.startsWith(wikiDomain)) {
@@ -178,8 +168,8 @@ public class ItemRepository {
 		return null;
 	}
 
-	public static String getWikiLink(boolean useOfficial) {
-		return useOfficial ? "https://wiki.hypixel.net" : "https://hypixelskyblock.minecraft.wiki";
+	public static String getWikiLink() {
+		return "https://hypixelskyblock.minecraft.wiki";
 	}
 
 	public static List<SkyblockRecipe> getRecipesAndUsages(ItemStack stack) {
@@ -265,7 +255,7 @@ public class ItemRepository {
 	public static void runAfterImport(Runnable runnable, boolean async) {
 		if (filesImported) {
 			if (async) {
-				CompletableFuture.runAsync(runnable, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+				CompletableFuture.runAsync(runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 					LOGGER.error("[Skyblocker Item Repo Loader] Encountered unknown exception while running after import task", e);
 					return null;
 				});

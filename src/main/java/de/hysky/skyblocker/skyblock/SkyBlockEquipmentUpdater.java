@@ -10,13 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.intellij.lang.annotations.Language;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public SkyBlockEquipmentUpdater() {
-		super("^Your Equipment and Stats|(?:\\(\\d/\\d\\) )?Loadouts$");
+		super("^Stats & Equipment|(?:\\(\\d/\\d\\) )?Loadouts$");
 	}
 
 	public SkyBlockEquipmentUpdater(@Language("RegExp") String titlePattern) {
@@ -66,6 +67,14 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 			if (equipment.length < 4) return List.of();
 			System.arraycopy(equipment, 0, SkyblockInventoryScreen.equipment, 0, 4);
 			return List.of();
+		}
+
+		@Override
+		public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
+			if (stack.is(Items.DYE.lime()) && slot > 35 && slot < 45) {
+				Arrays.fill(SkyblockInventoryScreen.equipment, ItemStack.EMPTY);
+			}
+			return false;
 		}
 	}
 }

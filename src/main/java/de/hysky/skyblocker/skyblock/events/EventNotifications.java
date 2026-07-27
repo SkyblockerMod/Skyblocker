@@ -9,10 +9,12 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -52,6 +53,7 @@ public class EventNotifications {
 			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
 			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
 			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
+			Map.entry("Cult of the Fallen Star", Ico.NETHER_STAR),
 			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
 	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
@@ -110,7 +112,7 @@ public class EventNotifications {
 				LOGGER.error("[Skyblocker] Failed to download events list", e);
 			}
 			return null;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(response -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(response -> {
 			events.clear();
 			if (response == null) {
 				LOGGER.error("[Skyblocker] Failed to get events list");
@@ -133,7 +135,7 @@ public class EventNotifications {
 					config.eventNotifications.events.computeIfAbsent(s, _ -> DEFAULT_REMINDERS);
 				}
 			});
-		}).exceptionally(EventNotifications::itBorked);
+		}, Minecraft.getInstance()).exceptionally(EventNotifications::itBorked);
 	}
 
 	private static Void itBorked(Throwable throwable) {

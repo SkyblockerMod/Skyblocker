@@ -7,9 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -25,6 +28,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
 
@@ -48,9 +52,9 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
-		ShortcutCategoryEntry<String> commandArgCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commandArgs(), CommandShortcutEntry::new, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
+		ShortcutCategoryEntry<String> commandArgCategory = new ShortcutCategoryEntry<>(Shortcuts.shortcuts.getData().commandArgs(), CommandArgShortcutEntry::new, "skyblocker.shortcuts.commandArg.target", "skyblocker.shortcuts.commandArg.replacement", "skyblocker.shortcuts.commandArg.tooltip");
 		if (Shortcuts.isShortcutsLoaded()) {
-			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new CommandShortcutEntry(commandArgCategory, commandArgTarget)));
+			commandArgCategory.shortcutsMap.keySet().stream().sorted().forEach(commandArgTarget -> addEntry(new CommandArgShortcutEntry(commandArgCategory, commandArgTarget)));
 		} else {
 			addEntry(new ShortcutLoadingEntry());
 		}
@@ -111,7 +115,9 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 	}
 
 	protected boolean stopEditing() {
-		return children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
+		boolean bl = children().stream().filter(KeybindShortcutEntry.class::isInstance).map(KeybindShortcutEntry.class::cast).anyMatch(KeybindShortcutEntry::stopEditing);
+		screen.checkForDuplicates();
+		return bl;
 	}
 
 	@Override
@@ -127,6 +133,18 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 	protected boolean hasChanges() {
 		ShortcutEntry<?>[] notEmptyShortcuts = getNotEmptyShortcuts().toArray(ShortcutEntry[]::new);
 		return notEmptyShortcuts.length != Shortcuts.shortcuts.getData().size() || Arrays.stream(notEmptyShortcuts).anyMatch(ShortcutEntry::isChanged);
+	}
+
+	protected boolean hasDuplicates() {
+		Set<String> keys = new ObjectOpenHashSet<>();
+		for (AbstractShortcutEntry entry : children()) {
+			if (entry instanceof ShortcutEntry<?> shortcutEntry) {
+				String key = shortcutEntry.key();
+				if (keys.contains(key)) return true;
+				keys.add(key);
+			}
+		}
+		return false;
 	}
 
 	protected void saveShortcuts() {
@@ -255,6 +273,8 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		protected abstract void save();
 
+		protected abstract String key();
+
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			replacement.setY(this.getY() + TEXT_FIELD_PADDING);
@@ -316,6 +336,11 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 
 		@Override
+		protected String key() {
+			return target.getValue();
+		}
+
+		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			super.extractContent(graphics, mouseX, mouseY, hovered, a);
 			target.setY(this.getY() + TEXT_FIELD_PADDING);
@@ -329,10 +354,26 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		}
 	}
 
+	protected class CommandArgShortcutEntry extends CommandShortcutEntry {
+		private CommandArgShortcutEntry(ShortcutCategoryEntry<String> category) {
+			super(category);
+		}
+
+		private CommandArgShortcutEntry(ShortcutCategoryEntry<String> category, String targetString) {
+			super(category, targetString);
+		}
+
+		@Override
+		protected String key() {
+			return "arg" + super.key();
+		}
+	}
+
 	protected class KeybindShortcutEntry extends ShortcutEntry<ShortcutKeyBinding> {
 		private final List<AbstractWidget> children;
 		private final ShortcutKeyBinding keyBinding;
 		private final KeybindWidget keybindButton;
+		private boolean conflicting = false;
 		private boolean duplicate = false;
 
 		private KeybindShortcutEntry(ShortcutCategoryEntry<ShortcutKeyBinding> category) {
@@ -388,16 +429,22 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 			category.shortcutsMap.put(keyBinding, replacement.getValue());
 		}
 
+		@Override
+		protected String key() {
+			return keyBinding.getBoundKeysText().getString();
+		}
+
 		/**
-		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#renderContent(GuiGraphics, int, int, boolean, float) ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
+		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#extractRenderState(GuiGraphicsExtractor, int, int, float)}  ControlsListWidget.KeyBindingEntry#render(DrawContext, int, int, int, int, int, int, int, boolean, float)}.
 		 */
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
 			super.extractContent(graphics, mouseX, mouseY, hovered, a);
 			keybindButton.setY(this.getY() + TEXT_FIELD_PADDING);
 			keybindButton.extractRenderState(graphics, mouseX, mouseY, a);
-			if (duplicate) {
-				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), CommonColors.YELLOW);
+			if (conflicting || duplicate) {
+				int color = duplicate ? CommonColors.RED : CommonColors.YELLOW;
+				graphics.fill(keybindButton.getX() - 6, this.getY(), keybindButton.getX() - 3, this.getY() + this.getHeight(), color);
 			}
 		}
 
@@ -410,31 +457,33 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 		/**
 		 * Modified from {@link net.minecraft.client.gui.screens.options.controls.KeyBindsList.KeyEntry#resetMappingAndUpdateButtons() ControlsListWidget.KeyBindingEntry#update()}.
 		 */
-		@SuppressWarnings("JavadocReference")
 		protected void update() {
 			keybindButton.setMessage(keyBinding.getBoundKeysText());
+			conflicting = false;
 			duplicate = false;
-			MutableComponent text = Component.empty();
+			MutableComponent conflictText = Component.empty();
+			MutableComponent duplicateText = Component.empty();
+
 			if (!keyBinding.isUnbound()) {
 				// Check for conflicts with regular keybinds
 				for (KeyMapping otherKeyBinding : minecraft.options.keyMappings) {
 					if (keyBinding.getBoundKeysTranslationKey().contains(otherKeyBinding.saveString())) {
-						if (duplicate) {
-							text.append(", ");
+						if (conflicting) {
+							conflictText.append(", ");
 						}
-						duplicate = true;
-						text.append(Component.translatable(otherKeyBinding.getName()));
+						conflicting = true;
+						conflictText.append(Component.translatable(otherKeyBinding.getName()));
 					}
 				}
 				// Check for conflicts with other keybind shortcuts
 				for (AbstractShortcutEntry shortcut : ShortcutsConfigListWidget.this.children()) {
 					if (shortcut instanceof KeybindShortcutEntry keyBindingShortcut && keyBinding != keyBindingShortcut.keyBinding && keyBinding.equals(keyBindingShortcut.keyBinding)) {
 						if (duplicate) {
-							text.append(", ");
+							duplicateText.append(", ");
 						}
 						duplicate = true;
 						// We display the replacement command to help users identify which shortcuts have conflicting keybinds.
-						text.append(keyBindingShortcut.replacement.getValue());
+						duplicateText.append(keyBindingShortcut.replacement.getValue());
 					}
 				}
 			}
@@ -443,8 +492,14 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 				keybindButton.setMessage(Component.literal("[ ")
 						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
 						.append(" ]")
-						.withStyle(ChatFormatting.RED));
-				keybindButton.setTooltip(Tooltip.create(Component.translatable("controls.keybinds.duplicateKeybinds", text)));
+						.withColor(TextColor.RED));
+				keybindButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.shortcuts.keyBinding.duplicate", duplicateText)));
+			} else if (conflicting) {
+				keybindButton.setMessage(Component.literal("[ ")
+						.append(keybindButton.getMessage().copy().withStyle(ChatFormatting.WHITE))
+						.append(" ]")
+						.withColor(TextColor.YELLOW));
+				keybindButton.setTooltip(Tooltip.create(Component.translatable("controls.keybinds.duplicateKeybinds", conflictText)));
 			} else {
 				keybindButton.setTooltip(null);
 			}

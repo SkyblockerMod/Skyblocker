@@ -153,7 +153,13 @@ public class ItemProtection {
 				|| screenTitle.startsWith("Endstone Chest")
 				|| screenTitle.startsWith("Skull Chest")
 				|| screenTitle.startsWith("Weapon Rack")
-				|| screenTitle.startsWith("Armor Stand");
+				|| screenTitle.startsWith("Armor Stand")
+				// Equipment & Stats
+				|| screenTitle.startsWith("Your Equipment and Stats")
+				|| screenTitle.contains("Equipment Sets")
+				|| screenTitle.contains("Armor Sets")
+				|| screenTitle.contains("Loadouts")
+				|| screenTitle.contains("Pets");
 	}
 
 	public static boolean isNpcSellMenu(AbstractContainerMenu menu) {

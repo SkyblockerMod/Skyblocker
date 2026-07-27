@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import net.minecraft.network.chat.CommonComponents;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -278,7 +279,18 @@ public class StatusBarsConfigScreen extends Screen {
 								.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
 								.addMessage(Component.translatable("skyblocker.bars.config.explanation"))
 								.build()))
-				.bounds(width - 20, (height - 15) / 2, 15, 15)
+				.bounds(width - 20, height / 2 - 17, 15, 15)
+				.build());
+		this.addRenderableWidget(Button.builder(Component.literal("⟲"),
+						_ -> minecraft.gui.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.resetTitle"))
+								.addButton(CommonComponents.GUI_NO, PopupScreen::onClose)
+								.addButton(CommonComponents.GUI_YES, popup -> {
+									FancyStatusBars.resetBarPositions();
+									popup.onClose();
+								})
+								.addMessage(Component.translatable("skyblocker.bars.config.reset"))
+								.build()))
+				.bounds(width - 20, height / 2 + 2, 15, 15)
 				.build());
 	}
 

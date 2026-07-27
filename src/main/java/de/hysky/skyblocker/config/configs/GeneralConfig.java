@@ -173,6 +173,8 @@ public class GeneralConfig {
 
 		public boolean itemRarityBackgrounds = true;
 
+		public boolean itemRarityBackgroundsLegacyColors = false;
+
 		public boolean jacobMedalBackgrounds = true;
 
 		public boolean legacyAttributeBackgrounds = true;

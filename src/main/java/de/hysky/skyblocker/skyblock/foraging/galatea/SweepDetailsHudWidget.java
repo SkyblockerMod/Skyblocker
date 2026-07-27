@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -27,6 +27,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	private static final Map<String, FlexibleItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new FlexibleItemStack(Items.MANGROVE_LOG),
+			"Helix", new FlexibleItemStack(Items.STRIPPED_MANGROVE_WOOD),
 			"Jungle", new FlexibleItemStack(Items.JUNGLE_LOG),
 			"Acacia", new FlexibleItemStack(Items.ACACIA_LOG),
 			"Dark Oak", new FlexibleItemStack(Items.DARK_OAK_LOG),
@@ -34,7 +35,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 			"Birch", new FlexibleItemStack(Items.BIRCH_LOG),
 			"Oak", new FlexibleItemStack(Items.OAK_LOG)
 	);
-	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN);
+	public static final Set<Location> LOCATIONS = Set.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN, Location.TORRHUS_CANYON);
 
 	public SweepDetailsHudWidget() {
 		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, "sweepDetails");
@@ -64,6 +65,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new FlexibleItemStack(Items.IRON_AXE));
 				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new FlexibleItemStack(Items.GOLDEN_AXE));
 				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new FlexibleItemStack(Items.STONE_AXE));
+				case TORRHUS_CANYON -> ItemRepository.getItemStack("HELIX_CHOPPER", new FlexibleItemStack(Items.GOLDEN_AXE));
 				default -> Ico.RED_CONCRETE;
 			};
 			addComponent(Elements.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));

@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 
@@ -104,22 +103,19 @@ public class ProfileViewer {
 	/// {@return a {@link Pair} optionally containing the user's {@link ApiProfileResponse} and {@link GameProfile}}
 	private static CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> loadData(String name) {
 		Minecraft minecraft = Minecraft.getInstance();
-		CompletableFuture<Pair<Optional<ApiProfileResponse>, Optional<GameProfile>>> dataFuture = CompletableFuture.supplyAsync(() -> ApiUtils.name2Uuid(name), Executors.newVirtualThreadPerTaskExecutor())
-				.thenComposeAsync(uuid -> {
-					if (uuid.isEmpty()) {
-						return CompletableFuture.failedStage(new IllegalStateException("Invalid username"));
-					}
+		return CompletableFuture.supplyAsync(() -> {
+			String uuid = ApiUtils.name2Uuid(name);
+			if (uuid.isEmpty()) {
+				throw new IllegalStateException("Invalid username");
+			}
 
-					CompletableFuture<Optional<JsonObject>> skyblockProfileFuture = ProfileUtils.fetchFullProfileByUuid(uuid)
-							.thenApply(Optional::ofNullable);
-					ResolvableProfile resolvableProfile = ResolvableProfile.createUnresolved(UndashedUuid.fromString(uuid));
-					CompletableFuture<Optional<GameProfile>> gameProfileFuture = minecraft.playerSkinRenderCache().lookup(resolvableProfile)
-							.thenApply(optional -> optional.map(PlayerSkinRenderCache.RenderInfo::gameProfile));
+			CompletableFuture<Optional<JsonObject>> skyblockProfileFuture = ProfileUtils.fetchFullProfileByUuid(uuid)
+					.thenApply(Optional::ofNullable);
+			ResolvableProfile resolvableProfile = ResolvableProfile.createUnresolved(UndashedUuid.fromString(uuid));
+			CompletableFuture<Optional<GameProfile>> gameProfileFuture = minecraft.playerSkinRenderCache().lookup(resolvableProfile)
+					.thenApply(optional -> optional.map(PlayerSkinRenderCache.RenderInfo::gameProfile));
 
-					return skyblockProfileFuture.thenCombine(gameProfileFuture, Pair::of);
-				}, Executors.newVirtualThreadPerTaskExecutor())
-				.thenApplyAsync(pair -> Pair.of(pair.left().map(json -> GSON.fromJson(json, ApiProfileResponse.class)), pair.right()), Executors.newVirtualThreadPerTaskExecutor());
-
-		return dataFuture;
+			return Pair.of(skyblockProfileFuture.join().map(json -> GSON.fromJson(json, ApiProfileResponse.class)), gameProfileFuture.join());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 }

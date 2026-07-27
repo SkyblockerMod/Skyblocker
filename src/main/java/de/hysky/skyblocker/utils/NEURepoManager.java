@@ -11,37 +11,38 @@ import io.github.moulberry.repo.NEUConstants;
 import io.github.moulberry.repo.NEURecipeCache;
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepository;
-import io.github.moulberry.repo.data.ItemOverlays;
 import io.github.moulberry.repo.NEURepositoryException;
+import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.data.NEURecipe;
-import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.util.NEUId;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.merge.ContentMergeStrategy;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -79,11 +80,11 @@ public class NEURepoManager {
 	/**
 	 * Store after load runnables so we can execute them after each time the repository is (re)loaded.
 	 */
-	private static final List<Runnable> afterLoadTasks = new ArrayList<>();
+	private static final List<Runnable> afterLoadTasks = new CopyOnWriteArrayList<>();
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
-	private static Multimap<String, NEUItem> nameToNEUItem = HashMultimap.create();
+	private static Multimap<@Nullable String, @Nullable NEUItem> nameToNEUItem = HashMultimap.create();
 
 	/**
 	 * Adds command to update the repository manually from ingame.
@@ -103,9 +104,8 @@ public class NEURepoManager {
 		runAsyncAfterLoad(NEURepoManager::loadNameToNEUItemMap); // Loads the NEUItem name cache after the repository is loaded.
 	}
 
-
 	public static boolean isLoading() {
-		return REPO_LOADING != null && !REPO_LOADING.isDone();
+		return !REPO_LOADING.isDone();
 	}
 
 	private static CompletableFuture<Boolean> loadRepository() {
@@ -115,16 +115,24 @@ public class NEURepoManager {
 			try {
 				if (Files.isDirectory(NEURepoManager.LOCAL_REPO_DIR)) {
 					try (Git localRepo = Git.open(NEURepoManager.LOCAL_REPO_DIR.toFile())) {
-						PullResult result = localRepo.pull().setRebase(false).setFastForward(MergeCommand.FastForwardMode.FF_ONLY).call();
-						if (result.isSuccessful()) {
-							LOGGER.info("[Skyblocker NEU Repo] NEU Repository updated with merge status: {}", result.getMergeResult().getMergeStatus());
-						} else {
-							LOGGER.error("[Skyblocker NEU Repo] Update failed with merge status: {}. Downloading new repository", result.getMergeResult().getMergeStatus());
-							client.execute(() ->
-								Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
-							);
-							success = false;
+						boolean stashed = localRepo.stashCreate().call() != null;
+						localRepo.fetch()
+								.setRefSpecs("+refs/heads/master:refs/remotes/origin/master")
+								.setThin(true)
+								.setDepth(1)
+								.call();
+						Ref ref = localRepo.reset()
+								.setRef("refs/remotes/origin/master")
+								.setMode(ResetCommand.ResetType.HARD)
+								.call();
+						if (stashed) {
+							localRepo.stashApply()
+									.setContentMergeStrategy(ContentMergeStrategy.THEIRS)
+									.call();
+							localRepo.stashDrop().call();
+							LOGGER.info("[Skyblocker NEU Repo] Auto stash has been applied to the NEU Repository");
 						}
+						LOGGER.info("[Skyblocker NEU Repo] NEU Repository was updated to {}", ref.getObjectId().getName());
 					}
 				} else {
 					Git.cloneRepository()
@@ -132,14 +140,14 @@ public class NEURepoManager {
 							.setDirectory(NEURepoManager.LOCAL_REPO_DIR.toFile())
 							.setBranchesToClone(List.of("refs/heads/master"))
 							.setBranch("refs/heads/master")
-							.setDepth(1) // do shallow clone
+							.setDepth(1)
 							.call().close();
 					LOGGER.info("[Skyblocker NEU Repo] NEU Repository Downloaded");
 				}
 			} catch (TransportException e) {
 				LOGGER.error("[Skyblocker NEU Repo] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
 				success = false;
-			} catch (RepositoryNotFoundException e) {
+			} catch (GitAPIException | RepositoryNotFoundException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
 				client.execute(() ->
 						Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
@@ -157,13 +165,13 @@ public class NEURepoManager {
 				success = false;
 			}
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenApplyAsync(success -> {
-			CompletableFuture.allOf(afterLoadTasks.stream().map(task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor())).toArray(CompletableFuture[]::new)).exceptionally(e -> {
-				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load tasks", e);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(success -> {
+			afterLoadTasks.forEach(task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
+				LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load task", e);
 				return null;
-			});
+			}));
 			return success;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**
@@ -189,7 +197,7 @@ public class NEURepoManager {
 	}
 
 	private static void deleteAndDownloadRepositoryInternal(@Nullable Player player) {
-		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, Executors.newVirtualThreadPerTaskExecutor());
+		Function<Runnable, CompletableFuture<Void>> runner = isLoading() ? REPO_LOADING::thenRunAsync : task -> CompletableFuture.runAsync(task, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		REPO_LOADING = runner.apply(() -> {
 			sendMessage(player, Component.translatable("skyblocker.updateRepository.start").withStyle(ChatFormatting.AQUA));
 			try {
@@ -221,7 +229,7 @@ public class NEURepoManager {
 	 * @return a completable future of the given runnable
 	 */
 	public static CompletableFuture<Void> runAsyncAfterLoad(Runnable runnable) {
-		return REPO_LOADING.thenRunAsync(runnable).exceptionally(e -> {
+		return REPO_LOADING.thenRunAsync(runnable, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 			LOGGER.error("[Skyblocker NEU Repo] Encountered unknown exception while running after load task", e);
 			return null;
 		}).thenRun(() -> afterLoadTasks.add(runnable)); // Add to the list after so it doesn't get executed twice.
@@ -238,7 +246,7 @@ public class NEURepoManager {
 	/**
 	 * Gets the {@link NEUItem} by display name.
 	 */
-	public static Collection<NEUItem> getItemByName(String displayName) {
+	public static Collection<@Nullable NEUItem> getItemByName(String displayName) {
 		return nameToNEUItem.get(displayName);
 	}
 

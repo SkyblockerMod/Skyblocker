@@ -7,6 +7,7 @@ import org.jspecify.annotations.Nullable;
 
 public enum StatusBarType implements StringRepresentable {
 	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Component.translatable("skyblocker.bars.config.health")),
+	VITALITY("vitality", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(200, 50, 40)}, false, true, new Color(220, 60, 60), Component.translatable("skyblocker.bars.config.vitality")),
 	INTELLIGENCE("intelligence", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, true, new Color(85, 255, 255), Component.translatable("skyblocker.bars.config.intelligence")),
 	DEFENSE("defense", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, false, new Color(185, 185, 185), Component.translatable("skyblocker.bars.config.defense")),
 	EXPERIENCE("experience", BarPositioner.BarAnchor.HOTBAR_TOP, 1, new Color[]{new Color(100, 230, 70)}, false, false, new Color(128, 255, 32), Component.translatable("skyblocker.bars.config.experience")),

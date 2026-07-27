@@ -63,6 +63,7 @@ public class Utils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 	private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
+	public static final String HYPIXEL_SKYBLOCK_NAMESPACE = "hypixel_skyblock";
 	private static final String PROFILE_PREFIX = "Profile: ";
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
@@ -165,13 +166,36 @@ public class Utils {
 		return location == Location.THE_FARMING_ISLAND;
 	}
 
-	public static boolean isInGalatea() { return location == Location.GALATEA; }
+	public static boolean isInGalatea() {
+		return location == Location.GALATEA;
+	}
 
-	public static boolean isInHub() { return location == Location.HUB; }
+	public static boolean isInTorrhusCanyon() {
+		return location == Location.TORRHUS_CANYON;
+	}
 
-	public static boolean isInPrivateIsland() { return location == Location.PRIVATE_ISLAND; }
+	/// {@return whether the user is in Galatea, the Torrhus Canyon, or the Park}
+	///
+	/// @implNote This intentionally excludes foraging areas in non-foraging islands.
+	public static boolean isInForagingIsland() {
+		return isInGalatea() || isInTorrhusCanyon() || isInPark();
+	}
 
-	public static boolean isInPark() { return location == Location.THE_PARK; }
+	public static boolean isInSafari() {
+		return location == Location.SAFARI;
+	}
+
+	public static boolean isInHub() {
+		return location == Location.HUB;
+	}
+
+	public static boolean isInPrivateIsland() {
+		return location == Location.PRIVATE_ISLAND;
+	}
+
+	public static boolean isInPark() {
+		return location == Location.THE_PARK;
+	}
 
 	public static boolean isOnBingo() {
 		return profile.endsWith("Ⓑ");

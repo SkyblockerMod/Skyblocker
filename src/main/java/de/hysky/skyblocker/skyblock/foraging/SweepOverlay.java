@@ -40,8 +40,7 @@ public class SweepOverlay {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
-	// TODO do not include formatting codes with the regex
-	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s]|§[0-9a-fk-or])*(\\d+)", SkyBlockIcons.SWEEP));
+	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
@@ -79,7 +78,7 @@ public class SweepOverlay {
 	}
 
 	private static boolean isValidLocation() {
-		return Utils.isInGalatea() || Utils.isInPark() || Utils.isInHub() || Utils.isInPrivateIsland();
+		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
+		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
 			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
 							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.withStyle(ChatFormatting.RED)));
@@ -194,8 +193,6 @@ public class SweepOverlay {
 	/**
 	 * Calculates the maximum number of logs that can be chopped based on Sweep stat and toughness.
 	 * A hard cap of {@value #MAX_WOOD_CAP} logs is enforced.
-	 * <p>
-	 * The formula is not official but rather a reverse-engineered approximation.
 	 *
 	 * @param sweepStat the player's Sweep stat
 	 * @param toughness the toughness of the log
@@ -203,10 +200,11 @@ public class SweepOverlay {
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
 		double logs;
-		if (toughness <= 0) {
-			logs = sweepStat;
+		if (toughness <= 1) {
+			logs = Math.min(MAX_WOOD_CAP, (int) sweepStat);
 		} else {
-			logs = 0.515 + (3.245 * Math.log(sweepStat - Math.sqrt(toughness) + 0.646)) - (1.708 * Math.log(toughness));
+			double x = (sweepStat + Math.sqrt(sweepStat) - toughness) / Math.pow(toughness, 0.511);
+			logs = Math.log10(1 + Math.pow(x, 1.9)) * 4;
 		}
 		return (int) Math.ceil(Math.min(MAX_WOOD_CAP, logs));
 	}

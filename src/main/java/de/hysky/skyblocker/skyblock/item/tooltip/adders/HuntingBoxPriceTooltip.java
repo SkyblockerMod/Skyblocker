@@ -19,7 +19,8 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	public HuntingBoxPriceTooltip(int priority) {
-		super("^Hunting Box$", priority);
+		// ^(?:\(\d+\/\d+\) )?Hunting Box$
+		super("^(?:\\(\\d+\\/\\d+\\) )?Hunting Box$", priority);
 	}
 
 	@Override

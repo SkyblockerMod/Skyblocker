@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,9 +77,7 @@ public class GoldorWaypointsManager {
 	}
 
 	private static void load(Minecraft client) {
-		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
-
-		terminals.whenComplete((_, _) -> loaded = true);
+		loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json")).thenRun(() -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {
@@ -94,13 +91,13 @@ public class GoldorWaypointsManager {
 
 				return List.<GoldorWaypoint>of();
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list -> list.forEach(waypoint -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(list -> list.forEach(waypoint -> {
 			switch (waypoint.kind) {
 				case TERMINAL -> TERMINALS.add(waypoint);
 				case DEVICE -> DEVICES.add(waypoint);
 				case LEVER -> LEVERS.add(waypoint);
 			}
-		}));
+		}), client);
 	}
 
 	/**

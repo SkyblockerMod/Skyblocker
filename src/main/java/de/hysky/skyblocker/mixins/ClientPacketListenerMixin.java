@@ -16,11 +16,12 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
-import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.foraging.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
@@ -175,6 +176,11 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	@Inject(method = "handleMapItemData", at = @At("RETURN"))
 	private void skyblocker$onMapItemData(ClientboundMapItemDataPacket packet, CallbackInfo ci) {
 		DungeonMapTexture.onMapItemDataUpdate(packet.mapId(), packet.colorPatch().isPresent());
+	}
+
+	@Inject(method = "handleSetTime", at = @At("RETURN"))
+	private void skyblocker$onSetTime(CallbackInfo ci) {
+		CrystalsLocationsManager.onTimeUpdate();
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showNetworkCharts()Z"))

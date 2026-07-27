@@ -3,23 +3,18 @@ package de.hysky.skyblocker.skyblock;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import de.hysky.skyblocker.utils.command.CommandUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
+import io.github.moulberry.repo.constants.AbiphoneContact;
 
-import com.google.gson.JsonParser;
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -28,7 +23,6 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
 
 public class CallAutocomplete {
-	private static final Logger LOGGER = LogUtils.getLogger();
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;
 
 	@Init
@@ -37,38 +31,29 @@ public class CallAutocomplete {
 	}
 
 	private static void loadCallNames() {
-		try (InputStream stream = NEURepoManager.file("constants/abiphone.json").stream()) {
-			String data = new String(stream.readAllBytes());
-			Map<String, AbiphoneContact> contacts = AbiphoneContact.MAP_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(data)).getOrThrow();
-			List<String> suggestions = contacts.entrySet().stream()
-					.map(entry -> computeCallNames(entry.getKey(), entry.getValue()))
-					.flatMap(List::stream)
-					.toList();
+		List<String> suggestions = new ArrayList<>();
 
-			commandNode = literal("call")
-					.requires(_ -> Utils.isOnSkyblock())
-					.executes(CommandUtils.noOp)
-					.then(argument("contact", StringArgumentType.greedyString())
-							.suggests((_, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
-							.executes(CommandUtils.noOp))
-					.build();
-		} catch (Exception e) {
-			LOGGER.error("[Skyblocker Call Autocomplete] Failed to load abiphone contacts list!", e);
+		for (Map.Entry<String, AbiphoneContact> entry : NEURepoManager.getConstants().getAbiphoneContacts().entrySet()) {
+			String npcName = entry.getKey();
+			List<String> callNameOverrides = entry.getValue().getCallNames();
+
+			suggestions.addAll(computeCallNames(npcName, callNameOverrides));
 		}
+
+		commandNode = literal("call")
+				.requires(_ -> Utils.isOnSkyblock())
+				.executes(CommandUtils.noOp)
+				.then(argument("contact", StringArgumentType.greedyString())
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(suggestions, builder))
+						.executes(CommandUtils.noOp))
+				.build();
 	}
 
-	private static List<String> computeCallNames(String npcName, AbiphoneContact contact) {
-		return contact.callNames().isPresent() ? contact.callNames().get() : List.of(formatDefaultCallName(npcName));
+	private static List<String> computeCallNames(String npcName, @Nullable List<String> callNameOverrides) {
+		return callNameOverrides != null ? callNameOverrides : List.of(formatDefaultCallName(npcName));
 	}
 
 	private static String formatDefaultCallName(String npcName) {
 		return npcName.toLowerCase(Locale.ENGLISH);
-	}
-
-	private record AbiphoneContact(Optional<List<String>> callNames) {
-		private static final Codec<AbiphoneContact> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.listOf().optionalFieldOf("callNames").forGetter(AbiphoneContact::callNames)
-				).apply(instance, AbiphoneContact::new));
-		private static final Codec<Map<String, AbiphoneContact>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 	}
 }

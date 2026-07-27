@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 import net.minecraft.util.datafix.fixes.ItemIdFix;
@@ -34,8 +35,8 @@ public class DungeonRoomsDFU {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonRoomsDFU.class);
 	private static final String DUNGEONS_DATA_DIR = "/assets/skyblocker/dungeons";
 	private static final String DUNGEON_ROOMS_DATA_DIR = DUNGEONS_DATA_DIR + "/dungeonrooms";
-	private static final HashMap<String, HashMap<String, HashMap<String, long[]>>> OLD_ROOMS = new HashMap<>();
-	private static final HashMap<String, HashMap<String, HashMap<String, int[]>>> ROOMS = new HashMap<>();
+	private static final Map<String, Map<String, Map<String, long[]>>> OLD_ROOMS = new HashMap<>();
+	private static final Map<String, Map<String, Map<String, int[]>>> ROOMS = new HashMap<>();
 
 	public static void main(String[] args) {
 		load().join();
@@ -56,12 +57,12 @@ public class DungeonRoomsDFU {
 			for (Path dungeon : dungeons) {
 				try (DirectoryStream<Path> roomShapes = Files.newDirectoryStream(dungeon, Files::isDirectory)) {
 					List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
-					HashMap<String, HashMap<String, long[]>> roomShapesMap = new HashMap<>();
+					Map<String, Map<String, long[]>> roomShapesMap = new ConcurrentHashMap<>();
 					for (Path roomShape : roomShapes) {
 						roomShapeFutures.add(CompletableFuture.supplyAsync(() -> readRooms(roomShape, resourcePathIndex)).thenAccept(rooms -> roomShapesMap.put(roomShape.getFileName().toString().toLowerCase(Locale.ENGLISH), rooms)));
 					}
 					OLD_ROOMS.put(dungeon.getFileName().toString().toLowerCase(Locale.ENGLISH), roomShapesMap);
-					dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(HashMap::size).sum())));
+					dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getFileName(), roomShapesMap.size(), roomShapesMap.values().stream().mapToInt(Map::size).sum())));
 				} catch (IOException e) {
 					LOGGER.error("Failed to load dungeon secrets for dungeon " + dungeon.getFileName(), e);
 				}
@@ -69,10 +70,10 @@ public class DungeonRoomsDFU {
 		} catch (IOException e) {
 			LOGGER.error("Failed to load dungeon secrets", e);
 		}
-		return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", OLD_ROOMS.size(), OLD_ROOMS.values().stream().mapToInt(HashMap::size).sum(), OLD_ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+		return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Loaded dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", OLD_ROOMS.size(), OLD_ROOMS.values().stream().mapToInt(Map::size).sum(), OLD_ROOMS.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum()));
 	}
 
-	private static HashMap<String, long[]> readRooms(Path roomShape, int resourcePathIndex) {
+	private static Map<String, long[]> readRooms(Path roomShape, int resourcePathIndex) {
 		try (DirectoryStream<Path> rooms = Files.newDirectoryStream(roomShape, Files::isRegularFile)) {
 			HashMap<String, long[]> roomsData = new HashMap<>();
 			for (Path room : rooms) {
@@ -94,12 +95,12 @@ public class DungeonRoomsDFU {
 	}
 
 	private static void updateRooms() {
-		for (Map.Entry<String, HashMap<String, HashMap<String, long[]>>> oldDungeon : OLD_ROOMS.entrySet()) {
-			HashMap<String, HashMap<String, int[]>> dungeon = new HashMap<>();
-			for (Map.Entry<String, HashMap<String, long[]>> oldRoomShape : oldDungeon.getValue().entrySet()) {
-				HashMap<String, int[]> roomShape = new HashMap<>();
+		for (Map.Entry<String, Map<String, Map<String, long[]>>> oldDungeon : OLD_ROOMS.entrySet()) {
+			Map<String, Map<String, int[]>> dungeon = new HashMap<>();
+			for (Map.Entry<String, Map<String, long[]>> oldRoomShape : oldDungeon.getValue().entrySet()) {
+				Map<String, int[]> roomShape = new HashMap<>();
 				for (Map.Entry<String, long[]> oldRoomEntry : oldRoomShape.getValue().entrySet()) {
-					roomShape.put(oldRoomEntry.getKey().replaceAll(" ", "-"), updateRoom(oldRoomEntry.getValue()));
+					roomShape.put(oldRoomEntry.getKey().replace(" ", "-"), updateRoom(oldRoomEntry.getValue()));
 				}
 				dungeon.put(oldRoomShape.getKey(), roomShape);
 			}
@@ -142,19 +143,19 @@ public class DungeonRoomsDFU {
 
 	private static CompletableFuture<Void> save() {
 		List<CompletableFuture<Void>> dungeonFutures = new ArrayList<>();
-		for (Map.Entry<String, HashMap<String, HashMap<String, int[]>>> dungeon : ROOMS.entrySet()) {
+		for (Map.Entry<String, Map<String, Map<String, int[]>>> dungeon : ROOMS.entrySet()) {
 			Path dungeonDir = Path.of("out", "dungeons", dungeon.getKey());
 			List<CompletableFuture<Void>> roomShapeFutures = new ArrayList<>();
-			for (Map.Entry<String, HashMap<String, int[]>> roomShape : dungeon.getValue().entrySet()) {
+			for (Map.Entry<String, Map<String, int[]>> roomShape : dungeon.getValue().entrySet()) {
 				Path roomShapeDir = dungeonDir.resolve(roomShape.getKey());
 				roomShapeFutures.add(CompletableFuture.runAsync(() -> saveRooms(roomShapeDir, roomShape)));
 			}
-			dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getKey(), dungeon.getValue().size(), dungeon.getValue().values().stream().mapToInt(HashMap::size).sum())));
+			dungeonFutures.add(CompletableFuture.allOf(roomShapeFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for dungeon {} with {} room shapes and {} rooms total", dungeon.getKey(), dungeon.getValue().size(), dungeon.getValue().values().stream().mapToInt(Map::size).sum())));
 		}
-		return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(HashMap::size).sum(), ROOMS.values().stream().map(HashMap::values).flatMap(Collection::stream).mapToInt(HashMap::size).sum()));
+		return CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("Saved dungeon secrets for {} dungeon(s), {} room shapes, and {} rooms total", ROOMS.size(), ROOMS.values().stream().mapToInt(Map::size).sum(), ROOMS.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum()));
 	}
 
-	private static void saveRooms(Path roomShapeDir, Map.Entry<String, HashMap<String, int[]>> roomShape) {
+	private static void saveRooms(Path roomShapeDir, Map.Entry<String, Map<String, int[]>> roomShape) {
 		try {
 			Files.createDirectories(roomShapeDir);
 		} catch (IOException e) {

@@ -13,22 +13,20 @@ public class RegularItemLookup implements WikiLookup {
 	private RegularItemLookup() {}
 
 	@Override
-	public void open(ItemStack itemStack, Player player, boolean useOfficial) {
+	public void open(ItemStack itemStack, Player player) {
 		String neuId = itemStack.getNeuName();
 
 		if (StringUtils.isNotEmpty(neuId)) {
-			String wikiLink = ItemRepository.getWikiLink(neuId, useOfficial);
+			String wikiLink = ItemRepository.getWikiLink(neuId);
 			if (wikiLink != null) {
 				WikiLookupManager.openWikiLink(wikiLink, player);
 				return;
 			}
 		}
-		noArticleFound(player, useOfficial);
+		noArticleFound(player);
 	}
 
-	private static void noArticleFound(Player player, boolean useOfficial) {
-		player.sendSystemMessage(Constants.PREFIX.get().append(useOfficial ?
-				Component.translatable("skyblocker.wikiLookup.noArticleFound.official") :
-				Component.translatable("skyblocker.wikiLookup.noArticleFound.independent")));
+	private static void noArticleFound(Player player) {
+		player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.wikiLookup.noArticleFound.independent")));
 	}
 }

@@ -85,6 +85,7 @@
 		"accessors.MapItemSavedDataAccessor",
 		"accessors.MapRendererInvoker",
 		"accessors.MinecraftAccessor",
+		"accessors.ModelManagerAccessor",
 		"accessors.PlayerTabOverlayAccessor",
 		"accessors.PopupScreenAccessor",
 		"accessors.RecipeBookComponentAccessor",

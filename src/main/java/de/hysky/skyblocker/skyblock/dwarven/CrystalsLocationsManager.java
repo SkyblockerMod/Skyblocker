@@ -76,6 +76,8 @@ public class CrystalsLocationsManager {
 
 	protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
 	protected static List<String> verifiedWaypoints = new ArrayList<>();
+	private static boolean updatedTime = false;
+	private static boolean updatedLocation = false;
 	private static final List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
 	@Init
@@ -392,19 +394,34 @@ public class CrystalsLocationsManager {
 
 	private static void onLocationChange(Location newLocation) {
 		if (newLocation == Location.CRYSTAL_HOLLOWS) {
-			WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.level)));
+			updatedLocation = true;
 		}
+	}
+
+	public static void onTimeUpdate() {
+		updatedTime = true;
 	}
 
 	private static void reset() {
 		activeWaypoints.clear();
 		verifiedWaypoints.clear();
 		waypointsSent2Socket.clear();
+		updatedTime = false;
+		updatedLocation = false;
 	}
 
 	private static void update() {
 		if (CLIENT.player == null || CLIENT.getConnection() == null || !SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled || !Utils.isInCrystalHollows()) {
 			return;
+		}
+
+		// Try connect to socket - this must happen after the location & time are updated since those two updates
+		// can happen in any order.
+		if (updatedTime && updatedLocation) {
+			WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.level)));
+
+			updatedTime = false;
+			updatedLocation = false;
 		}
 
 		//get if the player is in the crystals

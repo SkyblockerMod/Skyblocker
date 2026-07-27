@@ -32,7 +32,6 @@
   "key.skyblocker.toggleA": "Show tab HUD secondary view",
   "key.skyblocker.valueBreadownPopup": "Open Value Breakdown Popup",
   "key.skyblocker.wikiLookup.independent": "Independent Wiki Lookup",
-  "key.skyblocker.wikiLookup.official": "Hypixel Wiki Lookup",
 
   "skyblocker.accessoryHelper.afterSelling": "%s after selling %s",
   "skyblocker.accessoryHelper.allTiers": "Show all tiers",
@@ -41,8 +40,7 @@
   "skyblocker.accessoryHelper.filter.MISSING": "Missing",
   "skyblocker.accessoryHelper.filter.UPGRADES": "Upgrades",
   "skyblocker.accessoryHelper.highestTierOnly": "Show highest tier only",
-  "skyblocker.accessoryHelper.independent": "(Hold shift for independent)",
-  "skyblocker.accessoryHelper.openWiki": "Click to open on the wiki!",
+  "skyblocker.accessoryHelper.openWiki": "Click to open on the independent wiki!",
   "skyblocker.accessoryHelper.recombobulate": "Recombobulate a %s accessory.",
 
   "skyblocker.api.cache.HIT": "This data was cached!\nIt's %s seconds old.",
@@ -55,6 +53,10 @@
   "skyblocker.bars.config.commonPosition.OFF": "Off",
   "skyblocker.bars.config.commonPosition.RIGHT": "Right",
   "skyblocker.bars.config.defense": "Defense",
+  "skyblocker.bars.config.direction": "Direction",
+  "skyblocker.bars.config.direction.FROM_MIDDLE": "From Middle",
+  "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "Left to Right",
+  "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "Right to Left",
   "skyblocker.bars.config.experience": "Experience",
   "skyblocker.bars.config.explanation": "Welcome to the status bars config screen!\n\nDrag and drop the bars to snap them to an anchor (white squares), existing bars or you can put them anywhere.\nYou can right click them to edit a bunch of properties.\nBy hovering your mouse between 2 bars (your cursor should change), you can resize them.\n\nEverything is saved when you leave.",
   "skyblocker.bars.config.explanationTitle": "What is this?",
@@ -64,6 +66,8 @@
   "skyblocker.bars.config.intelligence": "Intelligence",
   "skyblocker.bars.config.mainColor": "Main Color",
   "skyblocker.bars.config.overflowColor": "Overflow Color",
+  "skyblocker.bars.config.reset": "This will reset the status bars to their default positions.\nThis cannot be undone.",
+  "skyblocker.bars.config.resetTitle": "Reset Status Bars?",
   "skyblocker.bars.config.showMax": "Show Max",
   "skyblocker.bars.config.showOverflow": "Show Overflow",
   "skyblocker.bars.config.speed": "Speed",
@@ -71,6 +75,7 @@
   "skyblocker.bars.config.textColor": "Text Color",
   "skyblocker.bars.config.textPosition.BAR_CENTER": "Bar Center",
   "skyblocker.bars.config.textPosition.CENTER": "Center",
+  "skyblocker.bars.config.vitality": "Vitality",
 
   "skyblocker.chat.confirmationPromptNotification": "Click anywhere on screen within 60 seconds to accept the prompt.",
 
@@ -170,8 +175,10 @@
   "skyblocker.config.chat.filter.hideShowOff.@Tooltip": "Filters messages from the /show command",
   "skyblocker.config.chat.filter.hideSpiritSceptre": "Hide Spirit Sceptre Message",
   "skyblocker.config.chat.filter.hideTeleportPad": "Hide Teleport Pad Messages",
-  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Galatea",
-  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of Galatea.",
+  "skyblocker.config.chat.filter.hideToggleBeekeeper": "Hides Beekeeper Messages outside Foraging islands",
+  "skyblocker.config.chat.filter.hideToggleBeekeeper.@Tooltip": "Hides Beekeeper HOTF perk messages while you're outside of foraging islands.",
+  "skyblocker.config.chat.filter.hideToggleLottery": "Hide Lottery Messages outside Foraging islands",
+  "skyblocker.config.chat.filter.hideToggleLottery.@Tooltip": "Hides Lottery HOTF perk messages while you're outside of foraging islands.",
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Sky Mall Messages outside Mining Islands",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides Sky Mall HOTM perk messages while you're outside of a mining island.",
 
@@ -334,6 +341,7 @@
   "skyblocker.config.dungeons.map.showOutline": "Show Outline",
   "skyblocker.config.dungeons.map.showRoomLabels": "Show Room Labels",
   "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
+  "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "This feature will not work if user uses /nick and making it hard to determine their identity.",
 
   "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
@@ -577,6 +585,8 @@
   "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle.style.SQUARE": "Square",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds": "Item Rarity Background",
   "skyblocker.config.general.itemInfoDisplay.itemRarityBackgrounds.@Tooltip": "Displays a colored background behind an item. The color represents the item's rarity.",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Item Rarity Background Legacy Colors",
+  "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Use the rarity colors from before the resource pack update.",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds": "Jacob's Contest Medal Background",
   "skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip": "Displays a colored background behind a Jacob's Farming Contest entry. The color represents the medal earned during the contest.",
   "skyblocker.config.general.itemInfoDisplay.legacyAttributeBackgrounds": "Legacy Attribute Background",
@@ -628,7 +638,7 @@
   "skyblocker.config.general.itemTooltip.enableAvgBIN": "Enable Avg. BIN Price",
   "skyblocker.config.general.itemTooltip.enableBazaarPrice": "Enable Bazaar buy/sell Price",
   "skyblocker.config.general.itemTooltip.enableEstimatedItemValue": "Enable Estimated Item Value",
-  "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Displays an estimation of the item's total value in the tooltip, §lmight not be 100% accurate all the time.§r\n\nWhen selling items always do a manual check of the item price!",
+  "skyblocker.config.general.itemTooltip.enableEstimatedItemValue.@Tooltip": "Displays an estimation of the item's total value in the tooltip.\nThe price is based on the BZ/AH price of each part, and cannot be accurately estimated when price data is not loaded. Prices may be artificially inflated or deflated so remember to check prices manually before selling items!",
   "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress": "Enable Evolving Item Progress",
   "skyblocker.config.general.itemTooltip.enableEvolvingItemProgress.@Tooltip": "Displays the age of evolving items and how long they will take to evolve.",
   "skyblocker.config.general.itemTooltip.enableExoticTooltip": "Enable Exotic Tooltip",
@@ -641,6 +651,7 @@
   "skyblocker.config.general.itemTooltip.enableMuseumInfo.@Tooltip": "If this item is donatable to the museum, then the item's category in the museum is displayed. It also displays a marker indicating whether you've donated that item to your museum or not (freebies not yet supported).\n\nMake sure to enable your Museum API for accurate information!",
   "skyblocker.config.general.itemTooltip.enableNPCPrice": "Enable NPC Price",
   "skyblocker.config.general.itemTooltip.enableObtainedDate": "Enable Obtained Date",
+  "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Price data is loaded via API. If the network fails to load data, please try manually refreshing the data using /skyblocker refreshPrices, or check if the network can access https://hysky.de/ and https://api.azureaaron.net/.",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
@@ -695,7 +706,7 @@
 
   "skyblocker.config.general.wikiLookup": "Wiki Lookup",
   "skyblocker.config.general.wikiLookup.enableWikiLookup": "Enable Wiki Lookup",
-  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item.\n\nUse '%s' for the official Hypixel wiki.\nUse '%s' for the independent wiki.",
+  "skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip": "Opens the wiki page of the hovered item.\n\nUse '%s' for the independent wiki.",
 
   "skyblocker.config.helpers": "Helpers",
 
@@ -753,9 +764,6 @@
 
   "skyblocker.config.helpers.enableNewYearCakesHelper": "Enable New Year Cakes Helper",
   "skyblocker.config.helpers.enableNewYearCakesHelper.@Tooltip": "Highlights the missing new year cakes green and the cakes you have already red.\n\nRequires you to open your cake bag at least once to work.",
-
-  "skyblocker.config.helpers.enableWardrobeHelper": "Enable Wardrobe Helper",
-  "skyblocker.config.helpers.enableWardrobeHelper.@Tooltip": "Allows changing Armor Sets and Equipment Sets by pressing the corresponding Hotbar Slot key.",
 
   "skyblocker.config.helpers.experiments": "Experiments Solver",
   "skyblocker.config.helpers.experiments.blockIncorrectClicks": "Block Incorrect Clicks",
@@ -1347,6 +1355,8 @@
   "skyblocker.config.uiAndVisuals.radialMenu.wardrobe": "Wardrobe",
 
   "skyblocker.config.uiAndVisuals.searchOverlay": "AH/BZ Search Overlay",
+  "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Show autocomplete suggestions for auction house/bazaar commands.",
+  "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip": "A re-log is required for this setting to be updated.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse": "Enable For Auction House",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableAuctionHouse.@Tooltip": "Show custom search overlay when searching in the Auction House.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar": "Enable For Bazaar",
@@ -1441,6 +1451,19 @@
   "skyblocker.config.uiAndVisuals.smoothAOTE.predictive.@Tooltip": "Predict where the teleport will end. This will mean there can be no added lag however it is sometimes wrong and can glitch out.",
   "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson": "Enable 3rd Person",
   "skyblocker.config.uiAndVisuals.smoothAOTE.thirdPerson.@Tooltip": "Enables teleport smoothing when in 3rd person modes.",
+
+  "skyblocker.config.uiAndVisuals.storageOverlay": "Storage Overlay",
+  "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth": "Backpack Width",
+  "skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip": "How many slots each backpack/ender chest should have per row. (This will be capped based on GUI scale to the maximum that fits.)",
+  "skyblocker.config.uiAndVisuals.storageOverlay.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip": "Enables the overlay for ender chest and backpacks.",
+  "skyblocker.config.uiAndVisuals.storageOverlay.farmingToolkitButton": "Farming Toolkit",
+  "skyblocker.config.uiAndVisuals.storageOverlay.hideButton": "Hide",
+  "skyblocker.config.uiAndVisuals.storageOverlay.homeButton": "Home",
+  "skyblocker.config.uiAndVisuals.storageOverlay.huntingToolkitButton": "Hunting Toolkit",
+  "skyblocker.config.uiAndVisuals.storageOverlay.reloadButton": "No backpacks found :(. Click to reload storage.",
+  "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch": "Remember Search",
+  "skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip": "Saves search and scroll position after closing backpack.",
 
   "skyblocker.config.uiAndVisuals.swingOnAbilities": "Swing On Abilities",
   "skyblocker.config.uiAndVisuals.swingOnAbilities.@Tooltip": "Swings your hand whenever you use an item with a right-click ability.",
@@ -1609,6 +1632,7 @@
   "skyblocker.customization.item.glint": "Glint: %s",
   "skyblocker.customization.item.glint.default": "Default",
   "skyblocker.customization.item.modelOverride": "Item Model Override",
+  "skyblocker.customization.item.selectModel": "Select Model",
   "skyblocker.customization.nothingCustomizable": "Nothing customizable.",
   "skyblocker.customization.title": "Customize Your Gear",
   "skyblocker.customization.titleSecret": "Pimp Your Gear",
@@ -1888,6 +1912,8 @@
   "skyblocker.shortcuts.config": "Shortcuts Config",
   "skyblocker.shortcuts.deleteQuestion": "Are you sure you want to remove this shortcut?",
   "skyblocker.shortcuts.deleteWarning": "Shortcut '%s' will be lost forever! (A long time!)",
+  "skyblocker.shortcuts.hasDuplicates": "Cannot save as there are entries with the same target command or key bind!",
+  "skyblocker.shortcuts.keyBinding.duplicate": "⚠ This key is used by another shortcut, which is not allowed! ⚠\n\nRemove this shortcut or:\n%s",
   "skyblocker.shortcuts.keyBinding.replacement": "Execute Command",
   "skyblocker.shortcuts.keyBinding.target": "Key Bind",
   "skyblocker.shortcuts.keyBinding.tooltip": "Run a command when a key is pressed.",
@@ -2033,7 +2059,6 @@
   "skyblocker.webSocket.receivedCrystalsWaypoint": "Received a waypoint to %s from the Skyblocker WebSocket.",
 
   "skyblocker.wikiLookup.noArticleFound.independent": "Unable to locate an independent wiki article for this item...",
-  "skyblocker.wikiLookup.noArticleFound.official": "Unable to locate an Official wiki article for this item...",
 
   "text.skyblocker.clickToSend": "[Click To Send In Chat]",
   "text.skyblocker.clickToSend.@Tooltip": "Click to send this in chat.",
