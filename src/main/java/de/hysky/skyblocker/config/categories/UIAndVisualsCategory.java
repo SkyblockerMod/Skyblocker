@@ -265,7 +265,7 @@ public class UIAndVisualsCategory {
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_6_8_0)
+								.tags(CommonTags.ADDED_IN_6_8_1)
 								.binding(defaults.uiAndVisuals.storageOverlay.storagesPerRow,
 										() -> config.uiAndVisuals.storageOverlay.storagesPerRow,
 										newValue -> config.uiAndVisuals.storageOverlay.storagesPerRow = newValue)
@@ -555,6 +555,7 @@ public class UIAndVisualsCategory {
 						).option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_1)
 								.binding(defaults.uiAndVisuals.bars.showEstimatedTilde,
 										() -> config.uiAndVisuals.bars.showEstimatedTilde,
 										newValue -> config.uiAndVisuals.bars.showEstimatedTilde = newValue)

@@ -1,3 +1,26 @@
+# Release 6.8.1
+
+## Highlight
+* Storage Overlay changes
+  * Add an option to set the maximum number of backpacks per row (default is 3)
+  * Change the cursor position to not reset when switching backpacks
+* Add a config for whether to show the estimated tilde on Fancy Bars
+* Fix Vitality bar not showing in dungeons
+* Fix Item Price Lookup opening the Search overlay
+* Fix Visitor's Logbook Wiki Lookup
+
+## What's Changed
+* Pack storage overlay horizontally by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2589
+* Add max storages per row by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2591
+* Fix Item Price Lookup Opening Search Overlay by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2593
+* vitality fixes and tilde option by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2592
+* no reset cursor in storage overlay by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2594
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.8.0+26.2...v6.8.1+26.2
+
+___
+
 # Release 6.8.0
 
 ## Highlight
