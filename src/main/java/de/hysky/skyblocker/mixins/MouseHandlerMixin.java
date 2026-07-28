@@ -46,7 +46,7 @@ public class MouseHandlerMixin {
 
 	@Inject(method = "releaseMouse", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/InputConstants;grabOrReleaseMouse(Lcom/mojang/blaze3d/platform/Window;IDD)V", shift = At.Shift.AFTER))
 	private void dontResetMouseInStorageOverlay(CallbackInfo ci) {
-		if (minecraft.gui.screen() instanceof StorageOverlayScreen) {
+		if (minecraft.screen instanceof StorageOverlayScreen) {
 			Vector2dc position = StorageOverlayScreen.getPreviousMousePosition();
 			if (position != null) {
 				this.xpos = position.x();
