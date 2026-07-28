@@ -30,7 +30,6 @@ public class ItemListCompatibility implements Plugin {
 
 	@Override
 	public void registerExclusionZones(ExclusionZoneManager zones) {
-		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		zones.addProvider(ContainerScreen.class, containerScreen -> {
 			if (!SkyblockerConfigManager.get().uiAndVisuals.museumOverlay || !containerScreen.getTitle().getString().contains("Museum")) return List.of();
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) containerScreen;
@@ -65,7 +64,6 @@ public class ItemListCompatibility implements Plugin {
 
 	@Override
 	public void registerHoveredItems(HoveredItemManager manager) {
-		if (!SkyblockerConfigManager.get().general.itemList.enableItemList) return;
 		manager.addProvider(HoveredItemStackUtils::getHoveredItemStack);
 		manager.addConsumer((screen, stack, event) -> {
 			LocalPlayer player = Minecraft.getInstance().player;
