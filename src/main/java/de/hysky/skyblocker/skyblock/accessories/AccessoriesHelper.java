@@ -39,9 +39,38 @@ public class AccessoriesHelper {
 	private static final ProfiledData<ProfileAccessoryData> COLLECTED_ACCESSORIES = new ProfiledData<>(FILE, ProfileAccessoryData.CODEC, true);
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
 	private static final Predicate<Accessory> HAS_FAMILY = Accessory::hasFamily;
-	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
+private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
-	public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
+public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
+
+public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
+
+
+	private static void updateDuplicateSlots(List<Slot> slots) {
+
+	duplicateSlots.clear();
+
+	Map<String, List<Integer>> found = new Object2ObjectOpenHashMap<>();
+
+	for (int i = 0; i < slots.size(); i++) {
+
+		ItemStack stack = slots.get(i).getItem();
+
+		String id = stack.getSkyblockId();
+
+		if (id.isEmpty()) continue;
+
+		found.computeIfAbsent(id, _ -> new ObjectArrayList<>())
+		.add(i);
+	}
+
+	for (List<Integer> duplicate : found.values()) {
+
+		if (duplicate.size() > 1) {
+			duplicateSlots.addAll(duplicate);
+		}
+	}
+}
 
 	@Init
 	public static void init() {
@@ -72,6 +101,7 @@ public class AccessoriesHelper {
 				.map(ItemStack::getSkyblockId)
 				.filter(NON_EMPTY)
 				.toList();
+				updateDuplicateSlots(slots);
 
 		List<String> recombobulated = slots.stream()
 				.map(Slot::getItem)
