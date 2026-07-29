@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
+import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -19,8 +20,7 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	public HuntingBoxPriceTooltip(int priority) {
-		// ^(?:\(\d+\/\d+\) )?Hunting Box$
-		super("^(?:\\(\\d+\\/\\d+\\) )?Hunting Box$", priority);
+		super(HuntingBoxHelper.HUNTING_BOX_TITLE_PATTERN, priority);
 	}
 
 	@Override
