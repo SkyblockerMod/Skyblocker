@@ -61,18 +61,23 @@ public class QuickNavConfigScreen extends Screen {
 	};
 
 	private final QuickNavConfigButton[] buttons = new QuickNavConfigButton[ITEM_SUPPLIERS.length];
+	private final @Nullable Screen parent;
 	private @Nullable QuickNavConfigButton highlightedButton;
 	private final @Nullable LivingEntity entityToRender;
 
 	public QuickNavConfigScreen() {
+		this(null);
+	}
+
+	public QuickNavConfigScreen(@Nullable Screen parent) {
 		super(Component.literal("Quick Navigation Config"));
 		if (Math.random() < 0.001 && minecraft.level != null) {
 			entityToRender = new Cat(EntityTypes.CAT, minecraft.level);
 			entityToRender.setId("meow".hashCode());
-
 		} else {
 			entityToRender = minecraft.player;
 		}
+		this.parent = parent;
 	}
 
 	@Override
@@ -146,6 +151,11 @@ public class QuickNavConfigScreen extends Screen {
 	public void removed() {
 		super.removed();
 		SkyblockerConfigManager.update(_ -> {});
+	}
+
+	@Override
+	public void onClose() {
+		minecraft.gui.setScreen(parent);
 	}
 
 	private class QuickNavConfigButton extends QuickNavButton {
@@ -230,7 +240,7 @@ public class QuickNavConfigScreen extends Screen {
 				}
 				dragging = false;
 			} else {
-				minecraft.gui.setScreen(new ItemEditPopup(QuickNavConfigScreen.this, () -> refreshButton(index), ITEM_SUPPLIERS[index].apply(SkyblockerConfigManager.get().quickNav), SETTERS[index]));
+				minecraft.gui.setScreen(new ItemEditPopup(QuickNavConfigScreen.this, () -> refreshButton(index), ITEM_SUPPLIERS[index].apply(SkyblockerConfigManager.get().quickNav), SETTERS[index], index));
 			}
 			setTooltip(tooltip);
 		}

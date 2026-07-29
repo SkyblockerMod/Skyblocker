@@ -24,14 +24,16 @@ import java.util.function.Consumer;
 public class SuggestionsEditBox extends EditBox {
 
 	private final TextFieldSuggestions suggestions;
-	private final boolean autoTrim;
 	private final @Nullable String argument;
 	private @Nullable Consumer<String> responder;
 
-	public SuggestionsEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node, boolean autoTrim) {
+	public SuggestionsEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, @Nullable CommandNode<ClientSuggestionProvider> node, boolean commandsOnly) {
 		super(font, width, height, narration);
-		this.suggestions = new TextFieldSuggestions(minecraft, screen, this, font, onlyShowIfCursorPastError, suggestionLineLimit, node);
-		this.autoTrim = autoTrim;
+		if (node != null) {
+			suggestions = TextFieldSuggestions.ofSpecificNode(minecraft, screen, this, font, onlyShowIfCursorPastError, suggestionLineLimit, node);
+		} else {
+			suggestions = TextFieldSuggestions.ofVanillaDispatcher(minecraft, screen, this, font, onlyShowIfCursorPastError, suggestionLineLimit, commandsOnly);
+		}
 		suggestions.setAllowSuggestions(true);
 		super.setResponder(this::onUpdate);
 		if (node instanceof ArgumentCommandNode<?,?> argumentCommandNode) argument = argumentCommandNode.getName();
@@ -48,11 +50,8 @@ public class SuggestionsEditBox extends EditBox {
 	}
 
 	private void onUpdate(String string) {
-		if (autoTrim && !string.trim().equals(string)) setValue(string.trim());
-		else {
-			suggestions.updateCommandInfo();
-			if (responder != null) responder.accept(string);
-		}
+		suggestions.updateCommandInfo();
+		if (responder != null) responder.accept(string);
 	}
 
 	public <V> Optional<V> getParsedValue(Class<V> type) {
@@ -101,6 +100,30 @@ public class SuggestionsEditBox extends EditBox {
 	}
 
 	@Override
+	public void setX(int x) {
+		super.setX(x);
+		suggestions.updatePosition();
+	}
+
+	@Override
+	public void setY(int y) {
+		super.setY(y);
+		suggestions.updatePosition();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		suggestions.updatePosition();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		suggestions.updatePosition();
+	}
+
+	@Override
 	public boolean keyPressed(KeyEvent event) {
 		if (suggestions.keyPressed(event)) return true;
 		if (this.isActive() && this.isFocused() && event.key() == InputConstants.KEY_ESCAPE) {
@@ -119,7 +142,6 @@ public class SuggestionsEditBox extends EditBox {
 		private int height = 20;
 		private int suggestionLineLimit = 7;
 		private boolean onlyShowIfCursorPastError = true;
-		private boolean autoTrim = true;
 
 		public Builder width(int width) {
 			this.width = width;
@@ -141,11 +163,6 @@ public class SuggestionsEditBox extends EditBox {
 			return this;
 		}
 
-		public Builder autoTrim(boolean autoTrim) {
-			this.autoTrim = autoTrim;
-			return this;
-		}
-
 		public SuggestionsEditBox build(Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
 			return build(Minecraft.getInstance(), Minecraft.getInstance().font,  screen, narration, node);
 		}
@@ -154,19 +171,23 @@ public class SuggestionsEditBox extends EditBox {
 			return build(minecraft, font, screen, narration, builder.build());
 		}
 
-		public <T> Argument<T> buildArg(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentType<T> argumentType) {
-			return new Argument<>(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, argumentType, autoTrim);
+		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
+			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, node, true);
 		}
 
-		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
-			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, node, autoTrim);
+		public <T> Argument<T> buildArg(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentType<T> argumentType) {
+			return new Argument<>(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, argumentType);
+		}
+
+		public SuggestionsEditBox buildVanillaDispatcher(Minecraft minecraft, Font font, Screen screen, Component narration, boolean commandsOnly) {
+			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, null, commandsOnly);
 		}
 	}
 
 	public static class Argument<T> extends SuggestionsEditBox {
 
-		public Argument(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, ArgumentType<T> argumentType, boolean autoTrim) {
-			super(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, RequiredArgumentBuilder.<ClientSuggestionProvider, T>argument("argument", argumentType).build(), autoTrim);
+		public Argument(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, ArgumentType<T> argumentType) {
+			super(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, RequiredArgumentBuilder.<ClientSuggestionProvider, T>argument("argument", argumentType).build(), true);
 
 		}
 
@@ -174,10 +195,16 @@ public class SuggestionsEditBox extends EditBox {
 			return (Optional<T>) getParsedValue(Object.class);
 		}
 
+		/**
+		 * This responder will only get called if the value is valid and parsed correctly.
+		 */
 		public void setValueResponder(Consumer<T> valueResponder) {
 			setResponder(_ -> getParsedValue().ifPresent(valueResponder));
 		}
 
+		/**
+		 * This responder will get called even if the value isn't valid and couldn't be parsed. In those cases it will receive {@code null}
+		 */
 		public void setOptionalValueResponder(Consumer<@Nullable T> optionalValueResponder) {
 			setResponder(_ -> optionalValueResponder.accept(getParsedValue().orElse(null)));
 		}

@@ -78,17 +78,26 @@ public class QuickNavigationConfig {
 			this.tooltip = tooltip;
 		}
 
+		public QuickNavItem(QuickNavItem quickNavItem) {
+			this.doubleClick = quickNavItem.doubleClick;
+			this.itemData = quickNavItem.itemData;
+			this.uiTitle = quickNavItem.uiTitle;
+			this.clickEvent = quickNavItem.clickEvent;
+			this.tooltip = quickNavItem.tooltip;
+			this.render = quickNavItem.render;
+		}
+
 		public boolean render = true;
 
 		public boolean doubleClick = false;
 
-		public ItemData itemData;
+		public ItemData itemData = new ItemData(Items.POISONOUS_POTATO);
 
-		public String uiTitle;
+		public @Language("RegExp") String uiTitle = "none";
 
 		public String tooltip = "";
 
-		public String clickEvent;
+		public String clickEvent = "/help";
 	}
 
 	public static class ItemData {

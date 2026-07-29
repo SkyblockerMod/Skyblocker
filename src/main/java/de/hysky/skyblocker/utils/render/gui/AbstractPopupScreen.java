@@ -15,6 +15,7 @@ import org.jspecify.annotations.Nullable;
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
 public class AbstractPopupScreen extends Screen {
+	protected static final int BACKGROUND_MARGIN = 18;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("popup/background");
 	private static final Identifier LIGHTER_BACKGROUND_TEXTURE = SkyblockerMod.id("background");
 	public final Screen backgroundScreen;
@@ -42,11 +43,11 @@ public class AbstractPopupScreen extends Screen {
 	 * These are the inner positions and size of the popup, not outer
 	 */
 	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
 	}
 
 	public static void extractLighterPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIGHTER_BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIGHTER_BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
 	}
 
 	@Override

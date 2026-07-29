@@ -5,8 +5,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.SuggestionContext;
-import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,53 +15,51 @@ import net.minecraft.client.gui.components.CommandSuggestions;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class TextFieldSuggestions extends CommandSuggestions {
 
 	private final CommandDispatcher<ClientSuggestionProvider> dispatcher;
+	private final Mode mode;
 	private @Nullable CommandContext<ClientSuggestionProvider> context;
-	private static final Supplier<ClientSuggestionProvider> FAKE_PROVIDER_SUPPLIER = Suppliers.memoize(FakeClientSuggestionProvider::new);
 
-	public TextFieldSuggestions(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
+	protected TextFieldSuggestions(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, @Nullable CommandNode<ClientSuggestionProvider> node, boolean commandOnly) {
 		super(minecraft, screen, input, font, true, onlyShowIfCursorPastError, 0, suggestionLineLimit, false, ARGB.black(0.5f));
-		this.dispatcher = new CommandDispatcher<>();
-		this.dispatcher.getRoot().addChild(node);
+		if (node != null) {
+			this.dispatcher = new CommandDispatcher<>();
+			this.dispatcher.getRoot().addChild(node);
+			this.mode = Mode.CUSTOM_NODE;
+		} else {
+			Commands.validate();
+			this.dispatcher = minecraft.player == null ? CommandUtils.getOfflineCommandDispatcher() : minecraft.player.connection.getCommands();
+			this.mode = commandOnly ? Mode.VANILLA_COMMANDS_ONLY : Mode.VANILLA;
+		}
 	}
 
-	public TextFieldSuggestions(Screen screen, EditBox input, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
-		this(Minecraft.getInstance(), screen, input, Minecraft.getInstance().font, onlyShowIfCursorPastError, suggestionLineLimit, node);
+	public static TextFieldSuggestions ofSpecificNode(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
+		return new TextFieldSuggestions(minecraft, screen, input, font, onlyShowIfCursorPastError, suggestionLineLimit, node, true);
 	}
 
-	public static CommandBuildContext getContext() {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return CommandBuildContext.simple(VanillaRegistries.createLookup(), FeatureFlagSet.of());
-		return CommandBuildContext.simple(player.connection.registryAccess(), player.connection.enabledFeatures());
+	public static TextFieldSuggestions ofVanillaDispatcher(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, boolean commandOnly) {
+		return new TextFieldSuggestions(minecraft, screen, input, font, onlyShowIfCursorPastError, suggestionLineLimit, null, commandOnly);
 	}
 
 	@Override
 	public void showSuggestions(boolean immediateNarration) {
 		super.showSuggestions(immediateNarration);
+		updatePosition();
+	}
+
+	public final void updatePosition() {
 		if (suggestions != null) {
 			suggestions.rect = new Rect2i(
 					suggestions.rect.getX(),
@@ -105,21 +104,32 @@ public class TextFieldSuggestions extends CommandSuggestions {
 
 		commandUsage.clear();
 		StringReader reader = new StringReader(command);
-		int cursorPosition = this.input.getCursorPosition();
-		CommandDispatcher<ClientSuggestionProvider> commands = dispatcher;
-		if (this.currentParse == null) {
-			this.currentParse = commands.parse(reader, minecraft.player != null ? minecraft.player.connection.getSuggestionsProvider() : FAKE_PROVIDER_SUPPLIER.get());
-			if (currentParse.getExceptions().isEmpty()) this.context = currentParse.getContext().build(command);
+		boolean startsWithSlash = reader.canRead() && reader.peek() == '/' && mode != Mode.CUSTOM_NODE; // do not allow slashes at all with a custom node
+		if (startsWithSlash) {
+			reader.skip();
 		}
-
-		int parseStart = this.onlyShowIfCursorPastError ? reader.getCursor() : 1;
-		if (cursorPosition >= parseStart && (this.suggestions == null || !this.keepSuggestions)) {
-			this.pendingSuggestions = commands.getCompletionSuggestions(this.currentParse, cursorPosition);
-			this.pendingSuggestions.thenAccept(suggestionResult -> {
-				if (this.pendingSuggestions.isDone()) {
-					this.updateUsageInfo(this.currentParse, suggestionResult);
+		int cursorPosition = this.input.getCursorPosition();
+		if (startsWithSlash || mode != Mode.VANILLA) {
+			CommandDispatcher<ClientSuggestionProvider> commands = dispatcher;
+			if (this.currentParse == null) {
+				this.currentParse = commands.parse(reader, minecraft.player != null ? minecraft.player.connection.getSuggestionsProvider() : CommandUtils.getOfflineSuggestionProvider());
+				CommandSyntaxException parseException = Commands.getParseException(currentParse);
+				if (mode == Mode.CUSTOM_NODE && parseException != null && parseException.getType() == CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument() && command.endsWith(" ")) {
+					input.setValue(command.trim());
+					return;
 				}
-			});
+				if (currentParse.getExceptions().isEmpty()) this.context = currentParse.getContext().build(command);
+			}
+
+			int parseStart = this.onlyShowIfCursorPastError ? reader.getCursor() : 1;
+			if (cursorPosition >= parseStart && (this.suggestions == null || !this.keepSuggestions)) {
+				this.pendingSuggestions = commands.getCompletionSuggestions(this.currentParse, cursorPosition);
+				this.pendingSuggestions.thenAccept(suggestionResult -> {
+					if (this.pendingSuggestions.isDone()) {
+						this.updateUsageInfo(this.currentParse, suggestionResult);
+					}
+				});
+			}
 		}
 	}
 
@@ -128,46 +138,12 @@ public class TextFieldSuggestions extends CommandSuggestions {
 	 */
 	@Override
 	protected List<FormattedCharSequence> fillNodeUsage(SuggestionContext<ClientSuggestionProvider> suggestionContext, Style usageFormat) {
-		return List.of();
+		return mode != Mode.CUSTOM_NODE ? super.fillNodeUsage(suggestionContext, usageFormat) : List.of();
 	}
 
-	private static class FakeClientSuggestionProvider extends ClientSuggestionProvider {
-		private final RegistryAccess registryAccess;
-
-		public FakeClientSuggestionProvider() {
-			// maybe dangerous? either that or 20 new imports to create a fake connection
-			super(null, Minecraft.getInstance(), PermissionSet.NO_PERMISSIONS);
-			this.registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-		}
-
-		@Override
-		public Set<ResourceKey<Level>> levels() {
-			return Set.of();
-		}
-
-		@Override
-		public Collection<String> getOnlinePlayerNames() {
-			return List.of();
-		}
-
-		@Override
-		public RegistryAccess registryAccess() {
-			return registryAccess;
-		}
-
-		@Override
-		public FeatureFlagSet enabledFeatures() {
-			return FeatureFlagSet.of();
-		}
-
-		@Override
-		public Collection<String> getAllTeams() {
-			return List.of();
-		}
-
-		@Override
-		public CompletableFuture<Suggestions> customSuggestion(CommandContext<?> context) {
-			return Suggestions.empty();
-		}
+	private enum Mode {
+		VANILLA,
+		VANILLA_COMMANDS_ONLY,
+		CUSTOM_NODE
 	}
 }

@@ -2,52 +2,63 @@ package de.hysky.skyblocker.config.screens.quicknav;
 
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 import de.hysky.skyblocker.utils.command.argumenttypes.RegexArgumentType;
-import de.hysky.skyblocker.utils.command.suggestions.TextFieldSuggestions;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.SuggestionsEditBox;
 import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.render.gui.SuggestionsEditBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.GridLayout;
-import net.minecraft.client.gui.layouts.Layout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
+import org.slf4j.Logger;
 
 import java.util.regex.Pattern;
 
 class ItemEditPopup extends AbstractPopupScreen {
+	private static final Logger LOGGER = LogUtils.getLogger();
+	private static final int SCROLLABLE_CONTENT_HEIGHT_DIFF = BACKGROUND_MARGIN * 2 + 20 + 20;
 
 	private final Runnable onClose;
 	private final QuickNavigationConfig.QuickNavItem item;
 	private final QuickNavConfigScreen.ConfigItemSetter setter;
-	private final LinearLayout layout = LinearLayout.vertical().spacing(10);
+	private final LinearLayout layout = LinearLayout.vertical().spacing(2);
+	private ScrollableLayout scrollableContent = new ScrollableLayout(minecraft, LinearLayout.vertical(), 0); // placeholder
 
-	private int currentCount;
 	private Component currentTooltip;
 
-	protected ItemEditPopup(Screen backgroundScreen, Runnable onClose, QuickNavigationConfig.QuickNavItem item, QuickNavConfigScreen.ConfigItemSetter setter) {
-		super(Component.literal("Edit button or something"), backgroundScreen);
+	ItemEditPopup(Screen backgroundScreen, Runnable onClose, QuickNavigationConfig.QuickNavItem item, QuickNavConfigScreen.ConfigItemSetter setter, int index) {
+		super(Component.literal("Editing Button " + index).withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), backgroundScreen);
 		this.onClose = onClose;
-		this.item = item;
+		this.item = new QuickNavigationConfig.QuickNavItem(item);
 		this.setter = setter;
-		currentCount = item.itemData.count;
 		try {
 			currentTooltip = ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(item.tooltip, JsonElement.class)).getOrThrow().getFirst();
 		} catch (Exception e) {
@@ -57,48 +68,44 @@ class ItemEditPopup extends AbstractPopupScreen {
 
 	@Override
 	protected void init() {
-		layout.defaultCellSetting().padding(3);
-		CommandBuildContext context = TextFieldSuggestions.getContext();
-		LinearLayout commandLayout = layout.addChild(LinearLayout.vertical().spacing(2));
-		addTitle(commandLayout, "Tooltip");
-		EditBox commandBox;
-		if (minecraft.player != null) {
-			commandBox = SuggestionsEditBox.builder().autoTrim(false).width(250).onlyShowIfCursorPastError(false).build(
-					minecraft, font, this, Component.empty(),
-					minecraft.player.connection.getCommands().getRoot()
-			);
-		} else {
-			commandBox = new EditBox(font, 250, 20, Component.empty());
-		}
-		commandBox.setValue(item.clickEvent.startsWith("/") ? item.clickEvent.substring(1) : item.clickEvent);
+		layout.addChild(new StringWidget(getTitle(), font), l -> l.alignHorizontallyCenter().paddingTop(2).paddingBottom(6));
+		LinearLayout content = LinearLayout.vertical().spacing(10);
+		content.defaultCellSetting().padding(3);
+		CommandBuildContext context = CommandUtils.newContext();
+		LinearLayout commandLayout = content.addChild(createSectionLayout());
+		// click event
+		addTitle(commandLayout, "Click Event");
+		EditBox commandBox = SuggestionsEditBox.builder().width(250).buildVanillaDispatcher(
+				minecraft, font, this, Component.empty(),
+				false);
+		commandBox.setValue(item.clickEvent);
 		commandBox.setTooltip(Tooltip.create(Component.literal("Command to run.")));
+		commandBox.setResponder(s -> item.clickEvent = s);
 		commandLayout.addChild(commandBox);
-		renderAroundLayout(commandLayout);
 
 		// tooltip
-		LinearLayout tooltipLayout = layout.addChild(LinearLayout.vertical().spacing(2));
+		LinearLayout tooltipLayout = content.addChild(createSectionLayout());
 		addTitle(tooltipLayout, "Tooltip");
 		ComponentEditWidget editWidget = new ComponentEditWidget(this, Component.literal("Customize Tooltip"), component -> currentTooltip = component.copy());
 		tooltipLayout.addChild(editWidget);
 		editWidget.setText(currentTooltip.copy(), false);
-		renderAroundLayout(tooltipLayout);
 
 		// menu regex
-		LinearLayout regexLayout = layout.addChild(LinearLayout.vertical().spacing(2));
+		LinearLayout regexLayout = content.addChild(createSectionLayout());
 		addTitle(regexLayout, "Menu Title");
-		SuggestionsEditBox.Argument<Pattern> patternBox = SuggestionsEditBox.builder().autoTrim(false).width(250).onlyShowIfCursorPastError(false).buildArg(
+		SuggestionsEditBox.Argument<Pattern> patternBox = SuggestionsEditBox.builder().width(250).onlyShowIfCursorPastError(false).buildArg(
 				minecraft, font, this, Component.empty(),
 				new RegexArgumentType()
 		);
 		patternBox.setTooltip(Tooltip.create(Component.literal("The button will appear pressed in the menu matching this title.\nThis supports Regex!\nCan be left empty if button doesn't open a menu.")));
 		patternBox.setMaxLength(2048);
 		patternBox.setValue(item.uiTitle);
+		patternBox.setValueResponder(p -> item.uiTitle = p.pattern().isBlank() ? "lorem ipsum" : p.pattern());
 		regexLayout.addChild(patternBox);
-		renderAroundLayout(regexLayout);
 
 
 		// item selection
-		LinearLayout iconLayout = layout.addChild(LinearLayout.vertical().spacing(2));
+		LinearLayout iconLayout = content.addChild(createSectionLayout());
 		addTitle(iconLayout, "Icon");
 		GridLayout itemLayout = iconLayout.addChild(new GridLayout()).columnSpacing(4).rowSpacing(2);
 
@@ -123,13 +130,47 @@ class ItemEditPopup extends AbstractPopupScreen {
 		itemLayout.addChild(countBox, 1, 2);
 		countBox.setMaxLength(2);
 		countBox.setValue(String.valueOf(item.itemData.count));
-		renderAroundLayout(iconLayout);
+
+		iconLayout.addChild(ButtonWidget.builder(Component.literal("Select Item"), _ -> minecraft.gui.setScreen(
+				new ItemSelectionPopup(this, itemStack -> {
+					if (itemStack != null) {
+						itemWidget.stack = itemStack;
+						item.itemData.item = itemStack.getItem();
+						String components = ItemStackComponentizationFixer.componentsAsString(itemStack);
+						item.itemData.components = components;
+						itemBox.setValue(itemStack.getItem() + components);
+					}
+				}))).build());
+
+		LinearLayout doubleClickLayout = content.addChild(createSectionLayout());
+		doubleClickLayout.addChild(Checkbox.builder(Component.literal("Require Double Click"), font)
+				.onValueChange((_, value) -> item.doubleClick = value)
+				.tooltip(Tooltip.create(Component.literal("Useful to limit missclicks on warp buttons.")))
+				.selected(item.doubleClick)
+				.build()
+		);
+
+		content.addChild(SpacerElement.height(0));
+		scrollableContent = layout.addChild(new ScrollableLayout(minecraft, content, height - SCROLLABLE_CONTENT_HEIGHT_DIFF));
+
+		// the buttons at the bottom
+		LinearLayout buttonsLayout = layout.addChild(LinearLayout.horizontal().spacing(4), LayoutSettings::alignHorizontallyCenter);
+		buttonsLayout.addChild(ButtonWidget.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).build());
+		buttonsLayout.addChild(ButtonWidget.builder(CommonComponents.GUI_DONE, _ -> {
+			save();
+			onClose();
+		}).build());
 
 		layout.visitWidgets(this::addRenderableWidget);
-		itemBox.setValueResponder(itemInput -> itemWidget.itemStack = new ItemStack(itemInput.item(), currentCount, itemInput.components()));
+		itemBox.setValueResponder(itemInput -> {
+			ItemStack itemStack = new ItemStack(itemInput.item(), item.itemData.count, itemInput.components());
+			itemWidget.stack = itemStack;
+			item.itemData.item = itemStack.getItem();
+			item.itemData.components = ItemStackComponentizationFixer.componentsAsString(itemStack);
+		});
 		countBox.setValueResponder(count -> {
-			currentCount = Math.max(count, 1);
-			itemWidget.itemStack = itemWidget.itemStack.copyWithCount(currentCount);
+			item.itemData.count = Math.max(count, 1);
+			itemWidget.stack = itemWidget.stack.copyWithCount(item.itemData.count);
 		});
 		super.init();
 	}
@@ -138,8 +179,10 @@ class ItemEditPopup extends AbstractPopupScreen {
 		layout.addChild(new StringWidget(Component.literal(title).withStyle(ChatFormatting.BOLD), font), l -> l.paddingBottom(4));
 	}
 
-	private void renderAroundLayout(Layout target) {
-		addRenderableOnly(((graphics, _, _, _) -> graphics.fill(layout.getX(), target.getY() - 3, layout.getX() + layout.getWidth(), target.getY() + target.getHeight() + 3, ARGB.black(0.15f))));
+	private LinearLayout createSectionLayout() {
+		LinearLayout linearLayout = LinearLayout.vertical().spacing(2);
+		linearLayout.addChild(new BackgroundRender(linearLayout, layout));
+		return linearLayout;
 	}
 
 	@Override
@@ -156,6 +199,8 @@ class ItemEditPopup extends AbstractPopupScreen {
 	@Override
 	protected void repositionElements() {
 		super.repositionElements();
+		scrollableContent.arrangeElements();
+		scrollableContent.setMaxHeight(height - SCROLLABLE_CONTENT_HEIGHT_DIFF);
 		layout.arrangeElements();
 		layout.setPosition((width - layout.getWidth()) / 2, (height - layout.getHeight()) / 2);
 	}
@@ -166,17 +211,44 @@ class ItemEditPopup extends AbstractPopupScreen {
 		onClose.run();
 	}
 
+	private void save() {
+		item.tooltip = ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, currentTooltip)
+				.ifError(error -> LOGGER.error("Failed to serialize component! {}", error.message())).result()
+				.map(SkyblockerMod.GSON_COMPACT::toJson).orElse("");
+		SkyblockerConfigManager.updateOnly(config -> setter.accept(config.quickNav, item));
+	}
+
 	private static class ItemWidget extends AbstractWidget {
-		private ItemStack itemStack;
+		private ItemStack stack;
 
 		private ItemWidget(ItemStack stack) {
 			super(0, 0, 16, 16, stack.getItemName());
-			this.itemStack = stack;
+			this.stack = stack;
 		}
 
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-			graphics.item(itemStack, getX(), getY());
+			graphics.item(stack, getX(), getY());
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput output) {}
+	}
+
+	private static class BackgroundRender extends AbstractWidget {
+		private final LayoutElement heightLayout;
+		private final LayoutElement widthLayout;
+
+		public BackgroundRender(LayoutElement heightLayout, LayoutElement widthLayout) {
+			super(0, 0, 0, 0, Component.empty());
+			active = false;
+			this.heightLayout = heightLayout;
+			this.widthLayout = widthLayout;
+		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.fill(widthLayout.getX(), heightLayout.getY() - 3, widthLayout.getX() + widthLayout.getWidth(), heightLayout.getY() + heightLayout.getHeight() + 3, ARGB.black(0.15f));
 		}
 
 		@Override

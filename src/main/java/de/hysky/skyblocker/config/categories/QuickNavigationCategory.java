@@ -32,6 +32,11 @@ public class QuickNavigationCategory {
 								newValue -> config.quickNav.enableQuickNav = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
+				/*.option(ButtonOption.createBuilder()
+						.name(Component.translatable("skyblocker.config.quickNav.quickNavConfigScreen"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new QuickNavConfigScreen(screen)))
+						.build())*/
 
 				//Buttons
 				.group(quickNavButton(defaults.quickNav.button1, config.quickNav.button1, 1))
