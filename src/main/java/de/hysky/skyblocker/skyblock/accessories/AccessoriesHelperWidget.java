@@ -90,7 +90,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(ContainerScreen screen) {
-		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper || !SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
+		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper
+	|| !SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getWidgets(screen).add(widget);

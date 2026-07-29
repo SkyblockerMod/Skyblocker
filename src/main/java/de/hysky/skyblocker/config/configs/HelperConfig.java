@@ -45,8 +45,6 @@ public class HelperConfig {
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
-	public CenturyRaffle centuryRaffle = new CenturyRaffle();
-
 	public static class BuildersWand {
 		public boolean enableBuildersWandPreview = true;
 
@@ -122,11 +120,6 @@ public class HelperConfig {
 		}
 	}
 
-	// Placeholder!
-	public static class Loadouts {
-
-	}
-
 	public static class FairySouls {
 		public boolean enableFairySoulsHelper = false;
 
@@ -176,11 +169,5 @@ public class HelperConfig {
 
 	public static class GreatSpookEvent {
 		public boolean enableMathTeacherHelper = true;
-	}
-
-	public static class CenturyRaffle {
-		public boolean enableRaffleTaskHighlight = true;
-
-		public boolean enableRaffleRewardHighlight = true;
 	}
 }
