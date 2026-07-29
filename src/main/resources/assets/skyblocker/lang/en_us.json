@@ -682,6 +682,11 @@
 
   "skyblocker.config.helpers": "Helpers",
 
+  "skyblocker.config.helpers.accessories": "Accessories",
+  "skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget": "Enable Accessories Helper Widget",
+  "skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget.@Tooltip": "Shows the Accessories Helper Widget in the accessory bag.",
+  "skyblocker.config.helpers.accessories.showDuplicateAccessories": "Highlight Duplicate Accessories",
+
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",

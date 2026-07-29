@@ -413,5 +413,9 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage": "Ersetze Nachricht Mit:",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "Für Originalnachricht leer lassen.",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.formatting": "Alle Ausgabemeldungen können mithilfe von Formatierungscodes (unter Verwendung von &) formatiert werden.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Verstecke Nachricht"
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.hideMessage": "Verstecke Nachricht",
+    "skyblocker.config.helpers.accessories": "Accessoires",
+    "skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget": "Accessoire-Helfer anzeigen",
+    "skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget.@Tooltip": "Zeigt den Accessoire-Helfer im Accessoire-Beutel an.",
+    "skyblocker.config.helpers.accessories.showDuplicateAccessories": "Doppelte Accessoires markieren"
 }

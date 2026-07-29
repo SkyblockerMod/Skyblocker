@@ -4,9 +4,9 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.CommonColors;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -24,10 +24,8 @@ public class AccessoriesContainerSolver extends SimpleContainerSolver {
 
 	@Override
 public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-
 	return slots.int2ObjectEntrySet().stream()
 			.map(entry -> {
-
 				int slot = entry.getIntKey();
 				ItemStack stack = entry.getValue();
 
@@ -35,14 +33,13 @@ public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 
 				if (id.isEmpty()) return null;
 
-
-				if (AccessoriesHelper.duplicateSlots.contains(slot)) {
+				if (SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget
+						&& SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories
+						&& AccessoriesHelper.duplicateSlots.contains(slot)) {
 					return new ColorHighlight(slot, DUPLICATE_COLOR);
 				}
 
-
 				return new ColorHighlight(slot, UNIQUE_COLOR);
-
 			})
 			.filter(java.util.Objects::nonNull)
 			.toList();
@@ -50,6 +47,6 @@ public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget;
-	}
+		return SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories;
+}
 }
