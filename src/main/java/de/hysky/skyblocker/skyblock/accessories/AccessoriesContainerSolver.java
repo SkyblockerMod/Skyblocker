@@ -12,7 +12,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class AccessoriesContainerSolver extends SimpleContainerSolver {
-	private static final int COLOR = ARGB.color(0.7f, CommonColors.GREEN);
+	private static final int UNIQUE_COLOR = ARGB.color(0.7f, CommonColors.GREEN);
+	private static final int DUPLICATE_COLOR = ARGB.color(0.7f, CommonColors.RED);
 	public static final AccessoriesContainerSolver INSTANCE = new AccessoriesContainerSolver();
 
 	@Nullable String highlightedAccessory;
@@ -22,13 +23,30 @@ public class AccessoriesContainerSolver extends SimpleContainerSolver {
 	}
 
 	@Override
-	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
-		if (highlightedAccessory == null) return List.of();
-		return slots.int2ObjectEntrySet().stream()
-				.filter(entry -> entry.getValue().getSkyblockId().equals(highlightedAccessory))
-				.map(entry -> new ColorHighlight(entry.getIntKey(), COLOR))
-				.toList();
-	}
+public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+
+	return slots.int2ObjectEntrySet().stream()
+			.map(entry -> {
+
+				int slot = entry.getIntKey();
+				ItemStack stack = entry.getValue();
+
+				String id = stack.getSkyblockId();
+
+				if (id.isEmpty()) return null;
+
+
+				if (AccessoriesHelper.duplicateSlots.contains(slot)) {
+					return new ColorHighlight(slot, DUPLICATE_COLOR);
+				}
+
+
+				return new ColorHighlight(slot, UNIQUE_COLOR);
+
+			})
+			.filter(java.util.Objects::nonNull)
+			.toList();
+}
 
 	@Override
 	public boolean isEnabled() {
