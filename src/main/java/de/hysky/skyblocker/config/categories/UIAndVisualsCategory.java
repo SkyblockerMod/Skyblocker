@@ -490,10 +490,11 @@ public class UIAndVisualsCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.bars"))
-						.tags(Component.literal("fancy status bars"))
+						.tags(Component.translatable("skyblocker.config.uiAndVisuals.bars.@Tag[0]"), Component.translatable("skyblocker.config.uiAndVisuals.bars.@Tag[1]"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBars.@Tooltip"))
 								.binding(defaults.uiAndVisuals.bars.enableBars,
 										() -> config.uiAndVisuals.bars.enableBars,
 										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
