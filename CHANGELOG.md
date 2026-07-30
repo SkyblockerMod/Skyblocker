@@ -18,6 +18,7 @@
 * fix new waypoints not respecting group options by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2597
 * Remove Config Check For SkyBlock Item List Exclusion Zones by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2599
 * some more storage overlay things by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2598
+* fix weird clicky behavior in the screen of the overlay of the storage by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2610
 
 
 **Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.8.1+26.2...v6.8.2+26.2
