@@ -7,6 +7,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.Type;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
+import de.hysky.skyblocker.utils.ws.message.DungeonBatKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonMimicKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
@@ -38,6 +39,7 @@ public class DungeonWebSocket {
 				case DungeonRoomSecretCountMessage.TYPE -> RenderHelper.runOnRenderThread(() -> SecretSync.handleSecretCountUpdate(DungeonRoomSecretCountMessage.CODEC.parse(message).getOrThrow()));
 				case DungeonRoomHideWaypointMessage.TYPE -> RenderHelper.runOnRenderThread(() -> SecretSync.handleHideWaypoint(DungeonRoomHideWaypointMessage.CODEC.parse(message).getOrThrow()));
 				// Secret Sync - Score Messages
+				case DungeonBatKilledMessage.TYPE -> RenderHelper.runOnRenderThread(() -> SecretSync.handleBatKilled(DungeonBatKilledMessage.CODEC.parse(message).getOrThrow()));
 				case DungeonMimicKilledMessage.TYPE -> RenderHelper.runOnRenderThread(() -> SecretSync.handleMimicKilled(DungeonMimicKilledMessage.CODEC.parse(message).getOrThrow()));
 				case DungeonPrinceKilledMessage.TYPE -> RenderHelper.runOnRenderThread(() -> SecretSync.handlePrinceKilled(DungeonPrinceKilledMessage.CODEC.parse(message).getOrThrow()));
 			}
