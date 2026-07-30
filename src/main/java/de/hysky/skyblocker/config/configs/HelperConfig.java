@@ -21,7 +21,7 @@ public class HelperConfig {
 
 	public boolean enableAnvilHelper = true;
 
-	public boolean enableAccessoriesHelperWidget = true;
+	public Accessories accessories = new Accessories();
 
 	public BuildersWand buildersWand = new BuildersWand();
 
@@ -45,14 +45,20 @@ public class HelperConfig {
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
-	public static class BuildersWand {
-		public boolean enableBuildersWandPreview = true;
+	public static class Accessories {
+	public boolean enableAccessoriesHelperWidget = true;
 
-		public float previewOpacity = 0.5f;
+	public boolean showDuplicateAccessories = true;
+}
+
+	public static class BuildersWand {
+	public boolean enableBuildersWandPreview = true;
+
+	public float previewOpacity = 0.5f;
 	}
 
 	public static class MythologicalRitual {
-		public boolean enableMythologicalRitualHelper = true;
+	public boolean enableMythologicalRitualHelper = true;
 	}
 
 	public static class Jerry {
