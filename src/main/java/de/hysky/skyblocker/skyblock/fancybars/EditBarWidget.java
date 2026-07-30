@@ -241,7 +241,14 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			setAndUpdate(current != null ? EnumUtils.cycle(current) : values[0]);
+			if (current == null) setAndUpdate(values[0]);
+
+			else {
+				setAndUpdate(click.hasShiftDown() || click.isRight() ?
+						EnumUtils.cycleBackwards(current) :
+						EnumUtils.cycle(current));
+			}
+
 			super.onClick(click, doubled);
 		}
 
