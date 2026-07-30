@@ -23,8 +23,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ScrollableLayout;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.events.ContainerEventHandler;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.LayoutSettings;
@@ -196,13 +194,6 @@ class ItemEditPopup extends AbstractPopupScreen {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractRenderState(graphics, mouseX, mouseY, a);
-		int y = 5;
-		GuiEventListener thing = getFocused();
-		while (thing != null) {
-			graphics.text(font, String.valueOf(thing), 5, y, -1);
-			thing = thing instanceof ContainerEventHandler container ? container.getFocused() : null;
-			y += font.lineHeight;
-		}
 	}
 
 	@Override
