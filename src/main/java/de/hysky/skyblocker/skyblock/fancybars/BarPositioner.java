@@ -198,6 +198,11 @@ public class BarPositioner {
 		SCREEN_CENTER_RIGHT(false, true,
 				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 + 8, scaledHeight / 2 - 4)),
 				SizeRule.freeSize(15, 3, 8)
+		),
+		SCREEN_CENTER_BOTTOM(false, true,
+				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 182 / 2, scaledHeight / 2 + 8)),
+				SizeRule.targetSize(12, 182, 2),
+				anchorPosition -> new ScreenRectangle(anchorPosition.x(), anchorPosition.y(), 182, 20)
 		);
 
 		private final AnchorPositionProvider positionProvider;
