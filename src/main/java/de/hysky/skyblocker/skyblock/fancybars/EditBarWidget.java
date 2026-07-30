@@ -61,6 +61,8 @@ public class EditBarWidget extends AbstractContainerWidget {
 		layout.addChild(new ColorOption(Component.translatable("skyblocker.bars.config.overflowColor"), parent, bar -> bar.hasOverflow() ? bar.getColors()[1] : null, (bar, color) -> bar.getColors()[1] = color));
 		layout.addChild(new ColorOption(Component.translatable("skyblocker.bars.config.textColor"), parent, StatusBar::getTextColor, StatusBar::setTextColor));
 
+		layout.addChild(new BooleanOption(Component.translatable("skyblocker.bars.config.dynamicTransparency"), bar -> bar.hasDynamicTransparency() ? bar.dynamicTransparency : null, (bar, dynamicTransparency) -> bar.dynamicTransparency = dynamicTransparency));
+
 		layout.addChild(new RunnableOption(Component.translatable("skyblocker.bars.config.hide"), bar -> bar.enabled, bar -> {
 			if (bar.anchor != null)
 				FancyStatusBars.barPositioner.removeBar(bar.anchor, bar.gridY, bar);

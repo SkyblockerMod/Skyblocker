@@ -379,14 +379,13 @@ public class FancyStatusBars {
 		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
-		for (StatusBar statusBar : barCollection) {
-			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.extractBar(graphics);
-		}
-		for (StatusBar statusBar : barCollection) {
-			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.extractText(graphics);
-		}
+
+		// This lazy hack ensures that the text is (usually) drawn on top and saves a bunch of code duplication elsewhere
+		barCollection.stream()
+				.sorted(Comparator.comparingInt(StatusBar::getY))
+				.filter(statusBar -> statusBar.enabled && statusBar.visible)
+				.forEachOrdered(statusBar -> statusBar.extractAll(graphics)
+		);
 
 		if (Utils.isInTheRift()) {
 			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
