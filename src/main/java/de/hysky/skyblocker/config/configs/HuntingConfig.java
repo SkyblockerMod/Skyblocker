@@ -60,7 +60,9 @@ public class HuntingConfig {
 	}
 
 	public static class ForestBiome {
+		public boolean highlightHideonfloor = true;
 
+		public Color hideonfloorHighlightColor = new Color(DyeColor.MAGENTA.getTextColor(), false);
 	}
 
 	public static class CanyonBiome {

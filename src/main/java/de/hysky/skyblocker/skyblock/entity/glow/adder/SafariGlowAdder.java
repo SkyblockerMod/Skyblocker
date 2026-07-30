@@ -7,6 +7,8 @@ import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.entity.Display.ItemDisplay;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.entity.Entity;
 
 public class SafariGlowAdder extends MobGlowAdder {
@@ -22,6 +24,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 
 		return switch (entity) {
 			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
+			case Shulker shulker when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && shulker.getColor() == DyeColor.GREEN -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
 			default -> NO_GLOW;
 		};
 	}

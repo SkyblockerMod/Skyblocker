@@ -156,6 +156,21 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.forestBiome"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor"))
+								.description(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip"))
+								.binding(defaults.hunting.forestBiome.highlightHideonfloor,
+										() -> config.hunting.forestBiome.highlightHideonfloor,
+										newValue -> config.hunting.forestBiome.highlightHideonfloor = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor"))
+								.binding(defaults.hunting.forestBiome.hideonfloorHighlightColor,
+										() -> config.hunting.forestBiome.hideonfloorHighlightColor,
+										newValue -> config.hunting.forestBiome.hideonfloorHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Canyon Biome

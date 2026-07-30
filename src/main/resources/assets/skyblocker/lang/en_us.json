@@ -848,6 +848,9 @@
   "skyblocker.config.hunting.canyonBiome": "Canyon Biome",
 
   "skyblocker.config.hunting.forestBiome": "Forest Biome",
+  "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor Highlight Color",
+  "skyblocker.config.hunting.forestBiome.highlightHideonfloor": "Highlight Hideonfloor",
+  "skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip": "Highlights Hideonfloor in magenta by default, with the option to choose a different color.",
 
   "skyblocker.config.hunting.hauntedBiome": "Haunted Biome",
   "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Color",
