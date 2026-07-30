@@ -173,9 +173,9 @@ public class HuntingCategory {
 								.build())
 						.build())
 
-				// Canyon Biome
+				// Cavern Biome
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.hunting.canyonBiome"))
+						.name(Component.translatable("skyblocker.config.hunting.cavernBiome"))
 						.collapsed(false)
 						.build())
 

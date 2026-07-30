@@ -16,7 +16,7 @@ public class HuntingConfig {
 
 	public ForestBiome forestBiome = new ForestBiome();
 
-	public CanyonBiome canyonBiome = new CanyonBiome();
+	public CavernBiome cavernBiome = new CavernBiome();
 
 	public IcyBiome icyBiome = new IcyBiome();
 
@@ -65,7 +65,7 @@ public class HuntingConfig {
 		public Color hideonfloorHighlightColor = new Color(DyeColor.MAGENTA.getTextColor(), false);
 	}
 
-	public static class CanyonBiome {
+	public static class CavernBiome {
 
 	}
 
