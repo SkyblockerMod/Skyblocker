@@ -33,7 +33,6 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
 
 	private final List<HeadButton> allButtons = new ArrayList<>();
-	private final List<HeadButton> visibleButtons = new ArrayList<>();
 	private final HeadButton noneButton;
 
 	private @Nullable ItemStack currentItem;
@@ -58,6 +57,7 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 
 		this.noneButton = new HeadButton("", this::onClick);
 		this.selectedButton = this.noneButton;
+		this.allButtons.add(this.noneButton);
 
 		setSearch("");
 	}
@@ -84,7 +84,7 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 
 		SkyblockerConfigManager.updateOnly(config -> {
 			switch (this.selectedButton) {
-				case HeadButton button when button == noneButton -> {
+				case HeadButton button when button == noneButton || button.texture == null -> {
 					config.general.customHelmetTextures.remove(uuid);
 					config.general.customAnimatedHelmetTextures.remove(uuid);
 				}
@@ -102,27 +102,18 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 
 	private void updateButtons() {
 		// Check all buttons, whether one is selected depends on if it matches the selectedButton
+		// noneButton is included
 		for (HeadButton b : this.allButtons) {
 			b.selected = b.equals(this.selectedButton);
 		}
-
-		// If the selectedButton is null then set the noneButton as selected
-		this.noneButton.selected = this.selectedButton == this.noneButton;
 	}
 
 	@Override
 	protected Collection<? extends AbstractWidget> filterWidgets(String search) {
 		setScrollAmount(0);
-		String s = search.toLowerCase(Locale.ENGLISH);
-		visibleButtons.clear();
-		visibleButtons.add(noneButton);
-		for (HeadButton b : allButtons) {
-			if (b.name.toLowerCase(Locale.ENGLISH).contains(s)) {
-				visibleButtons.add(b);
-			}
-		}
 		updateButtons();
-		return visibleButtons;
+		String s = search.toLowerCase(Locale.ENGLISH);
+		return allButtons.stream().filter(b -> b == noneButton || b.name.toLowerCase(Locale.ENGLISH).contains(s)).toList();
 	}
 
 	@Override
@@ -152,7 +143,7 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 		} else if (customHeadTexture != null) {
 			intendedSelected = this.allButtons.stream()
 					.filter(Predicate.not(AnimatedHeadButton.class::isInstance))
-					.filter(head -> Objects.requireNonNull(head.texture).equals(customHeadTexture))
+					.filter(head -> head.texture != null && head.texture.equals(customHeadTexture))
 					.findFirst()
 					.orElse(noneButton);
 		} else {
