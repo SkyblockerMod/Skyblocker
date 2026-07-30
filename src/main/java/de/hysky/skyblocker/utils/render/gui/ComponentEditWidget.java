@@ -319,11 +319,6 @@ public class ComponentEditWidget extends AbstractContainerWidget {
 		return i;
 	}
 
-	@Override
-	public void setFocused(boolean focused) {
-		if (!focused) setFocused(null);
-	}
-
 	private class FormattingButton extends AbstractButton {
 		private boolean enabled;
 		private final ChatFormatting format;
@@ -466,7 +461,6 @@ public class ComponentEditWidget extends AbstractContainerWidget {
 				default -> captured = false;
 			}
 			if (captured) return true;
-			assert client != null;
 			if (input.isSelectAll()) {
 				selectionStart = 0;
 				selectionEnd = textString.length();

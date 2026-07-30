@@ -39,7 +39,6 @@ public class TextFieldSuggestions extends CommandSuggestions {
 			this.dispatcher.getRoot().addChild(node);
 			this.mode = Mode.CUSTOM_NODE;
 		} else {
-			Commands.validate();
 			this.dispatcher = minecraft.player == null ? CommandUtils.getOfflineCommandDispatcher() : minecraft.player.connection.getCommands();
 			this.mode = commandOnly ? Mode.VANILLA_COMMANDS_ONLY : Mode.VANILLA;
 		}

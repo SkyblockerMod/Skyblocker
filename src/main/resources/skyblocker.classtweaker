@@ -76,6 +76,7 @@ inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/h
 inject-interface	net/minecraft/client/renderer/LevelRenderer	de/hysky/skyblocker/injected/EntityRenderMarker
 inject-interface	net/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit	de/hysky/skyblocker/injected/CustomGlowState
 inject-interface	net/minecraft/client/renderer/rendertype/RenderType	de/hysky/skyblocker/injected/GlowRenderTypeHolder
+inject-interface    net/minecraft/client/gui/GuiGraphicsExtractor de/hysky/skyblocker/injected/SkyblockerGraphicsExtractor
 
 # Suggestions
 accessible field net/minecraft/client/gui/components/CommandSuggestions input Lnet/minecraft/client/gui/components/EditBox;

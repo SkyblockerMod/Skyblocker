@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.utils.RegistryUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -39,7 +40,7 @@ public final class CommandUtils {
 
 	public static CommandBuildContext newContext() {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return CommandBuildContext.simple(VanillaRegistries.createLookup(), FeatureFlagSet.of());
+		if (player == null) return CommandBuildContext.simple(RegistryUtils.getRegistryWrapperLookup(), FeatureFlagSet.of());
 		return CommandBuildContext.simple(player.connection.registryAccess(), player.connection.enabledFeatures());
 	}
 

@@ -7,10 +7,15 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import de.hysky.skyblocker.utils.command.suggestions.TextFieldSuggestions;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -18,6 +23,7 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -38,6 +44,7 @@ public class SuggestionsEditBox extends EditBox {
 		super.setResponder(this::onUpdate);
 		if (node instanceof ArgumentCommandNode<?,?> argumentCommandNode) argument = argumentCommandNode.getName();
 		else argument = null;
+		Screens.getWidgets(screen).addFirst(new SuggestionsWrapper());
 	}
 
 	@Override
@@ -71,23 +78,6 @@ public class SuggestionsEditBox extends EditBox {
 	}
 
 	@Override
-	public boolean isMouseOver(double mouseX, double mouseY) {
-		return super.isMouseOver(mouseX, mouseY) || (suggestions.suggestions != null && suggestions.suggestions.rect.contains((int) mouseX, (int) mouseY));
-	}
-
-	@Override
-	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
-		if (suggestions.mouseScrolled(scrollY)) return true;
-		return super.mouseScrolled(x, y, scrollX, scrollY);
-	}
-
-	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		if (suggestions.mouseClicked(event)) return true;
-		return super.mouseClicked(event, doubleClick);
-	}
-
-	@Override
 	public void onClick(MouseButtonEvent event, boolean doubleClick) {
 		super.onClick(event, doubleClick);
 		suggestions.updateCommandInfo();
@@ -96,7 +86,11 @@ public class SuggestionsEditBox extends EditBox {
 	@Override
 	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
-		if (visible) suggestions.extractRenderState(graphics, mouseX, mouseY);
+		if (visible) {
+			ScreenRectangle peeked = graphics.scissorStack.peek();
+			if (peeked == null || peeked.intersects(getRectangle()))
+				graphics.skb$addDeferredElement((graphics1, mouseX1, mouseY1, _) -> suggestions.extractRenderState(graphics1, mouseX1, mouseY1));
+		}
 	}
 
 	@Override
@@ -208,5 +202,53 @@ public class SuggestionsEditBox extends EditBox {
 		public void setOptionalValueResponder(Consumer<@Nullable T> optionalValueResponder) {
 			setResponder(_ -> optionalValueResponder.accept(getParsedValue().orElse(null)));
 		}
+	}
+
+	private class SuggestionsWrapper extends AbstractWidget {
+
+		public SuggestionsWrapper() {
+			super(0, 0, 0, 0, Component.empty());
+		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+
+		}
+
+		@Override
+		public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+			return suggestions.mouseClicked(event);
+		}
+
+		@Override
+		public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+			return suggestions.mouseScrolled(scrollY);
+		}
+
+		@Override
+		public boolean isMouseOver(double mouseX, double mouseY) {
+			return (suggestions.suggestions != null && suggestions.suggestions.rect.contains((int) mouseX, (int) mouseY));
+		}
+
+		@Override
+		public void setFocused(boolean focused) {
+
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput output) {
+
+		}
+
+		@Override
+		public boolean isFocused() {
+			return false;
+		}
+
+		@Override
+		public boolean shouldTakeFocusAfterInteraction() {
+			return false;
+		}
+
 	}
 }
