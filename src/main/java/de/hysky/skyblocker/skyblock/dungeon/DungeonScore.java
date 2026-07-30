@@ -269,7 +269,7 @@ public class DungeonScore {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + BAT_MESSAGE, true);
 			}
 
-			// TODO secret sync
+			SecretSync.syncBatKilled();
 		}
 
 		batKilled = true;
