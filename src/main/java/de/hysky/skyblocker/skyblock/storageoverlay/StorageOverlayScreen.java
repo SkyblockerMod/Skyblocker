@@ -99,7 +99,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			return true;
 		});
 		ClientSendMessageEvents.MODIFY_COMMAND.register(command -> {
-			if (!SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled || savedIndex < 0 || Minecraft.getInstance().gui.screen() instanceof StorageOverlayScreen || !command.equals("storage")) {
+			if (!SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled || savedIndex < 0 || Minecraft.getInstance().screen instanceof StorageOverlayScreen || !command.equals("storage")) {
 				return command;
 			} else {
 				String c = getCommandForIndex(savedIndex);
