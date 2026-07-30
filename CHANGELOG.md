@@ -1,3 +1,29 @@
+# Release 6.8.2
+
+## Highlight
+* Storage Overlay changes
+  * Add darkening effect to slots that do not match the search text
+  * Add an option to reopen the previous backpack when running /storage
+  * Add a small highlight to hovered backpacks/ender chests
+  * Fix search not indexing item tooltips
+  * Fix some things overlapping with the search bar
+  * Fix being able to interact with slots through the search bar
+* Fix Kuudra Profit Calculation for enchantments
+* Fix Hunting Box Helper
+* Fix SkyBlock Item List exclusion zones not working sometimes
+* Fix new waypoints not respecting group options
+* Fix Fancy Bars config not mentioning the new Vitality bar
+
+## What's Changed
+* fix new waypoints not respecting group options by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2597
+* Remove Config Check For SkyBlock Item List Exclusion Zones by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2599
+* some more storage overlay things by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2598
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.8.1+26.2...v6.8.2+26.2
+
+___
+
 # Release 6.8.1
 
 ## Highlight
