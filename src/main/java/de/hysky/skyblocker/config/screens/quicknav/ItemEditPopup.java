@@ -145,10 +145,9 @@ class ItemEditPopup extends AbstractPopupScreen {
 		LinearLayout doubleClickLayout = content.addChild(createSectionLayout());
 		doubleClickLayout.addChild(Checkbox.builder(Component.literal("Require Double Click"), font)
 				.onValueChange((_, value) -> item.doubleClick = value)
-				.tooltip(Tooltip.create(Component.literal("Useful to limit missclicks on warp buttons.")))
 				.selected(item.doubleClick)
 				.build()
-		);
+		).setTooltip(Tooltip.create(Component.literal("Useful to limit missclicks on warp buttons.")));
 
 		content.addChild(SpacerElement.height(0));
 		scrollableContent = layout.addChild(new ScrollableLayout(minecraft, content, height - SCROLLABLE_CONTENT_HEIGHT_DIFF));
