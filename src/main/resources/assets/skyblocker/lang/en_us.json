@@ -878,6 +878,8 @@
   "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
 
   "skyblocker.config.hunting.icyBiome": "Icy Biome",
+  "skyblocker.config.hunting.icyBiome.hideColdOverlay": "Hide Cold Overlay",
+  "skyblocker.config.hunting.icyBiome.hideColdOverlay.@Tooltip": "Hides the frosty overlay that appears when you are cold.",
 
   "skyblocker.config.hunting.lassoHud": "Lasso HUD",
   "skyblocker.config.hunting.lassoHud.enabled": "Enabled",

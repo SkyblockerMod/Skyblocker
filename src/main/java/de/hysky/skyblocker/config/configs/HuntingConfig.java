@@ -70,7 +70,7 @@ public class HuntingConfig {
 	}
 
 	public static class IcyBiome {
-
+		public boolean hideColdOverlay = false;
 	}
 
 	public static class LassoHud {

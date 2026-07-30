@@ -13,11 +13,11 @@ public class SafariUtils {
 		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.FOREST);
 	}
 
-	public static boolean isInCanyonBiome() {
-		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.CANYON);
+	public static boolean isInCavernBiome() {
+		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.CAVERN);
 	}
 
 	public static boolean isInIcyBiome() {
-		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.ICY);
+		return Utils.isInSafari() && (Utils.isInBiome(SkyBlockBiomes.ICY) || Utils.isInBiome(SkyBlockBiomes.ICY_CAVES));
 	}
 }

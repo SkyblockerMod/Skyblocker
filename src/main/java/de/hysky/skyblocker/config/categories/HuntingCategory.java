@@ -183,6 +183,14 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.icyBiome"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay"))
+								.description(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay.@Tooltip"))
+								.binding(defaults.hunting.icyBiome.hideColdOverlay,
+										() -> config.hunting.icyBiome.hideColdOverlay,
+										newValue -> config.hunting.icyBiome.hideColdOverlay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Lasso Hud
