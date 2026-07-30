@@ -95,9 +95,3 @@ mutable field net/minecraft/client/gui/components/CommandSuggestions$Suggestions
 accessible field net/minecraft/client/gui/components/CommandSuggestions$SuggestionsList rect Lnet/minecraft/client/renderer/Rect2i;
 extendable method net/minecraft/client/gui/components/CommandSuggestions updateUsageInfo (Lcom/mojang/brigadier/ParseResults;Lcom/mojang/brigadier/suggestion/Suggestions;)V
 extendable method net/minecraft/client/gui/components/CommandSuggestions fillNodeUsage (Lcom/mojang/brigadier/context/SuggestionContext;Lnet/minecraft/network/chat/Style;)Ljava/util/List;
-extendable method net/minecraft/commands/arguments/item/ItemParser$State <init> (Lnet/minecraft/commands/arguments/item/ItemParser;Lcom/mojang/brigadier/StringReader;Lnet/minecraft/commands/arguments/item/ItemParser$Visitor;)V
-extendable method net/minecraft/commands/arguments/item/ItemParser$State suggestItem (Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;
-extendable method net/minecraft/commands/arguments/item/ItemParser$State readItem ()V
-extendable method net/minecraft/commands/arguments/item/ItemParser$State readComponents ()V
-extendable method net/minecraft/commands/arguments/item/ItemParser$State suggestStartComponents (Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;
-accessible method net/minecraft/commands/arguments/item/ItemParser$SuggestionsVisitor <init> ()V

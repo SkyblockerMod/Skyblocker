@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.command.suggestions;
 
-import com.google.common.base.Suppliers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
@@ -24,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class TextFieldSuggestions extends CommandSuggestions {
 
