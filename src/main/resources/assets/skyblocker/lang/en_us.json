@@ -230,6 +230,10 @@
   "skyblocker.config.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
   "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
+  "skyblocker.config.dungeons.batMessage": "Bat Message",
+  "skyblocker.config.dungeons.batMessage.sendBatMessage": "Enable Bat Message",
+  "skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip": "Sends a message in the chat upon killing a bat for other players' score calculation mods.",
+
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
   "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
 
