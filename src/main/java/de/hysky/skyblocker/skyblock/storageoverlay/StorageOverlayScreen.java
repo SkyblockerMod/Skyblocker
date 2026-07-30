@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
@@ -478,11 +479,12 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		public boolean matches(String filter) {
 			matchedSlots.clear();
+			final String filterLowerCase = filter.toLowerCase(Locale.ENGLISH);
 
 			//matches if any item in backpack contains the filter word
 			for (int i = 9; i < size(); ++i) {
 				ItemStack currentStack = open ? handler.getContainer().getItem(i) : storage.getStack(i);
-				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
+				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filterLowerCase) || ItemUtils.getLoreLineIf(currentStack, s -> s.toLowerCase(Locale.ENGLISH).contains(filterLowerCase)) != null) {
 					matchedSlots.set(i);
 				}
 			}
