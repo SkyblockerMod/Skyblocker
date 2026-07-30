@@ -229,9 +229,10 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	@Override
-	protected boolean isHovering(int left, int top, int w, int h, double xm, double ym) {
+	protected boolean isHovering(Slot slot, double xm, double ym) {
 		// prevent clicking slots through search bar
-		return super.isHovering(left, top, w, h, xm, ym) && (grid == null || grid.getGridRectangle().containsPoint((int) xm, (int) ym));
+		// only affect the container and not the inventory slots
+		return super.isHovering(slot, xm, ym) && (grid == null || slot.container instanceof Inventory || grid.getGridRectangle().containsPoint((int) xm, (int) ym));
 	}
 
 	@Override
