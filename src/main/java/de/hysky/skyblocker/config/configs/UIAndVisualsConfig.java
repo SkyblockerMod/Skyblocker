@@ -126,6 +126,8 @@ public class UIAndVisualsConfig {
 
 		public boolean rememberSearch = false;
 
+		public boolean rememberOpened = false;
+
 		// present in case we need to patch it out for x or y reason
 		public transient boolean doNotResetCursor = true;
 	}
