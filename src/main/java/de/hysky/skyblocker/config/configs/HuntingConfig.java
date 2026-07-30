@@ -54,6 +54,9 @@ public class HuntingConfig {
 	}
 
 	public static class HauntedBiome {
+		public boolean highlightDuplico = true;
+
+		public Color duplicoHighlightColor = new Color(DyeColor.RED.getTextColor(), false);
 	}
 
 	public static class ForestBiome {

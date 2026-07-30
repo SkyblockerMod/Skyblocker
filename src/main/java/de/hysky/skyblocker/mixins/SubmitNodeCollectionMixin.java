@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.List;
+
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -7,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -17,7 +20,10 @@ import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.feature.phase.SimpleFeatureRenderPhase;
@@ -46,6 +52,31 @@ public class SubmitNodeCollectionMixin {
 			}
 		}
 
+	}
+
+	@Inject(method = "submitBlockModel", at = @At("RETURN"))
+	private <S> void skyblocker$useCustomGlowRenderType(CallbackInfo ci, @Local(name = "renderType") RenderType renderType, @Local(name = "modelParts") List<BlockStateModelPart> modelParts, @Local(name = "pose") PoseStack.Pose pose) {
+		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
+
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			int customGlowColour = entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR);
+			RenderType outlineRenderType = renderType.isOutline() ? renderType : renderType.skyblocker$getGlowRenderType().orElse(null);
+
+			if (outlineRenderType != null) {
+				this.outline.submit(new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, modelParts, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, customGlowColour, null));
+			}
+		}
+	}
+
+	@ModifyVariable(method = "submitItem", name = "outlineColor", at = @At("LOAD"))
+	private int skyblocker$useCustomOutlineColour(int original) {
+		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
+
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			return entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR);
+		}
+
+		return original;
 	}
 
 	// NB: Custom glow must be initialized after the record constructor is run (so that the field value is not overridden by false).

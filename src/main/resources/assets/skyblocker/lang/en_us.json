@@ -850,6 +850,9 @@
   "skyblocker.config.hunting.forestBiome": "Forest Biome",
 
   "skyblocker.config.hunting.hauntedBiome": "Haunted Biome",
+  "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Color",
+  "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "Highlight Duplico",
+  "skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip": "Highlights Duplico in red by default, with the option to choose a different color.",
 
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",

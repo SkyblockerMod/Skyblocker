@@ -135,6 +135,21 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.hauntedBiome"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico"))
+								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip"))
+								.binding(defaults.hunting.hauntedBiome.highlightDuplico,
+										() -> config.hunting.hauntedBiome.highlightDuplico,
+										newValue -> config.hunting.hauntedBiome.highlightDuplico = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor"))
+								.binding(defaults.hunting.hauntedBiome.duplicoHighlightColor,
+										() -> config.hunting.hauntedBiome.duplicoHighlightColor,
+										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Forest Biome
