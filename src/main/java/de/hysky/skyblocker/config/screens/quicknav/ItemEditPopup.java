@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.config.screens.quicknav;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
@@ -44,7 +45,7 @@ import java.util.regex.Pattern;
 
 class ItemEditPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final int SCROLLABLE_CONTENT_HEIGHT_DIFF = BACKGROUND_MARGIN * 2 + 20 + 40;
+	private static final int SCROLLABLE_CONTENT_HEIGHT_DIFF = BACKGROUND_MARGIN * 2 + 20 + 50; // 20: height of buttons, 50: some hardcoded constant
 
 	private final Runnable onClose;
 	private final QuickNavigationConfig.QuickNavItem item;
@@ -55,7 +56,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 	private Component currentTooltip;
 
 	ItemEditPopup(Screen backgroundScreen, Runnable onClose, QuickNavigationConfig.QuickNavItem item, QuickNavConfigScreen.ConfigItemSetter setter, int index) {
-		super(Component.literal("Editing Button " + index).withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), backgroundScreen);
+		super(Component.translatable("skyblocker.config.quickNav.screen.title", index + 1).withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), backgroundScreen);
 		this.onClose = onClose;
 		this.item = new QuickNavigationConfig.QuickNavItem(item);
 		this.setter = setter;
@@ -74,25 +75,24 @@ class ItemEditPopup extends AbstractPopupScreen {
 		CommandBuildContext context = CommandUtils.newContext();
 		LinearLayout commandLayout = content.addChild(createSectionLayout());
 		// click event
-		addTitle(commandLayout, "Click Event");
+		addTitle(commandLayout, "skyblocker.config.quickNav.button.clickEvent");
 		EditBox commandBox = SuggestionsEditBox.builder().width(250).buildVanillaDispatcher(
 				minecraft, font, this, Component.empty(),
 				false);
 		commandBox.setValue(item.clickEvent);
-		commandBox.setTooltip(Tooltip.create(Component.literal("Command to run.")));
 		commandBox.setResponder(s -> item.clickEvent = s);
 		commandLayout.addChild(commandBox);
 
 		// tooltip
 		LinearLayout tooltipLayout = content.addChild(createSectionLayout());
-		addTitle(tooltipLayout, "Tooltip");
+		addTitle(tooltipLayout, "skyblocker.config.quickNav.button.tooltip");
 		ComponentEditWidget editWidget = new ComponentEditWidget(this, Component.literal("Customize Tooltip"), component -> currentTooltip = component.copy());
 		tooltipLayout.addChild(editWidget);
 		editWidget.setText(currentTooltip.copy(), false);
 
 		// menu regex
 		LinearLayout regexLayout = content.addChild(createSectionLayout());
-		addTitle(regexLayout, "Menu Title");
+		addTitle(regexLayout, "skyblocker.config.quickNav.button.uiTitle");
 		SuggestionsEditBox.Argument<Pattern> patternBox = SuggestionsEditBox.builder().width(250).onlyShowIfCursorPastError(false).buildArg(
 				minecraft, font, this, Component.empty(),
 				new RegexArgumentType()
@@ -103,16 +103,15 @@ class ItemEditPopup extends AbstractPopupScreen {
 		patternBox.setValueResponder(p -> item.uiTitle = p.pattern().isBlank() ? "lorem ipsum" : p.pattern());
 		regexLayout.addChild(patternBox);
 
-
 		// item selection
 		LinearLayout iconLayout = content.addChild(createSectionLayout());
-		addTitle(iconLayout, "Icon");
+		addTitle(iconLayout, "skyblocker.config.quickNav.button.icon");
 		GridLayout itemLayout = iconLayout.addChild(new GridLayout()).columnSpacing(4).rowSpacing(2);
 
 		ItemStack stack = ItemStackComponentizationFixer.fromComponentsString(item.itemData.item.toString(), item.itemData.count, item.itemData.components);
 		ItemWidget itemWidget = itemLayout.addChild(new ItemWidget(stack), 1, 0, l -> l.alignVerticallyMiddle().alignHorizontallyCenter());
 		int itemWidth = 250;
-		itemLayout.addChild(new StringWidget(Component.literal("Item"), font), 0, 1).setMaxWidth(itemWidth, StringWidget.TextOverflow.SCROLLING);
+		itemLayout.addChild(new StringWidget(Component.translatable("skyblocker.config.quickNav.button.item.itemName"), font), 0, 1).setMaxWidth(itemWidth, StringWidget.TextOverflow.SCROLLING);
 		SuggestionsEditBox.Argument<ItemInput> itemBox = SuggestionsEditBox.builder().width(250).buildArg(
 				minecraft, font, this, Component.empty(),
 				new ItemArgument(context)
@@ -120,9 +119,15 @@ class ItemEditPopup extends AbstractPopupScreen {
 		itemLayout.addChild(itemBox, 1, 1);
 		itemBox.setMaxLength(4096);
 		itemBox.setValue(item.itemData.item + item.itemData.components);
+		itemBox.setValueResponder(itemInput -> {
+			ItemStack itemStack = new ItemStack(itemInput.item(), item.itemData.count, itemInput.components());
+			itemWidget.stack = itemStack;
+			item.itemData.item = itemStack.getItem();
+			item.itemData.components = ItemStackComponentizationFixer.componentsAsString(itemStack);
+		});
 
 		int countWidth = 30;
-		itemLayout.addChild(new StringWidget(Component.literal("Count"), font), 0, 2).setMaxWidth(countWidth, StringWidget.TextOverflow.SCROLLING);
+		itemLayout.addChild(new StringWidget(Component.translatable("skyblocker.config.quickNav.screen.count"), font), 0, 2).setMaxWidth(countWidth, StringWidget.TextOverflow.SCROLLING);
 		SuggestionsEditBox.Argument<Integer> countBox = SuggestionsEditBox.builder().width(20).buildArg(
 				minecraft, font, this, Component.empty(),
 				IntegerArgumentType.integer(1)
@@ -130,8 +135,12 @@ class ItemEditPopup extends AbstractPopupScreen {
 		itemLayout.addChild(countBox, 1, 2);
 		countBox.setMaxLength(2);
 		countBox.setValue(String.valueOf(item.itemData.count));
+		countBox.setValueResponder(count -> {
+			item.itemData.count = Math.max(count, 1);
+			itemWidget.stack = itemWidget.stack.copyWithCount(item.itemData.count);
+		});
 
-		iconLayout.addChild(ButtonWidget.builder(Component.literal("Select Item"), _ -> minecraft.gui.setScreen(
+		iconLayout.addChild(ButtonWidget.builder(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"), _ -> minecraft.gui.setScreen(
 				new ItemSelectionPopup(this, itemStack -> {
 					if (itemStack != null) {
 						itemWidget.stack = itemStack;
@@ -140,14 +149,15 @@ class ItemEditPopup extends AbstractPopupScreen {
 						item.itemData.components = components;
 						itemBox.setValue(itemStack.getItem() + components);
 					}
-				}))).build());
+				}))).tooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))).build());
 
+		// require double click
 		LinearLayout doubleClickLayout = content.addChild(createSectionLayout());
-		doubleClickLayout.addChild(Checkbox.builder(Component.literal("Require Double Click"), font)
+		doubleClickLayout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.quickNav.button.doubleClick"), font)
 				.onValueChange((_, value) -> item.doubleClick = value)
 				.selected(item.doubleClick)
 				.build()
-		).setTooltip(Tooltip.create(Component.literal("Useful to limit missclicks on warp buttons.")));
+		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.doubleClick.@Tooltip")));
 
 		content.addChild(SpacerElement.height(0));
 		scrollableContent = layout.addChild(new ScrollableLayout(minecraft, content, height - SCROLLABLE_CONTENT_HEIGHT_DIFF));
@@ -161,21 +171,11 @@ class ItemEditPopup extends AbstractPopupScreen {
 		}).build());
 
 		layout.visitWidgets(this::addRenderableWidget);
-		itemBox.setValueResponder(itemInput -> {
-			ItemStack itemStack = new ItemStack(itemInput.item(), item.itemData.count, itemInput.components());
-			itemWidget.stack = itemStack;
-			item.itemData.item = itemStack.getItem();
-			item.itemData.components = ItemStackComponentizationFixer.componentsAsString(itemStack);
-		});
-		countBox.setValueResponder(count -> {
-			item.itemData.count = Math.max(count, 1);
-			itemWidget.stack = itemWidget.stack.copyWithCount(item.itemData.count);
-		});
 		super.init();
 	}
 
-	private void addTitle(LinearLayout layout, String title) {
-		layout.addChild(new StringWidget(Component.literal(title).withStyle(ChatFormatting.BOLD), font), l -> l.paddingBottom(4));
+	private void addTitle(LinearLayout layout, @Translatable String title) {
+		layout.addChild(new StringWidget(Component.translatable(title).withStyle(ChatFormatting.BOLD), font), l -> l.paddingBottom(4));
 	}
 
 	private LinearLayout createSectionLayout() {
@@ -213,7 +213,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 	private void save() {
 		item.tooltip = ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, currentTooltip)
 				.ifError(error -> LOGGER.error("Failed to serialize component! {}", error.message())).result()
-				.map(SkyblockerMod.GSON_COMPACT::toJson).orElse("");
+				.map(SkyblockerMod.GSON_COMPACT::toJson).orElse(currentTooltip.getString());
 		SkyblockerConfigManager.updateOnly(config -> setter.accept(config.quickNav, item));
 	}
 
