@@ -289,6 +289,15 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.storageOverlay.rememberSearch = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_2)
+								.binding(defaults.uiAndVisuals.storageOverlay.rememberOpened,
+										() -> config.uiAndVisuals.storageOverlay.rememberOpened,
+										newValue -> config.uiAndVisuals.storageOverlay.rememberOpened = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build()
 				)
 
