@@ -16,6 +16,7 @@ import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.config.configs.CombatConfig;
 
 public class SkyblockerConfig {
 	public int version = SkyblockerConfigManager.CONFIG_VERSION;
@@ -51,4 +52,6 @@ public class SkyblockerConfig {
 	public MiscConfig misc = new MiscConfig();
 
 	public DebugConfig debug = new DebugConfig();
+
+	public CombatConfig combat = new CombatConfig();
 }

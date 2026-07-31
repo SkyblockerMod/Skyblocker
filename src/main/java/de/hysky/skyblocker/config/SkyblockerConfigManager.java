@@ -23,6 +23,7 @@ import de.hysky.skyblocker.config.categories.OtherLocationsCategory;
 import de.hysky.skyblocker.config.categories.QuickNavigationCategory;
 import de.hysky.skyblocker.config.categories.SlayersCategory;
 import de.hysky.skyblocker.config.categories.UIAndVisualsCategory;
+import de.hysky.skyblocker.config.categories.CombatCategory;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -144,6 +145,7 @@ public class SkyblockerConfigManager {
 				.category(QuickNavigationCategory.create(defaults, config))
 				.category(EventNotificationsCategory.create(defaults, config))
 				.category(MiscCategory.create(defaults, config))
+				.category(CombatCategory.create(defaults, config))
 				.categoryIf(Debug.debugEnabled(), DebugCategory.create(defaults, config))
 				.search(search)
 				.platformLinks(PlatformLinks.createBuilder()
