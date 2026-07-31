@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 public class GyroOverlay {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 
-	private static float[] colorComponents;
+	private static float[] colorComponents = new Color(0x7F761594, true).getRGBComponents(null);
 
 	private static final int GYRO_RADIUS = 10;
 	private static final int SEGMENTS = 32;
@@ -51,7 +51,7 @@ public class GyroOverlay {
 	 * </ul>
 	 */
 	public static void extractRendering(PrimitiveCollector collector) {
-		if (CLIENT.player == null || CLIENT.level == null) return;
+		if (CLIENT.player == null || CLIENT.level == null || CLIENT.getCameraEntity() == null) return;
 		if (!Utils.isOnSkyblock()) return;
 		if (SkyblockerConfigManager.get().uiAndVisuals.gyroOverlay.gyroOverlayMode == Mode.OFF) return;
 

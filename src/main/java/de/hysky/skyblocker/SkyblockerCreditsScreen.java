@@ -61,7 +61,7 @@ public class SkyblockerCreditsScreen extends Screen {
 	private final IntSet speedupModifiers = new IntOpenHashSet();
 	private float scrollSpeed;
 	private int direction;
-	private @Nullable Screen parent;
+	private final @Nullable Screen parent;
 
 	protected SkyblockerCreditsScreen(@Nullable Screen parent) {
 		super(TITLE);
@@ -72,11 +72,9 @@ public class SkyblockerCreditsScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
-					.then(ClientCommands.literal("credits")
-							.executes(Scheduler.queueOpenScreenCommand(() -> new SkyblockerCreditsScreen(null)))));
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.then(ClientCommands.literal("credits")
+						.executes(Scheduler.queueOpenScreenCommand(() -> new SkyblockerCreditsScreen(null))))));
 	}
 
 	private float calculateScrollSpeed() {
@@ -269,7 +267,7 @@ public class SkyblockerCreditsScreen extends Screen {
 
 		for (int i = 0; i < this.lines.size(); i++) {
 			if (i == this.lines.size() - 1) {
-				float diff = yPos + yOffs - (this.height / 2 - 6);
+				float diff = yPos + yOffs - ((float) this.height / 2 - 6);
 
 				if (diff < 0f) {
 					graphics.pose().translate(0f, -diff);

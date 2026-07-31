@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 public class PetCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("pet_cache.json");
 	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC);
-	private static final Pattern AUTOPET_PATTERN = Pattern.compile("^Autopet equipped your \\[Lvl (?<level>\\d+)\\] (?<name>[A-Za-z ]+)(?: ✦)?! VIEW RULE$");
+	private static final Pattern AUTOPET_PATTERN = Pattern.compile("^Autopet equipped your \\[Lvl (?<level>\\d+)] (?<name>[A-Za-z ]+)(?: ✦)?! VIEW RULE$");
 
 	/**
 	 * Used in case the server lags to prevent the screen tick check from overwriting the clicked pet logic
@@ -112,6 +112,7 @@ public class PetCache {
 	/**
 	 * Parses the Auto Pet messages to try and detect the active pet
 	 */
+	@SuppressWarnings("UnstableApiUsage")
 	private static boolean onMessage(Component text, boolean overlay) {
 		if (!Utils.isOnSkyblock() || overlay) return true;
 
@@ -142,7 +143,7 @@ public class PetCache {
 
 			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.intValue());
 
-			if (rarity != null && rarity != SkyblockItemRarity.UNKNOWN) {
+			if (rarity != SkyblockItemRarity.UNKNOWN) {
 				//This is technically an internal class but I don't feel like copying it out right now and I got no plans to change/remove it :shrug:
 				int petOffset = PetConstants.RARITY_OFFSETS.getOrDefault(rarity.name(), 0);
 				//The list is copied due to a FastUtil bug with sub list iterators

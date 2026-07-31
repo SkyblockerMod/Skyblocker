@@ -436,7 +436,7 @@ public class ChestValue {
 		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
 		hideChestNameLabel = true;
 		Font textRenderer = Minecraft.getInstance().font;
-		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));
+		int chestValueWidth = Math.clamp((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title), textRenderer.width(chestValue));
 
 		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.lineHeight, chestValue, textRenderer);
 		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);

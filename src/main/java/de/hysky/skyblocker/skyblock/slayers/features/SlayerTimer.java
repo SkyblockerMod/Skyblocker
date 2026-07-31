@@ -112,23 +112,17 @@ public class SlayerTimer {
 
 	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerType, _ -> new Object2ObjectOpenHashMap<>());
-			SlayerPersonalBest currentBest = typeData.get(slayerTier);
-			//noinspection ConstantConditions
-			return currentBest != null ? currentBest.bestTimeMillis() : -1;
-		}
-
-		return -1;
+		var typeData = profileData.computeIfAbsent(slayerType, _ -> new Object2ObjectOpenHashMap<>());
+		SlayerPersonalBest currentBest = typeData.get(slayerTier);
+		//noinspection ConstantConditions; fastutil jspecify when
+		return currentBest != null ? currentBest.bestTimeMillis() : -1;
 	}
 
 	private static void updateBestTime(SlayerManager.SlayerQuest slayerQuest, long timeElapsed) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _ -> new Object2ObjectOpenHashMap<>());
-			typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
-			CACHED_SLAYER_STATS.save();
-		}
+		var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _ -> new Object2ObjectOpenHashMap<>());
+		typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
+		CACHED_SLAYER_STATS.save();
 	}
 
 	private static String formatTime(long millis) {
