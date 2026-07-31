@@ -896,7 +896,10 @@
   "skyblocker.config.hunting.safari.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while in the Safari Zone.",
 
   "skyblocker.config.hunting.torrhusMobs": "Torrhus Mobs",
+  "skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor": "Blue Jay Highlight Color",
   "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Color",
+  "skyblocker.config.hunting.torrhusMobs.highlightBlueJay": "Highlight Blue Jay",
+  "skyblocker.config.hunting.torrhusMobs.highlightBlueJay.@Tooltip": "Highlights Blue Jays in green by default, with the option to choose a different color.",
   "skyblocker.config.hunting.torrhusMobs.highlightHideonsun": "Highlight Hideonsun",
   "skyblocker.config.hunting.torrhusMobs.highlightHideonsun.@Tooltip": "Highlights Hideonsun in cyan by default, with the option to choose a different color.",
 

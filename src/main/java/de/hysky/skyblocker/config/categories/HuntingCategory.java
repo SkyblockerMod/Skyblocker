@@ -115,6 +115,21 @@ public class HuntingCategory {
 										newValue -> config.hunting.torrhusMobs.hideonsunHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay"))
+								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay.@Tooltip"))
+								.binding(defaults.hunting.torrhusMobs.highlightBlueJay,
+										() -> config.hunting.torrhusMobs.highlightBlueJay,
+										newValue -> config.hunting.torrhusMobs.highlightBlueJay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor"))
+								.binding(defaults.hunting.torrhusMobs.blueJayHighlightColor,
+										() -> config.hunting.torrhusMobs.blueJayHighlightColor,
+										newValue -> config.hunting.torrhusMobs.blueJayHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Safari

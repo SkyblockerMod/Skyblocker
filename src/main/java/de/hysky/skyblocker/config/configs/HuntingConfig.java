@@ -47,6 +47,10 @@ public class HuntingConfig {
 		public boolean highlightHideonsun = true;
 
 		public Color hideonsunHighlightColor = new Color(DyeColor.CYAN.getTextColor(), false);
+
+		public boolean highlightBlueJay = true;
+
+		public Color blueJayHighlightColor = new Color(DyeColor.GREEN.getTextColor(), false);
 	}
 
 	public static class Safari {
