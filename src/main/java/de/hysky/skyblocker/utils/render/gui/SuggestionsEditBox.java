@@ -40,7 +40,7 @@ public class SuggestionsEditBox extends EditBox {
 		}
 		suggestions.setAllowSuggestions(true);
 		super.setResponder(this::onUpdate);
-		if (node instanceof ArgumentCommandNode<?,?> argumentCommandNode) argument = argumentCommandNode.getName();
+		if (node instanceof ArgumentCommandNode<?, ?> argumentCommandNode) argument = argumentCommandNode.getName();
 		else argument = null;
 		Screens.getWidgets(screen).addFirst(new SuggestionsWrapper());
 	}
@@ -202,9 +202,12 @@ public class SuggestionsEditBox extends EditBox {
 		}
 	}
 
+	/**
+	 * Small wrapper so suggestions box interactions take priority
+	 */
 	private class SuggestionsWrapper extends AbstractWidget {
 
-		public SuggestionsWrapper() {
+		private SuggestionsWrapper() {
 			super(0, 0, 0, 0, Component.empty());
 		}
 

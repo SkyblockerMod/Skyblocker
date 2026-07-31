@@ -103,7 +103,7 @@ public final class CommandUtils {
 	}
 
 	private static class OfflineCommandDispatcher<S> extends CommandDispatcher<S> {
-		public OfflineCommandDispatcher(RootCommandNode<S> root) {
+		private OfflineCommandDispatcher(RootCommandNode<S> root) {
 			super(root);
 		}
 		@Override

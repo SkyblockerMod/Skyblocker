@@ -62,7 +62,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 		this.setter = setter;
 		try {
 			currentTooltip = ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(item.tooltip, JsonElement.class)).getOrThrow().getFirst();
-		} catch (Exception e) {
+		} catch (Exception _) {
 			currentTooltip = Component.literal(item.tooltip);
 		}
 	}
@@ -238,7 +238,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 		private final LayoutElement heightLayout;
 		private final LayoutElement widthLayout;
 
-		public BackgroundRender(LayoutElement heightLayout, LayoutElement widthLayout) {
+		private BackgroundRender(LayoutElement heightLayout, LayoutElement widthLayout) {
 			super(0, 0, 0, 0, Component.empty());
 			active = false;
 			this.heightLayout = heightLayout;

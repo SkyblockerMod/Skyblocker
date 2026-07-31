@@ -135,7 +135,7 @@ public class QuickNavConfigScreen extends Screen {
 		if (entityToRender != null) {
 			int xo = (width - INVENTORY_WIDTH) / 2;
 			int yo = (height - INVENTORY_HEIGHT) / 2;
-			InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, xo + 26, yo + 8, xo + 75, yo + 78, 30, 0.0625F, mouseX, mouseY, entityToRender);
+			InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, xo + 26, yo + 8, xo + 75, yo + 78, 30, 0.0625f, mouseX, mouseY, entityToRender);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class QuickNavConfigScreen extends Screen {
 		super.extractBackground(graphics, mouseX, mouseY, a);
 		int backgroundX = (width - INVENTORY_WIDTH) / 2;
 		int backgroundY = (height - INVENTORY_HEIGHT) / 2;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, InventoryScreen.INVENTORY_LOCATION, backgroundX, backgroundY, 0.0F, 0.0F, INVENTORY_WIDTH, INVENTORY_HEIGHT, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, InventoryScreen.INVENTORY_LOCATION, backgroundX, backgroundY, 0.0f, 0.0f, INVENTORY_WIDTH, INVENTORY_HEIGHT, 256, 256);
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class QuickNavConfigScreen extends Screen {
 		 * @param icon    the icon to display on the button.
 		 * @param tooltip the tooltip to show when hovered
 		 */
-		public QuickNavConfigButton(boolean enabled, int index, ItemStack icon, String tooltip) {
+		private QuickNavConfigButton(boolean enabled, int index, ItemStack icon, String tooltip) {
 			super(index, true, "", icon, tooltip);
 			this.enabled = enabled;
 			setRenderInFront(true);
