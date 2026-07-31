@@ -107,9 +107,18 @@ public class ForagingCategory {
 								.build())
 						.build())
 
+				// Torrhus Canyon
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle.@Tooltip"))
+								.binding(defaults.foraging.torrhusCanyon.solveDesertTemplePuzzle,
+										() -> config.foraging.torrhusCanyon.solveDesertTemplePuzzle,
+										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzle = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Sweep Overlay

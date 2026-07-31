@@ -30,7 +30,7 @@ public class ForagingConfig {
 	}
 
 	public static class TorrhusCanyon {
-
+		public boolean solveDesertTemplePuzzle = true;
 	}
 
 	public static class SweepOverlay {
