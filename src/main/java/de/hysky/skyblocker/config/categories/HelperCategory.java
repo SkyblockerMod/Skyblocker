@@ -80,6 +80,7 @@ public class HelperCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				// Accessories
+<<<<<<< HEAD
 .group(OptionGroup.createBuilder()
 		.name(Component.translatable("skyblocker.config.helpers.accessories"))
 		.collapsed(true)
@@ -100,6 +101,28 @@ public class HelperCategory {
 				.controller(ConfigUtils.createBooleanController())
 				.build())
 		.build())
+=======
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.accessories"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget"))
+								.description(Component.translatable("skyblocker.config.helpers.accessories.enableAccessoriesHelperWidget.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_0_0)
+								.binding(defaults.helpers.accessories.enableAccessoriesHelperWidget,
+										() -> config.helpers.accessories.enableAccessoriesHelperWidget,
+										newValue -> config.helpers.accessories.enableAccessoriesHelperWidget = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.accessories.showDuplicateAccessories"))
+								.binding(defaults.helpers.accessories.showDuplicateAccessories,
+										() -> config.helpers.accessories.showDuplicateAccessories,
+										newValue -> config.helpers.accessories.showDuplicateAccessories = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 
 				// Builder's Wand and Ruler Preview
 				.group(OptionGroup.createBuilder()

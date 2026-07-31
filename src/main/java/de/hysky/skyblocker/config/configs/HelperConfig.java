@@ -4,8 +4,10 @@ import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
@@ -50,6 +52,12 @@ public class HelperConfig {
 
 	public boolean showDuplicateAccessories = true;
 }
+
+	public static class Accessories {
+		public boolean enableAccessoriesHelperWidget = true;
+
+		public boolean showDuplicateAccessories = true;
+	}
 
 	public static class BuildersWand {
 	public boolean enableBuildersWandPreview = true;

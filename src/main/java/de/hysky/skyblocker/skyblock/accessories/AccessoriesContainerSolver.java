@@ -12,10 +12,13 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class AccessoriesContainerSolver extends SimpleContainerSolver {
+<<<<<<< HEAD
 	private static final int UNIQUE_COLOR = ARGB.color(0.7f, CommonColors.GREEN);
 	private static final int DUPLICATE_COLOR = ARGB.color(0.7f, CommonColors.RED);
+=======
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 	public static final AccessoriesContainerSolver INSTANCE = new AccessoriesContainerSolver();
-
+	private static final int DUPLICATE_COLOR = ARGB.color(0.45f, CommonColors.RED);
 	@Nullable String highlightedAccessory;
 
 	protected AccessoriesContainerSolver() {
@@ -23,6 +26,7 @@ public class AccessoriesContainerSolver extends SimpleContainerSolver {
 	}
 
 	@Override
+<<<<<<< HEAD
 public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 	return slots.int2ObjectEntrySet().stream()
 			.map(entry -> {
@@ -44,9 +48,25 @@ public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 			.filter(java.util.Objects::nonNull)
 			.toList();
 }
+=======
+	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+		if (highlightedAccessory == null) return List.of();
+		return slots.int2ObjectEntrySet().stream()
+				.filter(entry ->
+						SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget
+								&& SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories
+								&& AccessoriesHelper.duplicateSlots.contains(entry.getIntKey()))
+				.map(entry -> new ColorHighlight(entry.getIntKey(), DUPLICATE_COLOR))
+				.toList();
+	}
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories;
+<<<<<<< HEAD
 }
+=======
+	}
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 }

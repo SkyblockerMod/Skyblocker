@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
@@ -32,13 +33,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AccessoriesHelper {
+	public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
+	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
 	private static final ObjectOpenHashSet<String> EMPTY = new ObjectOpenHashSet<>(0);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
-	//UUID -> Profile Id & Data
+	//UUID -> Profile ID & Data
 	private static final ProfiledData<ProfileAccessoryData> COLLECTED_ACCESSORIES = new ProfiledData<>(FILE, ProfileAccessoryData.CODEC, true);
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
 	private static final Predicate<Accessory> HAS_FAMILY = Accessory::hasFamily;
+<<<<<<< HEAD
 private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
 public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
@@ -71,6 +74,36 @@ public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
 		}
 	}
 }
+=======
+	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
+	public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
+
+	private static void updateDuplicateSlots(List<Slot> slots) {
+
+		duplicateSlots.clear();
+
+		Map<String, List<Integer>> found = new Object2ObjectOpenHashMap<>();
+
+		for (int i = 0; i < slots.size(); i++) {
+
+			ItemStack stack = slots.get(i).getItem();
+
+			String id = stack.getSkyblockId();
+
+			if (id.isEmpty()) continue;
+
+			found.computeIfAbsent(id, _ -> new ObjectArrayList<>())
+					.add(i);
+		}
+
+		for (List<Integer> duplicate : found.values()) {
+
+			if (duplicate.size() > 1) {
+				duplicateSlots.addAll(duplicate);
+			}
+		}
+	}
 
 	@Init
 	public static void init() {
@@ -101,7 +134,11 @@ public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
 				.map(ItemStack::getSkyblockId)
 				.filter(NON_EMPTY)
 				.toList();
+<<<<<<< HEAD
 				updateDuplicateSlots(slots);
+=======
+		updateDuplicateSlots(slots);
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 
 		List<String> recombobulated = slots.stream()
 				.map(Slot::getItem)
@@ -193,6 +230,15 @@ public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
 		ACCESSORY_DATA = data;
 	}
 
+	public enum AccessoryReport {
+		HAS_HIGHEST_TIER, //You've collected the highest tier - Collected
+		IS_GREATER_TIER, //This accessory is an upgrade from the one in the same family that you already have - Upgrade -- Shows you what tier this accessory is in its family
+		HAS_GREATER_TIER, //This accessory has a higher tier upgrade - Upgradable -- Shows you the highest tier accessory you've collected in that family
+		OWNS_BETTER_TIER, //You've collected an accessory in this family with a higher tier - Downgrade -- Shows you the highest tier accessory you've collected in that family
+		MISSING, //You don't have any accessories in this family - Missing
+		INELIGIBLE
+	}
+
 	private record ProfileAccessoryData(Int2ObjectOpenHashMap<ObjectOpenHashSet<String>> pages, ObjectOpenHashSet<String> recombobulatedAccessories) {
 		private static final Codec<ProfileAccessoryData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.unboundedMap(Codec.INT, Codec.STRING.listOf().xmap(ObjectOpenHashSet::new, ObjectArrayList::new))
@@ -230,13 +276,4 @@ public static final Set<Integer> duplicateSlots = new ObjectOpenHashSet<>();
 	}
 
 	public record FamilyReport(Accessory highestInFamily, Optional<Accessory> highestCollectedInFamily) {}
-
-	public enum AccessoryReport {
-		HAS_HIGHEST_TIER, //You've collected the highest tier - Collected
-		IS_GREATER_TIER, //This accessory is an upgrade from the one in the same family that you already have - Upgrade -- Shows you what tier this accessory is in its family
-		HAS_GREATER_TIER, //This accessory has a higher tier upgrade - Upgradable -- Shows you the highest tier accessory you've collected in that family
-		OWNS_BETTER_TIER, //You've collected an accessory in this family with a higher tier - Downgrade -- Shows you the highest tier accessory you've collected in that family
-		MISSING, //You don't have any accessories in this family - Missing
-		INELIGIBLE
-	}
 }
