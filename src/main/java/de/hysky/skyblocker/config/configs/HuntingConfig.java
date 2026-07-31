@@ -20,6 +20,8 @@ public class HuntingConfig {
 
 	public IcyBiome icyBiome = new IcyBiome();
 
+	public FloorDrops floorDrops = new FloorDrops();
+
 	public LassoHud lassoHud = new LassoHud();
 
 	public static class HuntingBox {
@@ -75,6 +77,12 @@ public class HuntingConfig {
 
 	public static class IcyBiome {
 		public boolean hideColdOverlay = false;
+	}
+
+	public static class FloorDrops {
+		public boolean highlightFloorDrops = true;
+
+		public Color floorDropHighlightColor = new Color(DyeColor.ORANGE.getTextureDiffuseColor(), false);
 	}
 
 	public static class LassoHud {

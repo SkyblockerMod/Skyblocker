@@ -208,7 +208,28 @@ public class HuntingCategory {
 								.build())
 						.build())
 
-				//Lasso Hud
+				// Floor Drops
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.floorDrops"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops"))
+								.description(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableForestNodeHelper,
+										() -> config.foraging.galatea.enableForestNodeHelper,
+										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.floorDrops.floorDropHighlightColor"))
+								.binding(defaults.hunting.floorDrops.floorDropHighlightColor,
+										() -> config.hunting.floorDrops.floorDropHighlightColor,
+										newValue -> config.hunting.floorDrops.floorDropHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Lasso Hud
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.lassoHud"))
 						.collapsed(false)
