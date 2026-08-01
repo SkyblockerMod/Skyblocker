@@ -456,5 +456,19 @@
     "skyblocker.config.chat.filter": "Filter",
     "skyblocker.config.chat.filter.chatFilterResult.ACTION_BAR": "Bewegung zur Aktionsleiste",
     "skyblocker.config.chat.filter.chatFilterResult.FILTER": "Filter",
-    "skyblocker.config.chat.filter.chatFilterResult.PASS": "Deaktiviert"
+    "skyblocker.config.chat.filter.chatFilterResult.PASS": "Deaktiviert",
+    "key.skyblocker.loadout.01": "Ausrüstung 01",
+    "key.skyblocker.loadout.02": "Ausrüstung 02",
+    "key.skyblocker.loadout.03": "Ausrüstung 03",
+    "key.skyblocker.loadout.04": "Ausrüstung 04",
+    "key.skyblocker.loadout.05": "Ausrüstung 05",
+    "key.skyblocker.loadout.06": "Ausrüstung 06",
+    "key.skyblocker.loadout.07": "Ausrüstung 07",
+    "key.skyblocker.loadout.08": "Ausrüstung 08",
+    "key.skyblocker.loadout.09": "Ausrüstung 09",
+    "key.skyblocker.loadout.10": "Ausrüstung 10",
+    "key.skyblocker.loadout.11": "Ausrüstung 11",
+    "key.skyblocker.loadout.12": "Ausrüstung 12",
+    "key.skyblocker.valueBreadownPopup": "Wertaufschlüsselung öffnen",
+    "key.skyblocker.wikiLookup.independent": "Unabhängige im Wiki-Suche"
 }
