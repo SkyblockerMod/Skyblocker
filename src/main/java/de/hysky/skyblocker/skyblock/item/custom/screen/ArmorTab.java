@@ -23,6 +23,7 @@ import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -158,6 +159,17 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 	void tick() {
 		player.tickCount++;
+	}
+
+	@Override
+	public void doLayout(ScreenRectangle tabArea) {
+		int width = Math.min(444, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
+		headSelectionWidget.setWidth(width);
+		int modelFieldWidth = (int) (width * (1 / 3f));
+		trimSelectionWidget.setWidth(width - modelFieldWidth - PADDING / 2);
+		modelFieldContainer.setWidth(modelFieldWidth);
+		colorSelectionWidget.setWidth(width);
+		super.doLayout(tabArea);
 	}
 
 	public void recreate() {

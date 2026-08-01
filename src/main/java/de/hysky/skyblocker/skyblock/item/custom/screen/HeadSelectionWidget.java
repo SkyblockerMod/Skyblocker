@@ -72,6 +72,16 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 		super.setY(y + 2);
 	}
 
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width - 4);
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height - 4);
+	}
+
 	private void onClick(HeadButton button) {
 		selectedButton = button;
 		updateConfig();
