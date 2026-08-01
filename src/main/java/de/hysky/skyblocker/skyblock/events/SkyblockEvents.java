@@ -59,6 +59,7 @@ public class SkyblockEvents {
 	public static final SkyblockEvent JERRYS_WORKSHOP = register("Jerry's Workshop", Items.SNOW_BLOCK);
 	public static final SkyblockEvent TRAVELING_ZOO = register("Traveling Zoo", Items.HAY_BLOCK);
 	public static final SkyblockEvent HARVEST_FEAST = register("Harvest Feast", Items.GOLDEN_HOE);
+	public static final SkyblockEvent CULT_OF_THE_FALLEN_STAR = register("Cult of the Fallen Star", Items.NETHER_STAR);
 
 	public static final SkyblockEvent DUMMY = register("", Items.POISONOUS_POTATO);
 
