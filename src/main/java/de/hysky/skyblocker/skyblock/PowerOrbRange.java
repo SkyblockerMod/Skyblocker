@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.combat;
+package de.hysky.skyblocker.skyblock;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
@@ -30,7 +30,6 @@ public final class PowerOrbRange implements Renderable {
 
 		LevelRenderExtractionCallback.EVENT.register(INSTANCE::extractRendering);
 
-
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
 			if (client.level == null || client.player == null) {
@@ -38,7 +37,6 @@ public final class PowerOrbRange implements Renderable {
 				INSTANCE.clearPosition();
 				return;
 			}
-
 
 			INSTANCE.findOrb();
 		});
@@ -59,20 +57,11 @@ public final class PowerOrbRange implements Renderable {
 			return;
 		}
 
-		if (!SkyblockerConfigManager.get()
-				.combat
-				.powerOrbRange
-				.showPowerOrbRange) {
+		if (!SkyblockerConfigManager.get().helpers.showPowerOrbRange) {
 			return;
 		}
 
-		collector.submitCylinder(
-				orbPosition,
-				RANGE,
-				0.5f,
-				SEGMENTS,
-				COLOR
-		);
+		collector.submitCylinder(orbPosition, RANGE, 0.5f, SEGMENTS, COLOR);
 	}
 
 	private void findOrb() {
@@ -81,22 +70,18 @@ public final class PowerOrbRange implements Renderable {
 
 		if (mc.level == null) return;
 
-
 		for (Entity entity : mc.level.entitiesForRendering()) {
 
 			if (!(entity instanceof ArmorStand armorStand)) continue;
 
-
 			if (isOrb(armorStand)) {
 
-				Vec3 pos = armorStand.position()
-						.add(0, CIRCLE_HEIGHT, 0);
+				Vec3 pos = armorStand.position().add(0, CIRCLE_HEIGHT, 0);
 
 				updatePosition(pos);
 				return;
 			}
 		}
-
 
 		clearPosition();
 	}
@@ -105,18 +90,8 @@ public final class PowerOrbRange implements Renderable {
 
 		if (!armorStand.hasCustomName()) return false;
 
+		String name = armorStand.getName().getString().replaceAll("§.", "").toLowerCase(Locale.ENGLISH);
 
-		String name = armorStand.getName()
-				.getString()
-				.replaceAll("§.", "")
-				.toLowerCase(Locale.ENGLISH);
-
-
-		return name.contains("radiant power orb")
-				|| name.contains("mana flux")
-				|| name.contains("manaflux")
-				|| name.contains("overflux")
-				|| name.contains("plasmaflux")
-				|| name.contains("plasma flux");
+		return name.contains("radiant power orb") || name.contains("mana flux") || name.contains("manaflux") || name.contains("overflux") || name.contains("plasmaflux") || name.contains("plasma flux");
 	}
 }

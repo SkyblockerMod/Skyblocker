@@ -2,7 +2,6 @@ package de.hysky.skyblocker.config.configs;
 
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import net.minecraft.client.resources.language.I18n;
-import de.hysky.skyblocker.config.categories.LanternDeployableConfig;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class MiningConfig {
 
 	public Glacite glacite = new Glacite();
 
-	public LanternDeployableConfig lanternDeployable = new LanternDeployableConfig();
+	public LanternDeployable lanternDeployable = new LanternDeployable();
 
 	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
 
@@ -175,6 +174,10 @@ public class MiningConfig {
 		public boolean playSound = false;
 
 
+	}
+
+	public static class LanternDeployable {
+		public boolean showDeployableRange = true;
 	}
 
 	/**
