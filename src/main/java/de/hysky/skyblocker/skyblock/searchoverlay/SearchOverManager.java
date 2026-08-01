@@ -527,7 +527,7 @@ public class SearchOverManager {
 		if (search.isEmpty()) return;
 		String command;
 		switch (location) {
-			case AUCTION -> command = "/ahsearch " + search;
+			case AUCTION -> command = "/auctionsearch " + search;
 			case BAZAAR -> command = "/bz " + search;
 			default -> {
 				return;
