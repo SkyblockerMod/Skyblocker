@@ -3,10 +3,12 @@ package de.hysky.skyblocker.skyblock.events;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Http;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
 import java.time.Instant;
@@ -38,7 +40,7 @@ public final class CalendarEvents {
 				LOGGER.error("[Skyblocker] Failed to download events list", e);
 			}
 			return null;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(response -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(response -> {
 			Map<SkyblockEvent, LinkedList<EventInstance>> newEvents = new Reference2ObjectOpenHashMap<>();
 			if (response == null) {
 				LOGGER.error("[Skyblocker] Failed to get events list");
@@ -61,7 +63,7 @@ public final class CalendarEvents {
 				}
 			});
 			events = newEvents;
-		}).exceptionally(CalendarEvents::itBorked);
+		}, Minecraft.getInstance()).exceptionally(CalendarEvents::itBorked);
 	}
 
 	private static Void itBorked(Throwable throwable) {
