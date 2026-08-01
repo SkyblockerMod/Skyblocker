@@ -151,9 +151,9 @@ public class DungeonsConfig {
 
 		public boolean enableLividColorBoundingBox = true;
 
-		public boolean enableLividColorText = true;
+		public boolean enableLividColorText = false;
 
-		public boolean enableLividColorTitle = true;
+		public boolean enableLividColorTitle = false;
 
 		public String lividColorText = "The livid color is [color]";
 	}
