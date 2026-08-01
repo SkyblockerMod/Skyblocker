@@ -55,6 +55,7 @@ accessible	class	net/minecraft/client/renderer/rendertype/RenderSetup$TextureBin
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
+extendable  method  net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 
 # Quick Nav
 accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;

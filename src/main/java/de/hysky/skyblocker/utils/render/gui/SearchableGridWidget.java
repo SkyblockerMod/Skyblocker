@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 
 public abstract class SearchableGridWidget extends AbstractContainerWidget {
@@ -88,6 +89,13 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 
 	public double getScrollAmount() {
 		return widgetsContainer.scrollAmount();
+	}
+
+	/**
+	 * @return the grid's rectangle. Does not include the search bar.
+	 */
+	public ScreenRectangle getGridRectangle() {
+		return widgetsContainer.getRectangle();
 	}
 
 	private void filterInternal(String input) {
