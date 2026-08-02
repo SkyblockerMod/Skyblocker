@@ -4,8 +4,10 @@ import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
@@ -21,7 +23,7 @@ public class HelperConfig {
 
 	public boolean enableAnvilHelper = true;
 
-	public boolean enableAccessoriesHelperWidget = true;
+	public Accessories accessories = new Accessories();
 
 	public BuildersWand buildersWand = new BuildersWand();
 
@@ -45,16 +47,26 @@ public class HelperConfig {
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
-	public CenturyRaffle centuryRaffle = new CenturyRaffle();
+	public static class Accessories {
+	public boolean enableAccessoriesHelperWidget = true;
+
+	public boolean showDuplicateAccessories = true;
+}
+
+	public static class Accessories {
+		public boolean enableAccessoriesHelperWidget = true;
+
+		public boolean showDuplicateAccessories = true;
+	}
 
 	public static class BuildersWand {
-		public boolean enableBuildersWandPreview = true;
+	public boolean enableBuildersWandPreview = true;
 
-		public float previewOpacity = 0.5f;
+	public float previewOpacity = 0.5f;
 	}
 
 	public static class MythologicalRitual {
-		public boolean enableMythologicalRitualHelper = true;
+	public boolean enableMythologicalRitualHelper = true;
 	}
 
 	public static class Jerry {
@@ -122,11 +134,6 @@ public class HelperConfig {
 		}
 	}
 
-	// Placeholder!
-	public static class Loadouts {
-
-	}
-
 	public static class FairySouls {
 		public boolean enableFairySoulsHelper = false;
 
@@ -176,11 +183,5 @@ public class HelperConfig {
 
 	public static class GreatSpookEvent {
 		public boolean enableMathTeacherHelper = true;
-	}
-
-	public static class CenturyRaffle {
-		public boolean enableRaffleTaskHighlight = true;
-
-		public boolean enableRaffleRewardHighlight = true;
 	}
 }

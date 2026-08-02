@@ -71,18 +71,23 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
 	private static final int BORDER_SIZE = 8;
 	private static final int BUTTON_COUNT = 20;
+	// Things that should persist when you close the accessory bag
+	private static Filter filter = Filter.ALL;
+	private static int page;
+	private static boolean open;
+	private static boolean showHighestTierOnly;
 	private final List<AbstractWidget> widgets;
 	private final List<ResultButton> buttons = new ArrayList<>(BUTTON_COUNT);
 	private final FrameLayout layout;
 	private final StringWidget pageText = new StringWidget(CommonComponents.EMPTY, Minecraft.getInstance().font).setMaxWidth(30, StringWidget.TextOverflow.SCROLLING);
 	private final ArrowButton prevPageButton = new ArrowButton(false);
 	private final ArrowButton nextPageButton = new ArrowButton(true);
-
 	private List<AccessoryInfo> accessories = List.of();
 	private List<MagicPowerSource> displays = List.of();
 	private List<RecombobulateSource> recombDisplays = List.of();
 	private boolean refreshWhenDoneLoading = false;
 
+<<<<<<< HEAD
 	// Things that should persist when you close the accessory bag
 	private static Filter filter = Filter.ALL;
 	private static int page;
@@ -90,7 +95,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static boolean showHighestTierOnly;
 
 	static void attachToScreen(ContainerScreen screen) {
-		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper || !SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
+		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper
+	|| !SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getWidgets(screen).add(widget);
@@ -115,6 +121,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		tabButton.setToggled(open);
 	}
 
+=======
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 	AccessoriesHelperWidget() {
 		super(0, 0, 147, 182, CommonComponents.EMPTY, AbstractScrollArea.defaultSettings(4));
 		this.layout = new FrameLayout(getWidth() - BORDER_SIZE * 2, getHeight() - BORDER_SIZE * 2);
@@ -155,6 +163,47 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		widgets = builder.build();
 		mainLayout.arrangeElements();
 		updatePageSwitcher();
+	}
+
+	static void attachToScreen(ContainerScreen screen) {
+		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper
+				|| !SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget) return;
+		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
+		widget.setY((screen.height - widget.getHeight()) / 2);
+		Screens.getWidgets(screen).add(widget);
+		final int previousX = ((AbstractContainerScreenAccessor) screen).getX();
+		final int offset = Math.max(180 - previousX, 0);
+		TabButton tabButton = new TabButton(button -> {
+			boolean toggled = button.toggled;
+			widget.visible = open = toggled;
+			int x = toggled ? previousX + offset : previousX;
+			((AbstractContainerScreenAccessor) screen).setX(x);
+			widget.setX(x - widget.getWidth() - 2);
+			button.setX((toggled ? widget.getX() : x) - button.getWidth() + 5);
+			button.setY((toggled ? widget.getY() : ((AbstractContainerScreenAccessor) screen).getY()) + 8);
+			if (toggled) {
+				widget.refreshData();
+			} else {
+				// Reset page when you close the helper. keep rest for UX
+				page = 0;
+			}
+		});
+		Screens.getWidgets(screen).add(tabButton);
+		tabButton.setToggled(open);
+	}
+
+	/**
+	 * Checks bazaar, lbin and craft cost.
+	 */
+	private static OptionalDouble getPrice(Accessory acc) {
+		FlexibleItemStack stack = ItemRepository.getItemStack(acc.id());
+		if (stack == null) return OptionalDouble.empty();
+		OptionalDouble optionalPrice = ItemUtils.getItemPrice(stack);
+		double price;
+		if (optionalPrice.isPresent()) price = optionalPrice.getAsDouble();
+		else price = ItemUtils.getCraftCost(stack.getNeuName());
+		if (price <= 0) return OptionalDouble.empty();
+		return OptionalDouble.of(price);
 	}
 
 	private void refreshData() {
@@ -198,20 +247,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		displays = Stream.concat(stream, recombDisplays.stream())
 				.sorted(Comparator.comparingDouble(MagicPowerSource::pricePerMp)
 				).toList();
-	}
-
-	/**
-	 * Checks bazaar, lbin and craft cost.
-	 */
-	private static OptionalDouble getPrice(Accessory acc) {
-		FlexibleItemStack stack = ItemRepository.getItemStack(acc.id());
-		if (stack == null) return OptionalDouble.empty();
-		OptionalDouble optionalPrice = ItemUtils.getItemPrice(stack);
-		double price;
-		if (optionalPrice.isPresent()) price = optionalPrice.getAsDouble();
-		else price = ItemUtils.getCraftCost(stack.getNeuName());
-		if (price <= 0) return OptionalDouble.empty();
-		return OptionalDouble.of(price);
 	}
 
 	private void changePage(int offset) {
@@ -291,29 +326,25 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		return buttons.stream().map(ResultButton::getFocusedItem).filter(Objects::nonNull).findFirst().orElse(null);
 	}
 
-	private class ArrowButton extends AbstractWidget {
-		private final boolean next;
-		private final WidgetSprites textures;
-
-		ArrowButton(boolean next) {
-			super(0, 0, 12, 17, CommonComponents.EMPTY);
-			this.next = next;
-			this.textures = next ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES;
-		}
+	private enum Filter {
+		ALL,
+		MISSING,
+		UPGRADES;
 
 		@Override
-		public void onClick(MouseButtonEvent click, boolean doubled) {
-			changePage(next ? 1 : -1);
+		public String toString() {
+			return "skyblocker.accessoryHelper.filter." + name();
 		}
+	}
 
-		@Override
-		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
-			if (isHovered()) graphics.requestCursor(CursorTypes.POINTING_HAND);
-		}
+	private interface MagicPowerSource {
+		FlexibleItemStack icon();
 
-		@Override
-		protected void updateWidgetNarration(NarrationElementOutput builder) {}
+		void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
+
+		double pricePerMp();
+
+		void click();
 	}
 
 	// TODO abstract away this and SkyblockRecipeTabButton
@@ -387,6 +418,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		protected void clearDisplayStack() {
 			super.clearDisplayStack();
 		}
+
 		@Override
 		public @Nullable ItemStack getFocusedItem() {
 			return isHovered() ? getDisplayStack() : null;
@@ -477,6 +509,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private final FlexibleItemStack icon;
 		private final double pricePerMp;
 		private final List<Component> tooltip;
+
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", Ico.BARRIER);
 			OptionalDouble opt = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
@@ -516,24 +549,28 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		}
 	}
 
-	private interface MagicPowerSource {
-		FlexibleItemStack icon();
+	private class ArrowButton extends AbstractWidget {
+		private final boolean next;
+		private final WidgetSprites textures;
 
-		void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
-
-		double pricePerMp();
-
-		void click();
-	}
-
-	private enum Filter {
-		ALL,
-		MISSING,
-		UPGRADES;
+		ArrowButton(boolean next) {
+			super(0, 0, 12, 17, CommonComponents.EMPTY);
+			this.next = next;
+			this.textures = next ? RecipeBookPage.PAGE_FORWARD_SPRITES : RecipeBookPage.PAGE_BACKWARD_SPRITES;
+		}
 
 		@Override
-		public String toString() {
-			return "skyblocker.accessoryHelper.filter." + name();
+		public void onClick(MouseButtonEvent click, boolean doubled) {
+			changePage(next ? 1 : -1);
 		}
+
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, textures.get(true, isHovered()), getX(), getY(), getWidth(), getHeight());
+			if (isHovered()) graphics.requestCursor(CursorTypes.POINTING_HAND);
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput builder) {}
 	}
 }

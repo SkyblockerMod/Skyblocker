@@ -4,17 +4,21 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.CommonColors;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public class AccessoriesContainerSolver extends SimpleContainerSolver {
-	private static final int COLOR = ARGB.color(0.7f, CommonColors.GREEN);
+<<<<<<< HEAD
+	private static final int UNIQUE_COLOR = ARGB.color(0.7f, CommonColors.GREEN);
+	private static final int DUPLICATE_COLOR = ARGB.color(0.7f, CommonColors.RED);
+=======
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 	public static final AccessoriesContainerSolver INSTANCE = new AccessoriesContainerSolver();
-
+	private static final int DUPLICATE_COLOR = ARGB.color(0.45f, CommonColors.RED);
 	@Nullable String highlightedAccessory;
 
 	protected AccessoriesContainerSolver() {
@@ -22,16 +26,47 @@ public class AccessoriesContainerSolver extends SimpleContainerSolver {
 	}
 
 	@Override
+<<<<<<< HEAD
+public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
+	return slots.int2ObjectEntrySet().stream()
+			.map(entry -> {
+				int slot = entry.getIntKey();
+				ItemStack stack = entry.getValue();
+
+				String id = stack.getSkyblockId();
+
+				if (id.isEmpty()) return null;
+
+				if (SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget
+						&& SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories
+						&& AccessoriesHelper.duplicateSlots.contains(slot)) {
+					return new ColorHighlight(slot, DUPLICATE_COLOR);
+				}
+
+				return new ColorHighlight(slot, UNIQUE_COLOR);
+			})
+			.filter(java.util.Objects::nonNull)
+			.toList();
+}
+=======
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		if (highlightedAccessory == null) return List.of();
 		return slots.int2ObjectEntrySet().stream()
-				.filter(entry -> entry.getValue().getSkyblockId().equals(highlightedAccessory))
-				.map(entry -> new ColorHighlight(entry.getIntKey(), COLOR))
+				.filter(entry ->
+						SkyblockerConfigManager.get().helpers.accessories.enableAccessoriesHelperWidget
+								&& SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories
+								&& AccessoriesHelper.duplicateSlots.contains(entry.getIntKey()))
+				.map(entry -> new ColorHighlight(entry.getIntKey(), DUPLICATE_COLOR))
 				.toList();
 	}
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget;
+		return SkyblockerConfigManager.get().helpers.accessories.showDuplicateAccessories;
+<<<<<<< HEAD
+}
+=======
 	}
+>>>>>>> 85f1ed11d (Removed the green - jsut higlighting uniques)
 }
