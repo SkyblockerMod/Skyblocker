@@ -24,6 +24,10 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A modified version of {@link CommandSuggestions} that doesn't have hardcoded positions
+ * and that allows to use a specific command node instead of the vanilla dispatcher.
+ */
 public class TextFieldSuggestions extends CommandSuggestions {
 
 	private final CommandDispatcher<ClientSuggestionProvider> dispatcher;
@@ -42,10 +46,16 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		}
 	}
 
+	/**
+	 * Creates a text field suggestions with a specific node and children as the parser
+	 */
 	public static TextFieldSuggestions ofSpecificNode(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, CommandNode<ClientSuggestionProvider> node) {
 		return new TextFieldSuggestions(minecraft, screen, input, font, onlyShowIfCursorPastError, suggestionLineLimit, node, true);
 	}
 
+	/**
+	 * Creates a text field suggestions that suggests like chat or a command block. Basically the same as {@link CommandSuggestions} but without hard coded positions and chat restrictions.
+	 */
 	public static TextFieldSuggestions ofVanillaDispatcher(Minecraft minecraft, Screen screen, EditBox input, Font font, boolean onlyShowIfCursorPastError, int suggestionLineLimit, boolean commandOnly) {
 		return new TextFieldSuggestions(minecraft, screen, input, font, onlyShowIfCursorPastError, suggestionLineLimit, null, commandOnly);
 	}

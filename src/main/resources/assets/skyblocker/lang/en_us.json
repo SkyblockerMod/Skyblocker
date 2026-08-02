@@ -1089,7 +1089,7 @@
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
   "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "Adds 14 customizable inventory buttons that can be styled and run a command when clicked.",
   "skyblocker.config.quickNav.quickNavConfigScreen": "Open Configuration Screen",
-  "skyblocker.config.quickNav.screen.count": "Editing Button %s",
+  "skyblocker.config.quickNav.screen.count": "Count",
   "skyblocker.config.quickNav.screen.title": "Editing Button %s",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",

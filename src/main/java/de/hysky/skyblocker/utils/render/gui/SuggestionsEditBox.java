@@ -25,13 +25,17 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+/// An edit box that can display suggestions using brigadier.
+///
+/// It can be used to suggest an entire command (like in chat or a command block)
+/// or to suggest something more specific like an item stack or an identifier using an argument
 public class SuggestionsEditBox extends EditBox {
 
 	private final TextFieldSuggestions suggestions;
 	private final @Nullable String argument;
 	private @Nullable Consumer<String> responder;
 
-	public SuggestionsEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, @Nullable CommandNode<ClientSuggestionProvider> node, boolean commandsOnly) {
+	protected SuggestionsEditBox(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, @Nullable CommandNode<ClientSuggestionProvider> node, boolean commandsOnly) {
 		super(font, width, height, narration);
 		if (node != null) {
 			suggestions = TextFieldSuggestions.ofSpecificNode(minecraft, screen, this, font, onlyShowIfCursorPastError, suggestionLineLimit, node);
@@ -155,30 +159,53 @@ public class SuggestionsEditBox extends EditBox {
 			return this;
 		}
 
+		/**
+		 * @see Builder#build(Minecraft, Font, Screen, Component, CommandNode)
+		 */
 		public SuggestionsEditBox build(Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
 			return build(Minecraft.getInstance(), Minecraft.getInstance().font,  screen, narration, node);
 		}
 
+		/**
+		 * @see Builder#build(Minecraft, Font, Screen, Component, CommandNode)
+		 */
 		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentBuilder<ClientSuggestionProvider, ?> builder) {
 			return build(minecraft, font, screen, narration, builder.build());
 		}
 
+		/**
+		 * Builds a suggestion edit box with the specified node. <br>
+		 * Note: if it is an argument node with no children it is recommended to use {@link Builder#buildArg(Minecraft, Font, Screen, Component, ArgumentType)}
+		 * that has methods to get the parsed value directly.
+		 */
 		public SuggestionsEditBox build(Minecraft minecraft, Font font, Screen screen, Component narration, CommandNode<ClientSuggestionProvider> node) {
 			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, node, true);
 		}
 
+		/**
+		 * Builds a suggestion edit box with a specific argument type as the parser and suggestions provider.<br>
+		 * Has methods to get the parsed value directly thanks to the generic type.
+		 */
 		public <T> Argument<T> buildArg(Minecraft minecraft, Font font, Screen screen, Component narration, ArgumentType<T> argumentType) {
 			return new Argument<>(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, argumentType);
 		}
 
+		/**
+		 * Builds a suggestion edit box that pretty much acts as if it was chat or a command block and suggests all commands.
+		 */
 		public SuggestionsEditBox buildVanillaDispatcher(Minecraft minecraft, Font font, Screen screen, Component narration, boolean commandsOnly) {
 			return new SuggestionsEditBox(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, null, commandsOnly);
 		}
 	}
 
+	/**
+	 * A suggestion edit box based on an argument type. Has methods to get the parsed value directly.
+	 * @see Builder#buildArg(Minecraft, Font, Screen, Component, ArgumentType)
+	 * @param <T> The edit box's parsed type
+	 */
 	public static class Argument<T> extends SuggestionsEditBox {
 
-		public Argument(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, ArgumentType<T> argumentType) {
+		protected Argument(Minecraft minecraft, Screen screen, Font font, int width, int height, Component narration, boolean onlyShowIfCursorPastError, int suggestionLineLimit, ArgumentType<T> argumentType) {
 			super(minecraft, screen, font, width, height, narration, onlyShowIfCursorPastError, suggestionLineLimit, RequiredArgumentBuilder.<ClientSuggestionProvider, T>argument("argument", argumentType).build(), true);
 
 		}
