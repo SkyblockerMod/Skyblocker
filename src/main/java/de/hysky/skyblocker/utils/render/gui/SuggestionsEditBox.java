@@ -200,8 +200,8 @@ public class SuggestionsEditBox extends EditBox {
 
 	/**
 	 * A suggestion edit box based on an argument type. Has methods to get the parsed value directly.
-	 * @see Builder#buildArg(Minecraft, Font, Screen, Component, ArgumentType)
 	 * @param <T> The edit box's parsed type
+	 * @see Builder#buildArg(Minecraft, Font, Screen, Component, ArgumentType)
 	 */
 	public static class Argument<T> extends SuggestionsEditBox {
 
