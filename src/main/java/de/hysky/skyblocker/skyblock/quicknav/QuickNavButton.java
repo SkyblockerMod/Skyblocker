@@ -46,7 +46,7 @@ public class QuickNavButton extends AbstractWidget {
 	private final boolean toggled;
 	private final String command;
 	private final ItemStack icon;
-	protected final Tooltip tooltip;
+	protected final @Nullable Tooltip tooltip;
 
 	private boolean temporaryToggled = false;
 	private long toggleTime;
@@ -92,7 +92,7 @@ public class QuickNavButton extends AbstractWidget {
 		this.command = command;
 		this.icon = icon;
 		this.toggleTime = 0;
-		if (tooltip == null || tooltip.isEmpty()) {
+		if (tooltip.isEmpty()) {
 			this.tooltip = null;
 			return;
 		}
@@ -145,7 +145,7 @@ public class QuickNavButton extends AbstractWidget {
 		if (!this.temporaryToggled) {
 			this.temporaryToggled = true;
 			this.toggleTime = System.currentTimeMillis();
-			if (command == null || command.isEmpty()) {
+			if (command.isEmpty() && Minecraft.getInstance().player != null) {
 				Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Quick Nav button index " + (index + 1) + " has no command!").withStyle(ChatFormatting.RED)));
 			} else {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);

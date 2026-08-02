@@ -43,11 +43,11 @@ public class AbstractPopupScreen extends Screen {
 	 * These are the inner positions and size of the popup, not outer
 	 */
 	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
+		extractPopupBackground(graphics, x, y, width, height, false);
 	}
 
-	public static void extractLighterPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIGHTER_BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
+	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height, boolean light) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, light ? LIGHTER_BACKGROUND_TEXTURE : BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
 	}
 
 	@Override

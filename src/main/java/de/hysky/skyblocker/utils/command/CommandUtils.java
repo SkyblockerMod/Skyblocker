@@ -56,10 +56,10 @@ public final class CommandUtils {
 		return offlineSuggestionProvider;
 	}
 
-	private static <A, B> A unsafeCast(B b) {
-		return (A) b;
+	@SuppressWarnings("unchecked")
+	private static <T> T unsafeCast(Object o) {
+		return (T) o;
 	}
-
 
 
 	private static class FakeClientSuggestionProvider extends ClientSuggestionProvider {

@@ -29,10 +29,8 @@ public class QuickNav {
 
 	@Init
 	public static void commandInit() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(
-					ClientCommands.literal("quickNav").executes(Scheduler.queueOpenScreenCommand(QuickNavConfigScreen::new))));
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(
+				ClientCommands.literal("quickNav").executes(Scheduler.queueOpenScreenCommand(QuickNavConfigScreen::new)))));
 	}
 
 	public static List<QuickNavButton> init(String screenTitle) {
@@ -61,6 +59,7 @@ public class QuickNav {
 
 	private static QuickNavButton parseButton(QuickNavigationConfig.QuickNavItem buttonInfo, String screenTitle, int id) throws CommandSyntaxException {
 		QuickNavigationConfig.ItemData itemData = buttonInfo.itemData;
+		@SuppressWarnings("ConstantValue")
 		ItemStack stack = itemData != null && itemData.item != null && itemData.components != null ? ItemStackComponentizationFixer.fromComponentsString(itemData.item.toString(), Math.clamp(itemData.count, 1, 99), itemData.components) : new ItemStack(Items.BARRIER);
 
 		boolean uiTitleMatches = false;

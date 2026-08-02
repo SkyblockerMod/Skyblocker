@@ -107,21 +107,23 @@ public class ItemTab extends GridLayoutTab {
 
 
 		LocalPlayer player = Minecraft.getInstance().player;
-		ItemStack handStack = player.getMainHandItem();
-		if (!handStack.getUuid().isEmpty()) {
-			setCurrentItem(handStack);
-			return;
-		}
-		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
-			if (!stack.getUuid().isEmpty()) {
-				setCurrentItem(stack);
+		if (player != null) {
+			ItemStack handStack = player.getMainHandItem();
+			if (!handStack.getUuid().isEmpty()) {
+				setCurrentItem(handStack);
 				return;
 			}
-		}
-		for (ItemStack stack : player.getInventory()) {
-			if (!stack.getUuid().isEmpty()) {
-				setCurrentItem(stack);
-				return;
+			for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+				if (!stack.getUuid().isEmpty()) {
+					setCurrentItem(stack);
+					return;
+				}
+			}
+			for (ItemStack stack : player.getInventory()) {
+				if (!stack.getUuid().isEmpty()) {
+					setCurrentItem(stack);
+					return;
+				}
 			}
 		}
 		visitChildren(clickableWidget -> clickableWidget.visible = false);

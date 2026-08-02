@@ -48,6 +48,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -371,11 +372,14 @@ public class ComponentEditWidget extends AbstractContainerWidget {
 		private final ChatFormatting color;
 		private final int intColor;
 
+		/**
+		 * @param format Callers should ensure that this is a color.
+		 */
 		private ColorButton(ChatFormatting format) {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(TextColor.fromLegacyFormat(color).getValue()));
+			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(Objects.requireNonNull(TextColor.fromLegacyFormat(color)).getValue()));
 		}
 
 		@Override

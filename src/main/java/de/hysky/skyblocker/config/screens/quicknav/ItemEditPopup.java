@@ -149,7 +149,8 @@ class ItemEditPopup extends AbstractPopupScreen {
 						item.itemData.components = components;
 						itemBox.setValue(itemStack.getItem() + components);
 					}
-				}))).tooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))).build());
+				})
+		)).tooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip"))).build());
 
 		// require double click
 		LinearLayout doubleClickLayout = content.addChild(createSectionLayout());
@@ -187,7 +188,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 	@Override
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractBackground(graphics, mouseX, mouseY, a);
-		extractLighterPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight(), true);
 	}
 
 	@Override
