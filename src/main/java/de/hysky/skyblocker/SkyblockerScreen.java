@@ -43,8 +43,8 @@ public class SkyblockerScreen extends Screen {
 	private static final Component SUPPORT_US_TEXT = Component.translatable("text.skyblocker.supportUs");
 	private static final Component CREDITS_TEXT = Component.translatable("credits_and_attribution.button.credits");
 	private static final Component LOGS_FOLDER_TEXT = Component.translatable("text.skyblocker.logsFolder");
-	private HeaderAndFooterLayout layout;
-	private MultiLineTextWidget tip;
+	private HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this, 64, 100);
+	private MultiLineTextWidget tip = new MultiLineTextWidget(Component.empty(), this.font);
 
 	static {
 		if (FunUtils.shouldEnableFun()) {
@@ -62,10 +62,8 @@ public class SkyblockerScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
-					.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new)));
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new))));
 	}
 
 	@Override

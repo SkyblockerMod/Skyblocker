@@ -113,6 +113,8 @@ public class UpdateNotifications {
 	}
 
 	private static void introduceNewUpdate() {
+		if (MINECRAFT.player == null) return;
+
 		try {
 			Optional<SemanticVersion> newestVersionUsed = getConfig().newestVersionUsed();
 			SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
@@ -172,11 +174,9 @@ public class UpdateNotifications {
 		}
 
 		// Finds a release whose version number matches the newest version available and is available for the newest Minecraft version that the mod supports
-		Optional<MrVersion> latestModVersionForNewestMinecraftVersion = eligibleModVersions.stream()
+		return eligibleModVersions.stream()
 				.filter(releaseVersion -> VERSION_COMPARATOR.compare(releaseVersion.version(), newestModVersion) == 0)
 				.max(Comparator.comparing(MrVersion::newestMinecraftVersionSupported, VERSION_COMPARATOR));
-
-		return latestModVersionForNewestMinecraftVersion;
 	}
 
 	private static DataResult<SemanticVersion> parseVersion(String version) {

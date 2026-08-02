@@ -61,7 +61,6 @@ public class EndHudWidget extends ElementBasedWidget {
 		// Zealots
 		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
 			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
-			assert endStats != null; // remove warning, even though it can't be null...
 			addComponent(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
 			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
 			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));

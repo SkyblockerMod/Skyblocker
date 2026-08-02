@@ -212,9 +212,7 @@ public class HealthBars {
 	}
 
 	/**
-	 * Loops though armor stands with health bars and renders a bar for each of them just bellow the name label
-	 *
-	 * @param context render context
+	 * Loops though armor stands with health bars and renders a bar for each of them just bellow the name label.
 	 */
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.healthBars.enabled || healthValues.isEmpty()) {
