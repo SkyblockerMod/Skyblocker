@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 /**
  * Abstract class for a simple feature that highlights a certain type of block.
  */
-//TODO Move this to a more generic package since this is not Galatea specific (maybe make a world rendering utility package?)
+// TODO Move this to a more generic package since this is not foraging specific (maybe make a world rendering utility package?)
 public abstract class AbstractBlockHighlighter {
 	protected final Set<BlockPos> highlightedBlocks = new ObjectOpenHashSet<>();
 	protected final float[] colour;
@@ -34,19 +34,27 @@ public abstract class AbstractBlockHighlighter {
 	 * Convenience constructor for highlighting a specific block type.
 	 *
 	 * @param target Block to highlight.
-	 * @param colour Color to use for highlighting.
+	 * @param colour colour to use for highlighting.
 	 */
 	protected AbstractBlockHighlighter(Block target, DyeColor colour) {
 		this(state -> state.is(target), colour);
 	}
 
 	/**
-	 * @param statePredicate Predicate that the blockstate must match to be highlighted.
-	 * @param colour Color to use for highlighting.
+	 * @param statePredicate predicate that the block state must match to be highlighted.
+	 * @param colour colour to use for highlighting.
 	 */
 	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, DyeColor colour) {
+		this(statePredicate, ColorUtils.getFloatComponents(colour));
+	}
+
+	/**
+	 * @param statePredicate predicate that the block state must match to be highlighted.
+	 * @param colour colour to use for highlighting.
+	 */
+	protected AbstractBlockHighlighter(Predicate<BlockState> statePredicate, float[] colourComponents) {
 		this.statePredicate = statePredicate;
-		this.colour = ColorUtils.getFloatComponents(colour);
+		this.colour = colourComponents;
 	}
 
 	protected void init() {

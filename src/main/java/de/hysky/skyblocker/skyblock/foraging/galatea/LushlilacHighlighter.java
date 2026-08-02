@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
-public class LushlilacHighlighter extends AbstractBlockHighlighter {
+public final class LushlilacHighlighter extends AbstractBlockHighlighter {
 	private static final LushlilacHighlighter INSTANCE = new LushlilacHighlighter();
 
 	private LushlilacHighlighter() {

@@ -7,7 +7,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
-public class RubyVeilshroomHighlighter extends AbstractBlockHighlighter {
+public final class RubyVeilshroomHighlighter extends AbstractBlockHighlighter {
 	private static final RubyVeilshroomHighlighter INSTANCE = new RubyVeilshroomHighlighter();
 
 	private RubyVeilshroomHighlighter() {

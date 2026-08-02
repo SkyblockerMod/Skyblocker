@@ -566,6 +566,8 @@
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
 
   "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon",
+  "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "Enable Honeyhive Highlighter",
+  "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "Highlights full Honeyhives in blue to assist in locating them.",
   "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Enable Ruby Veilshroom Highlighter",
   "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Highlights Ruby Veilshrooms in purple to assist in locating them.",
   "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle": "Solve Desert Temple Puzzle",

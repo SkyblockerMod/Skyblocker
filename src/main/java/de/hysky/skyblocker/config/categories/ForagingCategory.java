@@ -127,6 +127,14 @@ public class ForagingCategory {
 										newValue -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip"))
+								.binding(defaults.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
+										() -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
+										newValue -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Sweep Overlay

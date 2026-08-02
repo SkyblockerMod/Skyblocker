@@ -33,6 +33,8 @@ public class ForagingConfig {
 		public boolean solveDesertTemplePuzzle = true;
 
 		public boolean enableRubyVeilshroomHighlighter = true;
+
+		public boolean enableHoneyhiveHighlighter = true;
 	}
 
 	public static class SweepOverlay {
