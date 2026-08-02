@@ -5,14 +5,13 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 public class LushlilacHighlighter extends AbstractBlockHighlighter {
-	public static final LushlilacHighlighter INSTANCE = new LushlilacHighlighter(Blocks.FLOWERING_AZALEA, DyeColor.MAGENTA);
+	private static final LushlilacHighlighter INSTANCE = new LushlilacHighlighter();
 
-	private LushlilacHighlighter(Block target, DyeColor colour) {
-		super(target, colour);
+	private LushlilacHighlighter() {
+		super(Blocks.FLOWERING_AZALEA, DyeColor.MAGENTA);
 	}
 
 	@Init

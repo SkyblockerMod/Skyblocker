@@ -119,6 +119,14 @@ public class ForagingCategory {
 										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzle = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip"))
+								.binding(defaults.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
+										() -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
+										newValue -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Sweep Overlay

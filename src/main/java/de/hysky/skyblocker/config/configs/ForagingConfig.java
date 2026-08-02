@@ -31,6 +31,8 @@ public class ForagingConfig {
 
 	public static class TorrhusCanyon {
 		public boolean solveDesertTemplePuzzle = true;
+
+		public boolean enableRubyVeilshroomHighlighter = true;
 	}
 
 	public static class SweepOverlay {

@@ -566,6 +566,8 @@
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
 
   "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon",
+  "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Enable Ruby Veilshroom Highlighter",
+  "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Highlights Ruby Veilshrooms in purple to assist in locating them.",
   "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle": "Solve Desert Temple Puzzle",
   "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle.@Tooltip": "Displays the correct order of buttons you need to click in white text for the first puzzle. For the second puzzle it shows the direction each statue should face.",
 
