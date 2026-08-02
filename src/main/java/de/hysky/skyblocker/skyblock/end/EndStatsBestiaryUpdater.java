@@ -33,7 +33,6 @@ public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 
 					int kills = NumberUtils.toInt(killsStr);
 					var stats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
-					assert stats != null;
 
 					if (entry.getIntKey() == ALL_ZEALOTS_INDEX) {
 						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(kills, stats.zealotsSinceLastEye(), stats.eyes()));
