@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.foraging.galatea;
+package de.hysky.skyblocker.skyblock.foraging;
 
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
@@ -74,7 +74,7 @@ public abstract class AbstractBlockHighlighter {
 	protected void onChunkLoad(ClientLevel world, LevelChunk chunk) {
 		if (!shouldProcess()) return;
 
-		chunk.findBlocks(statePredicate, (pos, _) -> this.highlightedBlocks.add(pos.immutable()));
+		chunk.findBlocks(this.statePredicate, (pos, _) -> this.highlightedBlocks.add(pos.immutable()));
 	}
 
 	/**

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.foraging.galatea;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
