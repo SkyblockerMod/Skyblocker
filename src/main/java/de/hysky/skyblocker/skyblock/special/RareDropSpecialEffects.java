@@ -63,7 +63,7 @@ public class RareDropSpecialEffects {
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";
-			case "Shard Of The Shredded" -> "SHARD_OF_THE_SHREDDED";
+			case "Shredded Sinew" -> "SHARD_OF_THE_SHREDDED";
 			case "Severed Hand" -> "SEVERED_HAND";
 			case "Warden Heart" -> "WARDEN_HEART";
 			//Spider
