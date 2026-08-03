@@ -441,7 +441,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		@Override
 		protected String key() {
-			return keyBinding.getBoundKeysText().getString();
+			return keyBinding.getBoundKeysTranslationKey().toString();
 		}
 
 		/**
