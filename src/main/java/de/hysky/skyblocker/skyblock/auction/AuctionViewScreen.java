@@ -107,7 +107,11 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 				buyButton.active = false;
 			}
 			case TOP_BID -> infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.alreadyTopBid").withColor(CommonColors.SOFT_YELLOW));
-			case AFFORD -> infoTextWidget.setMessage(Component.empty());
+			case AFFORD -> {
+				infoTextWidget.setMessage(Component.empty());
+				buyButton.active = true;
+				buyButton.visible = true;
+			}
 			case COLLECT_AUCTION -> {
 				infoTextWidget.setMessage(changeProfile ? Component.translatable("skyblocker.fancyAuctionHouse.differentProfile") : wonAuction ? Component.empty() : Component.translatable("skyblocker.fancyAuctionHouse.didntWin"));
 				//priceWidget.setMessage(Text.empty());
@@ -139,7 +143,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 			}
 			case GRACE_PERIOD -> {
 				buyButton.active = false;
-				buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", "Unknown"));
+				infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", "Unknown"));
 			}
 		}
 		updateLayout();
@@ -209,7 +213,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 			if (buyState == BuyState.GRACE_PERIOD) {
 				String line = ItemUtils.getLoreLineIf(stack, s -> s.trim().startsWith("Can buy in: "));
 				if (line != null) {
-					buyButton.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", Component.literal(line.split(":")[1].trim()).withColor(TextColor.YELLOW)));
+					infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", Component.literal(line.split(":")[1].trim()).withColor(TextColor.YELLOW)));
 				} else {
 					// Can buy it now.
 					// hypixel for some reason does NOT change the button back to the item it should be because I guess it would be too nice >:(
