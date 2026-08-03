@@ -6,8 +6,11 @@ public class ForagingConfig {
 
 	public Galatea galatea = new Galatea();
 
+	public TorrhusCanyon torrhusCanyon = new TorrhusCanyon();
+
 	public SweepOverlay sweepOverlay = new SweepOverlay();
 
+	// TODO rename to MoongladeMarsh
 	public static class Galatea {
 		public boolean enableForestNodeHelper = true;
 
@@ -24,6 +27,14 @@ public class ForagingConfig {
 		public boolean enableTunerSolver = true;
 
 		public boolean enableSweepDetailsWidget = true;
+	}
+
+	public static class TorrhusCanyon {
+		public boolean solveDesertTemplePuzzle = true;
+
+		public boolean enableRubyVeilshroomHighlighter = true;
+
+		public boolean enableHoneyhiveHighlighter = true;
 	}
 
 	public static class SweepOverlay {

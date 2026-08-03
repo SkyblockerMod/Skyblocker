@@ -31,7 +31,7 @@ public class HuntingCategory {
 						.description(Component.translatable("skyblocker.config.hunting.huntingBoxHelper.@Tooltip"))
 						.build())
 
-				//Hunting Mob Features
+				// Moonglade Mob Features
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.huntingMobs"))
 						.collapsed(false)
@@ -52,7 +52,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.hideonleafHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.hideonleafGlowColor,
 										() -> config.hunting.huntingMobs.hideonleafGlowColor,
 										newValue -> {
@@ -69,7 +69,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.shellwiseHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.shellwiseGlowColor,
 										() -> config.hunting.huntingMobs.shellwiseGlowColor,
 										newValue -> {
@@ -86,7 +86,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Coralot"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.coralotHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.coralotGlowColor,
 										() -> config.hunting.huntingMobs.coralotGlowColor,
 										newValue -> {
@@ -96,7 +96,155 @@ public class HuntingCategory {
 								.build())
 						.build())
 
-				//Lasso Hud
+				// Torrhus Mobs
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.torrhusMobs"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun"))
+								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun.@Tooltip"))
+								.binding(defaults.hunting.torrhusMobs.highlightHideonsun,
+										() -> config.hunting.torrhusMobs.highlightHideonsun,
+										newValue -> config.hunting.torrhusMobs.highlightHideonsun = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor"))
+								.binding(defaults.hunting.torrhusMobs.hideonsunHighlightColor,
+										() -> config.hunting.torrhusMobs.hideonsunHighlightColor,
+										newValue -> config.hunting.torrhusMobs.hideonsunHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay"))
+								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay.@Tooltip"))
+								.binding(defaults.hunting.torrhusMobs.highlightBlueJay,
+										() -> config.hunting.torrhusMobs.highlightBlueJay,
+										newValue -> config.hunting.torrhusMobs.highlightBlueJay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor"))
+								.binding(defaults.hunting.torrhusMobs.blueJayHighlightColor,
+										() -> config.hunting.torrhusMobs.blueJayHighlightColor,
+										newValue -> config.hunting.torrhusMobs.blueJayHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Safari
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.safari"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms.@Tooltip"))
+								.binding(defaults.hunting.safari.silencePhantoms,
+										() -> config.hunting.safari.silencePhantoms,
+										newValue -> config.hunting.safari.silencePhantoms = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Cavern Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.cavernBiome"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds"))
+								.description(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip"))
+								.binding(defaults.hunting.cavernBiome.highlightRockmiteMounds,
+										() -> config.hunting.cavernBiome.highlightRockmiteMounds,
+										newValue -> config.hunting.cavernBiome.highlightRockmiteMounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor"))
+								.binding(defaults.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										() -> config.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										newValue -> config.hunting.cavernBiome.rockmiteMoundHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Forest Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.forestBiome"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor"))
+								.description(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip"))
+								.binding(defaults.hunting.forestBiome.highlightHideonfloor,
+										() -> config.hunting.forestBiome.highlightHideonfloor,
+										newValue -> config.hunting.forestBiome.highlightHideonfloor = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor"))
+								.binding(defaults.hunting.forestBiome.hideonfloorHighlightColor,
+										() -> config.hunting.forestBiome.hideonfloorHighlightColor,
+										newValue -> config.hunting.forestBiome.hideonfloorHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Haunted Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.hauntedBiome"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico"))
+								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip"))
+								.binding(defaults.hunting.hauntedBiome.highlightDuplico,
+										() -> config.hunting.hauntedBiome.highlightDuplico,
+										newValue -> config.hunting.hauntedBiome.highlightDuplico = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor"))
+								.binding(defaults.hunting.hauntedBiome.duplicoHighlightColor,
+										() -> config.hunting.hauntedBiome.duplicoHighlightColor,
+										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Icy Biome
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.icyBiome"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay"))
+								.description(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay.@Tooltip"))
+								.binding(defaults.hunting.icyBiome.hideColdOverlay,
+										() -> config.hunting.icyBiome.hideColdOverlay,
+										newValue -> config.hunting.icyBiome.hideColdOverlay = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Floor Drops
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.hunting.floorDrops"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops"))
+								.description(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip"))
+								.binding(defaults.foraging.galatea.enableForestNodeHelper,
+										() -> config.foraging.galatea.enableForestNodeHelper,
+										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.floorDrops.floorDropHighlightColor"))
+								.binding(defaults.hunting.floorDrops.floorDropHighlightColor,
+										() -> config.hunting.floorDrops.floorDropHighlightColor,
+										newValue -> config.hunting.floorDrops.floorDropHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.build())
+
+				// Lasso Hud
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.lassoHud"))
 						.collapsed(false)
