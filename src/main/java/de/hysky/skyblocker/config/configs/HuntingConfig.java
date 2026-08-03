@@ -12,11 +12,11 @@ public class HuntingConfig {
 
 	public Safari safari = new Safari();
 
-	public HauntedBiome hauntedBiome = new HauntedBiome();
+	public CavernBiome cavernBiome = new CavernBiome();
 
 	public ForestBiome forestBiome = new ForestBiome();
 
-	public CavernBiome cavernBiome = new CavernBiome();
+	public HauntedBiome hauntedBiome = new HauntedBiome();
 
 	public IcyBiome icyBiome = new IcyBiome();
 
@@ -59,10 +59,10 @@ public class HuntingConfig {
 		public boolean silencePhantoms = true;
 	}
 
-	public static class HauntedBiome {
-		public boolean highlightDuplico = true;
+	public static class CavernBiome {
+		public boolean highlightRockmiteMounds = true;
 
-		public Color duplicoHighlightColor = new Color(DyeColor.RED.getTextColor(), false);
+		public Color rockmiteMoundHighlightColor = new Color(DyeColor.LIGHT_BLUE.getTextColor(), false);
 	}
 
 	public static class ForestBiome {
@@ -71,10 +71,10 @@ public class HuntingConfig {
 		public Color hideonfloorHighlightColor = new Color(DyeColor.MAGENTA.getTextColor(), false);
 	}
 
-	public static class CavernBiome {
-		public boolean highlightRockmiteMounds = true;
+	public static class HauntedBiome {
+		public boolean highlightDuplico = true;
 
-		public Color rockmiteMoundHighlightColor = new Color(DyeColor.LIGHT_BLUE.getTextColor(), false);
+		public Color duplicoHighlightColor = new Color(DyeColor.RED.getTextColor(), false);
 	}
 
 	public static class IcyBiome {

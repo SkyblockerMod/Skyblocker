@@ -146,23 +146,23 @@ public class HuntingCategory {
 								.build())
 						.build())
 
-				// Haunted Biome
+				// Cavern Biome
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.hunting.hauntedBiome"))
+						.name(Component.translatable("skyblocker.config.hunting.cavernBiome"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico"))
-								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip"))
-								.binding(defaults.hunting.hauntedBiome.highlightDuplico,
-										() -> config.hunting.hauntedBiome.highlightDuplico,
-										newValue -> config.hunting.hauntedBiome.highlightDuplico = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds"))
+								.description(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip"))
+								.binding(defaults.hunting.cavernBiome.highlightRockmiteMounds,
+										() -> config.hunting.cavernBiome.highlightRockmiteMounds,
+										newValue -> config.hunting.cavernBiome.highlightRockmiteMounds = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor"))
-								.binding(defaults.hunting.hauntedBiome.duplicoHighlightColor,
-										() -> config.hunting.hauntedBiome.duplicoHighlightColor,
-										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor"))
+								.binding(defaults.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										() -> config.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										newValue -> config.hunting.cavernBiome.rockmiteMoundHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.build())
@@ -188,23 +188,23 @@ public class HuntingCategory {
 								.build())
 						.build())
 
-				// Cavern Biome
+				// Haunted Biome
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.hunting.cavernBiome"))
+						.name(Component.translatable("skyblocker.config.hunting.hauntedBiome"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds"))
-								.description(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip"))
-								.binding(defaults.hunting.cavernBiome.highlightRockmiteMounds,
-										() -> config.hunting.cavernBiome.highlightRockmiteMounds,
-										newValue -> config.hunting.cavernBiome.highlightRockmiteMounds = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico"))
+								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip"))
+								.binding(defaults.hunting.hauntedBiome.highlightDuplico,
+										() -> config.hunting.hauntedBiome.highlightDuplico,
+										newValue -> config.hunting.hauntedBiome.highlightDuplico = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor"))
-								.binding(defaults.hunting.cavernBiome.rockmiteMoundHighlightColor,
-										() -> config.hunting.cavernBiome.rockmiteMoundHighlightColor,
-										newValue -> config.hunting.cavernBiome.rockmiteMoundHighlightColor = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor"))
+								.binding(defaults.hunting.hauntedBiome.duplicoHighlightColor,
+										() -> config.hunting.hauntedBiome.duplicoHighlightColor,
+										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.build())

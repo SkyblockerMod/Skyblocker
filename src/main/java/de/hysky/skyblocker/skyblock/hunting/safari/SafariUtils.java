@@ -5,16 +5,16 @@ import de.hysky.skyblocker.utils.Utils;
 
 public class SafariUtils {
 
-	public static boolean isInHauntedBiome() {
-		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.HAUNTED);
+	public static boolean isInCavernBiome() {
+		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.CAVERN);
 	}
 
 	public static boolean isInForestBiome() {
 		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.FOREST);
 	}
 
-	public static boolean isInCavernBiome() {
-		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.CAVERN);
+	public static boolean isInHauntedBiome() {
+		return Utils.isInSafari() && Utils.isInBiome(SkyBlockBiomes.HAUNTED);
 	}
 
 	public static boolean isInIcyBiome() {

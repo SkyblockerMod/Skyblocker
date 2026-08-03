@@ -28,11 +28,11 @@ public class SafariGlowAdder extends MobGlowAdder {
 			// Cavern Biome
 			case ItemDisplay display when huntingConfig.cavernBiome.highlightRockmiteMounds && SafariUtils.isInCavernBiome() && ItemUtils.getHeadTexture(display.getItemStack()).equals(HeadTextures.ROCKMITE_MOUND) -> huntingConfig.cavernBiome.rockmiteMoundHighlightColor.getRGB();
 
-			// Haunted Biome
-			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
-
 			// Forest Biome
 			case Shulker shulker when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && shulker.getColor() == DyeColor.GREEN -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
+
+			// Haunted Biome
+			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
 
 			default -> NO_GLOW;
 		};
