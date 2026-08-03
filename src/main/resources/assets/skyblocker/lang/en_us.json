@@ -863,7 +863,7 @@
   "skyblocker.config.hunting.floorDrops": "Floor Drops",
   "skyblocker.config.hunting.floorDrops.floorDropHighlightColor": "Floor Drop Highlight Color",
   "skyblocker.config.hunting.floorDrops.highlightFloorDrops": "Highlight Floor Drops",
-  "skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip": "Highlights Floor Drops in the Moonglade Marsh, the Torrhus Canyon, and the Critter Safari in orange.",
+  "skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip": "Highlights Floor Drops in the Moonglade Marsh, the Torrhus Canyon, and the Critter Safari.",
 
   "skyblocker.config.hunting.forestBiome": "Forest Biome",
   "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor Highlight Color",
