@@ -112,11 +112,11 @@ public class ForagingCategory {
 						.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle"))
-								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle.@Tooltip"))
-								.binding(defaults.foraging.torrhusCanyon.solveDesertTemplePuzzle,
-										() -> config.foraging.torrhusCanyon.solveDesertTemplePuzzle,
-										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzle = newValue)
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip"))
+								.binding(defaults.foraging.torrhusCanyon.solveDesertTemplePuzzles,
+										() -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles,
+										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

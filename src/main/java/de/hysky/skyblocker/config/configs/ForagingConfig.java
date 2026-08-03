@@ -30,7 +30,7 @@ public class ForagingConfig {
 	}
 
 	public static class TorrhusCanyon {
-		public boolean solveDesertTemplePuzzle = true;
+		public boolean solveDesertTemplePuzzles = true;
 
 		public boolean enableRubyVeilshroomHighlighter = true;
 
