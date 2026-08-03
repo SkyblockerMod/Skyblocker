@@ -230,6 +230,10 @@
   "skyblocker.config.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
   "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
+  "skyblocker.config.dungeons.batMessage": "Bat Message",
+  "skyblocker.config.dungeons.batMessage.sendBatMessage": "Enable Bat Message",
+  "skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip": "Sends a message in the chat upon killing a bat for other players' score calculation mods.",
+
   "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp Helper",
   "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Predicts mob movement in the Blood Room to assist camping.",
 
@@ -553,8 +557,6 @@
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle": "Solve Forest Temple Puzzle",
   "skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip": "Displays the amount of times you need to rotate the terracotta blocks. For positive rotations you right click while for negative rotations you left click.",
 
-  "skyblocker.config.foraging.hunting": "Hunting",
-
   "skyblocker.config.foraging.sweepOverlay": "Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Enable Sweep Overlay",
   "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Highlights logs that will be destroyed from sweep.",
@@ -562,6 +564,14 @@
   "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Highlights logs when using an axe's thrown ability.",
   "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Sweep Overlay Color",
   "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep Missing: Add the Sweep stat to your player list with /tablist",
+
+  "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon",
+  "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "Enable Honeyhive Highlighter",
+  "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "Highlights full Honeyhives in blue to assist in locating them.",
+  "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Enable Ruby Veilshroom Highlighter",
+  "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Highlights Ruby Veilshrooms in purple to assist in locating them.",
+  "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle": "Solve Desert Temple Puzzle",
+  "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzle.@Tooltip": "Displays the correct order of buttons you need to click in white text for the first puzzle. For the second puzzle it shows the direction each statue should face.",
 
   "skyblocker.config.general": "General",
 
@@ -845,21 +855,45 @@
 
   "skyblocker.config.hunting": "Hunting",
 
+  "skyblocker.config.hunting.cavernBiome": "Cavern Biome",
+  "skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds": "Highlight Rockmite Mounds",
+  "skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip": "Highlights Rockmite Mounds hiding around the Cavern Biome.",
+  "skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor": "Rockmite Mound Highlight Color",
+
+  "skyblocker.config.hunting.floorDrops": "Floor Drops",
+  "skyblocker.config.hunting.floorDrops.floorDropHighlightColor": "Floor Drop Highlight Color",
+  "skyblocker.config.hunting.floorDrops.highlightFloorDrops": "Highlight Floor Drops",
+  "skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip": "Highlights Floor Drops in the Moonglade Marsh, the Torrhus Canyon, and the Critter Safari in orange.",
+
+  "skyblocker.config.hunting.forestBiome": "Forest Biome",
+  "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor Highlight Color",
+  "skyblocker.config.hunting.forestBiome.highlightHideonfloor": "Highlight Hideonfloor",
+  "skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip": "Highlights Hideonfloor who blends in with the grass of the forest.",
+
+  "skyblocker.config.hunting.hauntedBiome": "Haunted Biome",
+  "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Color",
+  "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "Highlight Duplico",
+  "skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip": "Highlights Duplico who camouflages with their surroundings in the haunted house.",
+
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",
 
   "skyblocker.config.hunting.huntingMobs": "Hunting Mobs",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Coralot": "Coralot highlight color picker",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf": "Hideonleaf highlight color picker",
-  "skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise": "Shellwise highlight color picker",
+  "skyblocker.config.hunting.huntingMobs.coralotHighlightColor": "Coralot Highlight Color",
+  "skyblocker.config.hunting.huntingMobs.hideonleafHighlightColor": "Hideonleaf Highlight Color",
   "skyblocker.config.hunting.huntingMobs.highlightCoralot": "Highlight Coralot",
-  "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot in blue by default, with the option to choose a different color.",
+  "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot who is easily frightened by impatient hunters.",
   "skyblocker.config.hunting.huntingMobs.highlightHideonleaf": "Highlight Hideonleaf",
-  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaf in yellow by default, with the option to choose a different color.",
+  "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaf who disguises itself amongst the foliage of the Moonglade Marsh.",
   "skyblocker.config.hunting.huntingMobs.highlightShellwise": "Highlight Shellwise",
-  "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in orange by default, with the option to choose a different color.",
+  "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise whose knockback immunity attribute is desired by all.",
+  "skyblocker.config.hunting.huntingMobs.shellwiseHighlightColor": "Shellwise Highlight Color",
   "skyblocker.config.hunting.huntingMobs.silencePhantoms": "Silence Phantoms",
-  "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on Galatea.",
+  "skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on the Moonglade Marsh.",
+
+  "skyblocker.config.hunting.icyBiome": "Icy Biome",
+  "skyblocker.config.hunting.icyBiome.hideColdOverlay": "Hide Cold Overlay",
+  "skyblocker.config.hunting.icyBiome.hideColdOverlay.@Tooltip": "Hides the frosty overlay that appears when you are cold.",
 
   "skyblocker.config.hunting.lassoHud": "Lasso HUD",
   "skyblocker.config.hunting.lassoHud.enabled": "Enabled",
@@ -868,6 +902,18 @@
   "skyblocker.config.hunting.lassoHud.now": "NOW!!",
   "skyblocker.config.hunting.lassoHud.reel": "Reel",
   "skyblocker.config.hunting.lassoHud.wait": "Wait",
+
+  "skyblocker.config.hunting.safari": "Safari",
+  "skyblocker.config.hunting.safari.silencePhantoms": "Silence Phantoms",
+  "skyblocker.config.hunting.safari.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while in the Critter Safari.",
+
+  "skyblocker.config.hunting.torrhusMobs": "Torrhus Mobs",
+  "skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor": "Blue Jay Highlight Color",
+  "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Color",
+  "skyblocker.config.hunting.torrhusMobs.highlightBlueJay": "Highlight Blue Jay",
+  "skyblocker.config.hunting.torrhusMobs.highlightBlueJay.@Tooltip": "Highlights Blue Jays who like to hide high up in Helix trees.",
+  "skyblocker.config.hunting.torrhusMobs.highlightHideonsun": "Highlight Hideonsun",
+  "skyblocker.config.hunting.torrhusMobs.highlightHideonsun.@Tooltip": "Highlights Hideonsun who blends in with the environment of the Torrhus Canyon.",
 
   "skyblocker.config.mining": "Mining",
 

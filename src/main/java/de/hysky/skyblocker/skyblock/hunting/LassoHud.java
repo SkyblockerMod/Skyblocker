@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 public class LassoHud extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
-	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
+	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA, Location.TORRHUS_CANYON);
 
 	private static @Nullable LassoHud instance;
 	private static int percentage = 0;

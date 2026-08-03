@@ -34,11 +34,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
@@ -63,6 +65,7 @@ public class Utils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 	private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
+	public static final String HYPIXEL_NAMESPACE = "hypixel";
 	public static final String HYPIXEL_SKYBLOCK_NAMESPACE = "hypixel_skyblock";
 	private static final String PROFILE_PREFIX = "Profile: ";
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
@@ -195,6 +198,20 @@ public class Utils {
 
 	public static boolean isInPark() {
 		return location == Location.THE_PARK;
+	}
+
+	public static boolean isInBiome(Identifier biome) {
+		LocalPlayer player = Minecraft.getInstance().player;
+
+		// Same logic as the Biome Debug HUD entry
+		if (player != null) {
+			Level level = player.level();
+			BlockPos feetPos = player.blockPosition();
+
+			return level.isInsideBuildHeight(feetPos) && level.getBiome(feetPos).is(biome);
+		}
+
+		return false;
 	}
 
 	public static boolean isOnBingo() {

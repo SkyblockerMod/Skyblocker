@@ -96,6 +96,7 @@ public class Ico {
 	public static final FlexibleItemStack TROPICAL_FISH_BUCKET = new FlexibleItemStack(Items.TROPICAL_FISH_BUCKET);
 	public static final FlexibleItemStack STRIPPED_SPRUCE_WOOD = new FlexibleItemStack(Items.STRIPPED_SPRUCE_WOOD);
 	public static final FlexibleItemStack MANGROVE_LOG = new FlexibleItemStack(Items.MANGROVE_LOG);
+	public static final FlexibleItemStack STRIPPED_MANGROVE_LOG = new FlexibleItemStack(Items.STRIPPED_MANGROVE_LOG);
 	public static final FlexibleItemStack OMINOUS_BOTTLE = new FlexibleItemStack(Items.OMINOUS_BOTTLE);
 	public static final FlexibleItemStack CATACOMBS = ItemUtils.createSkull(HeadTextures.CATACOMBS);
 	public static final FlexibleItemStack MADDOX_BATPHONE = ItemUtils.createSkull(HeadTextures.MADDOX_BATPHONE);

@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -124,5 +125,10 @@ public abstract class GuiMixin {
 		}
 
 		return cooldownProgress;
+	}
+
+	@ModifyExpressionValue(method = "extractCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getTicksFrozen()I"))
+	private int skyblocker$hideSafariColdOverlay(int original) {
+		return Utils.isOnSkyblock() && SafariUtils.isInIcyBiome() && SkyblockerConfigManager.get().hunting.icyBiome.hideColdOverlay ? 0 : original;
 	}
 }

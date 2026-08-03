@@ -71,7 +71,9 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			Map.entry("kuudra", Location.KUUDRAS_HOLLOW),
 			Map.entry("the rift", Location.THE_RIFT),
 			Map.entry("jerry's workshop", Location.WINTER_ISLAND),
-			Map.entry("galatea", Location.GALATEA),
+			Map.entry("moonglade marsh", Location.GALATEA),
+			Map.entry("torrhus canyon", Location.TORRHUS_CANYON),
+			Map.entry("safari", Location.SAFARI),
 			Map.entry("backwater bayou", Location.BACKWATER_BAYOU),
 			Map.entry("lotus atoll", Location.LOTUS_ATOLL)
 	);
