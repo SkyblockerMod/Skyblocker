@@ -96,9 +96,9 @@
     "skyblocker.customItemNames.screen.customColorTitle": "Custom Colour",
     "skyblocker.config.uiAndVisuals.gyroOverlay.Color": "Gyro Overlay Colour",
     "skyblocker.museum.hud.filter.armor": "Armour",
-    "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaf in yellow by default, with the option to choose a different colour.",
-    "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot in blue by default, with the option to choose a different colour.",
-    "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise in orange by default, with the option to choose a different colour.",
+    "skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaf who disguises itself amongst the foliage of the Moonglade Marsh.",
+    "skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip": "Highlights Coralot who is easily frightened by impatient hunters.",
+    "skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip": "Highlights Shellwise whose knockback immunity attribute is desired by all.",
     "skyblocker.customization.armor.modelOverride": "Armour Model Override",
     "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centred",
     "skyblocker.config.uiAndVisuals.waypoints.lineColor": "Line Colour",
@@ -109,5 +109,14 @@
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors": "Item Rarity Background Legacy Colours",
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Use the rarity colours from before the resource pack update.",
     "skyblocker.config.uiAndVisuals.bars.@Tag[0]": "Health, Mana, Defence, Vitality, Speed & XP Bars",
-    "skyblocker.config.uiAndVisuals.bars.enableBars.@Tooltip": "Enables the fancy Health, Mana, Defence, Vitality, Speed, and XP Bars."
+    "skyblocker.config.uiAndVisuals.bars.enableBars.@Tooltip": "Enables the fancy Health, Mana, Defence, Vitality, Speed, and XP Bars.",
+    "skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor": "Rockmite Mound Highlight Colour",
+    "skyblocker.config.hunting.floorDrops.floorDropHighlightColor": "Floor Drop Highlight Colour",
+    "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor Highlight Colour",
+    "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Colour",
+    "skyblocker.config.hunting.huntingMobs.coralotHighlightColor": "Coralot Highlight Colour",
+    "skyblocker.config.hunting.huntingMobs.hideonleafHighlightColor": "Hideonleaf Highlight Colour",
+    "skyblocker.config.hunting.huntingMobs.shellwiseHighlightColor": "Shellwise Highlight Colour",
+    "skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor": "Blue Jay Highlight Colour",
+    "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Colour"
 }
