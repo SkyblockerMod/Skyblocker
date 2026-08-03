@@ -32,7 +32,7 @@ public class JoinInstanceAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> dungeonCommand;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> kuudraCommand;
 
-	private static Map<String, String> instanceMap;
+	private static Map<String, String> instanceMap = Map.of();
 
 	@Init
 	public static void init() {

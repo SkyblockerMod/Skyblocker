@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class AccessoriesHelper {
 	private static final ObjectOpenHashSet<String> EMPTY = new ObjectOpenHashSet<>(0);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
+	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)/\\d+\\))?");
 	//UUID -> Profile Id & Data
 	private static final ProfiledData<ProfileAccessoryData> COLLECTED_ACCESSORIES = new ProfiledData<>(FILE, ProfileAccessoryData.CODEC, true);
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
@@ -87,19 +87,19 @@ public class AccessoriesHelper {
 	}
 
 	public static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
-		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, null);
+		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, "");
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);
 
 		//Ignore rift-only accessories
-		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, null);
+		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, "");
 
 		Set<Accessory> collectedAccessories = getCollectedAccessories();
 
 		// If the accessory doesn't belong to a family
 		if (accessory.family().isEmpty()) {
 			//If the player has this accessory or player doesn't have this accessory
-			return collectedAccessories.contains(accessory) ? Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null) : Pair.of(AccessoryReport.MISSING, "");
+			return collectedAccessories.contains(accessory) ? Pair.of(AccessoryReport.HAS_HIGHEST_TIER, "") : Pair.of(AccessoryReport.MISSING, "");
 		}
 
 		FamilyReport report = calculateFamilyReport(accessory, collectedAccessories);
@@ -112,7 +112,7 @@ public class AccessoriesHelper {
 
 		//If this accessory is the highest tier, and the player has the highest tier accessory in this family
 		//This accounts for multiple accessories with the highest tier
-		if (accessory.tier() == highestTierInFamily && highestTierCollectedInFamily == highestTierInFamily) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
+		if (accessory.tier() == highestTierInFamily && highestTierCollectedInFamily == highestTierInFamily) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, "");
 
 		//If this accessory is a higher tier than all the other collected accessories in the same family
 		if (accessory.tier() > highestTierCollectedInFamily) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d→%d/%d)", highestTierCollectedInFamily, accessory.tier(), highestTierInFamily));
