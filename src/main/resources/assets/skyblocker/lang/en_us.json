@@ -1750,6 +1750,7 @@
   "skyblocker.fancyAuctionHouse.auctionEnded": "Auction Ended!",
   "skyblocker.fancyAuctionHouse.bid": "Bid!",
   "skyblocker.fancyAuctionHouse.buy": "Buy!",
+  "skyblocker.fancyAuctionHouse.canBuyIn": "Can buy in: %s",
   "skyblocker.fancyAuctionHouse.cancelAuction": "Cancel Auction",
   "skyblocker.fancyAuctionHouse.cantAfford": "Can't Afford!",
   "skyblocker.fancyAuctionHouse.changeProfile": "Change Profile",
