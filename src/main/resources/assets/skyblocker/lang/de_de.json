@@ -264,7 +264,6 @@
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Overlay für Wurf-Fähigkeit anzeigen",
     "skyblocker.config.foraging.sweepOverlay.sweepOverlayColor": "Farbe des Sweep-Overlays",
     "skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage": "Sweep fehlt: Füge den Sweep-Wert deinem Profil hinzu",
-    "skyblocker.config.foraging.hunting": "Hunting",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "Stil des Item-Hintergrunds",
     "skyblocker.containerValue.minionValue.@Tooltip": "Berechne den Wert der Resourcen, die dieser Minion produziert hat.",
     "skyblocker.config.general.itemTooltip": "Item-Tooltip",

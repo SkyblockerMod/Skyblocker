@@ -940,7 +940,6 @@
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay": "Показывать подсветку Sweep для бросков",
     "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay.@Tooltip": "Подсвечивать доски которые будут срублены от Sweep'а.",
     "skyblocker.config.foraging.sweepOverlay.enableSweepOverlay": "Включить подсветку Sweep",
-    "skyblocker.config.foraging.hunting": "Hunting",
     "skyblocker.config.helpers.enableDateCalculator": "Включить калькулятор даты",
     "skyblocker.config.dungeons.bloodCampHelper": "Blood Camp помощник",
     "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Предсказывает движение мобов в Blood Room.",
