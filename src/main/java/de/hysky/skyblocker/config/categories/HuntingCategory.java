@@ -52,7 +52,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Hideonleaf"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.hideonleafHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.hideonleafGlowColor,
 										() -> config.hunting.huntingMobs.hideonleafGlowColor,
 										newValue -> {
@@ -69,7 +69,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Shellwise"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.shellwiseHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.shellwiseGlowColor,
 										() -> config.hunting.huntingMobs.shellwiseGlowColor,
 										newValue -> {
@@ -86,7 +86,7 @@ public class HuntingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.colorPicker.Coralot"))
+								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.coralotHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.coralotGlowColor,
 										() -> config.hunting.huntingMobs.coralotGlowColor,
 										newValue -> {
