@@ -80,7 +80,7 @@ public class DesertTemplePuzzle {
 		// The scoreboard shows "Torrhus Springs" outside and "Desert Temple" inside
 		boolean inArea = Utils.getArea() == Area.TorrhusCanyon.TORRHUS_SPRINGS || Utils.getArea() == Area.TorrhusCanyon.DESERT_TEMPLE;
 
-		return SkyblockerConfigManager.get().foraging.torrhusCanyon.solveDesertTemplePuzzle && Utils.isInTorrhusCanyon() && inArea && MINECRAFT.level != null;
+		return SkyblockerConfigManager.get().foraging.torrhusCanyon.solveDesertTemplePuzzles && Utils.isInTorrhusCanyon() && inArea && MINECRAFT.level != null;
 	}
 
 	private static void calculateSolution() {
