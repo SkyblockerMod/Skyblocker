@@ -5,6 +5,8 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HuntingConfig;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.entity.Display.ItemDisplay;
 import net.minecraft.world.entity.monster.Shulker;
@@ -23,8 +25,15 @@ public class SafariGlowAdder extends MobGlowAdder {
 		HuntingConfig huntingConfig = SkyblockerConfigManager.get().hunting;
 
 		return switch (entity) {
+			// Cavern Biome
+			case ItemDisplay display when huntingConfig.cavernBiome.highlightRockmiteMounds && SafariUtils.isInCavernBiome() && ItemUtils.getHeadTexture(display.getItemStack()).equals(HeadTextures.ROCKMITE_MOUND) -> huntingConfig.cavernBiome.rockmiteMoundHighlightColor.getRGB();
+
+			// Haunted Biome
 			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
+
+			// Forest Biome
 			case Shulker shulker when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && shulker.getColor() == DyeColor.GREEN -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
+
 			default -> NO_GLOW;
 		};
 	}

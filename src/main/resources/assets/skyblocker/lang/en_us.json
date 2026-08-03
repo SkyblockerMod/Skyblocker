@@ -856,6 +856,9 @@
   "skyblocker.config.hunting": "Hunting",
 
   "skyblocker.config.hunting.cavernBiome": "Cavern Biome",
+  "skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds": "Highlight Rockmite Mounds",
+  "skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip": "Highlights Rockmite Mounds hiding around the Cavern Biome.",
+  "skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor": "Rockmite Mound Highlight Color",
 
   "skyblocker.config.hunting.floorDrops": "Floor Drops",
   "skyblocker.config.hunting.floorDrops.floorDropHighlightColor": "Floor Drop Highlight Color",

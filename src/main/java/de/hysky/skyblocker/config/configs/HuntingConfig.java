@@ -72,7 +72,9 @@ public class HuntingConfig {
 	}
 
 	public static class CavernBiome {
+		public boolean highlightRockmiteMounds = true;
 
+		public Color rockmiteMoundHighlightColor = new Color(DyeColor.LIGHT_BLUE.getTextColor(), false);
 	}
 
 	public static class IcyBiome {

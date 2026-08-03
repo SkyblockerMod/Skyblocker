@@ -192,6 +192,21 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.cavernBiome"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds"))
+								.description(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip"))
+								.binding(defaults.hunting.cavernBiome.highlightRockmiteMounds,
+										() -> config.hunting.cavernBiome.highlightRockmiteMounds,
+										newValue -> config.hunting.cavernBiome.highlightRockmiteMounds = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor"))
+								.binding(defaults.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										() -> config.hunting.cavernBiome.rockmiteMoundHighlightColor,
+										newValue -> config.hunting.cavernBiome.rockmiteMoundHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Icy Biome
