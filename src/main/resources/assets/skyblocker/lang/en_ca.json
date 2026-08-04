@@ -112,5 +112,8 @@
     "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor Highlight Colour",
     "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Colour",
     "skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor": "Blue Jay Highlight Colour",
-    "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Colour"
+    "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Colour",
+    "skyblocker.config.hunting.moongladeMobs.coralotHighlightColor": "Coralot Highlight Colour",
+    "skyblocker.config.hunting.moongladeMobs.hideonleafHighlightColor": "Hideonleaf Highlight Colour",
+    "skyblocker.config.hunting.moongladeMobs.shellwiseHighlightColor": "Shellwise Highlight Colour"
 }
