@@ -92,7 +92,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver;
+		return SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTunerSolver;
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	 */
 	@Override
 	public boolean onClickSlot(int slotId, ItemStack stack, int screenId, int button) {
-		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver) return false;
+		if (!SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTunerSolver) return false;
 		if (!isInMenu) return false;
 
 		if (button != InputConstants.MOUSE_BUTTON_LEFT && button != InputConstants.MOUSE_BUTTON_RIGHT && button != InputConstants.MOUSE_BUTTON_MIDDLE) return false;
@@ -325,7 +325,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	private void onSound(ClientboundSoundPacket packet) {
-		if (!SkyblockerConfigManager.get().foraging.galatea.enableTunerSolver
+		if (!SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTunerSolver
 				|| pitchSolved || !Utils.isInGalatea() || !isInMenu
 				|| !packet.getSound().value().location().equals(SoundEvents.NOTE_BLOCK_BASS.value().location())) {
 			return;

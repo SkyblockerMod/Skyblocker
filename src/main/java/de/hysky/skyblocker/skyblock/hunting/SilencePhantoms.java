@@ -15,7 +15,7 @@ public class SilencePhantoms {
 
 	private static boolean shouldProcess() {
 		if (Utils.isInGalatea()) {
-			return SkyblockerConfigManager.get().hunting.huntingMobs.silencePhantoms;
+			return SkyblockerConfigManager.get().hunting.moongladeMobs.silencePhantoms;
 		} else if (Utils.isInSafari()) {
 			return SkyblockerConfigManager.get().hunting.safari.silencePhantoms;
 		}

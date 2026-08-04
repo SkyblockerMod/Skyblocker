@@ -96,10 +96,10 @@ public final class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	}
 
 	private boolean isEnoughPickles(BlockState state) {
-		return state.hasProperty(SeaPickleBlock.PICKLES) && state.getValue(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.galatea.seaLumiesMinimumCount;
+		return state.hasProperty(SeaPickleBlock.PICKLES) && state.getValue(SeaPickleBlock.PICKLES) >= SkyblockerConfigManager.get().foraging.moongladeMarsh.seaLumiesMinimumCount;
 	}
 
 	private boolean isEnabled() {
-		return SkyblockerConfigManager.get().foraging.galatea.enableSeaLumiesHighlighter;
+		return SkyblockerConfigManager.get().foraging.moongladeMarsh.enableSeaLumiesHighlighter;
 	}
 }

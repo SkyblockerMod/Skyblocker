@@ -33,26 +33,26 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle.@Tooltip"))
-								.binding(defaults.foraging.galatea.solveForestTemplePuzzle,
-										() -> config.foraging.galatea.solveForestTemplePuzzle,
-										newValue -> config.foraging.galatea.solveForestTemplePuzzle = newValue)
+								.binding(defaults.foraging.moongladeMarsh.solveForestTemplePuzzle,
+										() -> config.foraging.moongladeMarsh.solveForestTemplePuzzle,
+										newValue -> config.foraging.moongladeMarsh.solveForestTemplePuzzle = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableLushlilacHighlighter,
-										() -> config.foraging.galatea.enableLushlilacHighlighter,
-										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
+								.binding(defaults.foraging.moongladeMarsh.enableLushlilacHighlighter,
+										() -> config.foraging.moongladeMarsh.enableLushlilacHighlighter,
+										newValue -> config.foraging.moongladeMarsh.enableLushlilacHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
-										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+								.binding(defaults.foraging.moongladeMarsh.enableSeaLumiesHighlighter,
+										() -> config.foraging.moongladeMarsh.enableSeaLumiesHighlighter,
 										newValue -> {
-											config.foraging.galatea.enableSeaLumiesHighlighter = newValue;
+											config.foraging.moongladeMarsh.enableSeaLumiesHighlighter = newValue;
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(ConfigUtils.createBooleanController())
@@ -60,10 +60,10 @@ public class ForagingCategory {
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount.@Tooltip"))
-								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
-										() -> config.foraging.galatea.seaLumiesMinimumCount,
+								.binding(defaults.foraging.moongladeMarsh.seaLumiesMinimumCount,
+										() -> config.foraging.moongladeMarsh.seaLumiesMinimumCount,
 										newValue -> {
-											config.foraging.galatea.seaLumiesMinimumCount = newValue;
+											config.foraging.moongladeMarsh.seaLumiesMinimumCount = newValue;
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
@@ -71,9 +71,9 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableTreeBreakProgress,
-										() -> config.foraging.galatea.enableTreeBreakProgress,
-										newValue -> config.foraging.galatea.enableTreeBreakProgress = newValue)
+								.binding(defaults.foraging.moongladeMarsh.enableTreeBreakProgress,
+										() -> config.foraging.moongladeMarsh.enableTreeBreakProgress,
+										newValue -> config.foraging.moongladeMarsh.enableTreeBreakProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
@@ -84,17 +84,17 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTunerSolver"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTunerSolver.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableTunerSolver,
-										() -> config.foraging.galatea.enableTunerSolver,
-										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
+								.binding(defaults.foraging.moongladeMarsh.enableTunerSolver,
+										() -> config.foraging.moongladeMarsh.enableTunerSolver,
+										newValue -> config.foraging.moongladeMarsh.enableTunerSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget"))
 								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableSweepDetailsWidget,
-										() -> config.foraging.galatea.enableSweepDetailsWidget,
-										newValue -> config.foraging.galatea.enableSweepDetailsWidget = newValue)
+								.binding(defaults.foraging.moongladeMarsh.enableSweepDetailsWidget,
+										() -> config.foraging.moongladeMarsh.enableSweepDetailsWidget,
+										newValue -> config.foraging.moongladeMarsh.enableSweepDetailsWidget = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

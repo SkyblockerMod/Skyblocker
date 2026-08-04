@@ -21,6 +21,6 @@ public final class LushlilacHighlighter extends AbstractBlockHighlighter {
 
 	@Override
 	protected boolean shouldProcess() {
-		return Utils.isInGalatea() && SkyblockerConfigManager.get().foraging.galatea.enableLushlilacHighlighter;
+		return Utils.isInGalatea() && SkyblockerConfigManager.get().foraging.moongladeMarsh.enableLushlilacHighlighter;
 	}
 }

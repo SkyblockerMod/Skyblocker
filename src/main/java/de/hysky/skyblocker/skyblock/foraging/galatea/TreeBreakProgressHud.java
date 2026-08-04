@@ -66,12 +66,12 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location))
 			return;
-		SkyblockerConfigManager.update(config -> config.foraging.galatea.enableTreeBreakProgress = enabled);
+		SkyblockerConfigManager.update(config -> config.foraging.moongladeMarsh.enableTreeBreakProgress = enabled);
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
+		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTreeBreakProgress;
 	}
 
 	@Override
