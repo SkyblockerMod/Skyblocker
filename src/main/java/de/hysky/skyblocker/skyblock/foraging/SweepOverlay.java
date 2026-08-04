@@ -25,7 +25,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -173,8 +172,8 @@ public class SweepOverlay {
 		if (Utils.isInTorrhusCanyon()) {
 			// These tags include non-stripped logs but it doesn't matter since at this point
 			// we have already checked for whether they are stripped in #isLog
-			TagKey<Block> birchLogs = BlockItemTags.BIRCH_LOGS.block();
-			TagKey<Block> mangroveLogs = BlockItemTags.MANGROVE_LOGS.block();
+			TagKey<Block> birchLogs = BlockTags.BIRCH_LOGS;
+			TagKey<Block> mangroveLogs = BlockTags.MANGROVE_LOGS;
 
 			return (source.is(birchLogs) && destination.is(birchLogs)) || (source.is(mangroveLogs) && destination.is(mangroveLogs));
 		}

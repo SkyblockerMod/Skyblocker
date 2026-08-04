@@ -213,7 +213,7 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 			if (buyState == BuyState.GRACE_PERIOD) {
 				String line = ItemUtils.getLoreLineIf(stack, s -> s.trim().startsWith("Can buy in: "));
 				if (line != null) {
-					infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", Component.literal(line.split(":")[1].trim()).withColor(TextColor.YELLOW)));
+					infoTextWidget.setMessage(Component.translatable("skyblocker.fancyAuctionHouse.canBuyIn", Component.literal(line.split(":")[1].trim()).withStyle(ChatFormatting.YELLOW)));
 				} else {
 					// Can buy it now.
 					// hypixel for some reason does NOT change the button back to the item it should be because I guess it would be too nice >:(
