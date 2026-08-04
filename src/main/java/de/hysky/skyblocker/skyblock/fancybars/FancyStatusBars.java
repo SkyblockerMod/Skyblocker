@@ -388,17 +388,24 @@ public class FancyStatusBars {
 			statusBar.extractText(graphics);
 		}
 
+		StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+		StatusBar vitalityBar = statusBars.get(StatusBarType.VITALITY);
 		if (Utils.isInTheRift()) {
 			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
 			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
-			statusBars.get(StatusBarType.DEFENSE).visible = false;
+			defenseBar.visible = false;
+			vitalityBar.visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
 			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+
 			int defense = StatusBarTracker.getDefense();
-			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
 			defenseBar.visible = true;
 			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+
+			StatusBarTracker.EstimatedResource vitality = StatusBarTracker.getVitality();
+			vitalityBar.visible = true;
+			vitalityBar.updateWithResource(vitality.resource());
 		}
 
 		StatusBarTracker.EstimatedResource intelligence = StatusBarTracker.getMana();
@@ -417,9 +424,6 @@ public class FancyStatusBars {
 			airBar.visible = player.isUnderWater();
 			updatePositionsNextFrame = true;
 		}
-		StatusBar vitality = statusBars.get(StatusBarType.VITALITY);
-		StatusBarTracker.EstimatedResource vitalityResource = StatusBarTracker.getVitality();
-		vitality.updateWithResource(vitalityResource.resource());
 		if (updatePositionsNextFrame) {
 			updatePositions(false);
 			updatePositionsNextFrame = false;
