@@ -6,7 +6,7 @@ import net.minecraft.world.item.DyeColor;
 public class HuntingConfig {
 	public HuntingBox huntingBox = new HuntingBox();
 
-	public HuntingMobs huntingMobs = new HuntingMobs();
+	public MoongladeMobs huntingMobs = new MoongladeMobs();
 
 	public TorrhusMobs torrhusMobs = new TorrhusMobs();
 
@@ -28,8 +28,7 @@ public class HuntingConfig {
 		public boolean enabled = true;
 	}
 
-	// TODO rename to MoongladeMobs
-	public static class HuntingMobs {
+	public static class MoongladeMobs {
 		public boolean silencePhantoms = true;
 
 		public boolean highlightHideonleaf = true;
