@@ -321,7 +321,6 @@
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[3]": "\nBoth: dwarven鉱山とglaciteトンネルにウェイポイントを表示する。",
     "skyblocker.config.mining.commissionWaypoints.mode.@Tooltip[4]": "\n(任務が更新されたときに有効になる)",
     "skyblocker.config.mining.commissionWaypoints.mode.OFF": "オフ",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Forest Node Helperを有効にする",
     "skyblocker.containerValue.minionValue.@Tooltip": "このミニオンが生成したリソースの価値を計算する。",
     "skyblocker.config.general.itemInfoDisplay.itemBackgroundStyle": "アイテムの背景のスタイル",
     "skyblocker.config.general.itemList.filter.all": "すべて",

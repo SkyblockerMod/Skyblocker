@@ -470,7 +470,6 @@
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Renderiza o progresso de quebra de árvore na HUD",
     "skyblocker.config.foraging.sweepOverlay": "Sobreposição de Sweep",
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Mostrará madeiras quando a habilidade arremessável do machado ser usada.",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Habilitar Assistante de Nódulo da Floresta",
     "skyblocker.config.foraging.galatea": "Galateia",
     "skyblocker.config.dungeons.bloodCampHelper.@Tooltip": "Prevê a movimentação dos monstros na Sala de Sangue para ajudar o acampamento.",
     "skyblocker.config.dungeons.secretWaypoints.enablePearlWaypoints.@Tooltip": "Com esses marcações, você atira uma pérola para perto do bloco e, ao mesmo tempo, usa a AOTV para cima.",

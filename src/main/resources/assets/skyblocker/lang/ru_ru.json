@@ -894,7 +894,6 @@
     "skyblocker.config.foraging.galatea": "Galatea",
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Включить подсветку Sea Lumies",
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Подсвечивает Lushlilac пурпурным цветом.",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Включить помощник нодов Forest",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress": "Включить HUD рубки деревьев",
     "skyblocker.config.foraging.galatea.enableTreeBreakProgress.@Tooltip": "Отображать прогресс рубки в HUD",
     "skyblocker.config.foraging.sweepOverlay.enableThrownAbilityOverlay.@Tooltip": "Подсвечивать доски при броске топора.",

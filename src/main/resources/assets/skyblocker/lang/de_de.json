@@ -227,7 +227,6 @@
     "skyblocker.fairySouls.markAllFound": "Alle Fairy Souls auf dieser Insel als gefunden markiert",
     "skyblocker.fairySouls.markAllMissing": "Alle Fairy Souls auf dieser Insel als nicht gefunden markiert",
     "skyblocker.shortcuts.commandSuggestionTooltip": "Vorschläge für Befehle funktionieren aufgrund von Beschränkungen in Minecraft erst nach einem Neustart des Spiels.",
-    "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Forest-Node-Helfer aktivieren",
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Hebt Lushlilacs in Magenta hervor, um das Auffinden zu erleichtern.",
     "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Lushlilac-Hervorhebung aktivieren",
     "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Sea-Lumies-Hervorhebung aktivieren",
