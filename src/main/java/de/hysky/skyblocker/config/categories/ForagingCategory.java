@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import java.awt.Color;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
@@ -106,6 +107,7 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles"))
 								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.foraging.torrhusCanyon.solveDesertTemplePuzzles,
 										() -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles,
 										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles = newValue)
@@ -114,6 +116,7 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter"))
 								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
 										() -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
 										newValue -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter = newValue)
@@ -122,6 +125,7 @@ public class ForagingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter"))
 								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
 										() -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
 										newValue -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter = newValue)
