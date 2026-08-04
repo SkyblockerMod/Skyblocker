@@ -1,7 +1,7 @@
 # Release 6.9.0
 
 ## Highlight
-* Add support for Torrhus Canyon & Safari locations
+* Add support for Torrhus Canyon & Critter Safari locations
   * This means you can now create waypoints and customize HUDs on these islands.
 * Add Sweep Overlay support to the Torrhus Canyon & Helix Trees
 * Add Floor Drop Highlight
@@ -17,7 +17,7 @@
 * Add Hideonfloor Highlight
 * Add Duplico Highlight
 * Add Hide Cold Overlay for the Icy Biome
-* Add Dungeon Score support for Murkbat Shard (+1 Score from bat kill) & Bat kill message
+* Add Dungeon Score support for Murkbat Shard (+1 score from bat kill) & bat kill message
 * Add Fairy Soul Finder support for Torrhus Canyon & Critter Safari
 * Add Egg Finder support to the Torrhus Canyon
 * Add Helix Tree support to Tree Break Progress HUD & Sweep Details HUD
