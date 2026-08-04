@@ -27,8 +27,8 @@ public abstract class GuiGraphicsExtractorMixin {
 		return Utils.isOnSkyblock() && ItemCooldowns.isOnCooldown(stack) ? ItemCooldowns.getItemCooldownEntry(stack).getRemainingCooldownPercent() : cooldownProgress;
 	}
 
-	@Inject(method = "setTooltipForNextFrameInternal", at = @At("HEAD"))
-	private void initializeGrids(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, boolean replaceExisting, CallbackInfo ci) {
+	@Inject(method = "tooltip", at = @At("HEAD"))
+	private void initializeGrids(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, CallbackInfo ci) {
 		// null initially to not create instances needlessly, might be premature optimization but oh well
 		GridComponentManager manager = null;
 		for (ClientTooltipComponent line : lines) {
