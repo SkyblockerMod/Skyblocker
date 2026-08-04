@@ -539,8 +539,6 @@
   "skyblocker.config.foraging": "Foraging",
 
   "skyblocker.config.foraging.galatea": "Galatea",
-  "skyblocker.config.foraging.galatea.enableForestNodeHelper": "Enable Forest Node Helper",
-  "skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip": "Highlights Forest Nodes in orange.",
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter": "Enable Lushlilac Highlighter",
   "skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
   "skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",

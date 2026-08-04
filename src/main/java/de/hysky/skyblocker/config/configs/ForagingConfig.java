@@ -12,7 +12,8 @@ public class ForagingConfig {
 
 	// TODO rename to MoongladeMarsh
 	public static class Galatea {
-		public boolean enableForestNodeHelper = true;
+		@Deprecated
+		public transient boolean enableForestNodeHelper = true;
 
 		public boolean solveForestTemplePuzzle = true;
 

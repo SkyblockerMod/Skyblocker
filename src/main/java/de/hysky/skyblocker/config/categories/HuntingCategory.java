@@ -230,9 +230,9 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops"))
 								.description(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableForestNodeHelper,
-										() -> config.foraging.galatea.enableForestNodeHelper,
-										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
+								.binding(defaults.hunting.floorDrops.highlightFloorDrops,
+										() -> config.hunting.floorDrops.highlightFloorDrops,
+										newValue -> config.hunting.floorDrops.highlightFloorDrops = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
