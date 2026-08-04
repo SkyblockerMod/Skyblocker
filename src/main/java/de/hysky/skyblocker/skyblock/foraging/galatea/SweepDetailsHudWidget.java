@@ -106,13 +106,13 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	@Override
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location)) return;
-		SkyblockerConfigManager.update(config -> config.foraging.galatea.enableSweepDetailsWidget = enabled);
+		SkyblockerConfigManager.update(config -> config.foraging.moongladeMarsh.enableSweepDetailsWidget = enabled);
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
 		if (!availableLocations().contains(location)) return false;
-		return SkyblockerConfigManager.get().foraging.galatea.enableSweepDetailsWidget;
+		return SkyblockerConfigManager.get().foraging.moongladeMarsh.enableSweepDetailsWidget;
 	}
 
 	@Override

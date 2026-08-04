@@ -6,7 +6,7 @@ import net.minecraft.world.item.DyeColor;
 public class HuntingConfig {
 	public HuntingBox huntingBox = new HuntingBox();
 
-	public MoongladeMobs huntingMobs = new MoongladeMobs();
+	public MoongladeMobs moongladeMobs = new MoongladeMobs();
 
 	public TorrhusMobs torrhusMobs = new TorrhusMobs();
 

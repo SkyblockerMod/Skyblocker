@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class ForagingConfig {
 
-	public MoongladeMarsh galatea = new MoongladeMarsh();
+	public MoongladeMarsh moongladeMarsh = new MoongladeMarsh();
 
 	public TorrhusCanyon torrhusCanyon = new TorrhusCanyon();
 
