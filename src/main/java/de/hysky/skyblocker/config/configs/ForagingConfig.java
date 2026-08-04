@@ -4,14 +4,13 @@ import java.awt.Color;
 
 public class ForagingConfig {
 
-	public Galatea galatea = new Galatea();
+	public MoongladeMarsh galatea = new MoongladeMarsh();
 
 	public TorrhusCanyon torrhusCanyon = new TorrhusCanyon();
 
 	public SweepOverlay sweepOverlay = new SweepOverlay();
 
-	// TODO rename to MoongladeMarsh
-	public static class Galatea {
+	public static class MoongladeMarsh {
 		@Deprecated
 		public transient boolean enableForestNodeHelper = true;
 

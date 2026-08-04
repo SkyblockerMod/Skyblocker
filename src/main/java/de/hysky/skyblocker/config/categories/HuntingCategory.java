@@ -33,26 +33,26 @@ public class HuntingCategory {
 
 				// Moonglade Mob Features
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.hunting.huntingMobs"))
+						.name(Component.translatable("skyblocker.config.hunting.moongladeMobs"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms"))
-								.description(Component.translatable("skyblocker.config.hunting.huntingMobs.silencePhantoms.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.silencePhantoms"))
+								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.silencePhantoms.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.silencePhantoms,
 										() -> config.hunting.huntingMobs.silencePhantoms,
 										newValue -> config.hunting.huntingMobs.silencePhantoms = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf"))
-								.description(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightHideonleaf.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightHideonleaf"))
+								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightHideonleaf.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.highlightHideonleaf,
 										() -> config.hunting.huntingMobs.highlightHideonleaf,
 										newValue -> config.hunting.huntingMobs.highlightHideonleaf = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.hideonleafHighlightColor"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.hideonleafHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.hideonleafGlowColor,
 										() -> config.hunting.huntingMobs.hideonleafGlowColor,
 										newValue -> {
@@ -61,15 +61,15 @@ public class HuntingCategory {
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise"))
-								.description(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightShellwise.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightShellwise"))
+								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightShellwise.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.highlightShellwise,
 										() -> config.hunting.huntingMobs.highlightShellwise,
 										newValue -> config.hunting.huntingMobs.highlightShellwise = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.shellwiseHighlightColor"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.shellwiseHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.shellwiseGlowColor,
 										() -> config.hunting.huntingMobs.shellwiseGlowColor,
 										newValue -> {
@@ -78,15 +78,15 @@ public class HuntingCategory {
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot"))
-								.description(Component.translatable("skyblocker.config.hunting.huntingMobs.highlightCoralot.@Tooltip"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightCoralot"))
+								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightCoralot.@Tooltip"))
 								.binding(defaults.hunting.huntingMobs.highlightCoralot,
 										() -> config.hunting.huntingMobs.highlightCoralot,
 										newValue -> config.hunting.huntingMobs.highlightCoralot = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.huntingMobs.coralotHighlightColor"))
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.coralotHighlightColor"))
 								.binding(defaults.hunting.huntingMobs.coralotGlowColor,
 										() -> config.hunting.huntingMobs.coralotGlowColor,
 										newValue -> {
