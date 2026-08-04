@@ -132,7 +132,7 @@ public class FloorDrops {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().foraging.galatea.enableForestNodeHelper && (Utils.isInGalatea() || Utils.isInTorrhusCanyon() || Utils.isInSafari());
+		return SkyblockerConfigManager.get().hunting.floorDrops.highlightFloorDrops && (Utils.isInGalatea() || Utils.isInTorrhusCanyon() || Utils.isInSafari());
 	}
 
 	private static void reset() {

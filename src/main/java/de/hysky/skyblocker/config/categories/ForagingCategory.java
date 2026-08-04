@@ -31,14 +31,6 @@ public class ForagingCategory {
 						.name(Component.translatable("skyblocker.config.foraging.galatea"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableForestNodeHelper,
-										() -> config.foraging.galatea.enableForestNodeHelper,
-										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle"))
 								.description(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip"))
 								.binding(defaults.foraging.galatea.solveForestTemplePuzzle,
