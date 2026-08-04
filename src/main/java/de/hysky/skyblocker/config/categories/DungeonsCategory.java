@@ -863,6 +863,7 @@ public class DungeonsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage"))
 								.description(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.dungeons.batMessage.sendBatMessage,
 										() -> config.dungeons.batMessage.sendBatMessage,
 										newValue -> config.dungeons.batMessage.sendBatMessage = newValue)

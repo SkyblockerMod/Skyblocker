@@ -55,7 +55,7 @@
 - **Sellable Dungeon Item Highlighter**
 - **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
-- **Mimic & Prince Messages**
+- **Mimic, Prince, and Bat Messages**
 - **Prevent teammates glow during Livid**
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
@@ -70,21 +70,31 @@
     - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
-- **Forest Node Highlighter**
+- **Floor Drop Highlighter**
 - **Lushlilac and Sea Lumies Highlighters**
+- **Ruby Veilshroom and HoneyHive Highlighters**
 - **Forest Temple puzzle solver**
+- **Desert Temple puzzles solver**
 - **Hunting Box Helper**
 - **Hunting Box Shard Prices**
-- **Various Mob Features**
+- **Moonglade Mob Features**
     - Phantom Silencer
     - Hideonleaf Highlighter
     - Carolat Highlighter
     - Shellwise Highlighter
+- **Torrhus Mob Features**
+    - Hideonsun Highlighter
+    - Blue Jay Highlighter
+- ** Safari Mob Features**
+     - Phantom Silencer
+     - Rockmite Mound Highlighter
+     - Hideonfloor Highlighter
+     - Duplico Highlighter
+     - Hide Cold Overlay
 - **Lasso HUD**
 
 ### Foraging Features:
 - **Sweep Overlay**
-    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
 - **Tree Break Progress HUD**
 - **Sweep Details HUD**
@@ -373,6 +383,7 @@
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
+    - *Beekeeper*
     - *Dungeonbreaker*
     - *Spirit Sceptre*
 

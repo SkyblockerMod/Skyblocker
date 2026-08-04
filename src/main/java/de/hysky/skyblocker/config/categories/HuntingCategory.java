@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.categories;
 import java.awt.Color;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.hunting.LassoHud;
@@ -103,6 +104,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun"))
 								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightHideonsun.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.torrhusMobs.highlightHideonsun,
 										() -> config.hunting.torrhusMobs.highlightHideonsun,
 										newValue -> config.hunting.torrhusMobs.highlightHideonsun = newValue)
@@ -110,6 +112,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.torrhusMobs.hideonsunHighlightColor,
 										() -> config.hunting.torrhusMobs.hideonsunHighlightColor,
 										newValue -> config.hunting.torrhusMobs.hideonsunHighlightColor = newValue)
@@ -118,6 +121,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay"))
 								.description(Component.translatable("skyblocker.config.hunting.torrhusMobs.highlightBlueJay.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.torrhusMobs.highlightBlueJay,
 										() -> config.hunting.torrhusMobs.highlightBlueJay,
 										newValue -> config.hunting.torrhusMobs.highlightBlueJay = newValue)
@@ -125,6 +129,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.torrhusMobs.blueJayHighlightColor,
 										() -> config.hunting.torrhusMobs.blueJayHighlightColor,
 										newValue -> config.hunting.torrhusMobs.blueJayHighlightColor = newValue)
@@ -139,6 +144,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms"))
 								.description(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.safari.silencePhantoms,
 										() -> config.hunting.safari.silencePhantoms,
 										newValue -> config.hunting.safari.silencePhantoms = newValue)
@@ -153,6 +159,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds"))
 								.description(Component.translatable("skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.cavernBiome.highlightRockmiteMounds,
 										() -> config.hunting.cavernBiome.highlightRockmiteMounds,
 										newValue -> config.hunting.cavernBiome.highlightRockmiteMounds = newValue)
@@ -160,6 +167,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.cavernBiome.rockmiteMoundHighlightColor,
 										() -> config.hunting.cavernBiome.rockmiteMoundHighlightColor,
 										newValue -> config.hunting.cavernBiome.rockmiteMoundHighlightColor = newValue)
@@ -174,6 +182,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor"))
 								.description(Component.translatable("skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.forestBiome.highlightHideonfloor,
 										() -> config.hunting.forestBiome.highlightHideonfloor,
 										newValue -> config.hunting.forestBiome.highlightHideonfloor = newValue)
@@ -181,6 +190,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.forestBiome.hideonfloorHighlightColor,
 										() -> config.hunting.forestBiome.hideonfloorHighlightColor,
 										newValue -> config.hunting.forestBiome.hideonfloorHighlightColor = newValue)
@@ -195,6 +205,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico"))
 								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.hauntedBiome.highlightDuplico,
 										() -> config.hunting.hauntedBiome.highlightDuplico,
 										newValue -> config.hunting.hauntedBiome.highlightDuplico = newValue)
@@ -202,6 +213,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.hauntedBiome.duplicoHighlightColor,
 										() -> config.hunting.hauntedBiome.duplicoHighlightColor,
 										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
@@ -216,6 +228,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay"))
 								.description(Component.translatable("skyblocker.config.hunting.icyBiome.hideColdOverlay.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.icyBiome.hideColdOverlay,
 										() -> config.hunting.icyBiome.hideColdOverlay,
 										newValue -> config.hunting.icyBiome.hideColdOverlay = newValue)
@@ -230,6 +243,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops"))
 								.description(Component.translatable("skyblocker.config.hunting.floorDrops.highlightFloorDrops.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.floorDrops.highlightFloorDrops,
 										() -> config.hunting.floorDrops.highlightFloorDrops,
 										newValue -> config.hunting.floorDrops.highlightFloorDrops = newValue)
@@ -237,6 +251,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.floorDrops.floorDropHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
 								.binding(defaults.hunting.floorDrops.floorDropHighlightColor,
 										() -> config.hunting.floorDrops.floorDropHighlightColor,
 										newValue -> config.hunting.floorDrops.floorDropHighlightColor = newValue)
