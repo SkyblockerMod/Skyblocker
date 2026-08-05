@@ -4,6 +4,8 @@ import java.awt.Color;
 
 public class ForagingConfig {
 
+	public boolean enableTreeFelledNotification = false;
+
 	public MoongladeMarsh moongladeMarsh = new MoongladeMarsh();
 
 	public TorrhusCanyon torrhusCanyon = new TorrhusCanyon();

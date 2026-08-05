@@ -27,6 +27,16 @@ public class ForagingCategory {
 				.id(SkyblockerMod.id("config/foraging"))
 				.name(Component.translatable("skyblocker.config.foraging"))
 
+				// Ungrouped Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification"))
+						.description(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip"))
+						.binding(defaults.foraging.enableTreeFelledNotification,
+								() -> config.foraging.enableTreeFelledNotification,
+								newValue -> config.foraging.enableTreeFelledNotification = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
 				// Moonglade Marsh
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh"))
