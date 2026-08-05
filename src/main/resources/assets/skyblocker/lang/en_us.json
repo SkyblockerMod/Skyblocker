@@ -538,6 +538,9 @@
 
   "skyblocker.config.foraging": "Foraging",
 
+  "skyblocker.config.foraging.enableTreeFelledNotification": "Enable Tree Felled Notification",
+  "skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip": "Shows a title message for 3 seconds when the Petalfall enchantment, Woodpecker attribute, or Timber HOTF perk activate and fell the tree you're chopping.",
+
   "skyblocker.config.foraging.moongladeMarsh": "Moonglade Marsh",
   "skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter": "Enable Lushlilac Highlighter",
   "skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
@@ -1822,6 +1825,8 @@
   "skyblocker.farming.visitorHelper.command.unableToRemoveVisitor": "Unable to remove visitor!",
 
   "skyblocker.fishing.reelNow": "Reel in now!",
+
+  "skyblocker.foraging.treeFelled": "Tree Felled!",
 
   "skyblocker.galatea.hud.sweepDetails": "Sweep Details",
   "skyblocker.galatea.hud.sweepDetails.correctStyle": "Style: %s",
