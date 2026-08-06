@@ -872,7 +872,10 @@
   "skyblocker.config.hunting.forestBiome.highlightHideonfloor.@Tooltip": "Highlights Hideonfloor who blends in with the grass of the forest.",
 
   "skyblocker.config.hunting.hauntedBiome": "Haunted Biome",
+  "skyblocker.config.hunting.hauntedBiome.bloodbatHighlightColor": "Bloodbat Highlight Color",
   "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico Highlight Color",
+  "skyblocker.config.hunting.hauntedBiome.highlightBloodbat": "Highlight Bloodbat",
+  "skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip": "Highlights Bloodbats who love to roost.",
   "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "Highlight Duplico",
   "skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip": "Highlights Duplico who camouflages with their surroundings in the haunted house.",
 

@@ -219,6 +219,21 @@ public class HuntingCategory {
 										newValue -> config.hunting.hauntedBiome.duplicoHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightBloodbat"))
+								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip"))
+								.binding(defaults.hunting.hauntedBiome.highlightBloodbat,
+										() -> config.hunting.hauntedBiome.highlightBloodbat,
+										newValue -> config.hunting.hauntedBiome.highlightBloodbat = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.bloodbatHighlightColor"))
+								.binding(defaults.hunting.hauntedBiome.bloodbatHighlightColor,
+										() -> config.hunting.hauntedBiome.bloodbatHighlightColor,
+										newValue -> config.hunting.hauntedBiome.bloodbatHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Icy Biome

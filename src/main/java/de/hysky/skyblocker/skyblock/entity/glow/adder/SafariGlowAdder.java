@@ -13,6 +13,7 @@ import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ambient.Bat;
 
 public class SafariGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -35,6 +36,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 
 			// Haunted Biome
 			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
+			case Bat _ when huntingConfig.hauntedBiome.highlightBloodbat && SafariUtils.isInHauntedBiome() -> huntingConfig.hauntedBiome.bloodbatHighlightColor.getRGB();
 
 			default -> NO_GLOW;
 		};
