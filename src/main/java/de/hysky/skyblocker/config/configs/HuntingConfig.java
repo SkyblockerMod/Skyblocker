@@ -74,6 +74,10 @@ public class HuntingConfig {
 		public boolean highlightDuplico = true;
 
 		public Color duplicoHighlightColor = new Color(DyeColor.RED.getTextColor(), false);
+
+		public boolean highlightBloodbat = true;
+
+		public Color bloodbatHighlightColor = new Color(DyeColor.LIME.getTextColor(), false);
 	}
 
 	public static class IcyBiome {
