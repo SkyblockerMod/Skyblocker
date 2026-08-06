@@ -11,6 +11,7 @@ import de.hysky.skyblocker.utils.Utils;
 import net.minecraft.world.entity.Display.ItemDisplay;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ambient.Bat;
@@ -35,11 +36,18 @@ public class SafariGlowAdder extends MobGlowAdder {
 			case ItemDisplay display when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && display.getItemStack().is(Items.DYED_SHULKER_BOX.green()) -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
 
 			// Haunted Biome
-			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
+			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 && isNotDuplico(display) -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
 			case Bat _ when huntingConfig.hauntedBiome.highlightBloodbat && SafariUtils.isInHauntedBiome() -> huntingConfig.hauntedBiome.bloodbatHighlightColor.getRGB();
 
 			default -> NO_GLOW;
 		};
+	}
+
+	private static boolean isNotDuplico(ItemDisplay display) {
+		ItemStack stack = display.getItemStack();
+
+		// Exclude Gimmiegolds and moving Hideonwalls
+		return !stack.is(Items.PLAYER_HEAD) && !stack.is(Items.DYED_SHULKER_BOX.purple());
 	}
 
 	@Override
