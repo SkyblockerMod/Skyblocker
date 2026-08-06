@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public class CompactorDeletorPreview {
 			int slotsCount = dimensions.leftInt() * dimensions.rightInt();
 			components.add(targetIndex, ClientTooltipComponent.create(Component.literal(slotsCount + (slotsCount == 1 ? " slot" : " slots")).withStyle(ChatFormatting.GRAY).getVisualOrderText()));
 
-			graphics.tooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
+			graphics.tooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, stack.get(DataComponents.TOOLTIP_STYLE));
 			return true;
 		}
 
@@ -67,7 +68,7 @@ public class CompactorDeletorPreview {
 			components.add(targetIndex, ClientTooltipComponent.create(Component.literal("Active: ")
 					.append(customData.getBooleanOr("PERSONAL_DELETOR_ACTIVE", false) ? Component.literal("YES").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.GREEN) : Component.literal("NO").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.RED)).getVisualOrderText()));
 		}
-		graphics.tooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
+		graphics.tooltip(client.font, components, x, y, DefaultTooltipPositioner.INSTANCE, stack.get(DataComponents.TOOLTIP_STYLE));
 		return true;
 	}
 
