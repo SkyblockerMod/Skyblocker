@@ -7,6 +7,7 @@ import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.auction.EditBidPopup;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
+import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
@@ -18,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,9 +41,15 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 
 	@Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
 	public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
-		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(this.getMainHandItem()) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))
-				&& (!SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems || !DungeonScore.isDungeonStarted())) {
-			cir.setReturnValue(false);
+		ItemStack item = this.getMainHandItem();
+
+		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(item) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))) {
+			boolean shouldDropInDungeons = SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems && DungeonScore.isDungeonStarted();
+			boolean shouldDropShiningCoins = SkyblockerConfigManager.get().hunting.hauntedBiome.ignoreSlotLockingForShiningCoins && SafariUtils.isInHauntedBiome() && item.getSkyblockId().equals("SHINING_COIN");
+
+			if (!shouldDropInDungeons && !shouldDropShiningCoins) {
+				cir.setReturnValue(false);
+			}
 		}
 	}
 

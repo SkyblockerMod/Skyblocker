@@ -878,6 +878,8 @@
   "skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip": "Highlights Bloodbats who love to roost.",
   "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "Highlight Duplico",
   "skyblocker.config.hunting.hauntedBiome.highlightDuplico.@Tooltip": "Highlights Duplico who camouflages with their surroundings in the haunted house.",
+  "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "Ignore Slot Locking for Shining Coins",
+  "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins.@Tooltip": "Allows you to drop Shining Coins from locked slots while in the Haunted Biome.",
 
   "skyblocker.config.hunting.huntingBoxHelper": "Enable Hunting Box Helper",
   "skyblocker.config.hunting.huntingBoxHelper.@Tooltip": "Highlights shards that you have enough of to syphon and reach the next tier of the attribute in the Hunting Box. Also displays the sell price of shards in the tooltip.",

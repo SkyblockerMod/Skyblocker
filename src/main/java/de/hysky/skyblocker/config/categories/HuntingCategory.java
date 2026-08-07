@@ -234,6 +234,14 @@ public class HuntingCategory {
 										newValue -> config.hunting.hauntedBiome.bloodbatHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins"))
+								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins.@Tooltip"))
+								.binding(defaults.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins,
+										() -> config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins,
+										newValue -> config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// Icy Biome
