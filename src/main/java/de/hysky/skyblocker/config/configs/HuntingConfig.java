@@ -78,6 +78,8 @@ public class HuntingConfig {
 		public boolean highlightBloodbat = true;
 
 		public Color bloodbatHighlightColor = new Color(DyeColor.LIME.getTextColor(), false);
+
+		public boolean ignoreSlotLockingForShiningCoins = false;
 	}
 
 	public static class IcyBiome {
