@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.config.configs;
 
 import java.awt.Color;
+
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import net.minecraft.world.item.DyeColor;
 
 public class HuntingConfig {
@@ -56,6 +58,10 @@ public class HuntingConfig {
 
 	public static class Safari {
 		public boolean silencePhantoms = true;
+
+		public boolean highlightSparklingCritters = false;
+
+		public Color sparklingCritterHighlightColor = new Color(SkyBlockColors.GOLD.getValue(), false);
 	}
 
 	public static class CavernBiome {

@@ -910,8 +910,11 @@
   "skyblocker.config.hunting.moongladeMobs.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while on the Moonglade Marsh.",
 
   "skyblocker.config.hunting.safari": "Safari",
+  "skyblocker.config.hunting.safari.highlightSparklingCritters": "Highlight Sparkling Critters",
+  "skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip": "Highlights Sparkling Critters which are very rarely found around the Critter Safari.",
   "skyblocker.config.hunting.safari.silencePhantoms": "Silence Phantoms",
   "skyblocker.config.hunting.safari.silencePhantoms.@Tooltip": "Mutes all sounds related to Phantoms while in the Critter Safari.",
+  "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critter Highlight Color",
 
   "skyblocker.config.hunting.torrhusMobs": "Torrhus Mobs",
   "skyblocker.config.hunting.torrhusMobs.blueJayHighlightColor": "Blue Jay Highlight Color",

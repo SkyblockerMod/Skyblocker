@@ -150,6 +150,21 @@ public class HuntingCategory {
 										newValue -> config.hunting.safari.silencePhantoms = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.highlightSparklingCritters"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip"))
+								.binding(defaults.hunting.safari.highlightSparklingCritters,
+										() -> config.hunting.safari.highlightSparklingCritters,
+										newValue -> config.hunting.safari.highlightSparklingCritters = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.sparklingCritterHighlightColor"))
+								.binding(defaults.hunting.safari.sparklingCritterHighlightColor,
+										() -> config.hunting.safari.sparklingCritterHighlightColor,
+										newValue -> config.hunting.safari.sparklingCritterHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Cavern Biome
