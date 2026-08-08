@@ -1799,5 +1799,7 @@
     "skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip": "Utiliser les couleurs de rareté d'avant la mise a jour du pack de ressource.",
     "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Montrer des suggestions d'autocompletion pour les commandes de l'auction house et du bazaar.",
     "skyblocker.config.foraging.moongladeMarsh": "Moonglade Marsh",
-    "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon"
+    "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon",
+    "skyblocker.config.dungeons.batMessage.sendBatMessage": "Activer le message des Chauve-souris",
+    "skyblocker.config.dungeons.batMessage": "Message des Chauve-souris"
 }
