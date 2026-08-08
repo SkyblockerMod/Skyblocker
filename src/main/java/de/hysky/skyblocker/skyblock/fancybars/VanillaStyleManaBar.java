@@ -69,10 +69,23 @@ public class VanillaStyleManaBar {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MOUNT_HEALTH, MANABAR_MOUNT_HUD_ID, (context, _) -> {
 			if (isEnabled()) extractRenderState(context);
 		});
+
+		/*
+		Proper implementation of height for bars, broken due to https://github.com/FabricMC/fabric-api/issues/5517
+		When fixed uncomment this and remove corresponding mixin from HudMixn.java
+
+		// 10 pixels is the spacing for a single bar, the mana bar always has 2 bars so has a height of 20 pixels
+		HudStatusBarHeightRegistry.addRight(VanillaHudElements.FOOD_BAR, (player) -> isEnabled() ? 0 : 10);
+		HudStatusBarHeightRegistry.addRight(VanillaHudElements.MOUNT_HEALTH, (player) -> isEnabled() ? 0 : 10);
+		// Only height for one bar needs to be registered, since the height for both bars is always enabled even when not visible.
+		// This could be changed if we had a condition like "isEnabled() && isHungerBarVisible()" for each individual bar,
+		// but as far as I am aware that condition is not easily available
+		HudStatusBarHeightRegistry.addRight(MANABAR_MOUNT_HUD_ID, (player) -> isEnabled() ? 20 : 0);
+		 */
 	}
 
-	private static boolean isEnabled() {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.isEnabled();
+	public static boolean isEnabled() {
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar && !FancyStatusBars.isEnabled();
 	}
 
 	private static void extractNotch(GuiGraphicsExtractor graphics, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {

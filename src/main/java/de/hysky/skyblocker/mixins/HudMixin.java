@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
+import de.hysky.skyblocker.skyblock.fancybars.VanillaStyleManaBar;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -130,5 +132,11 @@ public abstract class HudMixin {
 	@ModifyExpressionValue(method = "extractCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getTicksFrozen()I"))
 	private int skyblocker$hideSafariColdOverlay(int original) {
 		return Utils.isOnSkyblock() && SafariUtils.isInIcyBiome() && SkyblockerConfigManager.get().hunting.icyBiome.hideColdOverlay ? 0 : original;
+	}
+
+	// Workaround, can be removed when https://github.com/FabricMC/fabric-api/issues/5517 is fixed. See VanillaStylemanaBar.java for proper fix
+	@ModifyReturnValue(method = "getAirBubbleYLine", at = @At("RETURN"))
+	private int skyblocker$adjustAirBubbleHeight(int original) {
+		return VanillaStyleManaBar.isEnabled() ? original - 10 : original;
 	}
 }
