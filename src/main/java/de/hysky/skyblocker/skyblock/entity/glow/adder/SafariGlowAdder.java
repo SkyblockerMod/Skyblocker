@@ -39,7 +39,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 
 			// Forest Biome
 			case Shulker shulker when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && shulker.getColor() == DyeColor.GREEN -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
-			case ItemDisplay display when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && display.getItemStack().is(Items.DYED_SHULKER_BOX.green()) -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
+			case ItemDisplay display when huntingConfig.forestBiome.highlightHideonfloor && SafariUtils.isInForestBiome() && display.getItemStack().is(Items.GREEN_SHULKER_BOX) -> huntingConfig.forestBiome.hideonfloorHighlightColor.getRGB();
 
 			// Haunted Biome
 			case ItemDisplay display when huntingConfig.hauntedBiome.highlightDuplico && SafariUtils.isInHauntedBiome() && display.getPosRotInterpolationDuration() == 3 && isNotDuplico(display) -> huntingConfig.hauntedBiome.duplicoHighlightColor.getRGB();
@@ -56,7 +56,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 		ItemStack stack = display.getItemStack();
 
 		// Exclude Gimmiegolds and moving Hideonwalls
-		return !stack.is(Items.PLAYER_HEAD) && !stack.is(Items.DYED_SHULKER_BOX.purple());
+		return !stack.is(Items.PLAYER_HEAD) && !stack.is(Items.PURPLE_SHULKER_BOX);
 	}
 
 	private static boolean isSparkling(Entity entity) {
@@ -75,7 +75,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 
 			// Exclude things that aren't player heads or Hideonfloors
 			// Duplico already has a highlight of sorts (and does not work with name tag detection) and glow is weird with painting occlusion
-			if (!stack.is(Items.PLAYER_HEAD) && !stack.is(Items.DYED_SHULKER_BOX.green())) {
+			if (!stack.is(Items.PLAYER_HEAD) && !stack.is(Items.GREEN_SHULKER_BOX)) {
 				return false;
 			}
 		}
