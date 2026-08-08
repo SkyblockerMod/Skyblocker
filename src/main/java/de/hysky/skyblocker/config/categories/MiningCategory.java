@@ -128,7 +128,7 @@ public class MiningCategory {
 								.description(Component.translatable("skyblocker.config.mining.dwarvenMines.enableCarpetHighlight.@Tooltip"))
 								.binding(defaults.mining.dwarvenMines.enableCarpetHighlighter,
 										() -> config.mining.dwarvenMines.enableCarpetHighlighter,
-									newValue -> config.mining.dwarvenMines.enableCarpetHighlighter = newValue)
+										newValue -> config.mining.dwarvenMines.enableCarpetHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
@@ -185,9 +185,9 @@ public class MiningCategory {
 								.binding(defaults.mining.crystalHollows.enablePowderTracker,
 										() -> config.mining.crystalHollows.enablePowderTracker,
 										newValue -> {
-									config.mining.crystalHollows.enablePowderTracker = newValue;
-									if (newValue) PowderMiningTracker.INSTANCE.recalculateAll();
-								})
+											config.mining.crystalHollows.enablePowderTracker = newValue;
+											if (newValue) PowderMiningTracker.INSTANCE.recalculateAll();
+										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(ButtonOption.createBuilder()
@@ -343,8 +343,8 @@ public class MiningCategory {
 								.name(Component.translatable("skyblocker.config.mining.glacite.fossilSolver"))
 								.description(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.@Tooltip"))
 								.binding(defaults.mining.glacite.fossilSolver,
-												() -> config.mining.glacite.fossilSolver,
-												newValue -> config.mining.glacite.fossilSolver = newValue)
+										() -> config.mining.glacite.fossilSolver,
+										newValue -> config.mining.glacite.fossilSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -417,7 +417,17 @@ public class MiningCategory {
 										newValue -> config.mining.blockBreakPrediction.playSound = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-
+						.build())
+				//Lantern Deploy Range
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.mining.lanternDeployable.show"))
+						.description(Component.translatable("skyblocker.config.mining.lanternDeployable.show.@Tooltip"))
+						.binding(
+								defaults.mining.lanternDeployable.showDeployableRange,
+								() -> config.mining.lanternDeployable.showDeployableRange,
+								newValue -> config.mining.lanternDeployable.showDeployableRange = newValue
+						)
+						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.build();
 	}
