@@ -5,6 +5,8 @@ import com.ibm.icu.text.DateTimePatternGenerator;
 import de.hysky.skyblocker.compatibility.MacCompatibility;
 import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
@@ -12,7 +14,11 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter
@@ -71,6 +77,28 @@ public class Formatters {
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("E MMM d yyyy " + getTimeFormat(), Locale.US).withZone(getTimeZone());
 
 	/**
+	 * Formats dates to a standard format, without seconds.
+	 * <p>
+	 * Examples: Thu Jan 30 2025 2:00 PM, Thu Jan 30 2025 14:00
+	 */
+	public static final DateTimeFormatter DATE_FORMATTER_SHORT = DateTimeFormatter.ofPattern("E MMM d yyyy " + getShortTimeFormat(), Locale.US).withZone(getTimeZone());
+
+	/**
+	 * Based on {@link DateTimeFormatter#RFC_1123_DATE_TIME}
+	 */
+	public static final DateTimeFormatter SKYBLOCK_TIME_FORMATTER = new DateTimeFormatterBuilder()
+			.parseCaseInsensitive()
+			.parseLenient()
+			.appendValue(SkyblockTimeField.DAY_OF_MONTH, 1, 2, SignStyle.NEVER)
+			.appendLiteral(' ')
+			.appendText(SkyblockTimeField.MONTH_OF_YEAR, Arrays.stream(SkyblockTime.Month.values()).collect(Collectors.toMap(month -> (long) (month.ordinal() + 1), SkyblockTime.Month::getShortName)))
+			.appendLiteral(' ')
+			.appendValue(SkyblockTimeField.YEAR)
+			.appendLiteral(' ')
+			.appendValue(SkyblockTimeField.HOUR_OF_DAY, 2)
+			.appendLiteral(":00").toFormatter();
+
+	/**
 	 * Parses a number from a string.
 	 * <p>
 	 * Allows commas as thousands separators, periods as decimal points, and abbreviations.
@@ -88,6 +116,13 @@ public class Formatters {
 	 */
 	private static String getTimeFormat() {
 		return is12HourClock() || Debug.isTestEnvironment() ? "h:mm:ss a" : "HH:mm:ss";
+	}
+
+	/**
+	 * Returns the formatting for the time without seconds, always returns 12 hour in test environments.
+	 */
+	private static String getShortTimeFormat() {
+		return is12HourClock() || Debug.isTestEnvironment() ? "h:mm a" : "HH:mm";
 	}
 
 	/**

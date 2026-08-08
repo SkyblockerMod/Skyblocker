@@ -41,6 +41,6 @@ public final class JerryTimer {
 			return true;
 		});
 
-		SkyblockEvents.MAYOR_CHANGE.register(() -> isJerryActive = MayorUtils.getActivePerks().contains("Jerrypocalypse"));
+		SkyblockEvents.MAYOR_CHANGE.register(() -> isJerryActive = MayorUtils.getActivePerkNames().contains("Jerrypocalypse"));
 	}
 }
