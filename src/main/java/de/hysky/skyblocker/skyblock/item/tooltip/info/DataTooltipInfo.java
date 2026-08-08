@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
 import java.net.http.HttpHeaders;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,6 +25,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 	private final BiPredicate<T, String> contains;
 	private final Predicate<GeneralConfig.ItemTooltip> dataEnabled;
 	private final @Nullable Consumer<T>[] callbacks;
+	private CompletableFuture<Void> download = CompletableFuture.completedFuture(null);
 
 	@SafeVarargs
 	protected DataTooltipInfo(String address, Codec<T> codec, boolean cacheable, BiPredicate<T, String> contains, Predicate<GeneralConfig.ItemTooltip> tooltipEnabled, Predicate<GeneralConfig.ItemTooltip> dataEnabled, Consumer<T>... callbacks) {
@@ -62,6 +64,19 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 		} else {
 			return contains.test(data, memberName);
 		}
+	}
+
+	/**
+	 * Starts a download unless one is already in progress.
+	 * @return a non-null future mirroring the active download, which may have been started by an earlier caller; mutating the returned future does not affect the active download
+	 */
+	@Override
+	public synchronized CompletableFuture<Void> download() {
+		if (download.isDone()) {
+			download = DataTooltipInfoType.super.download();
+		}
+
+		return download.copy();
 	}
 
 	@Override
