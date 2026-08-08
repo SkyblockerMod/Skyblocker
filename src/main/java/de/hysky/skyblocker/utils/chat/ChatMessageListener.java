@@ -37,7 +37,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 @FunctionalInterface
@@ -112,13 +111,8 @@ public interface ChatMessageListener {
 						return true;
 					}
 
-					LocalPlayer player = Minecraft.getInstance().player;
-
-					if (player != null) {
-						player.sendOverlayMessage(message);
-
-						return false;
-					}
+					Minecraft.getInstance().gui.hud.setOverlayMessage(message, true);
+					return false;
 				}
 
 				case TOAST -> {
