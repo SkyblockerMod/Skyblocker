@@ -35,18 +35,21 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +113,7 @@ public class Utils {
 	private static String gameType = "";
 	private static String locationRaw = "";
 	private static String map = "";
+	private static @Nullable Holder<Biome> biome = null;
 	public static double purse = 0;
 
 	/**
@@ -200,18 +204,8 @@ public class Utils {
 		return location == Location.THE_PARK;
 	}
 
-	public static boolean isInBiome(Identifier biome) {
-		LocalPlayer player = Minecraft.getInstance().player;
-
-		// Same logic as the Biome Debug HUD entry
-		if (player != null) {
-			Level level = player.level();
-			BlockPos feetPos = player.blockPosition();
-
-			return level.isInsideBuildHeight(feetPos) && level.getBiome(feetPos).is(biome);
-		}
-
-		return false;
+	public static boolean isInBiome(Identifier targetBiome) {
+		return biome != null && biome.is(targetBiome);
 	}
 
 	public static boolean isOnBingo() {
@@ -314,6 +308,7 @@ public class Utils {
 		updateScoreboard(client);
 		updatePlayerPresence(client);
 		updateFromPlayerList(client);
+		updateBiome(client);
 	}
 
 	/**
@@ -472,6 +467,23 @@ public class Utils {
 		}
 	}
 
+	private static void updateBiome(Minecraft minecraft) {
+		LocalPlayer player = minecraft.player;
+
+		// Same logic as the Biome Debug HUD entry
+		if (player != null) {
+			Level level = player.level();
+			BlockPos feetPos = player.blockPosition();
+
+			if (level.isInsideBuildHeight(feetPos)) {
+				biome = level.getBiome(feetPos);
+				return;
+			}
+		}
+
+		biome = null;
+	}
+
 	private static void onDisconnect() {
 		if (isOnSkyblock) SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
 
@@ -482,6 +494,7 @@ public class Utils {
 		location = Location.UNKNOWN;
 		area = Area.UNKNOWN;
 		map = "";
+		biome = null;
 	}
 
 	private static void onPacket(HypixelS2CPacket packet) {
