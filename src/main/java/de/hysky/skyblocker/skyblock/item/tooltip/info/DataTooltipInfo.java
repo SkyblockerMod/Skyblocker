@@ -12,7 +12,6 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.utils.Http;
@@ -74,7 +73,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 	@Override
 	public synchronized CompletableFuture<Void> download() {
 		if (download.isDone()) {
-			download = super.download();
+			download = DataTooltipInfoType.super.download();
 		}
 
 		return download.copy();
