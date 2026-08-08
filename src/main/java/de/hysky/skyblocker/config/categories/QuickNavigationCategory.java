@@ -4,6 +4,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.config.screens.quicknav.QuickNavConfigScreen;
 import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import net.azureaaron.dandelion.api.ButtonOption;
@@ -31,6 +32,11 @@ public class QuickNavigationCategory {
 								() -> config.quickNav.enableQuickNav,
 								newValue -> config.quickNav.enableQuickNav = newValue)
 						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.optionIf(Minecraft.getInstance().player != null, ButtonOption.createBuilder()
+						.name(Component.translatable("skyblocker.config.quickNav.quickNavConfigScreen"))
+						.prompt(Component.translatable("text.skyblocker.open"))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new QuickNavConfigScreen(screen)))
 						.build())
 
 				//Buttons

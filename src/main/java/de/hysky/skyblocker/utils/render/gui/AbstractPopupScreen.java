@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,7 +15,9 @@ import org.jspecify.annotations.Nullable;
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
  */
 public class AbstractPopupScreen extends Screen {
+	protected static final int BACKGROUND_MARGIN = 18;
 	private static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("popup/background");
+	private static final Identifier LIGHTER_BACKGROUND_TEXTURE = SkyblockerMod.id("background");
 	public final Screen backgroundScreen;
 
 	protected AbstractPopupScreen(Component title, Screen backgroundScreen) {
@@ -40,7 +43,11 @@ public class AbstractPopupScreen extends Screen {
 	 * These are the inner positions and size of the popup, not outer
 	 */
 	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x - 18, y - 18, width + 36, height + 36);
+		extractPopupBackground(graphics, x, y, width, height, false);
+	}
+
+	public static void extractPopupBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height, boolean light) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, light ? LIGHTER_BACKGROUND_TEXTURE : BACKGROUND_TEXTURE, x - BACKGROUND_MARGIN, y - BACKGROUND_MARGIN, width + BACKGROUND_MARGIN * 2, height + BACKGROUND_MARGIN * 2);
 	}
 
 	@Override

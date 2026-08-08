@@ -76,3 +76,22 @@ inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/h
 inject-interface	net/minecraft/client/renderer/LevelRenderer	de/hysky/skyblocker/injected/EntityRenderMarker
 inject-interface	net/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit	de/hysky/skyblocker/injected/CustomGlowState
 inject-interface	net/minecraft/client/renderer/rendertype/RenderType	de/hysky/skyblocker/injected/GlowRenderTypeHolder
+inject-interface    net/minecraft/client/gui/GuiGraphicsExtractor de/hysky/skyblocker/injected/SkyblockerGraphicsExtractor
+
+# Suggestions
+accessible field net/minecraft/client/gui/components/CommandSuggestions input Lnet/minecraft/client/gui/components/EditBox;
+accessible field net/minecraft/client/gui/components/CommandSuggestions currentParse Lcom/mojang/brigadier/ParseResults;
+accessible field net/minecraft/client/gui/components/CommandSuggestions keepSuggestions Z
+accessible field net/minecraft/client/gui/components/CommandSuggestions minecraft Lnet/minecraft/client/Minecraft;
+accessible field net/minecraft/client/gui/components/CommandSuggestions suggestions Lnet/minecraft/client/gui/components/CommandSuggestions$SuggestionsList;
+accessible field net/minecraft/client/gui/components/CommandSuggestions onlyShowIfCursorPastError Z
+accessible field net/minecraft/client/gui/components/CommandSuggestions pendingSuggestions Ljava/util/concurrent/CompletableFuture;
+accessible field net/minecraft/client/gui/components/CommandSuggestions commandUsage Ljava/util/List;
+accessible field net/minecraft/client/gui/components/CommandSuggestions font Lnet/minecraft/client/gui/Font;
+accessible field net/minecraft/client/gui/components/CommandSuggestions commandUsagePosition I
+accessible field net/minecraft/client/gui/components/CommandSuggestions commandUsageWidth I
+accessible field net/minecraft/client/gui/components/CommandSuggestions fillColor I
+mutable field net/minecraft/client/gui/components/CommandSuggestions$SuggestionsList rect Lnet/minecraft/client/renderer/Rect2i;
+accessible field net/minecraft/client/gui/components/CommandSuggestions$SuggestionsList rect Lnet/minecraft/client/renderer/Rect2i;
+extendable method net/minecraft/client/gui/components/CommandSuggestions updateUsageInfo (Lcom/mojang/brigadier/ParseResults;Lcom/mojang/brigadier/suggestion/Suggestions;)V
+extendable method net/minecraft/client/gui/components/CommandSuggestions fillNodeUsage (Lcom/mojang/brigadier/context/SuggestionContext;Lnet/minecraft/network/chat/Style;)Ljava/util/List;
