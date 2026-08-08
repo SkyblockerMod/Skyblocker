@@ -7,6 +7,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntLists;
 import de.hysky.skyblocker.utils.Utils;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -26,7 +27,7 @@ public class YggdrasilServicesKeyInfoMixin {
 	@Unique
 	private static final Map<String, String> REPLACEMENT_MAP = Map.of();
 	@Unique
-	private static final IntList ERRONEUS_SIGNATURE_HASHES = new IntArrayList();
+	private static final IntList ERRONEUS_SIGNATURE_HASHES = IntLists.synchronize(new IntArrayList());
 
 	@WrapOperation(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B"))
 	private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
