@@ -74,7 +74,7 @@ public final class DataTooltipInfo<T> extends SimpleTooltipInfo implements DataT
 	@Override
 	public synchronized CompletableFuture<Void> download() {
 		if (download.isDone()) {
-			download = CompletableFuture.runAsync(this, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			download = super.download();
 		}
 
 		return download.copy();
