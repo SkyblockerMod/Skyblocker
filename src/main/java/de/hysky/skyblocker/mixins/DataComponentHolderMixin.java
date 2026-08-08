@@ -24,7 +24,7 @@ public interface DataComponentHolderMixin {
 	@SuppressWarnings("unchecked")
 	@ModifyReturnValue(method = "get", at = @At("RETURN"))
 	private <T> T skyblocker$customComponents(T original, DataComponentType<? extends T> dataComponentType) {
-		if (Utils.isOnSkyblock() && ((Object) this) instanceof ItemStack stack) {
+		if (Utils.isOnSkyblock() && (Object) this instanceof ItemStack stack) {
 			String itemUuid = stack.getUuid();
 			if (dataComponentType == DataComponents.TRIM) {
 				CustomArmorTrims.ArmorTrimId trimKey = SkyblockerConfigManager.get().general.customArmorTrims.get(itemUuid);
