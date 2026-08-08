@@ -782,6 +782,8 @@
   "skyblocker.config.helpers.fairySouls": "Fairy Souls Helper",
   "skyblocker.config.helpers.fairySouls.enableFairySoulsHelper": "Enable Fairy Souls Helper",
   "skyblocker.config.helpers.fairySouls.highlightFoundSouls": "Highlight found fairy souls",
+  "skyblocker.config.helpers.fairySouls.highlightOnBingo": "Highlight souls on Ⓑ Bingo profiles",
+  "skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip": "When disabled souls are not highlighted on Ⓑ Bingo profiles",
   "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls": "Only highlight nearby fairy souls",
   "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled only fairy souls in a radius of 50 blocks are highlighted",
 

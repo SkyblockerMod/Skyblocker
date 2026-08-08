@@ -367,6 +367,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo"))
+								.description(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip"))
+								.binding(defaults.helpers.fairySouls.highlightOnBingo,
+										() -> config.helpers.fairySouls.highlightOnBingo,
+										newValue -> config.helpers.fairySouls.highlightOnBingo = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls"))
 								.description(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip"))
 								.binding(defaults.helpers.fairySouls.highlightOnlyNearbySouls,
