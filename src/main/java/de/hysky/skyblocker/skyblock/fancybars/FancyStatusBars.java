@@ -379,14 +379,13 @@ public class FancyStatusBars {
 		if (!isEnabled() || player == null) return false;
 
 		Collection<StatusBar> barCollection = statusBars.values();
-		for (StatusBar statusBar : barCollection) {
-			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.extractBar(graphics);
-		}
-		for (StatusBar statusBar : barCollection) {
-			if (!statusBar.enabled || !statusBar.visible) continue;
-			statusBar.extractText(graphics);
-		}
+
+		// This lazy hack ensures that the text is (usually) drawn on top and saves a bunch of code duplication elsewhere
+		barCollection.stream()
+				.sorted(Comparator.comparingInt(StatusBar::getY))
+				.filter(statusBar -> statusBar.enabled && statusBar.visible)
+				.forEachOrdered(statusBar -> statusBar.extractAll(graphics)
+		);
 
 		StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
 		StatusBar vitalityBar = statusBars.get(StatusBarType.VITALITY);
