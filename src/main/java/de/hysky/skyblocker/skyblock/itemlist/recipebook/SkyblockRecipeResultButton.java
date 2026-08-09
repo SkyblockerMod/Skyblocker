@@ -1,16 +1,12 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
@@ -53,10 +49,6 @@ public class SkyblockRecipeResultButton extends AbstractWidget {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
 		graphics.fakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
 		graphics.itemDecorations(client.font, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
-	}
-
-	protected static List<Component> getTooltip(ItemStack stack) {
-		return new ArrayList<>(Screen.getTooltipFromItem(Minecraft.getInstance(), stack));
 	}
 
 	@Override
