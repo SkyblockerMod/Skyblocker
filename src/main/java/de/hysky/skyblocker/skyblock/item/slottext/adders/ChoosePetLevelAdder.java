@@ -9,6 +9,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +22,9 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 			"choose_pet_pet_level",
 			"skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel");
 
-	public ChoosePetLevelAdder() { super("^Choose Pet.*", CONFIG_INFORMATION); }
+	public ChoosePetLevelAdder() {
+		super("^(\\(\\d+/\\d+\\) )?Choose Pet$", CONFIG_INFORMATION);
+	}
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
@@ -33,8 +36,9 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 			matcher = LEVEL_PATTERN.matcher(stack.getHoverName().getString());
 			if (!matcher.matches()) return List.of();
 		}
+		String name = stack.getHoverName().getString();
 		String level = matcher.group(1);
-		if (!NumberUtils.isDigits(level) || "100".equals(level) || "200".equals(level)) return List.of();
+		if (!NumberUtils.isDigits(level) || "100".equals(level) && (!name.contains("Dragon") || name.contains("Ender Dragon")) || "200".equals(level)) return List.of();
 		return SlotText.bottomRightList(Component.literal(level).withColor(SlotText.CREAM));
 	}
 }
