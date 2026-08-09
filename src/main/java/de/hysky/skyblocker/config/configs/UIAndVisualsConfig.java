@@ -411,6 +411,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableAuctionHouse = true;
 
+		public boolean enableIronmanAuctionHouse = false;
+
 		public boolean enableMuseum = true;
 
 		public boolean keepPreviousSearches = false;

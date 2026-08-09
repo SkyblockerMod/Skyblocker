@@ -824,6 +824,14 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										() -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										newValue -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
 								.binding(defaults.uiAndVisuals.searchOverlay.enableMuseum,

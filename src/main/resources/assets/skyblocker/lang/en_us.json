@@ -1420,6 +1420,8 @@
   "skyblocker.config.uiAndVisuals.searchOverlay.enableBazaar.@Tooltip": "Show custom search overlay when searching in the Bazaar.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableCommands": "Open from commands",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableCommands.@Tooltip": "Opens the bazaar search with \"/bzs\" and auction house with \"/ahs\". A re-log is required for this setting to be updated.",
+  "skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse": "Enable For Ironman Cosmetics Auction House",
+  "skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse.@Tooltip": "Show custom search overlay when searching in the Cosmetics Auction House.",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum": "Enable for Museum",
   "skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip": "Show custom search overlay when searching in the Museum.",
   "skyblocker.config.uiAndVisuals.searchOverlay.historyLength": "Saved Search History Length",
