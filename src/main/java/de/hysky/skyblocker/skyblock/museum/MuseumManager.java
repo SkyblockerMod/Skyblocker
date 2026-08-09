@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.museum;
 
 import com.google.common.collect.Lists;
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
@@ -248,9 +247,7 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 		if (this.hoveredDonationButton != null) {
 			List<Component> tooltip = hoveredDonationButton.getItemTooltip();
 			Identifier tooltipStyle = hoveredDonationButton.getItem().get(DataComponents.TOOLTIP_STYLE);
-			IconographicCompatibility.withItem(hoveredDonationButton.getItem(), () ->
-					graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, tooltip, x, y, tooltipStyle)
-			);
+			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, tooltip, x, y, tooltipStyle);
 		}
 	}
 
