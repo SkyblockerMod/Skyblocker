@@ -1819,5 +1819,18 @@
     "skyblocker.config.hunting.torrhusMobs.highlightBlueJay": "突顯Blue Jay",
     "skyblocker.config.hunting.torrhusMobs.highlightHideonsun": "突顯Hideonsun",
     "skyblocker.config.uiAndVisuals.bars.@Tag[1]": "狀態條",
-    "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor突顯顔色"
+    "skyblocker.config.hunting.forestBiome.hideonfloorHighlightColor": "Hideonfloor突顯顔色",
+    "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "啟用Honeyhive突顯",
+    "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "以藍色突出顯示Honeyhive以便確定它們的位置。",
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "啟用Ruby Veilshroom突顯",
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "以紫色突出顯示Ruby Veilshroom以便確定它們的位置。",
+    "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles": "解決沙漠神廟謎題",
+    "skyblocker.config.hunting.cavernBiome.highlightRockmiteMounds": "突顯Rockmite Mounds",
+    "skyblocker.config.hunting.cavernBiome.rockmiteMoundHighlightColor": "Rockmite Mound突顯顔色",
+    "skyblocker.config.hunting.hauntedBiome.bloodbatHighlightColor": "Bloodbat突顯顔色",
+    "skyblocker.config.hunting.hauntedBiome.duplicoHighlightColor": "Duplico突顯顔色",
+    "skyblocker.config.hunting.hauntedBiome.highlightBloodbat": "突顯Bloodbat",
+    "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "突顯Duplico",
+    "skyblocker.config.hunting.safari.highlightSparklingCritters": "突顯Sparkling Critters",
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色"
 }
