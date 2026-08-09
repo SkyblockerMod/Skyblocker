@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
@@ -102,7 +103,9 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 				BackpackPreview.extractPreview(graphics, CLIENT.gui.screen(), linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
-				graphics.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
+				IconographicCompatibility.withItem(icon, () ->
+						graphics.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY)
+				);
 			}
 		}
 	}

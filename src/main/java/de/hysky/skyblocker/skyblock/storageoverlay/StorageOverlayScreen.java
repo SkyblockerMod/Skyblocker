@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.storageoverlay;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
@@ -568,7 +569,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 						if (graphics.containsPointInScissor(mouseX, mouseY) && mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE && mouseY > topPos && mouseY < topPos + StorageOverlayScreen.this.getHeight()) {
 							Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
 
-							graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
+							IconographicCompatibility.withItem(currentStack, () ->
+									graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle)
+							);
 						}
 					}
 

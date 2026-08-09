@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -192,7 +193,10 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	protected void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		super.extractTooltip(graphics, x, y);
 		if (x > this.leftPos + 75 && x < this.leftPos + 75 + 26 && y > this.topPos + 13 && y < this.topPos + 13 + 26) {
-			graphics.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);
+			ItemStack itemStack = menu.getSlot(13).getItem();
+			IconographicCompatibility.withItem(itemStack, () ->
+					graphics.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), x, y)
+			);
 		}
 	}
 

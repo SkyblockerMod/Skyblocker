@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -120,8 +121,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 					save(prevProfileId);
 					load(profileId);
 				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
-			}
-			else load(profileId);
+			} else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
@@ -177,7 +177,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasItem()) {
 				ItemStack itemStack = equipmentSlot.getItem();
-				graphics.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y, itemStack.get(DataComponents.TOOLTIP_STYLE));
+				IconographicCompatibility.withItem(itemStack, () ->
+						graphics.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y, itemStack.get(DataComponents.TOOLTIP_STYLE))
+				);
 				hoveredItem = itemStack;
 			}
 		}

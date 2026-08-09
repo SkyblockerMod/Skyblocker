@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -176,7 +177,9 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
 				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 
-				graphics.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
+				IconographicCompatibility.withItem(stack, () ->
+						graphics.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle)
+				);
 			} else if (this.hoveredText != null) {
 				//Draw text as a tooltip if it got truncated & we're hovering over it (for recipe display)
 				graphics.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);

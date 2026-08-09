@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.accessories;
 import com.google.common.collect.ImmutableList;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -442,7 +443,10 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
+				Identifier tooltipStyle = icon.get(DataComponents.TOOLTIP_STYLE);
+				IconographicCompatibility.withItem(icon.getStackOrEmpty(), () ->
+						graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, tooltipStyle)
+				);
 			}
 
 			@Override
