@@ -10,7 +10,6 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoad
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,12 +17,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 
 public class Inventory implements ProfileViewerPage {
 	private static final Identifier TEXTURE = Identifier.parse("textures/gui/container/generic_54.png");
@@ -73,8 +68,7 @@ public class Inventory implements ProfileViewerPage {
 
 		int startIndex = activePage * itemsPerPage;
 		int endIndex = Math.min(startIndex + itemsPerPage, containerList.size());
-		List<Component> tooltip = Collections.emptyList();
-		Identifier tooltipStyle = null;
+		ItemStack hoveredStack = null;
 		for (int i = 0; i < endIndex - startIndex; i++) {
 			ItemStack stack = containerList.get(startIndex + i);
 			if (stack.isEmpty()) continue;
@@ -96,13 +90,12 @@ public class Inventory implements ProfileViewerPage {
 			SlotTextManager.extractSlotText(graphics, textRenderer, null, stack, i, x, y);
 
 			if (mouseX > x - 2 && mouseX < x + 16 + 1 && mouseY > y - 2 && mouseY < y + 16 + 1) {
-				tooltip = stack.getTooltipLines(Item.TooltipContext.EMPTY, CLIENT.player, CLIENT.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
-				tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
+				hoveredStack = stack;
 			}
 		}
 
-		if (!tooltip.isEmpty()) {
-			graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY, tooltipStyle);
+		if (hoveredStack != null) {
+			graphics.setTooltipForNextFrame(textRenderer, hoveredStack, mouseX, mouseY);
 		}
 	}
 
