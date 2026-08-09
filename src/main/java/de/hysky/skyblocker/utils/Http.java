@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
+	private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(60);
 	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
@@ -37,6 +38,7 @@ public class Http {
 	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 				.GET()
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", "application/json")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
@@ -59,6 +61,7 @@ public class Http {
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", "*/*")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
@@ -78,6 +81,7 @@ public class Http {
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.method("HEAD", BodyPublishers.noBody())
+				.timeout(REQUEST_TIMEOUT)
 				.header("User-Agent", USER_AGENT)
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
@@ -90,6 +94,7 @@ public class Http {
 	public static String sendPostRequest(String url, String requestBody, String contentType) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.POST(BodyPublishers.ofString(requestBody))
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", contentType)
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("Content-Type", contentType)
