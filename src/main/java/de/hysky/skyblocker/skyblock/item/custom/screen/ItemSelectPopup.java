@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.item.custom.screen;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -60,7 +59,7 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 			else equipmentLayout.addChild(new ItemWidget(stack));
 		});
 		equipmentLayout.addChild(new SpacerElement(18, 18));
-		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+		for (ItemStack stack : SkyblockInventoryScreen.getCurrentEquipmentSet()) {
 			if (stack.isEmpty()) equipmentLayout.addChild(new SpacerElement(18, 18));
 			else equipmentLayout.addChild(new ItemWidget(stack));
 		}

@@ -4,7 +4,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
-import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -96,7 +95,7 @@ public class ItemTab extends GridLayoutTab {
 			setCurrentItem(handStack);
 			return;
 		}
-		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+		for (ItemStack stack : SkyblockInventoryScreen.getCurrentEquipmentSet()) {
 			if (!stack.getUuid().isEmpty()) {
 				setCurrentItem(stack);
 				return;
