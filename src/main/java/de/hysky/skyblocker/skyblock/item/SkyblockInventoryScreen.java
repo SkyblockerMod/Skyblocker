@@ -160,8 +160,8 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
-				// The Equipment Wardrobe is not available in the Rift.
-				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() ? "/stats" : "/equipment";
+				// The Equipment Wardrobe is not available in the Rift or Safari.
+				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() || Utils.isInSafari() ? "/stats" : "/equipment";
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 				return true;
 			}
