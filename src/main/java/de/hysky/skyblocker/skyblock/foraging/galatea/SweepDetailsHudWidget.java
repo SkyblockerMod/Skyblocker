@@ -54,7 +54,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		if (CLIENT.player == null || CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
-			addComponent(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+			addComponent(Elements.iconTextComponent(Ico.STRIPPED_SPRUCE_LOG, Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
 			addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
 			addComponent(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
 			return;
@@ -62,10 +62,10 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {
-				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new FlexibleItemStack(Items.IRON_AXE));
-				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new FlexibleItemStack(Items.GOLDEN_AXE));
-				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new FlexibleItemStack(Items.STONE_AXE));
-				case TORRHUS_CANYON -> ItemRepository.getItemStack("HELIX_CHOPPER", new FlexibleItemStack(Items.GOLDEN_AXE));
+				case HUB -> ItemRepository.getItemStack("SWEET_AXE", Ico.IRON_AXE);
+				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", Ico.GOLDEN_AXE);
+				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", Ico.STONE_AXE);
+				case TORRHUS_CANYON -> ItemRepository.getItemStack("HELIX_CHOPPER", Ico.GOLDEN_AXE);
 				default -> Ico.RED_CONCRETE;
 			};
 			addComponent(Elements.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));

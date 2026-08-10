@@ -23,6 +23,7 @@ public class Ico {
 	public static final FlexibleItemStack COMPASS = new FlexibleItemStack(Items.COMPASS);
 	public static final FlexibleItemStack SUGAR = new FlexibleItemStack(Items.SUGAR);
 	public static final FlexibleItemStack IRON_HOE = new FlexibleItemStack(Items.IRON_HOE);
+	public static final FlexibleItemStack GOLDEN_AXE = new FlexibleItemStack(Items.GOLDEN_AXE);
 	public static final FlexibleItemStack GOLDEN_HOE = new FlexibleItemStack(Items.GOLDEN_HOE);
 	public static final FlexibleItemStack GOLD = new FlexibleItemStack(Items.GOLD_INGOT);
 	public static final FlexibleItemStack IRON = new FlexibleItemStack(Items.IRON_INGOT);
@@ -72,7 +73,9 @@ public class Ico {
 	public static final FlexibleItemStack SAPLING = new FlexibleItemStack(Items.OAK_SAPLING);
 	public static final FlexibleItemStack SEEDS = new FlexibleItemStack(Items.WHEAT_SEEDS);
 	public static final FlexibleItemStack LODESTONE = new FlexibleItemStack(Items.LODESTONE);
+	public static final FlexibleItemStack STONE_AXE = new FlexibleItemStack(Items.STONE_AXE);
 	public static final FlexibleItemStack STONE_PICKAXE = new FlexibleItemStack(Items.STONE_PICKAXE);
+	public static final FlexibleItemStack IRON_AXE = new FlexibleItemStack(Items.IRON_AXE);
 	public static final FlexibleItemStack IRON_PICKAXE = new FlexibleItemStack(Items.IRON_PICKAXE);
 	public static final FlexibleItemStack NETHER_STAR = new FlexibleItemStack(Items.NETHER_STAR);
 	public static final FlexibleItemStack HEART_OF_THE_SEA = new FlexibleItemStack(Items.HEART_OF_THE_SEA);
@@ -94,6 +97,7 @@ public class Ico {
 	public static final FlexibleItemStack MYCELIUM = new FlexibleItemStack(Items.MYCELIUM);
 	public static final FlexibleItemStack SALMON_BUCKET = new FlexibleItemStack(Items.SALMON_BUCKET);
 	public static final FlexibleItemStack TROPICAL_FISH_BUCKET = new FlexibleItemStack(Items.TROPICAL_FISH_BUCKET);
+	public static final FlexibleItemStack STRIPPED_SPRUCE_LOG = new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG);
 	public static final FlexibleItemStack STRIPPED_SPRUCE_WOOD = new FlexibleItemStack(Items.STRIPPED_SPRUCE_WOOD);
 	public static final FlexibleItemStack MANGROVE_LOG = new FlexibleItemStack(Items.MANGROVE_LOG);
 	public static final FlexibleItemStack STRIPPED_MANGROVE_LOG = new FlexibleItemStack(Items.STRIPPED_MANGROVE_LOG);
