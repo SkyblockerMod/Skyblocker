@@ -1895,5 +1895,6 @@
     "skyblocker.dungeons.splits.livid": "",
     "skyblocker.dungeons.splits.sadanGiants": "",
     "skyblocker.config.eventNotifications.criterion.SKYBLOCK": "",
-    "skyblocker.dungeons.splits.transformedProfessor": ""
+    "skyblocker.dungeons.splits.transformedProfessor": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
