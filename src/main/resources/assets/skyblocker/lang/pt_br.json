@@ -1891,5 +1891,10 @@
     "skyblocker.config.hunting.torrhusMobs": "",
     "skyblocker.dwarvenMines.metalDetectorHelper.possible": "",
     "skyblocker.foraging.treeFelled": "",
-    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": "",
+    "skyblocker.accessoryHelper.allTiers": "",
+    "skyblocker.accessoryHelper.filter": "",
+    "skyblocker.accessoryHelper.filter.UPGRADES": "",
+    "skyblocker.accessoryHelper.highestTierOnly": "",
+    "skyblocker.accessoryHelper.filter.ALL": ""
 }
