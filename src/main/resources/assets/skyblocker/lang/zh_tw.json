@@ -1832,5 +1832,7 @@
     "skyblocker.config.hunting.hauntedBiome.highlightBloodbat": "突顯Bloodbat",
     "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "突顯Duplico",
     "skyblocker.config.hunting.safari.highlightSparklingCritters": "突顯Sparkling Critters",
-    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色"
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色",
+    "skyblocker.config.helpers.buildersWand": "",
+    "skyblocker.config.helpers.hoppitysHunt": ""
 }
