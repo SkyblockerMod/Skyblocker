@@ -11,6 +11,7 @@ import de.hysky.skyblocker.skyblock.crimson.kuudra.Kuudra;
 import de.hysky.skyblocker.skyblock.crimson.kuudra.KuudraProfileData;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
+import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Formatters;
@@ -356,12 +357,26 @@ public class ChestValue {
 				case ScreenType.MINION -> getMinionSlots(handler);
 				case ScreenType.SACK -> handler.slots.subList(10, (handler.getRowCount() * 9) - 10); // Skip the glass pane rows so we don't have to iterate over them
 				case ScreenType.STASH -> handler.slots.subList(0, (handler.getRowCount() - 1) * 9); // Stash uses the bottom row for the menu, so we skip it
-				case ScreenType.OTHER -> handler.slots.subList(0, handler.getRowCount() * 9);
+				case ScreenType.OTHER, ScreenType.HUNTING_BOX -> handler.slots.subList(0, handler.getRowCount() * 9);
 			};
 
 			for (Slot slot : slots) {
 				ItemStack stack = slot.getItem();
 				if (stack.isEmpty()) continue;
+
+				// Hunting box shards are display items without an item id, so they're identified by name and priced through the bazaar
+				if (screenType == ScreenType.HUNTING_BOX) {
+					Attribute attribute = Attributes.getAttributeFromItemName(stack);
+					if (attribute == null) continue;
+
+					int shards = ItemUtils.getItemCountInHuntingBox(stack).orElse(1);
+					OptionalDouble priceData = ItemUtils.getItemPrice(attribute.apiId());
+
+					if (priceData.isPresent()) value += priceData.getAsDouble() * shards;
+					else hasIncompleteData = true;
+
+					continue;
+				}
 
 				String coinsLine;
 				if (screenType == ScreenType.MINION && slot.index == 28 && stack.is(Items.HOPPER) && (coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
@@ -382,7 +397,7 @@ public class ChestValue {
 						yield ItemUtils.getItemCountInSack(stack, lines).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
-					case ScreenType.OTHER, ScreenType.MINION -> stack.getCount();
+					case ScreenType.OTHER, ScreenType.MINION, ScreenType.HUNTING_BOX -> stack.getCount();
 				};
 
 				if (count == 0) continue;
@@ -453,6 +468,7 @@ public class ChestValue {
 		if (rawTitleString.toLowerCase(Locale.ENGLISH).endsWith("sack")) return ScreenType.SACK;
 		if (MINION_PATTERN.matcher(rawTitleString.trim()).find()) return ScreenType.MINION;
 		if ("View Stash".equalsIgnoreCase(rawTitleString)) return ScreenType.STASH;
+		if (HuntingBoxHelper.HUNTING_BOX_TITLE_PATTERN.matcher(rawTitleString).matches()) return ScreenType.HUNTING_BOX;
 		return ScreenType.OTHER;
 	}
 
@@ -462,6 +478,7 @@ public class ChestValue {
 			case ScreenType.OTHER -> Component.translatable("skyblocker.containerValue.chestValue.@Tooltip");
 			case ScreenType.STASH -> Component.translatable("skyblocker.containerValue.stashValue.@Tooltip");
 			case ScreenType.SACK -> Component.translatable("skyblocker.containerValue.sackValue.@Tooltip");
+			case ScreenType.HUNTING_BOX -> Component.translatable("skyblocker.containerValue.huntingBoxValue.@Tooltip");
 		};
 	}
 
@@ -476,6 +493,7 @@ public class ChestValue {
 		MINION,
 		SACK,
 		STASH,
+		HUNTING_BOX,
 		OTHER
 	}
 
