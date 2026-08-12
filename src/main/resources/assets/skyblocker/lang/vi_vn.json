@@ -1871,5 +1871,6 @@
     "skyblocker.config.hunting.moongladeMobs": "",
     "skyblocker.config.hunting.moongladeMobs.coralotHighlightColor": "",
     "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "",
-    "skyblocker.config.mining.callMismyla.message": ""
+    "skyblocker.config.mining.callMismyla.message": "",
+    "skyblocker.config.helpers.jerry": ""
 }
