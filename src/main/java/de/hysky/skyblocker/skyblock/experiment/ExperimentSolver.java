@@ -7,9 +7,10 @@ import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * The general class for all experiment solvers, implemented with a state machine.
@@ -46,7 +47,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 	}
 
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		state = State.REMEMBER;
 		//No reason to use the screen lambda argument given by `register` as it narrows down the type of our screen for no reason
 		ScreenEvents.afterTick(screen).register(_ -> tick(screen));
@@ -58,7 +59,7 @@ public abstract sealed class ExperimentSolver extends SimpleContainerSolver impl
 		slots.clear();
 	}
 
-	protected abstract void tick(ContainerScreen screen);
+	protected abstract void tick(AbstractContainerScreen<?> screen);
 
 	/**
 	 * Display the actual item stacks if the solver is in the {@link State#SHOW} state.

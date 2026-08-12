@@ -125,7 +125,7 @@ public class ContainerSolverManager {
 					if (screen instanceof ContainerScreen || !solver.chestScreensOnly()) {
 						++screenId;
 						currentSolver = solver;
-						if (screen instanceof ContainerScreen containerScreen) currentSolver.start(containerScreen);
+						currentSolver.start(screen);
 						markHighlightsDirty();
 						return;
 					}

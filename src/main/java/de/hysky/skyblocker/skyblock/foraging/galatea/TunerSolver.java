@@ -5,17 +5,16 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -117,12 +116,11 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	}
 
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		resetState();
 		isInMenu = true;
 		ScreenEvents.afterTick(screen).register(_ -> {
-			Int2ObjectMap<ItemStack> slots = getSlots(screen);
-			trackTargetPaneMovement(slots);
+			trackTargetPaneMovement(screen.getMenu().slots);
 		});
 		ScreenEvents.remove(screen).register(_ -> resetState());
 	}
@@ -208,12 +206,12 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		lastSpeedTicks = 0;
 	}
 
-	private void trackTargetPaneMovement(Int2ObjectMap<ItemStack> slots) {
+	private void trackTargetPaneMovement(List<Slot> slots) {
 		int currentTargetSlot = -1;
 
 		// Find the current target pane in slots 10–16
 		for (int slot = 10; slot <= 16; slot++) {
-			ItemStack stack = slots.get(slot);
+			ItemStack stack = slots.get(slot).getItem();
 			if (stack != null && isStainedGlassPane(stack.getItem())) {
 				currentTargetSlot = slot;
 				break;
@@ -240,7 +238,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 			ticksSinceLastMove = 0;
 
 			if (!speedSolved) {
-				maybeSolveSpeed(slots);
+				maybeSolveSpeed(ContainerSolverManager.slotMap(slots));
 			}
 		} else if (currentTargetSlot != -1) {
 			ticksSinceLastMove++;
@@ -510,16 +508,5 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		int forward = (toIndex - fromIndex + COLOR_CYCLE.length) % COLOR_CYCLE.length;
 		int backward = (fromIndex - toIndex + COLOR_CYCLE.length) % COLOR_CYCLE.length;
 		return forward <= backward ? forward : -backward;
-	}
-
-	private static Int2ObjectMap<ItemStack> getSlots(ContainerScreen screen) {
-		Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
-		ChestMenu handler = screen.getMenu();
-		int containerSize = handler.getRowCount() * 9;
-
-		for (Slot slot : handler.slots.subList(0, containerSize)) {
-			slots.put(slot.index, slot.getItem());
-		}
-		return slots;
 	}
 }

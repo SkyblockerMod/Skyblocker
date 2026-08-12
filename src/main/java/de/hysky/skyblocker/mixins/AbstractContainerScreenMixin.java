@@ -109,37 +109,31 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	@Shadow
 	protected abstract List<Component> getTooltipFromContainerItem(ItemStack stack);
 
-	@Shadow
-	protected int leftPos;
-	@Shadow
-	protected int topPos;
-	@Shadow
-	protected int imageWidth;
-
 	protected AbstractContainerScreenMixin(Component title) {
 		super(title);
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
-		if (this.minecraft.player != null && this.hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
+		Slot hoveredSlot = this.hoveredSlot; // To prevent some weird null analysis issues.
+		if (this.minecraft.player != null && hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 
 			// Wiki lookup
-			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(this.hoveredSlot), this.minecraft.player, input);
+			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(hoveredSlot), this.minecraft.player, input);
 
 			//item protection
 			if (ItemProtection.itemProtection.matches(input)) {
 				ItemProtection.itemProtection.consumeClick();
-				boolean ownItem = this.hoveredSlot.container == this.minecraft.player.getInventory()
+				boolean ownItem = hoveredSlot.container == this.minecraft.player.getInventory()
 						|| ItemProtection.isPersonalStorage(this.getTitle().getString());
 				if (ownItem) {
-					ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+					ItemProtection.handleKeyPressed(hoveredSlot.getItem());
 				}
 			}
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
-				ItemPrice.itemPriceLookup(minecraft.player, this.hoveredSlot);
+				ItemPrice.itemPriceLookup(minecraft.player, hoveredSlot);
 			}
 		}
 	}
@@ -213,8 +207,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		original.call(graphics, textRenderer, text, data, x, y, texture);
 	}
 
-	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"))
+	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"), name = "item")
 	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+		// hoveredSlot can not be null here.
 		return skyblocker$modifyDisplayStack(hoveredSlot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
@@ -242,13 +237,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	/**
-	 * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
-	 * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
+	 * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks).
+	 * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item.
 	 *
 	 * @implNote This runs before {@link AbstractContainerMenu#clicked(int, int, ContainerInput, net.minecraft.world.entity.player.Player)}
 	 */
 	@Inject(method = "slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleContainerInput(IIILnet/minecraft/world/inventory/ContainerInput;Lnet/minecraft/world/entity/player/Player;)V"), cancellable = true)
-	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, ContainerInput containerInput, CallbackInfo ci) {
+	private void skyblocker$onSlotClick(@Nullable Slot slot, int slotId, int button, ContainerInput containerInput, CallbackInfo ci) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Item Protection
@@ -324,7 +319,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			case ChestMenu genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
 					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
-			case null, default -> {}
+			default -> {}
 		}
 
 		//Pet Caching

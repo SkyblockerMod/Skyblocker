@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +19,7 @@ import net.minecraft.world.item.ItemStack;
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
-	/// Only called when started in a {@link ContainerScreen}.
-	default void start(ContainerScreen screen) {}
+	default void start(AbstractContainerScreen<?> screen) {}
 
 	@Override
 	default void reset() {}
