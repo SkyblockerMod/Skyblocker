@@ -453,7 +453,7 @@
   "skyblocker.config.dungeons.terminalHud.showGate": "Show Gate",
   "skyblocker.config.dungeons.terminalHud.showLevers": "Show Levers",
   "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Show Task Status",
-  "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "If disabled, only show incomplete tasks will be shown.",
+  "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "If disabled, only incomplete tasks will be shown.",
   "skyblocker.config.dungeons.terminalHud.showTerminals": "Show Terminals",
 
   "skyblocker.config.dungeons.terminals": "Terminal Solvers (F7/M7)",
