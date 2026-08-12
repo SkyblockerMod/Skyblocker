@@ -1,24 +1,29 @@
 package de.hysky.skyblocker.skyblock.foraging;
 
-import java.awt.Color;
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -28,6 +33,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.awt.Color;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -56,16 +73,16 @@ public class SweepOverlay {
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
 			new BlockPos(-1, -1, -1), new BlockPos(-1, -1, 0), new BlockPos(-1, -1, 1),
-			new BlockPos(-1, 0, -1),  new BlockPos(-1, 0, 0),  new BlockPos(-1, 0, 1),
-			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
+			new BlockPos(-1, 0, -1), new BlockPos(-1, 0, 0), new BlockPos(-1, 0, 1),
+			new BlockPos(-1, 1, -1), new BlockPos(-1, 1, 0), new BlockPos(-1, 1, 1),
 
-			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
-			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
+			new BlockPos(0, -1, -1), new BlockPos(0, -1, 0), new BlockPos(0, -1, 1),
+			new BlockPos(0, 0, -1), new BlockPos(0, 0, 1),
+			new BlockPos(0, 1, -1), new BlockPos(0, 1, 0), new BlockPos(0, 1, 1),
 
-			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
-			new BlockPos(1, 0, -1),   new BlockPos(1, 0, 0),   new BlockPos(1, 0, 1),
-			new BlockPos(1, 1, -1),   new BlockPos(1, 1, 0),   new BlockPos(1, 1, 1)
+			new BlockPos(1, -1, -1), new BlockPos(1, -1, 0), new BlockPos(1, -1, 1),
+			new BlockPos(1, 0, -1), new BlockPos(1, 0, 0), new BlockPos(1, 0, 1),
+			new BlockPos(1, 1, -1), new BlockPos(1, 1, 0), new BlockPos(1, 1, 1)
 	};
 
 	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
@@ -78,11 +95,40 @@ public class SweepOverlay {
 			Blocks.STRIPPED_MANGROVE_LOG, 150f,
 			Blocks.STRIPPED_MANGROVE_WOOD, 150f
 	);
+	@Nullable
+	private static Vec3 start = null;
+	@Nullable
+	private static Vec3 look = null;
 
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().foraging.sweepOverlay.sweepOverlayColor);
 		LevelRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
+		ParticleEvents.FROM_SERVER.register(SweepOverlay::onParticle);
+		UseItemCallback.EVENT.register(SweepOverlay::onItemInteract);
+	}
+
+	private static InteractionResult onItemInteract(Player player, Level level, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+
+		start = player.getEyePosition();
+		look = player.getViewVector(1.0f);
+
+		return InteractionResult.PASS;
+	}
+
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
+		if (!ParticleTypes.WAX_ON.equals(packet.getParticle().getType())) {
+			return;
+		}
+
+		Vec3 location = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+		if (start != null && look != null) {
+			Vec3 b = location.subtract(start);
+			double offset = b.cross(look).length();
+			double distance = b.subtract(0,0, 0).length();
+			System.out.println("("+ distance + ", -"+ offset+ ")      ::"+ (offset / distance) );
+		}
 	}
 
 	private static boolean isValidLocation() {
@@ -123,12 +169,13 @@ public class SweepOverlay {
 			// #todo gravity prediction
 			Vec3 start = CLIENT.player.getEyePosition(1.0f);
 			Vec3 look = CLIENT.player.getViewVector(1.0f);
-			Vec3 end = start.add(look.scale(50.0));
-			ClipContext context = new ClipContext(
-					start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CLIENT.player
-			);
-			HitResult hitResult = CLIENT.level.clip(context);
-			if (hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
+			double lookPitch = CLIENT.player.getXRot();
+//			Vec3 end = start.add(look.scale(50.0));
+//			ClipContext context = new ClipContext(
+//					start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CLIENT.player
+//			);
+			HitResult hitResult = thrownAxe(start, look,lookPitch);
+			if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
 				blockHitResult = rayHitResult;
 				isThrown = true;
 			}
@@ -140,6 +187,33 @@ public class SweepOverlay {
 				submitConnectedLogs(collector, blockHitResult, state, isThrown);
 			}
 		}
+	}
+
+	/**
+	 * Predict where a throwing axe is going to hit when thrown given the starting variables. Taking gravity into account
+	 * @param start start position
+	 * @param look direction vector
+	 * @param lookPitch throwing pitch
+	 * @return hit result when found wood else null
+	 */
+	private static @Nullable BlockHitResult thrownAxe(Vec3 start, Vec3 look, Double lookPitch) {
+		if (CLIENT.level == null )  return null;
+		int max_distance = 50;
+		for (int i = 0; i < max_distance; i++) {
+			Vec3 pos = start.add(look.scale(i));
+			//add gravity
+			double angle =  Math.abs(lookPitch / 90);
+			double gravity = ((1 - angle)* (2.65 + 2.51827 * angle - 2.43475 * Math.pow(angle, 2) + 1.22748 * Math.pow(angle , 3))) / 1000;
+
+			pos = pos.subtract(0, gravity * Math.pow(i, 2), 0);
+			BlockPos block = BlockPos.containing(pos);
+			BlockState state = CLIENT.level.getBlockState(block);
+			if (isLog(state)) {
+				return new BlockHitResult(pos, Direction.DOWN, block, false);
+			}
+		}
+		//if no hits return null
+		return null;
 	}
 
 	/**
@@ -212,8 +286,8 @@ public class SweepOverlay {
 		}
 		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
 			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
-							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
-									.withStyle(ChatFormatting.RED)));
+					Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
+							.withStyle(ChatFormatting.RED)));
 			sweepStatNoticeShown = true;
 		}
 
@@ -257,8 +331,8 @@ public class SweepOverlay {
 	 * color and the blocks broken is halved.
 	 *
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
-	 * @param state         the block state of the targeted block
-	 * @param isThrown      true if the hit comes from a ray cast (throwable axe)
+	 * @param state          the block state of the targeted block
+	 * @param isThrown       true if the hit comes from a ray cast (throwable axe)
 	 */
 	private static void submitConnectedLogs(PrimitiveCollector collector, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
@@ -269,7 +343,7 @@ public class SweepOverlay {
 		// Adjust color for ray-cast hits (dimmer: multiply RGB by 0.7, keep alpha)
 		float[] renderColor = colorComponents;
 		if (isThrown) {
-			renderColor = new float[] {
+			renderColor = new float[]{
 					colorComponents[0] * 0.7f,
 					colorComponents[1] * 0.7f,
 					colorComponents[2] * 0.7f,
