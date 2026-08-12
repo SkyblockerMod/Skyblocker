@@ -1870,5 +1870,6 @@
     "skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle.@Tooltip": "",
     "skyblocker.config.general.itemTooltip.craft.SELL_ORDER": "",
     "skyblocker.config.helpers.chocolateFactory.enableChocolateFactoryHelper": "",
-    "skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip": ""
+    "skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
