@@ -87,7 +87,7 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
-				CLIENT.player.sendOverlayMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())));
+				CLIENT.gui.hud.setOverlayMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
 			}
 
 			if (rule.getToastMessage() != null) {
