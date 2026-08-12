@@ -1169,5 +1169,6 @@
     "skyblocker.config.dungeons.terminalHud.showGate": "Показывать Входы",
     "skyblocker.config.dungeons.terminalHud.showLevers": "Показывать Рычаги",
     "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Показывать Статус Задания",
-    "skyblocker.config.dungeons.terminalHud.showTerminals": "Показывать Терминалы"
+    "skyblocker.config.dungeons.terminalHud.showTerminals": "Показывать Терминалы",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
