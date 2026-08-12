@@ -1890,5 +1890,6 @@
     "skyblocker.config.hunting.safari.silencePhantoms.@Tooltip": "",
     "skyblocker.config.hunting.torrhusMobs": "",
     "skyblocker.dwarvenMines.metalDetectorHelper.possible": "",
-    "skyblocker.foraging.treeFelled": ""
+    "skyblocker.foraging.treeFelled": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
