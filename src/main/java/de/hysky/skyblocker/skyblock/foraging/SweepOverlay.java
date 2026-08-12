@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.foraging;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -10,22 +9,15 @@ import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -95,41 +87,13 @@ public class SweepOverlay {
 			Blocks.STRIPPED_MANGROVE_LOG, 150f,
 			Blocks.STRIPPED_MANGROVE_WOOD, 150f
 	);
-	@Nullable
-	private static Vec3 start = null;
-	@Nullable
-	private static Vec3 look = null;
 
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().foraging.sweepOverlay.sweepOverlayColor);
 		LevelRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
-		ParticleEvents.FROM_SERVER.register(SweepOverlay::onParticle);
-		UseItemCallback.EVENT.register(SweepOverlay::onItemInteract);
 	}
 
-	private static InteractionResult onItemInteract(Player player, Level level, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-
-		start = player.getEyePosition();
-		look = player.getViewVector(1.0f);
-
-		return InteractionResult.PASS;
-	}
-
-	private static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (!ParticleTypes.WAX_ON.equals(packet.getParticle().getType())) {
-			return;
-		}
-
-		Vec3 location = new Vec3(packet.getX(), packet.getY(), packet.getZ());
-		if (start != null && look != null) {
-			Vec3 b = location.subtract(start);
-			double offset = b.cross(look).length();
-			double distance = b.subtract(0,0, 0).length();
-			System.out.println("("+ distance + ", -"+ offset+ ")      ::"+ (offset / distance) );
-		}
-	}
 
 	private static boolean isValidLocation() {
 		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
@@ -166,15 +130,10 @@ public class SweepOverlay {
 			blockHitResult = hitResult;
 		} else if (isThrowableAxe && config.enableThrownAbilityOverlay && !ItemCooldowns.isOnCooldown(heldItem)) {
 			// Cast a ray up to 50 blocks for throwable axes
-			// #todo gravity prediction
 			Vec3 start = CLIENT.player.getEyePosition(1.0f);
 			Vec3 look = CLIENT.player.getViewVector(1.0f);
 			double lookPitch = CLIENT.player.getXRot();
-//			Vec3 end = start.add(look.scale(50.0));
-//			ClipContext context = new ClipContext(
-//					start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CLIENT.player
-//			);
-			HitResult hitResult = thrownAxe(start, look,lookPitch);
+			HitResult hitResult = thrownAxe(start, look, lookPitch, 50);
 			if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
 				blockHitResult = rayHitResult;
 				isThrown = true;
@@ -190,20 +149,22 @@ public class SweepOverlay {
 	}
 
 	/**
-	 * Predict where a throwing axe is going to hit when thrown given the starting variables. Taking gravity into account
-	 * @param start start position
-	 * @param look direction vector
-	 * @param lookPitch throwing pitch
+	 * Predict where a throwing axe is going to hit when thrown given the starting variables. Taking gravity into account.
+	 *
+	 * @param start       start position
+	 * @param look        direction vector
+	 * @param lookPitch   throwing pitch
+	 * @param maxDistance maximum search distance
 	 * @return hit result when found wood else null
 	 */
-	private static @Nullable BlockHitResult thrownAxe(Vec3 start, Vec3 look, Double lookPitch) {
-		if (CLIENT.level == null )  return null;
-		int max_distance = 50;
+	private static @Nullable BlockHitResult thrownAxe(Vec3 start, Vec3 look, Double lookPitch, int maxDistance) {
+		if (CLIENT.level == null) return null;
+		int max_distance = maxDistance;
 		for (int i = 0; i < max_distance; i++) {
 			Vec3 pos = start.add(look.scale(i));
 			//add gravity
-			double angle =  Math.abs(lookPitch / 90);
-			double gravity = ((1 - angle)* (2.65 + 2.51827 * angle - 2.43475 * Math.pow(angle, 2) + 1.22748 * Math.pow(angle , 3))) / 1000;
+			double angle = Math.abs(lookPitch / 90);
+			double gravity = ((1 - angle) * (2.65 + 2.51827 * angle - 2.43475 * Math.pow(angle, 2) + 1.22748 * Math.pow(angle, 3))) / 1000;
 
 			pos = pos.subtract(0, gravity * Math.pow(i, 2), 0);
 			BlockPos block = BlockPos.containing(pos);
