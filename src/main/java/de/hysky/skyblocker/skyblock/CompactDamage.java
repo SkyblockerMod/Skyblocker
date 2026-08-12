@@ -150,11 +150,10 @@ public class CompactDamage {
 			1000000000000000000L,
 	};
 
-	/// Equivalent to floor(log10(x)) + 1
-	/// https://stackoverflow.com/a/25934909
+	/// Equivalent to `floor(log10(x)) + 1` according to [this answer](https://stackoverflow.com/a/25934909).
 	@VisibleForTesting
 	static int baseTenDigits(long x) {
 		int guess = guesses[baseTwoDigits(x)];
-		return guess + ((x >= powersOfTen[guess]) ? 1 : 0);
+		return guess + (x >= powersOfTen[guess] ? 1 : 0);
 	}
 }

@@ -79,6 +79,7 @@ public enum StatusBarType implements StringRepresentable {
 	public StatusBar newStatusBar() {
 		return switch (this) {
 			case HEALTH -> new StatusBar.HealthStatusBar(this);
+			case VITALITY -> new StatusBar.VitalityStatusBar(this);
 			case INTELLIGENCE -> new StatusBar.ManaStatusBar(this);
 			case EXPERIENCE -> new StatusBar.ExperienceStatusBar(this);
 			default -> new StatusBar(this);

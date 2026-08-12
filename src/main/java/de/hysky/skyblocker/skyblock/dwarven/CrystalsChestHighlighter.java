@@ -189,7 +189,7 @@ public class CrystalsChestHighlighter {
 
 				//render the spot
 				highlightSpot = highlightSpot.scale((double) 1 / addedParticles).subtract(LOCK_HIGHLIGHT_SIZE.scale(0.5));
-				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
+				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], false);
 			}
 
 			//render total text if needed is more than 0

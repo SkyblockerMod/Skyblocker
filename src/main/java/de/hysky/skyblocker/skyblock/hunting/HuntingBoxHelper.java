@@ -16,12 +16,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HuntingBoxHelper extends SimpleContainerSolver {
+	// ^(?:\(\d+\/\d+\) )?Hunting Box$
+	public static final Pattern HUNTING_BOX_TITLE_PATTERN = Pattern.compile("^(?:\\(\\d+\\/\\d+\\) )?Hunting Box$");
 	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: ([\\d,]+) Shards?");
 	private static final Pattern SYPHON_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
 	private static final Logger LOGGER = LoggerFactory.getLogger(HuntingBoxHelper.class);
 
 	public HuntingBoxHelper() {
-		super("^Hunting Box$");
+		super(HUNTING_BOX_TITLE_PATTERN);
 	}
 
 	@Override

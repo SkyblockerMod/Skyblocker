@@ -7,11 +7,13 @@ import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
@@ -22,6 +24,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -32,14 +35,18 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -63,9 +70,12 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private static final int BOTTOM_V = 215;
 	private static final int EDGE_PADDING = 7;
 
+	private static final int NOT_MATCHED_COLOR = ARGB.black(0.6f);
+
 	protected static int openStorage;
 	private static double savedScroll = 0;
 	private static String savedSearch = "";
+	private static int savedIndex = -1;
 	private static boolean disableOnNextLoad = false;
 	@Nullable
 	private BackpackGridWidget grid;
@@ -73,6 +83,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private final StorageOverlayScreenHandler handler;
 	private final Component name;
 	private final ChestMenu defaultHandler;
+	private boolean saveMousePosition;
+	private static @Nullable Vector2dc previousMousePosition;
+
+	public static @Nullable Vector2dc getPreviousMousePosition() {
+		Vector2dc screenPosition = previousMousePosition;
+		previousMousePosition = null;
+		return screenPosition;
+	}
 
 	@Init
 	public static void setup() { //already had init therefore called setup
@@ -81,6 +99,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				disableOnNextLoad = true;
 			}
 			return true;
+		});
+		ClientSendMessageEvents.MODIFY_COMMAND.register(command -> {
+			if (!SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.enabled || savedIndex < 0 || Minecraft.getInstance().gui.screen() instanceof StorageOverlayScreen || !command.equals("storage")) {
+				return command;
+			} else {
+				String c = getCommandForIndex(savedIndex);
+				savedIndex = -1;
+				return c.substring(1);
+			}
 		});
 	}
 
@@ -105,10 +132,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		if (grid == null) return;
 
 		savedScroll = grid.getScrollAmount();
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown(getCommandForIndex(index), true);
+		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
+	}
+
+	private static String getCommandForIndex(int index) {
 		if (index <= 8) {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/echest " + (index + 1), true);
+			return "/echest " + (index + 1);
 		} else {
-			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/backpack " + (index - 8), true);
+			return "/backpack " + (index - 8);
 		}
 	}
 
@@ -135,6 +167,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	private void home(Button button) {
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
 		disableOnNextLoad = true;
+		savedIndex = -1;
 	}
 
 	private void toolkit(Button button) {
@@ -196,12 +229,21 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	@Override
+	protected boolean isHovering(Slot slot, double xm, double ym) {
+		// prevent clicking slots through search bar
+		// only affect the container and not the inventory slots
+		return super.isHovering(slot, xm, ym) && (grid == null || slot.container instanceof Inventory || grid.getGridRectangle().containsPoint((int) xm, (int) ym));
+	}
+
+	@Override
 	protected void init() {
 		super.init();
 
 		//setup backpack widgets
+		int storagesPerRow = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.storagesPerRow;
+		storagesPerRow = storagesPerRow > 0 ? storagesPerRow : Integer.MAX_VALUE;
 		int internalCols = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.backpackWidth;
-		grid = new BackpackGridWidget(getMinLeftPos() + 8, this.topPos + 8, getMaxWidth() - 16, getHeight() - 16, internalCols, true);
+		grid = new BackpackGridWidget(getMinLeftPos() + 8, this.topPos + 8, getMaxWidth() - 16, getHeight() - 16, storagesPerRow, internalCols, true);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
 		this.addRenderableWidget(grid);
@@ -237,24 +279,35 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 	@Override
 	public void onClose() {
+		savedScroll = 0;
 		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberSearch && grid != null) {
 			savedScroll = grid.getScrollAmount();
 		} else {
 			savedSearch = "";
-			savedScroll = 0;
+		}
+		if (SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.rememberOpened && grid != null && grid.openBackpack != null) {
+			savedIndex = grid.openBackpack.index;
+			savedScroll = grid.getScrollAmount();
+		} else {
+			savedIndex = -1;
 		}
 		super.onClose();
 	}
 
 	@Override
 	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
-		if (slot.container instanceof Inventory) {
+		if (slot.container instanceof Inventory || grid == null) {
 			super.extractSlot(graphics, slot, mouseX, mouseY);
 		} else {
 			//keep backpack slots within gui
-			graphics.enableScissor(-this.leftPos, 28, getWidth(), getHeight() - 8);
+			ScreenRectangle rectangle = grid.getGridRectangle();
+			rectangle = new ScreenRectangle(rectangle.position().x() - leftPos, rectangle.position().y() - topPos, rectangle.width(), rectangle.height());
+			graphics.enableScissor(rectangle.left(), rectangle.top(), rectangle.right(), rectangle.bottom());
 			super.extractSlot(graphics, slot, mouseX, mouseY);
 			graphics.disableScissor();
+			if (grid.openBackpack != null && !grid.openBackpack.matchedSlots.get(slot.getContainerSlot())) {
+				graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, NOT_MATCHED_COLOR);
+			}
 		}
 
 	}
@@ -286,6 +339,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	@Override
+	public void removed() {
+		super.removed();
+		if (saveMousePosition) {
+			previousMousePosition = new Vector2d(minecraft.mouseHandler.xpos(), minecraft.mouseHandler.ypos());
+		}
+	}
+
+	@Override
 	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractBackground(graphics, mouseX, mouseY, a);
 		//render background
@@ -301,7 +362,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Nullable
 		private final Button reloadButton;
 
-		private BackpackGridWidget(int x, int y, int width, int height, int internalCols, boolean packed) {
+		private BackpackGridWidget(int x, int y, int width, int height, int storagesPerRow, int internalCols, boolean packed) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - AbstractScrollArea.SCROLLBAR_WIDTH) {
@@ -309,9 +370,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			}
 
 			if (packed) {
-				int diff = (width - AbstractScrollArea.SCROLLBAR_WIDTH) % expectedWidth;
-				width -= diff;
-				x += diff / 2;
+				storagesPerRow = Math.min((width - AbstractScrollArea.SCROLLBAR_WIDTH) / expectedWidth, storagesPerRow);
+				width = storagesPerRow * expectedWidth + AbstractScrollArea.SCROLLBAR_WIDTH;
+				x = (StorageOverlayScreen.this.width - width) / 2;
 			}
 
 			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
@@ -360,7 +421,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Override
 		public boolean isMouseOver(double mouseX, double mouseY) {
 			//let the mouse go though gui if the user is interacting with open backpack
-			if (openBackpack != null && openBackpack.isMouseOver(mouseX, mouseY)) {
+			if (hoveredSlot != null && getGridRectangle().containsPoint((int) mouseX, (int) mouseY)) {
 				return false;
 			}
 			return super.isMouseOver(mouseX, mouseY);
@@ -391,6 +452,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		private final int index;
 		private final BackpackPreview.Storage storage;
 		private final boolean open;
+		private final BitSet matchedSlots = new BitSet();
 
 
 		private BackpackWidget(int columns, int index, BackpackPreview.Storage storage, Boolean open) {
@@ -417,17 +479,18 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		}
 
 		public boolean matches(String filter) {
-			//keep open backpack displayed even if no match
-			if (open) return true;
+			matchedSlots.clear();
+			final String filterLowerCase = filter.toLowerCase(Locale.ENGLISH);
 
 			//matches if any item in backpack contains the filter word
 			for (int i = 9; i < size(); ++i) {
-				ItemStack currentStack = storage.getStack(i);
-				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
-					return true;
+				ItemStack currentStack = open ? handler.getContainer().getItem(i) : storage.getStack(i);
+				if (currentStack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(filterLowerCase) || ItemUtils.getLoreLineIf(currentStack, s -> s.toLowerCase(Locale.ENGLISH).contains(filterLowerCase)) != null) {
+					matchedSlots.set(i);
 				}
 			}
-			return false;
+			//keep open backpack displayed even if no match
+			return matchedSlots.cardinality() != 0 || open;
 		}
 
 
@@ -487,25 +550,30 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 				//render cached items
 				for (int i = 9; i < size(); ++i) {
 					ItemStack currentStack = storage.getStack(i);
-					if (currentStack.isEmpty()) continue;
 					int itemX = x + (i - 9) % columns * SLOT_SIZE + 8;
 					int itemY = y + (i - 9) / columns * SLOT_SIZE + SLOT_SIZE;
-					// draw custom backgrounds ect as well as item
-					ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
+					if (!currentStack.isEmpty()) {
+						// draw custom backgrounds ect as well as item
+						ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
-					if (ItemProtection.isItemProtected(currentStack)) {
-						ItemProtection.drawSlotIcon(graphics, itemX, itemY);
+						if (ItemProtection.isItemProtected(currentStack)) {
+							ItemProtection.drawSlotIcon(graphics, itemX, itemY);
+						}
+
+						graphics.item(currentStack, itemX, itemY);
+						graphics.itemDecorations(textRenderer, currentStack, itemX, itemY);
+						SlotTextManager.extractSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
+
+						//draw tooltip if hovered
+						if (graphics.containsPointInScissor(mouseX, mouseY) && mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE && mouseY > topPos && mouseY < topPos + StorageOverlayScreen.this.getHeight()) {
+							Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
+
+							graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
+						}
 					}
 
-					graphics.item(currentStack, itemX, itemY);
-					graphics.itemDecorations(textRenderer, currentStack, itemX, itemY);
-					SlotTextManager.extractSlotText(graphics, textRenderer, null, currentStack, i, itemX, itemY);
-
-					//draw tooltip if hovered
-					if (mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE && mouseY > topPos && mouseY < topPos + StorageOverlayScreen.this.getHeight()) {
-						Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
-
-						graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
+					if (!matchedSlots.get(i)) {
+						graphics.fill(itemX, itemY, itemX + 16, itemY + 16, NOT_MATCHED_COLOR);
 					}
 				}
 			} else {
@@ -522,6 +590,9 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 			//outline open
 			if (open) {
 				graphics.outline(getX(), getY(), getWidth(), getHeight(), Color.yellow.getRGB());
+			}
+			if (isHovered() && !open) {
+				graphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.white(0.1f));
 			}
 		}
 

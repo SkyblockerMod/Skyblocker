@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.foraging.galatea;
+package de.hysky.skyblocker.skyblock.hunting;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,20 +25,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public class ForestNodes {
+public class FloorDrops {
 	private static final Minecraft client = Minecraft.getInstance();
 	private static final Map<BlockPos, ForestNode> forestNodes = new HashMap<>();
 
 	@Init
 	public static void init() {
-		Scheduler.INSTANCE.scheduleCyclic(ForestNodes::update, 20);
-		LevelRenderExtractionCallback.EVENT.register(ForestNodes::extractRendering);
+		Scheduler.INSTANCE.scheduleCyclic(FloorDrops::update, 20);
+		LevelRenderExtractionCallback.EVENT.register(FloorDrops::extractRendering);
 		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			if (!shouldProcess()) {
 				return InteractionResult.PASS;
@@ -55,7 +54,7 @@ public class ForestNodes {
 			return InteractionResult.PASS;
 		});
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
-		ParticleEvents.FROM_SERVER.register(ForestNodes::onParticle);
+		ParticleEvents.FROM_SERVER.register(FloorDrops::onParticle);
 	}
 
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
@@ -133,7 +132,7 @@ public class ForestNodes {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().foraging.galatea.enableForestNodeHelper && Utils.isInGalatea();
+		return SkyblockerConfigManager.get().hunting.floorDrops.highlightFloorDrops && (Utils.isInGalatea() || Utils.isInTorrhusCanyon() || Utils.isInSafari());
 	}
 
 	private static void reset() {
@@ -146,7 +145,7 @@ public class ForestNodes {
 		private ForestNode(BlockPos pos) {
 			super(pos,
 					() -> Type.HIGHLIGHT,
-					ColorUtils.getFloatComponents(DyeColor.ORANGE),
+					ColorUtils.getFloatComponents(SkyblockerConfigManager.get().hunting.floorDrops.floorDropHighlightColor.getRGB()),
 					DEFAULT_HIGHLIGHT_ALPHA,
 					DEFAULT_LINE_WIDTH,
 					false

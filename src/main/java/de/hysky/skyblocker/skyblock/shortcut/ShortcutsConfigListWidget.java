@@ -121,6 +121,16 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 	}
 
 	@Override
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		if (super.mouseClicked(event, doubleClick)) return true;
+		if (stopEditing()) {
+			updateKeybinds();
+		}
+		screen.checkForDuplicates();
+		return false;
+	}
+
+	@Override
 	protected boolean entriesCanBeSelected() {
 		return true;
 	}
@@ -431,7 +441,7 @@ public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<Shor
 
 		@Override
 		protected String key() {
-			return keyBinding.getBoundKeysText().getString();
+			return keyBinding.getBoundKeysTranslationKey().toString();
 		}
 
 		/**

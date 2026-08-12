@@ -103,4 +103,10 @@ public class MobGlow {
 	public static List<ArmorStand> getArmorStands(Level world, AABB box) {
 		return world.getEntitiesOfClass(ArmorStand.class, box.inflate(0, 2, 0), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
 	}
+
+	public static String getArmorStandNameTrick(Entity entity) {
+		Entity possibleNameTag = entity.level().getEntity(entity.getId() + 1);
+
+		return possibleNameTag instanceof ArmorStand ? possibleNameTag.getPlainTextName() : "ERR NO ARMR STAND";
+	}
 }

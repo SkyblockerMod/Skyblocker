@@ -144,7 +144,7 @@ public class WaypointGroup {
 
 	public NamedWaypoint createWaypoint(BlockPos pos) {
 		String name = "Waypoint " + (waypoints.size() + 1);
-		return ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f});
+		return (ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f})).withThroughWalls(renderThroughWalls).withTypeSupplier(this::waypointType);
 	}
 
 	/**

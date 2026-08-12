@@ -856,6 +856,21 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
+				// Bat Message
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.batMessage"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage"))
+								.description(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.dungeons.batMessage.sendBatMessage,
+										() -> config.dungeons.batMessage.sendBatMessage,
+										newValue -> config.dungeons.batMessage.sendBatMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				// Door Highlight
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.doorHighlight"))

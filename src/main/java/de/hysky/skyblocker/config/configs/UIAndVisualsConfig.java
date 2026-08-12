@@ -120,9 +120,16 @@ public class UIAndVisualsConfig {
 	public static class StorageOverlay {
 		public boolean enabled = false;
 
+		public int storagesPerRow = 3;
+
 		public int backpackWidth = 9;
 
 		public boolean rememberSearch = false;
+
+		public boolean rememberOpened = false;
+
+		// present in case we need to patch it out for x or y reason
+		public transient boolean doNotResetCursor = true;
 	}
 
 	public static class RadialMenu {
@@ -297,6 +304,10 @@ public class UIAndVisualsConfig {
 		public boolean useHungerBarSprites = false;
 
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
+
+		public boolean showEstimatedTilde = true;
+
+		public boolean hasSeenVitalityAtLeastOnce = false;
 
 		// Kept in for backwards compatibility, remove if needed
 		@SuppressWarnings("DeprecatedIsStillUsed")

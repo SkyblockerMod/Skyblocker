@@ -63,6 +63,8 @@ public class DungeonsConfig {
 
 	public PrinceMessage princeMessage = new PrinceMessage();
 
+	public BatMessage batMessage = new BatMessage();
+
 	public DoorHighlight doorHighlight = new DoorHighlight();
 
 	public DungeonScore dungeonScore = new DungeonScore();
@@ -151,9 +153,9 @@ public class DungeonsConfig {
 
 		public boolean enableLividColorBoundingBox = true;
 
-		public boolean enableLividColorText = true;
+		public boolean enableLividColorText = false;
 
-		public boolean enableLividColorTitle = true;
+		public boolean enableLividColorTitle = false;
 
 		public String lividColorText = "The livid color is [color]";
 	}
@@ -274,6 +276,10 @@ public class DungeonsConfig {
 
 		@Deprecated
 		public transient String princeMessage = "Prince dead!";
+	}
+
+	public static class BatMessage {
+		public boolean sendBatMessage = true;
 	}
 
 	public static class DoorHighlight {

@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +14,8 @@ import com.mojang.datafixers.util.Either;
 
 public class VisitorLookup implements WikiLookup {
 	public static final VisitorLookup INSTANCE = new VisitorLookup();
+	// ^(?:\(\d+\/\d+\) )?Visitor's Logbook$
+	private static final Pattern VISITORS_LOGBOOK_PATTERN = Pattern.compile("^(?:\\(\\d+\\/\\d+\\) )?Visitor's Logbook$");
 
 	private VisitorLookup() {}
 
@@ -28,6 +32,6 @@ public class VisitorLookup implements WikiLookup {
 		Slot slot = optional.get();
 		if (slot.index <= 9 || slot.index >= 44) return false;
 		if (slot.getItem().is(Items.STAINED_GLASS_PANE.black())) return false;
-		return StringUtils.isNotEmpty(title) && title.matches("^Visitor's Logbook$");
+		return StringUtils.isNotEmpty(title) && VISITORS_LOGBOOK_PATTERN.matcher(title).matches();
 	}
 }

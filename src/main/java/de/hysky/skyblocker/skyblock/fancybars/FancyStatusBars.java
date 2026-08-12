@@ -66,6 +66,14 @@ public class FancyStatusBars {
 		return Debug.isTestEnvironment() || statusBar.enabled || statusBar.inMouse;
 	}
 
+	/**
+	 * Called when vitality is first discovered.
+	 */
+	public static void makeVitalityVisible() {
+		statusBars.get(StatusBarType.VITALITY).visible = true;
+		updatePositionsNextFrame = true;
+	}
+
 	@SuppressWarnings("deprecation")
 	@Init
 	public static void init() {
@@ -110,6 +118,7 @@ public class FancyStatusBars {
 		for (StatusBarType type : StatusBarType.values()) {
 			statusBars.put(type, type.newStatusBar());
 		}
+		statusBars.get(StatusBarType.VITALITY).visible = SkyblockerConfigManager.get().uiAndVisuals.bars.hasSeenVitalityAtLeastOnce;
 		// Fill defaults
 		resetBarPositions();
 
@@ -379,24 +388,31 @@ public class FancyStatusBars {
 			statusBar.extractText(graphics);
 		}
 
+		StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+		StatusBar vitalityBar = statusBars.get(StatusBarType.VITALITY);
 		if (Utils.isInTheRift()) {
 			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
 			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
-			statusBars.get(StatusBarType.DEFENSE).visible = false;
+			defenseBar.visible = false;
+			vitalityBar.visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
 			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+
 			int defense = StatusBarTracker.getDefense();
-			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
 			defenseBar.visible = true;
 			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+
+			StatusBarTracker.EstimatedResource vitality = StatusBarTracker.getVitality();
+			vitalityBar.visible = true;
+			vitalityBar.updateWithResource(vitality.resource());
 		}
 
-		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
+		StatusBarTracker.EstimatedResource intelligence = StatusBarTracker.getMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
 			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
-		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
+		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence.resource());
 
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);
@@ -408,14 +424,6 @@ public class FancyStatusBars {
 			airBar.visible = player.isUnderWater();
 			updatePositionsNextFrame = true;
 		}
-		StatusBar vitality = statusBars.get(StatusBarType.VITALITY);
-		StatusBarTracker.Resource vitalityResource = StatusBarTracker.getVitality();
-		boolean hasVitality = vitalityResource != null;
-		if (hasVitality != vitality.visible) {
-			vitality.visible = hasVitality;
-			updatePositionsNextFrame = true;
-		}
-		if (hasVitality) vitality.updateWithResource(vitalityResource);
 		if (updatePositionsNextFrame) {
 			updatePositions(false);
 			updatePositionsNextFrame = false;

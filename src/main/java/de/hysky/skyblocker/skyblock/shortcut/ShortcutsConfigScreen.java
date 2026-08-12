@@ -22,7 +22,6 @@ public class ShortcutsConfigScreen extends Screen {
 	private Button buttonDone;
 	private boolean initialized;
 	private double scrollAmount;
-	private boolean hasDuplicates;
 
 	public ShortcutsConfigScreen() {
 		this(null);
@@ -90,13 +89,12 @@ public class ShortcutsConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		boolean wasEditing = shortcutsConfigListWidget.stopEditing();
-		if (wasEditing) {
+		if (super.mouseClicked(click, doubled)) return true;
+		if (shortcutsConfigListWidget.stopEditing()) {
 			shortcutsConfigListWidget.updateKeybinds();
 		}
-		boolean bl = super.mouseClicked(click, doubled);
 		checkForDuplicates();
-		return bl;
+		return false;
 	}
 
 	@Override
@@ -131,7 +129,7 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	protected void checkForDuplicates() {
-		hasDuplicates = shortcutsConfigListWidget.hasDuplicates();
+		boolean hasDuplicates = shortcutsConfigListWidget.hasDuplicates();
 
 		if (hasDuplicates) {
 			buttonDone.active = false;

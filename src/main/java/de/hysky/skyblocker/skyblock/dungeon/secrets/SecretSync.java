@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
+import de.hysky.skyblocker.utils.ws.message.DungeonBatKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonMimicKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
@@ -115,6 +116,18 @@ public class SecretSync {
 		if (secretIndex == -1) return;
 		room.markSecrets(secretIndex, true);
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Hiding waypoints for secret #{} in room {}", secretIndex, msg.roomName());
+	}
+
+	public static void syncBatKilled() {
+		if (CLIENT.player == null) return;
+		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
+				new DungeonBatKilledMessage(CLIENT.player.getUUID()));
+	}
+
+	public static void handleBatKilled(DungeonBatKilledMessage msg) {
+		if (!checkSender(msg.sender())) return;
+		DungeonScore.onBatKill(false);
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Bat killed!");
 	}
 
 	public static void syncMimicKilled() {

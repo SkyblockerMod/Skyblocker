@@ -521,10 +521,8 @@ public class SlayerManager {
 
 		private void save() {
 			var slayers = SLAYERS_DATA.computeIfAbsent(Object2ObjectOpenHashMap::new);
-			if (slayers != null) {
-				slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
-				SLAYERS_DATA.save();
-			}
+			slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
+			SLAYERS_DATA.save();
 		}
 
 		private void update(int level, int xpRemaining, boolean saveCache) {

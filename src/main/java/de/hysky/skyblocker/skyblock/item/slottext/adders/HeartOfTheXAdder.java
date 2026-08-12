@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class HeartOfTheXAdder extends SimpleSlotTextAdder {
@@ -20,11 +19,11 @@ public abstract class HeartOfTheXAdder extends SimpleSlotTextAdder {
 		super(titlePattern, configInformation);
 	}
 
-	protected abstract Item getNonLeveledItem();
+	protected abstract boolean isNonLeveledItem(ItemStack stack);
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
-		if (slotId < 0 || slotId > 44 || stack.is(getNonLeveledItem())) return List.of();
+		if (slotId < 0 || slotId > 44 || isNonLeveledItem(stack)) return List.of();
 
 		List<String> lore = stack.skyblocker$getLoreStrings();
 		if (lore.isEmpty()) return List.of();

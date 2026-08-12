@@ -5,7 +5,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +26,6 @@ public class BuildersWandPreview {
 	public static final int PLOT_SIZE = 96;
 	public static final int PLOT_OFFSET = 48;
 	private static final float[] RED = {1.0f, 0.0f, 0.0f};
-	public static final boolean SODIUM_LOADED = FabricLoader.getInstance().isModLoaded("sodium");
 	private static final Minecraft client = Minecraft.getInstance();
 
 	@Init
