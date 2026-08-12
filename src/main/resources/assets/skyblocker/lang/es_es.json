@@ -1882,5 +1882,11 @@
     "skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip": "",
     "skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip": "",
     "skyblocker.config.otherLocations.barn.solveHungryHiker": "",
-    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": ""
+    "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.filter": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.custom": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip": "",
+    "skyblocker.config.chat.chatRules.announcementLength": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": ""
 }
