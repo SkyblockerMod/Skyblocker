@@ -1895,5 +1895,6 @@
     "skyblocker.dungeons.splits.sadanGiants": "",
     "skyblocker.dungeons.splits.witherKing": "",
     "skyblocker.dungeons.splits.storm": "",
-    "skyblocker.dungeons.splits.transformedProfessor": ""
+    "skyblocker.dungeons.splits.transformedProfessor": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
