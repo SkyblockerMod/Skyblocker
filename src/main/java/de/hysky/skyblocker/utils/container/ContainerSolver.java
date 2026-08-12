@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
+	/// Only called when started in a {@link ContainerScreen}.
 	default void start(ContainerScreen screen) {}
 
 	@Override
@@ -55,5 +56,16 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 			slots.remove(i);
 			slots.remove((rows - 1) * 9 + i);
 		}
+	}
+
+	/// @return true if this solver should only work in Skyblock.
+	default boolean skyblockOnly() {
+		return true;
+	}
+
+	/// Override and return false to make this solver work in the inventory screen and
+	/// other {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen AbstractContainerScreen}s.
+	default boolean chestScreensOnly() {
+		return true;
 	}
 }

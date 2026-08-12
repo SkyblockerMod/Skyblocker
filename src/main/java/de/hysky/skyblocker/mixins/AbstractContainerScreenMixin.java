@@ -160,10 +160,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		return superClicked;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Inject(method = "extractTooltip", at = @At("HEAD"))
 	private void skyblocker$beforeTooltipExtracted(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
-		ContainerSolverManager.onExtract(graphics, (AbstractContainerScreen<ChestMenu>) (Object) this, this.menu.slots);
+		ContainerSolverManager.onExtract(graphics, (AbstractContainerScreen<?>) (Object) this, this.menu.slots);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -235,7 +234,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Unique
-	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, ContainerSolver solver) {
+	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, @Nullable ContainerSolver solver) {
 		if (solver instanceof StackDisplayModifier modifier && solver.isSolverSlot(slot, this)) {
 			return modifier.modifyDisplayStack(slot.getContainerSlot(), stack);
 		}
