@@ -1870,5 +1870,6 @@
     "skyblocker.config.foraging.enableTreeFelledNotification": "",
     "skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip": "",
     "skyblocker.config.hunting.forestBiome": "",
-    "skyblocker.config.hunting.moongladeMobs.highlightShellwise": ""
+    "skyblocker.config.hunting.moongladeMobs.highlightShellwise": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
