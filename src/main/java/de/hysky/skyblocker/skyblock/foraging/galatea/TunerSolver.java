@@ -79,7 +79,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	private boolean isInMenu = false;
 
 	// Pitch tracking
-	private String currentPitch = null;
+	private @Nullable String currentPitch = null;
 	private final List<Float> recentPitches = new ArrayList<>();
 	private static final int MAX_PITCH_SAMPLES = 5;
 
@@ -119,9 +119,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 	public void start(AbstractContainerScreen<?> screen) {
 		resetState();
 		isInMenu = true;
-		ScreenEvents.afterTick(screen).register(_ -> {
-			trackTargetPaneMovement(screen.getMenu().slots);
-		});
+		ScreenEvents.afterTick(screen).register(_ -> trackTargetPaneMovement(screen.getMenu().slots));
 		ScreenEvents.remove(screen).register(_ -> resetState());
 	}
 
@@ -332,7 +330,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		float packetPitch = packet.getPitch();
 		recentPitches.add(packetPitch);
 		int sampleCount = recentPitches.size();
-		String name = getPitchName(packetPitch);
+		String targetPitch = getPitchName(packetPitch);
 
 		if (currentPitch == null) {
 			LOGGER.warn("Current pitch not set, cannot compare");
@@ -342,7 +340,6 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 
 		float expectedPitch = getPitchValue(currentPitch);
 		if (Math.abs(packetPitch - expectedPitch) > 0.0001f) {
-			String targetPitch = name;
 			if (targetPitch == null) {
 				LOGGER.warn("Invalid pitch value received: {}", packetPitch);
 				recentPitches.clear();
@@ -395,7 +392,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		return 0;
 	}
 
-	private static String readCurrentPitch(Int2ObjectMap<ItemStack> slots) {
+	private static @Nullable String readCurrentPitch(Int2ObjectMap<ItemStack> slots) {
 		ItemStack pitchStack = slots.get(50);
 		if (pitchStack != null && !pitchStack.isEmpty()) {
 			List<String> lore = pitchStack.skyblocker$getLoreStrings();
@@ -453,7 +450,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 		return 0f;
 	}
 
-	private static String getPitchName(float pitch) {
+	private static @Nullable String getPitchName(float pitch) {
 		for (int i = 0; i < PITCH_VALUES.length; i++) {
 			if (Math.abs(pitch - PITCH_VALUES[i]) < 0.0001f) {
 				return PITCH_CYCLE[i];

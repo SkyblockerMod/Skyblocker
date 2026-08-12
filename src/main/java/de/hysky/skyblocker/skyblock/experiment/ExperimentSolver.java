@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * The general class for all experiment solvers, implemented with a state machine.

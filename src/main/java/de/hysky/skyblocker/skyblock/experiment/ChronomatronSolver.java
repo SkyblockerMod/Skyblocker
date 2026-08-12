@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 
 public final class ChronomatronSolver extends ExperimentSolver implements ContainerListener {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMap.ofEntries(
@@ -27,7 +28,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Contai
 			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.pink(), Items.STAINED_GLASS.pink())
 	);
 
-	private AbstractContainerScreen<?> screen;
+	private @Nullable AbstractContainerScreen<?> screen;
 
 	/**
 	 * The list of items to remember, in order.
