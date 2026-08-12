@@ -1169,5 +1169,13 @@
     "skyblocker.config.dungeons.terminalHud.showGate": "Показывать Входы",
     "skyblocker.config.dungeons.terminalHud.showLevers": "Показывать Рычаги",
     "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Показывать Статус Задания",
-    "skyblocker.config.dungeons.terminalHud.showTerminals": "Показывать Терминалы"
+    "skyblocker.config.dungeons.terminalHud.showTerminals": "Показывать Терминалы",
+    "skyblocker.bars.config.direction": "Направление",
+    "skyblocker.bars.config.direction.FROM_MIDDLE": "С середины",
+    "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "Слева направо",
+    "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "Справа налево",
+    "skyblocker.bars.config.reset": "Это вернет строки состояния в исходное положение.\n Это действие необратимо.",
+    "skyblocker.bars.config.resetTitle": "Сбросить индикатор состояния?",
+    "skyblocker.bars.config.vitality": "Жизненная сила",
+    "skyblocker.config.chat.filter.hideToggleBeekeeper": "Скрывает послания пчеловода за пределами островов для сбора нектара."
 }
