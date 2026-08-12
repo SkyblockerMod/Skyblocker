@@ -876,5 +876,6 @@
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableEtherTransmission.@Tooltip": "Etherwarp ConduitとEther Mergedに有効する。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableSinrecallTransmission.@Tooltip": "Sinseeker Scytheに有効する。",
     "skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip": "Aspect of the Leechに有効する。",
-    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "Necron's Blade・Hyperion・Astraea・Scylla・Valkyrieに有効する。"
+    "skyblocker.config.uiAndVisuals.smoothAOTE.enableWitherImpact.@Tooltip": "Necron's Blade・Hyperion・Astraea・Scylla・Valkyrieに有効する。",
+    "skyblocker.config.farming.visitorHelper": ""
 }
