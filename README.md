@@ -105,9 +105,12 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Blue Jay Highlighter
 - ** Safari Mob Features**
      - Phantom Silencer
+     - Sparkling Critter Highlighter
      - Rockmite Mound Highlighter
      - Hideonfloor Highlighter
      - Duplico Highlighter
+     - Bloodbat Highlighter
+     - Ignore Slot Locking for Shining Coins
      - Hide Cold Overlay
 - **Lasso HUD**
 
@@ -461,6 +464,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Config Backups**
 - **Iris shader support**
 - **Block Break Prediction**
+
 
 
 </details>
