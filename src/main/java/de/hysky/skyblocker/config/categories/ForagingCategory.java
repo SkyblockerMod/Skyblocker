@@ -31,6 +31,7 @@ public class ForagingCategory {
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification"))
 						.description(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_9_1)
 						.binding(defaults.foraging.enableTreeFelledNotification,
 								() -> config.foraging.enableTreeFelledNotification,
 								newValue -> config.foraging.enableTreeFelledNotification = newValue)
