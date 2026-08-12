@@ -1862,5 +1862,14 @@
     "skyblocker.fancyAuctionHouse.canBuyIn": "Megvehető: %s",
     "skyblocker.config.hunting.forestBiome": "Erdő Biome",
     "skyblocker.config.hunting.hauntedBiome": "Kísértetjárta Biome",
-    "skyblocker.config.hunting.icyBiome": "Jeges Biome"
+    "skyblocker.config.hunting.icyBiome": "Jeges Biome",
+    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "",
+    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins.@Tooltip": "",
+    "skyblocker.foraging.treeFelled": "",
+    "skyblocker.config.hunting.safari.highlightSparklingCritters": "",
+    "skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip": "",
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "",
+    "skyblocker.config.foraging.enableTreeFelledNotification": "",
+    "skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip": "",
+    "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip": ""
 }
