@@ -1895,5 +1895,6 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.anvil": "",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.true": ""
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.true": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
