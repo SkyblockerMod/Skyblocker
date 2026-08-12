@@ -153,6 +153,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.highlightSparklingCritters"))
 								.description(Component.translatable("skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_1)
 								.binding(defaults.hunting.safari.highlightSparklingCritters,
 										() -> config.hunting.safari.highlightSparklingCritters,
 										newValue -> config.hunting.safari.highlightSparklingCritters = newValue)
@@ -160,6 +161,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.sparklingCritterHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_1)
 								.binding(defaults.hunting.safari.sparklingCritterHighlightColor,
 										() -> config.hunting.safari.sparklingCritterHighlightColor,
 										newValue -> config.hunting.safari.sparklingCritterHighlightColor = newValue)
@@ -237,6 +239,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightBloodbat"))
 								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.highlightBloodbat.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_1)
 								.binding(defaults.hunting.hauntedBiome.highlightBloodbat,
 										() -> config.hunting.hauntedBiome.highlightBloodbat,
 										newValue -> config.hunting.hauntedBiome.highlightBloodbat = newValue)
@@ -244,6 +247,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.bloodbatHighlightColor"))
+								.tags(CommonTags.ADDED_IN_6_9_1)
 								.binding(defaults.hunting.hauntedBiome.bloodbatHighlightColor,
 										() -> config.hunting.hauntedBiome.bloodbatHighlightColor,
 										newValue -> config.hunting.hauntedBiome.bloodbatHighlightColor = newValue)
@@ -252,6 +256,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins"))
 								.description(Component.translatable("skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_1)
 								.binding(defaults.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins,
 										() -> config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins,
 										newValue -> config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins = newValue)
