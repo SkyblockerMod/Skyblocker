@@ -11,11 +11,9 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * A solver for a container without the inventory slots included.
- *
- * @see ContainerAndInventorySolver
- */
+/// A solver for a container screen.
+///
+/// For options, see [#skyblockOnly()], [#chestScreensOnly()], and [#chestInventoryOnly()].
 public interface ContainerSolver extends ContainerMatcher, Resettable {
 	List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots);
 
@@ -30,7 +28,7 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	default void markDirty() {}
 
 	default boolean isSolverSlot(Slot slot, Screen screen) {
-		if (this instanceof ContainerAndInventorySolver) return true;
+		if (!chestInventoryOnly()) return true;
 		if (screen instanceof ContainerScreen generic) {
 			return slot.index < generic.getMenu().getRowCount() * 9;
 		}
@@ -66,6 +64,11 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 	/// Override and return false to make this solver work in the inventory screen and
 	/// other {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen AbstractContainerScreen}s.
 	default boolean chestScreensOnly() {
+		return true;
+	}
+
+	/// Override and return false to include the player inventory slots in this solver.
+	default boolean chestInventoryOnly() {
 		return true;
 	}
 }

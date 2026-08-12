@@ -98,6 +98,7 @@ public class ContainerSolverManager {
 		return currentSolver;
 	}
 
+	@SuppressWarnings("unused")
 	public static void registerSolver(ContainerSolver solver) {
 		solvers.add(solver);
 	}
@@ -163,7 +164,7 @@ public class ContainerSolverManager {
 		context.pose().pushMatrix();
 		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
 
-		if (!(currentSolver instanceof ContainerAndInventorySolver) && handledScreen.getMenu() instanceof ChestMenu chestMenu) {
+		if (currentSolver.chestInventoryOnly() && handledScreen.getMenu() instanceof ChestMenu chestMenu) {
 			slots = slots.subList(0, chestMenu.getRowCount() * 9);
 		}
 
