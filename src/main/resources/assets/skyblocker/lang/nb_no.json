@@ -1895,5 +1895,6 @@
     "skyblocker.dungeons.splits.professor": "",
     "skyblocker.dungeons.splits.sadan": "",
     "skyblocker.dungeons.splits.maxor": "",
-    "skyblocker.dungeons.splits.scarf": ""
+    "skyblocker.dungeons.splits.scarf": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
