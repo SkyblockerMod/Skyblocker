@@ -1895,5 +1895,6 @@
     "skyblocker.dungeons.splits.terracottas": "",
     "skyblocker.dungeons.splits.bonzo": "",
     "skyblocker.dungeons.splits.necron": "",
-    "skyblocker.dungeons.splits.bonzoSike": ""
+    "skyblocker.dungeons.splits.bonzoSike": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
