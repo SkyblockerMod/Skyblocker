@@ -1888,5 +1888,12 @@
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.@Tooltip": "",
     "skyblocker.config.chat.chatRules.announcementLength": "",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": ""
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.toast.iconPreview.@Tooltip": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.arrowHit": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.crit": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.cave": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.zombie": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.anvil": "",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.true": ""
 }
