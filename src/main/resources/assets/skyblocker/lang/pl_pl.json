@@ -1895,5 +1895,6 @@
     "skyblocker.dungeons.splits.necron": "",
     "skyblocker.dungeons.splits.sadanGiants": "",
     "skyblocker.dungeons.splits.professor": "",
-    "skyblocker.dungeons.splits.bonzoSike": ""
+    "skyblocker.dungeons.splits.bonzoSike": "",
+    "skyblocker.config.mining.glacite.enableCorpseProfitTracker.@Tooltip": ""
 }
