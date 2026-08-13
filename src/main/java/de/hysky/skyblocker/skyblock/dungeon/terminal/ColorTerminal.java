@@ -12,19 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
 	private static final Map<String, DyeColor> colorFromName;
-	private DyeColor targetColor;
+	private @Nullable DyeColor targetColor;
 	private static final Map<Item, DyeColor> itemColor;
 
 	public ColorTerminal() {
@@ -61,7 +64,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (stack.hasFoil() || !targetColor.equals(itemColor.get(stack.getItem()))) {
+		if (stack.hasFoil() || !Objects.equals(targetColor, itemColor.get(stack.getItem()))) {
 			return shouldBlockIncorrectClicks();
 		}
 

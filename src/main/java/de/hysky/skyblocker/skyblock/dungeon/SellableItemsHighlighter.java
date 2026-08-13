@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import net.minecraft.world.item.ItemStack;
 
-public class SellableItemsHighlighter extends SimpleContainerSolver implements ContainerAndInventorySolver {
+public class SellableItemsHighlighter extends SimpleContainerSolver {
 	private static final Set<String> ITEM_IDS = Set.of(
 			"DEFUSE_KIT",
 			"TRAINING_WEIGHTS",
@@ -46,5 +45,10 @@ public class SellableItemsHighlighter extends SimpleContainerSolver implements C
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().dungeons.sellableItemsHighlighter;
+	}
+
+	@Override
+	public boolean chestInventoryOnly() {
+		return false;
 	}
 }
