@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -36,10 +36,9 @@ public final class SuperpairsSolver extends ExperimentSolver {
 
 	/**
 	 * Sets the state to {@link State#SHOW} since Superpairs does not require a state machine.
-	 * @param screen
 	 */
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		super.start(screen);
 		setState(State.SHOW);
 	}
@@ -51,9 +50,9 @@ public final class SuperpairsSolver extends ExperimentSolver {
 	 * and sets {@link #superpairsCurrentSlot} to the item of the last clicked slot.
 	 */
 	@Override
-	protected void tick(ContainerScreen screen) {
+	protected void tick(AbstractContainerScreen<?> screen) {
 		if (getState() == State.SHOW && getSlots().get(superpairsPrevClickedSlot) == null) {
-			ItemStack itemStack = screen.getMenu().getContainer().getItem(superpairsPrevClickedSlot);
+			ItemStack itemStack = screen.getMenu().getSlot(superpairsPrevClickedSlot).getItem();
 			if (!(itemStack.is(Items.CYAN_STAINED_GLASS) || itemStack.is(Items.BLACK_STAINED_GLASS_PANE) || itemStack.is(Items.AIR))) {
 				getSlots().int2ObjectEntrySet().stream()
 						.filter(entry -> ItemStack.matches(entry.getValue(), itemStack))
