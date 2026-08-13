@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.minecraft.world.item.ItemStack;
-import java.util.List;
-import java.util.Optional;
 
 public class SkyblockRecipeDisplayGenerator implements DynamicDisplayGenerator<SkyblockRecipeDisplay> {
 

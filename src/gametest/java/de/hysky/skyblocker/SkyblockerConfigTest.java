@@ -1,6 +1,7 @@
 package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;

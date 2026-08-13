@@ -1,5 +1,19 @@
 package de.hysky.skyblocker.skyblock.storageoverlay;
 
+import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -12,6 +26,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.SearchableGridWidget;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.client.Minecraft;
@@ -40,19 +55,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector2d;
-import org.joml.Vector2dc;
-import org.jspecify.annotations.Nullable;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
 
 
 public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlayScreenHandler> {

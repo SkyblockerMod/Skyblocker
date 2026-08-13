@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.utils.ContainerUtils;
+
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

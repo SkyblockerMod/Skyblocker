@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

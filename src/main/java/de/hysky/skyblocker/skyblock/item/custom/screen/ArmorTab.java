@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
+
+import java.io.Closeable;
+import java.time.Duration;
+import java.util.List;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.EntityUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
-import java.io.Closeable;
-import java.time.Duration;
-import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
@@ -35,8 +39,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
 
 public class ArmorTab extends GridLayoutTab implements Closeable {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");

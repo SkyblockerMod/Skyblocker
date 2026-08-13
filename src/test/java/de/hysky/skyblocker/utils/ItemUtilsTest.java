@@ -1,10 +1,20 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.Set;
+import java.util.TimeZone;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentMap;
@@ -15,13 +25,6 @@ import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-import java.util.TimeZone;
 
 public class ItemUtilsTest {
 	private final RegistryOps<JsonElement> JSON_OPS = VanillaRegistries.createLookup().createSerializationContext(JsonOps.INSTANCE);

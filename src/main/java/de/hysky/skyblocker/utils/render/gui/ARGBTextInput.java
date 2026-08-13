@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import com.mojang.logging.LogUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.function.IntConsumer;
+
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import com.mojang.logging.LogUtils;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

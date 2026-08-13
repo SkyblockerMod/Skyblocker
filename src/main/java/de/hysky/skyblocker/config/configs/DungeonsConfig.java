@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import java.awt.Color;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 

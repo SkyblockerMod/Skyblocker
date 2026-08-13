@@ -8,6 +8,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;

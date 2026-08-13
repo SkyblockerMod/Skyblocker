@@ -1,13 +1,5 @@
 package de.hysky.skyblocker.utils.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.util.StringRepresentable;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +7,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import de.hysky.skyblocker.utils.Utils;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.StringRepresentable;
 
 /*
 	This implementation doesn't have a default value parameter as there is no sensible default for the data structure.

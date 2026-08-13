@@ -8,12 +8,13 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.MiningConfig;
 import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
 import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
 import de.hysky.skyblocker.utils.Location;
+
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;

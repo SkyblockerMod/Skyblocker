@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.utils.render.text;
 
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.FormattedCharSink;
-
-import java.util.List;
 
 public record GridFormattedCharSequence(GridComponent.Contents gridContents, FormattedCharSequence composite) implements FormattedCharSequence {
 

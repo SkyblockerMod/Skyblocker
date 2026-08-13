@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries;
 
+import java.util.List;
+
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
-import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;

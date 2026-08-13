@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.compatibility.rei;
 
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackUtils;
+
 import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Point;
 import me.shedaniel.rei.api.client.registry.screen.FocusedStackProvider;

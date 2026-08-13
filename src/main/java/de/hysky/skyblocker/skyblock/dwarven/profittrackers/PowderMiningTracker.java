@@ -1,7 +1,21 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+
+import java.text.NumberFormat;
+import java.util.Comparator;
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.regex.Matcher;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Unmodifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mojang.brigadier.Command;
 import com.mojang.serialization.Codec;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -16,6 +30,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
+
 import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -32,18 +47,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.Unmodifiable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.NumberFormat;
-import java.util.Comparator;
-import java.util.List;
-import java.util.OptionalDouble;
-import java.util.regex.Matcher;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();

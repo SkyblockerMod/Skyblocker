@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.utils.Tickable;
 import java.util.function.Supplier;
+
+import de.hysky.skyblocker.utils.Tickable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ClipContext;

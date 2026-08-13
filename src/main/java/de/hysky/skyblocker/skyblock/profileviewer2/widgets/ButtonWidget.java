@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.render.GuiRenderer;

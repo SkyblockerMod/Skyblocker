@@ -7,6 +7,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.world.item.ItemStack;
 

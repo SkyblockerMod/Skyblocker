@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;

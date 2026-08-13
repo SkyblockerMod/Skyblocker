@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.google.gson.annotations.SerializedName;
 
 import de.hysky.skyblocker.utils.Location;
+
 import net.minecraft.core.BlockPos;
 
 public class Shards {

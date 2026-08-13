@@ -2,10 +2,11 @@ package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
 import java.util.concurrent.CompletableFuture;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public interface DataTooltipInfoType<T> extends TooltipInfoType, Runnable {
 	/**

@@ -1,11 +1,15 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -26,8 +30,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay> {
 	private static final int REI_SLOT_HEIGHT = 18;

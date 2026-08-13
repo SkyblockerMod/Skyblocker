@@ -1,11 +1,20 @@
 package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_NOT_LOADED;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_OUT_OF_BOUNDS;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_OUT_OF_WORLD;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.Commands;
@@ -13,13 +22,6 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_OUT_OF_BOUNDS;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_OUT_OF_WORLD;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.ERROR_NOT_LOADED;
 
 // Uses the static fields of BlockPosArgument to not create the same field twice
 public class ClientBlockPosArgumentType implements ArgumentType<ClientPosArgument> {

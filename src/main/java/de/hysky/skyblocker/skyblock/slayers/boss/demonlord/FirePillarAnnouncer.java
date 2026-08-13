@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
@@ -7,13 +10,11 @@ import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FirePillarAnnouncer {
 	private static final Pattern FIRE_PILLAR_PATTERN = Pattern.compile("(\\d+)s \\d+ hits");

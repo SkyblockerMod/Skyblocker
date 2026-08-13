@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.SkyblockerMod;
-import java.util.ArrayList;
-import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 

@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.utils.command.argumenttypes.blockpos;
 
+import java.util.Objects;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.commands.arguments.coordinates.WorldCoordinate;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import java.util.Objects;
 
 public class LookingClientPosArgument implements ClientPosArgument {
 	private final double x;

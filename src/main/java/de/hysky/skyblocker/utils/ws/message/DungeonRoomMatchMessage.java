@@ -1,13 +1,16 @@
 package de.hysky.skyblocker.utils.ws.message;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.utils.CodecUtils;
-import org.joml.Vector2ic;
-
 import java.util.List;
 import java.util.UUID;
+
+import org.joml.Vector2ic;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.CodecUtils;
+
 import net.minecraft.core.UUIDUtil;
 
 public record DungeonRoomMatchMessage(String type, UUID sender, Room.Type roomType, Room.Shape shape, Room.Direction direction,

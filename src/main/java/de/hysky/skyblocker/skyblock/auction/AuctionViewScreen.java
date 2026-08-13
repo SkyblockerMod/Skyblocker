@@ -1,18 +1,23 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.ContainerUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
-import org.joml.Matrix3x2fStack;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -34,9 +39,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
 
 public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	protected static final Identifier BACKGROUND_TEXTURE = SkyblockerMod.id("textures/gui/auctions_gui/view.png");

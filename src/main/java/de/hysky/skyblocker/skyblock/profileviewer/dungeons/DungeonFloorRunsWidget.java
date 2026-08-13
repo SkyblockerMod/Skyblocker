@@ -1,13 +1,16 @@
 package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import de.hysky.skyblocker.SkyblockerMod;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

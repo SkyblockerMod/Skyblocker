@@ -16,6 +16,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.injected.GlowRenderTypeHolder;
 import de.hysky.skyblocker.mixins.accessors.RenderSetupAccessor;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
+
 import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;

@@ -1,6 +1,12 @@
 package de.hysky.skyblocker.utils.config;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.utils.time.SkyblockTime;
+
 import dev.isxander.yacl3.api.controller.ControllerBuilder;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
@@ -12,10 +18,6 @@ import net.azureaaron.dandelion.deps.moulconfig.processor.ProcessedOption;
 import net.azureaaron.dandelion.impl.controllers.IntegerControllerImpl;
 import net.azureaaron.dandelion.impl.moulconfig.MoulConfigDefinition;
 import net.azureaaron.dandelion.impl.moulconfig.editor.DandelionNumberFieldEditor;
-import org.jspecify.annotations.Nullable;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DurationController extends IntegerControllerImpl {
 	private static final Pattern SECONDS_PATTERN = Pattern.compile("(^|\\s)(\\d+)s(\\s|$)");

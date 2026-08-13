@@ -6,6 +6,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.debug.SkyBlockResourcePackDownloader;
+
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;

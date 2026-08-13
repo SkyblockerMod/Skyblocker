@@ -1,8 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.Locale;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
-import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.auction.AuctionHouseScreenHandler;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
@@ -14,8 +19,11 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreenHandler;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.player.LocalPlayer;
@@ -23,12 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Locale;
 
 @Mixin(MenuScreens.ScreenConstructor.class)
 public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {

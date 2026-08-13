@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
+import java.util.List;
+
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;

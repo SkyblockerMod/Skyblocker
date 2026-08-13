@@ -4,6 +4,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;

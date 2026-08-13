@@ -1,5 +1,9 @@
 package de.hysky.skyblocker.utils.ws;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -7,15 +11,13 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonWebSocket;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.EggWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.Message;
-import org.slf4j.Logger;
-
-import java.util.Optional;
 
 public class WsMessageHandler {
 	private static final Logger LOGGER = LogUtils.getLogger();

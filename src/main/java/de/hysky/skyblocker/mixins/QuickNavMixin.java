@@ -1,14 +1,7 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
-import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import java.util.List;
+
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,7 +9,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.quicknav.QuickNav;
+import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
+import de.hysky.skyblocker.utils.Utils;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class QuickNavMixin extends QuickNavScreenMixin {

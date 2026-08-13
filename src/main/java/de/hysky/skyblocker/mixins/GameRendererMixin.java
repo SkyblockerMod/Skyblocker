@@ -1,6 +1,12 @@
 package de.hysky.skyblocker.mixins;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.utils.Utils;
@@ -9,11 +15,8 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.primitive.FilledBoxInstancedRenderer;
 import de.hysky.skyblocker.utils.render.primitive.OutlinedBoxInstancedRenderer;
+
 import net.minecraft.client.renderer.GameRenderer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {

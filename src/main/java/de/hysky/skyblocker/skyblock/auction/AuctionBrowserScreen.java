@@ -1,5 +1,19 @@
 package de.hysky.skyblocker.skyblock.auction;
 
+import java.awt.Color;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Supplier;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.joml.Matrix3x2fStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
@@ -10,22 +24,10 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.ChatFormatting;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.mojang.blaze3d.platform.InputConstants;
-
-import java.awt.Color;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

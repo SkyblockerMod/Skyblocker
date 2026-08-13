@@ -8,6 +8,7 @@ import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;

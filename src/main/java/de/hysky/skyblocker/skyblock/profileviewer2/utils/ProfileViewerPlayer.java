@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 import com.mojang.authlib.GameProfile;
 
 import de.hysky.skyblocker.utils.EntityUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.RemotePlayer;

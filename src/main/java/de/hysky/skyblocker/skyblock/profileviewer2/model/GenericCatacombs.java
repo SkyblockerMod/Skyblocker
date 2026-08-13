@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
+
+import com.google.gson.annotations.SerializedName;
 
 public class GenericCatacombs {
 	@SerializedName("best_score")

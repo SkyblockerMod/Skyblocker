@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
@@ -7,11 +12,8 @@ import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.ItemLoader;
+
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

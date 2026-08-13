@@ -6,6 +6,7 @@ import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
+
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;

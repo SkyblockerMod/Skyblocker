@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

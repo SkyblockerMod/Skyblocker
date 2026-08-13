@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -19,8 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-
-import static de.hysky.skyblocker.skyblock.itemlist.ItemRepository.getItemStack;
 
 public class OverlayScreen extends Screen {
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");

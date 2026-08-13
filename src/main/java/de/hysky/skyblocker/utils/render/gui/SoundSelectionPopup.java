@@ -1,5 +1,11 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -24,11 +30,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import org.jspecify.annotations.Nullable;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
 
 public class SoundSelectionPopup extends AbstractPopupScreen {
 	private static final Component YES_TEXT = CommonComponents.GUI_YES.copy().withStyle(ChatFormatting.GREEN);

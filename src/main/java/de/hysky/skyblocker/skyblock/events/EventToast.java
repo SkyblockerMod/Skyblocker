@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import java.util.List;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
-import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

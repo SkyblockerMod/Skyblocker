@@ -12,6 +12,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;

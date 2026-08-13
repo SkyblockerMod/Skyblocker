@@ -2,6 +2,7 @@ package de.hysky.skyblocker;
 
 import de.hysky.skyblocker.debug.SnapshotDebug;
 import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
+
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;

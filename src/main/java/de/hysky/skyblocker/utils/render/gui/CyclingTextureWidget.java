@@ -1,10 +1,13 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.utils.EnumUtils;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
+import de.hysky.skyblocker.utils.EnumUtils;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;

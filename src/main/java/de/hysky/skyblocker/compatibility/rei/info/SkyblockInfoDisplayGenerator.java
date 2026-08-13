@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
+import java.util.List;
+import java.util.Optional;
+
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.minecraft.world.item.ItemStack;
-import java.util.List;
-import java.util.Optional;
 
 public class SkyblockInfoDisplayGenerator implements DynamicDisplayGenerator<SkyblockInfoDisplay> {
 	@Override

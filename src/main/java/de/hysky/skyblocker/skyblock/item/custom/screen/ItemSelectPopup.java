@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import java.util.Arrays;
-import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;

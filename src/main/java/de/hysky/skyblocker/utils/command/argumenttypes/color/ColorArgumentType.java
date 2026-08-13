@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.command.argumenttypes.color;
 
 import com.mojang.brigadier.context.CommandContext;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 /**

@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.barn;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 

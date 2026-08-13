@@ -4,6 +4,7 @@ import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.FontAccessor;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.GlyphVisitor;
 import net.minecraft.client.gui.Font.PreparedText;

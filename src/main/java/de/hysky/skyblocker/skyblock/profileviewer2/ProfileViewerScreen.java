@@ -20,6 +20,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;

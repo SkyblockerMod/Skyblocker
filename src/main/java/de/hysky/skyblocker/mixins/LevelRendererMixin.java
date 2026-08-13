@@ -16,6 +16,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import de.hysky.skyblocker.injected.EntityRenderMarker;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
+
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;

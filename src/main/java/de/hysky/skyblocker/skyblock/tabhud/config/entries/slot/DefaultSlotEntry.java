@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
-import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

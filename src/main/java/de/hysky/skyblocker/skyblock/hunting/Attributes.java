@@ -2,17 +2,20 @@ package de.hysky.skyblocker.skyblock.hunting;
 
 import java.io.InputStream;
 import java.util.List;
-import net.minecraft.core.component.DataComponentHolder;
-import net.minecraft.core.component.DataComponents;
-import com.google.gson.JsonParser;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.JsonOps;
-import io.github.moulberry.repo.NEURepoFile;
+
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
+import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
+
+import io.github.moulberry.repo.NEURepoFile;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.core.component.DataComponents;
 
 public class Attributes {
 	private static final Logger LOGGER = LogUtils.getLogger();

@@ -6,6 +6,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.debug.SnapshotDebug;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 

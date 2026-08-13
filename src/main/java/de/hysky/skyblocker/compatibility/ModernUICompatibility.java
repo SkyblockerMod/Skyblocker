@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.compatibility;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
+import org.joml.Matrix3x2fStack;
+import org.slf4j.Logger;
+
 import com.mojang.logging.LogUtils;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.FormattedCharSequence;
-import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
-
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 
 public class ModernUICompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();

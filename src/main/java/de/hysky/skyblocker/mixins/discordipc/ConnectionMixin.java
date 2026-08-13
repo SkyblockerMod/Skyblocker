@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.mixins.discordipc;
 
-import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
-import meteordevelopment.discordipc.DiscordIPC;
-import meteordevelopment.discordipc.connection.UnixConnection;
-import meteordevelopment.discordipc.connection.WinConnection;
+import java.io.IOException;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.io.IOException;
+import de.hysky.skyblocker.utils.discord.DiscordRPCManager;
+
+import meteordevelopment.discordipc.DiscordIPC;
+import meteordevelopment.discordipc.connection.UnixConnection;
+import meteordevelopment.discordipc.connection.WinConnection;
 
 @Mixin(value = { UnixConnection.class, WinConnection.class })
 public class ConnectionMixin {

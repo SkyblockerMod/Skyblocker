@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.utils.LenientUuidTypeAdapter;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;

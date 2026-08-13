@@ -1,9 +1,16 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.List;
+import java.util.function.Consumer;
+
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
+
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -25,11 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-
-import java.util.List;
-import java.util.function.Consumer;
 
 public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");

@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.mixins;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.client.Options;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +7,12 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
+import net.minecraft.client.Options;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 @Mixin(Options.class)
 public class OptionsMixin {

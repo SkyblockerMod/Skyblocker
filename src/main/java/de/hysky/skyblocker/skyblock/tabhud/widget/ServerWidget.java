@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 
+import java.util.List;
+import java.util.Locale;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.List;
-import java.util.Locale;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

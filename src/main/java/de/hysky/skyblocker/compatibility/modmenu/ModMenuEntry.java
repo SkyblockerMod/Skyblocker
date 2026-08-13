@@ -2,7 +2,9 @@ package de.hysky.skyblocker.compatibility.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

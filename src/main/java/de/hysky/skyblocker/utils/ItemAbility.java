@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import de.hysky.skyblocker.injected.SkyblockerStack;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+import de.hysky.skyblocker.injected.SkyblockerStack;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemInstance;
+import net.minecraft.world.item.ItemStack;
 
 public record ItemAbility(String name, Activation activation, OptionalInt manaCost, OptionalInt soulflowCost, OptionalInt cooldown) {
 	private static final Pattern ABILITY_NAME_PATTERN = Pattern.compile("(?:⦾ )?Ability: (.+)" + " {2}(" + String.join("|", Arrays.stream(Activation.values()).map(Activation::toString).toArray(String[]::new)) + ")");

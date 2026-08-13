@@ -9,6 +9,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.opengl.DirectStateAccess;
+
 import de.hysky.skyblocker.mixins.accessors.DirectStateAccessInvoker;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.GlCommandEncoder")

@@ -1,11 +1,19 @@
 package de.hysky.skyblocker.debug;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -16,6 +24,7 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -42,12 +51,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
-import java.util.List;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Debug {
 	private static final Logger LOGGER = LogUtils.getLogger();

@@ -1,15 +1,19 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
-import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
+import com.mojang.datafixers.util.Either;
+
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 public class PetItemLookup implements WikiLookup {
 	private static final Pattern PET_ITEM_NAME = Pattern.compile("^\\[Lvl \\d+] (?<name>.+)$");

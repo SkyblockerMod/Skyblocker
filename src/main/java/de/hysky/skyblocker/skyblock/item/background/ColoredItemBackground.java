@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.background;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import java.util.function.Supplier;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;

@@ -1,10 +1,17 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
+
 import it.unimi.dsi.fastutil.ints.Int2BooleanArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -22,11 +29,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
-
-import java.util.Locale;
 
 public class InventorySearch {
 	private static @Nullable AbstractContainerScreen<?> openedHandledScreen = null;

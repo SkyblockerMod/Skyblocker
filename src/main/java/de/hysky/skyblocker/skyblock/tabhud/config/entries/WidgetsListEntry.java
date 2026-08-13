@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries;
 
 import java.util.List;
+
+import de.hysky.skyblocker.utils.render.GuiHelper;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -10,7 +13,6 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public abstract class WidgetsListEntry extends ContainerObjectSelectionList.Entry<WidgetsListEntry> {
 	public static final Component ENABLED_TEXT = Component.literal("ENABLED").withStyle(ChatFormatting.GREEN);

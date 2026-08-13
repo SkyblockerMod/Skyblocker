@@ -1,19 +1,22 @@
 package de.hysky.skyblocker.utils.container;
 
-import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import net.azureaaron.dandelion.api.Option;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
+
+import com.demonwav.mcdev.annotations.Translatable;
+
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+
+import net.azureaaron.dandelion.api.Option;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public interface SlotTextAdder extends ContainerMatcher {
 

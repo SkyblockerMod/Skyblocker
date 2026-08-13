@@ -1,21 +1,22 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
-import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import net.minecraft.network.chat.CommonComponents;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
-import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
+import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
+
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 

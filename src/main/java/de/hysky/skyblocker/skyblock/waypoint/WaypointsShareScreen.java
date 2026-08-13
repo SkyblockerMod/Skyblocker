@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import com.google.common.collect.Multimap;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.collect.Multimap;
+
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;

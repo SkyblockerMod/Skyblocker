@@ -9,6 +9,7 @@ import de.hysky.skyblocker.utils.render.BoxDataUniform;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
+
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;

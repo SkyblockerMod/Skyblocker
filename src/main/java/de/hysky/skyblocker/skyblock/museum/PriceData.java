@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.museum;
 
 import de.hysky.skyblocker.utils.ItemUtils;
+
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 
 public class PriceData {

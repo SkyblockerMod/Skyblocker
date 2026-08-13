@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.hysky.skyblocker.utils.SkyBlockIcons;
+
 import net.minecraft.client.Minecraft;
 
 public class DisciplineTestHelper {

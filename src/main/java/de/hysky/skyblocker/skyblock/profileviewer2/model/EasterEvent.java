@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import de.hysky.skyblocker.SkyblockerMod;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
+
+import de.hysky.skyblocker.SkyblockerMod;
+
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class EasterEvent {
 	@SerializedName("chocolate")

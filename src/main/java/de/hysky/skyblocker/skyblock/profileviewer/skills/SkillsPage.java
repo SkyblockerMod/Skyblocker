@@ -1,12 +1,15 @@
 package de.hysky.skyblocker.skyblock.profileviewer.skills;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.gson.JsonObject;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;

@@ -1,8 +1,7 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
+import java.io.InputStreamReader;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.InputStreamReader;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
+
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 public class VerifyJsonTest {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import de.hysky.skyblocker.utils.command.CommandUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -26,6 +25,8 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+
 import io.github.moulberry.repo.data.NEUItem;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;

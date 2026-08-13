@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 

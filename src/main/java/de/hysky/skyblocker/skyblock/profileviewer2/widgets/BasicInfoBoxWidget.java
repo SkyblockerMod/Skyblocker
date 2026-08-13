@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import de.hysky.skyblocker.SkyblockerMod;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

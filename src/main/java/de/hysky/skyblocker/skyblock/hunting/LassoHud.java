@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
+import java.util.Objects;
+import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -8,8 +13,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
-import java.util.Objects;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -18,7 +21,6 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class LassoHud extends ElementBasedWidget {

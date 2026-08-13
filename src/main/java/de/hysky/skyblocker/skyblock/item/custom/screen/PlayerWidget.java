@@ -1,7 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.InventoryScreenInvoker;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -13,8 +17,6 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class PlayerWidget extends AbstractWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");

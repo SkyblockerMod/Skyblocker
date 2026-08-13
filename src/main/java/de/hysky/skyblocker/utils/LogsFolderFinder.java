@@ -1,14 +1,11 @@
 package de.hysky.skyblocker.utils;
 
-import com.mojang.brigadier.Command;
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Util;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
@@ -17,11 +14,17 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.mojang.brigadier.Command;
+import com.mojang.logging.LogUtils;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Util;
 
 public final class LogsFolderFinder {
 	private static final Logger LOGGER = LogUtils.getLogger();

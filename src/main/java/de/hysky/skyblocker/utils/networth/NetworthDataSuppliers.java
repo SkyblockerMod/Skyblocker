@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.utils.ItemUtils;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.azureaaron.networth.data.SkyblockItemData;

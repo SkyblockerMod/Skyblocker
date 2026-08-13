@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -10,10 +15,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 

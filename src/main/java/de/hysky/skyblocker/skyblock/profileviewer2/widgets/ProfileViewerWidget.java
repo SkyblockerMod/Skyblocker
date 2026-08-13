@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;

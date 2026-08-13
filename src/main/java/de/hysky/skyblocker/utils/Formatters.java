@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.utils;
 
-import com.ibm.icu.text.DateTimePatternGenerator;
-
-import de.hysky.skyblocker.compatibility.MacCompatibility;
-import de.hysky.skyblocker.compatibility.WindowsCompatibility;
-import de.hysky.skyblocker.debug.Debug;
-import net.minecraft.util.Util;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import com.ibm.icu.text.DateTimePatternGenerator;
+
+import de.hysky.skyblocker.compatibility.MacCompatibility;
+import de.hysky.skyblocker.compatibility.WindowsCompatibility;
+import de.hysky.skyblocker.debug.Debug;
+
+import net.minecraft.util.Util;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter

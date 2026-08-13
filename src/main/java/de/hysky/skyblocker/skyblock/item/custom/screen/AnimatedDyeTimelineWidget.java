@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import org.jspecify.annotations.Nullable;
 
-import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;

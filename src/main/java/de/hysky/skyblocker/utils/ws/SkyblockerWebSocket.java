@@ -28,6 +28,7 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.Http;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public class SkyblockerWebSocket {

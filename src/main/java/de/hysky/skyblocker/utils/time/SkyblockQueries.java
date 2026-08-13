@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils.time;
 
-import org.jspecify.annotations.Nullable;
-
 import java.time.temporal.TemporalQuery;
+
+import org.jspecify.annotations.Nullable;
 
 public final class SkyblockQueries {
 	private SkyblockQueries() {}

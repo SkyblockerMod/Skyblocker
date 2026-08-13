@@ -14,6 +14,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
+
 import io.github.moulberry.repo.constants.ResourcePack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;

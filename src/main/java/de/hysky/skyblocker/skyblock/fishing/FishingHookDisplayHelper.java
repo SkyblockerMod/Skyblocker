@@ -1,9 +1,13 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -14,8 +18,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FishingHookDisplayHelper {
 	protected static ArmorStand fishingHookArmorStand;

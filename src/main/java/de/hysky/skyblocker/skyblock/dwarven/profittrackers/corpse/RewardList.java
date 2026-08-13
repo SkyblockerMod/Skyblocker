@@ -1,20 +1,21 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
-import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
+import java.text.NumberFormat;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.text.WordUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
-import java.util.Comparator;
-import java.util.List;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

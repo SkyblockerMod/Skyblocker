@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.chat;
 
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
+
 import net.minecraft.client.resources.language.I18n;
 
 public enum ChatFilterResult {

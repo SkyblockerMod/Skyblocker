@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Element that consists of an icon and a line of text.

@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JavaOps;
 
 import de.hysky.skyblocker.UpdateNotifications.MrVersion;
+
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.SharedConstants;

@@ -1,20 +1,23 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.MutableTriple;
+import org.joml.Vector2ic;
+
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
+
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.apache.commons.lang3.tuple.MutableTriple;
-import org.joml.Vector2ic;
 
 public class DebugRoom extends Room {
 	private final List<Waypoint> checkedBlocks = Collections.synchronizedList(new ArrayList<>());

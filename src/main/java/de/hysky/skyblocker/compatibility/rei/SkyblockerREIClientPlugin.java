@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.compatibility.rei;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
 import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoDisplayGenerator;
@@ -22,6 +27,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
+
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -42,11 +48,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * REI integration

@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.utils.container;
 
-import de.hysky.skyblocker.skyblock.ChestValue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.intellij.lang.annotations.Language;
 import org.jspecify.annotations.Nullable;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.skyblock.ChestValue;
+
 import net.minecraft.client.gui.screens.Screen;
 
 /**

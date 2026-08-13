@@ -10,6 +10,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 
 import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
+
 import net.minecraft.client.renderer.rendertype.PreparedRenderType;
 
 @Mixin(PreparedRenderType.class)

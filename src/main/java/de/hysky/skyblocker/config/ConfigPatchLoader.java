@@ -15,6 +15,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import net.azureaaron.dandelion.api.patching.ConfigPatch;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;

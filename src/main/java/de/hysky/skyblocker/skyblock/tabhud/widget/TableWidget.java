@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
+
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
-import java.util.List;
+
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 

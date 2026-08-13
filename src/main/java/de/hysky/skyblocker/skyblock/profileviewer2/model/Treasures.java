@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.google.gson.annotations.SerializedName;
 
 public class Treasures {
 	public List<Run> runs = List.of();

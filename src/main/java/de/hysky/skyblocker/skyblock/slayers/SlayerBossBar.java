@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import net.minecraft.client.gui.components.LerpingBossEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import org.jspecify.annotations.Nullable;
-
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.components.LerpingBossEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class SlayerBossBar {
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");

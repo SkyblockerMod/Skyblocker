@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.Locale;
+import java.util.function.Supplier;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -8,12 +11,10 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-
-import java.util.Locale;
-import java.util.function.Supplier;
 
 public class RareRoomAlert {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

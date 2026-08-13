@@ -1,10 +1,23 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.io.InputStream;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -14,6 +27,7 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
+
 import io.github.moulberry.repo.NEURepoFile;
 import io.github.moulberry.repo.NEURepositoryException;
 import it.unimi.dsi.fastutil.Pair;
@@ -34,17 +48,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-
-import java.io.InputStream;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BlockBreakPrediction {
 	private static final Logger LOGGER = LogUtils.getLogger();

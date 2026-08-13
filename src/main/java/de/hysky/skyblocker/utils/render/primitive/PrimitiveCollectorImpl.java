@@ -24,6 +24,7 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
+
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.minecraft.client.Minecraft;

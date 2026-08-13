@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.List;
+
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public class IceFillTest {
 	private static final boolean[][] iceFillBoard = new boolean[][]{

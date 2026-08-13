@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
+
+import com.google.gson.annotations.SerializedName;
 
 public class NetherIslandPlayerData {
 	@SerializedName("selected_faction")

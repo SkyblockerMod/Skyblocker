@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import io.github.moulberry.repo.constants.AbiphoneContact;
-
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -19,6 +16,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+
+import io.github.moulberry.repo.constants.AbiphoneContact;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
 

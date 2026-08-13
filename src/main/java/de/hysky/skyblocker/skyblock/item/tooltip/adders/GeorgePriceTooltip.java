@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.render.text.GridComponent;
-import org.jspecify.annotations.Nullable;
-
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

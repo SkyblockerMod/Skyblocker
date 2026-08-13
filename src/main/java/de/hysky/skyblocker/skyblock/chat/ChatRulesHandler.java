@@ -1,6 +1,14 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import org.jetbrains.annotations.VisibleForTesting;
+
 import com.mojang.serialization.Codec;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
@@ -14,6 +22,7 @@ import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -24,13 +33,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-
-import org.jetbrains.annotations.VisibleForTesting;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 public class ChatRulesHandler {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.purse;
 
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.client.Minecraft;
 
 public enum PurseChangeCause {

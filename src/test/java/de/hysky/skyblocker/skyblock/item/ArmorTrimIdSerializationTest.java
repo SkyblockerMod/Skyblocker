@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims.ArmorTrimId;
+
 import net.minecraft.resources.Identifier;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ArmorTrimIdSerializationTest {
 	private final Gson gson = new Gson();
