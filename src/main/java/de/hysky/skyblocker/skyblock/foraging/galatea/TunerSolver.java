@@ -322,7 +322,7 @@ public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder 
 
 	private void onSound(ClientboundSoundPacket packet) {
 		if (!SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTunerSolver
-				|| pitchSolved || !Utils.isInGalatea() || !isInMenu
+				|| pitchSolved || !Utils.isInForagingIsland() || !isInMenu
 				|| !packet.getSound().value().location().equals(SoundEvents.NOTE_BLOCK_BASS.value().location())) {
 			return;
 		}
