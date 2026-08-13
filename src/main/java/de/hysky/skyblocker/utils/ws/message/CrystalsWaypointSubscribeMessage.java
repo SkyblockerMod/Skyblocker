@@ -3,11 +3,10 @@ package de.hysky.skyblocker.utils.ws.message;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.debug.Debug;
 

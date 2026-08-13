@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import org.joml.Matrix4f;
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
 import de.hysky.skyblocker.utils.render.Renderer;

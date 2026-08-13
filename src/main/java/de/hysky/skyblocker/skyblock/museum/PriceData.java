@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class PriceData {
 	private final double lBinPrice;

@@ -2,8 +2,6 @@ package de.hysky.skyblocker.utils.ws;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,6 +9,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonWebSocket;

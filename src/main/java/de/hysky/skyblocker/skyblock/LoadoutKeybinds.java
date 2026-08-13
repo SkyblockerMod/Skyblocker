@@ -3,9 +3,8 @@ package de.hysky.skyblocker.skyblock;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

@@ -3,10 +3,10 @@ package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
-
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanImmutablePair;
 import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;

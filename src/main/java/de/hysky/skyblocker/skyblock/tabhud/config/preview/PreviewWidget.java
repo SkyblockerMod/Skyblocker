@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.HudAccessor;

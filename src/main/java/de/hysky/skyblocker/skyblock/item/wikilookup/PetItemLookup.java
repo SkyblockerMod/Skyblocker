@@ -5,9 +5,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.datafixers.util.Either;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 

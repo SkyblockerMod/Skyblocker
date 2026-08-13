@@ -4,12 +4,11 @@ import java.awt.Color;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

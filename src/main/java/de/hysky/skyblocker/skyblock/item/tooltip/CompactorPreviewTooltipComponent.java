@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;

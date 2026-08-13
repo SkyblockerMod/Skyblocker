@@ -12,12 +12,11 @@ import java.util.stream.Stream;
 
 import javax.swing.text.JTextComponent.KeyBinding;
 
-import org.jspecify.annotations.Nullable;
-
 import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.blaze3d.platform.InputConstants;
-
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

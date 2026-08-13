@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
 import me.shedaniel.rei.api.common.entry.EntryStack;
+
 import net.minecraft.world.item.ItemStack;
 
 public class SkyblockInfoDisplayGenerator implements DynamicDisplayGenerator<SkyblockInfoDisplay> {

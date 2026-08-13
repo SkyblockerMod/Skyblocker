@@ -7,10 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.ContainerUtils;

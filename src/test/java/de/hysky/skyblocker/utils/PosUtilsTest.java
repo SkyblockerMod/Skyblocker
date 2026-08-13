@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.utils;
 
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.google.gson.JsonObject;
 
 import de.hysky.skyblocker.SkyblockerMod;
 

@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import java.awt.Color;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

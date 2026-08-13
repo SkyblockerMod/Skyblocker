@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;

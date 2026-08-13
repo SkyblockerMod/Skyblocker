@@ -3,10 +3,9 @@ package de.hysky.skyblocker.skyblock.chat;
 import java.util.EnumSet;
 import java.util.stream.Stream;
 
+import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.utils.Location;
 

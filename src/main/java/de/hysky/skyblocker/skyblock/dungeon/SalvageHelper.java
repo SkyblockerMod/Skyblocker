@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -10,7 +12,6 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.azureaaron.networth.NetworthResult;
 import net.minecraft.world.item.ItemStack;
 

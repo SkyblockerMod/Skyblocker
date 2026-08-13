@@ -3,15 +3,15 @@ package de.hysky.skyblocker.utils.config;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jspecify.annotations.Nullable;
-
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-
 import dev.isxander.yacl3.api.controller.ControllerBuilder;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.string.IStringController;
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.utils.time.SkyblockTime;
+
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.deps.moulconfig.gui.GuiOptionEditor;
 import net.azureaaron.dandelion.deps.moulconfig.processor.ProcessedOption;

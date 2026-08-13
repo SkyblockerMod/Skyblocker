@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.fishing;
 import java.util.Objects;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
@@ -20,7 +21,6 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 
-import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

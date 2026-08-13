@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.config.datafixer;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
@@ -15,6 +12,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 

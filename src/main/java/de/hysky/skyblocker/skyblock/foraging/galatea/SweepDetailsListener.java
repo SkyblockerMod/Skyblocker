@@ -3,10 +3,9 @@ package de.hysky.skyblocker.skyblock.foraging.galatea;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mojang.logging.LogUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;

@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims.ArmorTrimId;
 

@@ -3,10 +3,9 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import com.mojang.datafixers.util.Either;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
-
-import com.mojang.datafixers.util.Either;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;

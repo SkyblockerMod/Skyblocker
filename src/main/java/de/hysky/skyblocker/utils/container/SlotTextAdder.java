@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.jspecify.annotations.Nullable;
-
 import com.demonwav.mcdev.annotations.Translatable;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.joml.RoundingMode;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
@@ -15,8 +17,6 @@ import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
 
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;

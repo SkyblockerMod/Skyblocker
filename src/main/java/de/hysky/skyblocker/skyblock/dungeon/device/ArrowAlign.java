@@ -3,10 +3,9 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 import java.util.List;
 import java.util.Optional;
 
+import com.mojang.brigadier.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mojang.brigadier.Command;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

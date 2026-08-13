@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import it.unimi.dsi.fastutil.Pair;
+
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
@@ -13,7 +15,6 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;

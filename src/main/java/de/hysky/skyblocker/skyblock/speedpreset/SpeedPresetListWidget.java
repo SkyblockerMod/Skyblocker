@@ -5,11 +5,11 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.StringRepresentable;

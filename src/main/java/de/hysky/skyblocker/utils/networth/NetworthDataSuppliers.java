@@ -1,15 +1,14 @@
 package de.hysky.skyblocker.utils.networth;
 
-import org.slf4j.Logger;
-
 import com.google.gson.JsonArray;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.utils.ItemUtils;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.azureaaron.networth.data.SkyblockItemData;
 
 public class NetworthDataSuppliers {

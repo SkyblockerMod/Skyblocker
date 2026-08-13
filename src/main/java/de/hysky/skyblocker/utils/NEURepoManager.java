@@ -12,6 +12,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.mojang.brigadier.Command;
+import io.github.moulberry.repo.NEUConstants;
+import io.github.moulberry.repo.NEURecipeCache;
+import io.github.moulberry.repo.NEURepoFile;
+import io.github.moulberry.repo.NEURepository;
+import io.github.moulberry.repo.NEURepositoryException;
+import io.github.moulberry.repo.data.ItemOverlays;
+import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.NEURecipe;
+import io.github.moulberry.repo.util.NEUId;
 import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
@@ -24,25 +38,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.mojang.brigadier.Command;
-
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
-import io.github.moulberry.repo.NEUConstants;
-import io.github.moulberry.repo.NEURecipeCache;
-import io.github.moulberry.repo.NEURepoFile;
-import io.github.moulberry.repo.NEURepository;
-import io.github.moulberry.repo.NEURepositoryException;
-import io.github.moulberry.repo.data.ItemOverlays;
-import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.NEURecipe;
-import io.github.moulberry.repo.util.NEUId;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.ChatFormatting;

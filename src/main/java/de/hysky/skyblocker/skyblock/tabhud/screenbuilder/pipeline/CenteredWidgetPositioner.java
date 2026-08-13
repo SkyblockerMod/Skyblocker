@@ -3,11 +3,11 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-
 import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+
+import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 public class CenteredWidgetPositioner extends WidgetPositioner {
 

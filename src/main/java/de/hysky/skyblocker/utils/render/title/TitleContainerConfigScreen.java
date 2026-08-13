@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -17,7 +17,6 @@ import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
 
-import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;

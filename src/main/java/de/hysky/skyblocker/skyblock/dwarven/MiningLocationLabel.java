@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.awt.Color;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;

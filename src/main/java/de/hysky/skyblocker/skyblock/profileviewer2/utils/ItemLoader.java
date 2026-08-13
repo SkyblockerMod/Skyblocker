@@ -9,9 +9,8 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.model.Inventories;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.Loadouts;

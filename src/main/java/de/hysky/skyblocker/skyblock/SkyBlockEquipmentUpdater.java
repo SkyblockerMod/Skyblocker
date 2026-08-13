@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.intellij.lang.annotations.Language;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -12,7 +13,6 @@ import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 

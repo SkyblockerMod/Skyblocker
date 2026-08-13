@@ -7,10 +7,9 @@ import java.nio.file.Files;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import com.mojang.brigadier.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mojang.brigadier.Message;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

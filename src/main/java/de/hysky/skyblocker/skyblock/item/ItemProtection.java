@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

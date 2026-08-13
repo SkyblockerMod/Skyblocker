@@ -6,9 +6,8 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 public class FileUtils {
 	private static final Logger LOGGER = LogUtils.getLogger();

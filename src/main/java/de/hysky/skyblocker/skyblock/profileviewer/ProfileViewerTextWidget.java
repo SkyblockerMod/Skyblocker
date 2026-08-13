@@ -9,9 +9,8 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import org.joml.Matrix3x2fStack;
-
 import com.google.gson.JsonObject;
+import org.joml.Matrix3x2fStack;
 
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;

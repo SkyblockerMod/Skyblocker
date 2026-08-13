@@ -3,6 +3,8 @@ package de.hysky.skyblocker.utils.container;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
@@ -40,8 +42,6 @@ import de.hysky.skyblocker.skyblock.slayers.features.RewardsHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

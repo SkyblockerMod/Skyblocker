@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.jetbrains.annotations.VisibleForTesting;
-
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

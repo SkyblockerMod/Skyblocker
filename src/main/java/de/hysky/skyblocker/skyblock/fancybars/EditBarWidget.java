@@ -7,10 +7,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableList;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-
-import com.google.common.collect.ImmutableList;
 
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;

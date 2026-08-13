@@ -3,12 +3,11 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

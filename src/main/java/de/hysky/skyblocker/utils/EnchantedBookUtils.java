@@ -5,10 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import de.hysky.skyblocker.annotations.Init;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
+import de.hysky.skyblocker.annotations.Init;
+
 import net.minecraft.network.chat.Component;
 
 public final class EnchantedBookUtils {

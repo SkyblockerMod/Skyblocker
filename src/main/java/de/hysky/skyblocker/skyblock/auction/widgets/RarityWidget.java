@@ -3,9 +3,8 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import java.util.List;
 import java.util.Locale;
 
-import org.joml.Matrix3x2fStack;
-
 import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;

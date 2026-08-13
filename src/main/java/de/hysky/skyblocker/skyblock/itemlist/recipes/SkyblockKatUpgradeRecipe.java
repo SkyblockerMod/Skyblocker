@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.github.moulberry.repo.data.NEUIngredient;
+import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -12,8 +14,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 
-import io.github.moulberry.repo.data.NEUIngredient;
-import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;

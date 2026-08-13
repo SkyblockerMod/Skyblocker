@@ -5,9 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.datafixers.util.Either;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;

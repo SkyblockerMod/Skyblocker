@@ -3,11 +3,10 @@ package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;

@@ -6,12 +6,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.annotations.Init;

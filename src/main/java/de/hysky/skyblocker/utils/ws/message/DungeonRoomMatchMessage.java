@@ -3,10 +3,9 @@ package de.hysky.skyblocker.utils.ws.message;
 import java.util.List;
 import java.util.UUID;
 
-import org.joml.Vector2ic;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.joml.Vector2ic;
 
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.CodecUtils;

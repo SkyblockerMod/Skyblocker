@@ -2,11 +2,10 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.function.Predicate;
 
-import org.apache.commons.text.WordUtils;
-import org.jspecify.annotations.Nullable;
-
 import com.google.common.collect.Iterables;
 import com.mojang.datafixers.util.Either;
+import org.apache.commons.text.WordUtils;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.utils.ItemUtils;
 

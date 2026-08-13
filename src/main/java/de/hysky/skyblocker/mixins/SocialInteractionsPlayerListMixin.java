@@ -2,10 +2,9 @@ package de.hysky.skyblocker.mixins;
 
 import java.util.Map;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 
 import de.hysky.skyblocker.utils.Utils;
 

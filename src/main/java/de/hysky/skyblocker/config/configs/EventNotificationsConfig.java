@@ -3,12 +3,12 @@ package de.hysky.skyblocker.config.configs;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.annotations.GenToString;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

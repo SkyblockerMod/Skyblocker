@@ -2,9 +2,8 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import java.awt.Color;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.GuiHelper;

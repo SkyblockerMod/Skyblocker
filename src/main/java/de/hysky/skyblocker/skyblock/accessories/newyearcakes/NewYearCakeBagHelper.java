@@ -2,11 +2,12 @@ package de.hysky.skyblocker.skyblock.accessories.newyearcakes;
 
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;

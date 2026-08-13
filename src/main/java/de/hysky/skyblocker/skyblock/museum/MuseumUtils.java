@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -12,7 +13,6 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 

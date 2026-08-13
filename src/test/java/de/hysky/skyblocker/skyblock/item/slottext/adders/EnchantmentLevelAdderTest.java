@@ -2,11 +2,10 @@ package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimaps;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EnchantmentLevelAdderTest {
 	@Test

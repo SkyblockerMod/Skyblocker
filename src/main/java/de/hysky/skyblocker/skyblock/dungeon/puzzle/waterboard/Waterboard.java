@@ -2,10 +2,9 @@ package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
 import java.util.Locale;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.core.BlockPos;

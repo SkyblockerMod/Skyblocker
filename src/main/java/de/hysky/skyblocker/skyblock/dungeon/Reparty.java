@@ -5,11 +5,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 
-import org.slf4j.Logger;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;

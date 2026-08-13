@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.primitives.Booleans;
+import com.mojang.brigadier.Command;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
-
-import com.google.common.primitives.Booleans;
-import com.mojang.brigadier.Command;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.item.tooltip.info;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 

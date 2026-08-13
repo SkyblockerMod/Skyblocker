@@ -2,12 +2,11 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import java.util.List;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.Location;

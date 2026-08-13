@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import org.joml.Intersectiond;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -15,7 +16,6 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
-import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;

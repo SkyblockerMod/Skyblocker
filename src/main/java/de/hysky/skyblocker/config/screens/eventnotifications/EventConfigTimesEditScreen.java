@@ -2,13 +2,14 @@ package de.hysky.skyblocker.config.screens.eventnotifications;
 
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
 import de.hysky.skyblocker.utils.config.DurationController;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

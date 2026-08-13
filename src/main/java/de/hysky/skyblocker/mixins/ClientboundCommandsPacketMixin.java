@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 import de.hysky.skyblocker.skyblock.AuctionBazaarAutocomplete;
 import de.hysky.skyblocker.skyblock.CallAutocomplete;

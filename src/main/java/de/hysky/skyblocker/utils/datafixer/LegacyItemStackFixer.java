@@ -2,12 +2,11 @@ package de.hysky.skyblocker.utils.datafixer;
 
 import java.util.List;
 
-import org.apache.logging.log4j.util.TriConsumer;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import org.apache.logging.log4j.util.TriConsumer;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.utils.RegistryUtils;
 import de.hysky.skyblocker.utils.TextTransformer;

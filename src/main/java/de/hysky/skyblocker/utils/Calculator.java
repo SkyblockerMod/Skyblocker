@@ -9,11 +9,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.demonwav.mcdev.annotations.Translatable;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jspecify.annotations.Nullable;
 
-import com.demonwav.mcdev.annotations.Translatable;
-
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.util.StringRepresentable;
 
 public class Calculator {

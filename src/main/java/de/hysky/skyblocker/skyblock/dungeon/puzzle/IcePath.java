@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import com.mojang.brigadier.Command;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
-
-import com.mojang.brigadier.Command;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

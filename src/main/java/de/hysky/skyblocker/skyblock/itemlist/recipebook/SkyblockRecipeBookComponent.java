@@ -3,15 +3,14 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import java.util.List;
 import java.util.Locale;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;

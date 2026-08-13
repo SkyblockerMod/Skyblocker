@@ -2,15 +2,14 @@ package de.hysky.skyblocker.debug;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

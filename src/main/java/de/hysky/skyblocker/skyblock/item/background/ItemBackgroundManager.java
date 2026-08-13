@@ -2,13 +2,14 @@ package de.hysky.skyblocker.skyblock.item.background;
 
 import java.util.List;
 
+import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.JacobMedalBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.LegacyAttributeBackground;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
-import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;

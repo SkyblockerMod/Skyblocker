@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mojang.brigadier.Command;
+import com.mojang.logging.LogUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
@@ -13,9 +15,6 @@ import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
-
-import com.mojang.brigadier.Command;
-import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;

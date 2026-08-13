@@ -3,13 +3,12 @@ package de.hysky.skyblocker.skyblock;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

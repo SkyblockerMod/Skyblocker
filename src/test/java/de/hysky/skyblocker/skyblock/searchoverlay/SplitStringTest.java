@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
+import it.unimi.dsi.fastutil.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import it.unimi.dsi.fastutil.Pair;
 
 public class SplitStringTest {
 	@Test

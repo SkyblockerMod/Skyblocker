@@ -2,10 +2,9 @@ package de.hysky.skyblocker.skyblock.quicknav;
 
 import java.time.Duration;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
