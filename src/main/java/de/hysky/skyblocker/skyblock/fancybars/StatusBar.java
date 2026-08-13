@@ -10,6 +10,7 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import net.minecraft.util.Mth;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jspecify.annotations.Nullable;
 
@@ -18,7 +19,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
@@ -60,6 +60,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		return type.hasMax();
 	}
 
+	public boolean hasDynamicTransparency() {
+		return type.hasDynamicTransparency();
+	}
+
 	public @Nullable Color getTextColor() {
 		return textColor;
 	}
@@ -91,6 +95,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public boolean visible = true;
 	public boolean enabled = true;
 
+	public boolean dynamicTransparency = false;
+
 	private @Nullable Integer value = null;
 	private @Nullable Integer max = null;
 	private @Nullable Integer overflow = null;
@@ -119,15 +125,19 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		this.toDisplay = toDisplay;
 	}
 
-	protected int transparency(int color) {
-		if (inMouse) return (color & 0x00FFFFFF) | 0x44_000000;
+	protected int mixTransparency(int color) {
+		if (inMouse || !enabled) return (color & 0x00FFFFFF) | 0x44_000000;
+		if (this.dynamicTransparency) {
+			if (this.value == null || this.max == null) return color;
+			int transparency = (int) (Mth.clampedMap((float) this.value / (float) this.max, 0.7, 0.95, 1.0, 0.11) * 255);
+			return (color & 0x00FFFFFF) | transparency << 24;
+		}
 		return color;
 	}
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		extractBar(graphics);
-		if (enabled) extractText(graphics);
+		extractAll(graphics);
 	}
 
 	protected Identifier getIcon() {
@@ -135,26 +145,88 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	public void extractBar(GuiGraphicsExtractor graphics) {
+	public void extractAll(GuiGraphicsExtractor graphics) {
 		if (renderWidth <= 0) return;
-		int transparency = transparency(-1);
+		int transparency = mixTransparency(-1);
+
+		// Leave room for Jesus
+		final int ICON_MARGIN = ICON_SIZE + 1;
+
+		// Compute bar position
+		// Compensate for space taken up by icon if aligned with bar
+		final int barWidth = switch (iconPosition) {
+			case LEFT, RIGHT -> renderWidth - ICON_MARGIN;
+			default -> renderWidth;
+		};
+		final int barHeight = 7;
+		final int barX = iconPosition == IconPosition.LEFT ? renderX + ICON_MARGIN : renderX;
+		final int barY = renderY + 1;
+
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, barY, barWidth, barHeight, transparency);
+		extractBarFill(graphics, barX, barWidth);
+
+		// Draw icons if aligned with bar
 		switch (iconPosition) {
 			case LEFT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX, renderY, ICON_SIZE, ICON_SIZE, transparency);
 			case RIGHT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), renderX + renderWidth - ICON_SIZE, renderY, ICON_SIZE, ICON_SIZE, transparency);
 		}
 
-		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 1 : renderX;
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACK, barX, renderY + 1, barWidth, 7, transparency);
-		extractBarFill(graphics, barX, barWidth);
-		//context.drawText(MinecraftClient.getInstance().textRenderer, gridX + " " + gridY + " s:" + size , x, y-9, Colors.WHITE, true);
+		if (!showText()) return;
+
+		// Compute string & text component
+		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
+//		Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
+		Color displayColor = textColor == null ? colors[0] : textColor;
+		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(displayColor.getRGB()));
+
+		if (hasMax() && showMax && max != null) {
+			text.append("/").append(max.toString());
+		}
+		if (hasOverflow() && showOverflow && overflow != null) {
+			MutableComponent literal = Component.literal(" + ").withStyle(style -> style.withColor(colors[1].getRGB()));
+			literal.append(toDisplay.apply(overflow));
+			text.append(literal);
+		}
+
+		// Compute text width
+		int textWidth = Minecraft.getInstance().font.width(text);
+		// Compensate for space taken up by icon if aligned with text
+		if (iconPosition == IconPosition.TEXT_LEFT || iconPosition == IconPosition.TEXT_RIGHT) {
+			textWidth += ICON_MARGIN;
+		}
+
+		// Compute text position
+		final int textY = this.renderY - 3;
+		int textX = switch (textPosition) {
+			case RIGHT -> barX + barWidth - textWidth;
+			case CENTER -> this.renderX + (renderWidth - textWidth) / 2;
+			case BAR_CENTER -> barX + (barWidth - textWidth) / 2;
+			case LEFT -> barX;
+			default -> barX; // Put on the left by default because I said so.
+		};
+
+		// Draw icon if aligned with text
+		switch (iconPosition) {
+			case TEXT_LEFT -> {
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), textX, textY - 1, ICON_SIZE, ICON_SIZE, transparency);
+				textX += ICON_MARGIN;
+			}
+			case TEXT_RIGHT -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), textX + textWidth - ICON_SIZE, textY - 1, ICON_SIZE, ICON_SIZE, transparency);
+			case TEXT_LEFT_FLOATING -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), textX - ICON_MARGIN, textY - 1, ICON_SIZE, ICON_SIZE, transparency);
+			case TEXT_RIGHT_FLOATING -> graphics.blitSprite(RenderPipelines.GUI_TEXTURED, getIcon(), textX + textWidth + 1, textY - 1, ICON_SIZE, ICON_SIZE, transparency);
+		}
+
+		int textFillColor = mixTransparency(displayColor.getRGB());
+		int textOutlineColor = mixTransparency(CommonColors.BLACK);
+
+		GuiHelper.outlinedText(graphics, Component.translationArg(text), textX, textY, textFillColor, textOutlineColor);
 	}
 
 	protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
-		renderBarFill(graphics, barX, barWidth, fill, transparency(colors[0].getRGB()));
+		renderBarFill(graphics, barX, barWidth, fill, mixTransparency(colors[0].getRGB()));
 
 		if (hasOverflow() && overflowFill > 0) {
-			renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(colors[1].getRGB()));
+			renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), mixTransparency(colors[1].getRGB()));
 		}
 	}
 
@@ -179,41 +251,6 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 	public void updateWithResource(StatusBarTracker.Resource resource) {
 		this.updateValues(resource.value() / (float) resource.max(), resource.overflow() / (float) resource.max(), resource.value(), resource.max(), resource.overflow() > 0 ? resource.overflow() : null);
-	}
-
-	public void extractText(GuiGraphicsExtractor graphics) {
-		if (!showText()) return;
-		Font textRenderer = Minecraft.getInstance().font;
-		int barWidth = iconPosition.equals(IconPosition.OFF) ? renderWidth : renderWidth - ICON_SIZE - 1;
-		int barX = iconPosition.equals(IconPosition.LEFT) ? renderX + ICON_SIZE + 2 : renderX;
-		String stringValue = value == null ? "???" : toDisplay.apply(overflow == null || showOverflow ? value : value + overflow);
-		//Color displayColor = overflow != null && !showOverflow ? colors[1] : textColor == null ? colors[0] : textColor;
-		Color displayColor = textColor == null ? colors[0] : textColor;
-		MutableComponent text = Component.literal(stringValue).withStyle(style -> style.withColor(displayColor.getRGB()));
-
-		if (hasMax() && showMax && max != null) {
-			text.append("/").append(max.toString());
-		}
-		if (hasOverflow() && showOverflow && overflow != null) {
-			MutableComponent literal = Component.literal(" + ").withStyle(style -> style.withColor(colors[1].getRGB()));
-			literal.append(toDisplay.apply(overflow));
-			text.append(literal);
-		}
-
-		int textWidth = textRenderer.width(text);
-		int x;
-		switch (textPosition) {
-			case RIGHT -> x = barX + barWidth - textWidth;
-			case CENTER -> x = this.renderX + (renderWidth - textWidth) / 2;
-			case BAR_CENTER -> x = barX + (barWidth - textWidth) / 2;
-			default -> x = barX; // Put on the left by default because I said so.
-		}
-		int y = this.renderY - 3;
-
-		int color = transparency(displayColor.getRGB());
-		int outlineColor = transparency(CommonColors.BLACK);
-
-		GuiHelper.outlinedText(graphics, Component.translationArg(text), x, y, color, outlineColor);
 	}
 
 	public void extractCursor(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
@@ -358,6 +395,11 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public enum IconPosition implements StringRepresentable {
 		LEFT,
 		RIGHT,
+		TEXT_LEFT,
+		TEXT_RIGHT,
+		// Doesn't take up space
+		TEXT_LEFT_FLOATING,
+		TEXT_RIGHT_FLOATING,
 		OFF;
 
 		@Override
@@ -367,7 +409,10 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 
 		@Override
 		public String toString() {
-			return I18n.get("skyblocker.bars.config.commonPosition." + name());
+			return switch (this) {
+				case TEXT_LEFT, TEXT_RIGHT, TEXT_LEFT_FLOATING, TEXT_RIGHT_FLOATING -> I18n.get("skyblocker.bars.config.iconPosition." + name());
+				default -> I18n.get("skyblocker.bars.config.commonPosition." + name());
+			};
 		}
 	}
 
@@ -450,6 +495,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		if (object.has("show_max")) this.showMax = object.get("show_max").getAsBoolean();
 		if (object.has("show_overflow")) this.showOverflow = object.get("show_overflow").getAsBoolean();
 		if (object.has("direction")) this.direction = Direction.valueOf(object.get("direction").getAsString().trim());
+		if (object.has("dynamic_transparency")) this.dynamicTransparency = object.get("dynamic_transparency").getAsBoolean();
 	}
 
 	public JsonObject toJson() {
@@ -480,6 +526,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		object.addProperty("show_overflow", showOverflow);
 		object.addProperty("direction", direction.getSerializedName());
 		object.addProperty("enabled", enabled);
+		object.addProperty("dynamic_transparency", dynamicTransparency);
 		return object;
 	}
 
@@ -493,14 +540,14 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
 			if (hasOverflow() && overflowFill > 0) {
 				if (overflowFill > fill && SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.IN_FRONT) {
-					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
-					renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
+					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), mixTransparency(getColors()[1].getRGB()));
+					renderBarFill(graphics, barX, barWidth, fill, mixTransparency(getColors()[0].getRGB()));
 				} else {
-					renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
-					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
+					renderBarFill(graphics, barX, barWidth, fill, mixTransparency(getColors()[0].getRGB()));
+					renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), mixTransparency(getColors()[1].getRGB()));
 				}
 			} else {
-				renderBarFill(graphics, barX, barWidth, fill, transparency(getColors()[0].getRGB()));
+				renderBarFill(graphics, barX, barWidth, fill, mixTransparency(getColors()[0].getRGB()));
 			}
 		}
 	}
@@ -548,9 +595,9 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				fillColor = getColors()[0].getRGB();
 			}
 
-			renderBarFill(graphics, barX, barWidth, fill, transparency(fillColor));
+			renderBarFill(graphics, barX, barWidth, fill, mixTransparency(fillColor));
 			if (hasOverflow() && overflowFill > 0) {
-				renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), transparency(getColors()[1].getRGB()));
+				renderBarFill(graphics, barX, barWidth, Math.min(overflowFill, 1), mixTransparency(getColors()[1].getRGB()));
 			}
 		}
 

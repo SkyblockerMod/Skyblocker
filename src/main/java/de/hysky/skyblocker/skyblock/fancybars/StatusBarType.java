@@ -6,13 +6,13 @@ import net.minecraft.util.StringRepresentable;
 import org.jspecify.annotations.Nullable;
 
 public enum StatusBarType implements StringRepresentable {
-	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Component.translatable("skyblocker.bars.config.health")),
-	VITALITY("vitality", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(200, 50, 40)}, false, true, new Color(220, 60, 60), Component.translatable("skyblocker.bars.config.vitality")),
-	INTELLIGENCE("intelligence", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, true, new Color(85, 255, 255), Component.translatable("skyblocker.bars.config.intelligence")),
-	DEFENSE("defense", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, false, new Color(185, 185, 185), Component.translatable("skyblocker.bars.config.defense")),
-	EXPERIENCE("experience", BarPositioner.BarAnchor.HOTBAR_TOP, 1, new Color[]{new Color(100, 230, 70)}, false, false, new Color(128, 255, 32), Component.translatable("skyblocker.bars.config.experience")),
-	SPEED("speed", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, true, new Color(185, 185, 185), Component.translatable("skyblocker.bars.config.speed")),
-	AIR("air", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(135, 206, 250)}, false, true, new Color(150, 230, 255), Component.translatable("skyblocker.bars.config.air"));
+	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Component.translatable("skyblocker.bars.config.health"), true),
+	VITALITY("vitality", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(200, 50, 40)}, false, true, new Color(220, 60, 60), Component.translatable("skyblocker.bars.config.vitality"), true),
+	INTELLIGENCE("intelligence", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(0, 255, 255), new Color(180, 0, 255)}, true, true, new Color(85, 255, 255), Component.translatable("skyblocker.bars.config.intelligence"), true),
+	DEFENSE("defense", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, false, new Color(185, 185, 185), Component.translatable("skyblocker.bars.config.defense"), false),
+	EXPERIENCE("experience", BarPositioner.BarAnchor.HOTBAR_TOP, 1, new Color[]{new Color(100, 230, 70)}, false, false, new Color(128, 255, 32), Component.translatable("skyblocker.bars.config.experience"), false),
+	SPEED("speed", BarPositioner.BarAnchor.HOTBAR_RIGHT, 0, new Color[]{new Color(255, 255, 255)}, false, true, new Color(185, 185, 185), Component.translatable("skyblocker.bars.config.speed"), false),
+	AIR("air", BarPositioner.BarAnchor.HOTBAR_RIGHT, 1, new Color[]{new Color(135, 206, 250)}, false, true, new Color(150, 230, 255), Component.translatable("skyblocker.bars.config.air"), false);
 
 	private final String id;
 	private final BarPositioner.BarAnchor defaultAnchor;
@@ -22,8 +22,9 @@ public enum StatusBarType implements StringRepresentable {
 	private final boolean hasMax;
 	private final @Nullable Color textColor;
 	private final Component name;
+	private final boolean dynamicTransparency;
 
-	StatusBarType(String id, BarPositioner.BarAnchor defaultAnchor, int defaultGridY, Color[] colors, boolean hasOverflow, boolean hasMax, @Nullable Color textColor, Component name) {
+	StatusBarType(String id, BarPositioner.BarAnchor defaultAnchor, int defaultGridY, Color[] colors, boolean hasOverflow, boolean hasMax, @Nullable Color textColor, Component name, boolean dynamicTransparency) {
 		this.id = id;
 		this.defaultAnchor = defaultAnchor;
 		this.defaultGridY = defaultGridY;
@@ -32,6 +33,7 @@ public enum StatusBarType implements StringRepresentable {
 		this.hasMax = hasMax;
 		this.textColor = textColor;
 		this.name = name;
+		this.dynamicTransparency = dynamicTransparency;
 	}
 
 	public static StatusBarType from(String id) {
@@ -66,6 +68,10 @@ public enum StatusBarType implements StringRepresentable {
 
 	public boolean hasMax() {
 		return hasMax;
+	}
+
+	public boolean hasDynamicTransparency() {
+		return dynamicTransparency;
 	}
 
 	public @Nullable Color getTextColor() {
