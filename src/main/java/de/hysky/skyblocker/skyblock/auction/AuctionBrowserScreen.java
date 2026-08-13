@@ -15,17 +15,6 @@ import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -48,6 +37,17 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);

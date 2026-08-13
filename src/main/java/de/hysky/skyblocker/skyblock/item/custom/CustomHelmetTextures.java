@@ -14,13 +14,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 /**
  * Caches generated ProfileComponents for custom player head textures.

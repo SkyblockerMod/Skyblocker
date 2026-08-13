@@ -6,10 +6,6 @@ import java.util.stream.IntStream;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -19,6 +15,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
+
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();

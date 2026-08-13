@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 /**
  * Handles automatic backups of the main config file.

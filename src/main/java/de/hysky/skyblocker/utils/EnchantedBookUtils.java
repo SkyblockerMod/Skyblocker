@@ -8,9 +8,9 @@ import java.util.Optional;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import de.hysky.skyblocker.annotations.Init;
-
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.annotations.Init;
 
 public final class EnchantedBookUtils {
 	private static final Map<String, String> API_ID_OVERRIDES = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());

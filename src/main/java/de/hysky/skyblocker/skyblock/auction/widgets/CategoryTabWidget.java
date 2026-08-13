@@ -2,11 +2,6 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -15,6 +10,11 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import de.hysky.skyblocker.utils.render.gui.SideTabButtonWidget;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 
 public class CategoryTabWidget extends SideTabButtonWidget {
 	@SuppressWarnings("unchecked")

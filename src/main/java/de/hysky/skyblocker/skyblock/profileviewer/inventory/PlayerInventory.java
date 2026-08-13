@@ -8,12 +8,6 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,6 +19,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 
 public class PlayerInventory implements ProfileViewerPage {
 	private static final Identifier TEXTURE = Identifier.parse("textures/gui/container/generic_54.png");

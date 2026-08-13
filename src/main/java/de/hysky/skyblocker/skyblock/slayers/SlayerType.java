@@ -5,13 +5,13 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.DROP_ICON;
 import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.HEAD_ICON;

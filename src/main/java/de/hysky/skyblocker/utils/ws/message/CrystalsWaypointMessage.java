@@ -7,12 +7,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.BlockPos;
+
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.MiningLocationLabel.CrystalHollowsLocationsCategory;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.ws.Type;
-
-import net.minecraft.core.BlockPos;
 
 public record CrystalsWaypointMessage(CrystalHollowsLocationsCategory location, BlockPos coordinates) implements Message<CrystalsWaypointMessage> {
 	private static final Codec<CrystalsWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -10,9 +10,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
-
 import net.minecraft.commands.SharedSuggestionProvider;
+
+import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 
 public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {
 	@Override

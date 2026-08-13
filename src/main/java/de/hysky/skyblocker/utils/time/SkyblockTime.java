@@ -9,14 +9,14 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockTime {
 	public static final Instant SKYBLOCK_EPOCH = Instant.ofEpochMilli(1560275700000L);

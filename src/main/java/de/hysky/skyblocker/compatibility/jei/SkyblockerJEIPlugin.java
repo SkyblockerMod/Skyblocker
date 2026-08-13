@@ -16,6 +16,11 @@ import mezz.jei.fabric.events.JeiLifecycleEvents;
 import mezz.jei.library.ingredients.subtypes.SubtypeInterpreters;
 import mezz.jei.library.load.registration.SubtypeRegistration;
 
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.Identifier;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -31,11 +36,6 @@ import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.Identifier;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {

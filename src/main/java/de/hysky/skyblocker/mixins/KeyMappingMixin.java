@@ -6,9 +6,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
-
 import net.minecraft.client.KeyMapping;
+
+import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 
 @Mixin(KeyMapping.class)
 public abstract class KeyMappingMixin {

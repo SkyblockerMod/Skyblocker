@@ -5,12 +5,12 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 
 public class RewardsHighlighter extends SimpleContainerSolver {
 	public RewardsHighlighter() {

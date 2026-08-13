@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import de.hysky.skyblocker.injected.SkyblockerStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.injected.SkyblockerStack;
 
 public record ItemAbility(String name, Activation activation, OptionalInt manaCost, OptionalInt soulflowCost, OptionalInt cooldown) {
 	private static final Pattern ABILITY_NAME_PATTERN = Pattern.compile("(?:⦾ )?Ability: (.+)" + " {2}(" + String.join("|", Arrays.stream(Activation.values()).map(Activation::toString).toArray(String[]::new)) + ")");

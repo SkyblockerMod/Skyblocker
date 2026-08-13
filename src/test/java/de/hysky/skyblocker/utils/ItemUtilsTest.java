@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.data.registries.VanillaRegistries;
@@ -24,6 +22,8 @@ import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 
 public class ItemUtilsTest {
 	private final RegistryOps<JsonElement> JSON_OPS = VanillaRegistries.createLookup().createSerializationContext(JsonOps.INSTANCE);

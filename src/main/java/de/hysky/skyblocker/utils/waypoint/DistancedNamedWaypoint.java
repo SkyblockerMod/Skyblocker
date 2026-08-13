@@ -2,13 +2,13 @@ package de.hysky.skyblocker.utils.waypoint;
 
 import java.util.function.Supplier;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class DistancedNamedWaypoint extends NamedWaypoint {
 	public DistancedNamedWaypoint(BlockPos pos, Component name, float[] colorComponents, boolean enabled) {

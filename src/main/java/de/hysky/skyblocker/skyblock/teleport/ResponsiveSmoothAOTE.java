@@ -2,15 +2,15 @@ package de.hysky.skyblocker.skyblock.teleport;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 
 import static de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE.getItemDistance;
 

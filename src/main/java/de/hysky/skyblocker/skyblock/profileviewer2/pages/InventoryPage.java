@@ -7,14 +7,6 @@ import java.util.concurrent.CompletableFuture;
 
 import it.unimi.dsi.fastutil.Pair;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -26,6 +18,14 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInformation, ProfileItemStorage>> {
 	private final List<AbstractWidget> widgets = new ArrayList<>();

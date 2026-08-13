@@ -3,13 +3,6 @@ package de.hysky.skyblocker.skyblock.waypoint;
 import java.awt.Color;
 import java.util.function.Consumer;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
-import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.StringWidget;
@@ -22,6 +15,13 @@ import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
 public class WaypointsOptionScreen extends Screen {
 	private final Screen parent;

@@ -7,12 +7,12 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class Fetchur extends ChatPatternListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Fetchur.class);

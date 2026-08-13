@@ -5,11 +5,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import de.hysky.skyblocker.utils.render.text.GridFormattedCharSequence;
-import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
-
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.util.FormattedCharSequence;
+
+import de.hysky.skyblocker.utils.render.text.GridFormattedCharSequence;
+import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
 
 @Mixin(ClientTooltipComponent.class)
 public interface ClientTooltipComponentMixin {

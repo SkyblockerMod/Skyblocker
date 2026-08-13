@@ -20,15 +20,15 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.backup.ConfigBackupManager;
-
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 
 public class JsonData<T> {
 	public static final SystemToast.SystemToastId ERROR_TOAST_ID = new SystemToast.SystemToastId(10_000L);

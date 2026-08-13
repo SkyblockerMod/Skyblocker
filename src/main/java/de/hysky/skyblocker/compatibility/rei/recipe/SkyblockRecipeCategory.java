@@ -13,12 +13,12 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.joml.Matrix3x2fStack;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
-
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 
 /**
  * Skyblock recipe category class for REI

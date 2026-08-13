@@ -4,12 +4,6 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.utils.config.DurationController;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -28,6 +22,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.utils.config.DurationController;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class EventConfigTimesEditScreen extends Screen {
 

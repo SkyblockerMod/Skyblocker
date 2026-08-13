@@ -6,14 +6,6 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -35,6 +27,14 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends AbstractWidget {

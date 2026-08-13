@@ -4,6 +4,11 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
 import de.hysky.skyblocker.skyblock.hunting.Attributes;
@@ -15,11 +20,6 @@ import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.text.GridComponent;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
 public class HuntingBoxPriceTooltip extends SimpleTooltipAdder {
 	public HuntingBoxPriceTooltip(int priority) {

@@ -11,19 +11,19 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.RegexUtils;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-import de.hysky.skyblocker.utils.time.SkyblockTimeField;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 
 public class DateCalculatorTooltip extends SimpleTooltipAdder {
 	//((?<days>\d+)d)? ?((?<hours>\d+)h)? ?((?<minutes>\d+)m)? ?((?<seconds>\d+)s)?

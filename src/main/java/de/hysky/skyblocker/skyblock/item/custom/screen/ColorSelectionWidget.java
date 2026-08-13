@@ -7,15 +7,6 @@ import java.util.stream.Stream;
 import com.demonwav.mcdev.annotations.Translatable;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -47,6 +38,15 @@ import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 
 public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
 	private static final int PADDING = 3;

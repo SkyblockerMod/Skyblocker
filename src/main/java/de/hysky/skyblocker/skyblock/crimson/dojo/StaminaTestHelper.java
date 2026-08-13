@@ -7,14 +7,14 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class StaminaTestHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

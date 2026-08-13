@@ -20,15 +20,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
@@ -42,6 +33,15 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();

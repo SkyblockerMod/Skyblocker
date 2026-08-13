@@ -2,9 +2,9 @@ package de.hysky.skyblocker.skyblock;
 
 import java.util.List;
 
-import de.hysky.skyblocker.utils.ItemAbility;
-
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.ItemAbility;
 
 public class SwingAnimation {
 	public static boolean hasAbility(ItemStack stack) {

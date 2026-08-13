@@ -3,18 +3,18 @@ package de.hysky.skyblocker.skyblock.foraging.torrhus;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
 
 public final class HoneyhiveHighlighter extends AbstractBlockHighlighter {
 	private static final HoneyhiveHighlighter INSTANCE = new HoneyhiveHighlighter();

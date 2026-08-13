@@ -15,12 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.injected.RecipeBookHolder;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
@@ -31,6 +25,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.RecipeBookHolder;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends AbstractContainerScreen<InventoryMenu> implements RecipeBookHolder {

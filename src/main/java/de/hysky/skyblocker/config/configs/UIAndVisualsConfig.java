@@ -9,15 +9,15 @@ import java.util.regex.Matcher;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.language.I18n;
+
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.resources.language.I18n;
 
 public class UIAndVisualsConfig {
 

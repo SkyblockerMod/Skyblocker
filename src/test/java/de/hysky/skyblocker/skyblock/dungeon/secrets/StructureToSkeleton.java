@@ -12,12 +12,12 @@ import java.util.zip.DeflaterOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 
 /**
  * Utility class to convert a structure template NBT file into a .skeleton file through an easy 3-step process.

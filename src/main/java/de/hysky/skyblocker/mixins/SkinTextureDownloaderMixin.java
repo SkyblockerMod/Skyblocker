@@ -13,15 +13,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
+import net.minecraft.util.ARGB;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SkinTextureDownloader;
-import net.minecraft.util.ARGB;
 
 @Mixin(SkinTextureDownloader.class)
 public class SkinTextureDownloaderMixin {

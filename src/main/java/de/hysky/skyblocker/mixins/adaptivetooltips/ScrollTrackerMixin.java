@@ -6,9 +6,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
-
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+
+import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
 
 @Pseudo
 @Mixin(targets = "dev.isxander.adaptivetooltips.helpers.ScrollTracker")

@@ -7,9 +7,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.azureaaron.networth.data.SkyblockItemData;
+
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class NetworthDataSuppliers {
 	private static final Logger LOGGER = LogUtils.getLogger();

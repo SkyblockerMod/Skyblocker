@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
-import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.ServerTransferHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
+
+import de.hysky.skyblocker.skyblock.garden.LowerSensitivity;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.gui.ServerTransferHelper;
 
 @Mixin(MouseHandler.class)
 public class MouseHandlerMixin {

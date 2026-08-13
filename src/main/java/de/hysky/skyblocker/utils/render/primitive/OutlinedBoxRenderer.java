@@ -3,12 +3,12 @@ package de.hysky.skyblocker.utils.render.primitive;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
-
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class OutlinedBoxRenderer implements PrimitiveRenderer<OutlinedBoxRenderState> {
 	protected static final OutlinedBoxRenderer INSTANCE = new OutlinedBoxRenderer();

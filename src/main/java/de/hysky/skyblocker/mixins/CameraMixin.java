@@ -4,12 +4,12 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.client.Camera;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
-
-import net.minecraft.client.Camera;
-import net.minecraft.world.phys.Vec3;
 
 @Mixin(Camera.class)
 public class CameraMixin {

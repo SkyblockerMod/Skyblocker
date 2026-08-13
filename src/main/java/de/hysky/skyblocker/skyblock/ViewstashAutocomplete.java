@@ -5,11 +5,11 @@ import java.util.stream.Stream;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.CommandUtils;
-
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
+
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;

@@ -15,14 +15,6 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import org.joml.Matrix3x2f;
 import org.joml.Vector2f;
 
-import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
-import de.hysky.skyblocker.compatibility.ModernUICompatibility;
-import de.hysky.skyblocker.mixins.accessors.GuiGraphicsExtractorInvoker;
-import de.hysky.skyblocker.utils.render.state.gui.GuiCustomShapeRenderState;
-import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
-import de.hysky.skyblocker.utils.render.state.gui.GuiHorizontalGradientRenderState;
-import de.hysky.skyblocker.utils.render.state.gui.GuiOutlinedTextRenderState;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerFaceExtractor;
@@ -42,6 +34,14 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
+
+import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
+import de.hysky.skyblocker.compatibility.ModernUICompatibility;
+import de.hysky.skyblocker.mixins.accessors.GuiGraphicsExtractorInvoker;
+import de.hysky.skyblocker.utils.render.state.gui.GuiCustomShapeRenderState;
+import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
+import de.hysky.skyblocker.utils.render.state.gui.GuiHorizontalGradientRenderState;
+import de.hysky.skyblocker.utils.render.state.gui.GuiOutlinedTextRenderState;
 
 public class GuiHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

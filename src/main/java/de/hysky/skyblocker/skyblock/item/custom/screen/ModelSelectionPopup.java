@@ -7,9 +7,6 @@ import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.ModelManagerAccessor;
-import de.hysky.skyblocker.utils.render.gui.AbstractSelectionPopup;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -23,6 +20,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.mixins.accessors.ModelManagerAccessor;
+import de.hysky.skyblocker.utils.render.gui.AbstractSelectionPopup;
 
 public class ModelSelectionPopup extends AbstractSelectionPopup<ModelSelectionPopup.Widget> {
 	protected ModelSelectionPopup(Screen backgroundScreen, Consumer<@Nullable Identifier> onDone) {

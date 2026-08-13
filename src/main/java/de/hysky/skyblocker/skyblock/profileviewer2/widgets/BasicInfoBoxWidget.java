@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public sealed class BasicInfoBoxWidget extends AbstractWidget permits SkillsInfoBoxWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");

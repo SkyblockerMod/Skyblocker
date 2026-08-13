@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard;
 
 public class VerifyJsonTest {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

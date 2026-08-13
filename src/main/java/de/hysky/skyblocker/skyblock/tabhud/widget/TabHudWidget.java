@@ -7,12 +7,12 @@ import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.utils.Location;
-
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.utils.Location;
 
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;

@@ -5,15 +5,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.museum.MuseumManager;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(ContainerScreen.class)
 public abstract class ContainerScreenMixin extends AbstractContainerScreen<ChestMenu> {

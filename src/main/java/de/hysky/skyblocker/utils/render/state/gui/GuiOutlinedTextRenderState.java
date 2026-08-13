@@ -3,8 +3,6 @@ package de.hysky.skyblocker.utils.render.state.gui;
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.FontAccessor;
-
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.GlyphVisitor;
 import net.minecraft.client.gui.Font.PreparedText;
@@ -12,6 +10,8 @@ import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.minecraft.util.FormattedCharSequence;
+
+import de.hysky.skyblocker.mixins.accessors.FontAccessor;
 
 public class GuiOutlinedTextRenderState extends GuiTextRenderState {
 	private final int outlineColor;

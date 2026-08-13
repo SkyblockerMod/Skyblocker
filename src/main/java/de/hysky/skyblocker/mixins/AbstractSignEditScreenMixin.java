@@ -11,12 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
-import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
-import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -24,6 +18,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(AbstractSignEditScreen.class)
 public abstract class AbstractSignEditScreenMixin extends Screen {

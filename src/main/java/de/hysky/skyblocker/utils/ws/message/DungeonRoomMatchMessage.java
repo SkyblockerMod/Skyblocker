@@ -7,10 +7,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.joml.Vector2ic;
 
+import net.minecraft.core.UUIDUtil;
+
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.CodecUtils;
-
-import net.minecraft.core.UUIDUtil;
 
 public record DungeonRoomMatchMessage(String type, UUID sender, Room.Type roomType, Room.Shape shape, Room.Direction direction,
 									String room, List<Vector2ic> pos) implements Message<DungeonRoomMatchMessage> {

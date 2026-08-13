@@ -10,17 +10,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.text.GridComponentManager;
-import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
-
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.text.GridComponentManager;
+import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
 
 @Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsExtractorMixin {

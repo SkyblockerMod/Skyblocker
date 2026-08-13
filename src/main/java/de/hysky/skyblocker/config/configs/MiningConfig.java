@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hysky.skyblocker.annotations.EnumDisabledValue;
-
 import net.minecraft.client.resources.language.I18n;
+
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 
 public class MiningConfig {
 	public boolean enableDrillFuel = true;

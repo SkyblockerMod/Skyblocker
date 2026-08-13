@@ -2,6 +2,11 @@ package de.hysky.skyblocker.skyblock.entity;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
@@ -11,11 +16,6 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 
 public class MobBoundingBoxes {
 	/**

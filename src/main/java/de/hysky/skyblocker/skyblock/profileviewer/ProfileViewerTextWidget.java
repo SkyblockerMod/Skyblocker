@@ -12,6 +12,13 @@ import java.util.Set;
 import com.google.gson.JsonObject;
 import org.joml.Matrix3x2fStack;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
@@ -22,13 +29,6 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.Wardrobe
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
 
 public class ProfileViewerTextWidget {
 	private static final int ROW_GAP = 9;

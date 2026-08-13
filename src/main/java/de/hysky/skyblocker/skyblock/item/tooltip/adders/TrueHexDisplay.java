@@ -5,12 +5,12 @@ import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 
 /**
  * Changes the color of HEX colors codes on dye items to reflect their actual color

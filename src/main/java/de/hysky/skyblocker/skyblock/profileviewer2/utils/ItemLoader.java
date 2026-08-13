@@ -12,12 +12,6 @@ import java.util.concurrent.Executors;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.model.Inventories;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.Loadouts;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -25,6 +19,12 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.model.Inventories;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.Loadouts;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
 
 public class ItemLoader {
 	private static final Logger LOGGER = LogUtils.getLogger();

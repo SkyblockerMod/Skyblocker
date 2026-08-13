@@ -16,14 +16,14 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 
 public final class LogsFolderFinder {
 	private static final Logger LOGGER = LogUtils.getLogger();

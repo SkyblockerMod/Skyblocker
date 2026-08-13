@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -12,6 +10,8 @@ import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 
 // This is kinda excessive, but I thought it was a good idea
 public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends AbstractWidget {

@@ -7,10 +7,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.client.renderer.rendertype.PreparedRenderType;
+
 import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-
-import net.minecraft.client.renderer.rendertype.PreparedRenderType;
 
 @Mixin(PreparedRenderType.class)
 public abstract class PreparedRenderTypeMixin {

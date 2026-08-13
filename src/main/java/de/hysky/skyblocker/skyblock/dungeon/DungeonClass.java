@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.minecraft.util.ARGB;
+
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-
-import net.minecraft.util.ARGB;
 
 public enum DungeonClass {
 	UNKNOWN("Unknown", MobGlow.NO_GLOW, Ico.BARRIER),

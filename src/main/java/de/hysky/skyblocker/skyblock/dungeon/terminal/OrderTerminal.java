@@ -6,13 +6,13 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public final class OrderTerminal extends SimpleContainerSolver implements TerminalSolver {
 	private static final int PANES_NUM = 14;

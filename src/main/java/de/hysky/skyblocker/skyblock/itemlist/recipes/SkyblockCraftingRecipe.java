@@ -8,12 +8,12 @@ import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import io.github.moulberry.repo.data.NEUIngredient;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public class SkyblockCraftingRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_crafting");

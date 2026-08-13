@@ -10,10 +10,10 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.resources.Identifier;
+
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-
-import net.minecraft.resources.Identifier;
 
 /**
  * Skyblock Crafting Recipe display class for REI

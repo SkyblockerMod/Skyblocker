@@ -11,17 +11,6 @@ import com.mojang.serialization.JsonOps;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.HudAccessor;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -48,6 +37,17 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.events.EventNotifications;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 

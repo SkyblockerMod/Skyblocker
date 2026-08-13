@@ -5,9 +5,9 @@ import java.util.Map;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import de.hysky.skyblocker.skyblock.item.HeadTextures;
-
 import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
 
 import static java.util.Map.entry;
 

@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -15,6 +10,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 
 public class EditBidPopup extends AbstractPopupScreen {
 	private LinearLayout layout = LinearLayout.vertical();

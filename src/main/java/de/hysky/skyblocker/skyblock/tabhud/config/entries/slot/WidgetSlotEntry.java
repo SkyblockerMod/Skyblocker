@@ -5,10 +5,6 @@ import java.util.Locale;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -19,6 +15,10 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button editButton;

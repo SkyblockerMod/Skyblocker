@@ -2,13 +2,6 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import java.awt.Color;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -18,6 +11,13 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class LevelBarWidget extends AbstractWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");

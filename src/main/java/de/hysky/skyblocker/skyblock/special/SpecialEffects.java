@@ -2,12 +2,12 @@ package de.hysky.skyblocker.skyblock.special;
 
 import java.lang.ref.WeakReference;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class SpecialEffects {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

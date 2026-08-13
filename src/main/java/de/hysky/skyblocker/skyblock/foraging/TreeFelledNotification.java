@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.skyblock.foraging;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 
 public class TreeFelledNotification {
 	private static final String PETALFALL_MESSAGE = "PETALFALL! You felled the entire Tree!";

@@ -2,11 +2,11 @@ package de.hysky.skyblocker.config.configs;
 
 import java.awt.Color;
 
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
+
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = false;

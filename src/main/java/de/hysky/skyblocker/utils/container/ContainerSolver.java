@@ -4,15 +4,15 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
-import de.hysky.skyblocker.utils.Resettable;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.Resettable;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 /// A solver for a container screen.
 ///

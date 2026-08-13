@@ -50,7 +50,7 @@
         </module>
 
         <module name="ImportOrder">
-            <property name="groups" value="java,javax,*,de.hysky,net"/>
+            <property name="groups" value="java,javax,*,net,de.hysky"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="bottom"/> <!-- Put static imports below regular imports -->

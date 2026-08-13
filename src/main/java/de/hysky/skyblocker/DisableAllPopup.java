@@ -2,9 +2,6 @@ package de.hysky.skyblocker;
 
 import java.util.concurrent.TimeUnit;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.CountdownComponent;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -14,6 +11,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.CountdownComponent;
 
 public final class DisableAllPopup {
 	private static final long DELAY_S = 10;

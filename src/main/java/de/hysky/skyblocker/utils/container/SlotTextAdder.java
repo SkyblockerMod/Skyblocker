@@ -7,15 +7,15 @@ import java.util.stream.Stream;
 import com.demonwav.mcdev.annotations.Translatable;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-
 import net.azureaaron.dandelion.api.Option;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 
 public interface SlotTextAdder extends ContainerMatcher {
 

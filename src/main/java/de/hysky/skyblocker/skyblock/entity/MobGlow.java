@@ -6,8 +6,6 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import de.hysky.skyblocker.annotations.Init;
-
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -16,6 +14,8 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.annotations.Init;
 
 public class MobGlow {
 	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;

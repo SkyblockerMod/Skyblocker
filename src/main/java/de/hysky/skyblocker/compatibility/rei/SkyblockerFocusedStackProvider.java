@@ -6,10 +6,10 @@ import me.shedaniel.rei.api.client.registry.screen.FocusedStackProvider;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackUtils;
-
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackUtils;
 
 public class SkyblockerFocusedStackProvider implements FocusedStackProvider {
 	@Override

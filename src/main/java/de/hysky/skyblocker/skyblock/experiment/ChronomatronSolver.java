@@ -7,15 +7,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class ChronomatronSolver extends ExperimentSolver implements ContainerListener {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMap.ofEntries(

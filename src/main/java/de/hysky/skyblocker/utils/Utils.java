@@ -20,15 +20,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.purse.PurseChangeCause;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.azureaaron.hmapi.data.server.Environment;
@@ -61,6 +52,15 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.

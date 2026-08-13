@@ -10,11 +10,11 @@ import java.util.zip.InflaterInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
-import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 
 /**
  * This is the opposite of {@link StructureToSkeleton}, for more detailed comments see that class instead.

@@ -9,6 +9,13 @@ import com.operationpotato.itemlist.api.ExclusionZoneManager;
 import com.operationpotato.itemlist.api.HoveredItemManager;
 import com.operationpotato.itemlist.api.Plugin;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
@@ -20,13 +27,6 @@ import de.hysky.skyblocker.skyblock.museum.MuseumManager;
 import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackUtils;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Rect2i;
 
 public class ItemListCompatibility implements Plugin {
 

@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 
 public class SortWidget extends SliderWidget<SortWidget.Option> {
 

@@ -14,15 +14,15 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class NewYearCakesHelper extends SimpleContainerSolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NewYearCakesHelper.class);

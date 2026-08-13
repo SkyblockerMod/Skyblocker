@@ -15,6 +15,15 @@ import com.mojang.util.UndashedUuid;
 import it.unimi.dsi.fastutil.Pair;
 import org.slf4j.Logger;
 
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.PlayerSkinRenderCache;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.world.item.component.ResolvableProfile;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
@@ -25,15 +34,6 @@ import de.hysky.skyblocker.skyblock.profileviewer2.utils.LenientUuidTypeAdapter;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.ProfileUtils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.PlayerSkinRenderCache;
-import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.world.item.component.ResolvableProfile;
 
 public class ProfileViewer {
 	private static final Logger LOGGER = LogUtils.getLogger();

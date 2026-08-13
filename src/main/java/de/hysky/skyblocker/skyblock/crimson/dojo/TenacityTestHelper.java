@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
@@ -13,6 +11,8 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class TenacityTestHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

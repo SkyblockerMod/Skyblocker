@@ -6,10 +6,10 @@ import java.util.Locale;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class SlayersPage implements ProfileViewerPage {
 	private static final String[] SLAYERS = {"Zombie", "Spider", "Wolf", "Enderman", "Vampire", "Blaze"};

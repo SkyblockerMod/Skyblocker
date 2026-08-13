@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class PosUtilsTest {
 	@Test

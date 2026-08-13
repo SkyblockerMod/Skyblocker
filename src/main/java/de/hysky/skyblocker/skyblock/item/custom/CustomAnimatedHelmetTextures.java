@@ -21,14 +21,14 @@ import org.apache.commons.text.WordUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.component.ResolvableProfile;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.component.ResolvableProfile;
 
 public class CustomAnimatedHelmetTextures {
 	private static final Logger LOGGER = LogUtils.getLogger();

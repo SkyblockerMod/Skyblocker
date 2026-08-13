@@ -5,15 +5,15 @@ import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class SkyblockXpMessages {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import com.google.gson.annotations.SerializedName;
 
-import de.hysky.skyblocker.utils.Location;
-
 import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.utils.Location;
 
 public class Shards {
 	public Traps traps = new Traps();

@@ -12,12 +12,12 @@ import it.unimi.dsi.fastutil.ints.IntSortedSets;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.joml.Vector2ic;
 
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class DebugRoom extends Room {
 	private final List<Waypoint> checkedBlocks = Collections.synchronizedList(new ArrayList<>());

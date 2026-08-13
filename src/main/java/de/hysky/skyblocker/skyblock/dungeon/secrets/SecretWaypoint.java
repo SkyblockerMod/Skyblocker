@@ -14,12 +14,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.core.BlockPos;
@@ -28,6 +22,12 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 
 public class SecretWaypoint extends DistancedNamedWaypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);

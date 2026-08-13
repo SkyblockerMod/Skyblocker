@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,6 +7,8 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 
 public class AuctionHouseScreenHandler extends ChestMenu {
 	public AuctionHouseScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory, int rows, boolean isView) {

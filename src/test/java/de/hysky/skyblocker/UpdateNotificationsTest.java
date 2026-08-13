@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.UpdateNotifications.MrVersion;
-
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.UpdateNotifications.MrVersion;
 
 public class UpdateNotificationsTest {
 	private final Comparator<Version> versionComparator = UpdateNotifications.VERSION_COMPARATOR;

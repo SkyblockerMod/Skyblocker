@@ -12,11 +12,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.Utils;
-
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.utils.Utils;
 
 /*
 	This implementation doesn't have a default value parameter as there is no sensible default for the data structure.

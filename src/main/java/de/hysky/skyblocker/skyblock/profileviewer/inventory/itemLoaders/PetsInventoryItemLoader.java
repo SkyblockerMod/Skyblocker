@@ -8,11 +8,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
-
-import net.minecraft.world.item.ItemStack;
 
 public class PetsInventoryItemLoader extends ItemLoader {
 	@Override

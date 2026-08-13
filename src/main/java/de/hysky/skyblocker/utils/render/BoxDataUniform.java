@@ -4,10 +4,10 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.util.List;
 
-import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
-
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.ARGB;
+
+import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
 
 public class BoxDataUniform extends AbstractUniformTexelBuffer<FilledBoxRenderState> {
 	private static final int TEXELS_PER_INSTANCE = 2;
