@@ -24,6 +24,10 @@ public class PlayerData {
 	public List<Effect> activeEffects = List.of();
 	@SerializedName("reaper_peppers_eaten")
 	public int reaperPeppersEaten;
+	@SerializedName("isopod_husks_eaten")
+	public int isopodHusksEaten;
+	@SerializedName("bee_saliva_eaten")
+	public int beeSalivaEaten;
 	@SerializedName("death_count")
 	public int deathCount;
 	@SerializedName("disabled_potion_effects")
@@ -47,7 +51,6 @@ public class PlayerData {
 	@SerializedName("fishing_treasure_caught")
 	public int fishingTreasuresCaught;
 	public Map<String, Double> experience = Map.of();
-
 
 	/// @param tier one indexed minion tier
 	public boolean hasCraftedMinionTier(String minionType, int tier) {
