@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.accessories;
 import com.google.common.collect.ImmutableList;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
@@ -21,6 +20,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -47,7 +47,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -388,6 +387,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		protected void clearDisplayStack() {
 			super.clearDisplayStack();
 		}
+
 		@Override
 		public @Nullable ItemStack getFocusedItem() {
 			return isHovered() ? getDisplayStack() : null;
@@ -443,10 +443,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				Identifier tooltipStyle = icon.get(DataComponents.TOOLTIP_STYLE);
-				IconographicCompatibility.withItem(icon.getStackOrEmpty(), () ->
-						graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, tooltipStyle)
-				);
+				GuiHelper.setTooltipWithItem(graphics, icon.getStackOrEmpty(), tooltip, mouseX, mouseY);
 			}
 
 			@Override
@@ -481,6 +478,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private final FlexibleItemStack icon;
 		private final double pricePerMp;
 		private final List<Component> tooltip;
+
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", Ico.BARRIER);
 			OptionalDouble opt = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
