@@ -76,6 +76,7 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 		// Draw Items
 		List<ItemStack> stacks = this.pages.get(this.index);
 		ItemStack hoveredStack = null;
+
 		for (int i = 0; i < stacks.size(); i++) {
 			int column = i % this.columns;
 			int row = i / this.columns;
