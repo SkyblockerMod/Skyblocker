@@ -131,7 +131,7 @@ public class StatusBarTracker {
 		String stringified = text.getString();
 
 		long now = System.currentTimeMillis();
-		if (lastMessage.equals(stringified) && lastMessageTime + 1000 > now) {
+		if (lastMessage.equals(stringified) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
 			return lastReturn;
 		}
 		lastMessage = stringified;
