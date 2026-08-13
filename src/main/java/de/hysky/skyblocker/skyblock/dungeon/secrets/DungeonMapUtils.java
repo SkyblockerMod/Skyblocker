@@ -1,14 +1,22 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
-
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
+
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import org.joml.RoundingMode;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -17,12 +25,6 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
-import org.joml.RoundingMode;
-import org.joml.Vector2d;
-import org.joml.Vector2dc;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.COLOR_BLACK.getPackedId(MapColor.Brightness.LOWEST);

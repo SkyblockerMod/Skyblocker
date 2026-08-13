@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
@@ -8,7 +13,7 @@ import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -27,8 +32,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import java.util.HashSet;
-import java.util.Set;
 
 public class CrystalsChestHighlighter {
 

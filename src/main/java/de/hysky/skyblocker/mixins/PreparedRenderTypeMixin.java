@@ -1,15 +1,15 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.textures.GpuTextureView;
-
 import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
+
 import net.minecraft.client.renderer.rendertype.PreparedRenderType;
 
 @Mixin(PreparedRenderType.class)

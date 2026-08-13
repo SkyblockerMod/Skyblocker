@@ -1,11 +1,19 @@
 package de.hysky.skyblocker.skyblock.foraging;
 
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -17,11 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * Abstract class for a simple feature that highlights a certain type of block.

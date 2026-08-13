@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
-import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
-import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import java.util.regex.Pattern;
+
 import org.intellij.lang.annotations.Language;
 import org.jspecify.annotations.Nullable;
 
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
 
 /**
  * Simple implementation of a slot text adder.

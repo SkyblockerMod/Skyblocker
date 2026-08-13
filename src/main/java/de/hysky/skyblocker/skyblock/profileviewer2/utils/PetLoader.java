@@ -9,9 +9,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import io.github.moulberry.repo.constants.PetLevelingBehaviourOverride;
+import io.github.moulberry.repo.constants.PetLevelingData;
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
+import io.github.moulberry.repo.util.PetId;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -21,12 +26,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.TextTransformer;
-import io.github.moulberry.repo.constants.PetLevelingBehaviourOverride;
-import io.github.moulberry.repo.constants.PetLevelingData;
-import io.github.moulberry.repo.constants.PetNumbers;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.Rarity;
-import io.github.moulberry.repo.util.PetId;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;

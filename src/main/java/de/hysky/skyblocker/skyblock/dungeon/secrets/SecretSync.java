@@ -1,6 +1,20 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -15,19 +29,7 @@ import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomMatchMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 
 public class SecretSync {

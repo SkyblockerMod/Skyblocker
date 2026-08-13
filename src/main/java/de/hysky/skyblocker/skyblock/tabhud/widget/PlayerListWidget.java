@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
-
-import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class PlayerListWidget extends TabHudWidget {

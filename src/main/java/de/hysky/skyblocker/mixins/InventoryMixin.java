@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import de.hysky.skyblocker.skyblock.crimson.kuudra.ArrowPoisonWarning;
+
 import net.minecraft.world.entity.player.Inventory;
 
 @Mixin(Inventory.class)

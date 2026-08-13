@@ -3,8 +3,10 @@ package de.hysky.skyblocker.utils.render.gui.pip;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
+
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;

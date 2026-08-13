@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.Set;
+
 import com.mojang.brigadier.Command;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -9,10 +12,9 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-
-import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 

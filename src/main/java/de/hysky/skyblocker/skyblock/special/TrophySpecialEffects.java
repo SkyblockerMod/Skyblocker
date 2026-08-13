@@ -3,16 +3,16 @@ package de.hysky.skyblocker.skyblock.special;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;

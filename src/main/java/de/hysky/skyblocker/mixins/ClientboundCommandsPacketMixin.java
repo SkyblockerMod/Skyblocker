@@ -3,6 +3,8 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 import de.hysky.skyblocker.skyblock.AuctionBazaarAutocomplete;
 import de.hysky.skyblocker.skyblock.CallAutocomplete;
@@ -14,9 +16,8 @@ import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.commands.SharedSuggestionProvider;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(targets = "net.minecraft.network.protocol.game.ClientboundCommandsPacket$NodeResolver")
 public class ClientboundCommandsPacketMixin {

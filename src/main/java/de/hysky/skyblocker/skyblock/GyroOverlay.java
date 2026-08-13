@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.awt.Color;
+import java.util.Locale;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import java.awt.Color;
-import java.util.Locale;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.ARGB;

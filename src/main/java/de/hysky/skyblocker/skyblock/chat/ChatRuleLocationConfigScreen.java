@@ -1,8 +1,12 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.util.EnumSet;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.config.screens.powdertracker.ItemTickList;
 import de.hysky.skyblocker.utils.Location;
-import java.util.EnumSet;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -11,7 +15,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 public class ChatRuleLocationConfigScreen extends Screen {
 	private final @Nullable Screen parent;

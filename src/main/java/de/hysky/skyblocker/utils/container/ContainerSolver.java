@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.utils.container;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

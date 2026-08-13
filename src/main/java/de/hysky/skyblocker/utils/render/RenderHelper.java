@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.utils.render;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
+
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;

@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jspecify.annotations.Nullable;
 
 public class MuseumUtils {
 	private static final Set<String> EQUIPMENT_TYPES = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT", "LOCKET", "VINE", "GRIPPERS");

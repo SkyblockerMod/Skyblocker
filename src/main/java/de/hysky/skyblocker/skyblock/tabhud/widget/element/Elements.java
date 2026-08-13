@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.Nullable;
 
 public class Elements {
 	public static Element iconTextComponent() {

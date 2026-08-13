@@ -1,5 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -10,17 +21,7 @@ import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
 
-import com.mojang.blaze3d.platform.InputConstants;
-
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;

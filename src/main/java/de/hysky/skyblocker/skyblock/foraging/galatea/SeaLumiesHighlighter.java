@@ -1,12 +1,15 @@
 package de.hysky.skyblocker.skyblock.foraging.galatea;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Iterator;
-import java.util.Set;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

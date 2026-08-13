@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
@@ -10,6 +15,7 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,10 +24,6 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 public class ItemLoader {
 

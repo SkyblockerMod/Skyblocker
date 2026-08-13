@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.foraging.galatea;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.logging.LogUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.minecraft.network.chat.Component;
 
 @SuppressWarnings("RegExpRepeatedSpace") // followup messages have 2 leading spaces

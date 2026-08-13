@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render;
 
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 

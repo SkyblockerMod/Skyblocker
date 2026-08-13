@@ -1,9 +1,19 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
+import org.joml.Vector2f;
+import org.joml.Vector2i;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.utils.render.GuiHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -16,14 +26,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
 public class RadialButton implements Renderable, GuiEventListener, LayoutElement, NarratableEntry {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

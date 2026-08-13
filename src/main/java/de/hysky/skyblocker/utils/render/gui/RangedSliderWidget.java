@@ -1,9 +1,12 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.utils.Formatters;
-import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
 import java.text.NumberFormat;
 import java.util.function.DoubleConsumer;
+
+import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
+
+import de.hysky.skyblocker.utils.Formatters;
+
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;

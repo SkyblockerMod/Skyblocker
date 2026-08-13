@@ -1,21 +1,21 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import java.awt.Color;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jspecify.annotations.Nullable;
-
-import java.awt.Color;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

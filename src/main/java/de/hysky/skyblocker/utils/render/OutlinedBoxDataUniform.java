@@ -5,6 +5,7 @@ import java.lang.foreign.ValueLayout;
 import java.util.List;
 
 import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
+
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.ARGB;
 

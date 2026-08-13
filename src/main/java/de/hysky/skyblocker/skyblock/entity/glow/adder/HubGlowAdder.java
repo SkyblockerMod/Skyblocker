@@ -5,6 +5,7 @@ import de.hysky.skyblocker.skyblock.carnival.CatchAFish;
 import de.hysky.skyblocker.skyblock.carnival.ZombieShootout;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.zombie.Zombie;

@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.world.scores.Scoreboard;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+
+import de.hysky.skyblocker.utils.Utils;
+
+import net.minecraft.world.scores.Scoreboard;
 
 @Mixin(Scoreboard.class)
 public abstract class ScoreboardMixin {

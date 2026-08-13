@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
+import java.util.List;
+import java.util.Optional;
+
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.resources.Identifier;
-import java.util.List;
-import java.util.Optional;
-
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
+import net.minecraft.resources.Identifier;
 
 /**
  * Skyblock Crafting Recipe display class for REI

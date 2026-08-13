@@ -1,19 +1,20 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import io.github.moulberry.repo.data.NEUNpcShopRecipe;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import io.github.moulberry.repo.data.NEUNpcShopRecipe;
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 
 public class SkyblockNpcShopRecipe implements CenteredRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_npc_shop");

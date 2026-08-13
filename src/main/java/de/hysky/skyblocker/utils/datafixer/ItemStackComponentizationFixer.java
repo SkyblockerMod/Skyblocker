@@ -9,6 +9,7 @@ import com.mojang.serialization.Dynamic;
 
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.RegistryUtils;
+
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentPatch;

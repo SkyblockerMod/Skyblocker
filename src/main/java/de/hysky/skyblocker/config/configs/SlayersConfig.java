@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.awt.Color;
+
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import net.minecraft.client.resources.language.I18n;
 
-import java.awt.Color;
+import net.minecraft.client.resources.language.I18n;
 
 public class SlayersConfig {
 	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;

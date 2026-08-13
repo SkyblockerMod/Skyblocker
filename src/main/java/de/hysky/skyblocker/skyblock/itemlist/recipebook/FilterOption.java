@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+
 import net.minecraft.resources.Identifier;
 
 public enum FilterOption implements Supplier<Identifier>, Predicate<String> {

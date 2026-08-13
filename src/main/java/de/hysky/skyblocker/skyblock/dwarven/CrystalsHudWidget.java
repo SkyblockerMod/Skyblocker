@@ -1,23 +1,25 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.List;
+import java.util.Set;
+
+import org.joml.Matrix3x2fStack;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.Location;
-import org.joml.Matrix3x2fStack;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
 
-import java.util.List;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class CrystalsHudWidget extends HudWidget {

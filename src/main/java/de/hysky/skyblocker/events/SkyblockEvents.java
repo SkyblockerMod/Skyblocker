@@ -3,6 +3,7 @@ package de.hysky.skyblocker.events;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.purse.PurseChangeCause;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;

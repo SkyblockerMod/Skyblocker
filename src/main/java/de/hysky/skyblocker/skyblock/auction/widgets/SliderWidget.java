@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.auction.widgets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

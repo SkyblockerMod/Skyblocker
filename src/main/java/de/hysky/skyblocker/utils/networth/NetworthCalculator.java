@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.networth;
 import java.util.List;
 
 import com.mojang.serialization.Dynamic;
+
 import net.azureaaron.networth.ItemCalculator;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.item.SkyblockItemStack;

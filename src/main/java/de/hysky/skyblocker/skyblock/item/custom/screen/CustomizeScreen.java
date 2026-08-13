@@ -1,6 +1,15 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.apache.commons.lang3.function.Consumers;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
@@ -11,7 +20,7 @@ import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
 import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -34,14 +43,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-
-import org.apache.commons.lang3.function.Consumers;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
 
 public class CustomizeScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();

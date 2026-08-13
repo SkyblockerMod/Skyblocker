@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.utils.command.argumenttypes;
 
+import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
-import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.commands.SharedSuggestionProvider;
 
 public final class EggTypeArgumentType implements ArgumentType<EggFinder.EggType> {

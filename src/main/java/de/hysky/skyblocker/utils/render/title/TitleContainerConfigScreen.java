@@ -1,7 +1,13 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import java.awt.Color;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
@@ -10,17 +16,12 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
-import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
 	public static final float MIN_TITLE_SCALE = 30f;

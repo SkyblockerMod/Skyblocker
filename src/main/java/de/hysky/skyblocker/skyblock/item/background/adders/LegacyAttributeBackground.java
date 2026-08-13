@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.background.adders;
 
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;

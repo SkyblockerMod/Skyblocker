@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.Constants;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.StringUtils;
 
 public class RegularItemLookup implements WikiLookup {
 	public static final RegularItemLookup INSTANCE = new RegularItemLookup();

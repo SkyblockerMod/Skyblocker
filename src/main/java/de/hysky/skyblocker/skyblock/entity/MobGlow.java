@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
+import de.hysky.skyblocker.annotations.Init;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;

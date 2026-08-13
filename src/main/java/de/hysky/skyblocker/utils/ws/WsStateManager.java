@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.utils.ws;
 
+import java.util.EnumSet;
+import java.util.Optional;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.Message;
+
 import net.azureaaron.hmapi.data.server.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-
-import java.util.EnumSet;
-import java.util.Optional;
 
 public class WsStateManager {
 	private static final EnumSet<Service> SUBSCRIBED_SERVER_SERVICES = EnumSet.noneOf(Service.class);

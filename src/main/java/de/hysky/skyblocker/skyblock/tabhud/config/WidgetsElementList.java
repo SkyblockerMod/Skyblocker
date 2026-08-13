@@ -1,9 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
 import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -12,13 +20,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
 
 public class WidgetsElementList extends ContainerObjectSelectionList<WidgetsListEntry> {
 	static final Identifier MOVE_UP_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");

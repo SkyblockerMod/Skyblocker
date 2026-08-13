@@ -3,14 +3,14 @@ package de.hysky.skyblocker;
 import java.util.Comparator;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JavaOps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JavaOps;
-
 import de.hysky.skyblocker.UpdateNotifications.MrVersion;
+
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.SharedConstants;

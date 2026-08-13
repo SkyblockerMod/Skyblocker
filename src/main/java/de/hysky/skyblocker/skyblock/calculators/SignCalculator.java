@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.calculators;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Formatters;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.VisibleForTesting;
 
 public class SignCalculator {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

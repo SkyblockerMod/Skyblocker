@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.SharedConstants;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -20,6 +17,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+
+import net.minecraft.SharedConstants;
 
 /**
  * @implNote All http requests are sent using HTTP 2

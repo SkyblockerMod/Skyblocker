@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.crimson.dojo.DisciplineTestHelper;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;

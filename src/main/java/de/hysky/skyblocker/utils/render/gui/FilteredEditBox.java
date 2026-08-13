@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.EditBoxAccessor;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;

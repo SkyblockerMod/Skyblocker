@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;

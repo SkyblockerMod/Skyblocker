@@ -2,8 +2,9 @@ package de.hysky.skyblocker.skyblock.searchoverlay;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;

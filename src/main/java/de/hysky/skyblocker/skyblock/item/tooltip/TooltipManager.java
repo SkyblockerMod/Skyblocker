@@ -1,5 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
@@ -33,6 +40,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.TrueHexDyeScreenDisplay;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
+
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
@@ -41,12 +49,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
-import org.jspecify.annotations.Nullable;
 
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{

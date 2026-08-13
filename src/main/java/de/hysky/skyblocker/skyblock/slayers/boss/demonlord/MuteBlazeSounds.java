@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.demonlord;
 
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

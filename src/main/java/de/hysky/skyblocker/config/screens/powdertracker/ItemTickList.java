@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import java.util.Collection;
 import java.util.List;
+
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Checkbox;

@@ -5,11 +5,10 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.NativeImage;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -21,6 +20,7 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.Utils;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;

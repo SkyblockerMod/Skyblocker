@@ -3,6 +3,7 @@ package de.hysky.skyblocker.config.configs;
 import java.awt.Color;
 
 import de.hysky.skyblocker.utils.SkyBlockColors;
+
 import net.minecraft.world.item.DyeColor;
 
 public class HuntingConfig {

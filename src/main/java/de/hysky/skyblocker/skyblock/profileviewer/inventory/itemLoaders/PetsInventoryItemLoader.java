@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
+
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.skyblock.profileviewer.inventory.Pet;
+
 import net.minecraft.world.item.ItemStack;
 
 public class PetsInventoryItemLoader extends ItemLoader {

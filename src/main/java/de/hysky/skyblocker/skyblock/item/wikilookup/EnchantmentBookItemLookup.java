@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.function.Predicate;
+
+import com.google.common.collect.Iterables;
+import com.mojang.datafixers.util.Either;
+import org.apache.commons.text.WordUtils;
+import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.utils.ItemUtils;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.text.WordUtils;
-import org.jspecify.annotations.Nullable;
-
-import com.google.common.collect.Iterables;
-import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.utils.ItemUtils;
 
 public class EnchantmentBookItemLookup implements WikiLookup {
 	private static final Predicate<ItemStack> ENCHANTMENT_BOOK_FILTER = itemStack -> {

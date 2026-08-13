@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 import java.util.function.IntConsumer;
 
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;

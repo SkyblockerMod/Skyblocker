@@ -3,10 +3,9 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vulkan.VulkanDevice;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
 import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
@@ -24,6 +23,7 @@ import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
 import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
+
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.minecraft.client.Minecraft;

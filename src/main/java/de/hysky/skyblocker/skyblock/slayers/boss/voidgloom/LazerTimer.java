@@ -4,6 +4,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 

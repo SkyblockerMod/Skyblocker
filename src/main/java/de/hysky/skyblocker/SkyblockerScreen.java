@@ -6,6 +6,7 @@ import de.hysky.skyblocker.skyblock.Tips;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.LogsFolderFinder;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.Font;

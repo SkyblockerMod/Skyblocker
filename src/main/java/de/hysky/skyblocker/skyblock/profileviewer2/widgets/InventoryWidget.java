@@ -9,6 +9,7 @@ import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import de.hysky.skyblocker.utils.render.GuiHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

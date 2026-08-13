@@ -1,7 +1,18 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
 import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,6 +28,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.components.tabs.MenuTabBar;
@@ -30,16 +42,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.ArrayUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class WidgetsConfigurationScreen extends Screen implements ContainerListener {
 	public static final Logger LOGGER = LogUtils.getLogger();

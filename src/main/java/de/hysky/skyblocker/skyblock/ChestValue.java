@@ -1,5 +1,22 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -19,7 +36,7 @@ import de.hysky.skyblocker.utils.RegexListUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
@@ -35,21 +52,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.OptionalDouble;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);

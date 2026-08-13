@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.util.Arrays;
+
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Utils;
-import java.util.Arrays;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;

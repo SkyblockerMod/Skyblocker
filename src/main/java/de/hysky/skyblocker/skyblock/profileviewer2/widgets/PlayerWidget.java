@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileViewerPlayer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;

@@ -2,24 +2,26 @@ package de.hysky.skyblocker.mixins;
 
 import java.awt.Color;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SkinTextureDownloader;
-import net.minecraft.util.ARGB;
+
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-import com.mojang.blaze3d.platform.NativeImage;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.utils.Utils;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
+import net.minecraft.util.ARGB;
 
 @Mixin(SkinTextureDownloader.class)
 public class SkinTextureDownloaderMixin {

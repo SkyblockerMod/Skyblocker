@@ -5,19 +5,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.DataResult.Error;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.injected.SkyblockerStack;
 import de.hysky.skyblocker.mixins.accessors.DataComponentPatchAccessor;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentPatch;

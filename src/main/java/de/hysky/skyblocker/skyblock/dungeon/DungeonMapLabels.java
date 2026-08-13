@@ -3,18 +3,7 @@ package de.hysky.skyblocker.skyblock.dungeon;
 import java.util.List;
 import java.util.Set;
 
-import de.hysky.skyblocker.utils.FunUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -26,9 +15,21 @@ import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.Vec3;
 
 public class DungeonMapLabels {
 	private static final Object2ObjectOpenHashMap<String, RoomLabel> LABELS = new Object2ObjectOpenHashMap<>();

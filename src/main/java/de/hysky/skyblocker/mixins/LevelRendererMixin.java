@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -11,11 +12,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.sugar.Local;
-
 import de.hysky.skyblocker.injected.EntityRenderMarker;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.utils.render.GlowRenderer;
+
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;

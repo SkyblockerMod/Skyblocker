@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import java.util.List;
+
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;

@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 import de.hysky.skyblocker.injected.CustomGlowState;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
+
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
 @Mixin(value = { ItemFeatureRenderer.Submit.class })

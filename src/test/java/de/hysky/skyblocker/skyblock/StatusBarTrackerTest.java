@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
+import org.junit.jupiter.api.Test;
+
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

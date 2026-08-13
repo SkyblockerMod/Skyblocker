@@ -1,10 +1,15 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
+import java.util.List;
+import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import java.util.List;
-import java.util.Locale;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,9 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.joml.Matrix3x2fStack;
-
-import com.mojang.blaze3d.platform.InputConstants;
 
 public class RarityWidget extends AbstractWidget {
 

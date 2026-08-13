@@ -1,9 +1,13 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import java.awt.Color;
+
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import java.awt.Color;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -14,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 /**
  * @implNote Does not render a background.

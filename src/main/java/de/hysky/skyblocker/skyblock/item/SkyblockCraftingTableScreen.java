@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import java.time.Duration;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;

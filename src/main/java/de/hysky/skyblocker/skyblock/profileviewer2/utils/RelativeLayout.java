@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
-import net.minecraft.client.gui.layouts.Layout;
-import net.minecraft.client.gui.layouts.LayoutElement;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import net.minecraft.client.gui.layouts.Layout;
+import net.minecraft.client.gui.layouts.LayoutElement;
 
 public class RelativeLayout implements Layout {
 	private int x, y;
