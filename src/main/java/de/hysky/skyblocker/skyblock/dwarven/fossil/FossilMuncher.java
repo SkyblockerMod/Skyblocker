@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.regex.Matcher;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 
 public class FossilMuncher extends ChatPatternListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FossilMuncher.class);

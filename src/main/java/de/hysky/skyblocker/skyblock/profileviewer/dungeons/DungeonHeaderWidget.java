@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.profileviewer.dungeons;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.Locale;
+
+import com.google.gson.JsonObject;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
 
 public class DungeonHeaderWidget {
 	private LevelFinder.LevelInfo classLevel;

@@ -1,16 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import com.google.gson.JsonObject;
-
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.awt.Color;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -20,6 +14,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.InventoryItemLoader;
 
 public class PlayerInventory implements ProfileViewerPage {
 	private static final Identifier TEXTURE = Identifier.parse("textures/gui/container/generic_54.png");

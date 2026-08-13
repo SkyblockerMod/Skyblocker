@@ -5,13 +5,14 @@ import java.util.Optional;
 
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
-
-import de.hysky.skyblocker.utils.EnumUtils;
-import de.hysky.skyblocker.utils.SkyBlockColors;
 import io.github.moulberry.repo.data.Rarity;
+
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.utils.EnumUtils;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 
 public enum SkyblockItemRarity implements StringRepresentable {
 	COMMON(TextColor.WHITE),

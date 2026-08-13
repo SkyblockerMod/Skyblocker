@@ -115,5 +115,7 @@
     "skyblocker.config.hunting.torrhusMobs.hideonsunHighlightColor": "Hideonsun Highlight Colour",
     "skyblocker.config.hunting.moongladeMobs.coralotHighlightColor": "Coralot Highlight Colour",
     "skyblocker.config.hunting.moongladeMobs.hideonleafHighlightColor": "Hideonleaf Highlight Colour",
-    "skyblocker.config.hunting.moongladeMobs.shellwiseHighlightColor": "Shellwise Highlight Colour"
+    "skyblocker.config.hunting.moongladeMobs.shellwiseHighlightColor": "Shellwise Highlight Colour",
+    "skyblocker.config.hunting.hauntedBiome.bloodbatHighlightColor": "Bloodbat Highlight Colour",
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critter Highlight Colour"
 }

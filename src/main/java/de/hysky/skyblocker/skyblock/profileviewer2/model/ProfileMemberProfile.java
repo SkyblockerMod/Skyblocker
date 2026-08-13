@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
 import java.util.UUID;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 public class ProfileMemberProfile {
 	@SerializedName("first_join")

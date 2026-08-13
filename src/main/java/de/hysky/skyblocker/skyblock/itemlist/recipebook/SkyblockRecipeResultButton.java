@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 public class SkyblockRecipeResultButton extends AbstractWidget {
 	// Corresponds to RecipeButton#BACKGROUND_SIZE

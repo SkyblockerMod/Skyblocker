@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
-import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
-import de.hysky.skyblocker.utils.container.TooltipAdder;
+import java.util.regex.Pattern;
+
 import org.intellij.lang.annotations.Language;
 
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.utils.container.RegexContainerMatcher;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
 
 /**
  * Simple implementation of a tooltip adder.

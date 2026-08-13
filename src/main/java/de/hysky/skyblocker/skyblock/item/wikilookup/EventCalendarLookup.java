@@ -3,14 +3,15 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.datafixers.util.Either;
+import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.StringUtils;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.datafixers.util.Either;
 
 public class EventCalendarLookup implements WikiLookup {
 	private static final Pattern CALENDAR_EVENT_NAME = Pattern.compile("^[0-9a-z ]*(?<event>.+)$");

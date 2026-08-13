@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 
 public class CalculatorTest {
 	private static final double PURSE = 12345;

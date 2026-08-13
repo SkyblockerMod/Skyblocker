@@ -5,9 +5,10 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import org.apache.commons.lang3.Strings;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.Strings;
 
 @SuppressWarnings("RedundantCast")
 public final class HexColorArgumentType implements ArgumentType<Integer> {

@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class DungeonQualityTooltip extends SimpleTooltipAdder {
 	private static final ChatFormatting[] MAXED = {ChatFormatting.RED, ChatFormatting.BOLD};

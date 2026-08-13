@@ -6,6 +6,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,9 +20,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 public interface TooltipInfoType {
 	DataTooltipInfoType<Object2DoubleMap<String>> NPC = ofData("https://hysky.de/api/npcprice", CodecUtils.object2DoubleMapCodec(Codec.STRING), true, Object2DoubleMap::containsKey, itemTooltip -> itemTooltip.enableNPCPrice);

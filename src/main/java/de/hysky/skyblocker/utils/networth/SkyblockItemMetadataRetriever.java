@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.azureaaron.networth.item.ItemMetadataRetriever;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

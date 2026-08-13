@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.utils.render.text;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class GridTooltipComponent implements ClientTooltipComponent {
 	private final GridFormattedCharSequence sequence;

@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import org.spongepowered.asm.mixin.Mixin;
+
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.level.Level;
-import org.spongepowered.asm.mixin.Mixin;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 
 @Mixin(Bat.class)
 public abstract class BatMixin extends AmbientCreature {

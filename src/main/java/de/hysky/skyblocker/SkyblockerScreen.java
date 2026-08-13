@@ -1,11 +1,5 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.Tips;
-import de.hysky.skyblocker.utils.FunUtils;
-import de.hysky.skyblocker.utils.LogsFolderFinder;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.Font;
@@ -25,6 +19,13 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.Tips;
+import de.hysky.skyblocker.utils.FunUtils;
+import de.hysky.skyblocker.utils.LogsFolderFinder;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;

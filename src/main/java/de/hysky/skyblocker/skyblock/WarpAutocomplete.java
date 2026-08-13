@@ -1,29 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
-import net.azureaaron.hmapi.data.rank.PackageRank;
-import net.azureaaron.hmapi.data.rank.RankType;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.commands.SharedSuggestionProvider;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +9,31 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.azureaaron.hmapi.data.rank.PackageRank;
+import net.azureaaron.hmapi.data.rank.RankType;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;

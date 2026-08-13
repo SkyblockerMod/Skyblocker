@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class ComboFilter extends SimpleChatFilter {
 	public ComboFilter() {

@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();

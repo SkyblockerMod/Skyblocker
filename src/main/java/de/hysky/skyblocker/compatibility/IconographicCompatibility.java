@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.compatibility;
 
-import net.minecraft.world.item.ItemStack;
-
 import java.util.function.BiConsumer;
+
+import net.minecraft.world.item.ItemStack;
 
 public class IconographicCompatibility {
 	public static boolean isEnabled = false;

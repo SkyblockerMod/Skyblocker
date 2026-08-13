@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
-import java.util.List;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 
 public final class SeparatorEntry extends WidgetsListEntry {
 	@Override

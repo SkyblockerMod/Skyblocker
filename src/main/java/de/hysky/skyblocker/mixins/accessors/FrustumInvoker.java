@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.mixins.accessors;
 
-import net.minecraft.client.renderer.culling.Frustum;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.client.renderer.culling.Frustum;
 
 /**
  * Use {@link de.hysky.skyblocker.utils.render.FrustumUtils#isVisible(double, double, double, double, double, double) FrustumUtils#isVisible} which is shorter. For the purpose of avoiding object allocations!

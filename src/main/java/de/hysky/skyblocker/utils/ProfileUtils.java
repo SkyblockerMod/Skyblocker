@@ -3,15 +3,14 @@ package de.hysky.skyblocker.utils;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.SkyblockerMod;
 
