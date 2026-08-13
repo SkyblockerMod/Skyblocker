@@ -5,6 +5,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -41,6 +42,7 @@ public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?:(?<percent>[\\d,]+(?:\\.\\d+)?%)|(?<current>[\\d,]+)/(?<max>[\\d,]+k?))\\)");
+	private static final Pattern TAB_FARMING_PROGRESS = Pattern.compile("Farming (?<level>\\d+): (?<progress>\\d+(?:\\.\\d+)?)%");
 	private static final Minecraft client = Minecraft.getInstance();
 	private static final int STATS_WINDOW = 5_000;
 
@@ -50,6 +52,7 @@ public class FarmingHud {
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
 
 	private static float farmingXpPercentProgress;
+	private static int tabFarmingLevel = -1;
 
 	@Init
 	public static void init() {
@@ -110,8 +113,33 @@ public class FarmingHud {
 
 			return true;
 		});
+		Scheduler.INSTANCE.scheduleCyclic(FarmingHud::updateProgressFromTab, 20);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
 				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));
+	}
+
+	/**
+	 * Updates the level progress from the skills section of the tab list, which reflects farming xp not reported
+	 * in the action bar, such as the xp rewarded for fulfilling a visitor's request.
+	 * The action bar remains the primary source while farming since it reports the progress
+	 * with two decimals of precision while the tab list only has one,
+	 * so the tab list value is ignored while action bar messages are coming in.
+	 */
+	private static void updateProgressFromTab() {
+		if (!shouldRender() || !farmingXp.isEmpty()) return;
+		for (String line : PlayerListManager.getPlayerStringList()) {
+			Matcher matcher = TAB_FARMING_PROGRESS.matcher(line);
+			if (!matcher.matches()) continue;
+			int level = Integer.parseInt(matcher.group("level"));
+			float progress = Float.parseFloat(matcher.group("progress"));
+			// Progress within a level only ever increases, so a lower value is just the tab list's rounding
+			// of the more precise action bar value - unless the level changed (level up or profile switch).
+			if (level != tabFarmingLevel || progress > farmingXpPercentProgress) {
+				farmingXpPercentProgress = progress;
+				tabFarmingLevel = level;
+			}
+			return;
+		}
 	}
 
 	@SuppressWarnings("SameParameterValue")
