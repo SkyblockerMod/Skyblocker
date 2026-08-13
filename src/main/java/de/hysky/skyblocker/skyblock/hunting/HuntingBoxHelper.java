@@ -10,12 +10,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
-import net.minecraft.world.item.ItemStack;
 
 public class HuntingBoxHelper extends SimpleContainerSolver {
 	// ^(?:\(\d+\/\d+\) )?Hunting Box$

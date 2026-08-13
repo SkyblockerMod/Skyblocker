@@ -2,9 +2,6 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import com.mojang.authlib.GameProfile;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileViewerPlayer;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
@@ -15,6 +12,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileViewerPlayer;
 
 public final class PlayerWidget extends AbstractWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/player_background");

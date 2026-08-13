@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 
 public class AttunementColors {
 	private static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC|IMMUNE");

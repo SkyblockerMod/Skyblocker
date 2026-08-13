@@ -9,11 +9,6 @@ import java.util.function.Consumer;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -26,6 +21,11 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class RadialButton implements Renderable, GuiEventListener, LayoutElement, NarratableEntry {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

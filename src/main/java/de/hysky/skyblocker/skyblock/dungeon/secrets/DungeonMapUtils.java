@@ -15,8 +15,6 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
@@ -25,6 +23,8 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room.Type;
 
 public class DungeonMapUtils {
 	public static final byte BLACK_COLOR = MapColor.COLOR_BLACK.getPackedId(MapColor.Brightness.LOWEST);

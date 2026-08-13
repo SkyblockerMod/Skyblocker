@@ -18,21 +18,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
-import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
-import de.hysky.skyblocker.utils.ApiAuthentication;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.EntityUtils;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.ProfileUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -50,6 +35,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
+import de.hysky.skyblocker.utils.ApiAuthentication;
+import de.hysky.skyblocker.utils.ApiUtils;
+import de.hysky.skyblocker.utils.EntityUtils;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.ProfileUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.extractEntityInInventoryFollowsMouse;
 

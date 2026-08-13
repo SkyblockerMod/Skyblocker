@@ -12,10 +12,6 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,6 +21,10 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 // This class is a copy of CorpseList because it's a very similar widget, but the way entries are added is different to achieve a different layout.
 // The main difference between this class and that class is the constructor and the constructors of MultiEntry.

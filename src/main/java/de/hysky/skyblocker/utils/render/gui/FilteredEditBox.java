@@ -5,12 +5,12 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.EditBoxAccessor;
-
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
+
+import de.hysky.skyblocker.mixins.accessors.EditBoxAccessor;
 
 public class FilteredEditBox extends EditBox {
 	private Predicate<String> filter = Objects::nonNull;

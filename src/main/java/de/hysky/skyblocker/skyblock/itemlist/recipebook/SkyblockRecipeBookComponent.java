@@ -7,10 +7,6 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.Pair;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
-import de.hysky.skyblocker.utils.FunUtils;
-import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -31,6 +27,10 @@ import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
+
+import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
+import de.hysky.skyblocker.utils.FunUtils;
+import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 
 /**
  * Based on {@link net.minecraft.client.gui.screens.recipebook.RecipeBookComponent}.

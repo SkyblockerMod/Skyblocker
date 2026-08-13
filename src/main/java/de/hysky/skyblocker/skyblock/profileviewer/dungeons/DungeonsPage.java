@@ -7,10 +7,10 @@ import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.utils.ProfileUtils;
-
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class DungeonsPage implements ProfileViewerPage {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileUtils.class);

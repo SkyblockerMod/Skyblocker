@@ -16,10 +16,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.loader.api.metadata.Person;
@@ -40,6 +36,10 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockerCreditsScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();

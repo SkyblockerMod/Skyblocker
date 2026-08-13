@@ -4,14 +4,14 @@ import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 /**
  * Base class for rendering colored backgrounds behind Minecraft items.

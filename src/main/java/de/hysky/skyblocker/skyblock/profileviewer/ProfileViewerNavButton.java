@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.profileviewer;
 
 import java.util.Map;
 
-import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -13,6 +9,10 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public class ProfileViewerNavButton extends AbstractWidget {
 	private static final Identifier BUTTON_TEXTURES_TOGGLED = Identifier.parse("container/creative_inventory/tab_top_selected_2");

@@ -12,15 +12,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.injected.GlowRenderTypeHolder;
-import de.hysky.skyblocker.mixins.accessors.RenderSetupAccessor;
-import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-
 import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.injected.GlowRenderTypeHolder;
+import de.hysky.skyblocker.mixins.accessors.RenderSetupAccessor;
+import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 
 @Mixin(RenderType.class)
 public class RenderTypeMixin implements GlowRenderTypeHolder {

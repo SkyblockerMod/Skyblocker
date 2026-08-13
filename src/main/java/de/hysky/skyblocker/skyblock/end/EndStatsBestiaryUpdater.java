@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 	private static final Pattern KILLS_PATTERN = Pattern.compile("Kills: ([0-9,]+)");

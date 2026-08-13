@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.world.entity.projectile.FishingHook;
+
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(FishingHook.class)
 public class FishingHookMixin {

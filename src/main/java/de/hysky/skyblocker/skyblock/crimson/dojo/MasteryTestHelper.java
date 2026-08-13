@@ -7,14 +7,14 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class MasteryTestHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

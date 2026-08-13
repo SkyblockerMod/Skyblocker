@@ -7,11 +7,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.BlockPos;
+
 import de.hysky.skyblocker.skyblock.chocolatefactory.EggFinder;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.ws.Type;
-
-import net.minecraft.core.BlockPos;
 
 public record EggWaypointMessage(EggFinder.EggType eggType, BlockPos coordinates, Optional<Long> expirationEpoch) implements Message<EggWaypointMessage> {
 	private static final Codec<EggWaypointMessage> CODEC = RecordCodecBuilder.create(instance -> instance.group(

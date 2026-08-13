@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.sven;
 
+import net.minecraft.sounds.SoundEvent;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.utils.Utils;
-
-import net.minecraft.sounds.SoundEvent;
 
 public class MuteWolfSounds {
 	@Init

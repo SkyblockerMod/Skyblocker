@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,6 +21,8 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
 
 public class SpeedPresetListWidget extends ContainerObjectSelectionList<SpeedPresetListWidget.AbstractEntry> {
 	private static final Pattern NUMBER = Pattern.compile("^-?\\d+(\\.\\d+)?$");

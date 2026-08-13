@@ -7,13 +7,13 @@ import com.mojang.logging.LogUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatMessageListener;
-
-import net.minecraft.network.chat.Component;
 
 @SuppressWarnings("RegExpRepeatedSpace") // followup messages have 2 leading spaces
 public class SweepDetailsListener implements ChatMessageListener {

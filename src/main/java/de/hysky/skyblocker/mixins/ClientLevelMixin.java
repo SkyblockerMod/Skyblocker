@@ -8,10 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -19,6 +15,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
+
+import de.hysky.skyblocker.events.PlaySoundEvents;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin implements BlockGetter {

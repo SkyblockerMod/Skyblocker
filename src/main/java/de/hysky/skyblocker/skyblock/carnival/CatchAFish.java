@@ -2,11 +2,6 @@ package de.hysky.skyblocker.skyblock.carnival;
 
 import java.awt.Color;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.item.HeadTextures;
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -14,6 +9,11 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class CatchAFish {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

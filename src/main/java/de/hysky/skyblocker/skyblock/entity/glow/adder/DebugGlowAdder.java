@@ -2,13 +2,13 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
 import java.awt.Color;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.debug.SnapshotDebug;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
-
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.chicken.Chicken;
 
 /// Makes chicks glow yellow for testing the Mob Glow when in debug mode and a snapshot.
 public class DebugGlowAdder extends MobGlowAdder {

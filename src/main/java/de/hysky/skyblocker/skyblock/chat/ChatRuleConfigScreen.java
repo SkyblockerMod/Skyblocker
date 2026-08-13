@@ -13,16 +13,6 @@ import java.util.function.Supplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
-import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-import de.hysky.skyblocker.utils.render.gui.SoundSelectionPopup;
-import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -62,6 +52,16 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
+import de.hysky.skyblocker.utils.render.gui.SoundSelectionPopup;
+import de.hysky.skyblocker.utils.render.gui.ToggleableLayoutWidget;
 
 public class ChatRuleConfigScreen extends Screen {
 	private static final int COLUMN_WIDTH = 105;

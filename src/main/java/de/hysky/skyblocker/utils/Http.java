@@ -18,9 +18,9 @@ import java.util.zip.InflaterInputStream;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.SharedConstants;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 /**
  * @implNote All http requests are sent using HTTP 2

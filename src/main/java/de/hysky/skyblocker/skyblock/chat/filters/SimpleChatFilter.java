@@ -4,9 +4,9 @@ import java.util.regex.Matcher;
 
 import org.intellij.lang.annotations.Language;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 
 public abstract class SimpleChatFilter extends ChatPatternListener {
 	protected SimpleChatFilter(@Language("RegExp") String pattern) {

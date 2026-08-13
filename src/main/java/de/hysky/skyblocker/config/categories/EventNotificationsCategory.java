@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.config.screens.eventnotifications.EventConfigTimesEditScreen;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.LabelOption;
@@ -20,6 +13,13 @@ import net.azureaaron.dandelion.api.OptionListener.UpdateType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.config.screens.eventnotifications.EventConfigTimesEditScreen;
+import de.hysky.skyblocker.skyblock.events.EventNotifications;
 
 public class EventNotificationsCategory {
 

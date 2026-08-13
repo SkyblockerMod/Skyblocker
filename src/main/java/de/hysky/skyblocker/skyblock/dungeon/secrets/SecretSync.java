@@ -15,6 +15,8 @@ import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
+import net.minecraft.client.Minecraft;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -29,8 +31,6 @@ import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomMatchMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
-
-import net.minecraft.client.Minecraft;
 
 public class SecretSync {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

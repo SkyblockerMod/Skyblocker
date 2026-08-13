@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.chat.filters;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -10,9 +13,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.render.gui.BasicToast;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class AutopetFilter extends ChatPatternListener {
 	private static final FlexibleItemStack ICON = ItemUtils.createSkull(HeadTextures.AUTOPET_RULES_2);

@@ -5,13 +5,13 @@ import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
-import de.hysky.skyblocker.utils.render.Renderer;
-import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+
+import de.hysky.skyblocker.utils.render.Renderer;
+import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
+import de.hysky.skyblocker.utils.render.state.TexturedQuadRenderState;
 
 public final class TexturedQuadRenderer implements PrimitiveRenderer<TexturedQuadRenderState> {
 	protected static final TexturedQuadRenderer INSTANCE = new TexturedQuadRenderer();

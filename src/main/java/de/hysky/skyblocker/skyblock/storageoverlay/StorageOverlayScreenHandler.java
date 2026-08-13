@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.skyblock.storageoverlay;
 
-import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
-
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+
+import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
 
 public class StorageOverlayScreenHandler extends ChestMenu {
 	private final int rows;

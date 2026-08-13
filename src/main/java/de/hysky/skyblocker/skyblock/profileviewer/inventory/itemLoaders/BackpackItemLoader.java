@@ -7,12 +7,12 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
+
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 
 public class BackpackItemLoader extends ItemLoader {
 	@Override

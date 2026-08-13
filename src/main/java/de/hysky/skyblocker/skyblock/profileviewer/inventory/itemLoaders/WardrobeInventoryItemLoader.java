@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 
 public class WardrobeInventoryItemLoader extends ItemLoader {
 	private final int activeSlot;

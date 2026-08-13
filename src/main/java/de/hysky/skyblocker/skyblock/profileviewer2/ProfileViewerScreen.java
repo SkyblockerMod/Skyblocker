@@ -10,6 +10,14 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.screens.LoadingDotsText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
+
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
@@ -19,14 +27,6 @@ import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
-
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.screens.LoadingDotsText;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
 
 // TODO should this support tab navigation?
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {

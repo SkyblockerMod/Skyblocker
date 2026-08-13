@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public enum FilterOption implements Supplier<Identifier>, Predicate<String> {
 

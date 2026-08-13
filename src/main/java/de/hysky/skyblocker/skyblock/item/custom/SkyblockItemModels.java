@@ -10,13 +10,13 @@ import com.mojang.logging.LogUtils;
 import io.github.moulberry.repo.constants.ResourcePack;
 import org.slf4j.Logger;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
 
 public class SkyblockItemModels {
 	private static final Logger LOGGER = LogUtils.getLogger();

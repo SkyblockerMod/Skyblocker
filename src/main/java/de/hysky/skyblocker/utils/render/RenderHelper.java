@@ -3,9 +3,6 @@ package de.hysky.skyblocker.utils.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
@@ -21,6 +18,9 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
 
 public class RenderHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

@@ -5,13 +5,13 @@ import java.util.function.DoubleConsumer;
 
 import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
 
-import de.hysky.skyblocker.utils.Formatters;
-
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.Formatters;
 
 public class RangedSliderWidget extends AbstractSliderButton {
 

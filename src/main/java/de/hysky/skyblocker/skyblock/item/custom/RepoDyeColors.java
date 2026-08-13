@@ -15,11 +15,11 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.slf4j.Logger;
 
+import net.minecraft.util.ExtraCodecs;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-
-import net.minecraft.util.ExtraCodecs;
 
 public class RepoDyeColors {
 	private static final Logger LOGGER = LogUtils.getLogger();

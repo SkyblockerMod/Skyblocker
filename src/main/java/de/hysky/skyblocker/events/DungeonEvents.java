@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.events;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretWaypoint;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretWaypoint;
 
 public class DungeonEvents {
 	/**

@@ -10,10 +10,10 @@ import com.mojang.util.UndashedUuid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.utils.Http.ApiResponse;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
+
+import de.hysky.skyblocker.utils.Http.ApiResponse;
 
 /*
  * Contains only basic helpers for using Http APIs

@@ -5,15 +5,15 @@ import java.util.Locale;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class BooleanSlotEntry extends WidgetsListSlotEntry {
 	private final Button enableButton;

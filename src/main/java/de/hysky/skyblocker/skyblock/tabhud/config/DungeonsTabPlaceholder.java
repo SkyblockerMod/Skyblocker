@@ -7,10 +7,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public final class DungeonsTabPlaceholder {
 

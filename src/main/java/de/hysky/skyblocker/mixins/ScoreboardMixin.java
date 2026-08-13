@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.world.scores.Scoreboard;
+
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(Scoreboard.class)
 public abstract class ScoreboardMixin {

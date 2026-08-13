@@ -10,11 +10,11 @@ import io.github.moulberry.repo.NEURepoFile;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.NEURepoManager;
-
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponents;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.NEURepoManager;
 
 public class Attributes {
 	private static final Logger LOGGER = LogUtils.getLogger();

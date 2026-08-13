@@ -5,11 +5,6 @@ import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -19,6 +14,11 @@ import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
+import de.hysky.skyblocker.utils.Utils;
 
 public final class SeaLumiesHighlighter extends AbstractBlockHighlighter {
 	public static final SeaLumiesHighlighter INSTANCE = new SeaLumiesHighlighter();

@@ -7,15 +7,15 @@ import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
 public class EvolvingItemAdder extends SimpleSlotTextAdder {

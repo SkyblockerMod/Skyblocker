@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.SkyblockerMod;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class ShortcutsTest {
 	private static final String SHORTCUTS_JSON_OLD = "{\"commands\":{\"/s\":\"/skyblock\"},\"commandArgs\":{\"/pa\":\"/p accept\"}}";

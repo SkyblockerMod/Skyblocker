@@ -8,8 +8,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
-import de.hysky.skyblocker.utils.ContainerUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -25,6 +23,8 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.ContainerUtils;
 
 public class RadialMenuScreen extends Screen implements ContainerListener {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

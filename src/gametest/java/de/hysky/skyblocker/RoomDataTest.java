@@ -10,12 +10,12 @@ import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 
 import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager.DUNGEONS_PATH;
 

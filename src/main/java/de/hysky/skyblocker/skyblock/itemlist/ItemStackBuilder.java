@@ -12,17 +12,17 @@ import io.github.moulberry.repo.data.Rarity;
 import it.unimi.dsi.fastutil.Pair;
 import org.slf4j.Logger;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.TextTransformer;
-import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
-import de.hysky.skyblocker.utils.datafixer.LegacyStringNbtReader;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
+import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
+import de.hysky.skyblocker.utils.datafixer.LegacyStringNbtReader;
 
 public class ItemStackBuilder {
 	private static final Logger LOGGER = LogUtils.getLogger();

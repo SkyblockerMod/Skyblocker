@@ -3,12 +3,12 @@ package de.hysky.skyblocker.skyblock.dungeon.preview;
 import java.util.Arrays;
 import java.util.List;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 
 public class RoomStructure {
 	static CompoundTag getCompound(int[] blocks) {

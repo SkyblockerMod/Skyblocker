@@ -2,13 +2,13 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.List;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 
 @RegisterWidget
 public class VisitorsWidget extends TabHudWidget {

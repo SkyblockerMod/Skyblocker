@@ -2,13 +2,13 @@ package de.hysky.skyblocker.skyblock.item.background.adders;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class LegacyAttributeBackground extends ColoredItemBackground<Integer> {
 	private static final int COLOR = 0xFFFF0000; // red

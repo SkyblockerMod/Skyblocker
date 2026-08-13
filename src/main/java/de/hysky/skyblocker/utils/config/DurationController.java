@@ -10,14 +10,14 @@ import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.string.IStringController;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.deps.moulconfig.gui.GuiOptionEditor;
 import net.azureaaron.dandelion.deps.moulconfig.processor.ProcessedOption;
 import net.azureaaron.dandelion.impl.controllers.IntegerControllerImpl;
 import net.azureaaron.dandelion.impl.moulconfig.MoulConfigDefinition;
 import net.azureaaron.dandelion.impl.moulconfig.editor.DandelionNumberFieldEditor;
+
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class DurationController extends IntegerControllerImpl {
 	private static final Pattern SECONDS_PATTERN = Pattern.compile("(^|\\s)(\\d+)s(\\s|$)");

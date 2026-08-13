@@ -9,11 +9,11 @@ import java.util.Locale;
 
 import com.ibm.icu.text.DateTimePatternGenerator;
 
+import net.minecraft.util.Util;
+
 import de.hysky.skyblocker.compatibility.MacCompatibility;
 import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
-
-import net.minecraft.util.Util;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter

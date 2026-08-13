@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public class ButtonWidget extends Button {
 	private static final Identifier NORMAL = SkyblockerMod.id("profile_viewer2/button");

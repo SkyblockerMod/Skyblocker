@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.animal.cow.Cow;
@@ -13,6 +7,12 @@ import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.animal.sheep.Sheep;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
+import de.hysky.skyblocker.utils.Utils;
 
 public class MushroomDesertGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")

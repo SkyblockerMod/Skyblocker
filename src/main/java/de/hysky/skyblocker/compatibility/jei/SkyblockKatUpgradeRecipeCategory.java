@@ -5,12 +5,12 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.types.IRecipeType;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.Component;
 
 public final class SkyblockKatUpgradeRecipeCategory extends AbstractSkyblockRecipeCategory<SkyblockKatUpgradeRecipe> {
 	private static final IRecipeType<SkyblockKatUpgradeRecipe> RECIPE_TYPE = IRecipeType.create(SkyblockKatUpgradeRecipe.ID, SkyblockKatUpgradeRecipe.class);

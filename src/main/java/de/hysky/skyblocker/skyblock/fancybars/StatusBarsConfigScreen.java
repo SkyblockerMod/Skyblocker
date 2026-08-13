@@ -14,8 +14,6 @@ import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -29,6 +27,8 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 public class StatusBarsConfigScreen extends Screen {
 	private static final Identifier HOTBAR_TEXTURE = Identifier.withDefaultNamespace("hud/hotbar");

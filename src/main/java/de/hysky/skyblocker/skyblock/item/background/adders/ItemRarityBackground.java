@@ -2,14 +2,14 @@ package de.hysky.skyblocker.skyblock.item.background.adders;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
 
 public class ItemRarityBackground extends ColoredItemBackground<SkyblockItemRarity> {
 	@Override

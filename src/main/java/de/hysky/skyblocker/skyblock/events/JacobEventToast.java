@@ -2,10 +2,6 @@ package de.hysky.skyblocker.skyblock.events;
 
 import java.util.List;
 
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,6 +10,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
+
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class JacobEventToast extends EventToast {
 	private final List<String> crops;

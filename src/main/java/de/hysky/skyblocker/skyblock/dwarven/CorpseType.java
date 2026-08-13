@@ -5,11 +5,11 @@ import java.util.Locale;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 
-import de.hysky.skyblocker.utils.ItemUtils;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public enum CorpseType implements StringRepresentable {
 	LAPIS("LAPIS_ARMOR_HELMET", null, ChatFormatting.BLUE), // dark blue looks bad and these two never exist in same shaft

@@ -2,10 +2,10 @@ package de.hysky.skyblocker.utils.render;
 
 import org.joml.FrustumIntersection;
 
-import de.hysky.skyblocker.mixins.accessors.FrustumInvoker;
-
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.mixins.accessors.FrustumInvoker;
 
 public class FrustumUtils {
 

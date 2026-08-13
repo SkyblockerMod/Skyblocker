@@ -9,13 +9,6 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.CustomAnimatedHelmetTextures;
-import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
@@ -34,6 +27,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.custom.CustomAnimatedHelmetTextures;
+import de.hysky.skyblocker.skyblock.item.custom.CustomHelmetTextures;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 
 public class HeadSelectionWidget extends AbstractContainerWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");

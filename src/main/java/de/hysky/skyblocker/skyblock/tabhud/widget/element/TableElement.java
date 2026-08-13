@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import de.hysky.skyblocker.utils.render.GuiHelper;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 /**
  * Meta-Element that consists of a grid of other components

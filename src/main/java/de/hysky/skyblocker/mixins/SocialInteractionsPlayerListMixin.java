@@ -6,10 +6,10 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import de.hysky.skyblocker.utils.Utils;
-
 import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.client.gui.screens.social.SocialInteractionsPlayerList;
+
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(SocialInteractionsPlayerList.class)
 public class SocialInteractionsPlayerListMixin {

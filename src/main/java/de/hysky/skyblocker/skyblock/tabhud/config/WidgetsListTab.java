@@ -12,16 +12,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
-import de.hysky.skyblocker.utils.ContainerUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -37,6 +27,16 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {

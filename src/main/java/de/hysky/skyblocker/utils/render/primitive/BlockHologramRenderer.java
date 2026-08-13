@@ -9,9 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
-import de.hysky.skyblocker.utils.render.MatrixHelper;
-import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
-
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
@@ -22,6 +19,9 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+
+import de.hysky.skyblocker.utils.render.MatrixHelper;
+import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
 
 public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHologramRenderState> {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();

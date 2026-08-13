@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
@@ -18,6 +16,8 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 import static de.hysky.skyblocker.skyblock.CompactDamage.baseTenDigits;
 import static de.hysky.skyblocker.skyblock.CompactDamage.compactDamage;
