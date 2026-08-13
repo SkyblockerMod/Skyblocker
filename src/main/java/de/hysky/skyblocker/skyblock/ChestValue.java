@@ -364,20 +364,6 @@ public class ChestValue {
 				ItemStack stack = slot.getItem();
 				if (stack.isEmpty()) continue;
 
-				// Hunting box shards are display items without an item id, so they're identified by name and priced through the bazaar
-				if (screenType == ScreenType.HUNTING_BOX) {
-					Attribute attribute = Attributes.getAttributeFromItemName(stack);
-					if (attribute == null) continue;
-
-					int shards = ItemUtils.getItemCountInHuntingBox(stack).orElse(1);
-					OptionalDouble priceData = ItemUtils.getItemPrice(attribute.apiId());
-
-					if (priceData.isPresent()) value += priceData.getAsDouble() * shards;
-					else hasIncompleteData = true;
-
-					continue;
-				}
-
 				String coinsLine;
 				if (screenType == ScreenType.MINION && slot.index == 28 && stack.is(Items.HOPPER) && (coinsLine = ItemUtils.getLoreLineIf(stack, s -> s.contains("Held Coins:"))) != null) {
 					String source = coinsLine.split(":")[1];
@@ -389,7 +375,14 @@ public class ChestValue {
 					continue;
 				}
 
-				String id = stack.getSkyblockApiId();
+				String id = switch (screenType) {
+					case ScreenType.HUNTING_BOX -> {
+						// Shards in the hunting box are display items without an id, so they're identified by their name instead
+						Attribute attribute = Attributes.getAttributeFromItemName(stack);
+						yield attribute != null ? attribute.apiId() : "";
+					}
+					default -> stack.getSkyblockApiId();
+				};
 
 				int count = switch (screenType) {
 					case ScreenType.SACK -> {
@@ -397,7 +390,8 @@ public class ChestValue {
 						yield ItemUtils.getItemCountInSack(stack, lines).orElse(0); // If this is in a sack and the item is not a stored item, we can just skip it
 					}
 					case ScreenType.STASH -> ItemUtils.getItemCountInStash(stack).orElse(0);
-					case ScreenType.OTHER, ScreenType.MINION, ScreenType.HUNTING_BOX -> stack.getCount();
+					case ScreenType.HUNTING_BOX -> ItemUtils.getItemCountInHuntingBox(stack).orElse(0);
+					case ScreenType.OTHER, ScreenType.MINION -> stack.getCount();
 				};
 
 				if (count == 0) continue;
@@ -407,7 +401,8 @@ public class ChestValue {
 
 					if (priceData.isEmpty()) hasIncompleteData = true;
 
-					value += NetworthCalculator.getItemNetworth(stack, count).price();
+					// The networth calculator can't price hunting box shards since they're display items, and shards have no modifiers to account for anyway
+					value += screenType == ScreenType.HUNTING_BOX ? priceData.orElse(0) * count : NetworthCalculator.getItemNetworth(stack, count).price();
 				}
 			}
 
