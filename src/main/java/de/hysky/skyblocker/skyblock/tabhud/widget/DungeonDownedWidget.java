@@ -16,11 +16,10 @@ import net.minecraft.network.chat.TextColor;
 @RegisterWidget
 public class DungeonDownedWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Downed", TITLE, TextColor.RED.getValue());
 	}
 
 	@Override
@@ -29,14 +28,12 @@ public class DungeonDownedWidget extends TabHudWidget {
 		if (down == null) {
 			this.addComponent(Elements.iconTextComponent());
 		} else {
-
 			ChatFormatting format = ChatFormatting.RED;
 			if (down.endsWith("NONE")) {
 				format = ChatFormatting.GRAY;
 			}
 			int idx = down.indexOf(": ");
-			Component downed = (idx == -1) ? null
-					: simpleEntryText(down.substring(idx + 2), "Downed: ", format);
+			Component downed = idx >= 0 ? simpleEntryText(down.substring(idx + 2), "Downed: ", format) : null;
 			this.addComponent(Elements.iconTextComponent(Ico.SKULL, downed));
 		}
 

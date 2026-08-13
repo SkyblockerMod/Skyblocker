@@ -13,20 +13,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
-// this widget shows various dungeon info
-// deaths, healing, dmg taken, milestones
+/// This widget shows various dungeon info:
+/// deaths, healing, damage taken, and milestones.
 @RegisterWidget
 public class DungeonDeathWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Death").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Death").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 
 	// match the deaths entry
 	// group 1: amount of deaths
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Deaths", TITLE, TextColor.RED.getValue());
 	}
 
 	@Override
@@ -35,9 +34,8 @@ public class DungeonDeathWidget extends TabHudWidget {
 		if (m == null) {
 			this.addComponent(Elements.iconTextComponent());
 		} else {
-			ChatFormatting f = (m.group("deathnum").equals("0")) ? ChatFormatting.GREEN : ChatFormatting.RED;
-			Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
-			this.addComponent(Elements.iconTextComponent(Ico.SKULL, d));
+			ChatFormatting f = m.group("deathnum").equals("0") ? ChatFormatting.GREEN : ChatFormatting.RED;
+			this.addSimpleIcoText(Ico.SKULL, "Deaths: ", f, m.group("deathnum"));
 		}
 
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", ChatFormatting.RED, 26);
