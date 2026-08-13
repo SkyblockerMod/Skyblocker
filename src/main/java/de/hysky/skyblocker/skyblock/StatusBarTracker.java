@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -45,6 +44,13 @@ public class StatusBarTracker {
 	private static final Pattern MANA_STATUS = Pattern.compile(String.format("(?<mana>[\\d,]+)/(?<max>[\\d,]+)[✎%s] ?(?:Mana|(?<overflow>[\\d,]+)[ʬ%s])?", SkyBlockIcons.MANA, SkyBlockIcons.OVERFLOW_MANA));
 
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
+
+	/// Caches the last message to avoid parsing the same message multiple times.
+	private static String lastMessage = "";
+	/// Caches the last return value of {@link #onOverlayMessage(Component, boolean)}.
+	private static Component lastReturn = Component.empty();
+	private static long lastMessageTime = 0;
+
 	private static Resource health = new Resource(100, 100, 0);
 	private static final EstimatedResource vitality = new EstimatedResource(new Resource(100, 100, 0));
 	private static final EstimatedResource mana = new EstimatedResource(new Resource(100, 100, 0));
@@ -115,20 +121,25 @@ public class StatusBarTracker {
 	}
 
 	private static boolean allowOverlayMessage(Component text, boolean overlay) {
-		onOverlayMessage(text, overlay);
-		return true;
+		return !onOverlayMessage(text, overlay).getString().isEmpty();
 	}
 
 	private static Component onOverlayMessage(Component text, boolean overlay) {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-
 		String stringified = text.getString();
+
+		long now = System.currentTimeMillis();
+		if (lastMessage.equals(stringified) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
+			return lastReturn;
+		}
+		lastMessage = stringified;
+		lastMessageTime = now;
 
 		try {
 			if (FancyStatusBars.isEnabled()) {
-				return Component.nullToEmpty(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
+				return lastReturn = Component.literal(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
 			} else {
 				// Still update values for other parts of the mod to use
 				update(stringified, SkyblockerConfigManager.get().chat.hideMana);
@@ -138,11 +149,11 @@ public class StatusBarTracker {
 			LOGGER.error("[Skyblocker Status Bar Tracker] Failed to update status bars! Content: '{}'", stripped, e);
 		}
 
-		return text;
+		return lastReturn = text;
 	}
 
 	@VisibleForTesting
-	protected static @Nullable String update(String actionBar, boolean filterManaUse) {
+	protected static String update(String actionBar, boolean filterManaUse) {
 		Matcher statuses = STATUS_PATTERN.matcher(actionBar);
 		var output = new StringBuilder();
 
@@ -210,9 +221,7 @@ public class StatusBarTracker {
 			}
 		}
 
-		String result = statuses.appendTail(output).toString().trim();
-
-		return result.isEmpty() ? null : result;
+		return statuses.appendTail(output).toString().trim();
 	}
 
 	private static void updateHealth(Matcher matcher) {
