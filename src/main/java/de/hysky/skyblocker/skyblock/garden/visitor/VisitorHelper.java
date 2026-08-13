@@ -83,10 +83,12 @@ public class VisitorHelper extends AbstractWidget {
 	@Init
 	public static void initialize() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if (!(screen instanceof AbstractContainerScreen<?> handledScreen) || !shouldRender()) return;
+			if (!shouldRender()) return;
 
-			processVisitor = true;
-			ScreenEvents.afterTick(screen).register(_ -> updateVisitors(handledScreen.getMenu()));
+			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
+				processVisitor = true;
+				ScreenEvents.afterTick(screen).register(_ -> updateVisitors(handledScreen.getMenu()));
+			}
 			Screens.getWidgets(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 
