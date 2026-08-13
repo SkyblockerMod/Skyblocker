@@ -15,15 +15,17 @@ public class Foraging {
 
 	public static class Starlyn {
 		@SerializedName("personal_bests")
-		public PersonalBests personalBests;
+		public PersonalBests personalBests = new PersonalBests();
 
 		public static class PersonalBests {
-			@SerializedName("agatha")
-			public int points;
+			public int agatha;
 			@SerializedName("FIG_LOG")
 			public int figLogs;
 			@SerializedName("MANGROVE_LOG")
 			public int mangroveLogs;
+			public int miria;
+			@SerializedName("HELIX_LOG")
+			public int helixLogs;
 		}
 	}
 
@@ -47,5 +49,11 @@ public class Foraging {
 		public int fig;
 		@SerializedName("MANGROVE")
 		public int mangrove;
+		@SerializedName("HELIX")
+		public int helix;
+
+		// super cursed way to do this but it allows us to reuse this class!
+		@SerializedName("milestone_tier_claimed")
+		public TreeGifts milestoneClaimed = new TreeGifts();
 	}
 }
