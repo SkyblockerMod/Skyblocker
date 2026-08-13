@@ -37,6 +37,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
+import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
 import de.hysky.skyblocker.mixins.accessors.GuiGraphicsExtractorInvoker;
 import de.hysky.skyblocker.utils.render.state.gui.GuiCustomShapeRenderState;

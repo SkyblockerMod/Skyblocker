@@ -66,6 +66,7 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 class AccessoriesHelperWidget extends AbstractContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");

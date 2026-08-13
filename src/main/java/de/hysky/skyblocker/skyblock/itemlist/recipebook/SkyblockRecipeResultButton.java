@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
