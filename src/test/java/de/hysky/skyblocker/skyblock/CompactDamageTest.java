@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import static de.hysky.skyblocker.skyblock.CompactDamage.baseTenDigits;
-import static de.hysky.skyblocker.skyblock.CompactDamage.compactDamage;
-import static de.hysky.skyblocker.skyblock.CompactDamage.formatToPrecision;
-import static de.hysky.skyblocker.skyblock.CompactDamage.prettifyDamageNumber;
-
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +18,11 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
+
+import static de.hysky.skyblocker.skyblock.CompactDamage.baseTenDigits;
+import static de.hysky.skyblocker.skyblock.CompactDamage.compactDamage;
+import static de.hysky.skyblocker.skyblock.CompactDamage.formatToPrecision;
+import static de.hysky.skyblocker.skyblock.CompactDamage.prettifyDamageNumber;
 
 public class CompactDamageTest {
 	Map<String, ChatFormatting> MODIFIERS = Util.make(new HashMap<>(), map -> {

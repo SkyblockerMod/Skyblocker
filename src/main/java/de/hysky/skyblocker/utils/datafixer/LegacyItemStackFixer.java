@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.utils.datafixer;
 
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFixer;
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
-
 import java.util.List;
 
 import org.apache.logging.log4j.util.TriConsumer;
@@ -29,6 +25,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
+
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFixer;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
 
 public class LegacyItemStackFixer {
 	private static final Logger LOGGER = LogUtils.getLogger();

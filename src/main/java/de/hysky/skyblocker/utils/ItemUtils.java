@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
@@ -80,6 +78,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class ItemUtils {
 	public static final String ID = "id";

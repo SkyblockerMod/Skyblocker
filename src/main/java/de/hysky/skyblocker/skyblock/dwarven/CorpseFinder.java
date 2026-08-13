@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -50,6 +47,9 @@ import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CorpseFinder {
 	private static boolean isLocationCorrect = false;

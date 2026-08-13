@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.debug;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,6 +49,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Debug {
 	private static final Logger LOGGER = LogUtils.getLogger();

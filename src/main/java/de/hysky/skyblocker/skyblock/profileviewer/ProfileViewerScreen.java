@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
-import static net.minecraft.client.gui.screens.inventory.InventoryScreen.extractEntityInInventoryFollowsMouse;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +51,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import static net.minecraft.client.gui.screens.inventory.InventoryScreen.extractEntityInInventoryFollowsMouse;
 
 public class ProfileViewerScreen extends Screen {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ProfileViewerScreen.class);

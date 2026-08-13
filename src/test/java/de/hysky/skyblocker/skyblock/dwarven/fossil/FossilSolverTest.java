@@ -1,15 +1,15 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.POSSIBLE_STATES;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.flipGrid;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.rotateGrid;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
 import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
+
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.POSSIBLE_STATES;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.flipGrid;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.rotateGrid;
 
 public class FossilSolverTest {
 

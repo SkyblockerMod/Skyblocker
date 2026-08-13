@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.storageoverlay;
 
-import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -55,6 +53,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import static de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview.getStorageIndexFromTitle;
 
 
 public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlayScreenHandler> {

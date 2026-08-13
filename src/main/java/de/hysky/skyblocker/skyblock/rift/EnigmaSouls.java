@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.rift;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -46,6 +44,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);

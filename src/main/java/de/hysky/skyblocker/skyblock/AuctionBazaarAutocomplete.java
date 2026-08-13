@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -23,6 +20,9 @@ import de.hysky.skyblocker.utils.command.CommandUtils;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class AuctionBazaarAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> ahsNode;

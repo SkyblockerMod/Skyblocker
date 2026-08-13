@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.preview;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,6 +15,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 
 public class RoomPreview {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

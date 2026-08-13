@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import static de.hysky.skyblocker.skyblock.dungeon.puzzle.IceFill.boardToString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +32,9 @@ import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import static de.hysky.skyblocker.skyblock.dungeon.puzzle.IceFill.boardToString;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /**
  * Puzzle solver for the Silverfish "Ice Path" puzzle

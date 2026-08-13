@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
@@ -47,6 +45,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();

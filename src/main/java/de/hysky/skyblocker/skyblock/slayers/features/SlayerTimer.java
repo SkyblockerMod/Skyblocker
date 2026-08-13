@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.slayers.features;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -33,6 +31,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");

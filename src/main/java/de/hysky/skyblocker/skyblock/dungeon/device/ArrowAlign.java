@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +26,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class ArrowAlign {
 	private static final BlockPos LEFT_TOP = new BlockPos(-2, 124, 79);

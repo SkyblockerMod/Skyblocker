@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +18,9 @@ import de.hysky.skyblocker.utils.command.CommandUtils;
 import io.github.moulberry.repo.constants.AbiphoneContact;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.SharedSuggestionProvider;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CallAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> commandNode;

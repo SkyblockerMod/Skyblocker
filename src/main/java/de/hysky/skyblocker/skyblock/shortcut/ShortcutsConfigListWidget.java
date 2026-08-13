@@ -10,6 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.swing.text.JTextComponent.KeyBinding;
+
 import org.jspecify.annotations.Nullable;
 
 import com.demonwav.mcdev.annotations.Translatable;

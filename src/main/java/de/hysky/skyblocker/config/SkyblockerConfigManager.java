@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.config;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.lang.StackWalker.Option;
@@ -61,6 +58,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SkyblockerConfigManager {
 	public static final int CONFIG_VERSION = 11;

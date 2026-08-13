@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -51,6 +49,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class FairySouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FairySouls.class);

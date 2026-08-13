@@ -1,7 +1,5 @@
 package de.hysky.skyblocker;
 
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager.DUNGEONS_PATH;
-
 import java.io.BufferedReader;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +17,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager.DUNGEONS_PATH;
 
 @SuppressWarnings("UnstableApiUsage")
 public class RoomDataTest implements FabricClientGameTest {

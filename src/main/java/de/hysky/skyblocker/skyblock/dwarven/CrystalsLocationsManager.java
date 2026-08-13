@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-import static net.minecraft.commands.SharedSuggestionProvider.suggest;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,6 +52,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.Vec3;
+
+import static com.mojang.brigadier.arguments.StringArgumentType.getString;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import static net.minecraft.commands.SharedSuggestionProvider.suggest;
 
 /**
  * Manager for Crystal Hollows waypoints that handles {@link #update() location detection},

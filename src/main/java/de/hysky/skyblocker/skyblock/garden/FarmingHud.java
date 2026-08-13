@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayDeque;
@@ -38,6 +36,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);

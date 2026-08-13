@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +23,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Tips {
 	private static final String modVersion = SkyblockerMod.VERSION.split("\\+")[0];

@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +29,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class IceFill extends DungeonPuzzle {
 	public static final IceFill INSTANCE = new IceFill();

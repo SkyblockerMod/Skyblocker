@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +46,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// Items without a proper item id or price

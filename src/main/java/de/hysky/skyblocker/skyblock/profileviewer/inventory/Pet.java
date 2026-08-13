@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -30,6 +28,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
 public class Pet {
 	private static final Pattern statsMatcher = Pattern.compile("\\{[A-Za-z_]+}");

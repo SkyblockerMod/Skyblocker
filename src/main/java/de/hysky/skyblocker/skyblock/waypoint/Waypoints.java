@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -67,6 +64,9 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Waypoints {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);

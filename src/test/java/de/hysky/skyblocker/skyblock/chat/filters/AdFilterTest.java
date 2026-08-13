@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.Test;
 
 import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AdFilterTest extends ChatPatternListenerTest<AdFilter> {
 	AdFilterTest() {

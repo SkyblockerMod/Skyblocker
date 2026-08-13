@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import static java.util.Map.entry;
-
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -19,6 +17,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+
+import static java.util.Map.entry;
 
 // this widget shows info about the current jacob's contest (garden only)
 @RegisterWidget

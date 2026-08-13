@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.util.Set;
 
 import com.mojang.brigadier.Command;
@@ -17,6 +15,8 @@ import de.hysky.skyblocker.utils.render.Renderable;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable {
 	protected final String puzzleName;

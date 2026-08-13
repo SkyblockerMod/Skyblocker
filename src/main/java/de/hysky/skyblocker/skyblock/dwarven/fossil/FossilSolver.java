@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.convertItemsToTiles;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.permutations;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +26,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.convertItemsToTiles;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.permutations;
 
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

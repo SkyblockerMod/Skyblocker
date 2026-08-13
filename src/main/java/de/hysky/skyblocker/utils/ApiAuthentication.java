@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.nio.ByteBuffer;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -35,6 +33,8 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.ProfileKeyPair;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /**
  * This class is responsible for communicating with the API to retrieve a fully custom token used to gain access to more privileged APIs

@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils.chat;
 
+import java.util.regex.Matcher;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.regex.Matcher;
 
 public abstract class ChatPatternListenerTest<T extends ChatPatternListener> {
 	protected final T listener;

@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.Test;
 
 import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AcceptRepartyTest extends ChatPatternListenerTest<Reparty> {
 

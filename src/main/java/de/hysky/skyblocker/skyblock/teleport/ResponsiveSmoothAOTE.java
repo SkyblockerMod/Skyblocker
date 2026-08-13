@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.teleport;
 
-import static de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE.getItemDistance;
-
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
+import static de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE.getItemDistance;
 
 public class ResponsiveSmoothAOTE {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
