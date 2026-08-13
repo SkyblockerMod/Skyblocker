@@ -1,20 +1,23 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 
 import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 
 public class WaypointGroup {
 	public static final Waypoint.Type DEFAULT_TYPE = Waypoint.Type.WAYPOINT;
@@ -40,7 +43,6 @@ public class WaypointGroup {
 		waypoints.forEach(enabled ? Waypoint::setMissing : Waypoint::setFound);
 		return new WaypointGroup(name, Location.UNKNOWN, waypoints, true, true, DEFAULT_TYPE);
 	}));
-	public static final int WAYPOINT_ACTIVATION_RADIUS = 2;
 
 	private final String name;
 	private final Location island;
@@ -144,7 +146,7 @@ public class WaypointGroup {
 
 	public NamedWaypoint createWaypoint(BlockPos pos) {
 		String name = "Waypoint " + (waypoints.size() + 1);
-		return ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f});
+		return (ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f})).withThroughWalls(renderThroughWalls).withTypeSupplier(this::waypointType);
 	}
 
 	/**
@@ -162,9 +164,12 @@ public class WaypointGroup {
 		if (Minecraft.getInstance().player == null || !ordered || waypoints.isEmpty()) return;
 		for (int i = 0; i < waypoints.size(); i++) {
 			NamedWaypoint waypoint = waypoints.get(i);
-			boolean notBackwards = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowGoingBackwards || i > currentIndex;
-			boolean notSkipping = SkyblockerConfigManager.get().uiAndVisuals.waypoints.allowSkippingWaypoints || i == (currentIndex + 1) % waypoints.size() || i == (currentIndex - 1 + waypoints.size()) % waypoints.size();
-			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), WAYPOINT_ACTIVATION_RADIUS)) {
+			UIAndVisualsConfig.Waypoints config = SkyblockerConfigManager.get().uiAndVisuals.waypoints;
+			int nextIndex = (currentIndex + 1) % waypoints.size();
+			int previousIndex = (currentIndex - 1 + waypoints.size()) % waypoints.size();
+			boolean notBackwards = config.allowGoingBackwards || i == nextIndex;
+			boolean notSkipping = config.allowSkippingWaypoints || i == nextIndex || i == previousIndex;
+			if (notBackwards && notSkipping && waypoint.pos.closerToCenterThan(Minecraft.getInstance().player.position(), config.waypointActivationRadius)) {
 				currentIndex = i;
 			}
 		}

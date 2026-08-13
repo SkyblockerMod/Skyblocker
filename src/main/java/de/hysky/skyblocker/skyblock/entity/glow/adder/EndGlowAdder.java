@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.EnderMan;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.EnderMan;
 
 public class EndGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")
@@ -17,7 +18,7 @@ public class EndGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
-		return entity instanceof EnderMan enderman && TheEnd.isSpecialZealot(enderman) ? ChatFormatting.RED.getColor() : NO_GLOW;
+		return entity instanceof EnderMan enderman && TheEnd.isSpecialZealot(enderman) ? TextColor.RED.getValue() : NO_GLOW;
 	}
 
 	@Override

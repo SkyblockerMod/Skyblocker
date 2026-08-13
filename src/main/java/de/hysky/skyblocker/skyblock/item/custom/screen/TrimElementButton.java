@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.render.HudHelper;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -37,7 +36,11 @@ import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.item.equipment.trim.TrimPattern;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public abstract sealed class TrimElementButton extends AbstractButton permits TrimElementButton.Pattern, TrimElementButton.Material {
 	private static final ItemStack BARRIER = new ItemStack(Items.BARRIER);
@@ -63,12 +66,12 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 	}
 
 	@Override
-	public void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-		this.renderDefaultSprite(context);
-		draw(context);
+	public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		this.extractDefaultSprite(graphics);
+		extract(graphics);
 	}
 
-	abstract void draw(GuiGraphics context);
+	abstract void extract(GuiGraphicsExtractor graphics);
 
 	public static final class Pattern extends TrimElementButton {
 		private static final int DEFAULT_ROTATION = 15;
@@ -112,9 +115,9 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics context) {
+		void extract(GuiGraphicsExtractor graphics) {
 			if (trim == null) {
-				context.renderItem(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+				graphics.item(BARRIER, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 				return;
 			}
 			if (isHovered()) {
@@ -129,30 +132,37 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			EquipmentClientInfo.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
 			float offset = setVisibleAndGetOffset(model, slot);
 
-			HudHelper.drawEquipment(context, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
+			GuiHelper.equipment(graphics, equipmentRenderer, layerType, equippableComponent.assetId().orElse(EquipmentAssets.IRON), model, state, stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), rotation, 14, offset);
 		}
 
 		@SuppressWarnings("incomplete-switch")
-		private static float setVisibleAndGetOffset(HumanoidModel<?> bipedModel, EquipmentSlot slot) {
-			bipedModel.setAllVisible(false);
+		private static float setVisibleAndGetOffset(HumanoidModel<?> humanoidModel, EquipmentSlot slot) {
+			humanoidModel.head.visible = false;
+			humanoidModel.hat.visible = false;
+			humanoidModel.body.visible = false;
+			humanoidModel.rightArm.visible = false;
+			humanoidModel.leftArm.visible = false;
+			humanoidModel.rightLeg.visible = false;
+			humanoidModel.leftLeg.visible = false;
+
 			switch (slot) {
 				case HEAD:
-					bipedModel.head.visible = true;
-					bipedModel.hat.visible = true;
+					humanoidModel.head.visible = true;
+					humanoidModel.hat.visible = true;
 					return 4;
 				case CHEST:
-					bipedModel.body.visible = true;
-					bipedModel.rightArm.visible = true;
-					bipedModel.leftArm.visible = true;
+					humanoidModel.body.visible = true;
+					humanoidModel.rightArm.visible = true;
+					humanoidModel.leftArm.visible = true;
 					return -6;
 				case LEGS:
-					bipedModel.body.visible = true;
-					bipedModel.rightLeg.visible = true;
-					bipedModel.leftLeg.visible = true;
+					humanoidModel.body.visible = true;
+					humanoidModel.rightLeg.visible = true;
+					humanoidModel.leftLeg.visible = true;
 					return -14;
 				case FEET:
-					bipedModel.rightLeg.visible = true;
-					bipedModel.leftLeg.visible = true;
+					humanoidModel.rightLeg.visible = true;
+					humanoidModel.leftLeg.visible = true;
 					return -20;
 			}
 			return 0;
@@ -166,7 +176,6 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 			// Find item that provides given material
 			stack = BuiltInRegistries.ITEM.stream()
 					.filter(item -> Optional.ofNullable(item.components().get(DataComponents.PROVIDES_TRIM_MATERIAL))
-							.flatMap(c -> c.unwrap(RegistryUtils.getRegistryWrapperLookup()))
 							.map(provided -> provided.is(element))
 							.orElse(false)
 					)
@@ -176,8 +185,8 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 		}
 
 		@Override
-		void draw(GuiGraphics context) {
-			context.renderItem(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
+		void extract(GuiGraphicsExtractor graphics) {
+			graphics.item(stack, getX() + getWidth() / 2 - 8, getY() + getHeight() / 2 - 8);
 		}
 	}
 

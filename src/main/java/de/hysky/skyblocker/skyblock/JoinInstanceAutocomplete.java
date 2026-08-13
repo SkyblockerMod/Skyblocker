@@ -1,26 +1,28 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.commands.SharedSuggestionProvider;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 /**
  * the mixin {@link de.hysky.skyblocker.mixins.ClientboundCommandsPacketMixin}
@@ -32,7 +34,7 @@ public class JoinInstanceAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> dungeonCommand;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> kuudraCommand;
 
-	private static Map<String, String> instanceMap;
+	private static Map<String, String> instanceMap = Map.of();
 
 	@Init
 	public static void init() {
@@ -43,22 +45,22 @@ public class JoinInstanceAutocomplete {
 				JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
 				instanceMap = obj.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getAsString()));
 
-				joinInstanceCommand = buildCommand("joininstance", s -> true);
+				joinInstanceCommand = buildCommand("joininstance", _ -> true);
 				dungeonCommand = buildCommand("joindungeon", s -> instanceMap.get(s).equalsIgnoreCase("Catacombs"));
 				kuudraCommand = buildCommand("joinkuudra", s -> instanceMap.get(s).equalsIgnoreCase("Kuudra"));
 
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to load joininstance list", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> buildCommand(String command, java.util.function.Predicate<String> filter) {
 		return literal(command)
-				.requires(source -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
 				.executes(CommandUtils.noOp)
 				.then(argument("instance", StringArgumentType.word())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(
 								instanceMap.keySet().stream().filter(filter).sorted(),
 								builder))
 						.executes(CommandUtils.noOp))

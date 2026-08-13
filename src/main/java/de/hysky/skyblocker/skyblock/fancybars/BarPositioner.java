@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
@@ -157,7 +158,7 @@ public class BarPositioner {
 	}
 
 	public void clear() {
-		map.replaceAll((barAnchor, rows) -> new LinkedList<>());
+		map.replaceAll((_, _) -> new LinkedList<>());
 	}
 
 
@@ -176,15 +177,15 @@ public class BarPositioner {
 				anchorPosition -> new ScreenRectangle(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
 
 		SCREEN_TOP_LEFT(false, true,
-				((scaledWidth, scaledHeight) -> new ScreenPosition(5, 5)),
+				((_, _) -> new ScreenPosition(5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_TOP_RIGHT(false, false,
-				((scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth - 5, 5)),
+				((scaledWidth, _) -> new ScreenPosition(scaledWidth - 5, 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_LEFT(true, true,
-				((scaledWidth, scaledHeight) -> new ScreenPosition(5, scaledHeight - 5)),
+				((_, scaledHeight) -> new ScreenPosition(5, scaledHeight - 5)),
 				SizeRule.freeSize(25, 2, 6)
 		),
 		SCREEN_BOTTOM_RIGHT(true, false,

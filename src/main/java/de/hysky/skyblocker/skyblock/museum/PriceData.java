@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class PriceData {
 	private final double lBinPrice;
@@ -17,7 +18,7 @@ public class PriceData {
 		if (donation.isSet()) {
 			double totalLBinPrice = 0, totalCraftCost = 0;
 			for (ObjectObjectMutablePair<String, PriceData> piece : donation.getSet()) {
-				double lBinPrice = ItemUtils.getItemPrice(piece.left()).leftDouble();
+				double lBinPrice = ItemUtils.getItemPrice(piece.left()).orElse(0);
 				double craftCost = ItemUtils.getCraftCost(piece.left());
 
 				totalLBinPrice += lBinPrice;
@@ -28,7 +29,7 @@ public class PriceData {
 			this.lBinPrice = totalLBinPrice;
 			this.craftCost = totalCraftCost;
 		} else {
-			this.lBinPrice = ItemUtils.getItemPrice(donation.getId()).leftDouble();
+			this.lBinPrice = ItemUtils.getItemPrice(donation.getId()).orElse(0);
 			this.craftCost = ItemUtils.getCraftCost(donation.getId());
 		}
 	}

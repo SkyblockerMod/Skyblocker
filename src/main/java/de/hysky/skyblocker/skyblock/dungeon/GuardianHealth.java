@@ -1,23 +1,25 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.phys.AABB;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class GuardianHealth {
 	private static final AABB bossRoom = new AABB(34, 65, -32, -32, 100, 36);
@@ -28,8 +30,8 @@ public class GuardianHealth {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GuardianHealth::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> GuardianHealth.reset());
-		WorldRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> GuardianHealth.reset());
+		LevelRenderExtractionCallback.EVENT.register(GuardianHealth::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
@@ -40,12 +42,12 @@ public class GuardianHealth {
 		if (Utils.isInDungeons() && inBoss && client.player != null && client.level != null) {
 			List<Guardian> guardians =
 					client.level.getEntitiesOfClass(
-							Guardian.class, bossRoom, guardianEntity -> true);
+							Guardian.class, bossRoom, _ -> true);
 
 			for (Guardian guardian : guardians) {
 				List<ArmorStand> armorStands =
 						client.level.getEntities(
-								EntityType.ARMOR_STAND,
+								EntityTypes.ARMOR_STAND,
 								guardian.getBoundingBox().inflate(0, 1, 0),
 								GuardianHealth::isGuardianName);
 

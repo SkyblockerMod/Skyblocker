@@ -1,29 +1,32 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
+import java.util.Objects;
+import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
-import java.util.Objects;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
-
 @RegisterWidget
 public class LassoHud extends ElementBasedWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final String LASSO_COUNT_DOWN_NAME = "                    ";
-	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA);
+	private static final Set<Location> AVAILABLE_LOCATION = Set.of(Location.GALATEA, Location.TORRHUS_CANYON);
 
 	private static @Nullable LassoHud instance;
 	private static int percentage = 0;
@@ -38,7 +41,7 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "Lasso HUD");
+		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), "Lasso HUD");
 		instance = this;
 	}
 
@@ -90,10 +93,10 @@ public class LassoHud extends ElementBasedWidget {
 	public void updateContent() {
 		//if 0 percent now otherwise wait
 		if (percentage == 0) {
-			addComponent(Elements.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
+			addComponent(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.now").withStyle(ChatFormatting.GREEN), percentage));
 			return;
 		}
-		addComponent(Elements.progressComponent(Items.LEAD.getDefaultInstance(), Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
+		addComponent(Elements.progressComponent(Ico.LEAD, Component.translatable("skyblocker.config.hunting.lassoHud.reel"), Component.translatable("skyblocker.config.hunting.lassoHud.wait"), percentage));
 
 	}
 

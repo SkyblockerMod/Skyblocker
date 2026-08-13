@@ -1,10 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon.preview;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.io.FileUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
@@ -34,13 +37,12 @@ import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.apache.commons.io.FileUtils;
-import org.jspecify.annotations.Nullable;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 
 public class RoomPreviewServer {
@@ -54,9 +56,9 @@ public class RoomPreviewServer {
 	@Init
 	public static void init() {
 		ServerPlayerEvents.JOIN.register(RoomPreviewServer::onPlayerJoin);
-		ServerPlayerEvents.AFTER_RESPAWN.register((_oldP, newP, _alive) -> applyNightVision(newP));
+		ServerPlayerEvents.AFTER_RESPAWN.register((_, newP, _) -> applyNightVision(newP));
 		ServerLifecycleEvents.SERVER_STARTED.register(RoomPreviewServer::checkServer);
-		ServerLifecycleEvents.SERVER_STOPPING.register((_server) -> RoomPreviewServer.reset());
+		ServerLifecycleEvents.SERVER_STOPPING.register(_ -> RoomPreviewServer.reset());
 	}
 
 	public static void onPlayerJoin(ServerPlayer player) {
@@ -96,16 +98,12 @@ public class RoomPreviewServer {
 		File previousSave = CLIENT.getLevelSource().getLevelPath(SAVE_NAME).toFile();
 		FileUtils.deleteQuietly(previousSave);
 
-		GameRules gameRules = new GameRules(WorldDataConfiguration.DEFAULT.enabledFeatures());
-		gameRules.set(GameRules.ADVANCE_TIME, false, null);
-		gameRules.set(GameRules.RANDOM_TICK_SPEED, 0, null);
-
 		isActive = true;
 		CLIENT.createWorldOpenFlows().createFreshLevel(SAVE_NAME,
-				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, false, Difficulty.PEACEFUL, true, gameRules, WorldDataConfiguration.DEFAULT),
+				new LevelSettings(SAVE_NAME, GameType.SPECTATOR, new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, WorldDataConfiguration.DEFAULT),
 				new WorldOptions(SAVE_NAME.hashCode(), false, false),
-				(lookup) -> {
-					var preset = WorldPresets.createFlatWorldDimensions(lookup);
+				lookup -> {
+					var preset = WorldPresets.createTestWorldDimensions(lookup);
 					var config = new FlatLevelGeneratorSettings(Optional.empty(), lookup.lookupOrThrow(Registries.BIOME).getOrThrow(ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("the_void"))), List.of());
 					return preset.replaceOverworldGenerator(lookup, new FlatLevelSource(config));
 				},
@@ -113,7 +111,13 @@ public class RoomPreviewServer {
 		);
 
 		IntegratedServer server = CLIENT.getSingleplayerServer();
-		if (server == null) reset();
+		if (server == null) {
+			reset();
+			return;
+		}
+
+		server.getGameRules().set(GameRules.ADVANCE_TIME, false, server);
+		server.getGameRules().set(GameRules.RANDOM_TICK_SPEED, 0, server);
 	}
 
 	public static void addErrorMessage(Component errorText) {

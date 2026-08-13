@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils;
 
-import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 
 /**
@@ -11,14 +13,14 @@ import net.minecraft.util.StringRepresentable;
 public enum Location implements StringRepresentable {
 	PRIVATE_ISLAND("dynamic", "Private Island"),
 	GARDEN("garden", "Garden"),
-	HUB("hub", "Hub", true),
-	THE_FARMING_ISLAND("farming_1", "The Farming Islands", true),
-	THE_PARK("foraging_1", "The Park", true),
-	SPIDERS_DEN("combat_1", "Spider's Den", true),
+	HUB("hub", "Hub"),
+	THE_FARMING_ISLAND("farming_1", "The Farming Islands"),
+	THE_PARK("foraging_1", "The Park"),
+	SPIDERS_DEN("combat_1", "Spider's Den"),
 	@Deprecated BLAZING_FORTRESS("combat_2", "Blazing Fortress"),
-	THE_END("combat_3", "The End", true),
+	THE_END("combat_3", "The End"),
 	CRIMSON_ISLE("crimson_isle", "Crimson Isle"),
-	GOLD_MINE("mining_1", "Gold Mine", true),
+	GOLD_MINE("mining_1", "Gold Mine"),
 	DEEP_CAVERNS("mining_2", "Deep Caverns"),
 	DWARVEN_MINES("mining_3", "Dwarven Mines"),
 	BACKWATER_BAYOU("fishing_1", "Backwater Bayou"),
@@ -32,13 +34,16 @@ public enum Location implements StringRepresentable {
 	/**
 	 * The freezing cold Glacite Mineshafts! *brr... so cold... :(*
 	 *
-	 * <p>This location might not exist according to the API? Try using {@link Area#GLACITE_MINESHAFTS}.
+	 * <p>This location might not exist according to the API? Try using {@link Area.DwarvenMines#GLACITE_MINESHAFTS}.
 	 */
 	GLACITE_MINESHAFTS("mineshaft", "Glacite Mineshafts"),
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
-	GALATEA("foraging_2", "Galatea", true),
+	GALATEA("foraging_2", "Moonglade Marsh"),
+	TORRHUS_CANYON("foraging_3", "Torrhus Canyon"),
+	SAFARI("safari", "Safari"),
+	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll"),
 	/**
 	 * Unknown Skyblock location
 	 */
@@ -55,30 +60,12 @@ public enum Location implements StringRepresentable {
 	private final String friendlyName;
 
 	/**
-	 * if the location is based on a modern server (not 1.8.9)
-	 */
-	private final boolean modern;
-
-	/**
 	 * @param id           location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 * @param friendlyName friendly name from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
 	 */
 	Location(String id, String friendlyName) {
 		this.id = id;
 		this.friendlyName = friendlyName;
-		this.modern = false;
-	}
-
-	/**
-	 * Alternative constructor to have the option of setting the location to modern.
-	 *
-	 * @param id     location id from <a href="https://api.hypixel.net/v2/resources/games">Hypixel API</a>
-	 * @param modern the location is 1.21+ server
-	 */
-	Location(String id, String friendlyName, boolean modern) {
-		this.id = id;
-		this.friendlyName = friendlyName;
-		this.modern = modern;
 	}
 
 	/**
@@ -86,10 +73,6 @@ public enum Location implements StringRepresentable {
 	 */
 	public String id() {
 		return this.id;
-	}
-
-	public boolean isModern() {
-		return this.modern;
 	}
 
 	@Override

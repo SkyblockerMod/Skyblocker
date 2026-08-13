@@ -1,21 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.HudHelper;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -26,6 +23,12 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implements Closeable {
 	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");
@@ -43,7 +46,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 	private @Nullable AnimatedDyeTimelineWidget.KeyframeWidget focusedFrame = null;
 
 	public AnimatedDyeTimelineWidget(int x, int y, int width, int height, FrameCallback frameCallback) {
-		super(x, y, width, height, Component.literal("Animated Dye Timeline"));
+		super(x, y, width, height, Component.literal("Animated Dye Timeline"), AbstractScrollArea.defaultSettings(4));
 		createImage(width, height);
 		this.frameCallback = frameCallback;
 	}
@@ -77,8 +80,8 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blit(RenderPipelines.GUI_TEXTURED,
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blit(RenderPipelines.GUI_TEXTURED,
 				GRADIENT_TEXTURE,
 				getX() + HORIZONTAL_MARGIN,
 				getY() + VERTICAL_MARGIN,
@@ -89,7 +92,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 				textureWidth, textureHeight
 		);
 		for (KeyframeWidget frame : keyframes) {
-			frame.render(context, mouseX, mouseY, delta);
+			frame.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 
@@ -197,9 +200,9 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
-			HudHelper.drawBorder(context, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
+			GuiHelper.border(graphics, getX(), getY(), getWidth(), getHeight(), isFocused() ? -1 : CommonColors.GRAY);
 		}
 
 		@Override
@@ -235,7 +238,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 
 		@Override
 		public boolean keyPressed(KeyEvent input) {
-			if (input.key() == GLFW.GLFW_KEY_DELETE) {
+			if (input.key() == InputConstants.KEY_DELETE) {
 				deleteThis(false);
 			}
 			return super.keyPressed(input);
@@ -243,7 +246,7 @@ public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implement
 
 		@Override
 		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
+			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT && isMouseOver(click.x(), click.y())) {
 				deleteThis(true);
 				return true;
 			}

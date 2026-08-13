@@ -1,0 +1,16 @@
+package de.hysky.skyblocker.mixins.accessors;
+
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.render.TextureSetup;
+
+@Mixin(GuiGraphicsExtractor.class)
+public interface GuiGraphicsExtractorInvoker {
+
+	@Invoker
+	void invokeInnerFill(RenderPipeline pipeline, TextureSetup textureSetup, int x0, int y0, int x1, int y1, int colour1, @Nullable Integer colour2);
+}

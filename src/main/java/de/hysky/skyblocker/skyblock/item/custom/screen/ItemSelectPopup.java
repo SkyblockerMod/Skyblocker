@@ -1,13 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import java.util.Arrays;
 import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -25,6 +22,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
 public class ItemSelectPopup extends AbstractPopupScreen {
 
@@ -60,7 +61,7 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 			else equipmentLayout.addChild(new ItemWidget(stack));
 		});
 		equipmentLayout.addChild(new SpacerElement(18, 18));
-		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+		for (ItemStack stack : SkyblockInventoryScreen.getCurrentEquipmentSet()) {
 			if (stack.isEmpty()) equipmentLayout.addChild(new SpacerElement(18, 18));
 			else equipmentLayout.addChild(new ItemWidget(stack));
 		}
@@ -81,9 +82,9 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x, y, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, x, y, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 	}
 
 	private class ItemWidget extends AbstractWidget {
@@ -103,13 +104,13 @@ public class ItemSelectPopup extends AbstractPopupScreen {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			int x = getX() + 1;
 			int y = getY() + 1;
-			if (isHovered()) context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			context.renderItem(item, x, y);
-			if (isHovered()) context.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_TEXTURE, getX() - 3, getY() - 3, 24, 24);
-			if (!selectable) context.renderItem(BARRIER, x, y);
+			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_TEXTURE, getX() - 3, getY() - 3, 24, 24);
+			graphics.item(item, x, y);
+			if (isHovered()) graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_TEXTURE, getX() - 3, getY() - 3, 24, 24);
+			if (!selectable) graphics.item(BARRIER, x, y);
 
 		}
 

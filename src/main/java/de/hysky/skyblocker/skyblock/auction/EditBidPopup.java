@@ -1,12 +1,8 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -15,6 +11,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.FilteredEditBox;
+
 public class EditBidPopup extends AbstractPopupScreen {
 	private LinearLayout layout = LinearLayout.vertical();
 	private final String minimumBid;
@@ -22,7 +23,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 
 	private final boolean signFront;
 
-	private EditBox textFieldWidget;
+	private FilteredEditBox textFieldWidget;
 
 	private boolean packetSent = false;
 
@@ -56,16 +57,15 @@ public class EditBidPopup extends AbstractPopupScreen {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.renderBackground(context, mouseX, mouseY, delta);
-		drawPopupBackground(context, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractBackground(graphics, mouseX, mouseY, a);
+		extractPopupBackground(graphics, layout.getX(), layout.getY(), layout.getWidth(), layout.getHeight());
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.enabled) {
-			SignCalculator.renderCalculator(context, textFieldWidget.getValue(), context.guiWidth() / 2, textFieldWidget.getY() - 8);
+			SignCalculator.extractCalculator(graphics, textFieldWidget.getValue(), graphics.guiWidth() / 2, textFieldWidget.getY() - 8);
 		}
 	}
 
 	private boolean isStringGood(String s) {
-		assert this.minecraft != null;
 		return this.minecraft.font.width(minimumBid) <= this.signBlockEntity.getMaxTextLineWidth();
 	}
 
@@ -100,8 +100,7 @@ public class EditBidPopup extends AbstractPopupScreen {
 	@Override
 	public void onClose() {
 		if (!packetSent) sendPacket("");
-		assert this.minecraft != null;
-		this.minecraft.setScreen(null);
+		this.minecraft.gui.setScreen(null);
 	}
 
 	@Override

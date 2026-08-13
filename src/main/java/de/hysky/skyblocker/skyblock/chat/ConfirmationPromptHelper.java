@@ -3,11 +3,9 @@ package de.hysky.skyblocker.skyblock.chat;
 import java.util.List;
 import java.util.Optional;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -18,8 +16,12 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 public class ConfirmationPromptHelper {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ConfirmationPromptHelper.class);
@@ -44,13 +46,13 @@ public class ConfirmationPromptHelper {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ConfirmationPromptHelper::onMessage);
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			//Don't check for the command being present in case the user opens the chat before the prompt is sent
 			if (Utils.isOnSkyblock() && screen instanceof ChatScreen && SkyblockerConfigManager.get().chat.confirmationPromptHelper) {
-				ScreenMouseEvents.beforeMouseClick(screen).register((_screen1, click) -> {
+				ScreenMouseEvents.beforeMouseClick(screen).register((_, click) -> {
 					if (hasCommand()) {
 						Minecraft client = Minecraft.getInstance();
-						if (client.screen instanceof ChatScreen) {	// Ignore clicks on other interactive elements
+						if (client.gui.screen() instanceof ChatScreen) {	// Ignore clicks on other interactive elements
 							ActiveTextCollector.ClickableStyleFinder clickHandler = new ActiveTextCollector.ClickableStyleFinder(screen.getFont(), (int) click.x(), (int) click.y())
 									.includeInsertions(false);
 							Style clickedStyle = clickHandler.result();
@@ -67,7 +69,7 @@ public class ConfirmationPromptHelper {
 				});
 			}
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
 			command = null;
 			commandFoundAt = 0;
 		});
@@ -106,7 +108,7 @@ public class ConfirmationPromptHelper {
 				commandFoundAt = System.currentTimeMillis();
 
 				//Send feedback msg
-				Minecraft.getInstance().player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.chat.confirmationPromptNotification")), false);
+				Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.chat.confirmationPromptNotification")));
 			}
 		}
 

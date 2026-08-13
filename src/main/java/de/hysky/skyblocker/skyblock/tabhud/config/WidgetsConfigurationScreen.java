@@ -1,7 +1,32 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
 import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.components.tabs.TabNavigationBar;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,30 +42,10 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.gui.components.tabs.TabManager;
-import net.minecraft.client.gui.components.tabs.TabNavigationBar;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.ArrayUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class WidgetsConfigurationScreen extends Screen implements ContainerListener {
 	public static final Logger LOGGER = LogUtils.getLogger();
+	public static Pattern SCREEN_TITLE_PATTERN = Pattern.compile("(\\(\\d/\\d]\\) )?widgets (in|on)");
 
 	private @Nullable ChestMenu handler;
 	private String titleLowercase;
@@ -69,8 +74,11 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			Map.entry("kuudra", Location.KUUDRAS_HOLLOW),
 			Map.entry("the rift", Location.THE_RIFT),
 			Map.entry("jerry's workshop", Location.WINTER_ISLAND),
-			Map.entry("galatea", Location.GALATEA),
-			Map.entry("backwater bayou", Location.BACKWATER_BAYOU)
+			Map.entry("moonglade marsh", Location.GALATEA),
+			Map.entry("torrhus canyon", Location.TORRHUS_CANYON),
+			Map.entry("safari", Location.SAFARI),
+			Map.entry("backwater bayou", Location.BACKWATER_BAYOU),
+			Map.entry("lotus atoll", Location.LOTUS_ATOLL)
 	);
 	private Location currentLocation = Utils.getLocation();
 
@@ -95,8 +103,8 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	 */
 	@Init
 	public static void initCommands() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("hud").executes((ctx) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("hud").executes(_ -> {
 				openWidgetsConfigScreen(null);
 				return Command.SINGLE_SUCCESS;
 			})));
@@ -174,7 +182,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			previewTab.goToLayer(widgetsLayer);
 		}
 		widgetsListTab = new WidgetsListTab(this.minecraft, this.handler);
-		this.tabNavigation = TabNavigationBar.builder(this.tabManager, this.width)
+		this.tabNavigation = MenuTabBar.builder(this.tabManager, this.width)
 				.addTabs(this.widgetsListTab, this.previewTab, previewDungeons)
 				.build();
 		widgetsListTab.setShouldShowCustomWidgetEntries(titleLowercase.startsWith("widgets ") || noHandler);
@@ -188,8 +196,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 	@Override
 	protected void repositionElements() {
 		if (this.tabNavigation != null) {
-			this.tabNavigation.setWidth(this.width);
-			this.tabNavigation.arrangeElements();
+			this.tabNavigation.arrangeElements(this.width);
 			int i = this.tabNavigation.getRectangle().bottom();
 			ScreenRectangle screenRect = new ScreenRectangle(0, i, this.width, this.height - i - 5);
 			this.tabManager.setTabArea(screenRect);
@@ -316,7 +323,7 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			this.minecraft.player.closeContainer();
 			super.onClose();
 		} else {
-			minecraft.setScreen(parent);
+			minecraft.gui.setScreen(parent);
 		}
 	}
 
@@ -346,6 +353,6 @@ public class WidgetsConfigurationScreen extends Screen implements ContainerListe
 			onLocationChanged.accept(location);
 		},
 				locations.contains(currentLocation) ? currentLocation : Location.HUB,
-				(isOpen) -> previewTab.locationDropdownOpened(isOpen));
+				isOpen -> previewTab.locationDropdownOpened(isOpen));
 	}
 }

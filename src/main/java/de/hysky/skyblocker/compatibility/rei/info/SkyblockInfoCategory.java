@@ -1,11 +1,8 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.util.ArrayList;
+import java.util.List;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -16,6 +13,7 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -26,8 +24,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import java.util.ArrayList;
-import java.util.List;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay> {
 	private static final int REI_SLOT_HEIGHT = 18;
@@ -52,10 +55,10 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		return ICON;
 	}
 
-	private Button getWikiLookupButton(Component text, boolean isOfficial, ItemStack itemStack, LocalPlayer player) {
-		Button btn = Button.builder(text, (button) -> WikiLookupManager.openWiki(itemStack, player, isOfficial)).build();
+	private Button getWikiLookupButton(Component text, ItemStack itemStack, LocalPlayer player) {
+		Button btn = Button.builder(text, _ -> WikiLookupManager.openWiki(itemStack, player)).build();
 
-		if (ItemRepository.getWikiLink(itemStack.getNeuName(), isOfficial) == null) {
+		if (ItemRepository.getWikiLink(itemStack.getNeuName()) == null) {
 			btn.setMessage(btn.getMessage().copy().withColor(RED_ERROR_COLOR));
 			btn.active = false;
 		}
@@ -64,7 +67,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 	}
 
 	private boolean checkScreen() {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		return currentScreen instanceof ContainerScreen || currentScreen instanceof AbstractCustomHypixelGUI<?>;
 	}
 
@@ -82,7 +85,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 		LinearLayout layoutWidget = LinearLayout.vertical();
 		layoutWidget.setPosition(bounds.x + OFFSET, bounds.y + OFFSET + REI_SLOT_HEIGHT);
 
-		layoutWidget.addChild(Button.builder(Component.translatable("key.skyblocker.itemPriceLookup"), (button) -> {
+		layoutWidget.addChild(Button.builder(Component.translatable("key.skyblocker.itemPriceLookup"), button -> {
 			ItemPrice.itemPriceLookup(player, itemStack);
 
 			Scheduler.INSTANCE.schedule(() -> {
@@ -92,8 +95,7 @@ public class SkyblockInfoCategory implements DisplayCategory<SkyblockInfoDisplay
 			}, 10);
 		}).build());
 
-		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.official"), true, itemStack, player));
-		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.fandom"), false, itemStack, player));
+		layoutWidget.addChild(getWikiLookupButton(Component.translatable("key.skyblocker.wikiLookup.independent"), itemStack, player));
 
 		layoutWidget.visitWidgets(child -> widgets.add(Widgets.wrapVanillaWidget(child)));
 		layoutWidget.arrangeElements();

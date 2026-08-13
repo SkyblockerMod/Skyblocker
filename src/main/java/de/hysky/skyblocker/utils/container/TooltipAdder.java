@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.utils.container;
 
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 public interface TooltipAdder extends ContainerMatcher {
 	/**

@@ -47,7 +47,7 @@ public class SkyblockerEMIPlugin implements EmiPlugin {
 		registry.addWorkstation(SKYBLOCK_CRAFTING, EmiStack.of(Items.LAVA_BUCKET));
 		ItemRepository.getRecipesStream().map(SkyblockEmiRecipe::new).forEach(registry::addRecipe);
 		registry.addExclusionArea(InventoryScreen.class, (screen, consumer) -> {
-			if (!SkyblockerConfigManager.get().farming.garden.gardenPlotsWidget || !Utils.getLocation().equals(Location.GARDEN)) return;
+			if (!SkyblockerConfigManager.get().farming.plotsWidget.enabled || !Utils.getLocation().equals(Location.GARDEN)) return;
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
 			consumer.accept(new Bounds(accessor.getX() + accessor.getImageWidth() + 4, accessor.getY(), 104, 127));
 		});

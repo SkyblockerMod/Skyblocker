@@ -2,19 +2,21 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
 import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(MapRenderer.class)
 public class MapRendererMixin {
 	@ModifyExpressionValue(method = "extractDecorationRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/saveddata/maps/MapDecoration;renderOnFrame()Z"))
-	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(argsOnly = true) MapDecoration decoration) {
+	private boolean preventDecorationInDungeons(boolean alwaysRendered, @Local(name = "decoration") MapDecoration decoration) {
 		// Allow alwaysRendered if
 		// 1. not in dungeons and map is disabled OR
 		// 2. the decoration type is frame (self player) and either fancy map or show self head are off OR

@@ -3,9 +3,9 @@ package de.hysky.skyblocker.skyblock.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -14,6 +14,8 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.annotations.Init;
 
 public class MobGlow {
 	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;
@@ -35,7 +37,7 @@ public class MobGlow {
 	@Init
 	public static void init() {
 		// Clear the cache every tick
-		ClientTickEvents.END_WORLD_TICK.register(client -> clearCache());
+		ClientTickEvents.END_LEVEL_TICK.register(_ -> clearCache());
 	}
 
 	protected static void registerGlowAdder(MobGlowAdder adder) {
@@ -102,5 +104,11 @@ public class MobGlow {
 
 	public static List<ArmorStand> getArmorStands(Level world, AABB box) {
 		return world.getEntitiesOfClass(ArmorStand.class, box.inflate(0, 2, 0), EntitySelector.ENTITY_NOT_BEING_RIDDEN);
+	}
+
+	public static String getArmorStandNameTrick(Entity entity) {
+		Entity possibleNameTag = entity.level().getEntity(entity.getId() + 1);
+
+		return possibleNameTag instanceof ArmorStand ? possibleNameTag.getPlainTextName() : "ERR NO ARMR STAND";
 	}
 }

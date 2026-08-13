@@ -1,13 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
@@ -16,6 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
+
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 
 /**
  * Utility class to convert a structure template NBT file into a .skeleton file through an easy 3-step process.
@@ -94,7 +96,7 @@ public class StructureToSkeleton {
 		int initialSize = blockData.size();
 		List<Integer> blockNums = blockData.stream()
 				.map(SkeletonBlock::compress)
-				.filter((num) -> num > 0)
+				.filter(num -> num > 0)
 				.sorted().toList();
 		if (blockNums.size() != initialSize) throw new RuntimeException("Negative block number detected..");
 

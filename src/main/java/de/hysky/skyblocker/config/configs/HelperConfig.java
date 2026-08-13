@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.resources.language.I18n;
+
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
 	public boolean enableNewYearCakesHelper = true;
@@ -43,6 +46,8 @@ public class HelperConfig {
 	public ItemPrice itemPrice = new ItemPrice();
 
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
+
+	public CenturyRaffle centuryRaffle = new CenturyRaffle();
 
 	public static class BuildersWand {
 		public boolean enableBuildersWandPreview = true;
@@ -87,7 +92,7 @@ public class HelperConfig {
 		public boolean enableFishingHud = true;
 
 		@Deprecated
-		public List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
+		public transient List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
 		public boolean enableSeaCreatureCounter = true;
 
@@ -99,13 +104,15 @@ public class HelperConfig {
 
 		public boolean seaCreatureTimerNotification = true;
 
-		public int seaCreatureCap = 30;
+		@Deprecated
+		public transient int seaCreatureCap;
 
 		public boolean seaCreatureCapNotification = true;
 
 		public SkyblockItemRarity minimumNotificationRarity = SkyblockItemRarity.EPIC;
 
 		public enum FishingHookDisplay {
+			@EnumDisabledValue
 			OFF,
 			CROSSHAIR,
 			HUD;
@@ -115,6 +122,11 @@ public class HelperConfig {
 				return I18n.get("skyblocker.config.helpers.fishing.fishingHookDisplay." + name());
 			}
 		}
+	}
+
+	// Placeholder!
+	public static class Loadouts {
+
 	}
 
 	public static class FairySouls {
@@ -160,10 +172,17 @@ public class HelperConfig {
 	public static class ItemPrice {
 		public boolean enableItemPriceLookup = true;
 
-		public boolean enableItemPriceRefresh = true;
+		@Deprecated
+		public transient boolean enableItemPriceRefresh;
 	}
 
 	public static class GreatSpookEvent {
 		public boolean enableMathTeacherHelper = true;
+	}
+
+	public static class CenturyRaffle {
+		public boolean enableRaffleTaskHighlight = true;
+
+		public boolean enableRaffleRewardHighlight = true;
 	}
 }

@@ -1,28 +1,30 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
+
+import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Range;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 public class DungeonPlayerManager {
 	/**
@@ -46,7 +48,7 @@ public class DungeonPlayerManager {
 		DungeonEvents.DUNGEON_LOADED.register(() -> dungeonLoaded = true);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonPlayerManager::updatePlayers, 1);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonPlayerManager::onPlayerGhost);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static @Nullable DungeonPlayer[] getPlayers() {
@@ -133,7 +135,7 @@ public class DungeonPlayerManager {
 			update(dungeonClass);
 
 			// Pre-fetches game profiles for rendering skins in the leap overlay and fancy dungeon map.
-			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), Executors.newVirtualThreadPerTaskExecutor());
+			CompletableFuture.runAsync(() -> Minecraft.getInstance().services().sessionService().fetchProfile(uuid, false), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 
 		private static @Nullable UUID findPlayerUuid(String name) {

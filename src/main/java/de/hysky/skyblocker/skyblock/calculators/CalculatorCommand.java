@@ -3,11 +3,7 @@ package de.hysky.skyblocker.skyblock.calculators;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.Calculator;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Formatters;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -16,9 +12,15 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.Calculator;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
+
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class CalculatorCommand {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -41,6 +43,8 @@ public class CalculatorCommand {
 	private static int doCalculation(String calculation) {
 		MutableComponent text = Constants.PREFIX.get();
 		try {
+			text.append(Component.literal(calculation).withStyle(ChatFormatting.AQUA));
+			text.append(" = ");
 			text.append(Component.literal(Formatters.DOUBLE_NUMBERS.format(Calculator.calculate(calculation))).withStyle(ChatFormatting.GREEN));
 		} catch (Calculator.CalculatorException e) {
 			text.append(Component.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").withStyle(ChatFormatting.RED));
@@ -51,7 +55,7 @@ public class CalculatorCommand {
 			return 0;
 		}
 
-		CLIENT.player.displayClientMessage(text, false);
+		CLIENT.player.sendSystemMessage(text);
 		return Command.SINGLE_SUCCESS;
 	}
 }

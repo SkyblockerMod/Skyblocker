@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
@@ -17,11 +17,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class ThreeWeirdos extends DungeonPuzzle {
 	@SuppressWarnings("unused")
@@ -49,7 +51,7 @@ public class ThreeWeirdos extends DungeonPuzzle {
 
 			return true;
 		});
-		UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
+		UseBlockCallback.EVENT.register((_, _, _, blockHitResult) -> {
 			if (blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(pos)) {
 				pos = null;
 			}

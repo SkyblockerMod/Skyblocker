@@ -1,22 +1,16 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -26,13 +20,23 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {
@@ -74,30 +78,30 @@ public class WidgetsListTab implements Tab {
 		widgetsElementList = new WidgetsElementList(this, client, 0, 0, 0);
 		this.client = client;
 		this.handler = handler;
-		back = Button.builder(Component.translatable("gui.back"), button -> {
-			clickAndWaitForServer(48, 0);
+		back = Button.builder(Component.translatable("gui.back"), _ -> {
+			clickAndWaitForServer(48, InputConstants.MOUSE_BUTTON_LEFT);
 			this.resetScrollOnLoad();
 		}).size(64, 15).build();
 		widgetsElementList.setBackButton(back);
-		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), button -> clickAndWaitForServer(50, 0))
+		thirdColumnButton = Button.builder(Component.literal("3rd Column:"), _ -> clickAndWaitForServer(50, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(120, 15)
 				.build();
 		thirdColumnButton.setTooltip(Tooltip.create(Component.literal("It is recommended to have this enabled, to have more info be displayed!")));
-		previousPage = Button.builder(Component.translatable("book.page_button.previous"), button -> {
-					clickAndWaitForServer(45, 0);
+		previousPage = Button.builder(Component.translatable("book.page_button.previous"), _ -> {
+					clickAndWaitForServer(45, InputConstants.MOUSE_BUTTON_LEFT);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
-		nextPage = Button.builder(Component.translatable("book.page_button.next"), button -> {
-					clickAndWaitForServer(53, 0);
+		nextPage = Button.builder(Component.translatable("book.page_button.next"), _ -> {
+					clickAndWaitForServer(53, InputConstants.MOUSE_BUTTON_LEFT);
 					resetScrollOnLoad();
 				})
 				.size(90, 15)
 				.build();
-		resetButton = Button.builder(Component.literal("Reset"), button -> {
+		resetButton = Button.builder(Component.literal("Reset"), _ -> {
 			if (resetSlotId == -1) return;
-			clickAndWaitForServer(resetSlotId, 0);
+			clickAndWaitForServer(resetSlotId, InputConstants.MOUSE_BUTTON_LEFT);
 		}).size(60, 15).build();
 		waitingForServerText = new StringWidget(Component.literal("Waiting for server..."), client.font);
 		waitingForServerText.setWidth(client.font.width(waitingForServerText.getMessage()));
@@ -137,7 +141,7 @@ public class WidgetsListTab implements Tab {
 	public void clickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.PICKUP, this.client.player);
+		client.gameMode.handleContainerInput(handler.containerId, slot, ContainerUtils.getContainerClickButton(button), ContainerInput.PICKUP, this.client.player);
 		waitingForServer = true;
 		waitingForServerText.visible = true;
 	}
@@ -145,7 +149,7 @@ public class WidgetsListTab implements Tab {
 	public void shiftClickAndWaitForServer(int slot, int button) {
 		if (waitingForServer || handler == null) return;
 		if (client.gameMode == null || this.client.player == null) return;
-		client.gameMode.handleInventoryMouseClick(handler.containerId, slot, button, ClickType.QUICK_MOVE, this.client.player);
+		client.gameMode.handleContainerInput(handler.containerId, slot, ContainerUtils.getContainerClickButton(button), ContainerInput.QUICK_MOVE, this.client.player);
 		// When moving a widget down it gets stuck sometimes
 		Scheduler.INSTANCE.schedule(() -> {
 			this.waitingForServer = false;
@@ -227,7 +231,7 @@ public class WidgetsListTab implements Tab {
 			}
 		}
 
-		if (stack.isEmpty() || stack.is(Items.BLACK_STAINED_GLASS_PANE)) {
+		if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.black())) {
 			entries.remove(slot);
 			return;
 		}
@@ -237,7 +241,7 @@ public class WidgetsListTab implements Tab {
 		String lastLowerCase = lore.getLast().toLowerCase(Locale.ENGLISH);
 
 		WidgetsListSlotEntry entry;
-		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.RED_STAINED_GLASS_PANE)) {
+		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.STAINED_GLASS_PANE.red())) {
 			entry = new EditableSlotEntry(this, slot, stack);
 		} else if (lowerCase.endsWith("widget")) {
 			entry = new WidgetSlotEntry(this, slot, stack);
@@ -276,5 +280,10 @@ public class WidgetsListTab implements Tab {
 	@Override
 	public Component getTabExtraNarration() {
 		return Component.empty();
+	}
+
+	@Override
+	public Layout getLayout() {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import it.unimi.dsi.fastutil.booleans.BooleanPredicate;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -29,10 +27,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class DojoManager {
 
@@ -43,14 +46,14 @@ public class DojoManager {
 
 
 	protected enum DojoChallenges {
-		NONE("none", enabled -> false),
-		FORCE("Force", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
-		STAMINA("Stamina", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableStaminaHelper),
-		MASTERY("Mastery", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
-		DISCIPLINE("Discipline", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
-		SWIFTNESS("Swiftness", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
-		CONTROL("Control", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableControlHelper),
-		TENACITY("Tenacity", enabled -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
+		NONE("none", _ -> false),
+		FORCE("Force", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableForceHelper),
+		STAMINA("Stamina", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableStaminaHelper),
+		MASTERY("Mastery", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableMasteryHelper),
+		DISCIPLINE("Discipline", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableDisciplineHelper),
+		SWIFTNESS("Swiftness", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableSwiftnessHelper),
+		CONTROL("Control", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableControlHelper),
+		TENACITY("Tenacity", _ -> SkyblockerConfigManager.get().crimsonIsle.dojo.enableTenacityHelper);
 
 		private final String name;
 		private final BooleanPredicate enabled;
@@ -72,8 +75,8 @@ public class DojoManager {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DojoManager::onMessage);
-		WorldRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(DojoManager::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientEntityEvents.ENTITY_LOAD.register(DojoManager::onEntitySpawn);
 		ClientEntityEvents.ENTITY_UNLOAD.register(DojoManager::onEntityDespawn);
 		AttackEntityCallback.EVENT.register(DojoManager::onEntityAttacked);

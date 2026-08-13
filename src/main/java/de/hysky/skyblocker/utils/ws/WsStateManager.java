@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.utils.ws;
 
+import java.util.EnumSet;
+import java.util.Optional;
+
+import net.azureaaron.hmapi.data.server.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.ws.message.Message;
-import net.azureaaron.hmapi.data.server.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-
-import java.util.EnumSet;
-import java.util.Optional;
 
 public class WsStateManager {
 	private static final EnumSet<Service> SUBSCRIBED_SERVER_SERVICES = EnumSet.noneOf(Service.class);
@@ -18,8 +19,8 @@ public class WsStateManager {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> reset());
 	}
 
 	private static void reset() {

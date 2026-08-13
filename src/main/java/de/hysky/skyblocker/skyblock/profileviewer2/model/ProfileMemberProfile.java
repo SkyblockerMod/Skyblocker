@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
 import java.util.UUID;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 public class ProfileMemberProfile {
 	@SerializedName("first_join")
@@ -15,10 +14,9 @@ public class ProfileMemberProfile {
 	public @Nullable CoopInvitation coopInvitation;
 	@SerializedName("deletion_notice")
 	public @Nullable DeletionNotice deletionNotice;
-	/**
-	 * If this is not present, the person is not in a coop, and only has the shared coop bank, instead of a personal one.
-	 * @see ApiProfile#banking
-	 */
+	/// If this is not present, the person is not in a coop, and only has the shared coop bank, instead of a personal one.
+	///
+	/// @see ApiProfile#banking
 	@SerializedName("bank_account")
 	public @Nullable Double personalBankAccount;
 

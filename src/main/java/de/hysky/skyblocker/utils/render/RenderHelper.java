@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.utils.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.jspecify.annotations.Nullable;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -20,38 +19,46 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
+
 public class RenderHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static PrimitiveCollectorImpl collector;
 
 	@Init
 	public static void init() {
-		WorldRenderEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
-		WorldRenderEvents.BEFORE_ENTITIES.register(RenderHelper::submitVanillaSubmittables);
-		WorldRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
+		LevelExtractionEvents.END_EXTRACTION.register(RenderHelper::startExtraction);
+		LevelRenderEvents.COLLECT_SUBMITS.register(RenderHelper::submitVanillaSubmittables);
+		LevelRenderEvents.START_MAIN.register(RenderHelper::prepare);
+		LevelRenderEvents.END_MAIN.register(RenderHelper::executeDraws);
 	}
 
-	private static void startExtraction(WorldExtractionContext context) {
+	private static void startExtraction(LevelExtractionContext context) {
 		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerPrimitiveCollection");
-		collector = new PrimitiveCollectorImpl(context.worldState(), context.frustum());
-		WorldRenderExtractionCallback.EVENT.invoker().onExtract(collector);
+		collector = new PrimitiveCollectorImpl(context.levelState(), context.levelState().cameraRenderState.cullFrustum);
+		LevelRenderExtractionCallback.EVENT.invoker().onExtract(collector);
 		collector.endCollection();
 		profiler.pop();
 	}
 
-	private static void submitVanillaSubmittables(WorldRenderContext context) {
+	private static void submitVanillaSubmittables(LevelRenderContext context) {
 		ProfilerFiller profiler = Profiler.get();
 		profiler.push("skyblockerSubmitVanillaSubmittables");
-		collector.dispatchVanillaSubmittables(context.worldState(), context.commandQueue());
+		collector.dispatchVanillaSubmittables(context.levelState(), context.submitNodeCollector());
 		profiler.pop();
 	}
 
-	private static void executeDraws(WorldRenderContext context) {
+	private static void prepare(LevelTerrainRenderContext context) {
+		Renderer.prepare();
+	}
+
+	private static void executeDraws(LevelRenderContext context) {
 		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("skyblockerSubmitPrimitives");
-		collector.dispatchPrimitivesToRenderers(context.worldState().cameraRenderState);
+		collector.dispatchPrimitivesToRenderers(context.levelState().cameraRenderState);
 		collector = null;
 		profiler.pop();
 
@@ -82,7 +89,7 @@ public class RenderHelper {
 	}
 
 	public static Camera getCamera() {
-		return CLIENT.gameRenderer.getMainCamera();
+		return CLIENT.gameRenderer.mainCamera();
 	}
 
 	/**

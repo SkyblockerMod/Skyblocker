@@ -1,14 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.HashSet;
+import java.util.Set;
+
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -27,8 +23,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import java.util.HashSet;
-import java.util.Set;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.PlaySoundEvents;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class CrystalsChestHighlighter {
 
@@ -46,8 +49,8 @@ public class CrystalsChestHighlighter {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(CrystalsChestHighlighter::extractLocationFromMessage);
-		WorldRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(CrystalsChestHighlighter::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		WorldEvents.BLOCK_STATE_UPDATE.register(CrystalsChestHighlighter::onBlockUpdate);
 		ParticleEvents.FROM_SERVER.register(CrystalsChestHighlighter::onParticle);
 		PlaySoundEvents.FROM_SERVER.register(CrystalsChestHighlighter::onSound);
@@ -160,7 +163,7 @@ public class CrystalsChestHighlighter {
 		//render chest outline
 		float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
 		for (BlockPos chest : activeChests) {
-			collector.submitOutlinedBox(AABB.ofSize(chest.getCenter().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
+			collector.submitOutlinedBox(AABB.ofSize(Vec3.atCenterOf(chest).subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
 		}
 
 		//render lock picking if player is looking at chest that is in the active chests list
@@ -169,7 +172,7 @@ public class CrystalsChestHighlighter {
 		}
 		HitResult target = CLIENT.hitResult;
 		if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
-			Vec3 chestPos = blockHitResult.getBlockPos().getCenter();
+			Vec3 chestPos = Vec3.atCenterOf(blockHitResult.getBlockPos());
 
 			if (!activeParticles.isEmpty()) {
 				//the player is looking at a chest use active particle to highlight correct spot
@@ -189,7 +192,7 @@ public class CrystalsChestHighlighter {
 
 				//render the spot
 				highlightSpot = highlightSpot.scale((double) 1 / addedParticles).subtract(LOCK_HIGHLIGHT_SIZE.scale(0.5));
-				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
+				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], false);
 			}
 
 			//render total text if needed is more than 0

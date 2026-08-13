@@ -2,17 +2,18 @@ package de.hysky.skyblocker.skyblock.dungeon;
 
 import org.joml.Matrix3x2fStack;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
 
 public class DungeonScoreHUD {
 	private static final Identifier DUNGEON_SCORE = SkyblockerMod.id("dungeon_score");
@@ -22,26 +23,26 @@ public class DungeonScoreHUD {
 
 	@Init
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (context, tickCounter) -> render(context));
+		HudElementRegistry.attachElementAfter(VanillaHudElements.OVERLAY_MESSAGE, DUNGEON_SCORE, (graphics, _) -> extractRenderState(graphics));
 	}
 
 	//This is 4+5 wide, needed to offset the extra width from bold numbers (3×1 wide) in S+ and the "+" (6 wide) so that it doesn't go off the screen if the score is S+ and the hud element is at the right edge of the screen
 	private static final Component extraSpace = Component.literal(" ").append(Component.literal(" ").withStyle(ChatFormatting.BOLD));
 
-	private static void render(GuiGraphics context) {
+	private static void extractRenderState(GuiGraphicsExtractor graphics) {
 		if (Utils.isInDungeons() && DungeonScore.isDungeonStarted() && SkyblockerConfigManager.get().dungeons.dungeonScore.enableScoreHUD) {
 			int x = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreX;
 			int y = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreY;
-			render(context, x, y);
+			extractRenderState(graphics, x, y);
 		}
 	}
 
-	public static void render(GuiGraphics context, int x, int y) {
+	public static void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
 		float scale = SkyblockerConfigManager.get().dungeons.dungeonScore.scoreScaling;
-		Matrix3x2fStack matrixStack = context.pose();
+		Matrix3x2fStack matrixStack = graphics.pose();
 		matrixStack.pushMatrix();
 		matrixStack.scale(scale, scale);
-		context.drawString(Minecraft.getInstance().font, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
+		graphics.text(Minecraft.getInstance().font, getFormattedScoreText(), (int) (x / scale), (int) (y / scale), 0xFFFFFFFF);
 		matrixStack.popMatrix();
 	}
 

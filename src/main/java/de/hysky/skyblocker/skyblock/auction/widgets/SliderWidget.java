@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -10,10 +11,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+
 // This is kinda excessive, but I thought it was a good idea
 public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends AbstractWidget {
 	private final SlotClickHandler clickSlot;
-	private int button = 0;
+	private int button = InputConstants.MOUSE_BUTTON_LEFT;
 	private int slotId = -1;
 
 	protected E current;
@@ -37,7 +40,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (posProgress < current.getOffset()) {
 			posProgress += delta * 5;
 			if (posProgress > current.getOffset()) posProgress = current.getOffset();
@@ -47,8 +50,8 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 		}
 
 
-		context.pose().pushMatrix();
-		context.pose().translate(getX(), getY());
+		graphics.pose().pushMatrix();
+		graphics.pose().translate(getX(), getY());
 
 		int x = current.isVertical() ? 0 : Math.round(posProgress);
 		int y = current.isVertical() ? Math.round(posProgress) : 0;
@@ -56,13 +59,13 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 		int optionWidth = current.getOptionSize()[0];
 		int optionHeight = current.getOptionSize()[1];
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, getWidth(), getHeight());
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getBackTexture(), 0, 0, getWidth(), getHeight());
 		if (isHovered()) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, optionWidth, optionHeight);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getHoverTexture(), x, y, optionWidth, optionHeight);
 		} else {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, optionWidth, optionHeight);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, current.getOptionTexture(), x, y, optionWidth, optionHeight);
 		}
-		context.pose().popMatrix();
+		graphics.pose().popMatrix();
 	}
 
 	@Override
@@ -75,7 +78,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 	@Override
 	protected boolean isValidClickButton(MouseButtonInfo input) {
 		this.button = input.button();
-		return super.isValidClickButton(input) || button == 1;
+		return super.isValidClickButton(input) || button == InputConstants.MOUSE_BUTTON_RIGHT;
 	}
 
 	public void setSlotId(int slotId) {

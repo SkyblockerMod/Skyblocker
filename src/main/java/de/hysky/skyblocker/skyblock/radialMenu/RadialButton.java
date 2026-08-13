@@ -1,11 +1,16 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
-import de.hysky.skyblocker.utils.render.HudHelper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
+import org.joml.Vector2f;
+import org.joml.Vector2i;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -16,14 +21,11 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class RadialButton implements Renderable, GuiEventListener, LayoutElement, NarratableEntry {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -63,7 +65,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
 		//change color  and radius when hovered
 		boolean hovered = getHovered.getAsBoolean();
 		int color = hovered ? 0xFE000000 : 0x77000000; //darker when hovered
@@ -71,7 +73,7 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		float external = hovered ? externalRadius + 5 : externalRadius;
 
 		//get bounding box
-		Vector2i center = new Vector2i(context.guiWidth() / 2, context.guiHeight() / 2);
+		Vector2i center = new Vector2i(graphics.guiWidth() / 2, graphics.guiHeight() / 2);
 		List<Vector2f> vertices = new ArrayList<>();
 		//first background rectangle
 		vertices.add(getPos(center, startAngle, internal));
@@ -85,24 +87,24 @@ public class RadialButton implements Renderable, GuiEventListener, LayoutElement
 		vertices.add(getPos(center, startAngle + arcLength / 2, external));
 
 		//draw background
-		HudHelper.drawCustomShape(context, vertices, color);
+		GuiHelper.customShape(graphics, vertices, color);
 
 		//render icon
 		float iconAngle = startAngle + (arcLength / 2);
 		Vector2f iconPos = getPos(center, iconAngle, (internal + external) / 2);
 		iconPos.sub(8, 8);
-		context.renderItem(icon, (int) iconPos.x, (int) iconPos.y);
-		context.renderItemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
-		SlotTextManager.renderSlotText(context, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
+		graphics.item(icon, (int) iconPos.x, (int) iconPos.y);
+		graphics.itemDecorations(CLIENT.font, icon, (int) iconPos.x, (int) iconPos.y);
+		SlotTextManager.extractSlotText(graphics, CLIENT.font, null, icon, linkedSlot, (int) iconPos.x, (int) iconPos.y);
 
 		//render tooltip
-		if (hovered && (HudHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
+		if (hovered && (GuiHelper.hasShiftDown() || SkyblockerConfigManager.get().uiAndVisuals.radialMenu.tooltipsWithoutShift)) {
 			// Backpack Preview
-			if (CLIENT.screen != null && CLIENT.screen.getTitle().getString().equals("Storage")) {
-				BackpackPreview.renderPreview(context, CLIENT.screen, linkedSlot, mouseX, mouseY);
+			if (CLIENT.gui.screen() != null && CLIENT.gui.screen().getTitle().getString().equals("Storage")) {
+				BackpackPreview.extractPreview(graphics, CLIENT.gui.screen(), linkedSlot, mouseX, mouseY);
 			} else {
 				//normal tooltips
-				context.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(CLIENT.font, icon, mouseX, mouseY);
 			}
 		}
 	}

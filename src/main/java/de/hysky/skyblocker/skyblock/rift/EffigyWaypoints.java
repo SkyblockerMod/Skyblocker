@@ -1,20 +1,22 @@
 package de.hysky.skyblocker.skyblock.rift;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Area;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.DyeColor;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class EffigyWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EffigyWaypoints.class);
@@ -60,11 +62,11 @@ public class EffigyWaypoints {
 		if (SkyblockerConfigManager.get().slayers.vampireSlayer.enableEffigyWaypoints && Utils.getArea() == Area.TheRift.CHATEAU) {
 			for (BlockPos effigy : UNBROKEN_EFFIGIES) {
 				if (SkyblockerConfigManager.get().slayers.vampireSlayer.compactEffigyWaypoints) {
-					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5F, true);
+					collector.submitFilledBoxWithBeaconBeam(effigy.below(6), RED, 0.5f, true);
 				} else {
-					collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5F, true);
+					collector.submitFilledBoxWithBeaconBeam(effigy, RED, 0.5f, true);
 					for (int i = 1; i < 6; i++) {
-						collector.submitFilledBox(effigy.below(i), RED, 0.5F - (0.075F * i), true);
+						collector.submitFilledBox(effigy.below(i), RED, 0.5f - (0.075f * i), true);
 					}
 				}
 			}

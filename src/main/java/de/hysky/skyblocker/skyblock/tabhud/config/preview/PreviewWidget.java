@@ -1,29 +1,31 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.render.HudHelper;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.ChatFormatting;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 /**
  * The preview widget that captures clicks and displays the current state of the widgets.
@@ -57,7 +59,7 @@ public class PreviewWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		hoveredWidget = null;
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100.f;
 		scaledRatio = ratio * scale;
@@ -65,14 +67,14 @@ public class PreviewWidget extends AbstractWidget {
 		scaledScreenHeight = tab.parent.height / scale;
 
 		ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
-		HudHelper.drawBorder(context, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
-		context.enableScissor(getX(), getY(), getRight(), getBottom());
-		Matrix3x2fStack matrices = context.pose();
+		GuiHelper.border(graphics, getX() - 1, getY() - 1, getWidth() + 2, getHeight() + 2, -1);
+		graphics.enableScissor(getX(), getY(), getRight(), getBottom());
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(scaledRatio, scaledRatio);
 
-		screenBuilder.renderWidgets(context, tab.getCurrentScreenLayer());
+		screenBuilder.extractWidgetsRenderState(graphics, tab.getCurrentScreenLayer());
 
 		float localMouseX = (mouseX - getX()) / scaledRatio;
 		float localMouseY = (mouseY - getY()) / scaledRatio;
@@ -88,8 +90,8 @@ public class PreviewWidget extends AbstractWidget {
 
 		// HOVERED
 		if (hoveredWidget != null && !hoveredWidget.equals(selectedWidget)) {
-			HudHelper.drawBorder(
-					context,
+			GuiHelper.border(
+					graphics,
 					hoveredWidget.getX() - 1,
 					hoveredWidget.getY() - 1,
 					hoveredWidget.getWidth() + 2,
@@ -100,13 +102,13 @@ public class PreviewWidget extends AbstractWidget {
 		// SELECTED
 		if (selectedWidget != null) {
 			//noinspection DataFlowIssue
-			HudHelper.drawBorder(
-					context,
+			GuiHelper.border(
+					graphics,
 					selectedWidget.getX() - 1,
 					selectedWidget.getY() - 1,
 					selectedWidget.getWidth() + 2,
 					selectedWidget.getHeight() + 2,
-					ChatFormatting.GREEN.getColor() | 0xFF000000);
+					TextColor.GREEN.getValue() | 0xFF000000);
 
 			PositionRule rule = screenBuilder.getPositionRule(selectedWidget.getInternalID());
 			if (rule != null) {
@@ -123,14 +125,13 @@ public class PreviewWidget extends AbstractWidget {
 				int translatedX = Math.min(thisAnchorX - rule.relativeX() - deltaX, (int) scaledScreenWidth - 2);
 				int translatedY = Math.min(thisAnchorY - rule.relativeY() - deltaY, (int) scaledScreenHeight - 2);
 
-				renderUnits(context, rule, deltaX, deltaY, thisAnchorX, thisAnchorY, translatedX, translatedY);
+				extractUnits(graphics, rule, deltaX, deltaY, thisAnchorX, thisAnchorY, translatedX, translatedY);
 
-				context.hLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
-				context.vLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
+				graphics.horizontalLine(translatedX, thisAnchorX, thisAnchorY + 1, 0xAAAA0000);
+				graphics.verticalLine(translatedX + 1, translatedY, thisAnchorY, 0xAAAA0000);
 
-
-				context.hLine(translatedX, thisAnchorX, thisAnchorY, CommonColors.RED);
-				context.vLine(translatedX, translatedY, thisAnchorY, CommonColors.RED);
+				graphics.horizontalLine(translatedX, thisAnchorX, thisAnchorY, CommonColors.RED);
+				graphics.verticalLine(translatedX, translatedY, thisAnchorY, CommonColors.RED);
 			}
 		}
 
@@ -138,12 +139,12 @@ public class PreviewWidget extends AbstractWidget {
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		matrices.scale(ratio, ratio);
-		((GuiInvoker) Minecraft.getInstance().gui).skyblocker$renderSidebar(context, tab.placeHolderObjective);
+		((HudAccessor) Minecraft.getInstance().gui.hud).extractSidebar(graphics, tab.placeHolderObjective);
 		matrices.popMatrix();
-		context.disableScissor();
+		graphics.disableScissor();
 	}
 
-	private void renderUnits(GuiGraphics context, PositionRule rule, int deltaX, int deltaY, int thisAnchorX, int thisAnchorY, int translatedX, int translatedY) {
+	private void extractUnits(GuiGraphicsExtractor graphics, PositionRule rule, int deltaX, int deltaY, int thisAnchorX, int thisAnchorY, int translatedX, int translatedY) {
 		boolean xUnitOnTop = rule.relativeY() > 0;
 		if (xUnitOnTop && thisAnchorY < 10) xUnitOnTop = false;
 		if (!xUnitOnTop && thisAnchorY > scaledScreenHeight - 10) xUnitOnTop = true;
@@ -160,12 +161,12 @@ public class PreviewWidget extends AbstractWidget {
 		if (Math.abs(xUnit) < 15 || Math.abs(yUnit) < 15) {
 			String text = "x: " + xUnitText + " y: " + yUnitText;
 			int textX = thisAnchorX < scaledScreenWidth / 2 ? (int) (scaledScreenWidth - tab.client.font.width(text) - 5) : 5;
-			context.drawString(tab.client.font, text, textX, 2, CommonColors.RED);
+			graphics.text(tab.client.font, text, textX, 2, CommonColors.RED);
 		}
 		// X
-		context.drawCenteredString(tab.client.font, xUnitText, thisAnchorX - (xUnit) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, CommonColors.SOFT_RED);
+		graphics.text(tab.client.font, xUnitText, thisAnchorX - (xUnit) / 2, xUnitOnTop ? thisAnchorY - 9 : thisAnchorY + 2, CommonColors.SOFT_RED);
 		// Y
-		context.drawString(tab.client.font, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (yUnit - 9) / 2, CommonColors.SOFT_RED, true);
+		graphics.text(tab.client.font, yUnitText, yUnitOnRight ? translatedX + 2 : translatedX - 1 - yUnitTextWidth, thisAnchorY - (yUnit - 9) / 2, CommonColors.SOFT_RED, true);
 	}
 
 	@Override
@@ -226,7 +227,7 @@ public class PreviewWidget extends AbstractWidget {
 		if (!(this.active && this.visible && isMouseOver(click.x(), click.y()))) return false;
 		double localMouseX = (click.x() - getX()) / scaledRatio;
 		double localMouseY = (click.y() - getY()) / scaledRatio;
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			List<HudWidget> hoveredThingies = new ArrayList<>();
 			for (HudWidget hudWidget : WidgetManager.getScreenBuilder(tab.getCurrentLocation()).getHudWidgets(tab.getCurrentScreenLayer())) {
 				if (hudWidget.isMouseOver(localMouseX, localMouseY)) hoveredThingies.add(hudWidget);
@@ -283,13 +284,13 @@ public class PreviewWidget extends AbstractWidget {
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		if (hoveredWidget != null && hoveredWidget.equals(selectedWidget)) {
-			int multiplier = (input.modifiers() & GLFW.GLFW_MOD_CONTROL) != 0 ? 5 : 1;
+			int multiplier = input.hasControlDown() ? 5 : 1;
 			int x = 0, y = 0;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_UP -> y = -multiplier;
-				case GLFW.GLFW_KEY_DOWN -> y = multiplier;
-				case GLFW.GLFW_KEY_LEFT -> x = -multiplier;
-				case GLFW.GLFW_KEY_RIGHT -> x = multiplier;
+				case InputConstants.KEY_UP -> y = -multiplier;
+				case InputConstants.KEY_DOWN -> y = multiplier;
+				case InputConstants.KEY_LEFT -> x = -multiplier;
+				case InputConstants.KEY_RIGHT -> x = multiplier;
 			}
 			ScreenBuilder screenBuilder = WidgetManager.getScreenBuilder(tab.getCurrentLocation());
 			PositionRule oldRule = screenBuilder.getPositionRuleOrDefault(selectedWidget.getInternalID());

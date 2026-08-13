@@ -12,9 +12,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class ConfigDataFixer {
 	static final String VERSION_KEY = "version";
@@ -62,6 +63,14 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix5ChatRulesSeparateOutputs(schema6, true));
 		Schema schema7 = builder.addSchema(7, Schema::new);
 		builder.addFixer(new ConfigFix6BuildersWandConfig(schema7, true));
+		Schema schema8 = builder.addSchema(8, Schema::new);
+		builder.addFixer(new ConfigFix7Farming(schema8, true));
+		Schema schema9 = builder.addSchema(9, Schema::new);
+		builder.addFixer(new ConfigFix8ItemList(schema9, true));
+		Schema schema10 = builder.addSchema(10, Schema::new);
+		builder.addFixer(new ConfigFix9EventNotifications(schema10, true));
+		Schema schema11 = builder.addSchema(11, Schema::new);
+		builder.addFixer(new ConfigFix10TorrhusCanyonAndSafari(schema11, true));
 
 		return dataFixer = builder.build().fixer();
 	}
@@ -70,7 +79,7 @@ public class ConfigDataFixer {
 		return new Codec<>() {
 			@Override
 			public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
-				return baseCodec.encode(input, ops, prefix);
+				return baseCodec.encode(input, ops, prefix).flatMap(t -> ops.mergeToMap(t, ops.createString(VERSION_KEY), ops.createInt(SkyblockerConfigManager.CONFIG_VERSION)));
 			}
 
 			@Override

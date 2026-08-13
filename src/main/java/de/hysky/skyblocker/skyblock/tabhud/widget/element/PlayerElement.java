@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Element that consists of a player's skin icon and their name
@@ -30,8 +31,8 @@ public class PlayerElement extends Element {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y) {
-		PlayerFaceRenderer.draw(context, tex, x, y, SKIN_ICO_DIM, true, false, -1);
-		context.drawString(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, CommonColors.WHITE, false);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int x, int y) {
+		PlayerFaceExtractor.extractRenderState(graphics, tex, x, y, SKIN_ICO_DIM, true, false, -1);
+		graphics.text(txtRend, name, x + SKIN_ICO_DIM + PAD_S, y, CommonColors.WHITE, false);
 	}
 }

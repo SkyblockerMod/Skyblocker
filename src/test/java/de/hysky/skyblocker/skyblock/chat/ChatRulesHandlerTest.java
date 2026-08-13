@@ -1,25 +1,66 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.Bootstrap;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.TextTransformer;
 
 class ChatRulesHandlerTest {
 	@BeforeAll
 	public static void setup() {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
+	}
+	@Test
+	void styleFromComponent() {
+		// these are real message components sent by hypixel, figured no better way to test
+		MutableComponent newBuff = Component.empty().withStyle(style -> style.withItalic(false));
+		newBuff.append(Component.literal("New buff").withStyle(ChatFormatting.YELLOW));
+		newBuff.append(Component.empty());
+		newBuff.append(Component.empty().append(Component.literal(": ").withStyle(style -> style.withBold(false).withItalic(false).withUnderlined(false).withStrikethrough(false).withObfuscated(false))));
+		newBuff.append(Component.literal("Gain ").withStyle(ChatFormatting.WHITE));
+		newBuff.append(Component.literal("+5% ").withStyle(ChatFormatting.GREEN));
+		newBuff.append(Component.literal("∮ Sweep").withStyle(ChatFormatting.DARK_GREEN));
+		newBuff.append(Component.literal(".").withStyle(ChatFormatting.WHITE));
+
+		MutableComponent watchdog = Component.literal("Watchdog has banned ").withStyle(ChatFormatting.WHITE);
+		watchdog.append(Component.literal("5,565").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+		watchdog.append(Component.literal(" players in the last 7 days.").withStyle(style -> style.withColor(ChatFormatting.WHITE).withBold(false)));
+
+		MutableComponent pressure = Component.empty().withStyle(style -> style.withItalic(false));
+		pressure.append(Component.literal(" ☠ ").withStyle(ChatFormatting.RED));
+		pressure.append(Component.empty().withStyle(ChatFormatting.GRAY));
+		pressure.append(Component.literal("NOT_LEGEND_").withStyle(ChatFormatting.GREEN));
+		pressure.append(Component.literal(" fainted from pressure").withStyle(ChatFormatting.GRAY));
+		pressure.append(Component.literal(".").withStyle(ChatFormatting.GRAY));
+
+		// yes, even this one... wtf hypixel
+		MutableComponent spacer = Component.empty().withStyle(style -> style.withItalic(false));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_BLUE));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_AQUA));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_AQUA));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.GRAY));
+		spacer.append(Component.literal(" ").withStyle(ChatFormatting.DARK_GRAY));
+
+		Assertions.assertEquals("&eNew buff&r: &fGain &a+5% &2∮ Sweep&f.", TextTransformer.toLegacy(newBuff));
+		Assertions.assertEquals("&fWatchdog has banned &c&l5,565 &fplayers in the last 7 days.", TextTransformer.toLegacy(watchdog));
+		Assertions.assertEquals(" &c☠ &aNOT_LEGEND_ &7fainted from pressure.", TextTransformer.toLegacy(pressure));
+		Assertions.assertEquals("       ", TextTransformer.toLegacy(spacer));
 	}
 
 	@Test
@@ -70,6 +111,7 @@ class ChatRulesHandlerTest {
 		var object = new JsonObject();
 		object.add("rules", ChatRule.LIST_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow());
 		var encodedObject = ChatRulesHandler.UNBOXING_CODEC.encodeStart(JsonOps.INSTANCE, rules).getOrThrow();
+		encodedObject.getAsJsonObject().remove("version"); // remove version as it is not relevant for this test
 
 		Assertions.assertEquals(object, encodedObject);
 	}

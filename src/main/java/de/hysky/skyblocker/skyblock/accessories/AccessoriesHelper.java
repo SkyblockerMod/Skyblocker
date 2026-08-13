@@ -1,23 +1,5 @@
 package de.hysky.skyblocker.skyblock.accessories;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
@@ -30,10 +12,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+
 public class AccessoriesHelper {
 	private static final ObjectOpenHashSet<String> EMPTY = new ObjectOpenHashSet<>(0);
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("collected_accessories.json");
-	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)\\/\\d+\\))?");
+	static final Pattern ACCESSORY_BAG_TITLE = Pattern.compile("Accessory Bag(?: \\((?<page>\\d+)/\\d+\\))?");
 	//UUID -> Profile Id & Data
 	private static final ProfiledData<ProfileAccessoryData> COLLECTED_ACCESSORIES = new ProfiledData<>(FILE, ProfileAccessoryData.CODEC, true);
 	private static final Predicate<String> NON_EMPTY = s -> !s.isEmpty();
@@ -45,12 +49,12 @@ public class AccessoriesHelper {
 	@Init
 	public static void init() {
 		COLLECTED_ACCESSORIES.init();
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
-			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof ContainerScreen genericContainerScreen) {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+			if (Utils.isOnSkyblock() && TooltipInfoType.ACCESSORIES.isTooltipEnabled() && !Utils.getProfileId().isEmpty() && screen instanceof ContainerScreen genericContainerScreen && !CatharsisCompatibility.isGuiElementHidden("skyblocker:accessoriesHelper")) {
 				Matcher matcher = ACCESSORY_BAG_TITLE.matcher(genericContainerScreen.getTitle().getString());
 
 				if (matcher.matches()) {
-					ScreenEvents.afterTick(screen).register(_screen -> {
+					ScreenEvents.afterTick(screen).register(_ -> {
 						ChestMenu handler = genericContainerScreen.getMenu();
 						int page = matcher.group("page") != null ? Integer.parseInt(matcher.group("page")) : 1;
 
@@ -86,19 +90,19 @@ public class AccessoriesHelper {
 	}
 
 	public static Pair<AccessoryReport, String> calculateReport4Accessory(String accessoryId) {
-		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, null);
+		if (!ACCESSORY_DATA.containsKey(accessoryId) || Utils.getProfileId().isEmpty()) return Pair.of(AccessoryReport.INELIGIBLE, "");
 
 		Accessory accessory = ACCESSORY_DATA.get(accessoryId);
 
 		//Ignore rift-only accessories
-		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, null);
+		if (accessory.origin().orElse("").equals("RIFT")) return Pair.of(AccessoryReport.INELIGIBLE, "");
 
 		Set<Accessory> collectedAccessories = getCollectedAccessories();
 
 		// If the accessory doesn't belong to a family
 		if (accessory.family().isEmpty()) {
 			//If the player has this accessory or player doesn't have this accessory
-			return collectedAccessories.contains(accessory) ? Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null) : Pair.of(AccessoryReport.MISSING, "");
+			return collectedAccessories.contains(accessory) ? Pair.of(AccessoryReport.HAS_HIGHEST_TIER, "") : Pair.of(AccessoryReport.MISSING, "");
 		}
 
 		FamilyReport report = calculateFamilyReport(accessory, collectedAccessories);
@@ -111,7 +115,7 @@ public class AccessoriesHelper {
 
 		//If this accessory is the highest tier, and the player has the highest tier accessory in this family
 		//This accounts for multiple accessories with the highest tier
-		if (accessory.tier() == highestTierInFamily && highestTierCollectedInFamily == highestTierInFamily) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, null);
+		if (accessory.tier() == highestTierInFamily && highestTierCollectedInFamily == highestTierInFamily) return Pair.of(AccessoryReport.HAS_HIGHEST_TIER, "");
 
 		//If this accessory is a higher tier than all the other collected accessories in the same family
 		if (accessory.tier() > highestTierCollectedInFamily) return Pair.of(AccessoryReport.IS_GREATER_TIER, String.format("(%d→%d/%d)", highestTierCollectedInFamily, accessory.tier(), highestTierInFamily));

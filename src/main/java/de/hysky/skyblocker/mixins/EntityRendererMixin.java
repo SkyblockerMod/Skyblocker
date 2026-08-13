@@ -2,30 +2,36 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.Boxes;
-import de.hysky.skyblocker.utils.ColorUtils;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.Entity;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
+import de.hysky.skyblocker.utils.Boxes;
+import de.hysky.skyblocker.utils.ColorUtils;
+
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
 
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
-	private void skyblocker$customGlow(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) EntityRenderState state) {
+	private void skyblocker$customGlow(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state) {
 		boolean allowGlowInLivid = LividColor.allowGlow();
 		boolean customGlow = MobGlow.hasOrComputeMobGlow(entity);
 		boolean allowGlow = allowGlowInLivid && state.appearsGlowing() || customGlow;
@@ -45,15 +51,37 @@ public class EntityRendererMixin {
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
-	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float partialTick) {
+	private void skyblocker$mobBoundingBox(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "partialTicks") float partialTicks) {
 		if (MobBoundingBoxes.shouldDrawMobBoundingBox(entity)) {
-			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), MobBoundingBoxes.getBoxColor(entity));
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTicks), MobBoundingBoxes.getBoxColor(entity));
 			return;
 		}
 
 		if (SlayerManager.shouldGlow(entity, SlayersConfig.HighlightSlayerEntities.HITBOX)) {
 			float[] color = ColorUtils.getFloatComponents(SkyblockerConfigManager.get().slayers.highlightColor.getRGB());
-			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTick), color);
+			MobBoundingBoxes.submitBox2BeRendered(Boxes.lerpEntityBoundingBox(entity, partialTicks), color);
+		}
+	}
+
+	// This is meant to be separate from the previous injection for organizational purposes.
+	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
+	private void skyblocker$movePlayerRenderPos(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state, @Local(name = "partialTicks") float partialTicks) {
+		Minecraft client = Minecraft.getInstance();
+
+		if (entity == client.player && !client.options.getCameraType().isFirstPerson()) {
+			Vec3 pos;
+			if (SkyblockerConfigManager.get().uiAndVisuals.smoothAOTE.predictive) {
+				pos = PredictiveSmoothAOTE.getInterpolatedPlayerPos();
+
+			} else {
+				pos = ResponsiveSmoothAOTE.getInterpolatedPlayerPos(partialTicks);
+			}
+			if (pos != null)
+			{
+				state.x = pos.x;
+				state.y = pos.y;
+				state.z = pos.z;
+			}
 		}
 	}
 

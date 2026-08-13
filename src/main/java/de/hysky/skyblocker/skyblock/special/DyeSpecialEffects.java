@@ -1,21 +1,25 @@
 package de.hysky.skyblocker.skyblock.special;
 
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.logging.LogUtils;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Utils;
 
 public class DyeSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -39,8 +43,7 @@ public class DyeSpecialEffects {
 					ItemStack stack = findDyeStack(matcher.group("dye"));
 
 					if (!stack.isEmpty()) {
-						CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER, 30);
-						CLIENT.gameRenderer.displayItemActivation(stack);
+						SpecialEffects.displaySpecialEffect(stack, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER);
 					}
 				}
 			} catch (Exception e) {
@@ -52,10 +55,10 @@ public class DyeSpecialEffects {
 	}
 
 	private static ItemStack findDyeStack(String dyeName) {
-		Optional<ItemStack> dye = ItemRepository.getItemsStream()
-				.filter(stack -> stack.getHoverName().getString().equals(dyeName))
+		Optional<FlexibleItemStack> dye = ItemRepository.getItemsStream()
+				.filter(stack -> stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString().equals(dyeName))
 				.findFirst();
 
-		return dye.orElse(ItemStack.EMPTY);
+		return dye.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY);
 	}
 }

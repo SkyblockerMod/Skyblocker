@@ -95,9 +95,9 @@ public class OkLabColor {
 		float B = Math.fma(progress, (lab2.b - lab1.b), lab1.b);
 
 		RGB rgb = okLab2LinearSRGB(L, A, B);
-		int r = Math.clamp((int) (delinearize(rgb.r) * 255f), 0, 255);
-		int g = Math.clamp((int) (delinearize(rgb.g) * 255f), 0, 255);
-		int b = Math.clamp((int) (delinearize(rgb.b) * 255f), 0, 255);
+		int r = Math.round(Math.clamp(delinearize(rgb.r) * 255f, 0, 255));
+		int g = Math.round(Math.clamp(delinearize(rgb.g) * 255f, 0, 255));
+		int b = Math.round(Math.clamp(delinearize(rgb.b) * 255f, 0, 255));
 
 		return (r << 16) | (g << 8) | b;
 	}

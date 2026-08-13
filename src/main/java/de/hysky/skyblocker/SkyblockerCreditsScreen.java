@@ -5,27 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -40,6 +36,10 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockerCreditsScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -61,7 +61,7 @@ public class SkyblockerCreditsScreen extends Screen {
 	private final IntSet speedupModifiers = new IntOpenHashSet();
 	private float scrollSpeed;
 	private int direction;
-	private @Nullable Screen parent;
+	private final @Nullable Screen parent;
 
 	protected SkyblockerCreditsScreen(@Nullable Screen parent) {
 		super(TITLE);
@@ -72,11 +72,9 @@ public class SkyblockerCreditsScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-					.then(ClientCommandManager.literal("credits")
-							.executes(Scheduler.queueOpenScreenCommand(() -> new SkyblockerCreditsScreen(null)))));
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.then(ClientCommands.literal("credits")
+						.executes(Scheduler.queueOpenScreenCommand(() -> new SkyblockerCreditsScreen(null))))));
 	}
 
 	private float calculateScrollSpeed() {
@@ -100,9 +98,9 @@ public class SkyblockerCreditsScreen extends Screen {
 	public boolean keyPressed(KeyEvent keyEvent) {
 		if (keyEvent.isUp()) {
 			this.direction = -1;
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_LEFT_CONTROL || keyEvent.key() == GLFW.GLFW_KEY_RIGHT_CONTROL) {
+		} else if (keyEvent.key() == InputConstants.KEY_LCONTROL || keyEvent.key() == InputConstants.KEY_RCONTROL) {
 			this.speedupModifiers.add(keyEvent.key());
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_SPACE) {
+		} else if (keyEvent.key() == InputConstants.KEY_SPACE) {
 			this.speedupActive = true;
 		}
 
@@ -116,9 +114,9 @@ public class SkyblockerCreditsScreen extends Screen {
 			this.direction = 1;
 		}
 
-		if (keyEvent.key() == GLFW.GLFW_KEY_SPACE) {
+		if (keyEvent.key() == InputConstants.KEY_SPACE) {
 			this.speedupActive = false;
-		} else if (keyEvent.key() == GLFW.GLFW_KEY_LEFT_CONTROL || keyEvent.key() == GLFW.GLFW_KEY_RIGHT_CONTROL) {
+		} else if (keyEvent.key() == InputConstants.KEY_LCONTROL || keyEvent.key() == InputConstants.KEY_RCONTROL) {
 			this.speedupModifiers.remove(keyEvent.key());
 		}
 
@@ -251,9 +249,9 @@ public class SkyblockerCreditsScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
-		this.renderVignette(graphics);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
+		this.extractVignette(graphics);
 
 		this.scroll = Math.max(0f, this.scroll + a * this.scrollSpeed);
 		int logoX = this.width / 2 - 128;
@@ -264,12 +262,12 @@ public class SkyblockerCreditsScreen extends Screen {
 		graphics.pose().translate(0f, yOffs);
 		graphics.nextStratum();
 
-		this.renderLogo(graphics, this.width, logoY);
+		this.extractLogo(graphics, this.width, logoY);
 		int yPos = logoY + 100;
 
 		for (int i = 0; i < this.lines.size(); i++) {
 			if (i == this.lines.size() - 1) {
-				float diff = yPos + yOffs - (this.height / 2 - 6);
+				float diff = yPos + yOffs - ((float) this.height / 2 - 6);
 
 				if (diff < 0f) {
 					graphics.pose().translate(0f, -diff);
@@ -280,9 +278,9 @@ public class SkyblockerCreditsScreen extends Screen {
 				FormattedCharSequence line = this.lines.get(i);
 
 				if (this.centredLines.contains(i)) {
-					graphics.drawCenteredString(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
+					graphics.centeredText(this.font, line, logoX + 128, yPos, CommonColors.WHITE);
 				} else {
-					graphics.drawString(this.font, line, logoX, yPos, CommonColors.WHITE);
+					graphics.text(this.font, line, logoX, yPos, CommonColors.WHITE);
 				}
 			}
 
@@ -292,24 +290,24 @@ public class SkyblockerCreditsScreen extends Screen {
 		graphics.pose().popMatrix();
 	}
 
-	private void renderVignette(GuiGraphics graphics) {
+	private void extractVignette(GuiGraphicsExtractor graphics) {
 		graphics.blit(RenderPipelines.VIGNETTE, VIGNETTE, 0, 0, 0f, 0f, this.width, this.height, this.width, this.height);
 	}
 
-	private void renderLogo(GuiGraphics graphics, int width, int heightOffset) {
+	private void extractLogo(GuiGraphicsExtractor graphics, int width, int heightOffset) {
 		int logoX = width / 2 - 128;
 		graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, logoX, heightOffset, 0f, 0f, 256, 64, 256, 64, CommonColors.WHITE);
 	}
 
 	@Override
-	protected void renderMenuBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+	protected void extractMenuBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
 		float v = this.scroll * 0.5f;
-		Screen.renderMenuBackgroundTexture(graphics, Screen.MENU_BACKGROUND, 0, 0, 0f, v, width, height);
+		Screen.extractMenuBackgroundTexture(graphics, Screen.MENU_BACKGROUND, 0, 0, 0f, v, width, height);
 	}
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(this.parent);
+		this.minecraft.gui.setScreen(this.parent);
 	}
 
 	@Override

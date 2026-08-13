@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class MuseumUtils {
 	private static final Set<String> EQUIPMENT_TYPES = Set.of("BELT", "GLOVES", "CLOAK", "GAUNTLET", "NECKLACE", "BRACELET", "HAT", "LOCKET", "VINE", "GRIPPERS");
@@ -60,9 +63,9 @@ public class MuseumUtils {
 				return Component.literal(setName).setStyle(nameStyle);
 			}
 		} else {
-			ItemStack stack = ItemRepository.getItemStack(id);
+			FlexibleItemStack stack = ItemRepository.getItemStack(id);
 			if (stack != null) {
-				return stack.getHoverName();
+				return stack.getStackOrThrow().getHoverName();
 			}
 		}
 		return Component.literal(id);

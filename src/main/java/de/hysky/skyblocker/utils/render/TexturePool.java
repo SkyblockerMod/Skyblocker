@@ -3,35 +3,34 @@ package de.hysky.skyblocker.utils.render;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
-
+import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.textures.TextureFormat;
+import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 
 /**
  * Creates a pool of {@code GpuTexture}s and {@code GpuTextureView}s, useful if you are blitting textures or copying them.
  * Textures are automatically closed if they aren't used for a frame.
  */
-public record TexturePool(String name, int size, @GpuTexture.Usage int usage, TextureFormat format, @Nullable GpuTexture[] textures, @Nullable GpuTextureView[] textureViews, boolean[] usedSlots) implements AutoCloseable {
+public record TexturePool(String name, int size, @GpuTexture.Usage int usage, GpuFormat format, @Nullable GpuTexture[] textures, @Nullable GpuTextureView[] textureViews, boolean[] usedSlots) implements AutoCloseable {
 
 	public TexturePool {
-		WorldRenderEvents.START_MAIN.register(this::clearUnusedTextures);
+		LevelRenderEvents.START_MAIN.register(this::clearUnusedTextures);
 	}
 
 	/**
 	 * Creates a new texture pool, the size is recommended to be double the amount of slots that you
 	 * expect you will need in a single frame case the texture sizes do not match.
 	 */
-	public static TexturePool create(String name, int size, @GpuTexture.Usage int usage, TextureFormat format) {
+	public static TexturePool create(String name, int size, @GpuTexture.Usage int usage, GpuFormat format) {
 		return new TexturePool(name, size, usage, format, new GpuTexture[size], new GpuTextureView[size], new boolean[size]);
 	}
 
-	private void clearUnusedTextures(WorldTerrainRenderContext context) {
+	private void clearUnusedTextures(LevelTerrainRenderContext context) {
 		// Close textures if they were unused for a frame
 		for (int i = 0; i < this.size(); i++) {
 			if (!this.usedSlots()[i]) {

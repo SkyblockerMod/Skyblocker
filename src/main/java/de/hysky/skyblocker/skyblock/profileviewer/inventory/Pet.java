@@ -1,15 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.constants.PetNumbers;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.Rarity;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -18,14 +8,27 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.NEURepoManager;
 
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
@@ -43,7 +46,7 @@ public class Pet {
 	private final double perecentageToLevel;
 	private final long levelXP;
 	private final long nextLevelXP;
-	private final ItemStack icon;
+	private final FlexibleItemStack icon;
 
 	public Pet(PetInfo petData) {
 		LevelFinder.LevelInfo info = LevelFinder.getLevelInfo(petData.type().equals("GOLDEN_DRAGON") ? "PET_GREG" : "PET_" + petData.tier(), (long) petData.exp());
@@ -78,7 +81,7 @@ public class Pet {
 
 	private Optional<ResolvableProfile> calculateSkinTexture() {
 		if (this.skin.isPresent()) {
-			ItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
+			FlexibleItemStack item = ItemRepository.getItemStack("PET_SKIN_" + this.skin.get());
 
 			if (item == null || item.isEmpty()) return Optional.empty();
 
@@ -90,10 +93,10 @@ public class Pet {
 	}
 
 	public int getLevel() { return level; }
-	public ItemStack getIcon() { return icon; }
+	public FlexibleItemStack getIcon() { return icon; }
 
 
-	private ItemStack createIcon() {
+	private FlexibleItemStack createIcon() {
 		if (NEURepoManager.isLoading() || !ItemRepository.filesImported()) return Ico.BARRIER;
 
 		String targetItemId = this.getName() + ";" + (this.getTier() + (heldItem.isPresent() && heldItem.get().equals("PET_ITEM_TIER_BOOST") ? 1 : 0));
@@ -117,10 +120,10 @@ public class Pet {
 	 * @param heldItem The ItemStack of the pet's held item, if any.
 	 * @return The ItemStack representing the pet with all its properties set.
 	 */
-	private ItemStack fromNEUItem(NEUItem item, ItemStack heldItem) {
+	private FlexibleItemStack fromNEUItem(NEUItem item, FlexibleItemStack heldItem) {
 		if (item == null) return getErrorStack();
 
-		ItemStack petStack = ItemRepository.getItemStack(item.getSkyblockItemId());
+		FlexibleItemStack petStack = ItemRepository.getItemStack(item.getSkyblockItemId());
 
 		if (petStack == null || petStack.isEmpty()) return getErrorStack();
 
@@ -150,12 +153,12 @@ public class Pet {
 			petStack.set(DataComponents.PROFILE, skinTexture.get());
 		}
 
-		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD, getRarity().next().formatting));
+		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD).withColor(getRarity().next().color));
 
 		// Update the lore and name
 		petStack.set(DataComponents.LORE, new ItemLore(formattedLore));
 		String displayName = ChatFormatting.stripFormatting(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withStyle((boosted() ? getRarity().next() : getRarity()).formatting));
+		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withColor((boosted() ? getRarity().next() : getRarity()).color));
 		return petStack;
 	}
 
@@ -166,7 +169,7 @@ public class Pet {
 	 * @param heldItem the pet's held item, if any
 	 * @return Formatted lore with injected stats inserted into the tooltip
 	 */
-	private List<Component> processLore(List<String> lore, ItemStack heldItem) {
+	private List<Component> processLore(List<String> lore, FlexibleItemStack heldItem) {
 		Map<String, Map<Rarity, PetNumbers>> petNums = NEURepoManager.getConstants().getPetNumbers();
 		Rarity rarity = Rarity.values()[getTier()];
 		PetNumbers data = petNums.get(getName()).get(rarity);
@@ -199,7 +202,7 @@ public class Pet {
 
 
 		if (heldItem != null) {
-			formattedLore.set(formattedLore.size() - 2, Component.nullToEmpty("§r§6Held Item: " + heldItem.getHoverName().getString()));
+			formattedLore.set(formattedLore.size() - 2, Component.nullToEmpty("§r§6Held Item: " + heldItem.get(DataComponents.CUSTOM_NAME).getString()));
 			formattedLore.add(formattedLore.size() - 1, Component.empty());
 		}
 
@@ -237,8 +240,8 @@ public class Pet {
 		return this.heldItem.isPresent() && this.heldItem.get().equals("PET_ITEM_TIER_BOOST");
 	}
 
-	private ItemStack getErrorStack() {
-		ItemStack errIcon = new ItemStack(Items.BARRIER);
+	private FlexibleItemStack getErrorStack() {
+		FlexibleItemStack errIcon = new FlexibleItemStack(Items.BARRIER);
 		errIcon.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(this.getName()));
 		return errIcon;
 	}

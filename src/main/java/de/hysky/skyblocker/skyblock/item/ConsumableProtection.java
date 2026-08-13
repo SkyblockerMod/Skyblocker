@@ -2,9 +2,6 @@ package de.hysky.skyblocker.skyblock.item;
 
 import java.util.Set;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +10,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+
 public class ConsumableProtection {
 	private static final Set<String> PROTECTED_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK");
 
@@ -20,7 +21,7 @@ public class ConsumableProtection {
 	public static void init() {
 		UseItemCallback.EVENT.register(ConsumableProtection::onInteract);
 		//Prevents placing the items when they are player heads (counts for consuming them)
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onInteract(player, world, hand));
+		UseBlockCallback.EVENT.register((player, world, hand, _) -> onInteract(player, world, hand));
 	}
 
 	private static InteractionResult onInteract(Player player, Level world, InteractionHand hand) {

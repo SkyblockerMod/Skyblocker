@@ -25,38 +25,46 @@
     "modmenu": [
       "de.hysky.skyblocker.compatibility.modmenu.ModMenuEntry"
     ],
-    "rei_client": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
-    ],
-    "rei_common": [
-      "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
-    ],
-    "emi": [
-      "de.hysky.skyblocker.compatibility.emi.SkyblockerEMIPlugin"
-    ],
+	"rei_client": [
+	  "de.hysky.skyblocker.compatibility.rei.SkyblockerREIClientPlugin"
+	],
+	"rei_common": [
+	   "de.hysky.skyblocker.compatibility.rei.SkyblockerREICommonPlugin"
+	],
     "jei_mod_plugin": [
       "de.hysky.skyblocker.compatibility.jei.SkyblockerJEIPlugin"
-    ]
+    ],
+		"skyblock-item-list": [
+			"de.hysky.skyblocker.compatibility.ItemListCompatibility"
+		],
+		"catharsis:imc/hidden_gui_elements": [
+			"de.hysky.skyblocker.compatibility.CatharsisCompatibility::hiddenGuiElements"
+		]
   },
   "mixins": [
     "skyblocker.mixins.json"
   ],
   "accessWidener": "skyblocker.classtweaker",
   "depends": {
-    "fabricloader": ">=0.18.4",
-    "fabric-api": ">=0.140.0+1.21.11",
-	"dandelion": ">=1.0.0-alpha.14+1.21.11",
-    "yet_another_config_lib_v3": ">=3.8.1+1.21.11",
+    "fabricloader": ">=0.19.3",
+    "fabric-api": ">=0.152.1+26.2",
+	"dandelion": ">=1.0.0-alpha.22+26.2",
+	"yet_another_config_lib_v3": ">=3.9.4+26.2",
 	"fabric-language-kotlin": "*",
-    "hm-api": ">=1.0.1+1.21.2",
-    "minecraft": "~1.21.11",
-    "java": ">=21"
+    "hm-api": ">=1.0.4+26.2",
+    "minecraft": "~26.2",
+    "java": ">=25"
   },
   "conflicts": {
   },
   "breaks": {
     "forcecloseworldloadingscreen": "<=2.2.0",
-    "skyblockmod": "<=1.10.7"
+    "skyblockmod": "<=1.10.7",
+		"jei": [
+			"<29.14.0.43",
+			"<30.8.0.51 ^30"
+		],
+	"sodium": "<=0.8.7"
   },
   "custom": {
     "modmenu": {

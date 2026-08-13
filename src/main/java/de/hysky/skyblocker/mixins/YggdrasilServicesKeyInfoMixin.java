@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.Base64;
+import java.util.Map;
+
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import de.hysky.skyblocker.utils.Utils;
+import it.unimi.dsi.fastutil.ints.IntLists;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,8 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.Base64;
-import java.util.Map;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(YggdrasilServicesKeyInfo.class)
 public class YggdrasilServicesKeyInfoMixin {
@@ -26,7 +27,7 @@ public class YggdrasilServicesKeyInfoMixin {
 	@Unique
 	private static final Map<String, String> REPLACEMENT_MAP = Map.of();
 	@Unique
-	private static final IntList ERRONEUS_SIGNATURE_HASHES = new IntArrayList();
+	private static final IntList ERRONEUS_SIGNATURE_HASHES = IntLists.synchronize(new IntArrayList());
 
 	@WrapOperation(method = "validateProperty", at = @At(value = "INVOKE", target = "Ljava/util/Base64$Decoder;decode(Ljava/lang/String;)[B"))
 	private byte[] skyblocker$replaceKnownWrongBase64(Base64.Decoder decoder, String signature, Operation<byte[]> decode) {
@@ -35,7 +36,7 @@ public class YggdrasilServicesKeyInfoMixin {
 		} catch (IllegalArgumentException e) {
 			try {
 				return decode.call(decoder, signature.replaceAll("[^A-Za-z0-9+/=]", ""));
-			} catch (IllegalArgumentException e2) {
+			} catch (IllegalArgumentException _) {
 				if (Utils.isOnSkyblock()) {
 					if (REPLACEMENT_MAP.containsKey(signature)) {
 						return decode.call(decoder, REPLACEMENT_MAP.get(signature));

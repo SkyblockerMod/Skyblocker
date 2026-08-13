@@ -1,15 +1,19 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.ItemInstance;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.injected.SkyblockerStack;
 
 public record ItemAbility(String name, Activation activation, OptionalInt manaCost, OptionalInt soulflowCost, OptionalInt cooldown) {
 	private static final Pattern ABILITY_NAME_PATTERN = Pattern.compile("(?:⦾ )?Ability: (.+)" + " {2}(" + String.join("|", Arrays.stream(Activation.values()).map(Activation::toString).toArray(String[]::new)) + ")");
@@ -21,7 +25,7 @@ public record ItemAbility(String name, Activation activation, OptionalInt manaCo
 	 * Use {@link ItemStack#skyblocker$getAbilities()}
 	 */
 	@Deprecated
-	public static List<ItemAbility> getAbilities(ItemStack stack) {
+	public static <T extends ItemInstance & SkyblockerStack> List<ItemAbility> getAbilities(T stack) {
 		List<String> strings = stack.skyblocker$getLoreStrings();
 		List<ItemAbility> abilities = new ArrayList<>(2); // items rarely have more than 2
 		String name = null;

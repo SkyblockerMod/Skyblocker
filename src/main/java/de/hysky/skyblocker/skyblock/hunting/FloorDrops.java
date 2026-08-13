@@ -1,0 +1,173 @@
+package de.hysky.skyblocker.skyblock.hunting;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
+
+public class FloorDrops {
+	private static final Minecraft client = Minecraft.getInstance();
+	private static final Map<BlockPos, ForestNode> forestNodes = new HashMap<>();
+
+	@Init
+	public static void init() {
+		Scheduler.INSTANCE.scheduleCyclic(FloorDrops::update, 20);
+		LevelRenderExtractionCallback.EVENT.register(FloorDrops::extractRendering);
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
+			if (!shouldProcess()) {
+				return InteractionResult.PASS;
+			}
+			forestNodes.remove(pos);
+			return InteractionResult.PASS;
+		});
+		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> {
+			if (!shouldProcess()) {
+				return InteractionResult.PASS;
+			}
+			BlockPos pos = hitResult.getBlockPos();
+			forestNodes.remove(pos);
+			return InteractionResult.PASS;
+		});
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		ParticleEvents.FROM_SERVER.register(FloorDrops::onParticle);
+	}
+
+	private static void onParticle(ClientboundLevelParticlesPacket packet) {
+		if (!shouldProcess()) {
+			return;
+		}
+
+		ParticleType<?> particleType = packet.getParticle().getType();
+		if (!ParticleTypes.HAPPY_VILLAGER.getType().equals(particleType)) {
+			return;
+		}
+
+		double x = packet.getX();
+		double y = packet.getY() - 1;
+		double z = packet.getZ();
+		BlockPos pos = BlockPos.containing(x, y, z);
+
+		// Check for three ItemDisplayEntity with minecraft:string in the same block
+		if (client.level != null) {
+			int stringItemCount = countStringItemDisplays(pos);
+			if (stringItemCount == 3) {
+				forestNodes.computeIfAbsent(pos, ForestNode::new);
+			}
+		}
+	}
+
+	private static int countStringItemDisplays(BlockPos pos) {
+		ClientLevel world = client.level;
+		if (world == null) {
+			return 0;
+		}
+
+		// Get all ItemDisplayEntity within the same block
+		List<Display.ItemDisplay> entities = world.getEntitiesOfClass(
+				Display.ItemDisplay.class,
+				AABB.ofSize(Vec3.atCenterOf(pos), 1.0, 1.0, 1.0),
+				_ -> true
+		);
+
+		// Count those with minecraft:string
+		return (int) entities.stream()
+				.filter(entity -> {
+					var state = entity.itemRenderState();
+					if (state == null) return false;
+					ItemStack stack = state.itemStack();
+					return !stack.isEmpty() && stack.getItem().equals(Items.STRING);
+				})
+				.count();
+	}
+
+	private static void update() {
+		if (!shouldProcess()) {
+			return;
+		}
+		Iterator<Map.Entry<BlockPos, ForestNode>> iterator = forestNodes.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<BlockPos, ForestNode> entry = iterator.next();
+			ForestNode forestNode = entry.getValue();
+			forestNode.updateWaypoint();
+			if (!forestNode.shouldRender()) {
+				iterator.remove();
+			}
+		}
+	}
+
+	private static void extractRendering(PrimitiveCollector collector) {
+		if (!shouldProcess()) {
+			return;
+		}
+		for (ForestNode forestNode : forestNodes.values()) {
+			if (forestNode.shouldRender()) {
+				forestNode.extractRendering(collector);
+			}
+		}
+	}
+
+	private static boolean shouldProcess() {
+		return SkyblockerConfigManager.get().hunting.floorDrops.highlightFloorDrops && (Utils.isInGalatea() || Utils.isInTorrhusCanyon() || Utils.isInSafari());
+	}
+
+	private static void reset() {
+		forestNodes.clear();
+	}
+
+	public static class ForestNode extends Waypoint {
+		private long lastConfirmed;
+
+		private ForestNode(BlockPos pos) {
+			super(pos,
+					() -> Type.HIGHLIGHT,
+					ColorUtils.getFloatComponents(SkyblockerConfigManager.get().hunting.floorDrops.floorDropHighlightColor.getRGB()),
+					DEFAULT_HIGHLIGHT_ALPHA,
+					DEFAULT_LINE_WIDTH,
+					false
+			);
+			this.lastConfirmed = System.currentTimeMillis();
+		}
+
+		private void updateWaypoint() {
+			long currentTimeMillis = System.currentTimeMillis();
+			if (lastConfirmed + 2000 > currentTimeMillis || client.level == null) {
+				return;
+			}
+			int stringItemCount = countStringItemDisplays(pos);
+			if (stringItemCount == 3) {
+				lastConfirmed = System.currentTimeMillis();
+			}
+		}
+
+		@Override
+		public boolean shouldRender() {
+			return super.shouldRender() && lastConfirmed + 5000 > System.currentTimeMillis();
+		}
+	}
+}

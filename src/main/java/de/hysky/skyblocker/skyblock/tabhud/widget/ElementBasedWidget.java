@@ -1,25 +1,28 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.ItemStack;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 
 /**
  * Abstract base class for a element based Widget.
@@ -60,7 +63,7 @@ public abstract class ElementBasedWidget extends HudWidget {
 	public ElementBasedWidget(Component title, @Nullable Integer colorValue, String internalID) {
 		super(internalID);
 		this.title = title;
-		this.color = 0xFF000000 | (colorValue == null ? 0 : colorValue);
+		this.color = 0xFF000000 | (colorValue == null ? 0 : SkyBlockColors.fromVanilla(colorValue));
 	}
 
 	public void addComponent(Element c) {
@@ -95,28 +98,28 @@ public abstract class ElementBasedWidget extends HudWidget {
 	 * added as such:
 	 * [ico] [string] [textB.formatted(fmt)]
 	 */
-	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, int idx) {
+	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, int idx) {
 		Component txt = simpleEntryText(idx, string, fmt);
 		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIcoText(@Nullable ItemStack ico, String string, ChatFormatting fmt, String content) {
+	public final void addSimpleIcoText(@Nullable FlexibleItemStack ico, String string, ChatFormatting fmt, String content) {
 		Component txt = simpleEntryText(content, string, fmt);
 		this.addComponent(Elements.iconTextComponent(ico, txt));
 	}
 
-	public final void addSimpleIconTranslatableText(@Nullable ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
+	public final void addSimpleIconTranslatableText(@Nullable FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, String content) {
 		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Elements.iconTextComponent(icon, text));
 	}
 
-	public final void addSimpleIconTranslatableText(ItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
+	public final void addSimpleIconTranslatableText(FlexibleItemStack icon, @Translatable String translationKey, ChatFormatting formatting, Component content) {
 		Component text = simpleEntryTranslatableText(translationKey, content, formatting);
 		this.addComponent(Elements.iconTextComponent(icon, text));
 	}
 
 	@Override
-	public final void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public final void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
 			Options options = Minecraft.getInstance().options;
 			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
@@ -128,22 +131,22 @@ public abstract class ElementBasedWidget extends HudWidget {
 		int strHeightHalf = txtRend.lineHeight / 2;
 		int strAreaWidth = txtRend.width(title) + 4;
 
-		context.drawString(txtRend, title, x + 8, y + 2, this.color, false);
+		context.text(txtRend, title, x + 8, y + 2, this.color, false);
 
 		// Only draw borders if not in minimal mode
 		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.drawHLine(context, x + 2, y + 1 + strHeightHalf, 4);
-			this.drawHLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
-			this.drawHLine(context, x + 2, y + h - 2, w - 4);
+			this.extractHorizontalLine(context, x + 2, y + 1 + strHeightHalf, 4);
+			this.extractHorizontalLine(context, x + 2 + strAreaWidth + 4, y + 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			this.extractHorizontalLine(context, x + 2, y + h - 2, w - 4);
 
-			this.drawVLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.drawVLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, x + 1, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
+			this.extractVerticalLine(context, x + w - 2, y + 2 + strHeightHalf, h - 4 - strHeightHalf);
 		}
 
 		int yOffs = y + BORDER_SZE_N;
 
 		for (Element c : elements) {
-			c.render(context, x + BORDER_SZE_W, yOffs);
+			c.extractRenderState(context, x + BORDER_SZE_W, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
 	}
@@ -173,12 +176,12 @@ public abstract class ElementBasedWidget extends HudWidget {
 		prevH = h;
 	}
 
-	private void drawHLine(GuiGraphics context, int xpos, int ypos, int width) {
-		context.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
+	private void extractHorizontalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {
+		graphics.fill(xpos, ypos, xpos + width, ypos + 1, this.color);
 	}
 
-	private void drawVLine(GuiGraphics context, int xpos, int ypos, int height) {
-		context.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
+	private void extractVerticalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int height) {
+		graphics.fill(xpos, ypos, xpos + 1, ypos + height, this.color);
 	}
 
 	/**

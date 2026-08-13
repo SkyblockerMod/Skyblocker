@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.azureaaron.networth.item.ItemMetadataRetriever;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -34,7 +35,7 @@ record SkyblockItemMetadataRetriever(IntList cakeBagCakeYears) implements ItemMe
 				}
 
 				return cakeYears;
-			} catch (Exception ignored) {}
+			} catch (Exception _) {}
 		}
 
 		return IntList.of();

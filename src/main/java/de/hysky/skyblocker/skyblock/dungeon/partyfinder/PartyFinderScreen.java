@@ -1,15 +1,26 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.utils.ItemUtils;
+import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -25,28 +36,26 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
-	protected static final Identifier BACKGROUND_TEXTURE = Identifier.withDefaultNamespace("social_interactions/background");
+	protected static final FallbackedTexture<Identifier> BACKGROUND_TEXTURE = FallbackedTexture.ofGuiSprite(
+			SkyblockerMod.id("party_finder/background"),
+			Identifier.withDefaultNamespace("social_interactions/background"));
 	protected static final Identifier SEARCH_ICON_TEXTURE = Identifier.withDefaultNamespace("icon/search");
 	protected static final Component SEARCH_TEXT = Component.translatable("gui.socialInteractions.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY);
 	public static boolean isInKuudraPartyFinder = false;
@@ -128,7 +137,13 @@ public class PartyFinderScreen extends Screen {
 				} catch (Exception e) {
 					LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+		});
+		ClientSendMessageEvents.COMMAND.register(command -> {
+			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;
+			command = command.toLowerCase(Locale.ENGLISH);
+			if (!command.startsWith("join")) return;
+			isInKuudraPartyFinder = command.startsWith("joinkuudra") || command.startsWith("joininstance kuudra_");
 		});
 	}
 
@@ -154,7 +169,7 @@ public class PartyFinderScreen extends Screen {
 		searchField.setHint(SEARCH_TEXT);
 		searchField.setResponder(s -> partyEntryListWidget.setSearch(s));
 		// Refresh button
-		refreshButton = Button.builder(Component.literal("⟳").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)), (a) -> {
+		refreshButton = Button.builder(Component.literal("⟳").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)), _ -> {
 					if (refreshSlotId != -1) {
 						clickAndWaitForServer(refreshSlotId);
 						resetScroll = true;
@@ -165,7 +180,7 @@ public class PartyFinderScreen extends Screen {
 		refreshButton.active = false;
 
 		// Prev and next page buttons
-		previousPageButton = Button.builder(Component.literal("←"), (a) -> {
+		previousPageButton = Button.builder(Component.literal("←"), _ -> {
 					if (prevPageSlotId != -1) {
 						clickAndWaitForServer(prevPageSlotId);
 						resetScroll = true;
@@ -174,7 +189,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(searchField.getX() + searchField.getWidth(), searchField.getY())
 				.size(12, 12).build();
 		previousPageButton.active = false;
-		nextPageButton = Button.builder(Component.literal("→"), (a) -> {
+		nextPageButton = Button.builder(Component.literal("→"), _ -> {
 					if (nextPageSlotId != -1) {
 						clickAndWaitForServer(nextPageSlotId);
 						resetScroll = true;
@@ -194,7 +209,7 @@ public class PartyFinderScreen extends Screen {
 		int searchButtonWidth = (partyEntryListWidget.getRowWidth() + 6) / 3 - 2 * searchButtonMargin;
 
 
-		partyFinderButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.partyFinder"), (a) -> {
+		partyFinderButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.partyFinder"), _ -> {
 					if (partyButtonSlotId != -1) {
 						setCurrentPage(Page.FINDER);
 						clickAndWaitForServer(partyButtonSlotId);
@@ -203,7 +218,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(partyEntryListWidget.getRowLeft(), entryListTopY - 39)
 				.size(searchButtonWidth + searchButtonMargin, topRowButtonsHeight).build();
 
-		settingsButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.searchSettings"), (a) -> {
+		settingsButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.searchSettings"), _ -> {
 					if (settingsButtonSlotId != -1) {
 						setCurrentPage(Page.SETTINGS);
 						clickAndWaitForServer(settingsButtonSlotId);
@@ -212,7 +227,7 @@ public class PartyFinderScreen extends Screen {
 				.pos(partyEntryListWidget.getRowLeft() + searchButtonWidth + 3 * searchButtonMargin, entryListTopY - 39)
 				.size(searchButtonWidth, topRowButtonsHeight).build();
 
-		createPartyButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.createParty"), (a) -> {
+		createPartyButton = Button.builder(Component.translatable("skyblocker.partyFinder.tabs.createParty"), _ -> {
 					if (createPartyButtonSlotId != -1) {
 						clickAndWaitForServer(createPartyButtonSlotId);
 					}
@@ -232,7 +247,7 @@ public class PartyFinderScreen extends Screen {
 		addRenderableWidget(createPartyButton);
 		addRenderableWidget(settingsContainer);
 		if (Debug.debugEnabled()) {
-			addRenderableWidget(Button.builder(Component.nullToEmpty("DEBUG"), (a) -> DEBUG = !DEBUG).bounds(width - 40, 0, 40, 20).build());
+			addRenderableWidget(Button.builder(Component.nullToEmpty("DEBUG"), _ -> DEBUG = !DEBUG).bounds(width - 40, 0, 40, 20).build());
 		}
 
 		dirtiedTime = System.currentTimeMillis();
@@ -250,46 +265,45 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (!settingsContainer.canInteract(null)) {
-			context.fill(0, 0, width, height, 0x40000000);
+			graphics.fill(0, 0, width, height, 0x40000000);
 		}
-		super.render(context, mouseX, mouseY, delta);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 
 		if (searchField.visible) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SEARCH_ICON_TEXTURE, partyEntryListWidget.getRowLeft() + 1, searchField.getY() + 1, 10, 10);
 		}
 		if (DEBUG) {
-			context.drawString(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
-			context.drawString(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
+			graphics.text(font, currentPage.toString(), 0, 0, CommonColors.WHITE, true);
+			graphics.text(font, "Truly a party finder", 20, 20, CommonColors.WHITE, true);
 			if (sign != null) {
-				context.drawString(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
+				graphics.text(font, "You are in a sign btw", 20, 30, CommonColors.WHITE, true);
 			} else {
-				context.drawString(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
-				context.drawString(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(refreshSlotId), width - 25, 30, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(prevPageSlotId), width - 25, 40, CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(nextPageSlotId), width - 25, 50, CommonColors.WHITE, true);
 				for (int i = 0; i < handler.slots.size(); i++) {
-					context.renderItem(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
+					graphics.item(handler.slots.get(i).getItem(), (i % 9) * 16, (i / 9) * 16);
 				}
-				context.drawString(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
+				graphics.text(font, String.valueOf(settingsButtonSlotId), settingsButton.getX() + settingsButton.getWidth() / 2, Math.max(0, settingsButton.getY() - 8), CommonColors.WHITE, true);
 			}
 		}
 		if (isWaitingForServer()) {
 			String s = "Waiting for server...";
-			context.drawString(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
+			graphics.text(font, s, this.width - font.width(s) - 5, this.height - font.lineHeight - 2, CommonColors.WHITE, true);
 		}
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		this.renderTransparentBackground(context);
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		this.extractTransparentBackground(graphics);
 		int i = partyEntryListWidget.getRowWidth() + 16 + 6;
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE.get(), partyEntryListWidget.getRowLeft() - 8, partyEntryListWidget.getY() - 12 - 8, i, partyEntryListWidget.getBottom() - partyEntryListWidget.getY() + 16 + 12);
 	}
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
 		assert this.minecraft.player != null;
 		if (currentPage != Page.SIGN)
 			this.minecraft.player.closeContainer();
@@ -374,6 +388,7 @@ public class PartyFinderScreen extends Screen {
 		waitingForServer = false;
 		String titleText = name.getString();
 		if (titleText.contains("Party Finder")) {
+			checkIfKuudra();
 			updatePartyFinderPage();
 		} else {
 			if (currentPage != Page.SETTINGS) setCurrentPage(Page.SETTINGS);
@@ -381,6 +396,15 @@ public class PartyFinderScreen extends Screen {
 				abort();
 			}
 		}
+	}
+
+	private void checkIfKuudra() {
+		if (handler.slots.size() < 54) return;
+		ItemStack stack = handler.slots.get(45).getItem();
+		if (stack.isEmpty()) return;
+
+		isInKuudraPartyFinder = stack.skyblocker$getLoreStrings().stream().anyMatch(s -> s.contains("Kuudra"));
+		if (isInKuudraPartyFinder) abort();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -397,7 +421,6 @@ public class PartyFinderScreen extends Screen {
 				if (slot.index > (handler.getRowCount() - 1) * 9 - 1 || !slot.hasItem()) continue;
 				ItemStack stack = slot.getItem();
 				if (stack.is(Items.PLAYER_HEAD)) {
-					assert this.minecraft != null;
 					parties.add(new PartyEntry(stack.getHoverName(), ItemUtils.getLore(stack), this, slot.index));
 				} else if (stack.is(Items.ARROW) && stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains("previous")) {
 					prevPageSlotId = slot.index;
@@ -425,12 +448,10 @@ public class PartyFinderScreen extends Screen {
 			} else if (slot.getItem().is(Items.BOOKSHELF)) {
 				deListSlotId = slot.index;
 			} else if (slot.getItem().is(Items.PLAYER_HEAD)) {
-				assert this.minecraft != null;
 				yourPartyStack = slot.getItem();
 			}
 		}
 
-		assert minecraft != null;
 		String playerName = minecraft.getUser().getName();
 
 		// It's possible for the party to show up in the search results before it does next to the delist button.
@@ -470,18 +491,16 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	public void abort() {
-		assert this.minecraft != null;
 		if (currentPage == Page.SIGN) {
 			assert this.minecraft.player != null;
 			this.minecraft.player.openTextEdit(sign, signFront);
-		} else this.minecraft.setScreen(new ContainerScreen(handler, inventory, title));
-		this.minecraft.getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
+		} else this.minecraft.gui.setScreen(new ContainerScreen(handler, inventory, title));
+		this.minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
 		aborted = true;
 	}
 
 	@Override
 	public void removed() {
-		assert this.minecraft != null;
 		if (this.minecraft.player == null || aborted || currentPage == Page.SIGN) {
 			return;
 		}
@@ -493,7 +512,7 @@ public class PartyFinderScreen extends Screen {
 		super.tick();
 		// Slight delay to make sure all slots are received, because they are most of the time sent one at a time
 		if (dirty && System.currentTimeMillis() - dirtiedTime > 60) update();
-		assert this.minecraft != null && this.minecraft.player != null;
+		assert this.minecraft.player != null;
 		if (!this.minecraft.player.isAlive() || this.minecraft.player.isRemoved() && currentPage != Page.SIGN) {
 			this.minecraft.player.closeContainer();
 		}
@@ -509,9 +528,8 @@ public class PartyFinderScreen extends Screen {
 
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
-		assert minecraft != null;
 		assert minecraft.gameMode != null;
-		minecraft.gameMode.handleInventoryMouseClick(handler.containerId, slotID, 0, ClickType.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 
@@ -520,7 +538,6 @@ public class PartyFinderScreen extends Screen {
 	}
 
 	public Minecraft getClient() {
-		assert this.minecraft != null;
 		return this.minecraft;
 	}
 

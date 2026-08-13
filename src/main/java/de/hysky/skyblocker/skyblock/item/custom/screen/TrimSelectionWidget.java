@@ -1,15 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.RegistryUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -22,6 +20,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.utils.RegistryUtils;
 
 public class TrimSelectionWidget extends AbstractContainerWidget {
 	private static final int PADDING = 3;
@@ -40,7 +43,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 	private Identifier selectedMaterial = null;
 
 	public TrimSelectionWidget(int x, int y, int width, int height) {
-		super(x, y, width, height, Component.nullToEmpty("Trim Selection"));
+		super(x, y, width, height, Component.nullToEmpty("Trim Selection"), AbstractScrollArea.defaultSettings(8));
 
 		// Patterns
 		TrimElementButton.Pattern patternNoneButton = new TrimElementButton.Pattern(null, null, this::onClickPattern);
@@ -189,19 +192,19 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-		context.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+		graphics.enableScissor(getX() + 2, getY() + 2, getX() + getWidth() - 2, getY() + getHeight() - 2);
 
 		int scrollY = (int) this.scrollAmount();
 		for (AbstractWidget widget : this.children) {
 			widget.setY(widget.getY() - scrollY);
-			widget.render(context, mouseX, mouseY, delta);
+			widget.extractRenderState(graphics, mouseX, mouseY, a);
 			widget.setY(widget.getY() + scrollY);
 		}
 
-		renderScrollbar(context, mouseX, mouseY);
-		context.disableScissor();
+		extractScrollbar(graphics, mouseX, mouseY);
+		graphics.disableScissor();
 	}
 
 	@Override

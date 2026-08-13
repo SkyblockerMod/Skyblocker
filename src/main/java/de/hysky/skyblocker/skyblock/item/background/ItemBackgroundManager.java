@@ -1,14 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.background;
 
+import java.util.List;
+
+import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.JacobMedalBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.LegacyAttributeBackground;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.ItemStack;
-import java.util.List;
 
 public class ItemBackgroundManager {
 
@@ -26,7 +30,7 @@ public class ItemBackgroundManager {
 		}
 
 		// Hook into screen changes for per-background logic
-		ScreenEvents.BEFORE_INIT.register((client, screen, width, height) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			String title = screen.getTitle().getString();
 
 			for (ColoredItemBackground<?> background : BACKGROUNDS) {
@@ -43,10 +47,10 @@ public class ItemBackgroundManager {
 	 * @param x       X position of the item
 	 * @param y       Y position of the item
 	 */
-	public static void drawBackgrounds(ItemStack stack, GuiGraphics context, int x, int y) {
+	public static void drawBackgrounds(ItemStack stack, GuiGraphicsExtractor graphics, int x, int y) {
 		for (ColoredItemBackground<?> background : BACKGROUNDS) {
 			if (background.isEnabled()) {
-				background.tryDraw(stack, context, x, y);
+				background.tryExtract(stack, graphics, x, y);
 			}
 		}
 	}

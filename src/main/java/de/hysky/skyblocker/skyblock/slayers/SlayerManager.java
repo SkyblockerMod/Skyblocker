@@ -1,7 +1,40 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.WeakHashMap;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -18,37 +51,6 @@ import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import org.jspecify.annotations.Nullable;
-
-import java.nio.file.Path;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.WeakHashMap;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Holds all information related to slayers.
@@ -85,8 +87,8 @@ public class SlayerManager {
 		SLAYERS_DATA.load();
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SlayerManager::onChatMessage);
 		SkyblockEvents.MAYOR_CHANGE.register(SlayerManager::onMayorChange);
-		SkyblockEvents.PROFILE_CHANGE.register((_prev, _profile) -> slayerQuest = null);
-		ClientPlayConnectionEvents.JOIN.register((_c, _p, _m) -> bossFight = null);
+		SkyblockEvents.PROFILE_CHANGE.register((_, _) -> slayerQuest = null);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> bossFight = null);
 		AttackEntityCallback.EVENT.register(SlayerManager::onEntityAttack);
 		Scheduler.INSTANCE.scheduleCyclic(TwinClawsIndicator::updateIce, SkyblockerConfigManager.get().slayers.vampireSlayer.holyIceUpdateFrequency);
 		Scheduler.INSTANCE.scheduleCyclic(ManiaIndicator::updateMania, SkyblockerConfigManager.get().slayers.vampireSlayer.maniaUpdateFrequency);
@@ -123,6 +125,10 @@ public class SlayerManager {
 					SlayerTimer.sendMessage();
 					CallMaddox.onBossKilled();
 				}
+				return true;
+			}
+			case "YOU COCOONED YOUR SLAYER BOSS" -> {
+				if (slayerQuest != null) SlayerTimer.sendMessage();
 				return true;
 			}
 			case String s when s.startsWith("SLAYER MINI-BOSS") -> {
@@ -202,7 +208,7 @@ public class SlayerManager {
 						!bossName.equals(slayerQuest.slayerType.bossName) ||
 						!bossTier.equals(slayerQuest.slayerTier.name())) {
 					SlayerType slayerType = SlayerType.fromBossName(bossName);
-					assert slayerType != null;
+					if (slayerType == null) return;
 					slayerQuest = new SlayerQuest(slayerType, SlayerTier.valueOf(bossTier));
 				}
 				active = true;
@@ -335,7 +341,7 @@ public class SlayerManager {
 	 * @return a list of nearby custom-named armor stands
 	 */
 	public static List<ArmorStand> getEntityArmorStands(Entity entity, float expandY) {
-		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1F, expandY, 0.1F), x -> x instanceof ArmorStand && x.hasCustomName())
+		return entity.level().getEntities(entity, entity.getBoundingBox().inflate(0.1f, expandY, 0.1f), x -> x instanceof ArmorStand && x.hasCustomName())
 				.stream()
 				.map(e -> (ArmorStand) e)
 				.toList();
@@ -401,7 +407,7 @@ public class SlayerManager {
 	/**
 	 * Checks whether the player is currently fighting a Slayer boss.
 	 *
-	 *  @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
+	 * @return {@code true} if a slayer boss fight is active and the boss is alive; {@code false} otherwise.
 	 */
 	public static boolean isFightingSlayer() {
 		return bossFight != null && bossFight.boss.isAlive();
@@ -517,10 +523,8 @@ public class SlayerManager {
 
 		private void save() {
 			var slayers = SLAYERS_DATA.computeIfAbsent(Object2ObjectOpenHashMap::new);
-			if (slayers != null) {
-				slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
-				SLAYERS_DATA.save();
-			}
+			slayers.put(slayerType, new SlayerInfo(level, xpRemaining));
+			SLAYERS_DATA.save();
 		}
 
 		private void update(int level, int xpRemaining, boolean saveCache) {

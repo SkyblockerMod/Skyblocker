@@ -6,18 +6,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.ChestValue;
-import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -26,6 +18,15 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.ChestValue;
+import de.hysky.skyblocker.skyblock.crimson.CrimsonFaction;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.utils.RegexListUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 
 public class Kuudra {
 	public static final int KUUDRA_MAGMA_CUBE_SIZE = 30;
@@ -38,19 +39,19 @@ public class Kuudra {
 	@Init
 	public static void init() {
 		DATA.load();
-		ScreenEvents.AFTER_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
 				String title = screen.getTitle().getString();
 				Matcher factionShopMatcher = FACTION_SHOP_PATTERN.matcher(title);
 
 				switch (title) {
-					case String s when factionShopMatcher.matches() -> {
-						ScreenEvents.afterTick(screen).register(_screen -> {
+					case String _ when factionShopMatcher.matches() -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							checkKuudraKeyShop(genericContainerScreen, factionShopMatcher);
 						});
 					}
-					case String s when s.startsWith("Pets") -> {
-						ScreenEvents.afterTick(screen).register(_screen -> {
+					case String s when s.endsWith("Pets") -> {
+						ScreenEvents.afterTick(screen).register(_ -> {
 							checkForKuudraPet(genericContainerScreen);
 						});
 					}
@@ -58,7 +59,7 @@ public class Kuudra {
 				}
 			}
 		});
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Kuudra::onMessage);
 	}
 
@@ -85,7 +86,7 @@ public class Kuudra {
 		kuudraKeyPrices.putAll(KuudraProfileData.EMPTY.kuudraKeyPrices());
 
 		for (ItemStack kuudraKey : kuudraKeyItems) {
-			Matcher matcher = ItemUtils.getLoreLineIfMatch(kuudraKey, ChestValue.DUNGEON_CHEST_COIN_COST_PATTERN);
+			Matcher matcher = RegexListUtils.matchInList(kuudraKey.skyblocker$getLoreStrings(), ChatFormatting::stripFormatting, ChestValue.DUNGEON_CHEST_COIN_COST_PATTERN);
 
 			if (matcher != null) {
 				// Same logic as getting coin value from dungeon chests

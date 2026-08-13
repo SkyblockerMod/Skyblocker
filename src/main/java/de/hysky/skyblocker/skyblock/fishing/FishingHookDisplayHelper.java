@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.HelperConfig;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
 
 public class FishingHookDisplayHelper {
 	protected static ArmorStand fishingHookArmorStand;
@@ -24,11 +26,11 @@ public class FishingHookDisplayHelper {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> fishingHookArmorStand = null);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> fishingHookArmorStand = null);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.TITLE_AND_SUBTITLE, FISHING_HOOK_DISPLAY, FishingHookDisplayHelper::render);
 	}
 
-	public static void render(GuiGraphics context, DeltaTracker tickDelta) {
+	public static void render(GuiGraphicsExtractor graphics, DeltaTracker tickDelta) {
 		if (SkyblockerConfigManager.get().helpers.fishing.fishingHookDisplay == HelperConfig.Fishing.FishingHookDisplay.OFF) return;
 
 
@@ -53,10 +55,10 @@ public class FishingHookDisplayHelper {
 			int y = screenHeight / 2; // Position near the top
 
 			// Scale the text by 3x
-			context.pose().pushMatrix();
-			context.pose().scale(3.0F, 3.0F);
-			context.drawCenteredString(client.font, armorStandName, (int) (x / 3.0F), (int) (y / 3.0F), 0xFFFFFF00);
-			context.pose().popMatrix();
+			graphics.pose().pushMatrix();
+			graphics.pose().scale(3.0f, 3.0f);
+			graphics.centeredText(client.font, armorStandName, (int) (x / 3.0f), (int) (y / 3.0f), 0xFFFFFF00);
+			graphics.pose().popMatrix();
 		}
 		//else update the tab
 		else {

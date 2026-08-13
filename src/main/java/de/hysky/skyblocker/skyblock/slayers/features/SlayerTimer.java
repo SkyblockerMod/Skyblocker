@@ -1,10 +1,26 @@
 package de.hysky.skyblocker.skyblock.slayers.features;
 
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.function.Function;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -15,22 +31,8 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
-import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.function.Function;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SlayerTimer {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("slayer_personal_best.json");
@@ -89,11 +91,11 @@ public class SlayerTimer {
 		LocalPlayer player = Minecraft.getInstance().player;
 		assert player != null;
 		if (currentPBMills != -1 && currentPBMills > newPBMills) {
-			player.displayClientMessage(Constants.PREFIX.get().append(
+			player.sendSystemMessage(Constants.PREFIX.get().append(
 					Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))
 							.append(" ")
-							.append(Component.translatable("skyblocker.slayer.personalBest").withStyle(ChatFormatting.LIGHT_PURPLE))), false);
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.previousPersonalBest", Component.literal(currentPB).withStyle(ChatFormatting.YELLOW))), false);
+							.append(Component.translatable("skyblocker.slayer.personalBest").withStyle(ChatFormatting.LIGHT_PURPLE))));
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.previousPersonalBest", Component.literal(currentPB).withStyle(ChatFormatting.YELLOW))));
 
 			TitleContainer.addTitleAndPlaySound(new Title("skyblocker.slayer.personalBest", ChatFormatting.AQUA), 100);
 			TitleContainer.addTitle(new Title(
@@ -103,7 +105,7 @@ public class SlayerTimer {
 
 			updateBestTime(slayerQuest, newPBMills);
 		} else {
-			player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))), false);
+			player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.slayer.slainTime", Component.literal(newPB).withStyle(ChatFormatting.YELLOW))));
 			if (currentPBMills == -1) {
 				updateBestTime(slayerQuest, newPBMills);
 			}
@@ -112,23 +114,17 @@ public class SlayerTimer {
 
 	private static long getPersonalBest(SlayerType slayerType, SlayerTier slayerTier) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerType, _type -> new Object2ObjectOpenHashMap<>());
-			SlayerPersonalBest currentBest = typeData.get(slayerTier);
-			//noinspection ConstantConditions
-			return currentBest != null ? currentBest.bestTimeMillis() : -1;
-		}
-
-		return -1;
+		var typeData = profileData.computeIfAbsent(slayerType, _ -> new Object2ObjectOpenHashMap<>());
+		SlayerPersonalBest currentBest = typeData.get(slayerTier);
+		//noinspection ConstantConditions; fastutil jspecify when
+		return currentBest != null ? currentBest.bestTimeMillis() : -1;
 	}
 
 	private static void updateBestTime(SlayerManager.SlayerQuest slayerQuest, long timeElapsed) {
 		var profileData = CACHED_SLAYER_STATS.computeIfAbsent(Object2ObjectOpenHashMap::new);
-		if (profileData != null) {
-			var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _type -> new Object2ObjectOpenHashMap<>());
-			typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
-			CACHED_SLAYER_STATS.save();
-		}
+		var typeData = profileData.computeIfAbsent(slayerQuest.slayerType, _ -> new Object2ObjectOpenHashMap<>());
+		typeData.put(slayerQuest.slayerTier, new SlayerPersonalBest(timeElapsed, System.currentTimeMillis()));
+		CACHED_SLAYER_STATS.save();
 	}
 
 	private static String formatTime(long millis) {

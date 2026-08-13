@@ -1,0 +1,65 @@
+package de.hysky.skyblocker.utils.render.gui.pip;
+
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.util.LightCoordsUtil;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.render.state.gui.GuiEquipmentRenderState;
+
+public class GuiEquipmentRenderer<S> extends PictureInPictureRenderer<GuiEquipmentRenderState<S>> {
+
+	private GuiEquipmentRenderer(PictureInPictureRendererRegistry.Context context) {}
+
+	@Init
+	public static void init() {
+		PictureInPictureRendererRegistry.register(GuiEquipmentRenderer::new);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<GuiEquipmentRenderState<S>> getRenderStateClass() {
+		return (Class<GuiEquipmentRenderState<S>>) (Object) GuiEquipmentRenderState.class;
+	}
+
+	@Override
+	protected void renderToTexture(GuiEquipmentRenderState<S> state, PoseStack matrices, SubmitNodeCollector submitNodeCollector) {
+		Minecraft client = Minecraft.getInstance();
+
+		matrices.pushPose();
+		matrices.translate(0, state.offset() / state.scale(), 0);
+		matrices.mulPose(Axis.XN.rotationDegrees(-5));
+		matrices.mulPose(Axis.YN.rotationDegrees(state.rotation()));
+
+		client.gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+		state.equipmentRenderer().renderLayers(
+				state.layerType(),
+				state.assetKey(),
+				state.model(),
+				state.state(),
+				state.stack(),
+				matrices,
+				submitNodeCollector,
+				LightCoordsUtil.FULL_BRIGHT,
+				0
+		);
+
+		matrices.popPose();
+	}
+
+	@Override
+	protected float getTranslateY(int height, int guiScale) {
+		return height / 2;
+	}
+
+	@Override
+	protected String getTextureLabel() {
+		return "skyblocker equipment renderer";
+	}
+}

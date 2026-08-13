@@ -5,14 +5,14 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.RenderPipelines;
+
+import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 
 public class IrisCompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -28,8 +28,12 @@ public class IrisCompatibility {
 	 */
 	public static void assignPipelines() {
 		if (IRIS_ENABLED) {
+			assignPipeline(SkyblockerRenderPipelines.FILLED_INSTANCED, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED, "BASIC");
 			assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_INSTANCED, "LINES");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_THROUGH_WALLS_INSTANCED, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.TEXTURE, "TEXTURED");
@@ -53,7 +57,7 @@ public class IrisCompatibility {
 			Objects.requireNonNull(GET_IRIS_PROGRAM, "Iris Program handle must be present to assign a pipeline.");
 
 			REGISTER_PIPELINE.invoke(GET_IRIS_API.invoke(), pipeline, GET_IRIS_PROGRAM.invoke(irisProgramName));
-		} catch (IllegalStateException ignored) {
+		} catch (IllegalStateException _) {
 			//The pipeline was probably already registered
 		} catch (Throwable e) {
 			LOGGER.error("[Skyblocker Iris Compatibility] Failed to assign pipeline {} to {}.", pipeline.getLocation(), irisProgramName, e);
@@ -67,7 +71,7 @@ public class IrisCompatibility {
 			MethodType type = MethodType.methodType(irisApiClass);
 
 			return lookup.findStatic(irisApiClass, "getInstance", type);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}
@@ -80,7 +84,7 @@ public class IrisCompatibility {
 			MethodType type = MethodType.methodType(void.class, RenderPipeline.class, irisProgramClass);
 
 			return lookup.findVirtual(irisApiClass, "assignPipeline", type);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}
@@ -93,7 +97,7 @@ public class IrisCompatibility {
 			MethodHandle enumValueOf = lookup.findStatic(Enum.class, "valueOf", type);
 
 			return MethodHandles.insertArguments(enumValueOf, 0, irisProgramClass);
-		} catch (Exception e) {
+		} catch (Exception _) {
 			return null;
 		}
 	}

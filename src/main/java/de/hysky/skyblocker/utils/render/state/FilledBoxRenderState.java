@@ -1,13 +1,4 @@
 package de.hysky.skyblocker.utils.render.state;
 
-public class FilledBoxRenderState {
-	public double minX;
-	public double minY;
-	public double minZ;
-	public double maxX;
-	public double maxY;
-	public double maxZ;
-	public float[] colourComponents;
-	public float alpha;
-	public boolean throughWalls;
+public record FilledBoxRenderState(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colourComponents, float alpha, boolean throughWalls) {
 }

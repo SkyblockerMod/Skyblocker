@@ -1,15 +1,12 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.mojang.brigadier.Command;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -18,13 +15,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Optional;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class ArrowAlign {
 	private static final BlockPos LEFT_TOP = new BlockPos(-2, 124, 79);
@@ -36,10 +38,10 @@ public class ArrowAlign {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
-				.then(literal("solve").executes(context -> {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(ArrowAlign::extractRendering);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("device").then(literal("arrow-align")
+				.then(literal("solve").executes(_ -> {
 					findSolution();
 					return Command.SINGLE_SUCCESS;
 				}))
@@ -68,7 +70,7 @@ public class ArrowAlign {
 	}
 
 	private static List<ItemFrame> getFrameEntitiesList() {
-		return Minecraft.getInstance().level.getEntitiesOfClass(ItemFrame.class, FRAMES_AREA, frame -> true);
+		return Minecraft.getInstance().level.getEntitiesOfClass(ItemFrame.class, FRAMES_AREA, _ -> true);
 	}
 
 	private static int getSolutionIndex(BlockPos pos) {
@@ -86,10 +88,10 @@ public class ArrowAlign {
 								return false;
 							}
 							case Align.S -> {
-								if (!itemFrame.getItem().is(Items.LIME_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.WOOL.lime())) return false;
 							}
 							case Align.E -> {
-								if (!itemFrame.getItem().is(Items.RED_WOOL)) return false;
+								if (!itemFrame.getItem().is(Items.WOOL.red())) return false;
 							}
 							default -> {
 								if (!itemFrame.getItem().is(Items.ARROW)) return false;

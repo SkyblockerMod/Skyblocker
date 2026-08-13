@@ -1,19 +1,17 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.io.Closeable;
+import java.util.List;
+import java.util.stream.Stream;
+
 import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -41,9 +39,14 @@ import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 
-import java.io.Closeable;
-import java.util.List;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 
 public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
 	private static final int PADDING = 3;
@@ -81,7 +84,7 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	private final List<AbstractWidget> children;
 
 	public ColorSelectionWidget(int x, int y, int width, int height, Font textRenderer) {
-		super(x, y, width, height, Component.nullToEmpty("ColorSelectionWidget"));
+		super(x, y, width, height, Component.nullToEmpty("ColorSelectionWidget"), AbstractScrollArea.defaultSettings(4));
 		int height1 = Math.min(Math.min(2 * height / 3, width / 5), height - 40); // 40 is the height of slider + timeline + some padding/margin
 
 		colorPicker = new ColorPickerWidget(0, 0, height1 * 2, height1);
@@ -266,8 +269,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 
 	private void onClickPickDye(Button button) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.screen == null) return;
-		client.setScreen(new DyeSelectPopup(client.screen, this::setFromSolidDye, this::setFromAnimatedDye));
+		if (client.gui.screen() == null) return;
+		client.gui.setScreen(new DyeSelectPopup(client.gui.screen(), this::setFromSolidDye, this::setFromAnimatedDye));
 	}
 
 	private void setFromSolidDye(Button button, int hex) {
@@ -321,10 +324,10 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
 		for (AbstractWidget child : children) {
-			child.render(context, mouseX, mouseY, delta);
+			child.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 

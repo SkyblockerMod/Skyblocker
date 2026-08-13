@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import java.util.List;
+import java.util.Optional;
+
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.resources.Identifier;
-import java.util.List;
-import java.util.Optional;
-
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 /**
  * Skyblock Crafting Recipe display class for REI
@@ -27,12 +30,12 @@ public class SkyblockRecipeDisplay implements Display {
 
 	@Override
 	public List<EntryIngredient> getInputEntries() {
-		return recipe.getInputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+		return recipe.getInputs().stream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).map(EntryIngredient::of).toList();
 	}
 
 	@Override
 	public List<EntryIngredient> getOutputEntries() {
-		return recipe.getOutputs().stream().map(EntryStacks::of).map(EntryIngredient::of).toList();
+		return recipe.getOutputs().stream().map(FlexibleItemStack::getStackOrThrow).map(EntryStacks::of).map(EntryIngredient::of).toList();
 	}
 
 	public SkyblockRecipe getRecipe() {

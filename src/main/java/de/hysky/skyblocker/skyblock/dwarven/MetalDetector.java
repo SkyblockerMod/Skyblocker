@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Area;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
@@ -18,13 +18,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 
 public class MetalDetector {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -92,8 +94,8 @@ public class MetalDetector {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(MetalDetector::getDistanceMessage);
-		WorldRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(MetalDetector::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	/**
@@ -120,7 +122,7 @@ public class MetalDetector {
 		//send message when starting looking about how to use mod
 		if (!startedLooking) {
 			startedLooking = true;
-			CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.startTip")), false);
+			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.startTip")));
 		}
 
 		//find the center of the mines if possible to speed up search
@@ -136,9 +138,9 @@ public class MetalDetector {
 		//if the amount of possible blocks has changed output that to the user
 		if (possibleBlocks.size() != previousPossibleBlockCount) {
 			if (possibleBlocks.size() == 1) {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage").withStyle(ChatFormatting.GREEN)), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundTreasureMessage").withStyle(ChatFormatting.GREEN)));
 			} else {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage").append(Component.nullToEmpty(String.valueOf(possibleBlocks.size())))), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.possibleTreasureLocationsMessage").append(Component.nullToEmpty(String.valueOf(possibleBlocks.size())))));
 			}
 		}
 
@@ -201,7 +203,7 @@ public class MetalDetector {
 		if (possibleBlocks.isEmpty()) {
 			newTreasure = true;
 			if (CLIENT.player != null) {
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage").withStyle(ChatFormatting.RED)), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.somethingWentWrongMessage").withStyle(ChatFormatting.RED)));
 			}
 		}
 	}
@@ -223,7 +225,7 @@ public class MetalDetector {
 			if (nameMatcher.matches()) {
 				Vec3i offset = keeperOffsets.get(nameMatcher.group(1));
 				minesCenter = armorStand.blockPosition().offset(offset);
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundCenter").withStyle(ChatFormatting.GREEN)), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dwarvenMines.metalDetectorHelper.foundCenter").withStyle(ChatFormatting.GREEN)));
 				return;
 			}
 		}

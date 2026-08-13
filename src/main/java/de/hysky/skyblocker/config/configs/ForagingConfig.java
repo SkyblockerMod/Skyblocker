@@ -4,12 +4,17 @@ import java.awt.Color;
 
 public class ForagingConfig {
 
-	public Galatea galatea = new Galatea();
+	public boolean enableTreeFelledNotification = false;
+
+	public MoongladeMarsh moongladeMarsh = new MoongladeMarsh();
+
+	public TorrhusCanyon torrhusCanyon = new TorrhusCanyon();
 
 	public SweepOverlay sweepOverlay = new SweepOverlay();
 
-	public static class Galatea {
-		public boolean enableForestNodeHelper = true;
+	public static class MoongladeMarsh {
+		@Deprecated
+		public transient boolean enableForestNodeHelper = true;
 
 		public boolean solveForestTemplePuzzle = true;
 
@@ -24,6 +29,14 @@ public class ForagingConfig {
 		public boolean enableTunerSolver = true;
 
 		public boolean enableSweepDetailsWidget = true;
+	}
+
+	public static class TorrhusCanyon {
+		public boolean solveDesertTemplePuzzles = true;
+
+		public boolean enableRubyVeilshroomHighlighter = true;
+
+		public boolean enableHoneyhiveHighlighter = true;
 	}
 
 	public static class SweepOverlay {

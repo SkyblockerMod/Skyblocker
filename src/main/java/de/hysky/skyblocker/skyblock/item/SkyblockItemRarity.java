@@ -2,44 +2,52 @@ package de.hysky.skyblocker.skyblock.item;
 
 import java.util.Arrays;
 import java.util.Optional;
-import net.minecraft.ChatFormatting;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.StringRepresentable;
+
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
+import io.github.moulberry.repo.data.Rarity;
+
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.StringRepresentable;
+
 import de.hysky.skyblocker.utils.EnumUtils;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 
 public enum SkyblockItemRarity implements StringRepresentable {
-	COMMON(ChatFormatting.WHITE),
-	UNCOMMON(ChatFormatting.GREEN),
-	RARE(ChatFormatting.BLUE),
-	EPIC(ChatFormatting.DARK_PURPLE),
-	LEGENDARY(ChatFormatting.GOLD),
-	MYTHIC(ChatFormatting.LIGHT_PURPLE),
-	DIVINE(ChatFormatting.AQUA),
-	SPECIAL(ChatFormatting.RED),
-	VERY_SPECIAL(ChatFormatting.RED),
-	ULTIMATE(ChatFormatting.DARK_RED),
-	ADMIN(ChatFormatting.DARK_RED),
-	UNKNOWN(ChatFormatting.DARK_GRAY);
+	COMMON(TextColor.WHITE),
+	UNCOMMON(TextColor.GREEN),
+	RARE(SkyBlockColors.BLUE, TextColor.BLUE),
+	EPIC(SkyBlockColors.DARK_PURPLE, TextColor.DARK_PURPLE),
+	LEGENDARY(SkyBlockColors.GOLD, TextColor.GOLD),
+	MYTHIC(TextColor.LIGHT_PURPLE),
+	DIVINE(TextColor.AQUA),
+	SPECIAL(TextColor.RED),
+	VERY_SPECIAL(TextColor.RED),
+	ULTIMATE(SkyBlockColors.DARK_RED, TextColor.DARK_RED),
+	ADMIN(SkyBlockColors.DARK_RED, TextColor.DARK_RED),
+	UNKNOWN(TextColor.DARK_GRAY);
 
 	public static final Codec<SkyblockItemRarity> CODEC = StringRepresentable.fromEnum(SkyblockItemRarity::values);
 	public final String name;
-	public final ChatFormatting formatting;
 	public final int color;
 	public final float r;
 	public final float g;
 	public final float b;
+	public final int legacyColor;
 
-	SkyblockItemRarity(ChatFormatting formatting) {
-		this.name = name().replace("_", " ");
-		this.formatting = formatting;
-		//noinspection DataFlowIssue
-		this.color = formatting.getColor();
+	SkyblockItemRarity(TextColor color, TextColor legacyColor) {
+		this.name = this.name().replace("_", " ");
+		this.color = color.getValue();
 
-		this.r = ((color >> 16) & 0xFF) / 255f;
-		this.g = ((color >> 8) & 0xFF) / 255f;
-		this.b = (color & 0xFF) / 255f;
+		this.r = ARGB.redFloat(this.color);
+		this.g = ARGB.greenFloat(this.color);
+		this.b = ARGB.blueFloat(this.color);
+		this.legacyColor = legacyColor.getValue();
+	}
+
+	SkyblockItemRarity(TextColor color) {
+		this(color, color);
 	}
 
 	/**
@@ -53,6 +61,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 			case EPIC -> 12;
 			case LEGENDARY -> 16;
 			case MYTHIC -> 22;
+			case DIVINE -> 28;
 			default -> 1;
 		};
 	}
@@ -71,9 +80,25 @@ public enum SkyblockItemRarity implements StringRepresentable {
 		};
 	}
 
+	public Rarity toNeuRarity() {
+		return switch (this) {
+			case SkyblockItemRarity.COMMON -> Rarity.COMMON;
+			case SkyblockItemRarity.UNCOMMON -> Rarity.UNCOMMON;
+			case SkyblockItemRarity.RARE -> Rarity.RARE;
+			case SkyblockItemRarity.EPIC -> Rarity.EPIC;
+			case SkyblockItemRarity.LEGENDARY -> Rarity.LEGENDARY;
+			case SkyblockItemRarity.MYTHIC -> Rarity.MYTHIC;
+			case SkyblockItemRarity.DIVINE -> Rarity.DIVINE;
+			case SkyblockItemRarity.SPECIAL -> Rarity.SPECIAL;
+			case SkyblockItemRarity.VERY_SPECIAL -> Rarity.VERY_SPECIAL;
+			case SkyblockItemRarity.ULTIMATE -> Rarity.SUPREME;
+			case SkyblockItemRarity.ADMIN, SkyblockItemRarity.UNKNOWN -> Rarity.UNKNOWN;
+		};
+	}
+
 	@Override
 	public String getSerializedName() {
-		return name();
+		return this.name();
 	}
 
 	@Override
@@ -94,7 +119,7 @@ public enum SkyblockItemRarity implements StringRepresentable {
 
 	public static SkyblockItemRarity fromColor(int color) {
 		return Arrays.stream(SkyblockItemRarity.values())
-				.filter(rarity -> ARGB.colorFromFloat(1f, rarity.r, rarity.g, rarity.b) == ARGB.opaque(color))
+				.filter(rarity -> ARGB.opaque(rarity.color) == ARGB.opaque(color))
 				.findFirst()
 				.orElse(UNKNOWN);
 	}

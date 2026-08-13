@@ -6,14 +6,16 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.utils.RegexListUtils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexListUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 public class StereoHarmonyHelper extends SimpleContainerSolver {
 	private static final Pattern PEST_NAME_PATTERN = Pattern.compile("^When playing, (?<name>.+) Pests.*");
@@ -25,7 +27,7 @@ public class StereoHarmonyHelper extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().farming.garden.enableStereoHarmonyHelperForContest;
+		return SkyblockerConfigManager.get().farming.pestHighlighter.enableStereoHarmonyHelperForContest;
 	}
 
 	@Override

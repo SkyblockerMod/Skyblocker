@@ -5,26 +5,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 
 // TODO should this support tab navigation?
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
@@ -35,9 +37,9 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final GameProfile userProfile;
 	private final ProfileMember member;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
+	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2));
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
@@ -56,7 +58,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	private LoadingInformation createLoadingInformation() {
-		return new LoadingInformation(this.profile, this.userProfile, this.member);
+		return new LoadingInformation(this.profile, this.userProfile, this.member, ItemLoader.decodeItems(this.member));
 	}
 
 	private void loadPages() {
@@ -66,7 +68,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
 				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
 				this.contentLayout.arrangeElements();
-				repositionElements();
+				this.repositionElements();
 				this.loadedPages.add(page);
 			}, this.minecraft).exceptionallyAsync(throwable -> {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to load {} page!", page.getName().getString(), throwable);
@@ -89,7 +91,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	public List<? extends GuiEventListener> children() {
-		List<ProfileViewerWidget> children = new ArrayList<>();
+		List<AbstractWidget> children = new ArrayList<>();
 		children.addAll(this.getSelectedPage().getWidgets());
 		children.addAll(this.tabWidgets);
 
@@ -98,7 +100,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	protected void init() {
-		repositionElements();
+		this.repositionElements();
 	}
 
 	@Override
@@ -110,22 +112,22 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Reposition everything that is rendering
 		//this.repositionElements();
 		// Render the unselected buttons under the background
-		this.renderTabButtons(graphics, mouseX, mouseY, a, false);
+		this.extractTabButtons(graphics, mouseX, mouseY, a, false);
 		// Render the background
-		super.render(graphics, mouseX, mouseY, a);
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 		// Render the selected tab on top of the background
-		this.renderTabButtons(graphics, mouseX, mouseY, a, true);
+		this.extractTabButtons(graphics, mouseX, mouseY, a, true);
 
 		ProfileViewerPage<?> selectedPage = this.getSelectedPage();
 
 		// Render the loaded page or some generic loading text
 		if (this.loadedPages.contains(selectedPage)) {
-			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
-				widget.render(graphics, mouseX, mouseY, a);
+			for (AbstractWidget widget : selectedPage.getWidgets()) {
+				widget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 		} else {
 			int centreX = this.getBackgroundX() + (BACKGROUND_WIDTH / 2);
@@ -137,19 +139,19 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 					.append(Component.literal(" page..."));
 			Component loadingDotsText = Component.literal(LoadingDotsText.get(timeLoadingPage));
 
-			graphics.drawCenteredString(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
-			graphics.drawCenteredString(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, pageLoadingText, centreX, centreY - this.font.lineHeight, CommonColors.WHITE);
+			graphics.centeredText(this.font, loadingDotsText, centreX, centreY + this.font.lineHeight, CommonColors.WHITE);
 		}
 	}
 
-	private void renderTabButtons(GuiGraphics graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
+	private void extractTabButtons(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, boolean onlySelected) {
 		for (PageTabWidget tabWidget : this.tabWidgets) {
 			// We need to render the selected tab button behind the screen
 			if (onlySelected && this.tabWidgets.indexOf(tabWidget) != this.selectedPageIndex) {
 				continue;
 			}
 
-			tabWidget.render(graphics, mouseX, mouseY, a);
+			tabWidget.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 	}
 }

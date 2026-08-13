@@ -1,20 +1,13 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
+import java.text.NumberFormat;
+import java.util.Comparator;
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.regex.Matcher;
+
 import com.mojang.brigadier.Command;
 import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -25,23 +18,34 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Unmodifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.NumberFormat;
-import java.util.Comparator;
-import java.util.List;
-import java.util.regex.Matcher;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public final class PowderMiningTracker extends AbstractProfitTracker {
 	public static final PowderMiningTracker INSTANCE = new PowderMiningTracker();
@@ -87,7 +91,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 		INSTANCE.allRewards.init();
 
 		// @formatter:off // Don't you hate it when your format style for chained method calls makes a chain like this incredibly ugly?
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 			literal(SkyblockerMod.NAMESPACE)
 				.then(literal("rewardTrackers")
 					.then(literal("powderMining")
@@ -171,12 +175,12 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 			if (itemId.equals("GEMSTONE_POWDER")) {
 				shownRewards.merge(Component.literal("Gemstone Powder").withStyle(ChatFormatting.LIGHT_PURPLE), amount, Integer::sum);
 			} else {
-				ItemStack stack = ItemRepository.getItemStack(itemId);
+				FlexibleItemStack stack = ItemRepository.getItemStack(itemId);
 				if (stack == null) {
 					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", itemId);
 					return;
 				}
-				shownRewards.merge(stack.getHoverName(), amount, Integer::sum);
+				shownRewards.merge(stack.get(DataComponents.CUSTOM_NAME), amount, Integer::sum);
 			}
 		}
 	}
@@ -203,8 +207,8 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	 * Normally, the price is calculated on a per-reward basis as they are obtained. This is what this method does.
 	 */
 	private void calculateProfitForItem(String itemId, int amount) {
-		DoubleBooleanPair price = ItemUtils.getItemPrice(itemId);
-		if (price.rightBoolean()) profit += price.leftDouble() * amount;
+		OptionalDouble price = ItemUtils.getItemPrice(itemId);
+		if (price.isPresent()) profit += price.getAsDouble() * amount;
 	}
 
 	/**
@@ -234,12 +238,12 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 			if (entry.getKey().equals("GEMSTONE_POWDER")) {
 				shownRewards.put(Component.literal("Gemstone Powder").withStyle(ChatFormatting.LIGHT_PURPLE), entry.getIntValue());
 			} else {
-				ItemStack stack = ItemRepository.getItemStack(entry.getKey());
+				FlexibleItemStack stack = ItemRepository.getItemStack(entry.getKey());
 				if (stack == null) {
 					LOGGER.warn("Item stack for id `{}` is null! This might be caused by failed item repository downloads.", entry.getKey());
 					continue;
 				}
-				shownRewards.put(stack.getHoverName(), entry.getIntValue());
+				shownRewards.put(stack.get(DataComponents.CUSTOM_NAME), entry.getIntValue());
 			}
 		}
 		recalculatePrices();
@@ -254,40 +258,40 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	static {
 		NAME2ID_MAP.put("Gemstone Powder", "GEMSTONE_POWDER"); // Not an actual item, but since we're using IDs for mapping to colored text we need to have this here
 
-		NAME2ID_MAP.put("❤ Rough Ruby Gemstone", "ROUGH_RUBY_GEM");
-		NAME2ID_MAP.put("❤ Flawed Ruby Gemstone", "FLAWED_RUBY_GEM");
-		NAME2ID_MAP.put("❤ Fine Ruby Gemstone", "FINE_RUBY_GEM");
-		NAME2ID_MAP.put("❤ Flawless Ruby Gemstone", "FLAWLESS_RUBY_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.HEALTH + " Rough Ruby Gemstone", "ROUGH_RUBY_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.HEALTH + " Flawed Ruby Gemstone", "FLAWED_RUBY_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.HEALTH + " Fine Ruby Gemstone", "FINE_RUBY_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.HEALTH + " Flawless Ruby Gemstone", "FLAWLESS_RUBY_GEM");
 
-		NAME2ID_MAP.put("❈ Rough Amethyst Gemstone", "ROUGH_AMETHYST_GEM");
-		NAME2ID_MAP.put("❈ Flawed Amethyst Gemstone", "FLAWED_AMETHYST_GEM");
-		NAME2ID_MAP.put("❈ Fine Amethyst Gemstone", "FINE_AMETHYST_GEM");
-		NAME2ID_MAP.put("❈ Flawless Amethyst Gemstone", "FLAWLESS_AMETHYST_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.DEFENSE + " Rough Amethyst Gemstone", "ROUGH_AMETHYST_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.DEFENSE + " Flawed Amethyst Gemstone", "FLAWED_AMETHYST_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.DEFENSE + " Fine Amethyst Gemstone", "FINE_AMETHYST_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.DEFENSE + " Flawless Amethyst Gemstone", "FLAWLESS_AMETHYST_GEM");
 
-		NAME2ID_MAP.put("☘ Rough Jade Gemstone", "ROUGH_JADE_GEM");
-		NAME2ID_MAP.put("☘ Flawed Jade Gemstone", "FLAWED_JADE_GEM");
-		NAME2ID_MAP.put("☘ Fine Jade Gemstone", "FINE_JADE_GEM");
-		NAME2ID_MAP.put("☘ Flawless Jade Gemstone", "FLAWLESS_JADE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_FORTUNE + " Rough Jade Gemstone", "ROUGH_JADE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_FORTUNE + " Flawed Jade Gemstone", "FLAWED_JADE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_FORTUNE + " Fine Jade Gemstone", "FINE_JADE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_FORTUNE + " Flawless Jade Gemstone", "FLAWLESS_JADE_GEM");
 
-		NAME2ID_MAP.put("⸕ Rough Amber Gemstone", "ROUGH_AMBER_GEM");
-		NAME2ID_MAP.put("⸕ Flawed Amber Gemstone", "FLAWED_AMBER_GEM");
-		NAME2ID_MAP.put("⸕ Fine Amber Gemstone", "FINE_AMBER_GEM");
-		NAME2ID_MAP.put("⸕ Flawless Amber Gemstone", "FLAWLESS_AMBER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_SPEED + " Rough Amber Gemstone", "ROUGH_AMBER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_SPEED + " Flawed Amber Gemstone", "FLAWED_AMBER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_SPEED + " Fine Amber Gemstone", "FINE_AMBER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.MINING_SPEED + " Flawless Amber Gemstone", "FLAWLESS_AMBER_GEM");
 
-		NAME2ID_MAP.put("✎ Rough Sapphire Gemstone", "ROUGH_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("✎ Flawed Sapphire Gemstone", "FLAWED_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("✎ Fine Sapphire Gemstone", "FINE_SAPPHIRE_GEM");
-		NAME2ID_MAP.put("✎ Flawless Sapphire Gemstone", "FLAWLESS_SAPPHIRE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.INTELLIGENCE + " Rough Sapphire Gemstone", "ROUGH_SAPPHIRE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.INTELLIGENCE + " Flawed Sapphire Gemstone", "FLAWED_SAPPHIRE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.INTELLIGENCE + " Fine Sapphire Gemstone", "FINE_SAPPHIRE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.INTELLIGENCE + " Flawless Sapphire Gemstone", "FLAWLESS_SAPPHIRE_GEM");
 
-		NAME2ID_MAP.put("✧ Rough Topaz Gemstone", "ROUGH_TOPAZ_GEM");
-		NAME2ID_MAP.put("✧ Flawed Topaz Gemstone", "FLAWED_TOPAZ_GEM");
-		NAME2ID_MAP.put("✧ Fine Topaz Gemstone", "FINE_TOPAZ_GEM");
-		NAME2ID_MAP.put("✧ Flawless Topaz Gemstone", "FLAWLESS_TOPAZ_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.PRISTINE + " Rough Topaz Gemstone", "ROUGH_TOPAZ_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.PRISTINE + " Flawed Topaz Gemstone", "FLAWED_TOPAZ_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.PRISTINE + " Fine Topaz Gemstone", "FINE_TOPAZ_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.PRISTINE + " Flawless Topaz Gemstone", "FLAWLESS_TOPAZ_GEM");
 
-		NAME2ID_MAP.put("❁ Rough Jasper Gemstone", "ROUGH_JASPER_GEM");
-		NAME2ID_MAP.put("❁ Flawed Jasper Gemstone", "FLAWED_JASPER_GEM");
-		NAME2ID_MAP.put("❁ Fine Jasper Gemstone", "FINE_JASPER_GEM");
-		NAME2ID_MAP.put("❁ Flawless Jasper Gemstone", "FLAWLESS_JASPER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.STRENGTH + " Rough Jasper Gemstone", "ROUGH_JASPER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.STRENGTH + " Flawed Jasper Gemstone", "FLAWED_JASPER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.STRENGTH + " Fine Jasper Gemstone", "FINE_JASPER_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.STRENGTH + " Flawless Jasper Gemstone", "FLAWLESS_JASPER_GEM");
 
 		NAME2ID_MAP.put("Pickonimbus 2000", "PICKONIMBUS");
 		NAME2ID_MAP.put("Ascension Rope", "ASCENSION_ROPE");

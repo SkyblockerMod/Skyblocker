@@ -2,19 +2,21 @@ package de.hysky.skyblocker.mixins;
 
 import java.awt.Color;
 import java.util.Set;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SkinTextureDownloader;
-import net.minecraft.util.ARGB;
+
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SkinTextureDownloader;
+import net.minecraft.util.ARGB;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.PlayerHeadHashCache;
@@ -33,7 +35,7 @@ public class SkinTextureDownloaderMixin {
 
 	@Inject(method = "processLegacySkin", at = @At("HEAD"))
 	private static void skyblocker$determineSkinSource(NativeImage image, String uri, CallbackInfoReturnable<NativeImage> cir, @Share("isSkyblockSkinTexture") LocalBooleanRef isSkyblockSkinTexture) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || Minecraft.getInstance().screen instanceof ProfileViewerScreen)) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.dontStripSkinAlphaValues && (Utils.isOnSkyblock() || Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen || Minecraft.getInstance().gui.screen() instanceof de.hysky.skyblocker.skyblock.profileviewer2.ProfileViewerScreen)) {
 			String skinTextureHash = PlayerHeadHashCache.getSkinHashFromUrl(uri);
 			int skinHash = skinTextureHash.hashCode();
 			isSkyblockSkinTexture.set(PlayerHeadHashCache.contains(skinHash));

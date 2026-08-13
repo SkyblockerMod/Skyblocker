@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 
@@ -55,5 +56,12 @@ public class ToggleableLayoutWidget implements Layout {
 	@Override
 	public int getHeight() {
 		return enabled ? widget.getHeight() : 0;
+	}
+
+	@Override
+	public void removeChildren() {
+		if (this.enabled && this.widget instanceof Layout layout) {
+			layout.removeChildren();
+		}
 	}
 }

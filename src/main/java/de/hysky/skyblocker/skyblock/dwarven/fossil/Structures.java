@@ -118,7 +118,7 @@ public class Structures {
 		private boolean isEmptyCollision(int positionX, int positionY) {
 			try {
 				return isState(positionX, positionY, TileState.EMPTY);
-			} catch (IndexOutOfBoundsException f) {
+			} catch (IndexOutOfBoundsException _) {
 				return true;
 			}
 		}
@@ -134,7 +134,7 @@ public class Structures {
 		boolean isFossilCollision(int positionX, int positionY) {
 			try {
 				return isState(positionX, positionY, TileState.FOSSIL);
-			} catch (IndexOutOfBoundsException f) {
+			} catch (IndexOutOfBoundsException _) {
 				return false;
 			}
 		}

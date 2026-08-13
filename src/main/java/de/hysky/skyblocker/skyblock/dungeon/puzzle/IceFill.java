@@ -1,7 +1,24 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.common.primitives.Booleans;
 import com.mojang.brigadier.Command;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -11,23 +28,8 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class IceFill extends DungeonPuzzle {
 	public static final IceFill INSTANCE = new IceFill();
@@ -48,7 +50,7 @@ public class IceFill extends DungeonPuzzle {
 	@Init
 	public static void init() {
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("puzzle").then(literal(INSTANCE.puzzleName)
 					.then(literal("printBoard1").executes(context -> {
 						context.getSource().sendFeedback(Constants.PREFIX.get().append(boardToString(INSTANCE.iceFillBoards[0])));
 						return Command.SINGLE_SUCCESS;

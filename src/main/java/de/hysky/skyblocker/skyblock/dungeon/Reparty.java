@@ -1,5 +1,27 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.regex.Matcher;
+
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
+import net.azureaaron.hmapi.data.party.PartyRole;
+import net.azureaaron.hmapi.events.HypixelPacketEvents;
+import net.azureaaron.hmapi.network.HypixelNetworking;
+import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
+import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
+import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
@@ -7,27 +29,6 @@ import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.azureaaron.hmapi.data.party.PartyRole;
-import net.azureaaron.hmapi.events.HypixelPacketEvents;
-import net.azureaaron.hmapi.network.HypixelNetworking;
-import net.azureaaron.hmapi.network.packet.s2c.ErrorS2CPacket;
-import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
-import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.regex.Matcher;
-
-import org.slf4j.Logger;
-
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.logging.LogUtils;
 
 public class Reparty extends ChatPatternListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -43,9 +44,9 @@ public class Reparty extends ChatPatternListener {
 				"\nYou have 60 seconds to accept. Click here to join!\n.*)$");
 
 		HypixelPacketEvents.PARTY_INFO.register(this::onPacket);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("reparty").executes(this::executeCommand));
-			dispatcher.register(ClientCommandManager.literal("rp").executes(this::executeCommand));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
+			dispatcher.register(ClientCommands.literal("reparty").executes(this::executeCommand));
+			dispatcher.register(ClientCommands.literal("rp").executes(this::executeCommand));
 		});
 	}
 
@@ -78,14 +79,14 @@ public class Reparty extends ChatPatternListener {
 					Scheduler.INSTANCE.schedule(() -> this.repartying = false, count * BASE_DELAY);
 				} else {
 					assert CLIENT.player != null;
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.reparty.notInPartyOrNotLeader")), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.reparty.notInPartyOrNotLeader")));
 					this.repartying = false;
 				}
 			}
 
 			case ErrorS2CPacket(var id, var error) when id.equals(PartyInfoS2CPacket.ID) && this.repartying -> {
 				assert CLIENT.player != null;
-				CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.reparty.error")), false);
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.reparty.error")));
 				LOGGER.error("[Skyblocker Reparty] The party info packet returned an unexpected error! {}", error);
 
 				this.repartying = false;

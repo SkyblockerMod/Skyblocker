@@ -1,21 +1,25 @@
 package de.hysky.skyblocker.utils;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.OptionalInt;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.logging.LogUtils;
 import com.mojang.util.UndashedUuid;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.utils.purse.PurseChangeCause;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.azureaaron.hmapi.data.rank.PackageRank;
 import net.azureaaron.hmapi.data.rank.RankType;
 import net.azureaaron.hmapi.data.server.Environment;
@@ -34,26 +38,29 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.OptionalInt;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.utils.purse.PurseChangeCause;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 /**
  * Utility variables and methods for retrieving Skyblock related information.
@@ -62,10 +69,13 @@ public class Utils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 	private static final String ALTERNATE_HYPIXEL_ADDRESS = System.getProperty("skyblocker.alternateHypixelAddress", "");
 
+	public static final String HYPIXEL_NAMESPACE = "hypixel";
+	public static final String HYPIXEL_SKYBLOCK_NAMESPACE = "hypixel_skyblock";
 	private static final String PROFILE_PREFIX = "Profile: ";
 	private static final String PROFILE_MESSAGE_PREFIX = "§aYou are playing on profile: §e";
 	public static final String PROFILE_ID_PREFIX = "Profile ID: ";
 	private static final String PROFILE_ID_SUGGEST_PREFIX = "CLICK THIS TO SUGGEST IT IN CHAT";
+	private static final String AREA_ICON_REGEX = String.format("[%s%s]", SkyBlockIcons.AREA, SkyBlockIcons.RIFT_AREA);
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
@@ -104,6 +114,7 @@ public class Utils {
 	private static String gameType = "";
 	private static String locationRaw = "";
 	private static String map = "";
+	private static @Nullable Holder<Biome> biome = null;
 	public static double purse = 0;
 
 	/**
@@ -163,13 +174,40 @@ public class Utils {
 		return location == Location.THE_FARMING_ISLAND;
 	}
 
-	public static boolean isInGalatea() { return location == Location.GALATEA; }
+	public static boolean isInGalatea() {
+		return location == Location.GALATEA;
+	}
 
-	public static boolean isInHub() { return location == Location.HUB; }
+	public static boolean isInTorrhusCanyon() {
+		return location == Location.TORRHUS_CANYON;
+	}
 
-	public static boolean isInPrivateIsland() { return location == Location.PRIVATE_ISLAND; }
+	/// {@return whether the user is in Galatea, the Torrhus Canyon, or the Park}
+	///
+	/// @implNote This intentionally excludes foraging areas in non-foraging islands.
+	public static boolean isInForagingIsland() {
+		return isInGalatea() || isInTorrhusCanyon() || isInPark();
+	}
 
-	public static boolean isInPark() { return location == Location.THE_PARK; }
+	public static boolean isInSafari() {
+		return location == Location.SAFARI;
+	}
+
+	public static boolean isInHub() {
+		return location == Location.HUB;
+	}
+
+	public static boolean isInPrivateIsland() {
+		return location == Location.PRIVATE_ISLAND;
+	}
+
+	public static boolean isInPark() {
+		return location == Location.THE_PARK;
+	}
+
+	public static boolean isInBiome(Identifier targetBiome) {
+		return biome != null && biome.is(targetBiome);
+	}
 
 	public static boolean isOnBingo() {
 		return profile.endsWith("Ⓑ");
@@ -191,6 +229,11 @@ public class Utils {
 	 */
 	public static Location getLocation() {
 		return location;
+	}
+
+	@VisibleForTesting
+	public static void setTestLocation(Location located) {
+		location = located;
 	}
 
 	/**
@@ -249,7 +292,7 @@ public class Utils {
 	@Init
 	public static void init() {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(Utils::onChatMessage);
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
+		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> onDisconnect());
 
 		//Register Mod API stuff
 		HypixelNetworking.registerToEvents(Util.make(new Object2IntOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, 1)));
@@ -266,6 +309,7 @@ public class Utils {
 		updateScoreboard(client);
 		updatePlayerPresence(client);
 		updateFromPlayerList(client);
+		updateBiome(client);
 	}
 
 	/**
@@ -302,7 +346,7 @@ public class Utils {
 	public static String getIslandArea() {
 		try {
 			for (String sidebarLine : STRING_SCOREBOARD) {
-				if (sidebarLine.contains("⏣") || sidebarLine.contains("ф") /* Rift */) {
+				if (sidebarLine.indexOf(SkyBlockIcons.AREA) >= 0 || sidebarLine.indexOf(SkyBlockIcons.RIFT_AREA) >= 0 /* Rift */) {
 					return sidebarLine.strip();
 				}
 			}
@@ -379,13 +423,13 @@ public class Utils {
 				SlayerManager.checkSlayerQuest();
 				updateArea();
 			}
-		} catch (NullPointerException e) {
+		} catch (NullPointerException _) {
 			//Do nothing
 		}
 	}
 
 	private static void updateArea() {
-		String areaName = getIslandArea().replaceAll("[⏣ф]", "").strip();
+		String areaName = getIslandArea().replaceAll(AREA_ICON_REGEX, "").strip();
 		Area oldArea = area;
 		area = Area.from(areaName);
 
@@ -424,6 +468,23 @@ public class Utils {
 		}
 	}
 
+	private static void updateBiome(Minecraft minecraft) {
+		LocalPlayer player = minecraft.player;
+
+		// Same logic as the Biome Debug HUD entry
+		if (player != null) {
+			Level level = player.level();
+			BlockPos feetPos = player.blockPosition();
+
+			if (level.isInsideBuildHeight(feetPos)) {
+				biome = level.getBiome(feetPos);
+				return;
+			}
+		}
+
+		biome = null;
+	}
+
 	private static void onDisconnect() {
 		if (isOnSkyblock) SkyblockEvents.LEAVE.invoker().onSkyblockLeave();
 
@@ -434,6 +495,7 @@ public class Utils {
 		location = Location.UNKNOWN;
 		area = Area.UNKNOWN;
 		map = "";
+		biome = null;
 	}
 
 	private static void onPacket(HypixelS2CPacket packet) {
@@ -445,7 +507,7 @@ public class Utils {
 				HypixelNetworking.sendPlayerInfoC2SPacket(1);
 			}
 
-			case LocationUpdateS2CPacket(var serverName, var serverType, var _lobbyName, var mode, var mapName) -> {
+			case LocationUpdateS2CPacket(var serverName, var serverType, _, var mode, var mapName) -> {
 				Utils.server = serverName;
 				String previousServerType = Utils.gameType;
 				Utils.gameType = serverType.orElse("");
@@ -476,13 +538,13 @@ public class Utils {
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					player.displayClientMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)), false);
+					player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.utils.locationUpdateError").withStyle(ChatFormatting.RED)));
 				}
 
 				LOGGER.error("[Skyblocker] Failed to update your current location! Some features of the mod may not work correctly :( - Error: {}", error);
 			}
 
-			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, var _prefix) -> {
+			case PlayerInfoS2CPacket(var playerRank, var packageRank, var monthlyPackageRank, _) -> {
 				rank = RankType.getEffectiveRank(playerRank, packageRank, monthlyPackageRank);
 			}
 
@@ -502,6 +564,7 @@ public class Utils {
 
 			@Override
 			public void run() {
+				if (!Utils.isOnSkyblock()) return;
 				if (requestId == profileIdRequest) {
 					MessageScheduler.INSTANCE.sendMessageAfterCooldown("/profileid", true);
 					profileSuggestionMessages = 0;
@@ -558,6 +621,7 @@ public class Utils {
 			} else if (message.startsWith(PROFILE_ID_PREFIX)) {
 				String prevProfileId = profileId;
 				profileId = message.substring(PROFILE_ID_PREFIX.length());
+				if (Utils.getEnvironment() != Environment.PRODUCTION) profileId += "-alpha";
 				profileIdRequest++;
 
 				if (!prevProfileId.equals(profileId)) {
@@ -582,8 +646,8 @@ public class Utils {
 	public static void sendMessageToBypassEvents(Component message) {
 		Minecraft client = Minecraft.getInstance();
 
-		client.gui.getChat().addMessage(message);
-		((ChatListenerAccessor) client.getChatListener()).invokeLogSystemMessage(message, Instant.now());
+		client.gui.hud.getChat().addClientSystemMessage(message);
+		((ChatListenerAccessor) client.gui.chatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
 	}
 
@@ -604,20 +668,17 @@ public class Utils {
 	public static OptionalInt parseInt(String input) {
 		try {
 			return OptionalInt.of(Integer.parseInt(input));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException _) {
 			return OptionalInt.empty();
 		}
 	}
 
 	/**
-	 * Get players eye height from the servers point of view based on it's minecraft version
-	 *
 	 * @return offset from players pos to their eyes
 	 */
 	public static float getEyeHeight(Player player) {
-		if (player == null || !player.isShiftKeyDown()) return 1.62f;
-		//sneaking height is different depending on server
-		return getLocation().isModern() ? 1.27f : 1.54f;
+		if (!player.isShiftKeyDown()) return 1.62f;
+		return 1.27f;
 	}
 
 	/**

@@ -1,17 +1,11 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-import de.hysky.skyblocker.utils.ItemAbility;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,8 +16,6 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentHolder;
@@ -34,6 +26,16 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.utils.ItemAbility;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerStack {
@@ -74,7 +76,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@ModifyExpressionValue(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
-	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local TooltipProvider component) {
+	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local(name = "component") TooltipProvider component) {
 		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantments);
 	}
 
@@ -82,7 +84,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getKey(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;")),
 			at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER, ordinal = 0)
 	)
-	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(argsOnly = true) Consumer<Component> textConsumer) {
+	private void skyblocker$skyblockIdTooltip(CallbackInfo ci, @Local(name = "builder") Consumer<Component> textConsumer) {
 		if (Utils.isOnSkyblock()) {
 			String skyblockId = getSkyblockId();
 
@@ -115,7 +117,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 		return durabilityBarFill >= 0 ? OkLabColor.interpolate(CommonColors.RED, CommonColors.GREEN, durabilityBarFill) : original;
 	}
 
-	@Inject(method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
+	@Inject(method = "<init>(Lnet/minecraft/core/Holder;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
 		skyblocker$getAndCacheDurability();
 	}
@@ -138,7 +140,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@Unique
 	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
-		return !(Minecraft.getInstance() != null && Minecraft.getInstance().screen instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return !(Minecraft.getInstance() != null && Minecraft.getInstance().gui != null && Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique

@@ -7,16 +7,23 @@ repositories {
 }
 
 dependencies {
-	implementation "org.ow2.asm:asm:${project.asm_version}"
-	implementation "org.ow2.asm:asm-tree:${project.asm_version}"
+	implementation "org.jspecify:jspecify:${project.jspecify_version}"
 }
 
 gradlePlugin {
 	plugins {
 		simplePlugin {
 			id = 'de.hysky.skyblocker.annotation-processor'
-			// The plugin entry point could be changed to a different class that then appropriately calls the different processors when there's more than one.
 			implementationClass = 'de.hysky.skyblocker.Processor'
 		}
 	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }

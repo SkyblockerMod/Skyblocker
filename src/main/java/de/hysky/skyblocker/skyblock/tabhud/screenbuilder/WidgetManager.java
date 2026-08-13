@@ -1,11 +1,35 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import org.joml.Matrix3x2fStack;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -19,28 +43,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.StringRepresentable;
-import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class WidgetManager {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -62,7 +64,7 @@ public class WidgetManager {
 	// we probably want this to run pretty early?
 	@Init(priority = -1)
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> {
 
 			instantiateWidgets();
 			for (int i = 1; i < 6; i++) {
@@ -73,25 +75,25 @@ public class WidgetManager {
 
 		});
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> saveConfig());
 
 		// Renders the hud (always on screen) widgets.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, tickCounter) -> render(context, true));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, FANCY_TAB_HUD, (context, _) -> extractRenderState(context, true));
 		// Renders the tab widgets
-		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, tickCounter) -> render(context, false));
+		HudElementRegistry.attachElementBefore(VanillaHudElements.PLAYER_LIST, FANCY_TAB, (context, _) -> extractRenderState(context, false));
 	}
 
-	private static void render(GuiGraphics context, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor context, boolean hud) {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
-		if (client.screen instanceof WidgetsConfigurationScreen) return;
+		if (client.gui.screen() instanceof WidgetsConfigurationScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
 		Matrix3x2fStack matrices = context.pose();
 		matrices.pushMatrix();
 		matrices.scale(scale, scale);
-		WidgetManager.render(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
+		WidgetManager.extractRenderState(context, (int) (window.getGuiScaledWidth() / scale), (int) (window.getGuiScaledHeight() / scale), hud);
 		matrices.popMatrix();
 	}
 
@@ -101,7 +103,7 @@ public class WidgetManager {
 	 *
 	 * @param hud true to only render the hud (always on screen) widgets, false to only render the tab widgets.
 	 */
-	private static void render(GuiGraphics context, int w, int h, boolean hud) {
+	private static void extractRenderState(GuiGraphicsExtractor context, int w, int h, boolean hud) {
 		Minecraft client = Minecraft.getInstance();
 		ScreenBuilder screenBuilder = getScreenBuilder(Utils.getLocation());
 		if (client.options.keyPlayerList.isDown()) {
@@ -132,7 +134,7 @@ public class WidgetManager {
 					}
 				}
 			}
-		} catch (NoSuchFileException e) {
+		} catch (NoSuchFileException _) {
 			LOGGER.warn("[Skyblocker] No hud widget config file found, using defaults");
 			fillDefaultConfig();
 		} catch (Exception e) {
@@ -166,12 +168,6 @@ public class WidgetManager {
 		screenBuilder.setPositionRule(
 				"hud_end",
 				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().otherLocations.end.x, SkyblockerConfigManager.get().otherLocations.end.y, WidgetManager.ScreenLayer.HUD)
-		);
-
-		screenBuilder = getScreenBuilder(Location.GARDEN);
-		screenBuilder.setPositionRule(
-				"hud_farming",
-				new PositionRule("screen", PositionRule.Point.DEFAULT, PositionRule.Point.DEFAULT, SkyblockerConfigManager.get().farming.garden.farmingHud.x, SkyblockerConfigManager.get().farming.garden.farmingHud.y, WidgetManager.ScreenLayer.HUD)
 		);
 
 		for (Location loc : new Location[]{Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES}) {

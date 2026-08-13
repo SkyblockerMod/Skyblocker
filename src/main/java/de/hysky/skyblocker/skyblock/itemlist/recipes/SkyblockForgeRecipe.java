@@ -1,28 +1,30 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.SkyblockTime;
-import io.github.moulberry.repo.data.NEUForgeRecipe;
-import org.joml.Vector2i;
-import org.jspecify.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import io.github.moulberry.repo.data.NEUForgeRecipe;
+import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class SkyblockForgeRecipe implements SkyblockRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_forge");
 
-	private final List<ItemStack> inputs;
-	private final ItemStack output;
+	private final List<FlexibleItemStack> inputs;
+	private final FlexibleItemStack output;
 	private final String durationString;
 
 	public SkyblockForgeRecipe(NEUForgeRecipe forgeRecipe) {
@@ -32,7 +34,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 		durationString = SkyblockTime.formatTimeString(duration);
 	}
 
-	public ItemStack getResult() {
+	public FlexibleItemStack getResult() {
 		return output;
 	}
 
@@ -75,12 +77,12 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public List<ItemStack> getInputs() {
+	public List<FlexibleItemStack> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<ItemStack> getOutputs() {
+	public List<FlexibleItemStack> getOutputs() {
 		return Collections.singletonList(output);
 	}
 
@@ -95,7 +97,7 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	public Identifier getRecipeIdentifier() {
-		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.getCount());
+		return Identifier.fromNamespaceAndPath("skyblock", output.getSkyblockId().toLowerCase(Locale.ENGLISH).replace(';', '_') + "_" + output.count());
 	}
 
 	@Override
@@ -108,10 +110,10 @@ public class SkyblockForgeRecipe implements SkyblockRecipe {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int width, int height, double mouseX, double mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int width, int height, double mouseX, double mouseY) {
 		// Render the duration of the recipe in hours by dividing by 3600
 		ScreenPosition arrowLocation = getArrowLocation(width, height);
 		if (arrowLocation != null)
-			context.drawCenteredString(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
+			graphics.centeredText(Minecraft.getInstance().font, durationString, arrowLocation.x() + 12, arrowLocation.y() - 10, CommonColors.WHITE);
 	}
 }

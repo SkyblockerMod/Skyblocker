@@ -1,18 +1,20 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 	private static final Pattern AUTOPET_LEVEL_PATTERN = Pattern.compile("Equip: ⭐? ?\\[Lvl (\\d+)].*");
@@ -21,18 +23,23 @@ public class ChoosePetLevelAdder extends SimpleSlotTextAdder {
 			"choose_pet_pet_level",
 			"skyblocker.config.uiAndVisuals.slotText.choosePetPetLevel");
 
-	public ChoosePetLevelAdder() { super("^Choose Pet.*", CONFIG_INFORMATION); }
+	public ChoosePetLevelAdder() {
+		super("^(\\(\\d+/\\d+\\) )?Choose Pet$", CONFIG_INFORMATION);
+	}
 
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (slotId < 9 || slotId > 44 || !stack.is(Items.PLAYER_HEAD)) return List.of();
+		// Don't add level if choosing a pet for an Exception, as the "Equip: ..." line will be for another pet.
+		if (ItemUtils.getLoreLineIf(stack, x -> x.equals("Except if:")) != null) return List.of();
 		Matcher matcher = ItemUtils.getLoreLineIfMatch(stack, AUTOPET_LEVEL_PATTERN);
 		if (matcher == null) {
 			matcher = LEVEL_PATTERN.matcher(stack.getHoverName().getString());
 			if (!matcher.matches()) return List.of();
 		}
+		String name = stack.getHoverName().getString();
 		String level = matcher.group(1);
-		if (!NumberUtils.isDigits(level) || "100".equals(level) || "200".equals(level)) return List.of();
+		if (!NumberUtils.isDigits(level) || "100".equals(level) && (!name.contains("Dragon") || name.contains("Ender Dragon")) || "200".equals(level)) return List.of();
 		return SlotText.bottomRightList(Component.literal(level).withColor(SlotText.CREAM));
 	}
 }

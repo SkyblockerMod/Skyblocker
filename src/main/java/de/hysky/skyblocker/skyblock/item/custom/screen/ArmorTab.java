@@ -1,18 +1,16 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -31,8 +29,14 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.EntityUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
 
@@ -61,6 +65,16 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 		@Override
 		public void onEquipItem(EquipmentSlot slot, ItemStack oldStack, ItemStack newStack) {}
+
+		@Override
+		public boolean isModelPartShown(PlayerModelPart modelPart) {
+			return modelPart != PlayerModelPart.CAPE && CLIENT.options.isModelPartEnabled(modelPart);
+		}
+
+		@Override
+		public int getId() {
+			return EntityUtils.PLACEHOLDER_ID;
+		}
 	};
 
 	public ArmorTab(CustomizeScreen parent) {
@@ -181,8 +195,8 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_TEXTURE, getX() + 1, getY() + 1, 82, 22);
 
 			int hoveredSlot = -1;
 			int localX = mouseX - getX() - 2;
@@ -193,17 +207,17 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 			if (hoveredSlot >= 0 && selectable[hoveredSlot]) {
 				int i = getX() + 2 + hoveredSlot * 20;
-				context.fill(i, getY() + 2, i + 20, getY() + 22, 0x20_FF_FF_FF);
+				graphics.fill(i, getY() + 2, i + 20, getY() + 22, 0x20_FF_FF_FF);
 			}
 
 			for (int i = 0; i < armor.length; i++) {
-				context.renderItem(armor[i], getX() + 4 + i * 20, getY() + 4);
+				graphics.item(armor[i], getX() + 4 + i * 20, getY() + 4);
 				if (!selectable[i] && !armor[i].isEmpty()) {
-					context.renderItem(BARRIER, getX() + 4 + i * 20, getY() + 4);
+					graphics.item(BARRIER, getX() + 4 + i * 20, getY() + 4);
 				}
 			}
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
-			this.handleCursor(context);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_SELECTION_TEXTURE, getX() + selectedSlot * 20, getY(), 24, 24);
+			this.handleCursor(graphics);
 		}
 
 		@Override
@@ -234,7 +248,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		private final IdentifierTextField field;
 
 		private ModelFieldContainer(int width, int height) {
-			super(0, 0, width, height, Component.empty());
+			super(0, 0, width, height, Component.empty(), AbstractScrollArea.defaultSettings(4));
 			containerLayout = new FrameLayout();
 			field = containerLayout.addChild(new IdentifierTextField(width - 10, 20, identifier -> {
 				String uuid = armor[selectedSlot].getUuid();
@@ -287,20 +301,20 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			if (!visible) return;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
 					getX(),
 					getY(),
 					getWidth(),
 					getHeight()
 			);
-			this.field.render(context, mouseX, mouseY, deltaTicks);
-			this.drawLabel(context.textRenderer(HoveredTextEffects.NONE));
+			this.field.extractRenderState(graphics, mouseX, mouseY, a);
+			this.extractLabel(graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE));
 		}
 
-		private void drawLabel(ActiveTextCollector drawer) {
+		private void extractLabel(ActiveTextCollector drawer) {
 			int padding = 5;
 			int startY = getY() + padding;
 			drawer.acceptScrollingWithDefaultCenter(text, getX() + padding, getRight() - padding, startY, startY + 9);

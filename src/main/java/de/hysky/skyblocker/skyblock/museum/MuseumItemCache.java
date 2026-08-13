@@ -1,46 +1,5 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.mojang.util.UndashedUuid;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Http.ApiResponse;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import io.github.moulberry.repo.NEURepoFile;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import it.unimi.dsi.fastutil.objects.ObjectList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,10 +14,52 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.util.UndashedUuid;
+import io.github.moulberry.repo.NEURepoFile;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Http.ApiResponse;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class MuseumItemCache {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MuseumItemCache.class);
@@ -82,9 +83,9 @@ public class MuseumItemCache {
 	@Init
 	public static void init() {
 		loadMuseumItems();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> MUSEUM_ITEM_CACHE.load());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> MUSEUM_ITEM_CACHE.load());
 		ClientCommandRegistrationCallback.EVENT.register(MuseumItemCache::registerCommands);
-		SkyblockEvents.PROFILE_CHANGE.register((prev, profile) -> onProfileChange());
+		SkyblockEvents.PROFILE_CHANGE.register((_, _) -> onProfileChange());
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -204,7 +205,7 @@ public class MuseumItemCache {
 
 				armorToId.forEach((setId, displayIdObject) -> ARMOR_TO_ID.put(setId, displayIdObject.getAsString()));
 				LOGGER.info("[Skyblocker] Loaded museum data");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load donations data", e);
 			}
@@ -257,7 +258,7 @@ public class MuseumItemCache {
 
 			// Check if the item has a donated downgrade
 			uncontributedItems.forEach(donation -> donation.setDiscount(donation.getDowngrades().stream()
-					.filter(downgrade -> donation.isCraftable())
+					.filter(_ -> donation.isCraftable())
 					.filter(downgrade -> uncontributedItems.stream().noneMatch(item -> item.getId().equals(downgrade)))
 					.map(downgrade -> ObjectDoublePair.of(downgrade, MuseumUtils.getSetCraftCost(downgrade)))
 					.findFirst()
@@ -326,7 +327,7 @@ public class MuseumItemCache {
 						//Set of all found item ids on profile
 						ObjectOpenHashSet<String> itemIds = new ObjectOpenHashSet<>();
 
-						donatedSets.forEach((s, __) -> {
+						donatedSets.forEach((s, _) -> {
 							Optional<Donation> donation = MUSEUM_DONATIONS.stream().filter(d -> d.getId().equals(s)).findFirst();
 							donation.ifPresent(value -> itemIds.addAll(value.getDowngrades()));
 							if (donation.isPresent()) {
@@ -366,7 +367,7 @@ public class MuseumItemCache {
 				if (source != null) source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.museum.resyncFailure", Component.translatable("skyblocker.museum.resyncFailure.unknownError"))));
 				LOGGER.error(ERROR_LOG_TEMPLATE, profileId, e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void putEmpty(UUID uuid, String profileId) {

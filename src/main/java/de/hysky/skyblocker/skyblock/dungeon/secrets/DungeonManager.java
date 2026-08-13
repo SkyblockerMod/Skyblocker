@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,30 +15,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
-import com.google.gson.JsonParser;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
-import net.minecraft.ChatFormatting;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -53,31 +34,26 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Tickable;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -106,6 +82,28 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class DungeonManager {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -278,9 +276,9 @@ public class DungeonManager {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(DungeonManager::saveCustomWaypoints);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::update, 5);
 		Scheduler.INSTANCE.scheduleCyclic(DungeonManager::updateAllRoomCheckmarks, 20);
-		WorldRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(DungeonManager::extractRendering);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(DungeonManager::onChatMessage);
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> onUseBlock(world, hitResult));
+		UseBlockCallback.EVENT.register((_, world, _, hitResult) -> onUseBlock(world, hitResult));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 				.then(literal("markAsFound").then(markSecretsCommand(true)))
 				.then(literal("markAsMissing").then(markSecretsCommand(false)).then(markAllSecretsAsMissingCommand()))
@@ -292,7 +290,7 @@ public class DungeonManager {
 				.then(literal("removeWaypointRelatively").then(removeCustomWaypointCommand(true)))
 		))));
 		if (Debug.debugEnabled()) {
-			ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
+			ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("dungeons").then(literal("secrets")
 					.then(literal("matchAgainst").then(matchAgainstCommand()))
 					.then(literal("clearSubProcesses").executes(context -> {
 						if (currentRoom != null) {
@@ -330,7 +328,7 @@ public class DungeonManager {
 					}))
 			))));
 		}
-		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
+		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 	}
 
 	private static void load() {
@@ -346,13 +344,13 @@ public class DungeonManager {
 			String dungeon = path[1];
 			String roomShape = path[2];
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
-			ROOMS_DATA.computeIfAbsent(dungeon, dungeonKey -> new ConcurrentHashMap<>());
-			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, roomShapeKey -> new ConcurrentHashMap<>());
-			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(blocks -> {
+			ROOMS_DATA.computeIfAbsent(dungeon, _ -> new ConcurrentHashMap<>());
+			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, _ -> new ConcurrentHashMap<>());
+			dungeonFutures.add(CompletableFuture.runAsync(() -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
-				roomsMap.put(room, blocks);
+				roomsMap.put(room, readRoom(resourceEntry.getValue()));
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -374,7 +372,7 @@ public class DungeonManager {
 					throw new RuntimeException(ex);
 				}
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -386,11 +384,11 @@ public class DungeonManager {
 						addCustomWaypoints(room, SecretWaypoint.LIST_CODEC.parse(JsonOps.INSTANCE, waypointsJson).resultOrPartial(LOGGER::error).orElseGet(ArrayList::new))
 				);
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded custom dungeon secret waypoints");
-			} catch (NoSuchFileException ignored) {
+			} catch (NoSuchFileException _) {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load custom dungeon secret waypoints", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR));
 		roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker Dungeon Secrets] Loaded dungeon secrets for {} dungeon(s), {} room shapes, {} rooms, and {} custom secret waypoints total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), customWaypoints.size(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
 			return null;
@@ -420,7 +418,7 @@ public class DungeonManager {
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Integer> markSecretsCommand(boolean found) {
-		return argument("secretIndex", IntegerArgumentType.integer()).suggests((provider, builder) -> {
+		return argument("secretIndex", IntegerArgumentType.integer()).suggests((_, builder) -> {
 			if (isCurrentRoomMatched()) {
 				//noinspection DataFlowIssue - checked above
 				IntStream.rangeClosed(1, currentRoom.getSecretCount()).forEach(builder::suggest);
@@ -538,7 +536,7 @@ public class DungeonManager {
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
-		return argument("room", StringArgumentType.string()).suggests((context, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
+		return argument("room", StringArgumentType.string()).suggests((_, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
 			if (!isClearingDungeon()) {
 				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
@@ -1072,7 +1070,7 @@ public class DungeonManager {
 	}
 
 	public static void startFromRoomPreview(Room room) {
-		room.segments.forEach((segment) -> rooms.put(segment, room));
+		room.segments.forEach(segment -> rooms.put(segment, room));
 		currentRoom = room;
 		runEnded = true;
 	}

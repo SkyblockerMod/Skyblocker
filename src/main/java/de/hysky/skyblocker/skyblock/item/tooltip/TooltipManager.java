@@ -1,5 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
@@ -18,6 +34,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.DungeonQualityTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EstimatedItemValueTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EvolvingItemProgressTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.GeorgePriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.HuntingBoxPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LBinTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
@@ -32,20 +49,6 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.TrueHexDyeScreenDisplay;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerMatcher;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
-import org.jspecify.annotations.Nullable;
 
 public class TooltipManager {
 	private static final TooltipAdder[] adders = new TooltipAdder[]{
@@ -61,21 +64,22 @@ public class TooltipManager {
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new EvolvingItemProgressTooltip(0),
 			new NpcPriceTooltip(1),
-			new BazaarPriceTooltip(2),
-			new LBinTooltip(3),
-			new AvgBinTooltip(4),
-			new EssenceShopPrice(5),
-			new CraftPriceTooltip(6),
-			new EstimatedItemValueTooltip(7),
-			new DungeonQualityTooltip(8),
-			new MotesTooltip(9),
-			new ObtainedDateTooltip(10),
-			new MuseumTooltip(11),
-			new ColorTooltip(12),
-			new AccessoryTooltip(13),
-			new DateCalculatorTooltip(14),
-			new HuntingBoxPriceTooltip(15),
-			CroesusProfit.INSTANCE, // priority = 16
+			new GeorgePriceTooltip(2),
+			new BazaarPriceTooltip(3),
+			new LBinTooltip(4),
+			new AvgBinTooltip(5),
+			new EssenceShopPrice(6),
+			new CraftPriceTooltip(7),
+			new EstimatedItemValueTooltip(8),
+			new DungeonQualityTooltip(9),
+			new MotesTooltip(10),
+			new ObtainedDateTooltip(11),
+			new MuseumTooltip(12),
+			new ColorTooltip(13),
+			new AccessoryTooltip(14),
+			new DateCalculatorTooltip(15),
+			new HuntingBoxPriceTooltip(16),
+			CroesusProfit.INSTANCE, // priority = 17
 	};
 	private static List<TooltipAdder> currentScreenAdders = new ArrayList<>();
 
@@ -84,16 +88,16 @@ public class TooltipManager {
 
 	@Init
 	public static void init() {
-		ItemTooltipCallback.EVENT.register((stack, tooltipContext, tooltipType, lines) -> {
-			if (Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> handledScreen) {
+		ItemTooltipCallback.EVENT.register((stack, _, _, lines) -> {
+			if (Minecraft.getInstance().gui.screen() instanceof AbstractContainerScreen<?> handledScreen) {
 				addToTooltip(((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot(), stack, lines);
 			} else {
 				addToTooltip(null, stack, lines);
 			}
 		});
-		ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
+		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			onScreenChange(screen);
-			ScreenEvents.remove(screen).register(ignored -> currentScreenAdders = List.of());
+			ScreenEvents.remove(screen).register(_ -> currentScreenAdders = List.of());
 		});
 	}
 

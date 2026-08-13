@@ -1,16 +1,11 @@
 package de.hysky.skyblocker.skyblock.end;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
+import java.util.HashMap;
+import java.util.Map;
+
 import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.Minecraft;
@@ -22,8 +17,16 @@ import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.DyeColor;
-import java.util.HashMap;
-import java.util.Map;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.SeenWaypoint;
 
 public class EnderNodes {
 	private static final Minecraft client = Minecraft.getInstance();
@@ -32,12 +35,12 @@ public class EnderNodes {
 	@Init
 	public static void init() {
 		Scheduler.INSTANCE.scheduleCyclic(EnderNodes::update, 20);
-		WorldRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+		LevelRenderExtractionCallback.EVENT.register(EnderNodes::extractRendering);
+		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> {
 			enderNodes.remove(pos);
 			return InteractionResult.PASS;
 		});
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		ParticleEvents.FROM_SERVER.register(EnderNodes::onParticle);
 	}
 

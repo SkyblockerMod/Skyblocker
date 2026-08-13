@@ -3,6 +3,13 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
@@ -10,14 +17,8 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TargetPractice {
 	private static final BlockPos PRESSURE_PLATE = new BlockPos(63, 127, 35);
@@ -35,8 +36,8 @@ public class TargetPractice {
 	@Init
 	public static void init() {
 		WorldEvents.BLOCK_STATE_UPDATE.register(TargetPractice::onBlockStateUpdate);
-		WorldRenderExtractionCallback.EVENT.register(TargetPractice::extractRendering);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(TargetPractice::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	private static void onBlockStateUpdate(BlockPos pos, BlockState oldState, BlockState newState) {
@@ -67,7 +68,7 @@ public class TargetPractice {
 		// The blocks on the grid are initially Blue Terracotta, when the blocks turns into Emerald Block it is the one that the
 		// player must shoot, so when that block turns back into Blue Terracotta it has either been successfully shot or the device reset.
 		if (POSSIBLE_TARGETS.contains(pos)) {
-			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.BLUE_TERRACOTTA)) {
+			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.DYED_TERRACOTTA.blue())) {
 				// Convert position to immutable since it might be mutable and we can't have it changing
 				HIT_TARGETS.add(pos.immutable());
 			}

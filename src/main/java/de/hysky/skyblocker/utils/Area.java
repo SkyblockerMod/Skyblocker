@@ -39,6 +39,7 @@ public sealed interface Area {
 	@Deprecated
 	record Unknown() implements Area {
 
+		@Deprecated
 		@Override
 		public String displayName() {
 			return "Unknown";
@@ -100,6 +101,22 @@ public sealed interface Area {
 		private final String displayName;
 
 		Galatea(String displayName) {
+			this.displayName = displayName;
+		}
+
+		@Override
+		public String displayName() {
+			return this.displayName;
+		}
+	}
+
+	enum TorrhusCanyon implements Area {
+		TORRHUS_SPRINGS("Torrhus Springs"),
+		DESERT_TEMPLE("Desert Temple");
+
+		private final String displayName;
+
+		TorrhusCanyon(String displayName) {
 			this.displayName = displayName;
 		}
 

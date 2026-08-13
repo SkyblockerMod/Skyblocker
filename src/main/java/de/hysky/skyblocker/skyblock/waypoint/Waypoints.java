@@ -1,44 +1,5 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multimaps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.toasts.SystemToast;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.arguments.StringRepresentableArgument;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.StringRepresentable;
-import org.apache.commons.io.IOUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -62,8 +23,49 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import org.apache.commons.io.IOUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Waypoints {
 	public static final Logger LOGGER = LoggerFactory.getLogger(Waypoints.class);
@@ -82,15 +84,15 @@ public class Waypoints {
 	public static void init() {
 		loadWaypoints();
 		ClientLifecycleEvents.CLIENT_STOPPING.register(Waypoints::saveWaypoints);
-		WorldRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(Waypoints::extractRendering);
 		ClientCommandRegistrationCallback.EVENT.register(Waypoints::registerCommands);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 		Scheduler.INSTANCE.scheduleCyclic(Waypoints::tick, 1);
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext access) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE)
-				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(Minecraft.getInstance().screen)))
+				.then(literal("waypoints").executes(Scheduler.queueOpenScreenCommand(() -> new WaypointsScreen(Minecraft.getInstance().gui.screen())))
 						.then(literal("ordered").then(argument("action", OrderedAction.ArgumentType.orderedAction()).executes(Waypoints::executeOrderedWaypointAction)))
 				));
 	}
@@ -120,7 +122,7 @@ public class Waypoints {
 		try (BufferedReader reader = Files.newBufferedReader(WAYPOINTS_FILE)) {
 			List<WaypointGroup> waypointGroups = CODEC.parse(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(reader, JsonArray.class)).resultOrPartial(LOGGER::error).orElseThrow();
 			waypointGroups.forEach(Waypoints::putWaypointGroup);
-		} catch (NoSuchFileException ignored) {
+		} catch (NoSuchFileException _) {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading waypoints", e);
 		}
@@ -132,7 +134,7 @@ public class Waypoints {
 			}
 			Files.move(SKYBLOCKER_LEGACY_ORDERED_FILE, SkyblockerMod.CONFIG_DIR.resolve("legacy_ordered_waypoints.json"));
 			LOGGER.info("[Skyblocker Waypoints] Successfully migrated {} ordered waypoints from {} groups to waypoints!", waypointGroups.stream().map(WaypointGroup::waypoints).mapToInt(List::size).sum(), waypointGroups.size());
-		} catch (NoSuchFileException | FileAlreadyExistsException ignored) {
+		} catch (NoSuchFileException | FileAlreadyExistsException _) {
 		} catch (IOException e) {
 			LOGGER.error("[Skyblocker Waypoints] Encountered exception while loading legacy ordered waypoints", e);
 		}
@@ -208,7 +210,7 @@ public class Waypoints {
 		JsonArray waypointGroupsJson;
 		try {
 			waypointGroupsJson = SkyblockerMod.GSON.fromJson(waypointGroupsString, JsonObject.class).getAsJsonArray("categories");
-		} catch (JsonSyntaxException e) {
+		} catch (JsonSyntaxException _) {
 			// Handle the case where there is only a single json list of waypoints and no group data.
 			JsonObject waypointGroupJson = new JsonObject();
 			waypointGroupJson.addProperty("name", "New Group");

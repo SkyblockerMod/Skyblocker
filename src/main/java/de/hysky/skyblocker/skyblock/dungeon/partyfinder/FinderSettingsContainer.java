@@ -3,8 +3,12 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.client.gui.GuiGraphics;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -17,20 +21,20 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;
-	private OptionDropdownWidget floorSelector;
-	private OptionDropdownWidget dungeonTypeSelector;
-	private OptionDropdownWidget sortGroupsSelector;
+	private @Nullable OptionDropdownWidget floorSelector;
+	private @Nullable OptionDropdownWidget dungeonTypeSelector;
+	private @Nullable OptionDropdownWidget sortGroupsSelector;
 
-	private RangedValueWidget classLevelRange;
-	private RangedValueWidget dungeonLevelRange;
+	private @Nullable RangedValueWidget classLevelRange;
+	private @Nullable RangedValueWidget dungeonLevelRange;
 
-	private AbstractContainerWidget currentlyOpenedOption = null;
+	private @Nullable AbstractContainerWidget currentlyOpenedOption = null;
 
 	private final List<AbstractContainerWidget> initializedWidgets = new ArrayList<>();
 
 
 	public FinderSettingsContainer(int x, int y, int height) {
-		super(x, y, 336, height, Component.empty());
+		super(x, y, 336, height, Component.empty(), AbstractScrollArea.defaultSettings(4));
 	}
 
 	@Override
@@ -169,8 +173,8 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 				//System.out.println("Min and max: " + minAndMax[0] + " " + minAndMax[1]);
 				int leMin = -1;
 				int leMax = -1;
-				try { leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException ignored) {}
-				try { leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException ignored) {}
+				try { leMin = Integer.parseInt(minAndMax[0].trim()); } catch (NumberFormatException _) {}
+				try { leMax = Integer.parseInt(minAndMax[1].trim()); } catch (NumberFormatException _) {}
 
 				widget.setMinAndMax(leMin, leMax);
 				return true;
@@ -219,12 +223,13 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 		return true;
 	}
 
-	private void updateDropdownOptionWidget(ChestMenu handler, OptionDropdownWidget dropdownWidget) {
+	private void updateDropdownOptionWidget(ChestMenu handler, @Nullable OptionDropdownWidget dropdownWidget) {
+		if (dropdownWidget == null) return;
 		currentlyOpenedOption = dropdownWidget;
 		List<OptionDropdownWidget.Option> entries = new ArrayList<>();
 		for (Slot slot : handler.slots) {
 			if (slot.index > (handler.getRowCount() - 1) * 9 - 1) break;
-			if (slot.hasItem() && !slot.getItem().is(Items.BLACK_STAINED_GLASS_PANE)) {
+			if (slot.hasItem() && !slot.getItem().is(Items.STAINED_GLASS_PANE.black())) {
 				entries.add(dropdownWidget.new Option(slot.getItem().getHoverName().getString(), slot.getItem(), slot.index));
 			}
 		}
@@ -232,7 +237,8 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 		dropdownWidget.open(entries, backId);
 	}
 
-	private void updateRangedValue(ChestMenu handler, RangedValueWidget valueWidget) {
+	private void updateRangedValue(ChestMenu handler, @Nullable RangedValueWidget valueWidget) {
+		if (valueWidget == null) return;
 		currentlyOpenedOption = valueWidget;
 		int min = -1;
 		int max = -1;
@@ -275,15 +281,15 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		if (!visible || !isInitialized) return;
-		this.classLevelRange.render(context, mouseX, mouseY, delta);
-		this.dungeonLevelRange.render(context, mouseX, mouseY, delta);
+		if (this.classLevelRange != null) this.classLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
+		if (this.dungeonLevelRange != null) this.dungeonLevelRange.extractRenderState(graphics, mouseX, mouseY, a);
 
 		// Render the dropdowns last to fix overlap issue.
-		this.sortGroupsSelector.render(context, mouseX, mouseY, delta);
-		this.floorSelector.render(context, mouseX, mouseY, delta);
-		this.dungeonTypeSelector.render(context, mouseX, mouseY, delta);
+		if (this.sortGroupsSelector != null) this.sortGroupsSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		if (this.floorSelector != null) this.floorSelector.extractRenderState(graphics, mouseX, mouseY, a);
+		if (this.dungeonTypeSelector != null) this.dungeonTypeSelector.extractRenderState(graphics, mouseX, mouseY, a);
 	}
 
 	@Override

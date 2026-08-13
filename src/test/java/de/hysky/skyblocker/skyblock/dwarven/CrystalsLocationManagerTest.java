@@ -1,11 +1,19 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.utils.Constants;
-import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.utils.Constants;
+
 class CrystalsLocationManagerTest {
+	@BeforeAll
+	static void beforeAll() {
+		System.setProperty("skyblocker.iAmABoringPersonAndHateFun", "true");
+	}
+
 	boolean matches(String text) {
 		return CrystalsLocationsManager.TEXT_CWORDS_PATTERN.matcher(text).find();
 	}

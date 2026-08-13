@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.config.screens.powdertracker.ItemTickList;
-import de.hysky.skyblocker.utils.Location;
 import java.util.EnumSet;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
@@ -11,7 +12,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.config.screens.powdertracker.ItemTickList;
+import de.hysky.skyblocker.utils.Location;
 
 public class ChatRuleLocationConfigScreen extends Screen {
 	private final @Nullable Screen parent;
@@ -27,10 +30,9 @@ public class ChatRuleLocationConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		assert minecraft != null;
-		addRenderableOnly((context, mouseX, mouseY, delta) -> {
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
-			context.drawCenteredString(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - minecraft.font.lineHeight), CommonColors.WHITE);
+		addRenderableOnly((context, _, _, _) -> {
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.chat.chatRules.screen.ruleScreen.locationsConfigScreen.note"), width / 2, (38 - minecraft.font.lineHeight), CommonColors.WHITE);
 		});
 
 		ItemTickList<Location> itemTickList = addRenderableWidget(new ItemTickList<>(minecraft, width, height - 107, 43, 24, enabledLocations, EnumSet.complementOf(EnumSet.of(Location.UNKNOWN)), true).init());
@@ -39,16 +41,16 @@ public class ChatRuleLocationConfigScreen extends Screen {
 		gridWidget.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
 		GridLayout.RowHelper adder = gridWidget.createRowHelper(2);
 
-		adder.addChild(Button.builder(Component.translatable("text.skyblocker.reset"), button -> {
+		adder.addChild(Button.builder(Component.translatable("text.skyblocker.reset"), _ -> {
 			enabledLocations.clear();
 			itemTickList.clearAndInit();
 		}).build());
-		adder.addChild(Button.builder(Component.translatable("text.skyblocker.undo"), button -> {
+		adder.addChild(Button.builder(Component.translatable("text.skyblocker.undo"), _ -> {
 			enabledLocations.clear();
 			enabledLocations.addAll(chatRule.getValidLocations());
 			itemTickList.clearAndInit();
 		}).build());
-		adder.addChild(Button.builder(CommonComponents.GUI_DONE, button -> {
+		adder.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 								saveFilters();
 								onClose();
 							})
@@ -65,7 +67,6 @@ public class ChatRuleLocationConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 }

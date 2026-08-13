@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.loader.api.FabricLoader;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,22 +16,23 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class BuildersWandPreview {
 	private static final int MAX_BLOCKS = 241;
 	public static final int PLOT_SIZE = 96;
 	public static final int PLOT_OFFSET = 48;
 	private static final float[] RED = {1.0f, 0.0f, 0.0f};
-	public static final boolean SODIUM_LOADED = FabricLoader.getInstance().isModLoaded("sodium");
 	private static final Minecraft client = Minecraft.getInstance();
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(collector -> {
+		LevelRenderExtractionCallback.EVENT.register(collector -> {
 			if (!SkyblockerConfigManager.get().helpers.buildersWand.enableBuildersWandPreview || !Utils.isOnSkyblock() || client.player == null) return;
 			if (!Utils.isInPrivateIsland() && !Utils.isInGarden()) return;
 			if (!(client.hitResult instanceof BlockHitResult blockHitResult) || blockHitResult.getType() != HitResult.Type.BLOCK) return;
@@ -101,10 +101,17 @@ public class BuildersWandPreview {
 		else startBlock = client.level.getBlockState(startPos).getBlock();
 
 		BlockPos.MutableBlockPos pos = startPos.mutable();
+
+		Direction dir = hitResult.getDirection().getOpposite();
+		// Adjust direction based on if we hit the top/bottom face (then we use client.player.getDirection() instead). Side checks are exclusive to sneaking (delete) only.
+		if (dir == Direction.UP || dir == Direction.DOWN || !isSneaking) {
+			dir = client.player.getDirection();
+		}
+
 		for (int i = 0; i < MAX_BLOCKS && checkPos(startPos, pos, client.level.getBlockState(pos), isSneaking, startBlock); i++) {
 			if (isSneaking) collector.submitFilledBox(pos.immutable(), RED, SkyblockerConfigManager.get().helpers.buildersWand.previewOpacity, true);
 			else extractBlockPreview(collector, pos.immutable(), Blocks.DIRT.defaultBlockState());
-			pos.move(client.player.getDirection());
+			pos.move(dir);
 		}
 	}
 

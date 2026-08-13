@@ -1,10 +1,29 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.VisibleForTesting;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.Utils;
@@ -13,21 +32,6 @@ import de.hysky.skyblocker.utils.render.gui.BasicToast;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.VisibleForTesting;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 public class ChatRulesHandler {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -40,11 +44,11 @@ public class ChatRulesHandler {
 
 	@Init
 	public static void init() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CHAT_RULE_LIST.init());
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> CHAT_RULE_LIST.init());
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatRulesHandler::checkMessage);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-				dispatcher.register(ClientCommandManager.literal(SkyblockerMod.NAMESPACE)
-						.then(ClientCommandManager.literal("chatRules")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) ->
+				dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+						.then(ClientCommands.literal("chatRules")
 								.executes(
 										Scheduler.queueOpenScreenCommand(() -> new ChatRulesConfigScreen(null)))
 		)));
@@ -53,8 +57,8 @@ public class ChatRulesHandler {
 	@VisibleForTesting
 	static List<ChatRule> getDefaultChatRules() {
 		return new ArrayList<>(List.of(
-				new ChatRule("Clean Hub Chat", false, true, true, true, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
-				new ChatRule("Mining Ability Alert", false, true, false, true, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
+				new ChatRule("Clean Hub Chat", false, true, true, true, false, "(selling)|(buying)|(lowb)|(visit)|(/p)|(/ah)|(my ah)", EnumSet.of(Location.HUB), true, null, null, null, null, null),
+				new ChatRule("Mining Ability Alert", false, true, false, true, false, "is now available!", EnumSet.of(Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS), false, "&1Ability", null, new ChatRule.AnnouncementMessage("&1Ability", 3000), null, SoundEvents.ARROW_HIT_PLAYER)
 		));
 	}
 
@@ -65,10 +69,9 @@ public class ChatRulesHandler {
 		if (overlay || !Utils.isOnSkyblock()) return true;
 		List<ChatRule> rules = CHAT_RULE_LIST.getData();
 		if (!CHAT_RULE_LIST.isLoaded() || rules.isEmpty()) return true;
-		String plain = ChatFormatting.stripFormatting(message.getString());
 
 		for (ChatRule rule : rules) {
-			ChatRule.Match match = rule.isMatch(plain);
+			ChatRule.Match match = rule.isMatch(rule.getIncludeFormatting() ? TextTransformer.toLegacy(message) : ChatFormatting.stripFormatting(message.getString()));
 			if (!match.matches()) continue;
 
 			// Get a replacement message
@@ -85,12 +88,12 @@ public class ChatRulesHandler {
 
 			// Show in action bar
 			if (rule.getActionBarMessage() != null && CLIENT.player != null) {
-				CLIENT.player.displayClientMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())), true);
+				CLIENT.player.sendOverlayMessage(formatText(match.insertCaptureGroups(rule.getActionBarMessage())));
 			}
 
 			if (rule.getToastMessage() != null) {
 				ChatRule.ToastMessage toastMessage = rule.getToastMessage();
-				CLIENT.getToastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon));
+				CLIENT.gui.toastManager().addToast(new BasicToast(formatText(match.insertCaptureGroups(toastMessage.message)), toastMessage.displayDuration, toastMessage.icon.map(FlexibleItemStack::getStack).orElse(ItemStack.EMPTY)));
 			}
 
 			// Play sound

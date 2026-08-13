@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SkyblockXpMessages {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -32,7 +35,7 @@ public class SkyblockXpMessages {
 				int hash = xpMessage.hashCode();
 
 				if (!RECENT_MESSAGES.contains(hash)) {
-					CLIENT.player.displayClientMessage(Constants.PREFIX.get().append(xpMessage), false);
+					CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(xpMessage));
 					RECENT_MESSAGES.add(hash);
 					Scheduler.INSTANCE.schedule(() -> RECENT_MESSAGES.remove(hash), 20 * 10);
 				}

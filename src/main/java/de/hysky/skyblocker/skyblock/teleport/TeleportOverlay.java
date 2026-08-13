@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.teleport;
 
 import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class TeleportOverlay {
@@ -20,7 +22,7 @@ public class TeleportOverlay {
 	@Init
 	public static void init() {
 		configCallback(SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.teleportOverlayColor); // Initialize colorComponents from the config value
-		WorldRenderExtractionCallback.EVENT.register(TeleportOverlay::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(TeleportOverlay::extractRendering);
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
@@ -38,6 +40,11 @@ public class TeleportOverlay {
 				case "ASPECT_OF_THE_LEECH_2" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
 						extractRendering(collector, 4, false);
+					}
+				}
+				case "ASPECT_OF_THE_LEECH_3" -> {
+					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
+						extractRendering(collector, 5, false);
 					}
 				}
 				case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {

@@ -1,20 +1,22 @@
 package de.hysky.skyblocker.compatibility.rei;
 
-import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import io.github.moulberry.repo.data.NEUCraftingRecipe;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.compatibility.rei.info.SkyblockInfoCategory;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SkyblockTransferHandler implements TransferHandler {
 	private static final int MAX_FAIL_COUNT = 5;
@@ -57,7 +59,7 @@ public class SkyblockTransferHandler implements TransferHandler {
 	}
 
 	private void checkScreen(String skyblockId) {
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
 		if (!(currentScreen instanceof ContainerScreen)) {
 			FAIL_COUNT = 0;
 			FAILED_ITEM = skyblockId;

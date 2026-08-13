@@ -1,17 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -19,12 +11,20 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.commands.SharedSuggestionProvider;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class RngMeterAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -45,15 +45,15 @@ public class RngMeterAutocomplete {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker RNG Meter Autocomplete] Failed to load RNG Meter data.", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static LiteralCommandNode<FabricClientCommandSource> createCommandNode(String command) {
 		return literal(command)
-				.requires(source -> Utils.isOnSkyblock())
+				.requires(_ -> Utils.isOnSkyblock())
 				.executes(CommandUtils.noOp)
 				.then(argument("type", StringArgumentType.string())
-						.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
+						.suggests((_, builder) -> SharedSuggestionProvider.suggest(rngMeters.keySet(), builder))
 						.executes(CommandUtils.noOp)
 						.then(argument("subtype", StringArgumentType.string())
 								.suggests((context, builder) -> SharedSuggestionProvider.suggest(rngMeters.getOrDefault(StringArgumentType.getString(context, "type"), List.of()), builder))

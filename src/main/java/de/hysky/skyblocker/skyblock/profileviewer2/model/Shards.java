@@ -5,8 +5,9 @@ import java.util.UUID;
 
 import com.google.gson.annotations.SerializedName;
 
-import de.hysky.skyblocker.utils.Location;
 import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.utils.Location;
 
 public class Shards {
 	public Traps traps = new Traps();
@@ -23,14 +24,13 @@ public class Shards {
 			@SerializedName("capture_time")
 			public long captureTime;
 			public String mode = "";
-			/**
-			 * Comma delimited string of coordinates with decimals
-			 */
+			/// Comma delimited string of coordinates with decimals
 			public String location = "";
 			@SerializedName("placed_at")
 			public long placedAt;
 			public String shard = "";
 			public boolean captured;
+			public boolean museum;
 			public UUID uuid = UUID.randomUUID();
 
 			public Location getIsland() {

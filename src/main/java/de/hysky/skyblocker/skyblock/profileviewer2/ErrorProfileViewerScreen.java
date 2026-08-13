@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.profileviewer2;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -13,12 +13,12 @@ public final class ErrorProfileViewerScreen extends AbstractProfileViewerScreen 
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float a) {
-		super.render(graphics, mouseX, mouseY, a);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		super.extractRenderState(graphics, mouseX, mouseY, a);
 
 		int middleX = graphics.guiWidth() / 2;
 		int middleY = graphics.guiHeight() / 2;
-		graphics.drawCenteredString(this.font, "Encountered an error.", middleX, middleY, CommonColors.WHITE);
-		graphics.drawCenteredString(this.font, this.reason, middleX, middleY + 9, CommonColors.WHITE);
+		graphics.centeredText(this.font, "Encountered an error.", middleX, middleY, CommonColors.WHITE);
+		graphics.centeredText(this.font, this.reason, middleX, middleY + 9, CommonColors.WHITE);
 	}
 }

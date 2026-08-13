@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import java.util.List;
 import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -16,7 +17,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.joml.Matrix3x2fStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 
 public class RarityWidget extends AbstractWidget {
 
@@ -34,15 +38,15 @@ public class RarityWidget extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		Matrix3x2fStack matrices = context.pose();
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
 		matrices.translate(getX(), getY());
 		boolean onLeftArrow = isOnLeftArrow(mouseX);
 		boolean onRightArrow = isOnRightArrow(mouseX);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 6, 0, 36, 11);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, onLeftArrow ? LEFT_HOVER_TEXTURE : LEFT_TEXTURE, 0, 0, 6, 11);
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, onRightArrow ? RIGHT_HOVER_TEXTURE : RIGHT_TEXTURE, 42, 0, 6, 11);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 6, 0, 36, 11);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, onLeftArrow ? LEFT_HOVER_TEXTURE : LEFT_TEXTURE, 0, 0, 6, 11);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, onRightArrow ? RIGHT_HOVER_TEXTURE : RIGHT_TEXTURE, 42, 0, 6, 11);
 
 		// Text
 		Font textRenderer = Minecraft.getInstance().font;
@@ -52,14 +56,14 @@ public class RarityWidget extends AbstractWidget {
 			matrices.pushMatrix();
 			matrices.translate(0f, 5.5f);
 			matrices.scale(scale, scale);
-			context.drawCenteredString(textRenderer, current, (int) (24 / scale), -textRenderer.lineHeight / 2, color);
+			graphics.centeredText(textRenderer, current, (int) (24 / scale), -textRenderer.lineHeight / 2, color);
 			matrices.popMatrix();
 		} else {
-			context.drawCenteredString(textRenderer, current, 24, 2, color);
+			graphics.centeredText(textRenderer, current, 24, 2, color);
 		}
 
 		matrices.popMatrix();
-		if (!onLeftArrow && !onRightArrow && isHovered()) context.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
+		if (!onLeftArrow && !onRightArrow && isHovered()) graphics.setComponentTooltipForNextFrame(textRenderer, tooltip, mouseX, mouseY);
 
 	}
 
@@ -94,9 +98,9 @@ public class RarityWidget extends AbstractWidget {
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (slotId == -1) return;
 		if (isOnLeftArrow(click.x())) {
-			onClick.click(slotId, 1);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_RIGHT);
 		} else if (isOnRightArrow(click.x())) {
-			onClick.click(slotId, 0);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_LEFT);
 		}
 	}
 }

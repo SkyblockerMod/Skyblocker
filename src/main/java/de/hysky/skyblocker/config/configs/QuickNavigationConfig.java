@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
+import org.intellij.lang.annotations.Language;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.intellij.lang.annotations.Language;
 
 public class QuickNavigationConfig {
 	public boolean enableQuickNav = true;
@@ -15,13 +16,13 @@ public class QuickNavigationConfig {
 	 * "Pets" : simple match on letters
 	 * "(?: \\(\\d+/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
 	 */
-	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "Pets(?: \\(\\d+/\\d+\\))?", "/pets", "Pets");
+	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "(?:\\(\\d+/\\d+\\) )?Pets", "/pets", "Pets");
 
 	/* REGEX Explanation
 	 * "Wardrobe" : simple match on letters
 	 * " \\(\\d+/\\d+\\)" : match on any page with format ($number/$number), in case it is updated again in the future.
 	 */
-	public QuickNavItem button4 = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "Wardrobe \\(\\d+/\\d+\\)", "/wardrobe", "Wardrobe");
+	public QuickNavItem button4 = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "\\(\\d+/\\d+\\) Armor Sets", "/armor", "Armor Sets");
 
 	public QuickNavItem button5 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-2081424676,-57521078,-2073572414,158072763],name:\"\",properties:[{name:\"textures\",value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}]"), "Sack of Sacks", "/sacks", "Sacks");
 
@@ -42,7 +43,18 @@ public class QuickNavigationConfig {
 
 	public QuickNavItem button11 = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;1605800870,415127827,-1236127084,15358548],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}]"), "/warp dungeon_hub", "Dungeons Hub");
 
-	public QuickNavItem button12 = new QuickNavItem(false, new ItemData(Items.GOLD_BLOCK), "Auction House", "/ah", "(?:Co-op )?Auction House|Your Bids");
+	/* REGEX Explanation
+	 * "Auctions Browser" : simple exact match
+	 * "Co-op Auction House" : simple exact match
+	 * "Auction House" : simple exact match
+	 * "Manage Auctions" : simple exact match
+	 * "Your Bids" : simple exact match
+	 * "BIN Auction View" : simple exact match
+	 * "Auction View" : simple exact match
+	 * "Auctions:.*" : match "Auctions:" followed by anything (`/ahs <query>` results)
+	 * "(?: ... )" : combine all valid titles
+	 */
+	public QuickNavItem button12 = new QuickNavItem(false, new ItemData(Items.GOLD_BLOCK), "^(?:Auctions Browser|Co-op Auction House|Auction House|Manage Auctions|Your Bids|BIN Auction View|Auction View|Auctions:.*)$", "/ah", "Auction House");
 
 	public QuickNavItem button13 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlMmRjZGE0MWVjM2FmZjhhZjUwZjI3MmVjMmUwNmE4ZjUwOWUwZjgwN2YyMzU1YTFmNWEzM2MxYjY2ZTliNCJ9fX0=\"}]}]"), "(?:Co-op )?Bazaar .*", "/bz", "Bazaar");
 

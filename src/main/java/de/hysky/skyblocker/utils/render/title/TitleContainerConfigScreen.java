@@ -1,25 +1,27 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import java.awt.Color;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
-import de.hysky.skyblocker.utils.render.gui.AbstractWidget;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
-import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
-import org.lwjgl.glfw.GLFW;
-
-import java.awt.Color;
-import java.util.List;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
 	public static final float MIN_TITLE_SCALE = 30f;
@@ -68,13 +70,13 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, List<AbstractWidget> widgets, float delta) {
-		super.renderWidget(context, widgets, delta);
+	protected void extractRenderState(GuiGraphicsExtractor context, List<BasicWidget> widgets, float delta) {
+		super.extractRenderState(context, widgets, delta);
 		TitleContainer.render(context, EXAMPLES, widgets.getFirst().getX(), widgets.getFirst().getY(), delta, renderScale, direction, alignment);
-		context.drawCenteredString(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
-		context.drawCenteredString(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
+		context.centeredText(font, "Press Q/E to change Alignment: " + alignment, width / 2, font.lineHeight * 2, Color.WHITE.getRGB());
+		context.centeredText(font, "Press R to change Direction: " + direction, width / 2, font.lineHeight * 3 + 5, Color.WHITE.getRGB());
+		context.centeredText(font, "Press +/- to change Scale", width / 2, font.lineHeight * 4 + 10, Color.WHITE.getRGB());
+		context.centeredText(font, "Right Click To Reset Position", width / 2, font.lineHeight * 5 + 15, Color.GRAY.getRGB());
 
 		int selectionWidth = getSelectionWidth();
 		int x1 = switch (alignment) {
@@ -86,10 +88,10 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 		int x2 = x1 + selectionWidth;
 		int y2 = y1 + getSelectionHeight();
 
-		context.hLine(x1, x2, y1, Color.RED.getRGB());
-		context.hLine(x1, x2, y2, Color.RED.getRGB());
-		context.vLine(x1, y1, y2, Color.RED.getRGB());
-		context.vLine(x2, y1, y2, Color.RED.getRGB());
+		context.horizontalLine(x1, x2, y1, Color.RED.getRGB());
+		context.horizontalLine(x1, x2, y2, Color.RED.getRGB());
+		context.verticalLine(x1, y1, y2, Color.RED.getRGB());
+		context.verticalLine(x2, y1, y2, Color.RED.getRGB());
 	}
 
 	private void updateWidgetDimensions() {
@@ -108,17 +110,17 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		switch (input.key()) {
-			case GLFW.GLFW_KEY_Q -> alignment = EnumUtils.cycle(alignment);
-			case GLFW.GLFW_KEY_E -> alignment = EnumUtils.cycleBackwards(alignment);
-			case GLFW.GLFW_KEY_R -> {
+			case InputConstants.KEY_Q -> alignment = EnumUtils.cycle(alignment);
+			case InputConstants.KEY_E -> alignment = EnumUtils.cycleBackwards(alignment);
+			case InputConstants.KEY_R -> {
 				direction = EnumUtils.cycle(direction);
 				updateWidgetDimensions();
 			}
-			case GLFW.GLFW_KEY_EQUAL -> {
+			case InputConstants.KEY_EQUALS -> {
 				titleContainerScale = Math.min(MAX_TITLE_SCALE, titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
-			case GLFW.GLFW_KEY_MINUS -> {
+			case InputConstants.KEY_MINUS -> {
 				titleContainerScale = Math.max(MIN_TITLE_SCALE, titleContainerScale - 10);
 				updateWidgetDimensions();
 			}
@@ -127,7 +129,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected int getWidgetXOffset(AbstractWidget widget) {
+	protected int getWidgetXOffset(BasicWidget widget) {
 		return switch (alignment) {
 			case LEFT -> 0;
 			case MIDDLE -> -getSelectionWidth() / 2;
@@ -142,7 +144,7 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	}
 
 	@Override
-	protected void savePos(SkyblockerConfig fullConfig, List<AbstractWidget> widgets) {
+	protected void savePos(SkyblockerConfig fullConfig, List<BasicWidget> widgets) {
 		// Save to -1 if the widget is at the default position
 		List<IntIntMutablePair> defaultPos = getConfigPos(fullConfig);
 		UIAndVisualsConfig.TitleContainer config = fullConfig.uiAndVisuals.titleContainer;

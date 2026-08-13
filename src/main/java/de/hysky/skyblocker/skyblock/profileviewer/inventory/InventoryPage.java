@@ -1,6 +1,19 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.BackpackItemLoader;
@@ -9,22 +22,12 @@ import de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders.Wardrobe
 import de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public class InventoryPage implements ProfileViewerPage {
 	private static final String[] INVENTORY_PAGES = {"inventory", "enderchest", "backpack", "wardrobe", "pets", "accessoryBag"};
 	private static final int TOTAL_HEIGHT = 165;
-	private static final Map<String, ItemStack> ICON_MAP = Map.ofEntries(
+	private static final Map<String, FlexibleItemStack> ICON_MAP = Map.ofEntries(
 			Map.entry("wardrobe", Ico.L_CHESTPLATE),
 			Map.entry("inventory", Ico.CHEST),
 			Map.entry("backpack", ProfileViewerUtils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYyZjNiM2EwNTQ4MWNkZTc3MjQwMDA1YzBkZGNlZTFjMDY5ZTU1MDRhNjJjZTA5Nzc4NzlmNTVhMzkzOTYxNDYifX19")),
@@ -58,21 +61,21 @@ public class InventoryPage implements ProfileViewerPage {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta, int rootX, int rootY) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY) {
 		int startingY = rootY + (TOTAL_HEIGHT - inventorySelectButtons.size() * 21) / 2;
 		for (int i = 0; i < inventorySelectButtons.size(); i++) {
 			inventorySelectButtons.get(i).setX(rootX);
 			inventorySelectButtons.get(i).setY(startingY + i * 21);
-			inventorySelectButtons.get(i).render(context, mouseX, mouseY, delta);
+			inventorySelectButtons.get(i).extractRenderState(graphics, mouseX, mouseY, delta);
 		}
 
 		if (inventorySubPages[activePage] == null) {
-			context.drawString(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
+			graphics.text(textRenderer, "No data...", rootX + 92, rootY + 72, Color.DARK_GRAY.getRGB(), false);
 			return;
 		}
 
 		inventorySubPages[activePage].markWidgetsAsVisible();
-		inventorySubPages[activePage].render(context, mouseX, mouseY, delta, rootX + 35, rootY + 6);
+		inventorySubPages[activePage].extractRenderState(graphics, mouseX, mouseY, delta, rootX + 35, rootY + 6);
 	}
 
 	public void onNavButtonClick(SubPageSelectButton clickedButton) {

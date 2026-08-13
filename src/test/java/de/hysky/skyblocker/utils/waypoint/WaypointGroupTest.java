@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.Location;
-import net.minecraft.SharedConstants;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.Location;
 
 public class WaypointGroupTest {
 	@BeforeAll

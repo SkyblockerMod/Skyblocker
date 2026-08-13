@@ -1,24 +1,27 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
+import java.awt.Color;
+import java.util.function.Consumer;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import java.awt.Color;
-import java.util.function.Consumer;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 
 /**
  * One single temporary waypoint that gets deleted when the player gets close or changes world.
@@ -30,14 +33,14 @@ public class IndividualWaypoint extends NamedWaypoint {
 	@Init
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(IndividualWaypoint::onTick);
-		WorldRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
-		ClientPlayConnectionEvents.JOIN.register((ignore, ignore2, ignore3) -> waypoint = null);
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
-				ClientCommandManager.literal(SkyblockerMod.NAMESPACE).then(ClientCommandManager.literal("waypoints").then(ClientCommandManager.literal("individual")
-						.then(ClientCommandManager.argument("x", IntegerArgumentType.integer(Integer.MIN_VALUE))
-								.then(ClientCommandManager.argument("y", IntegerArgumentType.integer(Integer.MIN_VALUE))
-										.then(ClientCommandManager.argument("z", IntegerArgumentType.integer(Integer.MIN_VALUE))
-												.then(ClientCommandManager.argument("area", StringArgumentType.greedyString())
+		LevelRenderExtractionCallback.EVENT.register(collector -> { if (waypoint != null) waypoint.extractRendering(collector); });
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> waypoint = null);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
+				ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("waypoints").then(ClientCommands.literal("individual")
+						.then(ClientCommands.argument("x", IntegerArgumentType.integer(Integer.MIN_VALUE))
+								.then(ClientCommands.argument("y", IntegerArgumentType.integer(Integer.MIN_VALUE))
+										.then(ClientCommands.argument("z", IntegerArgumentType.integer(Integer.MIN_VALUE))
+												.then(ClientCommands.argument("area", StringArgumentType.greedyString())
 														.executes(context -> setWaypoint(
 																context.getSource()::sendFeedback,
 																IntegerArgumentType.getInteger(context, "x"),

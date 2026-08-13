@@ -1,16 +1,17 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.ServerTickCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.network.protocol.common.ClientboundPingPacket;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.ServerTickCallback;
 
 public class ServerTickCounter {
 	private static int lastId = -1;
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
 	}
 
 	public static void onServerTick(ClientboundPingPacket packet) {

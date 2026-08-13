@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
-import de.hysky.skyblocker.utils.Utils;
+import java.util.List;
+import java.util.function.Consumer;
+
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -25,9 +27,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix3x2fStack;
 
-import java.util.List;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
 
 public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -69,11 +73,23 @@ public class ItemTab extends GridLayoutTab {
 		modelField.setHint(Component.translatable("skyblocker.customization.item.modelOverride").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		nameWidget = new CustomizeNameWidget(parentScreen);
 
-		layout.addChild(new ItemSelector(), 0, 0, 2, 1);
+		layout.addChild(new ItemSelector(), 0, 0, 1, 1);
 		layout.addChild(new BackgroundRenderer(), 0, 1);
-		layout.addChild(glintButton, 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).alignVerticallyTop().paddingTop(3));
-		layout.addChild(modelField, 1, 1, p -> p.alignHorizontallyRight().paddingRight(3).alignVerticallyBottom().paddingBottom(3));
-		layout.addChild(nameWidget, 2, 0, 1, 2);
+
+		LinearLayout linearLayout = layout.addChild(LinearLayout.vertical(), 0, 1, p -> p.alignHorizontallyRight().paddingRight(3).paddingVertical(3));
+		linearLayout.addChild(glintButton);
+		linearLayout.addChild(Button.builder(Component.translatable("skyblocker.customization.item.selectModel"), _ -> {
+			Minecraft minecraft = Minecraft.getInstance();
+			Consumer<@Nullable Identifier> applyItemModel = stack -> {
+				if (stack != null) {
+					modelField.setValue(stack.toString());
+				}
+			};
+			minecraft.gui.setScreen(new ModelSelectionPopup(parentScreen, applyItemModel));
+		}).width(120).build(), p -> p.paddingTop(4));
+		linearLayout.addChild(modelField);
+
+		layout.addChild(nameWidget, 1, 0, 1, 2);
 
 		LocalPlayer player = Minecraft.getInstance().player;
 		ItemStack handStack = player.getMainHandItem();
@@ -81,7 +97,7 @@ public class ItemTab extends GridLayoutTab {
 			setCurrentItem(handStack);
 			return;
 		}
-		for (ItemStack stack : (Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment)) {
+		for (ItemStack stack : SkyblockInventoryScreen.getCurrentEquipmentSet()) {
 			if (!stack.getUuid().isEmpty()) {
 				setCurrentItem(stack);
 				return;
@@ -135,15 +151,17 @@ public class ItemTab extends GridLayoutTab {
 
 	private class ItemSelector extends AbstractContainerWidget {
 		private static final int PADDING = 3;
+		// Offset added to ensure this is aligned with the item model field area
+		private static final int ADDED_ITEM_OFFSET = 7;
 
 		private final Button selectItemButton;
 		private final LinearLayout layout = LinearLayout.vertical().spacing(5);
 
 		private ItemSelector() {
-			super(0, 20, 0, 0, Component.literal("Item Selector"));
-			layout.addChild(SpacerElement.height(32)); // ITEM
-			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), b ->
-					Minecraft.getInstance().setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
+			super(0, 20, 0, 0, Component.literal("Item Selector"), AbstractScrollArea.defaultSettings(8));
+			layout.addChild(SpacerElement.height(32 + ADDED_ITEM_OFFSET));
+			selectItemButton = layout.addChild(Button.builder(Component.literal("Select Item"), _ ->
+					Minecraft.getInstance().gui.setScreen(new ItemSelectPopup(parentScreen, ItemTab.this::setCurrentItem))
 			).width(Button.SMALL_WIDTH).build());
 			layout.arrangeElements();
 			layout.setPosition(PADDING, PADDING);
@@ -178,20 +196,20 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
-			Matrix3x2fStack matrices = context.pose();
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, INNER_SPACE_TEXTURE, getX(), getY(), getWidth(), getHeight());
+			Matrix3x2fStack matrices = graphics.pose();
 			matrices.pushMatrix();
 			float x = layout.getX() + layout.getWidth() / 2f - 16;
-			int y = layout.getY();
+			int y = layout.getY() + ADDED_ITEM_OFFSET;
 			if (mouseX >= x && mouseX < x + 32 && mouseY >= y && mouseY < y + 32) {
-				context.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(currentItem.getHoverName(), mouseX, mouseY);
 			}
 			matrices.translate(x, y);
 			matrices.scale(2);
-			context.renderItem(currentItem, 0, 0);
+			graphics.item(currentItem, 0, 0);
 			matrices.popMatrix();
-			selectItemButton.render(context, mouseX, mouseY, deltaTicks);
+			selectItemButton.extractRenderState(graphics, mouseX, mouseY, a);
 		}
 
 		@Override
@@ -208,10 +226,10 @@ public class ItemTab extends GridLayoutTab {
 		}
 
 		@Override
-		protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 			int x = glintButton.getX() - 3;
 			int y = glintButton.getY() - 3;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED,
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED,
 					INNER_SPACE_TEXTURE,
 					x,
 					y,

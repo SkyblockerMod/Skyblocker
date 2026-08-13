@@ -3,24 +3,22 @@ package de.hysky.skyblocker.skyblock.special;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class DungeonsSpecialEffects {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Pattern DUNGEON_CHEST_PATTERN = Pattern.compile("^\\s{3,}(?!.*:)(?:RARE REWARD!\\s+)?(?<item>.+)$");
 
 	@Init
@@ -38,11 +36,10 @@ public class DungeonsSpecialEffects {
 			Matcher matcher = DUNGEON_CHEST_PATTERN.matcher(stringForm);
 
 			if (matcher.matches()) {
-				ItemStack stack = getStackFromName(matcher.group("item"));
+				FlexibleItemStack stack = getStackFromName(matcher.group("item"));
 
-				if (stack != null && !stack.isEmpty()) {
-					CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.PORTAL, 30);
-					CLIENT.gameRenderer.displayItemActivation(stack);
+				if (stack != null && stack.getStack() != null && !stack.getStackOrThrow().isEmpty()) {
+					SpecialEffects.displaySpecialEffect(stack.getStackOrThrow(), ParticleTypes.PORTAL);
 				}
 			}
 		} catch (Exception e) { // In case there's a regex failure or something else bad happens
@@ -52,7 +49,7 @@ public class DungeonsSpecialEffects {
 		return true;
 	}
 
-	private static @Nullable ItemStack getStackFromName(String itemName) {
+	private static @Nullable FlexibleItemStack getStackFromName(String itemName) {
 		String itemId = switch (itemName) {
 			case "Recombobulator 3000" -> "RECOMBOBULATOR_3000";
 

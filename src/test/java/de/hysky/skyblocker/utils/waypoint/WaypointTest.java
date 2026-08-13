@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.core.BlockPos;
 
 public class WaypointTest {
 	private Waypoint.Type type;

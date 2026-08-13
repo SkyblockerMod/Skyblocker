@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.calculators;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Calculator;
 import de.hysky.skyblocker.utils.Formatters;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.VisibleForTesting;
 
 public class SignCalculator {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -16,7 +18,7 @@ public class SignCalculator {
 	private static double output;
 	private static Component error;
 
-	public static void renderCalculator(GuiGraphics context, String message, int renderX, int renderY) {
+	public static void extractCalculator(GuiGraphicsExtractor graphics, String message, int renderX, int renderY) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.inputCalculator.requiresEquals && !message.startsWith("=")) {
 			output = -1;
 			error = null;
@@ -28,7 +30,7 @@ public class SignCalculator {
 		}
 		calculate(message);
 
-		render(context, message, renderX, renderY);
+		extract(graphics, message, renderX, renderY);
 	}
 
 	@VisibleForTesting
@@ -60,7 +62,7 @@ public class SignCalculator {
 		return Long.toString(Math.round(output));
 	}
 
-	private static void render(GuiGraphics context, String input, int renderX, int renderY) {
+	private static void extract(GuiGraphicsExtractor graphics, String input, int renderX, int renderY) {
 		Component text;
 		if (output == -1) {
 			text = error != null ? error : Component.translatable("skyblocker.config.uiAndVisuals.inputCalculator.invalidEquation").withStyle(ChatFormatting.RED);
@@ -68,6 +70,6 @@ public class SignCalculator {
 			text = Component.literal(input + " = " + Formatters.DOUBLE_NUMBERS.format(output)).withStyle(ChatFormatting.GREEN);
 		}
 
-		context.drawCenteredString(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
+		graphics.centeredText(CLIENT.font, text, renderX, renderY, 0xFFFFFFFF);
 	}
 }

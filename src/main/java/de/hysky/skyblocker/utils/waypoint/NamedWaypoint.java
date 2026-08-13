@@ -1,27 +1,30 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import com.google.common.primitives.Floats;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.google.common.primitives.Floats;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class NamedWaypoint extends Waypoint {
 	public static final Codec<NamedWaypoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -54,7 +57,7 @@ public class NamedWaypoint extends Waypoint {
 	static final Codec<NamedWaypoint> SKYBLOCKER_LEGACY_ORDERED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BlockPos.CODEC.fieldOf("pos").forGetter(waypoint -> waypoint.pos),
 			Codec.floatRange(0, 1).listOf().xmap(Floats::toArray, FloatArrayList::new).optionalFieldOf("colorComponents", new float[0]).forGetter(waypoint -> waypoint.colorComponents)
-	).apply(instance, (pos, colorComponents) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
+	).apply(instance, (pos, _) -> new OrderedNamedWaypoint(pos, "", new float[]{0, 1, 0})));
 
 	public static final Comparator<NamedWaypoint> NAME_COMPARATOR = new NameComparator();
 
@@ -96,7 +99,7 @@ public class NamedWaypoint extends Waypoint {
 	public NamedWaypoint(BlockPos pos, Component name, Supplier<Type> typeSupplier, float[] colorComponents, float alpha, boolean enabled, boolean throughWalls) {
 		super(pos, typeSupplier, colorComponents, alpha, DEFAULT_LINE_WIDTH, throughWalls, enabled);
 		this.name = name;
-		this.centerPos = pos.getCenter();
+		this.centerPos = Vec3.atCenterOf(pos);
 	}
 
 	public static NamedWaypoint fromSkytils(int x, int y, int z, String name, int color, boolean enabled) {
@@ -207,7 +210,7 @@ public class NamedWaypoint extends Waypoint {
 				int i1 = Integer.parseInt(num1);
 				int i2 = Integer.parseInt(num2);
 				return Integer.compare(i1, i2);
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException _) {
 				return string1.compareTo(string2);
 			}
 		}

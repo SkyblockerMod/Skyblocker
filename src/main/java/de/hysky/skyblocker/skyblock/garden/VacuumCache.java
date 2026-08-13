@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.nio.file.Path;
+
 import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
-import java.nio.file.Path;
 
 public class VacuumCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("vacuum_cache.json");
@@ -24,7 +25,7 @@ public class VacuumCache {
 	public static void init() {
 		CACHED_VINYL.load();
 
-		ScreenEvents.BEFORE_INIT.register((_client, screen, _scaledWidth, _scaledHeight) -> {
+		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
 			if (!Utils.isOnSkyblock() || !(screen instanceof ContainerScreen containerScreen)) {
 				return;
 			}
@@ -33,7 +34,7 @@ public class VacuumCache {
 				return;
 			}
 
-			ScreenEvents.remove(screen).register(_screen -> VacuumCache.update(containerScreen));
+			ScreenEvents.remove(screen).register(_ -> VacuumCache.update(containerScreen));
 		});
 	}
 

@@ -1,20 +1,25 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.io.BufferedReader;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -26,20 +31,16 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class GoldorWaypointsManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoldorWaypointsManager.class);
@@ -70,16 +71,14 @@ public class GoldorWaypointsManager {
 
 	@Init
 	public static void init() {
-		WorldRenderExtractionCallback.EVENT.register(GoldorWaypointsManager::extractRendering);
+		LevelRenderExtractionCallback.EVENT.register(GoldorWaypointsManager::extractRendering);
 		ClientLifecycleEvents.CLIENT_STARTED.register(GoldorWaypointsManager::load);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(GoldorWaypointsManager::onChatMessage);
-		ClientPlayConnectionEvents.JOIN.register(((handler, sender, client) -> reset()));
+		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 	}
 
 	private static void load(Minecraft client) {
-		CompletableFuture<Void> terminals = loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json"));
-
-		terminals.whenComplete((_result, _throwable) -> loaded = true);
+		loadWaypoints(client, SkyblockerMod.id("dungeons/goldorwaypoints.json")).thenRun(() -> loaded = true);
 	}
 
 	private static CompletableFuture<Void> loadWaypoints(Minecraft client, Identifier file) {
@@ -93,13 +92,13 @@ public class GoldorWaypointsManager {
 
 				return List.<GoldorWaypoint>of();
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list -> list.forEach(waypoint -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(list -> list.forEach(waypoint -> {
 			switch (waypoint.kind) {
 				case TERMINAL -> TERMINALS.add(waypoint);
 				case DEVICE -> DEVICES.add(waypoint);
 				case LEVER -> LEVERS.add(waypoint);
 			}
-		}));
+		}), client);
 	}
 
 	/**
@@ -158,8 +157,7 @@ public class GoldorWaypointsManager {
 	 * @param matcher The matcher to extract the name from
 	 * @return The player name, or null if the matcher didn't match
 	 */
-	@Nullable
-	private static String getPlayerName(Matcher matcher) {
+	private static @Nullable String getPlayerName(Matcher matcher) {
 		return matcher.matches() ? matcher.group("name") : null;
 	}
 
@@ -252,7 +250,7 @@ public class GoldorWaypointsManager {
 		final int phase;
 
 		GoldorWaypoint(WaypointTargetKind kind, int phase, Component name, BlockPos pos) {
-			super(pos, name, TYPE_SUPPLIER, kind.colorComponents, 0.25F, true);
+			super(pos, name, TYPE_SUPPLIER, kind.colorComponents, 0.25f, true);
 			this.kind = kind;
 			this.phase = phase;
 		}
@@ -269,7 +267,7 @@ public class GoldorWaypointsManager {
 			private final float[] colorComponents;
 
 			WaypointTargetKind(int r, int g, int b) {
-				this.colorComponents = new float[]{r / 255F, g / 255F, b / 255F};
+				this.colorComponents = new float[]{r / 255f, g / 255f, b / 255f};
 			}
 
 			@Override

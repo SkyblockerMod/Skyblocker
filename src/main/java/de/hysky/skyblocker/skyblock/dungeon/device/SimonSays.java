@@ -1,19 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.WorldRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.Objects;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.Minecraft;
@@ -30,9 +24,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class SimonSays {
 	private static final AABB BOARD_AREA = AABB.encapsulatingFullBlocks(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
@@ -46,8 +48,8 @@ public class SimonSays {
 	@Init
 	public static void init() {
 		UseBlockCallback.EVENT.register(SimonSays::onBlockInteract);
-		ClientPlayConnectionEvents.JOIN.register((_handler, _sender, _client) -> reset());
-		WorldRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		LevelRenderExtractionCallback.EVENT.register(SimonSays::extractRendering);
 		WorldEvents.BLOCK_STATE_UPDATE.register(SimonSays::onBlockUpdate);
 	}
 

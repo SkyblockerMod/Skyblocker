@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.utils.Formatters;
-import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
 import java.text.NumberFormat;
 import java.util.function.DoubleConsumer;
+
+import it.unimi.dsi.fastutil.doubles.Double2ObjectFunction;
+
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.Formatters;
 
 public class RangedSliderWidget extends AbstractSliderButton {
 
@@ -25,7 +28,7 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		this.step = step;
 		this.formatter = formatter;
 		this.callback = callback;
-		setValue(defaultValue);
+		setValue(valueToProgress(defaultValue));
 	}
 
 	private double roundToNearestStep(double value) {
@@ -43,11 +46,6 @@ public class RangedSliderWidget extends AbstractSliderButton {
 	@Override
 	protected void updateMessage() {
 		setMessage(this.formatter.apply(getValue()));
-	}
-
-	public void setValue(double value) {
-		this.value = valueToProgress(value);
-		this.updateMessage();
 	}
 
 	public double getValue() {
@@ -73,7 +71,7 @@ public class RangedSliderWidget extends AbstractSliderButton {
 		private int x, y, width = Button.DEFAULT_WIDTH, height = Button.DEFAULT_HEIGHT;
 		private double value, min = 0, max = 1, step;
 		private Double2ObjectFunction<Component> formatter = d -> Component.literal(Formatters.DOUBLE_NUMBERS.format(d));
-		private DoubleConsumer callback = d -> {};
+		private DoubleConsumer callback = _ -> {};
 
 		private Builder() {}
 

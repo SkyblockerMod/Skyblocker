@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
-import de.hysky.skyblocker.utils.ItemUtils;
+import java.util.List;
+import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -14,8 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
-import java.util.Locale;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button editButton;
@@ -25,8 +28,8 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 
 	public WidgetSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
-		editButton = Button.builder(Component.literal("EDIT"), button -> {
-					this.parent.clickAndWaitForServer(this.slotId, 1);
+		editButton = Button.builder(Component.literal("EDIT"), _ -> {
+					this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_RIGHT);
 					this.parent.resetScrollOnLoad();
 				})
 				.size(32, 12)
@@ -38,14 +41,14 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 		} else if (string.startsWith("✖")) {
 			state = State.DISABLED;
 		} else state = State.LOCKED;
-		enableButton = Button.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, button -> this.parent.clickAndWaitForServer(this.slotId, 0))
+		enableButton = Button.builder(state.equals(State.ENABLED) ? ENABLED_TEXT : DISABLED_TEXT, _ -> this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(64, 12)
 				.build();
 		alwaysEnabled = ItemUtils.getLoreLineIf(icon, s -> s.toLowerCase(Locale.ENGLISH).contains("always enable")) != null;
 	}
 
 	@Override
-	public void renderTooltip(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
+	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY) {
 		if (mouseX >= x && mouseX <= x + entryWidth - 110 && mouseY >= y && mouseY <= y + entryHeight) {
 			@SuppressWarnings("deprecation")
 			List<Component> lore = ItemUtils.getLore(icon);
@@ -54,7 +57,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 			} else if (state != State.LOCKED) {
 				lore = lore.subList(0, Math.max(lore.size() - 3, 0));
 			}
-			context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lore, mouseX, mouseY);
 		}
 	}
 
@@ -64,32 +67,32 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+	public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 		int textY = this.getY() + (this.getHeight() - 9) / 2;
 		Font textRenderer = Minecraft.getInstance().font;
-		renderIconAndText(context, this.getY(), this.getX(), this.getHeight());
+		extractIconAndText(graphics, this.getY(), this.getX(), this.getHeight());
 		if (state != State.LOCKED) {
 
 			editButton.setPosition(this.getX() + this.getWidth() - 40, this.getY() + (this.getHeight() - 12) / 2);
-			editButton.render(context, mouseX, mouseY, deltaTicks);
+			editButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 
 			if (!alwaysEnabled) {
 				enableButton.setPosition(this.getX() + this.getWidth() - 110, this.getY() + (this.getHeight() - 12) / 2);
-				enableButton.render(context, mouseX, mouseY, deltaTicks);
+				enableButton.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
 			}
 		} else {
-			context.drawString(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
+			graphics.text(textRenderer, "LOCKED", this.getX() + this.getWidth() - 50, textY, CommonColors.RED, true);
 		}
 	}
 
 	private static void addToast(Component message) {
-		Minecraft.getInstance().getToastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
+		Minecraft.getInstance().gui.toastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
 	}
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
 		if (super.mouseClicked(event, doubled) || parent.isWaitingForServer()) return true;
-		boolean isSelect = event.button() == 0;
+		boolean isSelect = event.button() == InputConstants.MOUSE_BUTTON_LEFT;
 		if (isSelect && state != State.ENABLED) {
 			addToast(Component.translatable("skyblocker.uiAndVisuals.tabHud.widgetsScreen.toast.mustEnableWidget"));
 			return false;
@@ -109,9 +112,9 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 
 		boolean isGreater = WidgetsElementList.editingPosition > relativePosition;
 		if (isSelect) {
-			parent.clickAndWaitForServer(13, isGreater ? 1 : 0);
+			parent.clickAndWaitForServer(13, isGreater ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT);
 		} else {
-			parent.shiftClickAndWaitForServer(13, isGreater ? 1 : 0);
+			parent.shiftClickAndWaitForServer(13, isGreater ? InputConstants.MOUSE_BUTTON_RIGHT : InputConstants.MOUSE_BUTTON_LEFT);
 		}
 
 		final int remainingClicks = Math.abs(WidgetsElementList.editingPosition - relativePosition) - 1;

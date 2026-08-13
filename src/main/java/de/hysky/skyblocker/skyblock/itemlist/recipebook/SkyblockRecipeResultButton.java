@@ -2,8 +2,11 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,10 +15,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 public class SkyblockRecipeResultButton extends AbstractWidget {
-	//Corresponds to AnimatedResultButton#field_32415
+	// Corresponds to RecipeButton#BACKGROUND_SIZE
 	private static final int SIZE = 25;
 	private static final int ITEM_OFFSET = 4;
 
@@ -47,12 +49,12 @@ public class SkyblockRecipeResultButton extends AbstractWidget {
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		Minecraft client = Minecraft.getInstance();
 
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
-		context.renderFakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
-		context.renderItemDecorations(client.font, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, RecipeButton.SLOT_CRAFTABLE_SPRITE, this.getX(), this.getY(), this.width, this.height);
+		graphics.fakeItem(itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
+		graphics.itemDecorations(client.font, itemStack, this.getX() + ITEM_OFFSET, this.getY() + ITEM_OFFSET);
 	}
 
 	protected static List<Component> getTooltip(ItemStack stack) {

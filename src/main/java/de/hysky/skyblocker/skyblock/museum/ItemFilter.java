@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.museum;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class ItemFilter {
 	private final List<String> categories = new ArrayList<>();
