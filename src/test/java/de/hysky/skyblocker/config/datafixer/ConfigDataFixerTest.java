@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.io.InputStreamReader;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStreamReader;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 public class ConfigDataFixerTest {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

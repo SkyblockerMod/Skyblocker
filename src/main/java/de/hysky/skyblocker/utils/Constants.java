@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

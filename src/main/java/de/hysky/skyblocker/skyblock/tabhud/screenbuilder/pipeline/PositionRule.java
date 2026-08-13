@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 
 public record PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY,

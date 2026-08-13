@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import org.intellij.lang.annotations.Language;
-import org.jspecify.annotations.Nullable;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.intellij.lang.annotations.Language;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 
 public abstract class HeartOfTheXAdder extends SimpleSlotTextAdder {
 	private static final Pattern LEVEL = Pattern.compile("Level (?<level>\\d+)/?(?<max>\\d+)?");

@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetsListEntry;
 
 /**
  * An entry with common fields for all entries that clicks slots

@@ -12,9 +12,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class ConfigDataFixer {
 	static final String VERSION_KEY = "version";

@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.AbstractProfileViewerScreen;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 /**
  * This widget's purpose is for debugging and positing widgets. It currently outlines the bounds of the main content area.

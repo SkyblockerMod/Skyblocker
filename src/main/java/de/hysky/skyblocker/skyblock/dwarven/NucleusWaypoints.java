@@ -1,12 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,6 +12,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class NucleusWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NucleusWaypoints.class);

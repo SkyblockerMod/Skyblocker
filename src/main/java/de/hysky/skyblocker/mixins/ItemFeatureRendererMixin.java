@@ -2,16 +2,16 @@ package de.hysky.skyblocker.mixins;
 
 import java.util.Optional;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 
 @Mixin(ItemFeatureRenderer.class)
 public class ItemFeatureRendererMixin {

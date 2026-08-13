@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import java.util.ArrayList;
+import java.util.List;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -9,14 +11,14 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.joml.Matrix3x2fStack;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 
 /**
  * Skyblock recipe category class for REI

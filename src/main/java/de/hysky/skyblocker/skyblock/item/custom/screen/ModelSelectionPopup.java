@@ -1,7 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.mixins.accessors.ModelManagerAccessor;
-import de.hysky.skyblocker.utils.render.gui.AbstractSelectionPopup;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -15,12 +20,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
+import de.hysky.skyblocker.mixins.accessors.ModelManagerAccessor;
+import de.hysky.skyblocker.utils.render.gui.AbstractSelectionPopup;
 
 public class ModelSelectionPopup extends AbstractSelectionPopup<ModelSelectionPopup.Widget> {
 	protected ModelSelectionPopup(Screen backgroundScreen, Consumer<@Nullable Identifier> onDone) {

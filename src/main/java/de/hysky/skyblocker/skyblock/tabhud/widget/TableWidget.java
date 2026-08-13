@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
 import java.util.List;
+
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
 
 /**
  * Generic widget that arranges rows of components in equal width columns.

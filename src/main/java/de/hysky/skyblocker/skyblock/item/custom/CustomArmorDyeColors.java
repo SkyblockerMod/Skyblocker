@@ -2,19 +2,21 @@ package de.hysky.skyblocker.skyblock.item.custom;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 
 public class CustomArmorDyeColors {
 	@Init

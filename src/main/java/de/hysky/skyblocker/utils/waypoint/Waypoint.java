@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.utils.render.Renderable;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import com.mojang.serialization.Codec;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.utils.render.Renderable;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 /**
  * Represents a waypoint with a position, type, color, alpha, line width, through walls, and enabled state.

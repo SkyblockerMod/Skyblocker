@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -12,7 +14,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 public class ShortcutsConfigScreen extends Screen {
 	private final @Nullable Screen parent;

@@ -3,12 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +10,13 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 	private static final int INFO_OFFSET = 2;

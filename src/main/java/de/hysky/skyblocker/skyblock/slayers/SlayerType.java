@@ -1,20 +1,20 @@
 package de.hysky.skyblocker.skyblock.slayers;
 
-import com.mojang.serialization.Codec;
+import java.util.List;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
+import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-import java.util.List;
-
-import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.HEAD_ICON;
 import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.DROP_ICON;
+import static de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayerWidget.HEAD_ICON;
 
 public enum SlayerType implements StringRepresentable {
 	REVENANT("revenant", "Zombie", EntityTypes.ZOMBIE, "Revenant Horror", HEAD_ICON.get("Zombie"), DROP_ICON.get("Zombie"), new int[]{500, 20_000, 400_000, 1_500_000, 10_000_000}, new int[]{5, 25, 100, 500, 1500}, new int[]{5, 15, 200, 1000, 5000, 20000, 100000, 400000, 1000000}, List.of("Revenant Sycophant"), List.of("Revenant Champion", "Deformed Revenant"), List.of("Atoned Champion", "Atoned Revenant")),

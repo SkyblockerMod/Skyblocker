@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
@@ -8,6 +7,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 
 /**
  * The Skyblock Crafting Tab which handles the mouse clicks & rendering for the results page and the search field.

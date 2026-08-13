@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.component.ItemLore;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
