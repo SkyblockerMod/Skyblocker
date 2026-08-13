@@ -11,29 +11,27 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-// this widget shows a list of obtained dungeon buffs
+/// This widget shows a list of obtained dungeon buffs.
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Buffs", TITLE, ChatFormatting.GREEN.getColor());
 	}
 
 	@Override
 	public void updateContent(List<Component> ignored) {
 
-		String footertext = PlayerListManager.getFooter();
+		String footer = PlayerListManager.getFooter();
 
-		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
+		if (footer == null || !footer.contains("Dungeon Buffs")) {
 			this.addComponent(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
-		String interesting = footertext.split("Dungeon Buffs")[1];
-		String[] lines = interesting.split("\n");
+		String[] lines = footer.split("Dungeon Buffs")[1].split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
 			this.addComponent(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
@@ -51,12 +49,10 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addComponent(new PlainTextElement(Component.literal(line).withColor(color)));
 		}
-
 	}
 
-	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
 		if (blessing.contains("Life")) return ChatFormatting.LIGHT_PURPLE.getColor();
 		if (blessing.contains("Power")) return ChatFormatting.RED.getColor();

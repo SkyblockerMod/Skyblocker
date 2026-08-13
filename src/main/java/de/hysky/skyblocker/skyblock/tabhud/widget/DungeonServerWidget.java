@@ -12,20 +12,19 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-// this widget shows broad info about the current dungeon
-// opened/completed rooms, % of secrets found and time taken
+/// This widget shows broad info about the current dungeon,
+/// opened/completed rooms, % of secrets found, and time taken.
 @RegisterWidget
 public class DungeonServerWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Dungeon Info").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Dungeon Info").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 
 	// match the secrets text
 	// group 1: % of secrets found (without "%")
 	private static final Pattern SECRET_PATTERN = Pattern.compile("Secrets Found: (?<secnum>.*)%");
 
 	public DungeonServerWidget() {
-		super("Dungeon Info", TITLE, ChatFormatting.DARK_PURPLE.getColor());
+		super("Dungeon Info", TITLE, ChatFormatting.GOLD.getColor());
 	}
 
 	@Override
@@ -38,9 +37,12 @@ public class DungeonServerWidget extends TabHudWidget {
 		if (m == null) {
 			this.addComponent(Elements.progressComponent());
 		} else {
-			this.addComponent(Elements.progressComponent(Ico.CHEST, Component.nullToEmpty("Secrets found:"),
+			this.addComponent(Elements.progressComponent(
+					Ico.CHEST,
+					Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
-					ChatFormatting.DARK_PURPLE.getColor()));
+					ChatFormatting.DARK_PURPLE.getColor()
+			));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GOLD, 45);
