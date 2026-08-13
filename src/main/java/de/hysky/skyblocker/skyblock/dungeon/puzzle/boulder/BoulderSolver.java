@@ -159,12 +159,20 @@ public class BoulderSolver {
 		}
 
 		/**
-		 * Checks if the puzzle is solved, i.e., if the player is positioned on the target BoulderObject.
+		 * Checks if the puzzle is solved, i.e., if the player has reached the row containing the target
+		 * BoulderObject. The player can walk past the remaining blocks on that final row.
 		 *
 		 * @return true if the theoretical puzzle is solved, false otherwise.
 		 */
 		public boolean isSolved() {
-			return grid[playerX][playerY] == 'T';
+			for (int row = 0; row < grid.length; row++) {
+				for (char cell : grid[row]) {
+					if (cell == 'T') {
+						return playerX == row;
+					}
+				}
+			}
+			return false;
 		}
 
 		/**
