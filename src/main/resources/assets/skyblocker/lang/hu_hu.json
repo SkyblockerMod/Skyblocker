@@ -1862,5 +1862,10 @@
     "skyblocker.fancyAuctionHouse.canBuyIn": "Megvehető: %s",
     "skyblocker.config.hunting.forestBiome": "Erdő Biome",
     "skyblocker.config.hunting.hauntedBiome": "Kísértetjárta Biome",
-    "skyblocker.config.hunting.icyBiome": "Jeges Biome"
+    "skyblocker.config.hunting.icyBiome": "Jeges Biome",
+    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "Rekesz Lezárás figyelmen kívül hagyása Shining Coin-okhoz",
+    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins.@Tooltip": "A lezárt rekeszekből is ki tudod dobni a Shining Coin-okat ha a Kísértetjárta Biomeban vagy.",
+    "skyblocker.config.hunting.safari.highlightSparklingCritters": "Sparkling Critter-ek Kiemelése",
+    "skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip": "Kiemeli a Sparkling Critter-eket, amik nagyon ritkán találhatóak meg a Critter Safari-ban.",
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critter Kiemelés Színe"
 }
