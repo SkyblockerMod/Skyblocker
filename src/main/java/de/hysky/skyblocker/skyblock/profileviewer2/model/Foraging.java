@@ -52,8 +52,16 @@ public class Foraging {
 		@SerializedName("HELIX")
 		public int helix;
 
-		// super cursed way to do this but it allows us to reuse this class!
 		@SerializedName("milestone_tier_claimed")
-		public TreeGifts milestoneClaimed = new TreeGifts();
+		public MilestoneClaimed milestoneClaimed = new MilestoneClaimed();
+
+		public static class MilestoneClaimed {
+			@SerializedName("FIG")
+			public int fig;
+			@SerializedName("MANGROVE")
+			public int mangrove;
+			@SerializedName("HELIX")
+			public int helix;
+		}
 	}
 }

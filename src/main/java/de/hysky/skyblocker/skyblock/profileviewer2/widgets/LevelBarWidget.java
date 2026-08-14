@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -18,36 +21,34 @@ import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class LevelBarWidget extends AbstractWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");
 	private static final Identifier BAR_BACKGROUND = SkyblockerMod.id("bars/bar_back");
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
-	private static final int HEIGHT = 26;
-	private static final int ICON_BOX_SIZE = 22;
-	// The icon box is 2px smaller on all sides
-	private static final int ICON_BOX_Y_OFFSET = 2;
-	// The gap of 4 is for space between icon & content box
-	private static final int CONTENT_BOX_OFFSET = ICON_BOX_SIZE + 4;
-	// Extra padding of 3 is so the text & bar aren't against the left edge of the content box
-	private static final int CONTENT_OFFSET = CONTENT_BOX_OFFSET + 3;
-	private static final int TEXT_Y_OFFSET = 5;
+	private static final int HEIGHT = 22;
+	private static final int ICON_AREA_SIZE = 22;
+	private static final int TEXT_Y_OFFSET = 3;
 	private static final int BAR_OFFSET = TEXT_Y_OFFSET + Minecraft.getInstance().font.lineHeight + 1;
 	private static final int BAR_WIDTH = 75;
 	private static final int BAR_HEIGHT = 6;
 	private final FlexibleItemStack icon;
 	private final double barFillPercentage;
 	private final Color barFillColour;
+	private final List<Component> tooltip;
 
 	public LevelBarWidget(int width) {
-		this(width, Ico.BARRIER, Component.literal("Placeholder"), 0.75d, Color.CYAN);
+		this(width, Ico.BARRIER, Component.literal("Placeholder"), 0.75d, Color.CYAN, List.of());
 	}
 
-	public LevelBarWidget(int width, FlexibleItemStack icon, Component label, double barFillPercentage, Color barFillColour) {
+	private LevelBarWidget(int width, FlexibleItemStack icon, Component label, double barFillPercentage, Color barFillColour, List<Component> tooltip) {
 		super(0, 0, width, HEIGHT, label);
 		this.icon = icon;
 		this.barFillPercentage = barFillPercentage;
 		this.barFillColour = barFillColour;
+		this.tooltip = tooltip;
 
 		// Make the widget ignore clicks
 		this.active = false;
@@ -63,28 +64,35 @@ public final class LevelBarWidget extends AbstractWidget {
 			default -> Color.GREEN;
 		};
 
-		return new LevelBarWidget(width, skill.getIcon(), label, barFillPercentage, barFillColour);
+		List<Component> tooltip = new ArrayList<>();
+		tooltip.add(label.plainCopy().withStyle(ChatFormatting.GREEN));
+		tooltip.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(levelInfo.xp())).withStyle(ChatFormatting.GOLD));
+
+		return new LevelBarWidget(width, skill.getIcon(), label, barFillPercentage, barFillColour, List.copyOf(tooltip));
 	}
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		// Background
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY() + ICON_BOX_Y_OFFSET, ICON_BOX_SIZE, ICON_BOX_SIZE);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
 		// Icon
-		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (ICON_BOX_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2, this.getY() + ICON_BOX_Y_OFFSET + (ICON_BOX_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2);
-
-		// Content Area background
-		int contentAreaWidth = this.getWidth() - CONTENT_BOX_OFFSET;
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, this.getX() + CONTENT_BOX_OFFSET, this.getY(), contentAreaWidth, HEIGHT);
+		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (ICON_AREA_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2, this.getY() + (ICON_AREA_SIZE - GuiRenderer.DEFAULT_ITEM_SIZE) / 2);
 
 		// Label
-		graphics.text(Minecraft.getInstance().font, this.getMessage(), this.getX() + CONTENT_OFFSET, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, this.getMessage(), this.getX() + ICON_AREA_SIZE, this.getY() + TEXT_Y_OFFSET, CommonColors.WHITE);
 
 		// Bars
+		int barX = this.getX() + ICON_AREA_SIZE;
+		int barY = this.getY() + BAR_OFFSET;
 		int barFillWidth = (int) (this.barFillPercentage * BAR_WIDTH);
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACKGROUND, this.getX() + CONTENT_OFFSET, this.getY() + BAR_OFFSET, BAR_WIDTH, BAR_HEIGHT);
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_FILL, this.getX() + CONTENT_OFFSET, this.getY() + BAR_OFFSET, barFillWidth, BAR_HEIGHT, this.barFillColour.getRGB());
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_BACKGROUND, barX, barY, BAR_WIDTH, BAR_HEIGHT);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BAR_FILL, barX, barY, barFillWidth, BAR_HEIGHT, this.barFillColour.getRGB());
+
+		// Tooltip
+		if (GuiHelper.pointIsInArea(mouseX, mouseY, barX, barY, barX + BAR_WIDTH, barY + BAR_HEIGHT)) {
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, this.tooltip, mouseX, mouseY);
+		}
 	}
 
 	@Override
