@@ -57,16 +57,24 @@ public final class LevelBarWidget extends AbstractWidget {
 	public static LevelBarWidget forSkill(int width, Skill skill, ProfileMember member) {
 		LevelInfo levelInfo = member.playerData.getSkillLevel(skill, member);
 		Component label = Component.literal(skill.getFriendlyName() + " " + levelInfo.level());
-		double barFillPercentage = levelInfo.percentageToNextLevel();
-		Color barFillColour = switch ((Integer) levelInfo.level()) {
-			case Integer i when i >= skill.getBaseCap() && i < skill.getAbsoluteCap() -> Color.YELLOW;
-			case Integer i when i >= skill.getBaseCap() -> Color.MAGENTA;
-			default -> Color.GREEN;
-		};
+		double barFillPercentage = levelInfo.progress().isPresent() ? levelInfo.progress().get().percentageToNextLevel() : 1f;
+		Color barFillColour = Color.GREEN;
+
+		if (levelInfo.isLevelCapped()) {
+			barFillColour = Color.YELLOW;
+		} else if (levelInfo.isLevelAbsolutelyMaxed()) {
+			barFillColour = Color.MAGENTA;
+		}
 
 		List<Component> tooltip = new ArrayList<>();
 		tooltip.add(label.plainCopy().withStyle(ChatFormatting.GREEN));
 		tooltip.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(levelInfo.xp())).withStyle(ChatFormatting.GOLD));
+
+		if (levelInfo.isLevelNotAtAnyMaximum() && levelInfo.progress().isPresent()) {
+			LevelInfo.Progress progress = levelInfo.progress().get();
+
+			tooltip.add(Component.literal("Progress: " + Formatters.INTEGER_NUMBERS.format(progress.xpProgress()) + "/" + Formatters.INTEGER_NUMBERS.format(progress.xpNeeded())).withStyle(ChatFormatting.GOLD));
+		}
 
 		return new LevelBarWidget(width, skill.getIcon(), label, barFillPercentage, barFillColour, List.copyOf(tooltip));
 	}
