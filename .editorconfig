@@ -25,10 +25,10 @@ ij_java_keep_simple_lambdas_in_one_line = true
 ij_java_keep_simple_methods_in_one_line = true
 
 [*.{json,properties}]
+indent_style = space
 indent_size = 2
 
 [run/config/skyblocker/item-repo/**.json]
-indent_style = space
 insert_final_newline = false
 
 [.editorconfig]
