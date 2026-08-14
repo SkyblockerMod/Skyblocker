@@ -24,7 +24,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private static final int SPACING = 2;
-	private static final int LEVEL_BAR_WIDTH = 112;
+	private static final int LEVEL_BAR_WIDTH = 105;
 	private final List<AbstractWidget> widgets = new ArrayList<>();
 
 	@Override
@@ -60,7 +60,7 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 		pageLayout.addChild(SpacerElement.width(3));
 
 		// Skills Area
-		GridLayout skillsAreaLayout = new GridLayout().rowSpacing(SPACING).columnSpacing(SPACING * 4);
+		GridLayout skillsAreaLayout = new GridLayout().rowSpacing(SPACING * 2).columnSpacing(SPACING * 4);
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.COMBAT, member), 1, 1));
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.MINING, member), 2, 1));
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.FARMING, member), 3, 1));
@@ -73,7 +73,8 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.CARPENTRY, member), 4, 2));
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.RUNECRAFTING, member), 5, 2));
 		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.SOCIAL, member), 6, 2));
-		pageLayout.addChild(skillsAreaLayout, pageLayout.newCellSettings().alignVerticallyMiddle().paddingTop(-2));
+		this.widgets.add(skillsAreaLayout.addChild(new LevelBarWidget(LEVEL_BAR_WIDTH), 7, 1));
+		pageLayout.addChild(skillsAreaLayout, pageLayout.newCellSettings().alignVerticallyMiddle().paddingTop(-4));
 
 		return pageLayout;
 	}
