@@ -9,6 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A utility class that provides methods to solve the Boulder puzzle using the A* search algorithm.
@@ -24,7 +25,7 @@ public class BoulderSolver {
 	 * @return A list of coordinates representing the shortest path to solve the puzzle,
 	 *         or null if no solution is found within the maximum number of iterations.
 	 */
-	public static List<int[]> aStarSolve(List<GameState> initialStates) {
+	public static @Nullable List<int[]> aStarSolve(List<GameState> initialStates) {
 		Set<GameState> visited = new HashSet<>();
 		PriorityQueue<Pair<GameState, List<int[]>>> queue = new PriorityQueue<>(new AStarComparator());
 
@@ -109,7 +110,7 @@ public class BoulderSolver {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(@Nullable Object obj) {
 			if (this == obj) return true;
 			if (obj == null || getClass() != obj.getClass()) return false;
 			GameState gameState = (GameState) obj;
@@ -160,12 +161,12 @@ public class BoulderSolver {
 		}
 
 		/**
-		 * Checks if the puzzle is solved, i.e., if the player is positioned on the target BoulderObject.
+		 * Checks if the puzzle is solved, i.e., if the player reaches the back wall (x=0).
 		 *
 		 * @return true if the theoretical puzzle is solved, false otherwise.
 		 */
 		public boolean isSolved() {
-			return grid[playerX][playerY] == 'T';
+			return playerX == 0;
 		}
 
 		/**
@@ -176,14 +177,7 @@ public class BoulderSolver {
 		 */
 		public int heuristic() {
 			// should be improved maybe prioritize empty path first
-			for (int i = 0; i < grid.length; i++) {
-				for (int j = 0; j < grid[0].length; j++) {
-					if (grid[i][j] == 'T') {
-						return Math.abs(playerX - i) + Math.abs(playerY - j);
-					}
-				}
-			}
-			return Integer.MAX_VALUE;
+			return Math.abs(playerX) + Math.abs(playerY - grid[0].length / 2);
 		}
 
 		/**
