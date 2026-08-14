@@ -41,6 +41,7 @@ import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -66,7 +67,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 
 class AccessoriesHelperWidget extends AbstractContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
@@ -388,7 +388,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		protected void clearDisplayStack() {
 			super.clearDisplayStack();
 		}
-
 		@Override
 		public @Nullable ItemStack getFocusedItem() {
 			return isHovered() ? getDisplayStack() : null;
@@ -444,7 +443,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				GuiHelper.setTooltipWithItem(graphics, icon.getStackOrEmpty(), tooltip, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
 			@Override
@@ -479,7 +478,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private final FlexibleItemStack icon;
 		private final double pricePerMp;
 		private final List<Component> tooltip;
-
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", Ico.BARRIER);
 			OptionalDouble opt = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");

@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +36,6 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 
 import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
-import de.hysky.skyblocker.compatibility.IconographicCompatibility;
 import de.hysky.skyblocker.compatibility.ModernUICompatibility;
 import de.hysky.skyblocker.mixins.accessors.GuiGraphicsExtractorInvoker;
 import de.hysky.skyblocker.utils.render.state.gui.GuiCustomShapeRenderState;
@@ -161,17 +159,6 @@ public class GuiHelper {
 	// 26.1 Port: still holds true!
 	public static boolean hasShiftDown() {
 		return Minecraft.getInstance().hasShiftDown();
-	}
-
-	// Tooltip Stuff
-
-	public static void setTooltipWithItem(GuiGraphicsExtractor graphics, ItemStack stack, List<FormattedCharSequence> tooltip, int mouseX, int mouseY) {
-		Identifier style = stack.get(DataComponents.TOOLTIP_STYLE);
-		if (!IconographicCompatibility.isEnabled) {
-			graphics.setTooltipForNextFrame(CLIENT.font, tooltip, mouseX, mouseY, style);
-			return;
-		}
-		IconographicCompatibility.withItem(stack, () -> graphics.setTooltipForNextFrame(CLIENT.font, tooltip, mouseX, mouseY, style));
 	}
 
 	public static void close() {

@@ -39,9 +39,6 @@
 		],
 		"catharsis:imc/hidden_gui_elements": [
 			"de.hysky.skyblocker.compatibility.CatharsisCompatibility::hiddenGuiElements"
-		],
-		"iconographic:imc/item": [
-			"de.hysky.skyblocker.compatibility.IconographicCompatibility::setupItemCompat"
 		]
   },
   "mixins": [
