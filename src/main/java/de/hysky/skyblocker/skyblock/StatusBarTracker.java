@@ -46,7 +46,7 @@ public class StatusBarTracker {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 
 	/// Caches the last message to avoid parsing the same message multiple times.
-	private static String lastMessage = "";
+	private static Component lastMessage = Component.empty();
 	/// Caches the last return value of {@link #onOverlayMessage(Component, boolean)}.
 	private static Component lastReturn = Component.empty();
 	private static long lastMessageTime = 0;
@@ -128,21 +128,20 @@ public class StatusBarTracker {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-		String stringified = text.getString();
 
 		long now = System.currentTimeMillis();
-		if (lastMessage.equals(stringified) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
+		if (lastMessage.equals(text) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
 			return lastReturn;
 		}
-		lastMessage = stringified;
+		lastMessage = text;
 		lastMessageTime = now;
+		String stringified = text.getString();
 
 		try {
-			if (FancyStatusBars.isEnabled()) {
-				return lastReturn = Component.literal(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
-			} else {
-				// Still update values for other parts of the mod to use
-				update(stringified, SkyblockerConfigManager.get().chat.hideMana);
+			String returned = update(stringified, SkyblockerConfigManager.get().chat.hideMana);
+
+			if (FancyStatusBars.isEnabled() && !stringified.equals(returned)) {
+				return lastReturn = Component.literal(returned);
 			}
 		} catch (Exception e) {
 			String stripped = ChatFormatting.stripFormatting(stringified);
