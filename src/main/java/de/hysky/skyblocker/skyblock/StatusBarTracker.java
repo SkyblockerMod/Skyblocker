@@ -130,7 +130,7 @@ public class StatusBarTracker {
 		}
 
 		long now = System.currentTimeMillis();
-		if (lastMessage.equals(text) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
+		if (lastMessage.equals(text) && lastMessageTime + 337 > now) { // Prime ms for a prime 7 ticks
 			return lastReturn;
 		}
 		lastMessage = text;
@@ -138,9 +138,11 @@ public class StatusBarTracker {
 		String stringified = text.getString();
 
 		try {
+			// Always update values for other parts of the mod to use
 			String returned = update(stringified, SkyblockerConfigManager.get().chat.hideMana);
 
 			if (FancyStatusBars.isEnabled() && !stringified.equals(returned)) {
+				// TODO This may still strip formatting from partially consumed message
 				return lastReturn = Component.literal(returned);
 			}
 		} catch (Exception e) {
