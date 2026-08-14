@@ -22,7 +22,7 @@ public enum Skill {
 	TAMING("Taming", 50, 60, Ico.SPAWN_EGG);
 
 	/// The main skills that count towards skill average.
-	public static final Set<Skill> CONVENTIONAL_SKILLS = Set.copyOf(EnumSet.complementOf(EnumSet.of(CATACOMBS, RUNECRAFTING)));
+	public static final Set<Skill> CONVENTIONAL_SKILLS = Set.copyOf(EnumSet.complementOf(EnumSet.of(CATACOMBS, RUNECRAFTING, SOCIAL)));
 	private final String name;
 	private final int baseCap;
 	private final int absoluteCap;
