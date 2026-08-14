@@ -122,13 +122,13 @@ public class Boulder extends DungeonPuzzle {
 	private static List<BoulderSolver.GameState> getInitialStates(BoulderBoard board) {
 		char[][] boardArray = board.getBoardCharArray();
 		return List.of(
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 1),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 2),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 3),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 4),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 5),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 6)
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 1, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 2, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 3, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 4, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 5, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 6, 0)
 		);
 	}
 
