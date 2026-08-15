@@ -897,7 +897,6 @@
   "skyblocker.config.hunting.lassoHud.wait": "Wait",
 
   "skyblocker.config.hunting.moongladeMobs": "Moonglade Mobs",
-  "skyblocker.config.hunting.moongladeMobs.colorPicker.Invisibug": "Invisibug highlight color picker",
   "skyblocker.config.hunting.moongladeMobs.coralotHighlightColor": "Coralot Highlight Color",
   "skyblocker.config.hunting.moongladeMobs.hideonleafHighlightColor": "Hideonleaf Highlight Color",
   "skyblocker.config.hunting.moongladeMobs.highlightCoralot": "Highlight Coralot",
@@ -906,6 +905,7 @@
   "skyblocker.config.hunting.moongladeMobs.highlightHideonleaf.@Tooltip": "Highlights Hideonleaf who disguises itself amongst the foliage of the Moonglade Marsh.",
   "skyblocker.config.hunting.moongladeMobs.highlightInvisibug": "Highlight Invisibug",
   "skyblocker.config.hunting.moongladeMobs.highlightInvisibug.@Tooltip": "Highlights Invisibug in cyan by default, with the option to choose a different color.",
+  "skyblocker.config.hunting.moongladeMobs.highlightInvisibugColor": "Invisibug Highlight Color",
   "skyblocker.config.hunting.moongladeMobs.highlightShellwise": "Highlight Shellwise",
   "skyblocker.config.hunting.moongladeMobs.highlightShellwise.@Tooltip": "Highlights Shellwise whose knockback immunity attribute is desired by all.",
   "skyblocker.config.hunting.moongladeMobs.shellwiseHighlightColor": "Shellwise Highlight Color",

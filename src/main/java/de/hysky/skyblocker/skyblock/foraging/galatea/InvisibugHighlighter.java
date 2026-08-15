@@ -1,13 +1,9 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Comparator;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,6 +14,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class InvisibugHighlighter {
 	private static final Minecraft client = Minecraft.getInstance();
@@ -36,7 +39,7 @@ public class InvisibugHighlighter {
 	}
 
 	private static boolean isActive() {
-		return SkyblockerConfigManager.get().hunting.huntingMobs.highlightInvisibug && Utils.isInGalatea();
+		return SkyblockerConfigManager.get().hunting.moongladeMobs.highlightInvisibug && Utils.isInGalatea();
 	}
 
 
@@ -95,7 +98,7 @@ public class InvisibugHighlighter {
 		long now = System.currentTimeMillis();
 		invisibugLocations.object2LongEntrySet().removeIf(e -> now - e.getLongValue() > PARTICLE_EXPIRY);
 
-		SkyblockerConfigManager.get().hunting.huntingMobs.invisibugGlowColor.getRGBColorComponents(COLOR);
+		SkyblockerConfigManager.get().hunting.moongladeMobs.invisibugGlowColor.getRGBColorComponents(COLOR);
 		for (Vec3 pos : invisibugLocations.keySet()) {
 			collector.submitFilledBox(pos.subtract(HIGHLIGHT_SIZE.scale(0.5)), HIGHLIGHT_SIZE, COLOR, ALPHA, false);
 		}
