@@ -217,7 +217,7 @@ public final class ItemUtils {
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
 				}
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				if (customData.contains("runes")) {
 					CompoundTag runes = customData.getCompoundOrEmpty("runes");
 					String rune = runes.keySet().stream().findFirst().orElse("");
@@ -313,7 +313,7 @@ public final class ItemUtils {
 				PetInfo petInfo = getPetInfo(stack);
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				CompoundTag runes = customData.getCompoundOrEmpty("runes");
 				String rune = runes.keySet().stream().findFirst().orElse("");
 				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getIntOr(rune, 0);
