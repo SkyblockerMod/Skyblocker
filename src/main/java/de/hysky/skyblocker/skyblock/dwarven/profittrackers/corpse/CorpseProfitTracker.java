@@ -1,7 +1,35 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Locale;
+import java.util.OptionalDouble;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,35 +41,10 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.data.ProfiledData;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.Unmodifiable;
-import org.jetbrains.annotations.UnmodifiableView;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Locale;
-import java.util.OptionalDouble;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -240,21 +243,21 @@ public final class CorpseProfitTracker extends AbstractProfitTracker {
 	// TODO: Perhaps make a little something in the skyblocker-assets repo for this in case it needs updating in the future
 	static {
 		// Gemstones
-		NAME2ID_MAP.put("☠ Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
-		NAME2ID_MAP.put("☠ Fine Onyx Gemstone", "FINE_ONYX_GEM");
-		NAME2ID_MAP.put("☠ Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Flawed Onyx Gemstone", "FLAWED_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Fine Onyx Gemstone", "FINE_ONYX_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.CRIT_DAMAGE + " Flawless Onyx Gemstone", "FLAWLESS_ONYX_GEM");
 
-		NAME2ID_MAP.put("☘ Flawed Peridot Gemstone", "FLAWED_PERIDOT_GEM");
-		NAME2ID_MAP.put("☘ Fine Peridot Gemstone", "FINE_PERIDOT_GEM");
-		NAME2ID_MAP.put("☘ Flawless Peridot Gemstone", "FLAWLESS_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Flawed Peridot Gemstone", "FLAWED_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Fine Peridot Gemstone", "FINE_PERIDOT_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FARMING_FORTUNE + " Flawless Peridot Gemstone", "FLAWLESS_PERIDOT_GEM");
 
-		NAME2ID_MAP.put("☘ Flawed Citrine Gemstone", "FLAWED_CITRINE_GEM");
-		NAME2ID_MAP.put("☘ Fine Citrine Gemstone", "FINE_CITRINE_GEM");
-		NAME2ID_MAP.put("☘ Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Flawed Citrine Gemstone", "FLAWED_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Fine Citrine Gemstone", "FINE_CITRINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FORAGING_FORTUNE + " Flawless Citrine Gemstone", "FLAWLESS_CITRINE_GEM");
 
-		NAME2ID_MAP.put("☂ Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("☂ Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
-		NAME2ID_MAP.put("☂ Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Flawed Aquamarine Gemstone", "FLAWED_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Fine Aquamarine Gemstone", "FINE_AQUAMARINE_GEM");
+		NAME2ID_MAP.put(SkyBlockIcons.FISHING_SPEED + " Flawless Aquamarine Gemstone", "FLAWLESS_AQUAMARINE_GEM");
 
 		// Eggs
 		NAME2ID_MAP.put("Goblin Egg", "GOBLIN_EGG");

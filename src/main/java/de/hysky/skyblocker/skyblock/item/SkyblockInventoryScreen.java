@@ -1,18 +1,22 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
-import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
-import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -21,6 +25,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
@@ -29,32 +34,33 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.function.Supplier;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 /**
  * <p>Adds equipment slots to the inventory screen and moves the offhand slot.</p>
  * <p>Opened here {@link de.hysky.skyblocker.mixins.MinecraftMixin#skyblocker$skyblockInventoryScreen MinecraftClientMixin#skyblocker$skyblockInventoryScreen}</p>
  * <p>Book button is moved here {@link de.hysky.skyblocker.mixins.InventoryScreenMixin#skyblocker$moveButton InventoryScreenMixin#skyblocker$moveButton}</p>
  */
+@SuppressWarnings("JavadocReference")
 public class SkyblockInventoryScreen extends InventoryScreen implements HoveredItemStackProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Equipment");
 	private static final Supplier<ItemStack[]> EMPTY_EQUIPMENT = () -> new ItemStack[]{ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
-	public static final ItemStack[] equipment = EMPTY_EQUIPMENT.get();
-	public static final ItemStack[] equipment_rift = EMPTY_EQUIPMENT.get();
-	private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 8) // min size at 4 for backwards compat
+	public static final ItemStack[] EQUIPMENT = EMPTY_EQUIPMENT.get();
+	private static final ItemStack[] EQUIPMENT_RIFT = EMPTY_EQUIPMENT.get();
+	private static final ItemStack[] EQUIPMENT_SAFARI = EMPTY_EQUIPMENT.get();
+	private static final Codec<ItemStack[]> CODEC = ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf(4, 12) // min size at 4 for backwards compat
 			.xmap(itemStacks -> itemStacks.toArray(ItemStack[]::new), List::of).fieldOf("items").codec();
 
 	private static final Identifier SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot");
@@ -79,7 +85,10 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		Path resolve = FOLDER.resolve(profileId + ".nbt");
 
 		try {
-			NbtIo.writeUnnamedTagWithFallback(CODEC.encodeStart(NbtOps.INSTANCE, ArrayUtils.addAll(equipment, equipment_rift)).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
+			ItemStack[] combined = Stream.of(EQUIPMENT, EQUIPMENT_RIFT, EQUIPMENT_SAFARI)
+					.flatMap(Arrays::stream)
+					.toArray(ItemStack[]::new);
+			NbtIo.writeUnnamedTagWithFallback(CODEC.encodeStart(NbtOps.INSTANCE, combined).getOrThrow(), new DataOutputStream(Files.newOutputStream(resolve)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to save Equipment data", e);
 		}
@@ -97,11 +106,13 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 			}
 			return EMPTY_EQUIPMENT.get();
 			// Schedule on main thread to avoid any async weirdness
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(itemStacks -> Minecraft.getInstance().execute(() -> {
-			System.arraycopy(itemStacks, 0, equipment, 0, Math.min(itemStacks.length, 4));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(itemStacks -> {
+			System.arraycopy(itemStacks, 0, EQUIPMENT, 0, Math.min(itemStacks.length, 4));
 			if (itemStacks.length <= 4) return;
-			System.arraycopy(itemStacks, 4, equipment_rift, 0, Math.clamp(itemStacks.length - 4, 0, 4));
-		}));
+			System.arraycopy(itemStacks, 4, EQUIPMENT_RIFT, 0, Math.clamp(itemStacks.length - 4, 0, 4));
+			if (itemStacks.length <= 8) return;
+			System.arraycopy(itemStacks, 8, EQUIPMENT_SAFARI, 0, Math.clamp(itemStacks.length - 8, 0, 4));
+		}, Minecraft.getInstance());
 	}
 
 	@Override
@@ -113,7 +124,12 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Init
 	public static void initEquipment() {
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty()) CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
+			if (!prevProfileId.isEmpty()) {
+				CompletableFuture.runAsync(() -> {
+					save(prevProfileId);
+					load(profileId);
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			}
 			else load(profileId);
 		}));
 
@@ -125,10 +141,20 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 
 	public SkyblockInventoryScreen(Player player) {
 		super(player);
-		SimpleContainer inventory = new SimpleContainer(Utils.isInTheRift() ? equipment_rift : equipment);
+		SimpleContainer inventory = new SimpleContainer(getCurrentEquipmentSet());
 		Identifier[] textures = new Identifier[]{EMPTY_NECKLACE, EMPTY_CLOAK, EMPTY_BELT, EMPTY_HAND};
 		for (int i = 0; i < 4; i++) {
 			equipmentSlots[i] = new EquipmentSlot(inventory, i, 77, 8 + i * 18, textures[i]);
+		}
+	}
+
+	public static ItemStack[] getCurrentEquipmentSet() {
+		if (Utils.isInTheRift()) {
+			return EQUIPMENT_RIFT;
+		} else if (Utils.isInSafari()) {
+			return EQUIPMENT_SAFARI;
+		} else {
+			return EQUIPMENT;
 		}
 	}
 
@@ -136,7 +162,9 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/equipment", true);
+				// The Equipment Wardrobe is not available in the Rift or Safari.
+				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() || Utils.isInSafari() ? "/stats" : "/equipment";
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 				return true;
 			}
 		}
@@ -168,7 +196,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasItem()) {
 				ItemStack itemStack = equipmentSlot.getItem();
-				graphics.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y);
+				graphics.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y, itemStack.get(DataComponents.TOOLTIP_STYLE));
 				hoveredItem = itemStack;
 			}
 		}
@@ -201,7 +229,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.isWindowActive()) {
+		if (client.isWindowActive() && client.player != null) {
 			var mouse = client.mouseHandler;
 			var window = client.getWindow();
 			var mouseX = MouseHandler.getScaledXPos(window, mouse.xpos());
@@ -237,7 +265,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		}
 
 		@Override
-		public @Nullable Identifier getNoItemIcon() {
+		public Identifier getNoItemIcon() {
 			return noItemIcon;
 		}
 	}

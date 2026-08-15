@@ -1,43 +1,5 @@
 package de.hysky.skyblocker.skyblock.searchoverlay;
 
-import com.google.common.collect.Streams;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.museum.Donation;
-import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
-import de.hysky.skyblocker.utils.BazaarProduct;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.util.NEUId;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +10,49 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.google.common.collect.Streams;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.util.NEUId;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.skyblock.AuctionBazaarAutocomplete;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.museum.Donation;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.utils.BazaarProduct;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -89,15 +94,40 @@ public class SearchOverManager {
 
 	private static void registerSearchCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.enableCommands) {
-			dispatcher.register(literal("ahs").executes(_ -> startCommand(true, "")));
-			dispatcher.register(literal("bzs").executes(_ -> startCommand(false, "")));
+			dispatcher.register(literal("ahs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("ahsearch")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(true, "")));
+			dispatcher.register(literal("bzs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.executes(_ -> startCommand(false, "")));
 
-			dispatcher.register(literal("ahs").then(argument("item", StringArgumentType.greedyString())
+			dispatcher.register(literal("ahs")
+					.requires(_ -> Utils.isOnSkyblock())
+					.then(argument("item", StringArgumentType.greedyString())
 					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
-			dispatcher.register(literal("bzs").then(argument("item", StringArgumentType.greedyString())
-					.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+			dispatcher.register(literal("ahsearch")
+					.requires(_ -> Utils.isOnSkyblock())
+					.then(argument("item", StringArgumentType.greedyString())
+					.executes(context -> startCommand(true, StringArgumentType.getString(context, "item"))
 					)));
+			if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.commandAutocomplete) {
+				dispatcher.register(literal("bzs")
+						.requires(_ -> Utils.isOnSkyblock())
+						.then(argument("item", StringArgumentType.greedyString())
+						.suggests(AuctionBazaarAutocomplete::suggestBzs)
+						.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+						)));
+			} else {
+				dispatcher.register(literal("bzs")
+						.requires(_ -> Utils.isOnSkyblock())
+						.then(argument("item", StringArgumentType.greedyString())
+						.executes(context -> startCommand(false, StringArgumentType.getString(context, "item"))
+						)));
+			}
 		}
 
 		if (!Debug.debugEnabled()) return;
@@ -149,7 +179,7 @@ public class SearchOverManager {
 					NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 					if (neuItem == null) continue;
 
-					String name = ChatFormatting.stripFormatting(neuItem.getLore().getFirst());
+					String name = ChatFormatting.stripFormatting(EnchantedBookUtils.getEnchantNameFromLore(neuItem.getLore()));
 					bazaarItems.add(name);
 					namesToNeuId.put(name, neuId);
 					continue;
@@ -213,6 +243,14 @@ public class SearchOverManager {
 		SearchOverManager.level200Pets = level200Pets;
 		SearchOverManager.starableItems = starableItems;
 		SearchOverManager.namesToNeuId = namesToNeuId;
+	}
+
+	public static HashSet<String> getBazaarItems() {
+		return bazaarItems;
+	}
+
+	public static HashSet<String> getAuctionItems() {
+		return auctionItems;
 	}
 
 	/**
@@ -491,7 +529,7 @@ public class SearchOverManager {
 		if (search.isEmpty()) return;
 		String command;
 		switch (location) {
-			case AUCTION -> command = "/ahSearch " + search;
+			case AUCTION -> command = "/auctionsearch " + search;
 			case BAZAAR -> command = "/bz " + search;
 			default -> {
 				return;

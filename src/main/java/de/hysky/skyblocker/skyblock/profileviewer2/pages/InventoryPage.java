@@ -5,14 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import it.unimi.dsi.fastutil.Pair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -24,6 +18,14 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInformation, ProfileItemStorage>> {
 	private final List<AbstractWidget> widgets = new ArrayList<>();
@@ -56,7 +58,8 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				this.buildInventoryLayout(itemStorage),
 				this.buildEnderChestLayout(itemStorage),
 				this.buildBackpackLayout(itemStorage),
-				this.buildWardrobeLayout(itemStorage),
+				this.buildGenericWardrobeLayout("Armour Sets", itemStorage.armourSets()),
+				this.buildGenericWardrobeLayout("Equipment Sets", itemStorage.equipmentSets()),
 				this.buildPetsLayout(itemStorage),
 				this.buildAccessoryBagLayout(itemStorage)
 				);
@@ -65,8 +68,9 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				new ButtonWidget(Ico.E_CHEST, _ -> selectTab(1, tabContentLayouts)),
 				new ButtonWidget(Ico.JUMBO_BACKPACK, _ -> selectTab(2, tabContentLayouts)),
 				new ButtonWidget(Ico.L_CHESTPLATE, _ -> selectTab(3, tabContentLayouts)),
-				new ButtonWidget(Ico.BONE, _ -> selectTab(4, tabContentLayouts)),
-				new ButtonWidget(Ico.ACCESSORY_BAG, _ -> selectTab(5, tabContentLayouts))
+				new ButtonWidget(Ico.BROWN_HARNESS, _ -> selectTab(4, tabContentLayouts)),
+				new ButtonWidget(Ico.BONE, _ -> selectTab(5, tabContentLayouts)),
+				new ButtonWidget(Ico.ACCESSORY_BAG, _ -> selectTab(6, tabContentLayouts))
 				// Fishing Bag
 				// Potion Bag
 				// Quiver
@@ -119,9 +123,9 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		return this.buildPaginatedLayout(Component.literal("Backpack"), pages);
 	}
 
-	private LayoutElement buildWardrobeLayout(ProfileItemStorage itemStorage) {
+	private LayoutElement buildGenericWardrobeLayout(String name, List<ItemStack> items) {
 		// Padding (of empty items) is added to the pages to ensure that the ordering logic works when the wardrobe page is not full
-		List<List<ItemStack>> unorderedPages = divideIntoPages(itemStorage.wardrobe(), 4 * 9, true);
+		List<List<ItemStack>> unorderedPages = divideIntoPages(items, 4 * 9, true);
 		List<List<ItemStack>> orderedPages = new ArrayList<>();
 
 		for (int page = 0; page < unorderedPages.size(); page++) {
@@ -137,7 +141,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 			orderedPages.add(List.copyOf(orderedPage));
 		}
 
-		return this.buildPaginatedLayout(Component.literal("Wardrobe"), 4, orderedPages);
+		return this.buildPaginatedLayout(Component.literal(name), 4, orderedPages);
 	}
 
 	private LayoutElement buildPetsLayout(ProfileItemStorage itemStorage) {

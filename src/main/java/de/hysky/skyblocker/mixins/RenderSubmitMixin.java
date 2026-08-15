@@ -3,9 +3,10 @@ package de.hysky.skyblocker.mixins;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+
 import de.hysky.skyblocker.injected.CustomGlowState;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
 @Mixin(value = { ItemFeatureRenderer.Submit.class })
 public class RenderSubmitMixin implements CustomGlowState {

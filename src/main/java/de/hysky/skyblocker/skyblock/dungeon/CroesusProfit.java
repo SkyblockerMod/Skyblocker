@@ -1,5 +1,26 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.hunting.Attribute;
@@ -11,25 +32,6 @@ import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.TooltipAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.OptionalDouble;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder {
 	public static final CroesusProfit INSTANCE = new CroesusProfit();
@@ -118,7 +120,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	@SuppressWarnings("deprecation")
 	private DoubleBooleanPair getChestValue(ItemStack chest) {
 		double chestValue = 0;
-		int chestPrice = 0;
+		double chestPrice = 0;
 		boolean hasIncompleteData = false;
 
 		boolean processingContents = false;
@@ -138,9 +140,9 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 					// This check is in a separate block because Java does not allow us to put it into the when statement
 					// mean effectively final restrictions!!!
 					if (!processingContents) {
-						String chestCost = lineString.replace(",", "").replaceAll("\\D", "");
+						String chestCost = lineString.replace(",", "").replaceAll("[^\\d.]", "");
 						if (!NumberUtils.isCreatable(chestCost)) continue;
-						chestPrice = Integer.parseInt(chestCost);
+						chestPrice = Double.parseDouble(chestCost);
 					}
 				}
 
@@ -149,7 +151,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						// Remove any whitespace from the line with the key name
 						String trimmed = lineString.trim();
 
-						chestPrice = (int) ChestValue.computeKuudraKeyPrice(trimmed).leftDouble();
+						chestPrice = ChestValue.computeKuudraKeyPrice(trimmed).leftDouble();
 					}
 				}
 
@@ -444,26 +446,26 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			// Enchanted Books
 			Map.entry("Enchanted Book (Fatal Tempo I)", "ENCHANTMENT_ULTIMATE_FATAL_TEMPO_1"),
 			Map.entry("Enchanted Book (Inferno I)", "ENCHANTMENT_ULTIMATE_INFERNO_1"),
-			Map.entry("Enchanted Book (Strong Mana I)", "ENCHANTMENT_STRONG_MANA_1"),
-			Map.entry("Enchanted Book (Strong Mana II)", "ENCHANTMENT_STRONG_MANA_2"),
-			Map.entry("Enchanted Book (Strong Mana III)", "ENCHANTMENT_STRONG_MANA_3"),
-			Map.entry("Enchanted Book (Strong Mana IV)", "ENCHANTMENT_STRONG_MANA_4"),
-			Map.entry("Enchanted Book (Strong Mana V)", "ENCHANTMENT_STRONG_MANA_5"),
-			Map.entry("Enchanted Book (Ferocious Mana I)", "ENCHANTMENT_FEROCIOUS_MANA_1"),
-			Map.entry("Enchanted Book (Ferocious Mana II)", "ENCHANTMENT_FEROCIOUS_MANA_2"),
-			Map.entry("Enchanted Book (Ferocious Mana III)", "ENCHANTMENT_FEROCIOUS_MANA_3"),
-			Map.entry("Enchanted Book (Ferocious Mana IV)", "ENCHANTMENT_FEROCIOUS_MANA_4"),
-			Map.entry("Enchanted Book (Ferocious Mana V)", "ENCHANTMENT_FEROCIOUS_MANA_5"),
-			Map.entry("Enchanted Book (Hardened Mana I)", "ENCHANTMENT_HARDENED_MANA_1"),
-			Map.entry("Enchanted Book (Hardened Mana II)", "ENCHANTMENT_HARDENED_MANA_2"),
-			Map.entry("Enchanted Book (Hardened Mana III)", "ENCHANTMENT_HARDENED_MANA_3"),
-			Map.entry("Enchanted Book (Hardened Mana IV)", "ENCHANTMENT_HARDENED_MANA_4"),
-			Map.entry("Enchanted Book (Hardened Mana V)", "ENCHANTMENT_HARDENED_MANA_5"),
-			Map.entry("Enchanted Book (Mana Vampire I)", "ENCHANTMENT_MANA_VAMPIRE_1"),
-			Map.entry("Enchanted Book (Mana Vampire II)", "ENCHANTMENT_MANA_VAMPIRE_2"),
-			Map.entry("Enchanted Book (Mana Vampire III)", "ENCHANTMENT_MANA_VAMPIRE_3"),
-			Map.entry("Enchanted Book (Mana Vampire IV)", "ENCHANTMENT_MANA_VAMPIRE_4"),
-			Map.entry("Enchanted Book (Mana Vampire V)", "ENCHANTMENT_MANA_VAMPIRE_5"),
+			Map.entry("Enchanted Book (Strong Vitality I)", "ENCHANTMENT_STRONG_MANA_1"),
+			Map.entry("Enchanted Book (Strong Vitality II)", "ENCHANTMENT_STRONG_MANA_2"),
+			Map.entry("Enchanted Book (Strong Vitality III)", "ENCHANTMENT_STRONG_MANA_3"),
+			Map.entry("Enchanted Book (Strong Vitality IV)", "ENCHANTMENT_STRONG_MANA_4"),
+			Map.entry("Enchanted Book (Strong Vitality V)", "ENCHANTMENT_STRONG_MANA_5"),
+			Map.entry("Enchanted Book (Vivacious Vitality I)", "ENCHANTMENT_FEROCIOUS_MANA_1"),
+			Map.entry("Enchanted Book (Vivacious Vitality II)", "ENCHANTMENT_FEROCIOUS_MANA_2"),
+			Map.entry("Enchanted Book (Vivacious Vitality III)", "ENCHANTMENT_FEROCIOUS_MANA_3"),
+			Map.entry("Enchanted Book (Vivacious Vitality IV)", "ENCHANTMENT_FEROCIOUS_MANA_4"),
+			Map.entry("Enchanted Book (Vivacious Vitality V)", "ENCHANTMENT_FEROCIOUS_MANA_5"),
+			Map.entry("Enchanted Book (Hardened Vitality I)", "ENCHANTMENT_HARDENED_MANA_1"),
+			Map.entry("Enchanted Book (Hardened Vitality II)", "ENCHANTMENT_HARDENED_MANA_2"),
+			Map.entry("Enchanted Book (Hardened Vitality III)", "ENCHANTMENT_HARDENED_MANA_3"),
+			Map.entry("Enchanted Book (Hardened Vitality IV)", "ENCHANTMENT_HARDENED_MANA_4"),
+			Map.entry("Enchanted Book (Hardened Vitality V)", "ENCHANTMENT_HARDENED_MANA_5"),
+			Map.entry("Enchanted Book (Vampiric Vitality I)", "ENCHANTMENT_MANA_VAMPIRE_1"),
+			Map.entry("Enchanted Book (Vampiric Vitality II)", "ENCHANTMENT_MANA_VAMPIRE_2"),
+			Map.entry("Enchanted Book (Vampiric Vitality III)", "ENCHANTMENT_MANA_VAMPIRE_3"),
+			Map.entry("Enchanted Book (Vampiric Vitality IV)", "ENCHANTMENT_MANA_VAMPIRE_4"),
+			Map.entry("Enchanted Book (Vampiric Vitality V)", "ENCHANTMENT_MANA_VAMPIRE_5"),
 
 			// Misc
 			Map.entry("Dusty Travel Scroll to the Kuudra Skull", "NETHER_FORTRESS_BOSS_TRAVEL_SCROLL"),

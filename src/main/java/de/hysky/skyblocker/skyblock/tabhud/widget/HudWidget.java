@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import java.util.Objects;
 import java.util.Set;
+
+import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 
 public abstract class HudWidget extends BasicWidget {
 	/**

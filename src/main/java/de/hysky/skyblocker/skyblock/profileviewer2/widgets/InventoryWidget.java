@@ -4,11 +4,6 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -17,9 +12,16 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class InventoryWidget extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Identifier CONTAINER_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
@@ -51,6 +53,7 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		Font font = Minecraft.getInstance().font;
 		List<Component> tooltip = null;
+		Identifier tooltipStyle = null;
 		int x = this.getX();
 		int y = this.getY();
 
@@ -69,6 +72,11 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 
 		// Draw label
 		graphics.text(font, this.getMessage(), x + 8, y + 6, 0xFF404040, false);
+
+		// Sometimes there may be no pages so we should skip the rest of the rendering
+		if (this.pages.isEmpty()) {
+			return;
+		}
 
 		// Draw Items
 		List<ItemStack> stacks = this.pages.get(this.index);
@@ -97,12 +105,13 @@ public final class InventoryWidget extends AbstractWidget implements HoveredItem
 
 			if (!stack.isEmpty() && GuiHelper.pointIsInArea(mouseX, mouseY, itemX - 1, itemY - 1, itemX + GuiRenderer.DEFAULT_ITEM_SIZE + 1, itemY + GuiRenderer.DEFAULT_ITEM_SIZE + 1)) {
 				tooltip = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+				tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
 			}
 		}
 
 		// Draw Tooltip
 		if (tooltip != null) {
-			graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY, null);
+			graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY, tooltipStyle);
 		}
 	}
 

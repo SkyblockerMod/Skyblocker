@@ -3,11 +3,13 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.apache.commons.lang3.StringUtils;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,13 +19,14 @@ import de.hysky.skyblocker.skyblock.garden.GardenConstants;
 import de.hysky.skyblocker.skyblock.garden.VacuumCache;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
 	private static final int PEST_COLOUR = 0xB62F00;
-	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
+	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile(String.format("^ [○%s] (?<crop>.+) .+$", SkyBlockIcons.FARMING_FORTUNE));
 
 	@Init
 	public static void init() {

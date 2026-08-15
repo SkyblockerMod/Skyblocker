@@ -1,14 +1,10 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -32,8 +28,14 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 
 public class ItemProtection {
 	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("item_protection");
@@ -43,7 +45,7 @@ public class ItemProtection {
 	public static void init() {
 		itemProtection = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.itemProtection",
-				GLFW.GLFW_KEY_V,
+				InputConstants.KEY_V,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
 		ClientCommandRegistrationCallback.EVENT.register(ItemProtection::registerCommand);
@@ -153,7 +155,13 @@ public class ItemProtection {
 				|| screenTitle.startsWith("Endstone Chest")
 				|| screenTitle.startsWith("Skull Chest")
 				|| screenTitle.startsWith("Weapon Rack")
-				|| screenTitle.startsWith("Armor Stand");
+				|| screenTitle.startsWith("Armor Stand")
+				// Equipment & Stats
+				|| screenTitle.startsWith("Your Equipment and Stats")
+				|| screenTitle.contains("Equipment Sets")
+				|| screenTitle.contains("Armor Sets")
+				|| screenTitle.contains("Loadouts")
+				|| screenTitle.contains("Pets");
 	}
 
 	public static boolean isNpcSellMenu(AbstractContainerMenu menu) {

@@ -1,37 +1,38 @@
 package de.hysky.skyblocker.skyblock.itemlist;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.TextTransformer;
-import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
-import de.hysky.skyblocker.utils.datafixer.LegacyStringNbtReader;
-import io.github.moulberry.repo.constants.PetNumbers;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.Rarity;
-import it.unimi.dsi.fastutil.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.mojang.logging.LogUtils;
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
+import it.unimi.dsi.fastutil.Pair;
+import org.slf4j.Logger;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
-import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
+import de.hysky.skyblocker.utils.datafixer.LegacyItemStackFixer;
+import de.hysky.skyblocker.utils.datafixer.LegacyStringNbtReader;
 
 public class ItemStackBuilder {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static Map<String, Map<Rarity, PetNumbers>> petNums;
+	private static Map<String, Map<Rarity, PetNumbers>> petNums = Map.of();
 
 	protected static void loadPetNums() {
 		try {
 			petNums = NEURepoManager.getConstants().getPetNumbers();
 		} catch (Exception _) {
-			ItemRepository.LOGGER.error("Failed to load petnums.json");
+			ItemRepository.LOGGER.error("[Skyblocker ItemStackBuilder] Failed to load petnums.json");
 		}
 	}
 
@@ -46,7 +47,7 @@ public class ItemStackBuilder {
 			nbt.putShort("Damage", (short) item.getDamage());
 			nbt.putInt("Count", 1);
 
-			FlexibleItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, FlexibleItemStack.CODEC);
+			FlexibleItemStack stack = LegacyItemStackFixer.fixLegacyStack(nbt, FlexibleItemStack.CODEC, FlexibleItemStack.EMPTY, FlexibleItemStack::set);
 
 			//The item couldn't be fixed up
 			if (stack.is(Items.AIR)) {

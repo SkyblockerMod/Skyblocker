@@ -1,8 +1,21 @@
 package de.hysky.skyblocker.skyblock.rift;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.DyeColor;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Area;
@@ -10,18 +23,6 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.DyeColor;
 
 public class MirrorverseWaypoints {
 	private static final Logger LOGGER = LoggerFactory.getLogger("skyblocker");
@@ -53,7 +54,7 @@ public class MirrorverseWaypoints {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Mirrorverse Waypoints failed to load ;(", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static Waypoint[] loadWaypoints(JsonArray waypointsJson) {

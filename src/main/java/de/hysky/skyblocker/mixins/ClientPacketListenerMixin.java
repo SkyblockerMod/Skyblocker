@@ -5,30 +5,14 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.skyblock.CompactDamage;
-import de.hysky.skyblocker.skyblock.HealthBars;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
-import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
-import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
-import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
-import de.hysky.skyblocker.skyblock.galatea.TreeBreakProgressHud;
-import de.hysky.skyblocker.skyblock.hunting.LassoHud;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
-import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
-import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
-import de.hysky.skyblocker.utils.Utils;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -50,13 +34,32 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.events.PlaySoundEvents;
+import de.hysky.skyblocker.skyblock.CompactDamage;
+import de.hysky.skyblocker.skyblock.HealthBars;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.TeleportMaze;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseFinder;
+import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
+import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
+import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
+import de.hysky.skyblocker.skyblock.foraging.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.hunting.LassoHud;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.BeaconHighlighter;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
+import de.hysky.skyblocker.utils.Utils;
 
 /**
  * All mixins in this file should be arranged in the order of the methods they inject into.
@@ -175,6 +178,11 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 	@Inject(method = "handleMapItemData", at = @At("RETURN"))
 	private void skyblocker$onMapItemData(ClientboundMapItemDataPacket packet, CallbackInfo ci) {
 		DungeonMapTexture.onMapItemDataUpdate(packet.mapId(), packet.colorPatch().isPresent());
+	}
+
+	@Inject(method = "handleSetTime", at = @At("RETURN"))
+	private void skyblocker$onSetTime(CallbackInfo ci) {
+		CrystalsLocationsManager.onTimeUpdate();
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showNetworkCharts()Z"))

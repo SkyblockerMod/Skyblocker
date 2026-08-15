@@ -2,9 +2,8 @@ package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
 import java.util.Map;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 public class Inventories {
 	@SerializedName("bag_contents")
@@ -23,9 +22,6 @@ public class Inventories {
 	public @Nullable AbstractInventoryContents equipmentContents;
 	@SerializedName("personal_vault_contents")
 	public @Nullable AbstractInventoryContents personalVaultContents;
-	/** The non-zero indexed wardrobe slot in use. */
-	@SerializedName("wardrobe_equipped_slot")
-	public int equippedWardrobeSlot;
 	@SerializedName("sacks_counts")
 	public @Nullable Map<String, Integer> sacksCounts;
 

@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-import de.hysky.skyblocker.utils.render.title.Title;
-import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.util.LinkedHashMap;
+import java.util.SequencedMap;
+import java.util.regex.Pattern;
+
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
@@ -17,11 +16,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.jspecify.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.SequencedMap;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class SeaCreatureTracker {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -83,7 +85,7 @@ public class SeaCreatureTracker {
 		SeaCreature lastCreature = seaCreatures.sequencedValues().getLast().seaCreature;
 		SkyblockItemRarity lastCreatureRarity = lastCreature.rarity;
 		if (lastCreatureRarity.compareTo(rarityThreshold) >= 0) {
-			TitleContainer.addTitle(new Title(Component.literal(lastCreature.name).withStyle(lastCreatureRarity.formatting)), 60);
+			TitleContainer.addTitle(new Title(Component.literal(lastCreature.name).withColor(lastCreatureRarity.color)), 60);
 			if (CLIENT.player == null) return;
 			CLIENT.player.playSound(SoundEvents.ARROW_HIT_PLAYER, 100f, 0.1f);
 		}

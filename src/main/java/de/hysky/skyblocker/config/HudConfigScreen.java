@@ -1,15 +1,20 @@
 package de.hysky.skyblocker.config;
 
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.gui.BasicWidget;
-import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
 import java.awt.Color;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
+import me.shedaniel.rei.api.client.gui.compat.GuiGraphics;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 
 /**
  * A screen for configuring the positions of HUD widgets.
@@ -80,7 +85,7 @@ public abstract class HudConfigScreen extends Screen {
 
 	@Override
 	public final boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
-		if (click.button() == 0 && draggingWidget != null) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && draggingWidget != null) {
 			draggingWidget.setX((int) Math.clamp(click.x() - mouseClickRelativeX, 0, this.width - draggingWidget.getWidth()) - getWidgetXOffset(draggingWidget));
 			draggingWidget.setY((int) Math.clamp(click.y() - mouseClickRelativeY, 0, this.height - draggingWidget.getHeight()));
 		}
@@ -89,7 +94,7 @@ public abstract class HudConfigScreen extends Screen {
 
 	@Override
 	public final boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (click.button() == 0) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 			for (BasicWidget widget : widgets) {
 				if (GuiHelper.pointIsInArea(click.x(), click.y(), widget.getX() + getWidgetXOffset(widget), widget.getY(), widget.getX() + getWidgetXOffset(widget) + widget.getWidth(), widget.getY() + widget.getHeight())) {
 					draggingWidget = widget;
@@ -98,7 +103,7 @@ public abstract class HudConfigScreen extends Screen {
 					break;
 				}
 			}
-		} else if (click.button() == 1) {
+		} else if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			resetPos();
 		}
 		return super.mouseClicked(click, doubled);

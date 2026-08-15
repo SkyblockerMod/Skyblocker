@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.brigadier.Command;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -16,20 +18,20 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 public class ChatPositionShare {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatPositionShare.class);
-	private static final Pattern SIMPLE_COORDS_PATTERN = Pattern.compile("(?<x>-?[0-9]+) (?<y>[0-9]+) (?<z>-?[0-9]+)");
-	private static final Pattern SIMPLE_COMMA_COORDS_PATTERN = Pattern.compile("(?<x>-?[0-9]+), (?<y>[0-9]+), (?<z>-?[0-9]+)");
-	private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?[0-9]+), y: (?<y>[0-9]+), z: (?<z>-?[0-9]+)");
-	private static final Pattern SKYBLOCKER_COORDS_PATTERN = Pattern.compile("x: (?<x>-?[0-9]+), y: (?<y>[0-9]+), z: (?<z>-?[0-9]+)(?: \\| (?<area>[^|]+))");
-	private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?[0-9]+) (?<y>[0-9]+) (?<z>-?[0-9]+)");
+	private static final Pattern SIMPLE_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)(?:\\.\\d*)? (?<y>\\d+)(?:\\.\\d*)? (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern SIMPLE_COMMA_COORDS_PATTERN = Pattern.compile("(?<x>-?\\d+)(?:\\.\\d*)?, (?<y>\\d+)(?:\\.\\d*)?, (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern GENERIC_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)(?:\\.\\d*)?, y: (?<y>\\d+)(?:\\.\\d*)?, z: (?<z>-?\\d+)(?:\\.\\d*)?");
+	private static final Pattern SKYBLOCKER_COORDS_PATTERN = Pattern.compile("x: (?<x>-?\\d+)(?:\\.\\d*)?, y: (?<y>\\d+)(?:\\.\\d*)?, z: (?<z>-?\\d+)(?:\\.\\d*)?(?: \\| (?<area>[^|]+))");
+	private static final Pattern SKYHANNI_DIANA_PATTERN = Pattern.compile("A MINOS INQUISITOR has spawned near \\[(?<area>[^]]*)] at Coords (?<x>-?\\d+)(?:\\.\\d*)? (?<y>\\d+)(?:\\.\\d*)? (?<z>-?\\d+)(?:\\.\\d*)?");
 	private static final List<Pattern> PATTERNS = List.of(SKYBLOCKER_COORDS_PATTERN, SKYHANNI_DIANA_PATTERN, GENERIC_COORDS_PATTERN, SIMPLE_COMMA_COORDS_PATTERN, SIMPLE_COORDS_PATTERN);
 
 	@Init
@@ -45,10 +47,9 @@ public class ChatPositionShare {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(ChatPositionShare::onMessage);
 	}
 
-	@SuppressWarnings("deprecation")
 	private static int sharePlayerPosition(FabricClientCommandSource source) {
 		Vec3 pos = source.getPosition();
-		MessageScheduler.INSTANCE.sendMessageAfterCooldown("x: " + (int) pos.x() + ", y: " + (int) pos.y() + ", z: " + (int) pos.z() + " | " + Utils.getIslandArea(), true);
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("x: " + (int) pos.x() + ", y: " + (int) pos.y() + ", z: " + (int) pos.z() + " | " + Utils.getArea().displayName(), true);
 		return Command.SINGLE_SUCCESS;
 	}
 

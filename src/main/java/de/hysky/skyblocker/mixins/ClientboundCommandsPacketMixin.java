@@ -3,7 +3,12 @@ package de.hysky.skyblocker.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.commands.SharedSuggestionProvider;
+
+import de.hysky.skyblocker.skyblock.AuctionBazaarAutocomplete;
 import de.hysky.skyblocker.skyblock.CallAutocomplete;
 import de.hysky.skyblocker.skyblock.ChaptersAutocomplete;
 import de.hysky.skyblocker.skyblock.JoinInstanceAutocomplete;
@@ -13,9 +18,6 @@ import de.hysky.skyblocker.skyblock.ViewstashAutocomplete;
 import de.hysky.skyblocker.skyblock.WarpAutocomplete;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.commands.SharedSuggestionProvider;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(targets = "net.minecraft.network.protocol.game.ClientboundCommandsPacket$NodeResolver")
 public class ClientboundCommandsPacketMixin {
@@ -34,6 +36,10 @@ public class ClientboundCommandsPacketMixin {
 				case String s when s.equals("rngmeter") && RngMeterAutocomplete.longCommand != null -> RngMeterAutocomplete.longCommand;
 				case String s when s.equals("rng") && RngMeterAutocomplete.shortCommand != null -> RngMeterAutocomplete.shortCommand;
 				case String s when s.equals("call") && CallAutocomplete.commandNode != null -> CallAutocomplete.commandNode;
+				case String s when s.equals("ahs") && AuctionBazaarAutocomplete.ahsNode != null -> AuctionBazaarAutocomplete.ahsNode;
+				case String s when s.equals("ahsearch") && AuctionBazaarAutocomplete.ahsearchNode != null -> AuctionBazaarAutocomplete.ahsearchNode;
+				case String s when s.equals("bz") && AuctionBazaarAutocomplete.bzNode != null -> AuctionBazaarAutocomplete.bzNode;
+				case String s when s.equals("bazaar") && AuctionBazaarAutocomplete.bazaarNode != null -> AuctionBazaarAutocomplete.bazaarNode;
 				case String s when s.equals("chapter") && ChaptersAutocomplete.singularCommandNode != null -> ChaptersAutocomplete.singularCommandNode;
 				case String s when s.equals("chapters") && ChaptersAutocomplete.pluralCommandNode != null -> ChaptersAutocomplete.pluralCommandNode;
 				default -> original;

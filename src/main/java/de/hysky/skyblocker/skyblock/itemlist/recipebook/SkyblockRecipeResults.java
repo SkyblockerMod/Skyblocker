@@ -1,25 +1,15 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import com.google.common.collect.Lists;
-import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.CenteredRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.joml.Vector2i;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.datafixers.util.Either;
+import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -37,6 +27,18 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.CenteredRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 //TODO when in recipe view set search hint to talk about close or smth
 /**
@@ -346,7 +348,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			return true;
 		}
 
-		if (this.recipeView && click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		if (this.recipeView && click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			// The crafting result button
 			var result = resultButtons.get(14);
 			var rawID = result.getDisplayStack().getSkyblockId();

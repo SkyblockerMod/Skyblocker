@@ -2,6 +2,20 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
@@ -12,18 +26,6 @@ import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
 import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.ColorUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {

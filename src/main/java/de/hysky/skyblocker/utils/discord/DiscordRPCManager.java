@@ -1,19 +1,21 @@
 package de.hysky.skyblocker.utils.discord;
 
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.MiscConfig;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Utils;
+import java.text.DecimalFormat;
+import java.util.concurrent.CompletableFuture;
+
 import meteordevelopment.discordipc.DiscordIPC;
 import meteordevelopment.discordipc.RichPresence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.DecimalFormat;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.MiscConfig;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.Utils;
 
 /**
  * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
@@ -93,7 +95,7 @@ public class DiscordRPCManager {
 				} else if (initialization) {
 					LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 
@@ -107,19 +109,23 @@ public class DiscordRPCManager {
 	}
 
 	@SuppressWarnings("deprecation")
+	private static String islandArea() {
+		return Utils.getIslandArea().replace(SkyBlockIcons.AREA, '⏣').replace(SkyBlockIcons.RIFT_AREA, 'ф');
+	}
+
 	public static String getInfo() {
 		String info = null;
 		if (!SkyblockerConfigManager.get().misc.richPresence.cycleMode) {
 			switch (SkyblockerConfigManager.get().misc.richPresence.info) {
 				case BITS -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
 				case PURSE -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-				case LOCATION -> info = Utils.getIslandArea();
+				case LOCATION -> info = islandArea();
 			}
 		} else if (SkyblockerConfigManager.get().misc.richPresence.cycleMode) {
 			switch (cycleCount) {
 				case 0 -> info = "Bits: " + DECIMAL_FORMAT.format(Utils.getBits());
 				case 1 -> info = "Purse: " + DECIMAL_FORMAT.format(Utils.getPurse());
-				case 2 -> info = Utils.getIslandArea();
+				case 2 -> info = islandArea();
 			}
 		}
 		return info;

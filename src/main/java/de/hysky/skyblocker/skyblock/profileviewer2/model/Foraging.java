@@ -15,15 +15,17 @@ public class Foraging {
 
 	public static class Starlyn {
 		@SerializedName("personal_bests")
-		public PersonalBests personalBests;
+		public PersonalBests personalBests = new PersonalBests();
 
 		public static class PersonalBests {
-			@SerializedName("agatha")
-			public int points;
+			public int agatha;
 			@SerializedName("FIG_LOG")
 			public int figLogs;
 			@SerializedName("MANGROVE_LOG")
 			public int mangroveLogs;
+			public int miria;
+			@SerializedName("HELIX_LOG")
+			public int helixLogs;
 		}
 	}
 
@@ -47,5 +49,19 @@ public class Foraging {
 		public int fig;
 		@SerializedName("MANGROVE")
 		public int mangrove;
+		@SerializedName("HELIX")
+		public int helix;
+
+		@SerializedName("milestone_tier_claimed")
+		public MilestoneClaimed milestoneClaimed = new MilestoneClaimed();
+
+		public static class MilestoneClaimed {
+			@SerializedName("FIG")
+			public int fig;
+			@SerializedName("MANGROVE")
+			public int mangrove;
+			@SerializedName("HELIX")
+			public int helix;
+		}
 	}
 }

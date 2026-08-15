@@ -1,17 +1,16 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
+import java.time.LocalDate;
+import java.util.Locale;
+import java.util.Map;
+
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-
-import java.time.LocalDate;
-import java.util.Locale;
-import java.util.Map;
-
-import org.jspecify.annotations.Nullable;
 
 public class Dungeons {
 	@SerializedName("last_dungeon_run")

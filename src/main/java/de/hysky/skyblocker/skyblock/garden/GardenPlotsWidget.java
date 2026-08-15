@@ -1,18 +1,17 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.ChatFormatting;
@@ -37,13 +36,16 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.render.gui.ItemButtonWidget;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 public class GardenPlotsWidget extends AbstractContainerWidget {
 	private static final Supplier<ScreenPosition> POSITION = () -> new ScreenPosition(SkyblockerConfigManager.get().farming.plotsWidget.x, SkyblockerConfigManager.get().farming.plotsWidget.y);
@@ -292,7 +294,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		super.onClick(click, doubled);
 		if (dragAreaHovered) {
-			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && Minecraft.getInstance().hasShiftDown()) {
+			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT && Minecraft.getInstance().hasShiftDown()) {
 				setPosition(inventoryRectangle.right() + SPACING, inventoryRectangle.top());
 				savePositionToConfig();
 			} else {
@@ -309,7 +311,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 			return;
 		}
 
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			editingSlotIcon = hoveredSlot;
 			customIconOptionsItems = Arrays.stream(CUSTOM_ICON_OPTIONS).map(s -> {
 				if (s == null) return noneItem;
@@ -352,7 +354,7 @@ public class GardenPlotsWidget extends AbstractContainerWidget {
 
 	@Override
 	protected boolean isValidClickButton(MouseButtonInfo input) {
-		return (super.isValidClickButton(input) || input.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) && (hoveredSlot != -1 || dragAreaHovered);
+		return (super.isValidClickButton(input) || input.button() == InputConstants.MOUSE_BUTTON_RIGHT) && (hoveredSlot != -1 || dragAreaHovered);
 	}
 
 	@Override

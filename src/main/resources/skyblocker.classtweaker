@@ -55,12 +55,19 @@ accessible	class	net/minecraft/client/renderer/rendertype/RenderSetup$TextureBin
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
+extendable  method  net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 
 # Quick Nav
 accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 
 # Text
 accessible	field	net/minecraft/ChatFormatting	code	C
+
+# Server Resource Packs
+accessible	field	net/minecraft/client/resources/server/DownloadedPackSource	manager	Lnet/minecraft/client/resources/server/ServerPackManager;
+accessible	field	net/minecraft/client/resources/server/ServerPackManager packs Ljava/util/List;
+accessible	class	net/minecraft/client/resources/server/ServerPackManager$ServerPackData
+accessible	field	net/minecraft/client/resources/server/ServerPackManager$ServerPackData	url	Ljava/net/URL;
 
 # Interface Injections
 inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity

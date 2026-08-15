@@ -2,9 +2,8 @@ package de.hysky.skyblocker.config;
 
 import java.lang.reflect.Field;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 /**
  * While this sounds like a data fixer it isn't. - It's the only reasonable solution to deal with the mine field

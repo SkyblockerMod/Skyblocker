@@ -1,23 +1,25 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class SkyblockKatUpgradeRecipe implements CenteredRecipe {
 	public static final Identifier ID = SkyblockerMod.id("skyblock_kat_upgrade");

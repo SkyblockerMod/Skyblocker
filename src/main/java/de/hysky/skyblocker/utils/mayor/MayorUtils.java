@@ -1,32 +1,31 @@
 package de.hysky.skyblocker.utils.mayor;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class MayorUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MayorUtils.class);
@@ -84,17 +83,15 @@ public class MayorUtils {
 		long currentYearMillis = SkyblockTime.getSkyblockMillis() % 446400000L; //446400000ms is 1 year, 105600000ms is the amount of time from early spring 1st to late spring 27th
 		// If current time is past late spring 27th, the next mayor change is at next year's spring 27th, otherwise it's at this year's spring 27th
 		long millisUntilNextMayorChange = currentYearMillis > 105600000L ? 446400000L - currentYearMillis + 105600000L : 105600000L - currentYearMillis;
-		RenderHelper.runOnRenderThread(() -> {
-			// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
-			Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
-			// Reset the instances as soon as the new mayor is elected to prevent Paul's +10 score from being applied when its not actually active (within the extra 5 minutes above)
-			Scheduler.INSTANCE.schedule(() -> {
-				mayor = Mayor.EMPTY;
-				minister = Minister.EMPTY;
-				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
-			}, (int) (millisUntilNextMayorChange / 50));
-		});
+		// 5 extra minutes to allow the cache to expire. This is a simpler than checking age and subtracting from max age and rescheduling again.
+		Scheduler.INSTANCE.schedule(MayorUtils::tickMayorCache, (int) (millisUntilNextMayorChange / 50) + 5 * 60 * 20);
+		// Reset the instances as soon as the new mayor is elected to prevent Paul's +10 score from being applied when its not actually active (within the extra 5 minutes above)
+		Scheduler.INSTANCE.schedule(() -> {
+			mayor = Mayor.EMPTY;
+			minister = Minister.EMPTY;
+			LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
+			SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+		}, (int) (millisUntilNextMayorChange / 50));
 	}
 
 	private static void tickMayorCache() {
@@ -123,7 +120,7 @@ public class MayorUtils {
 			} catch (Exception e) {
 				throw new RuntimeException(e); //Wrap the exception to be handled by the exceptionally block
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(throwable -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(throwable -> {
 			LOGGER.error("[Skyblocker] Failed to get mayor status!", throwable.getCause());
 			if (mayorTickRetryAttempts < 5) {
 				int minutes = 5 << mayorTickRetryAttempts; //5, 10, 20, 40, 80 minutes
@@ -167,10 +164,11 @@ public class MayorUtils {
 					minister = Minister.EMPTY;
 				}
 				LOGGER.info("[Skyblocker] Mayor set to {}, minister set to {}.", mayor, minister);
-				scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 			}
-		});
+		}).thenRunAsync(() -> {
+			scheduleMayorTick(); //Ends up as a cyclic task with finer control over scheduled time
+			SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+		}, Minecraft.getInstance());
 	}
 
 	private static CompletableFuture<Boolean> loadMayorPerkOverrides() {
@@ -180,7 +178,6 @@ public class MayorUtils {
 				mayorPerkOverrides = PerkOverride.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
 				LOGGER.info("[Skyblocker] Loaded {} mayor perk overrides.", mayorPerkOverrides.size());
-				SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
 
 				return true;
 			} catch (Exception e) {
@@ -188,7 +185,10 @@ public class MayorUtils {
 
 				return false;
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenApplyAsync(loaded -> {
+			if (loaded) SkyblockEvents.MAYOR_CHANGE.invoker().onMayorChange();
+			return loaded;
+		}, Minecraft.getInstance());
 	}
 
 	private record PerkOverride(String perk, long from, long to) {

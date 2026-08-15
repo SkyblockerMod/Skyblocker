@@ -1,14 +1,21 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.gson.JsonObject;
 import com.mojang.authlib.properties.PropertyMap;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.ChatFormatting;
@@ -34,19 +41,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 
 public class PartyFinderScreen extends Screen {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(PartyFinderScreen.class);
@@ -134,7 +137,7 @@ public class PartyFinderScreen extends Screen {
 				} catch (Exception e) {
 					LOGGER.error("[Skyblocker] Failed to load dungeons floor skull textures json", e);
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		});
 		ClientSendMessageEvents.COMMAND.register(command -> {
 			if (!Utils.isOnSkyblock() || !SkyblockerConfigManager.get().dungeons.fancyPartyFinder) return;
@@ -526,7 +529,7 @@ public class PartyFinderScreen extends Screen {
 	public void clickAndWaitForServer(int slotID) {
 		//System.out.println("hey");
 		assert minecraft.gameMode != null;
-		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, 0, ContainerInput.PICKUP, minecraft.player);
+		minecraft.gameMode.handleContainerInput(handler.containerId, slotID, ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, minecraft.player);
 		waitingForServer = true;
 	}
 

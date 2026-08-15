@@ -1,28 +1,25 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.util.UndashedUuid;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
-import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
-import de.hysky.skyblocker.utils.ApiAuthentication;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.EntityUtils;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.ProfileUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -38,18 +35,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.profileviewer.collections.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.dungeons.DungeonsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.inventory.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer.skills.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer.slayers.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
+import de.hysky.skyblocker.utils.ApiAuthentication;
+import de.hysky.skyblocker.utils.ApiUtils;
+import de.hysky.skyblocker.utils.EntityUtils;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.ProfileUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.extractEntityInInventoryFollowsMouse;
 
@@ -101,11 +101,8 @@ public class ProfileViewerScreen extends Screen {
 		CompletableFuture<Void> collectionsFuture = CompletableFuture.runAsync(() -> profileViewerPages[4] = new CollectionsPage(hypixelProfile, playerProfile));
 
 		CompletableFuture.allOf(skillsFuture, slayersFuture, dungeonsFuture, inventoriesFuture, collectionsFuture)
-				.thenRun(() -> {
-					synchronized (this) {
-						rebuildWidgets();
-					}
-				}).exceptionally(err -> {
+				.thenRunAsync(this::rebuildWidgets, Minecraft.getInstance())
+				.exceptionally(err -> {
 					LOGGER.error("[Skyblocker Profile Viewer] An error occurred while initializing widgets!", err);
 					errorMessage = "Unable to process player data!";
 					profileNotFound = true;
@@ -115,9 +112,7 @@ public class ProfileViewerScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		synchronized (this) {
-			super.extractRenderState(graphics, mouseX, mouseY, delta);
-		}
+		super.extractRenderState(graphics, mouseX, mouseY, delta);
 
 		int rootX = width / 2 - GUI_WIDTH / 2;
 		int rootY = height / 2 - GUI_HEIGHT / 2 + 5;
@@ -207,7 +202,7 @@ public class ProfileViewerScreen extends Screen {
 				this.profileNotFound = true;
 				return null;
 			}).join();
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 		return CompletableFuture.allOf(profileFuture, playerFuture);
 	}
@@ -257,7 +252,7 @@ public class ProfileViewerScreen extends Screen {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to fetch collections data", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	public static Map<String, List<Collection>> getCollections() {

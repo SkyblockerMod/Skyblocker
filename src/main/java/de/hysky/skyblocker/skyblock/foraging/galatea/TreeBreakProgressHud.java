@@ -1,14 +1,14 @@
-package de.hysky.skyblocker.skyblock.galatea;
+package de.hysky.skyblocker.skyblock.foraging.galatea;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Location;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,18 +17,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Location;
 
 @RegisterWidget
 public class TreeBreakProgressHud extends ElementBasedWidget {
 
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA);
+	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GALATEA, Location.TORRHUS_CANYON);
 	private static @Nullable TreeBreakProgressHud instance;
 	private static final Int2ObjectMap<ArmorStand> armorstands = new Int2ObjectOpenHashMap<>();
 
@@ -66,12 +68,12 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	public void setEnabledIn(Location location, boolean enabled) {
 		if (!availableLocations().contains(location))
 			return;
-		SkyblockerConfigManager.update(config -> config.foraging.galatea.enableTreeBreakProgress = enabled);
+		SkyblockerConfigManager.update(config -> config.foraging.moongladeMarsh.enableTreeBreakProgress = enabled);
 	}
 
 	@Override
 	public boolean isEnabledIn(Location location) {
-		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.galatea.enableTreeBreakProgress;
+		return availableLocations().contains(location) && SkyblockerConfigManager.get().foraging.moongladeMarsh.enableTreeBreakProgress;
 	}
 
 	@Override
@@ -85,7 +87,8 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 			.filter(entity -> {
 				Component name = entity.getCustomName();
 				if (name == null) return false;
-				return name.getString().contains("FIG TREE") || name.getString().contains("MANGROVE TREE");
+				String string = name.getString();
+				return string.contains("FIG TREE") || string.contains("MANGROVE TREE") || string.contains("HELIX TREE");
 			})
 			.min(Comparator.comparingDouble(e -> e.distanceToSqr(CLIENT.player)))
 			.orElse(null);
@@ -128,8 +131,8 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 		if (closest == null || !isOwnTree(closest)) return;
 
 		String closestName = closest.getName().getString();
-		String treeName = closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
-		FlexibleItemStack woodIcon = closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
+		String treeName = closestName.contains("HELIX") ? "Helix Tree" : closestName.contains("FIG") ? "Fig Tree" : "Mangrove Tree";
+		FlexibleItemStack woodIcon = closestName.contains("HELIX") ? Ico.STRIPPED_MANGROVE_LOG : closestName.contains("FIG") ? Ico.STRIPPED_SPRUCE_WOOD : Ico.MANGROVE_LOG;
 		addSimpleIcoText(woodIcon, treeName + " ", ChatFormatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
 	}
 

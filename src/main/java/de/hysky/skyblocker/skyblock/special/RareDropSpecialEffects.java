@@ -1,25 +1,26 @@
 package de.hysky.skyblocker.skyblock.special;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.Utils;
 
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
-	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? ✯ Magic Find\\))?$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? "+SkyBlockIcons.MAGIC_FIND+" Magic Find\\))?$");
 
 	@Init
 	public static void init() {
@@ -48,8 +49,7 @@ public class RareDropSpecialEffects {
 		FlexibleItemStack stack = getStackFromName(itemName);
 
 		if (stack != null && stack.getStack() != null && !stack.getStack().isEmpty()) {
-			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, ParticleTypes.SCRAPE, 30);
-			CLIENT.gameRenderer.displayItemActivation(stack.getStackOrThrow());
+			SpecialEffects.displaySpecialEffect(stack.getStackOrThrow(), ParticleTypes.SCRAPE);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class RareDropSpecialEffects {
 			//Slayer
 			//Zombie
 			case "Scythe Blade" -> "SCYTHE_BLADE";
-			case "Shard Of The Shredded" -> "SHARD_OF_THE_SHREDDED";
+			case "Shredded Sinew" -> "SHARD_OF_THE_SHREDDED";
 			case "Severed Hand" -> "SEVERED_HAND";
 			case "Warden Heart" -> "WARDEN_HEART";
 			//Spider

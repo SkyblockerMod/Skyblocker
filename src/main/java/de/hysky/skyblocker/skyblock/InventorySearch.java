@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.ItemUtils;
+import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.Int2BooleanArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -21,10 +22,12 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.Locale;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class InventorySearch {
 	private static @Nullable AbstractContainerScreen<?> openedHandledScreen = null;
@@ -35,13 +38,13 @@ public class InventorySearch {
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
-			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
+			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen) || CatharsisCompatibility.isGuiElementHidden("skyblocker:inventorySearch")) return;
 			openedHandledScreen = null;
 
 			if (inventorySearchConfig.clickableText) Screens.getWidgets(handledScreen).add(new SearchTextWidget(handledScreen));
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((_, input) -> {
-				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
+				if (input.key() == (inventorySearchConfig.ctrlK ? InputConstants.KEY_K : InputConstants.KEY_F) && input.hasControlDownWithQuirk()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -150,7 +153,7 @@ public class InventorySearch {
 		public boolean keyPressed(KeyEvent input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isFocused());
+			return super.keyPressed(input) || (!input.isEscape() && this.isFocused());
 		}
 
 		// Unfocus when clicking outside

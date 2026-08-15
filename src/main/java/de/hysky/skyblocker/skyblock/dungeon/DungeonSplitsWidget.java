@@ -1,31 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
-
-import org.jspecify.annotations.Nullable;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +9,33 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 
 @RegisterWidget
 public class DungeonSplitsWidget extends TableWidget {

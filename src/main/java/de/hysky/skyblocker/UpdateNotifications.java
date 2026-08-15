@@ -1,19 +1,25 @@
 package de.hysky.skyblocker;
 
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.UnaryOperator;
+
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
@@ -27,21 +33,15 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.function.UnaryOperator;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class UpdateNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -64,56 +64,59 @@ public class UpdateNotifications {
 	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> loaded = CONFIG.init());
-		SkyblockEvents.JOIN.register(() -> Objects.requireNonNull(loaded).thenRunAsync(UpdateNotifications::tryCheckForNewVersion, Minecraft.getInstance()));
+		SkyblockEvents.JOIN.register(() -> {
+			if (loaded == null) loaded = CONFIG.init();
+			loaded.thenRunAsync(UpdateNotifications::tryCheckForNewVersion, Minecraft.getInstance());
+		});
 	}
 
 	private static void tryCheckForNewVersion() {
 		if (getConfig().enabled() && !sentUpdateNotification) {
 			// Wait a minute since when you join Skyblock there's usually a bunch of chat messages that pop up
 			// so that this doesn't get buried
-			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20);
+			Scheduler.INSTANCE.schedule(UpdateNotifications::checkForNewVersion, 60 * 20, true);
 			Scheduler.INSTANCE.schedule(UpdateNotifications::introduceNewUpdate, 60 * 20);
 		}
 	}
 
 	private static void checkForNewVersion() {
-		CompletableFuture.runAsync(() -> {
-			try {
-				// The cast would only fail because someone compiled the mod with a non-compliant version
-				SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
-				SemanticVersion currentMinecraftVersion = parseMinecraftVersion(SharedConstants.getCurrentVersion().id()).getOrThrow();
-				String response = Http.sendGetRequest(VERSIONS_URL);
-				List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
+		try {
+			// The cast would only fail because someone compiled the mod with a non-compliant version
+			SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
+			SemanticVersion currentMinecraftVersion = parseMinecraftVersion(SharedConstants.getCurrentVersion().id()).getOrThrow();
+			String response = Http.sendGetRequest(VERSIONS_URL);
+			List<MrVersion> mrVersions = MrVersion.LIST_CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(response)).getOrThrow();
 
-				// Set it to true now so that we don't keep re-checking if the data should be discarded
-				sentUpdateNotification = true;
+			// Set it to true now so that we don't keep re-checking if the data should be discarded
+			sentUpdateNotification = true;
 
-				Optional<MrVersion> optimalVersion = getOptimalVersion(currentModVersion, currentMinecraftVersion, mrVersions);
+			Optional<MrVersion> optimalVersion = getOptimalVersion(currentModVersion, currentMinecraftVersion, mrVersions);
 
-				if (optimalVersion.isPresent() && !shouldDiscard(currentModVersion, optimalVersion.get().version())) {
-					MrVersion newVersion = optimalVersion.get();
-					String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
-					Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
-							.applyFormat(ChatFormatting.GRAY)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
+			if (optimalVersion.isPresent() && !shouldDiscard(currentModVersion, optimalVersion.get().version())) {
+				MrVersion newVersion = optimalVersion.get();
+				String downloadLink = "https://modrinth.com/mod/skyblocker-liap/version/" + newVersion.id();
+				Component versionText = Component.literal(newVersion.name()).withStyle(style -> style
+						.applyFormat(ChatFormatting.GRAY)
+						.withUnderlined(true)
+						.withClickEvent(new ClickEvent.OpenUrl(URI.create(downloadLink))));
 
-					MINECRAFT.execute(() -> {
-						if (MINECRAFT.player == null) {
-							return;
-						}
+				MINECRAFT.execute(() -> {
+					if (MINECRAFT.player == null) {
+						return;
+					}
 
-						MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
-						SystemToast.add(MINECRAFT.gui.toastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
-					});
-				}
-			} catch (Exception e) {
-				LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
+					MINECRAFT.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.updateNotifications.newUpdateMessage", versionText)));
+					SystemToast.add(MINECRAFT.gui.toastManager(), TOAST_TYPE, Component.translatable("skyblocker.updateNotifications.newUpdateToast.title"), Component.translatableEscape("skyblocker.updateNotifications.newUpdateToast.description", newVersion.version()));
+				});
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		} catch (Exception e) {
+			LOGGER.error("[Skyblocker Update Notifications] Failed to determine if an update is available or not!", e);
+		}
 	}
 
 	private static void introduceNewUpdate() {
+		if (MINECRAFT.player == null) return;
+
 		try {
 			Optional<SemanticVersion> newestVersionUsed = getConfig().newestVersionUsed();
 			SemanticVersion currentModVersion = (SemanticVersion) MOD_VERSION;
@@ -173,11 +176,9 @@ public class UpdateNotifications {
 		}
 
 		// Finds a release whose version number matches the newest version available and is available for the newest Minecraft version that the mod supports
-		Optional<MrVersion> latestModVersionForNewestMinecraftVersion = eligibleModVersions.stream()
+		return eligibleModVersions.stream()
 				.filter(releaseVersion -> VERSION_COMPARATOR.compare(releaseVersion.version(), newestModVersion) == 0)
 				.max(Comparator.comparing(MrVersion::newestMinecraftVersionSupported, VERSION_COMPARATOR));
-
-		return latestModVersionForNewestMinecraftVersion;
 	}
 
 	private static DataResult<SemanticVersion> parseVersion(String version) {

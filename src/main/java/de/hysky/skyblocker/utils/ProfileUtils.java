@@ -2,10 +2,6 @@ package de.hysky.skyblocker.utils;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -13,6 +9,8 @@ import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.SkyblockerMod;
 
@@ -47,7 +45,7 @@ public class ProfileUtils {
 			}
 
 			return null;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**
@@ -58,7 +56,7 @@ public class ProfileUtils {
 			String uuid = ApiUtils.name2Uuid(name);
 
 			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**
@@ -67,7 +65,7 @@ public class ProfileUtils {
 	public static CompletableFuture<@Nullable JsonObject> fetchFullProfileByUuid(String uuid) {
 		return CompletableFuture.supplyAsync(() -> {
 			return !uuid.isEmpty() ? UUID_TO_PROFILES_CACHE.getUnchecked(uuid) : null;
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static @Nullable JsonObject fetchProfilesInternal(String uuid) {

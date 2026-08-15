@@ -1,17 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class AccessoryTooltip extends SimpleTooltipAdder {
 	public static final int COLLECTED_COLOUR = TextColor.GREEN.getValue();
@@ -31,7 +35,7 @@ public class AccessoryTooltip extends SimpleTooltipAdder {
 			Pair<AccessoriesHelper.AccessoryReport, String> report = AccessoriesHelper.calculateReport4Accessory(internalID);
 
 			if (report.left() != AccessoriesHelper.AccessoryReport.INELIGIBLE) {
-				MutableComponent title = Component.literal(String.format("%-19s", "Accessory: ")).withColor(0xF57542);
+				MutableComponent title = Component.literal("Accessory:").withColor(0xF57542);
 
 				Component stateText = switch (report.left()) {
 					case HAS_HIGHEST_TIER -> Component.literal("✔ Collected").withColor(COLLECTED_COLOUR);
@@ -44,7 +48,7 @@ public class AccessoryTooltip extends SimpleTooltipAdder {
 					default -> Component.literal("? Unknown").withStyle(ChatFormatting.GRAY);
 				};
 
-				lines.add(title.append(stateText));
+				lines.add(GridComponent.of(title, stateText));
 			}
 		}
 	}

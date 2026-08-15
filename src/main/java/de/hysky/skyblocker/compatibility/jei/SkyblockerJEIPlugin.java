@@ -3,20 +3,6 @@ package de.hysky.skyblocker.compatibility.jei;
 import java.util.List;
 import java.util.function.Predicate;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.skyblock.garden.GardenPlots;
-import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
-import de.hysky.skyblocker.skyblock.museum.MuseumManager;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -29,10 +15,27 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.fabric.events.JeiLifecycleEvents;
 import mezz.jei.library.ingredients.subtypes.SubtypeInterpreters;
 import mezz.jei.library.load.registration.SubtypeRegistration;
+
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.garden.GardenPlots;
+import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockKatUpgradeRecipe;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockNpcShopRecipe;
+import de.hysky.skyblocker.skyblock.museum.MuseumManager;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 
 @JeiPlugin
 public class SkyblockerJEIPlugin implements IModPlugin {
@@ -42,7 +45,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	private SkyblockKatUpgradeRecipeCategory skyblockKatUpgradeRecipe;
 
 	public static void trickJEIIntoLoadingRecipes() {
-		JeiLifecycleEvents.AFTER_RECIPE_SYNC.invoker().run();
+		JeiLifecycleEvents.AFTER_RECIPES_UPDATED.invoker().run();
 	}
 
 	@Override
@@ -55,8 +58,8 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		@SuppressWarnings("unused")
 		SubtypeInterpreters interpreters = ((SubtypeRegistration) registration).getInterpreters();
 		ItemRepository.getItemsStream().filter(stack -> !interpreters.contains(VanillaTypes.ITEM_STACK, stack.getStackOrThrow())).map(FlexibleItemStack::getStackOrThrow).distinct().forEach(item ->
-		registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
-				);
+				registration.registerSubtypeInterpreter(item.getItem(), (stack, _) -> ItemStackComponentizationFixer.componentsAsString(stack))
+		);
 	}
 
 	@Override
@@ -78,6 +81,7 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
 		registration.addGuiContainerHandler(ContainerScreen.class, new GenericContainerHandler());
 		registration.addGuiContainerHandler(InventoryScreen.class, new InventoryContainerHandler());
+		registration.addGuiContainerHandler(StorageOverlayScreen.class, new StorageOverlayHandler());
 		registration.addGlobalGuiHandler(new GlobalHandler());
 	}
 
@@ -107,13 +111,18 @@ public class SkyblockerJEIPlugin implements IModPlugin {
 		}
 	}
 
+	private static class StorageOverlayHandler implements IGuiContainerHandler<StorageOverlayScreen> {
+		@Override
+		public List<Rect2i> getGuiExtraAreas(StorageOverlayScreen screen) {
+			return List.of(screen.getMainExclusionZone(), screen.getButtonsExclusionZone());
+		}
+	}
+
 	private static class GlobalHandler implements IGlobalGuiHandler {
 		@Override
 		public List<Rect2i> getGuiExtraAreas() {
 			if (!Utils.isOnSkyblock() || !VisitorHelper.shouldRender()) return List.of();
-			return VisitorHelper.getExclusionZones().stream()
-					.map(rect -> new Rect2i(rect.position().x(), rect.position().y(), rect.width(), rect.height()))
-					.toList();
+			return VisitorHelper.getExclusionZones();
 		}
 	}
 }

@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.config.configs;
 
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import java.awt.Color;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
+
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = false;
@@ -62,6 +64,8 @@ public class DungeonsConfig {
 	public MimicMessage mimicMessage = new MimicMessage();
 
 	public PrinceMessage princeMessage = new PrinceMessage();
+
+	public BatMessage batMessage = new BatMessage();
 
 	public DoorHighlight doorHighlight = new DoorHighlight();
 
@@ -151,9 +155,9 @@ public class DungeonsConfig {
 
 		public boolean enableLividColorBoundingBox = true;
 
-		public boolean enableLividColorText = true;
+		public boolean enableLividColorText = false;
 
-		public boolean enableLividColorTitle = true;
+		public boolean enableLividColorTitle = false;
 
 		public String lividColorText = "The livid color is [color]";
 	}
@@ -274,6 +278,10 @@ public class DungeonsConfig {
 
 		@Deprecated
 		public transient String princeMessage = "Prince dead!";
+	}
+
+	public static class BatMessage {
+		public boolean sendBatMessage = true;
 	}
 
 	public static class DoorHighlight {

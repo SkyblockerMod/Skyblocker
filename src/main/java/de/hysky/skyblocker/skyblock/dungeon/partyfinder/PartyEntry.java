@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
-import de.hysky.skyblocker.SkyblockerMod;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +8,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -32,7 +35,8 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.joml.Matrix3x2fStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 	private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
@@ -267,7 +271,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		if (slotID == -1) {
 			PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
 		}
-		if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && !screen.isWaitingForServer() && slotID != -1) {
 			screen.clickAndWaitForServer(slotID);
 			return true;
 		}

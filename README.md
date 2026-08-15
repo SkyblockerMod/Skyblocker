@@ -73,7 +73,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Sellable Dungeon Item Highlighter**
 - **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
-- **Mimic & Prince Messages**
+- **Mimic, Prince, and Bat Messages**
 - **Prevent teammates glow during Livid**
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
@@ -88,21 +88,34 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
-- **Forest Node Highlighter**
+- **Floor Drop Highlighter**
 - **Lushlilac and Sea Lumies Highlighters**
+- **Ruby Veilshroom and HoneyHive Highlighters**
 - **Forest Temple puzzle solver**
+- **Desert Temple puzzles solver**
 - **Hunting Box Helper**
 - **Hunting Box Shard Prices**
-- **Various Mob Features**
+- **Moonglade Mob Features**
     - Phantom Silencer
     - Hideonleaf Highlighter
     - Carolat Highlighter
     - Shellwise Highlighter
+- **Torrhus Mob Features**
+    - Hideonsun Highlighter
+    - Blue Jay Highlighter
+- ** Safari Mob Features**
+     - Phantom Silencer
+     - Sparkling Critter Highlighter
+     - Rockmite Mound Highlighter
+     - Hideonfloor Highlighter
+     - Duplico Highlighter
+     - Bloodbat Highlighter
+     - Ignore Slot Locking for Shining Coins
+     - Hide Cold Overlay
 - **Lasso HUD**
 
 ### Foraging Features:
 - **Sweep Overlay**
-    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
 - **Tree Break Progress HUD**
 - **Sweep Details HUD**
@@ -132,6 +145,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
     - *Custom Head Textures*
+    - *Custom Item Models*
+    - *Custom Glint*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -141,6 +156,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *XP*
     - *Speed*
     - *Oxygen*
+    - *Vitality*
 - **Vanilla health/xp and fancy bar shown in parallel**
 - Place the bars on anchors or anywhere on screen
 
@@ -288,6 +304,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - Auction House
     - Bazaar
     - Museum
+- **Storage Overlay**
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -375,7 +392,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
-  - *`/chapters` command*
+    - *`/chapters` command*
+    - *`/ahs`, `/bz` commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -386,6 +404,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
+    - *Beekeeper*
     - *Dungeonbreaker*
     - *Spirit Sceptre*
 
@@ -402,7 +421,8 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe Keybinds**
+- **Loadouts Helper**
+    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
@@ -444,6 +464,7 @@ Installation guide is [here](https://github.com/SkyblockerMod/Skyblocker/wiki/in
 - **Config Backups**
 - **Iris shader support**
 - **Block Break Prediction**
+
 
 
 </details>

@@ -1,6 +1,20 @@
 package de.hysky.skyblocker.utils.render.title;
 
+import java.awt.Color;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.HudConfigScreen;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -8,18 +22,6 @@ import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.EnumUtils;
 import de.hysky.skyblocker.utils.render.gui.BasicWidget;
 import de.hysky.skyblocker.utils.render.gui.EmptyWidget;
-import it.unimi.dsi.fastutil.ints.IntIntMutablePair;
-import org.lwjgl.glfw.GLFW;
-
-import java.awt.Color;
-import java.util.List;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class TitleContainerConfigScreen extends HudConfigScreen {
 	public static final float MIN_TITLE_SCALE = 30f;
@@ -108,17 +110,17 @@ public class TitleContainerConfigScreen extends HudConfigScreen {
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		switch (input.key()) {
-			case GLFW.GLFW_KEY_Q -> alignment = EnumUtils.cycle(alignment);
-			case GLFW.GLFW_KEY_E -> alignment = EnumUtils.cycleBackwards(alignment);
-			case GLFW.GLFW_KEY_R -> {
+			case InputConstants.KEY_Q -> alignment = EnumUtils.cycle(alignment);
+			case InputConstants.KEY_E -> alignment = EnumUtils.cycleBackwards(alignment);
+			case InputConstants.KEY_R -> {
 				direction = EnumUtils.cycle(direction);
 				updateWidgetDimensions();
 			}
-			case GLFW.GLFW_KEY_EQUAL -> {
+			case InputConstants.KEY_EQUALS -> {
 				titleContainerScale = Math.min(MAX_TITLE_SCALE, titleContainerScale + 10);
 				updateWidgetDimensions();
 			}
-			case GLFW.GLFW_KEY_MINUS -> {
+			case InputConstants.KEY_MINUS -> {
 				titleContainerScale = Math.max(MIN_TITLE_SCALE, titleContainerScale - 10);
 				updateWidgetDimensions();
 			}

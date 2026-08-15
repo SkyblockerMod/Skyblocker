@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import it.unimi.dsi.fastutil.chars.CharList;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +12,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import it.unimi.dsi.fastutil.chars.CharList;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.
  *
  * @author AzureAaron
  */
 public class TextTransformer {
-	private static final Pattern REDUNDANT_COLOR_REGEX = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
+	private static final Pattern REDUNDANT_COLOR = Pattern.compile("&(?:#[\\da-f]{6}|[\\da-f])(\\s*)&(#[\\da-f]{6}|[\\da-f])");
+	private static final Pattern TRAILING_WHITESPACE = Pattern.compile("(\\s*)&(#[\\da-f]{6}|[\\da-fk-or])(\\s+)");
 	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\s+");
 	private static final CharList FORMAT_CODES = CharList.of('4', 'c', '6', 'e', '2', 'a', 'b', '3', '1', '9', 'd', '5', 'f', '7', '8', '0', 'r', 'k', 'l', 'm', 'n', 'o');
 	private static final Map<Integer, Character> HEX_TO_CODES = Arrays.stream(ChatFormatting.values()).filter(c -> TextColor.fromLegacyFormat(c) != null).collect(Collectors.toUnmodifiableMap(cf -> TextColor.fromLegacyFormat(cf).getValue(), cf -> cf.code));
@@ -68,12 +70,19 @@ public class TextTransformer {
 		return codes.toString();
 	}
 
-	private static String removeRedundantCodes(String message) {
+	private static String removeRedundantStyles(String message) {
 		String result = message;
-		Matcher redundant = REDUNDANT_COLOR_REGEX.matcher(message);
+		Matcher redundant = REDUNDANT_COLOR.matcher(message);
 
 		while (redundant.find()) {
 			result = redundant.replaceAll("$1&$2");
+			redundant.reset(result);
+		}
+
+		redundant = TRAILING_WHITESPACE.matcher(result);
+
+		while (redundant.find()) {
+			result = redundant.replaceAll("$1$3&$2");
 			redundant.reset(result);
 		}
 
@@ -107,7 +116,7 @@ public class TextTransformer {
 			return Optional.empty();
 		}, Style.EMPTY);
 
-		return removeRedundantCodes(result.toString());
+		return removeRedundantStyles(result.toString());
 	}
 
 	/**

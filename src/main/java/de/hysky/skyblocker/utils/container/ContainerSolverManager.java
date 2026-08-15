@@ -1,9 +1,25 @@
 package de.hysky.skyblocker.utils.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.skyblock.RaffleRewardHighlight;
 import de.hysky.skyblocker.skyblock.RaffleTaskHighlight;
+import de.hysky.skyblocker.skyblock.SkyBlockEquipmentUpdater;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesContainerSolver;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakeBagHelper;
 import de.hysky.skyblocker.skyblock.accessories.newyearcakes.NewYearCakesHelper;
@@ -25,7 +41,7 @@ import de.hysky.skyblocker.skyblock.end.EndStatsBestiaryUpdater;
 import de.hysky.skyblocker.skyblock.experiment.ChronomatronSolver;
 import de.hysky.skyblocker.skyblock.experiment.SuperpairsSolver;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
-import de.hysky.skyblocker.skyblock.galatea.TunerSolver;
+import de.hysky.skyblocker.skyblock.foraging.galatea.TunerSolver;
 import de.hysky.skyblocker.skyblock.garden.StereoHarmonyHelper;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.AnvilHelper;
@@ -33,24 +49,12 @@ import de.hysky.skyblocker.skyblock.item.tooltip.adders.BitsHelper;
 import de.hysky.skyblocker.skyblock.slayers.features.RewardsHighlighter;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import java.util.List;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * Manager class for {@link SimpleContainerSolver}s like terminal solvers and experiment solvers. To add a new gui solver, extend {@link SimpleContainerSolver} and register it in {@link #ContainerSolverManager()}.
  */
 public class ContainerSolverManager {
-	private static final ContainerSolver[] solvers = new ContainerSolver[]{
+	private static final List<ContainerSolver> solvers = new ArrayList<>(List.of(
 			new ColorTerminal(),
 			new OrderTerminal(),
 			new StartsWithTerminal(),
@@ -80,7 +84,9 @@ public class ContainerSolverManager {
 			AccessoriesContainerSolver.INSTANCE,
 			new AnvilHelper(),
 			new RewardsHighlighter(),
-	};
+			new SkyBlockEquipmentUpdater(),
+			new SkyBlockEquipmentUpdater.EquipmentWardrobe()
+	));
 	private static @Nullable ContainerSolver currentSolver = null;
 	private static @Nullable List<ColorHighlight> highlights;
 	/**
@@ -94,33 +100,38 @@ public class ContainerSolverManager {
 		return currentSolver;
 	}
 
+	@SuppressWarnings("unused")
+	public static void registerSolver(ContainerSolver solver) {
+		solvers.add(solver);
+	}
+
 	@Init
 	public static void init() {
 		ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
-			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen) {
+			if (screen instanceof AbstractContainerScreen<?> containerScreen) {
 				ScreenEvents.remove(screen).register(_ -> clearScreen());
-				onSetScreen(genericContainerScreen);
+				onSetScreen(containerScreen);
 			} else {
 				clearScreen();
 			}
 		});
 	}
 
-	@SuppressWarnings({"ConstantValue", "java:S1066"})
-	public static void onSetScreen(ContainerScreen screen) {
+	public static void onSetScreen(AbstractContainerScreen<?> screen) {
 		String screenName = screen.getTitle().getString();
 		for (ContainerSolver solver : solvers) {
-			if (solver.isEnabled()) {
-				//Ignore the result of instanceof being always true.
-				//This only happens because all solvers in the `solvers` array are SimpleContainerSolvers, which extend RegexContainerMatcher.
-				//This may not be the case as more and more solvers are added.
-				//Also don't merge this with the above `if`, the parenthesis mess gets hard to read. (java:S1066 for sonarlint users)
+			// Checks if the solver should be processed.
+			if ((Utils.isOnSkyblock() || !solver.skyblockOnly()) && solver.isEnabled()) {
+				// Checks if the solver matches the screen.
 				if ((solver instanceof RegexContainerMatcher containerMatcher && containerMatcher.test(screenName)) || solver.test(screen)) {
-					++screenId;
-					currentSolver = solver;
-					currentSolver.start(screen);
-					markHighlightsDirty();
-					return;
+					// Checks if the solver should be processed for this screen type.
+					if (screen instanceof ContainerScreen || !solver.chestScreensOnly()) {
+						++screenId;
+						currentSolver = solver;
+						currentSolver.start(screen);
+						markHighlightsDirty();
+						return;
+					}
 				}
 			}
 		}
@@ -149,13 +160,17 @@ public class ContainerSolverManager {
 		return currentSolver != null && currentSolver.onClickSlot(slot, stack, screenId, button);
 	}
 
-	public static void onExtract(GuiGraphicsExtractor context, AbstractContainerScreen<ChestMenu> handledScreen, List<Slot> slots) {
+	public static void onExtract(GuiGraphicsExtractor context, AbstractContainerScreen<?> handledScreen, List<Slot> slots) {
 		if (currentSolver == null) return;
 
 		context.pose().pushMatrix();
 		context.pose().translate(((AbstractContainerScreenAccessor) handledScreen).getX(), ((AbstractContainerScreenAccessor) handledScreen).getY());
 
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(currentSolver instanceof ContainerAndInventorySolver ? slots : slots.subList(0, handledScreen.getMenu().getRowCount() * 9)));
+		if (currentSolver.chestInventoryOnly() && handledScreen.getMenu() instanceof ChestMenu chestMenu) {
+			slots = slots.subList(0, chestMenu.getRowCount() * 9);
+		}
+
+		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots));
 		for (ColorHighlight highlight : highlights) {
 			Slot slot = slots.get(highlight.slot());
 			int color = highlight.color();

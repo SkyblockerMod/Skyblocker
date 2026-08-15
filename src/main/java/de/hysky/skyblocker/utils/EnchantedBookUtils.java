@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.annotations.Init;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.network.chat.Component;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
+import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.annotations.Init;
 
 public final class EnchantedBookUtils {
 	private static final Map<String, String> API_ID_OVERRIDES = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());

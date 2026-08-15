@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -14,6 +8,13 @@ import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class ChatCategory {
 
@@ -144,6 +145,15 @@ public class ChatCategory {
 								.binding(defaults.chat.hideToggleLottery,
 										() -> config.chat.hideToggleLottery,
 										newValue -> config.chat.hideToggleLottery = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideToggleBeekeeper"))
+								.description(Component.translatable("skyblocker.config.chat.filter.hideToggleBeekeeper.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.chat.hideToggleBeekeeper,
+										() -> config.chat.hideToggleBeekeeper,
+										newValue -> config.chat.hideToggleBeekeeper = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

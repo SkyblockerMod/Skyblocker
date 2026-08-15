@@ -1,17 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
@@ -21,6 +11,20 @@ import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.skyblock.LoadoutKeybinds;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
+import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -45,16 +49,6 @@ public class HelperCategory {
 						.binding(defaults.helpers.enableBitsTooltip,
 								() -> config.helpers.enableBitsTooltip,
 								newValue -> config.helpers.enableBitsTooltip = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-
-				// Wardrobe Helper
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
-						.description(Component.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip"))
-						.binding(defaults.helpers.enableWardrobeHelper,
-								() -> config.helpers.enableWardrobeHelper,
-								newValue -> config.helpers.enableWardrobeHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
@@ -278,6 +272,81 @@ public class HelperCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 
+						.build())
+
+				// Loadouts Helper
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.loadouts"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper"))
+								.description(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip"))
+								.tags(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tag"), CommonTags.ADDED_IN_6_7_0)
+								.binding(defaults.helpers.enableWardrobeHelper,
+										() -> config.helpers.enableWardrobeHelper,
+										newValue -> config.helpers.enableWardrobeHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.01"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_1)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.02"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_2)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.03"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_3)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.04"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_4)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.05"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_5)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.06"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_6)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.07"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_7)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.08"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_8)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.09"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_9)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.10"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_10)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.11"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_11)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.12"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_12)
+								.build())
 						.build())
 
 				//Fairy Souls Helper
