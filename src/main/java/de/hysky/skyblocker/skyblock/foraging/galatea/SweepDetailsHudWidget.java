@@ -29,6 +29,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	private static final Map<String, FlexibleItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new FlexibleItemStack(Items.MANGROVE_LOG),
+			"Helix", new FlexibleItemStack(Items.STRIPPED_MANGROVE_WOOD),
 			"Jungle", new FlexibleItemStack(Items.JUNGLE_LOG),
 			"Acacia", new FlexibleItemStack(Items.ACACIA_LOG),
 			"Dark Oak", new FlexibleItemStack(Items.DARK_OAK_LOG),
@@ -65,6 +66,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new FlexibleItemStack(Items.IRON_AXE));
 				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new FlexibleItemStack(Items.GOLDEN_AXE));
 				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new FlexibleItemStack(Items.STONE_AXE));
+				case TORRHUS_CANYON -> ItemRepository.getItemStack("HELIX_CHOPPER", Ico.GOLDEN_AXE);
 				default -> Ico.RED_CONCRETE;
 			};
 			addElement(Elements.iconTextComponent(axeIcon, Component.translatable("skyblocker.galatea.hud.sweepDetails.inactive")));

@@ -548,8 +548,6 @@
   "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget": "Enable Sweep Details Widget",
   "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\nSweep Details are removed from the chat but are still saved to the logs.\n\nRequires enabling Sweep Details at Swoop in the Moonglade Marsh!",
   "skyblocker.config.foraging.moongladeMarsh.enableTreeBreakHud": "Tree Break Progress HUD",
-  "skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress": "Enable Tree Break Progress HUD",
-  "skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress.@Tooltip": "Renders tree break progress in HUD",
   "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver": "Enable Tuner Solver",
   "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver.@Tooltip": "Shows the required clicks for the Tune Frequency puzzle in the Moonglade Beacon.",
   "skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount": "Minimum Sea Lumie Count to Highlight",

@@ -259,14 +259,25 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.enabled"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.enabled.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
 								.binding(defaults.uiAndVisuals.storageOverlay.enabled,
 										() -> config.uiAndVisuals.storageOverlay.enabled,
 										newValue -> config.uiAndVisuals.storageOverlay.enabled = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_1)
+								.binding(defaults.uiAndVisuals.storageOverlay.storagesPerRow,
+										() -> config.uiAndVisuals.storageOverlay.storagesPerRow,
+										newValue -> config.uiAndVisuals.storageOverlay.storagesPerRow = newValue)
+								.controller(IntegerController.createBuilder().range(0, 20).slider(1).build())
+								.build())
+						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.backpackWidth.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
 								.binding(defaults.uiAndVisuals.storageOverlay.backpackWidth,
 										() -> config.uiAndVisuals.storageOverlay.backpackWidth,
 										newValue -> config.uiAndVisuals.storageOverlay.backpackWidth = newValue)
@@ -275,9 +286,19 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberSearch.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
 								.binding(defaults.uiAndVisuals.storageOverlay.rememberSearch,
 										() -> config.uiAndVisuals.storageOverlay.rememberSearch,
 										newValue -> config.uiAndVisuals.storageOverlay.rememberSearch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_2)
+								.binding(defaults.uiAndVisuals.storageOverlay.rememberOpened,
+										() -> config.uiAndVisuals.storageOverlay.rememberOpened,
+										newValue -> config.uiAndVisuals.storageOverlay.rememberOpened = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build()
@@ -482,10 +503,11 @@ public class UIAndVisualsCategory {
 				//Fancy Bars
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.bars"))
-						.tags(Component.literal("fancy status bars"))
+						.tags(Component.translatable("skyblocker.config.uiAndVisuals.bars.@Tag[0]"), Component.translatable("skyblocker.config.uiAndVisuals.bars.@Tag[1]"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBars"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.enableBars.@Tooltip"))
 								.binding(defaults.uiAndVisuals.bars.enableBars,
 										() -> config.uiAndVisuals.bars.enableBars,
 										newValue -> config.uiAndVisuals.bars.enableBars = newValue)
@@ -544,7 +566,15 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
 								.controller(ConfigUtils.createEnumController(intelligenceDisplay -> Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
 								.build()
-						)
+						).option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_1)
+								.binding(defaults.uiAndVisuals.bars.showEstimatedTilde,
+										() -> config.uiAndVisuals.bars.showEstimatedTilde,
+										newValue -> config.uiAndVisuals.bars.showEstimatedTilde = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Waypoints
@@ -835,6 +865,15 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.searchOverlay.enableCommands,
 										() -> config.uiAndVisuals.searchOverlay.enableCommands,
 										newValue -> config.uiAndVisuals.searchOverlay.enableCommands = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
+								.binding(defaults.uiAndVisuals.searchOverlay.commandAutocomplete,
+										() -> config.uiAndVisuals.searchOverlay.commandAutocomplete,
+										newValue -> config.uiAndVisuals.searchOverlay.commandAutocomplete = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
