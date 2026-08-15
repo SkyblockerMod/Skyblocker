@@ -38,7 +38,7 @@ public class LassoHud extends ElementBasedWidget {
 	}
 
 	public LassoHud() {
-		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), new Information("hud_lasso", Component.literal("Lasso HUD"), Location.GALATEA));
+		super(Component.literal("Lasso").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), new Information("hud_lasso", Component.literal("Lasso HUD"), Location.GALATEA, Location.TORRHUS_CANYON));
 		instance = this;
 	}
 

@@ -36,7 +36,7 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 	}
 
 	public TreeBreakProgressHud() {
-		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), TextColor.GREEN.getValue(), new Information("hud_treeprogress", Component.literal("Tree Break Progress"), Location.GALATEA));
+		super(Component.literal("Tree Break Progress").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), TextColor.GREEN.getValue(), new Information("hud_treeprogress", Component.literal("Tree Break Progress"), Location.GALATEA, Location.TORRHUS_CANYON));
 		instance = this;
 		update();
 	}

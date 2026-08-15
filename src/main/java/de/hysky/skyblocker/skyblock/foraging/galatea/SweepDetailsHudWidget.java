@@ -37,7 +37,7 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 			"Birch", new FlexibleItemStack(Items.BIRCH_LOG),
 			"Oak", new FlexibleItemStack(Items.OAK_LOG)
 	);
-	public static final Set<Location> LOCATIONS = EnumSet.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN);
+	public static final Set<Location> LOCATIONS = EnumSet.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN, Location.TORRHUS_CANYON);
 
 	public SweepDetailsHudWidget() {
 		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, new Information("sweep_details", Component.literal("Sweep Details"), LOCATIONS));
@@ -63,9 +63,9 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {
-				case HUB -> ItemRepository.getItemStack("SWEET_AXE", new FlexibleItemStack(Items.IRON_AXE));
-				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", new FlexibleItemStack(Items.GOLDEN_AXE));
-				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", new FlexibleItemStack(Items.STONE_AXE));
+				case HUB -> ItemRepository.getItemStack("SWEET_AXE", Ico.IRON_AXE);
+				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", Ico.GOLDEN_AXE);
+				case GALATEA -> ItemRepository.getItemStack("FIGSTONE_AXE", Ico.STONE_AXE);
 				case TORRHUS_CANYON -> ItemRepository.getItemStack("HELIX_CHOPPER", Ico.GOLDEN_AXE);
 				default -> Ico.RED_CONCRETE;
 			};
