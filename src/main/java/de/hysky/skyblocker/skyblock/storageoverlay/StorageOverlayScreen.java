@@ -186,7 +186,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	/// The actual left pos of the overlay once it's initialized
-	private int getLeftPos() {
+	public int getLeftPos() {
 		return (this.width - this.getWidth()) / 2;
 	}
 
@@ -196,7 +196,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 	}
 
 	/// The actual width of the overlay once it's initialized
-	private int getWidth() {
+	public int getWidth() {
 		return this.grid != null ? this.grid.getWidth() + 16 : getMaxWidth();
 	}
 
