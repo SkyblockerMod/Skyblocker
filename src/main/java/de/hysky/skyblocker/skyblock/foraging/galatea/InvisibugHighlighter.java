@@ -54,7 +54,7 @@ public class InvisibugHighlighter {
 	private static boolean isNearPet(ClientLevel level, Vec3 pos) {
 		return level.getEntitiesOfClass(ArmorStand.class, AABB.ofSize(pos, 10, 10, 10)).stream()
 				.min(Comparator.comparingDouble(armorStand -> armorStand.distanceToSqr(pos)))
-				.map(armorStand -> armorStand.hasItemInSlot(EquipmentSlot.MAINHAND))
+				.map(armorStand -> armorStand.hasItemInSlot(EquipmentSlot.MAINHAND) || armorStand.getCustomName() != null)
 				.orElse(false);
 	}
 
