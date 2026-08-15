@@ -22,9 +22,9 @@ public class LevelCalculator {
 	// TODO make member parameter nullable?
 	public static LevelInfo getSkillLevel(long xp, Skill skill, ProfileMember member) {
 		int[] xpChart = switch (skill) {
-			case Skill.CATACOMBS -> DUNGEONS_XP_CHART;
-			case Skill.RUNECRAFTING -> RUNECRAFTING_XP_CHART;
-			case Skill.SOCIAL -> SOCIAL_XP_CHART;
+			case CATACOMBS -> DUNGEONS_XP_CHART;
+			case RUNECRAFTING -> RUNECRAFTING_XP_CHART;
+			case SOCIAL -> SOCIAL_XP_CHART;
 
 			default -> REGULAR_XP_CHART;
 		};
@@ -70,8 +70,25 @@ public class LevelCalculator {
 
 	private static int getSkillCapIncrease(Skill skill, ProfileMember member) {
 		return switch (skill) {
-			case Skill.FARMING -> member.jacobsContest.perks.farmingLevelCap;
-			case Skill.TAMING -> member.petsData.petCare.petTypesSacrificed.size();
+			case FARMING -> member.jacobsContest.perks.farmingLevelCap;
+			case FORAGING -> {
+				int increase = 0;
+
+				if (CollectionTiers.unlockedTier(member, "FIG_LOG", 9)) {
+					increase++;
+				}
+
+				if (CollectionTiers.unlockedTier(member, "MANGROVE_LOG", 9)) {
+					increase++;
+				}
+
+				if (CollectionTiers.unlockedTier(member, "HELIX_LOG", 9)) {
+					increase++;
+				}
+
+				yield increase;
+			}
+			case TAMING -> member.petsData.petCare.petTypesSacrificed.size();
 			default -> 0;
 		};
 	}
