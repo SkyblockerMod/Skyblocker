@@ -18,23 +18,14 @@ public class BoulderBoard {
 	 *
 	 * @param height The height of the board.
 	 * @param width  The width of the board.
-	 * @param target The target BoulderObject that needs to be reached to solve the puzzle.
 	 */
-	public BoulderBoard(int height, int width, BoulderObject target) {
+	public BoulderBoard(int height, int width) {
 		this.height = height;
 		this.width = width;
 		this.grid = new BoulderObject[height][width];
 
-		int offsetX = target.x() - 23;
-		int y = 65;
-
 		for (int z = 0; z < width; z++) {
-			if (z == width / 2) {
-				grid[0][z] = target;
-			} else {
-				grid[0][z] = new BoulderObject(offsetX, y, z, "B");
-			}
-			grid[height - 1][z] = new BoulderObject(24 - (3 * z), y, 6, "P");
+			grid[height - 1][z] = new BoulderObject(24 - (3 * z), Boulder.BASE_Y, 6, "P");
 		}
 	}
 
@@ -46,7 +37,10 @@ public class BoulderBoard {
 	 * @return The BoulderObject at the specified position, or null if no object is present.
 	 */
 	public BoulderObject getObjectAtPosition(int x, int y) {
-		return isValidPosition(x, y) ? grid[x][y] : null;
+		if (!isValidPosition(x, y)) {
+			throw new IllegalArgumentException("Invalid position: (" + x + ", " + y + ")");
+		}
+		return grid[x][y];
 	}
 
 	/**
@@ -58,8 +52,7 @@ public class BoulderBoard {
 	 * or null if no object is present at the specified position.
 	 */
 	public BlockPos getObject3DPosition(int x, int y) {
-		BoulderObject object = getObjectAtPosition(x, y);
-		return (object != null) ? object.get3DPosition().relative(Direction.Axis.Y, -1) : null;
+		return getObjectAtPosition(x, y).get3DPosition().relative(Direction.Axis.Y, -1);
 	}
 
 	/**
