@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.util.ARGB;

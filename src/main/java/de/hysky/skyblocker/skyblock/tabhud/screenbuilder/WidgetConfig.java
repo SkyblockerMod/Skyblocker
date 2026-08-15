@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.util.Optional;
+
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.utils.CodecUtils;
-
-import java.util.Optional;
 
 public record WidgetConfig(Optional<JsonObject> config, Optional<PositionRule> position) {
 	public static final Codec<WidgetConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.Location;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -13,6 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
+import de.hysky.skyblocker.utils.Location;
 
 /**
  * Tracks where widgets were copied to.

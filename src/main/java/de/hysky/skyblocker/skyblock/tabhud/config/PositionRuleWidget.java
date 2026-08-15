@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.render.GuiHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
@@ -20,11 +20,13 @@ import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 class PositionRuleWidget extends AbstractContainerWidget {
 

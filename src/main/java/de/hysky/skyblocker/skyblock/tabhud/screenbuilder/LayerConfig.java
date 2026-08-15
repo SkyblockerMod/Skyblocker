@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.util.Map;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import java.util.Map;
 
 public record LayerConfig(Map<String, WidgetConfig> widgets) {
 	public static final LayerConfig DUMMY = new LayerConfig();

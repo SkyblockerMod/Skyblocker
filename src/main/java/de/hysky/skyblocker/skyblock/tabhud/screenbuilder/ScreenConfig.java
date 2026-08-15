@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-
-import java.util.Set;
-import java.util.stream.Stream;
 
 public record ScreenConfig(LayerConfig hud, LayerConfig tab, LayerConfig secondaryTab, Set<String> hiddenTabWidgets) {
 	public static final ScreenConfig DUMMY = new ScreenConfig(new LayerConfig(), new LayerConfig(), new LayerConfig());

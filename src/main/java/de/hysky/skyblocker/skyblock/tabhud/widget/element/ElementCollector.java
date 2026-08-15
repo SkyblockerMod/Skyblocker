@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
 
-import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.demonwav.mcdev.annotations.Translatable;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public interface ElementCollector {
 	<E extends Element> E addElement(E element);

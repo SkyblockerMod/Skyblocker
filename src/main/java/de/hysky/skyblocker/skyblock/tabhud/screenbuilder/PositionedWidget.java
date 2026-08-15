@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Mainly a pair of a {@link HudWidget} and a {@link PositionRule}. <p>

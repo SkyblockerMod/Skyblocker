@@ -1,21 +1,16 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.list;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+
 import com.mojang.brigadier.Command;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.BooleanSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.DefaultSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.EditableSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetsListSlotEntry;
-import de.hysky.skyblocker.utils.ContainerUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.ChatFormatting;
@@ -40,12 +35,19 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.BooleanSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.DefaultSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.EditableSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class WidgetsListScreen extends Screen implements ContainerListener {
 	public static boolean overrideWidgetsScreen = false;

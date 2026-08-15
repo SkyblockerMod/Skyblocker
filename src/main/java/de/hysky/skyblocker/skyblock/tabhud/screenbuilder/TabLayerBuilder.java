@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import net.minecraft.util.profiling.Profiler;
-import org.joml.Vector2i;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import org.joml.Vector2i;
+
+import net.minecraft.util.profiling.Profiler;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 /**
  * A {@link LayerBuilder} specialized to display fancy tab

@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
+import org.joml.Vector2i;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import org.joml.Vector2i;
 
 public class TopAlignedWidgetPositioner extends WidgetPositioner {
 

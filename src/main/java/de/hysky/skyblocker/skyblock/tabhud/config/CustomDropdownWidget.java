@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -11,6 +10,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 
 class CustomDropdownWidget<T> extends DropdownWidget<T> {
 	private static final Identifier TEXTURE = SkyblockerMod.id("menu_outer_space");

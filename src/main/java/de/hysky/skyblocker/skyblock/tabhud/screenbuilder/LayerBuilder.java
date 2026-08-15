@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.JsonValueInput;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.util.profiling.Profiler;
-import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.joml.Matrix3x2fStack;
+import org.slf4j.Logger;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.profiling.Profiler;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.JsonValueInput;
 
 /**
  * "Builds" the rendered screen, positions widgets properly each frame and updates their configs when needed

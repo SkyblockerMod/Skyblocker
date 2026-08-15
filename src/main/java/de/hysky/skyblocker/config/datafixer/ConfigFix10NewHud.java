@@ -1,15 +1,15 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 public class ConfigFix10NewHud extends ConfigDataFix {
 	public ConfigFix10NewHud(Schema outputSchema, boolean changesType) {

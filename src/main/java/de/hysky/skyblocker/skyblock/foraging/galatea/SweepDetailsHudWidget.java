@@ -1,5 +1,15 @@
 package de.hysky.skyblocker.skyblock.galatea;
 
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -12,15 +22,6 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.Items;
-
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Set;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ElementBasedWidget {

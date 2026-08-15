@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
@@ -11,6 +11,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry> {
 

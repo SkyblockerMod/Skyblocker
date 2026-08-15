@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -22,11 +22,13 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
 class CopyToPopup extends AbstractPopupScreen {
 	private final LinearLayout layout = LinearLayout.vertical().spacing(2);

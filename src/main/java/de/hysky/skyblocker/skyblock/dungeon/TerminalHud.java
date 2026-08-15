@@ -1,5 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -9,16 +20,6 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.CommonColors;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 @RegisterWidget
 public class TerminalHud extends ElementBasedWidget {

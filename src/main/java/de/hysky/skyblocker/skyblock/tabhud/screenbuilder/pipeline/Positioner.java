@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
+import java.util.Locale;
+import java.util.function.BiFunction;
+
 import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.Locale;
-import java.util.function.BiFunction;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
 
 public enum Positioner implements StringRepresentable {
 	TOP(TopAlignedWidgetPositioner::new),

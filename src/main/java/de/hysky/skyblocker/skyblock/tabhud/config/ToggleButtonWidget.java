@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.utils.render.GuiHelper;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -10,6 +10,8 @@ import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 class ToggleButtonWidget extends AbstractButton {
 	private final BooleanConsumer onPress;

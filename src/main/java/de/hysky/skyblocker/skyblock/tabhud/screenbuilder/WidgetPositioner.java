@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import java.util.function.Function;
-import net.minecraft.client.gui.navigation.ScreenPosition;
+
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.navigation.ScreenPosition;
+
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 public abstract class WidgetPositioner {
 	protected final float maxHeight;

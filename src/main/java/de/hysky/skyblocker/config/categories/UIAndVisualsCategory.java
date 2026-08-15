@@ -1,5 +1,31 @@
 package de.hysky.skyblocker.config.categories;
 
+import java.awt.Color;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
+import net.azureaaron.dandelion.api.LabelOption;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionFlag;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.FloatController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.InputQuirks;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -22,30 +48,6 @@ import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.azureaaron.dandelion.api.ButtonOption;
-import net.azureaaron.dandelion.api.ConfigCategory;
-import net.azureaaron.dandelion.api.KeyMappingOption;
-import net.azureaaron.dandelion.api.LabelOption;
-import net.azureaaron.dandelion.api.Option;
-import net.azureaaron.dandelion.api.OptionFlag;
-import net.azureaaron.dandelion.api.OptionGroup;
-import net.azureaaron.dandelion.api.controllers.ColourController;
-import net.azureaaron.dandelion.api.controllers.FloatController;
-import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.InputQuirks;
-import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.awt.Color;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class UIAndVisualsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {

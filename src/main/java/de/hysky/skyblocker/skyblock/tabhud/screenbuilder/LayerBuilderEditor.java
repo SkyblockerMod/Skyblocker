@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import java.util.Optional;
+
 import com.google.gson.JsonObject;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-
-import java.util.Optional;
 
 /**
  * A class that allows adding and removing widgets from a {@link LayerBuilder} and serializing its config

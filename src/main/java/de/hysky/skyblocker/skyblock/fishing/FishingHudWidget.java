@@ -2,8 +2,6 @@ package de.hysky.skyblocker.skyblock.fishing;
 
 import java.util.Objects;
 
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-
 import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import org.jspecify.annotations.Nullable;
 
@@ -26,6 +24,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 @RegisterWidget
 public class FishingHudWidget extends ElementBasedWidget {

@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.util.ProblemReporter;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import net.minecraft.util.ProblemReporter;
 
 public class JsonValueInput {
 	private final JsonObject input;
