@@ -911,7 +911,7 @@
 
   "skyblocker.config.hunting.safari": "Safari",
   "skyblocker.config.hunting.safari.CritterCapsuleHelper": "Critter Capsule Helper",
-  "skyblocker.config.hunting.safari.CritterCapsuleHelper.@Tooltip": "Show where the critter capsule is going to hit",
+  "skyblocker.config.hunting.safari.CritterCapsuleHelper.@Tooltip": "Shows where the critter capsule is going to hit.",
   "skyblocker.config.hunting.safari.CritterCapsuleHelperColor": "Critter Capsule Helper Highlight Color",
   "skyblocker.config.hunting.safari.highlightSparklingCritters": "Highlight Sparkling Critters",
   "skyblocker.config.hunting.safari.highlightSparklingCritters.@Tooltip": "Highlights Sparkling Critters which are very rarely found around the Critter Safari.",

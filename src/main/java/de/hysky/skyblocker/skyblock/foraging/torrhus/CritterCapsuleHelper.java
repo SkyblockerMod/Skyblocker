@@ -1,24 +1,13 @@
 package de.hysky.skyblocker.skyblock.foraging.torrhus;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -27,49 +16,22 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class CritterCapsuleHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	@Nullable
-	private static Vec3 start = null;
-	@Nullable
-	private static Vec3 look = null;
 	@Nullable
 	public static Entity highlighted = null;
 
 	@Init
 	public static void init() {
 		LevelRenderExtractionCallback.EVENT.register(CritterCapsuleHelper::extractRendering);
-		ParticleEvents.FROM_SERVER.register(CritterCapsuleHelper::onParticle);
-		UseItemCallback.EVENT.register(CritterCapsuleHelper::onItemInteract);
 	}
-
-
-	private static InteractionResult onItemInteract(Player player, Level level, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-
-		start = player.getEyePosition();
-		look = player.getViewVector(1.0f);
-		System.out.println(player.getXRot());
-
-		return InteractionResult.PASS;
-	}
-
-	private static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (!ParticleTypes.WAX_OFF.equals(packet.getParticle().getType())) {
-			return;
-		}
-
-		Vec3 location = new Vec3(packet.getX(), packet.getY(), packet.getZ());
-		if (start != null && look != null) {
-			Vec3 b = location.subtract(start);
-			double offset = b.cross(look).length();
-			double distance = b.length();
-			System.out.println("(" + distance + ", -" + offset + ")      ::" + (offset / distance));
-		}
-	}
-
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (CLIENT.player == null || CLIENT.level == null || !SkyblockerConfigManager.get().hunting.safari.CritterCapsuleHelper || !Utils.isInSafari()) return;
@@ -93,8 +55,6 @@ public class CritterCapsuleHelper {
 		} else {
 			highlighted = null;
 		}
-
-
 	}
 
 	private static @Nullable HitResult throwLine(PrimitiveCollector collector, Vec3 start, Vec3 look) {
@@ -105,11 +65,9 @@ public class CritterCapsuleHelper {
 			Vec3 pos = start.add(look.scale(i));
 			double AccumulatedGravity;
 
-
 			AccumulatedGravity = (-0.85614) * Math.exp(-0.29696 * 0.093157 * i) * Math.sin(0.093157 * Math.sqrt(1 - 0.29696 * 0.29696) * i + 3.6507) - 36.584 + 35.962 * Math.sin((-0.027059) * i + 14.087);
-
-
 			pos = pos.add(0, AccumulatedGravity, 0);
+
 			//draw line
 			if (i > 1) {
 				Vec3 offset = look.cross(Vec3.Y_AXIS).normalize().scale(0.05);
@@ -130,14 +88,10 @@ public class CritterCapsuleHelper {
 					continue;
 				}
 				return new EntityHitResult(entity, pos);
-
 			}
 			lastPos = pos;
-
-
 		}
 		return null;
 
 	}
-
 }
