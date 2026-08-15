@@ -1,5 +1,12 @@
 package de.hysky.skyblocker.config.categories;
 
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -8,12 +15,6 @@ import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
-import net.azureaaron.dandelion.api.ButtonOption;
-import net.azureaaron.dandelion.api.ConfigCategory;
-import net.azureaaron.dandelion.api.Option;
-import net.azureaaron.dandelion.api.OptionGroup;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class FarmingCategory {
 

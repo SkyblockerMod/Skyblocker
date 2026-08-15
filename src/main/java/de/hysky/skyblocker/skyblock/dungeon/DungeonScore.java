@@ -1,7 +1,25 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -17,27 +35,12 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DungeonScore {
 	private static final Supplier<DungeonsConfig.DungeonScore> SCORE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.dungeonScore;
 	private static final Supplier<DungeonsConfig.MimicMessage> MIMIC_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.mimicMessage;
 	private static final Supplier<DungeonsConfig.PrinceMessage> PRINCE_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.princeMessage;
+	private static final Supplier<DungeonsConfig.BatMessage> BAT_MESSAGE_CONFIG = () -> SkyblockerConfigManager.get().dungeons.batMessage;
 	private static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Dungeon Score");
 	//Scoreboard patterns
 	private static final Pattern CLEARED_PATTERN = Pattern.compile("Cleared: (?<cleared>\\d+)%.*");
@@ -52,14 +55,18 @@ public class DungeonScore {
 	private static final Pattern DEATHS_PATTERN = Pattern.compile(" \\u2620 (?<whodied>\\S+) .*");
 	//.*?(?:Mimic dead!?|Mimic Killed!|\$SKYTILS-DUNGEON-SCORE-MIMIC\$)$
 	private static final Pattern MIMIC_PATTERN = Pattern.compile(".*?(?:Mimic dead!?|Mimic Killed!|\\$SKYTILS-DUNGEON-SCORE-MIMIC\\$)$");
-	private static final String PRINCE_KILL_MESSAGE = "A Prince falls. +1 Bonus Score";
+	private static final String HYPIXEL_PRINCE_KILL_MESSAGE = "A Prince falls. +1 Bonus Score";
 	//.*?(?:Prince dead!?|Prince Killed!)$
 	private static final Pattern PRINCE_PATTERN = Pattern.compile(".*?(?:Prince dead!?|Prince Killed!)$");
+	private static final String HYPIXEL_BAT_KILL_MESSAGE = "A Bat has been slain. +1 Bonus Score";
+	// .*?(?:Bat dead!?|Bat Killed!)$
+	private static final Pattern BAT_PATTERN = Pattern.compile(".*?(?:Bat dead!?|Bat Killed!)$");
 	//Other patterns
 	private static final Pattern MIMIC_FLOORS_PATTERN = Pattern.compile("[FM][67]");
 	//Score messages sent in party chat
 	private static final String MIMIC_MESSAGE = "Mimic dead!";
 	private static final String PRINCE_MESSAGE = "Prince dead!";
+	private static final String BAT_MESSAGE = "Bat dead!";
 
 	private static boolean isMayorPaul = false;
 
@@ -72,6 +79,7 @@ public class DungeonScore {
 	private static boolean sent300;
 	private static boolean mimicKilled;
 	private static boolean princeKilled;
+	private static boolean batKilled;
 	private static boolean dungeonStarted;
 	private static boolean firstDeathHasSpiritPet;
 	private static boolean bloodRoomCompleted;
@@ -94,6 +102,7 @@ public class DungeonScore {
 				checkMessageForWatcher(str);
 				if (floorHasMimics) checkMessageForMimic(str); //Only called when the message is not cancelled & isn't on the action bar, complementing MimicFilter
 				checkMessageForPrince(str);
+				checkMessageForBat(str);
 			}
 
 			return true;
@@ -157,6 +166,7 @@ public class DungeonScore {
 		sent300 = false;
 		mimicKilled = false;
 		princeKilled = false;
+		batKilled = false;
 		dungeonStarted = false;
 		firstDeathHasSpiritPet = false;
 		bloodRoomCompleted = false;
@@ -215,7 +225,8 @@ public class DungeonScore {
 		int mimicScore = mimicKilled ? 2 : 0;
 		if (getSecretsPercentage() >= 100 && floorHasMimics) mimicScore = 2; //If mimic kill is not announced but all secrets are found, mimic must've been killed
 		int princeScore = princeKilled ? 1 : 0;
-		return paulScore + cryptsScore + mimicScore + princeScore;
+		int batScore = batKilled ? 1 : 0;
+		return paulScore + cryptsScore + mimicScore + princeScore + batScore;
 	}
 
 	public static boolean isEntityMimic(Entity entity) {
@@ -249,6 +260,21 @@ public class DungeonScore {
 			SecretSync.syncPrinceKilled();
 		}
 		princeKilled = true;
+	}
+
+	public static void onBatKill(boolean fromHypixel) {
+		if (batKilled) return;
+
+		// Ensure that we don't send a bat kill message if a teammate does
+		if (fromHypixel) {
+			if (BAT_MESSAGE_CONFIG.get().sendBatMessage) {
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + BAT_MESSAGE, true);
+			}
+
+			SecretSync.syncBatKilled();
+		}
+
+		batKilled = true;
 	}
 
 	public static boolean wasPrinceKilled() {
@@ -364,8 +390,16 @@ public class DungeonScore {
 	}
 
 	private static void checkMessageForPrince(String message) {
-		if (!PRINCE_PATTERN.matcher(message).matches() && !message.equals(PRINCE_KILL_MESSAGE)) return;
-		onPrinceKill(message.equals(PRINCE_KILL_MESSAGE));
+		if (!PRINCE_PATTERN.matcher(message).matches() && !message.equals(HYPIXEL_PRINCE_KILL_MESSAGE)) return;
+		onPrinceKill(message.equals(HYPIXEL_PRINCE_KILL_MESSAGE));
+	}
+
+	private static void checkMessageForBat(String message) {
+		if (!BAT_PATTERN.matcher(message).matches() && !message.equals(HYPIXEL_BAT_KILL_MESSAGE)) {
+			return;
+		}
+
+		onBatKill(message.equals(HYPIXEL_BAT_KILL_MESSAGE));
 	}
 
 	public static void setCurrentFloor() {

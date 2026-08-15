@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.utils.render.text;
 
+import java.util.List;
+
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-
-import java.util.List;
 
 public class GridComponent {
 	/// Creates a basic grid component. When multiple of these are used in a tooltip, they will form a grid (duh) and be aligned nicely with each other

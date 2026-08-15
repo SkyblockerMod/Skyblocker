@@ -1,8 +1,7 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.debug.SnapshotDebug;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import it.unimi.dsi.fastutil.Pair;
+
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -10,6 +9,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCompa
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+
+import de.hysky.skyblocker.debug.SnapshotDebug;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyblockerGameTest implements FabricClientGameTest {

@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.Location;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.Location;
 
 @RegisterWidget
 public class PowderMiningWidget extends HudWidget {

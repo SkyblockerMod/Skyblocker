@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -8,6 +7,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 
 public class PaginationButton extends AbstractWidget {
 	private final ProfileViewerPage screen;

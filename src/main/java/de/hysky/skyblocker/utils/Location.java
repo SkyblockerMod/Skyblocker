@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils;
 
-import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 
 /**
@@ -38,7 +40,7 @@ public enum Location implements StringRepresentable {
 	/**
 	 * <p>Goodbye 1.8 hello 1.21 (and foraging 50 for all)!</p>
 	 */
-	GALATEA("foraging_2", "Galatea"),
+	GALATEA("foraging_2", "Moonglade Marsh"),
 	TORRHUS_CANYON("foraging_3", "Torrhus Canyon"),
 	SAFARI("safari", "Safari"),
 	LOTUS_ATOLL("lotus_atoll", "Lotus Atoll"),

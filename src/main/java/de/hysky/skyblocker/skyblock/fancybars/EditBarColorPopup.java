@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
+import java.awt.Color;
+import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -13,8 +13,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
-import java.awt.Color;
-import java.util.function.Consumer;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 
 public class EditBarColorPopup extends AbstractPopupScreen {
 

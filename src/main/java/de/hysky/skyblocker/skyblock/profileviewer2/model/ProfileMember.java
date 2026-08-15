@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 import java.util.UUID;
+
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 public class ProfileMember {
 	@SerializedName("player_id")
@@ -50,6 +50,7 @@ public class ProfileMember {
 	@SerializedName("player_stats")
 	public PlayerStats playerStats = new PlayerStats();
 	public ProfileMemberProfile profile = new ProfileMemberProfile();
+	public Safari safari = new Safari();
 	public Shards shards = new Shards();
 	@SerializedName("skill_tree")
 	public SkillTree skillTree = new SkillTree();

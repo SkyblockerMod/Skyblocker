@@ -1,11 +1,7 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HudAccessor;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import de.hysky.skyblocker.utils.Utils;
+import java.util.function.Function;
+
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -14,7 +10,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
-import java.util.function.Function;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Utils;
 
 public class VanillaStyleManaBar {
 	private static int lastManaValue;

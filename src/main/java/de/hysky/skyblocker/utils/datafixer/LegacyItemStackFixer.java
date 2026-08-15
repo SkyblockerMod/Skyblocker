@@ -1,20 +1,13 @@
 package de.hysky.skyblocker.utils.datafixer;
 
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFixer;
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
-import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
-
 import java.util.List;
-
-import org.apache.logging.log4j.util.TriConsumer;
-import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import org.apache.logging.log4j.util.TriConsumer;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.TextTransformer;
 import net.azureaaron.legacyitemdfu.TypeReferences;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -28,6 +21,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
+
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.TextTransformer;
+
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFirstVersion;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getFixer;
+import static net.azureaaron.legacyitemdfu.LegacyItemStackFixer.getLatestVersion;
 
 public class LegacyItemStackFixer {
 	private static final Logger LOGGER = LogUtils.getLogger();

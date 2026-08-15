@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
 import java.awt.Color;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import org.jspecify.annotations.Nullable;
 
 public enum StatusBarType implements StringRepresentable {
 	HEALTH("health", BarPositioner.BarAnchor.HOTBAR_TOP, 0, new Color[]{new Color(255, 0, 0), new Color(255, 220, 0)}, true, true, new Color(255, 85, 85), Component.translatable("skyblocker.bars.config.health")),

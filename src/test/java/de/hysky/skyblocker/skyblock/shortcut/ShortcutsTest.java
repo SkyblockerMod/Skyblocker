@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class ShortcutsTest {
 	private static final String SHORTCUTS_JSON_OLD = "{\"commands\":{\"/s\":\"/skyblock\"},\"commandArgs\":{\"/pa\":\"/p accept\"}}";

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -12,7 +14,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 public class ShortcutsConfigScreen extends Screen {
 	private final @Nullable Screen parent;
@@ -22,7 +23,6 @@ public class ShortcutsConfigScreen extends Screen {
 	private Button buttonDone;
 	private boolean initialized;
 	private double scrollAmount;
-	private boolean hasDuplicates;
 
 	public ShortcutsConfigScreen() {
 		this(null);
@@ -90,13 +90,12 @@ public class ShortcutsConfigScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		boolean wasEditing = shortcutsConfigListWidget.stopEditing();
-		if (wasEditing) {
+		if (super.mouseClicked(click, doubled)) return true;
+		if (shortcutsConfigListWidget.stopEditing()) {
 			shortcutsConfigListWidget.updateKeybinds();
 		}
-		boolean bl = super.mouseClicked(click, doubled);
 		checkForDuplicates();
-		return bl;
+		return false;
 	}
 
 	@Override
@@ -131,7 +130,7 @@ public class ShortcutsConfigScreen extends Screen {
 	}
 
 	protected void checkForDuplicates() {
-		hasDuplicates = shortcutsConfigListWidget.hasDuplicates();
+		boolean hasDuplicates = shortcutsConfigListWidget.hasDuplicates();
 
 		if (hasDuplicates) {
 			buttonDone.active = false;

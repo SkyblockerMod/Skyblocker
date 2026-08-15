@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils.time;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SkyblockTimeTest {
 	private static final long TEST_EPOCH_SECONDS = 1779575826; // 6th of early summer 492

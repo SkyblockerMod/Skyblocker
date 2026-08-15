@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-
-import org.jspecify.annotations.Nullable;
+import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.CommonColors;
 
 /**
  * Element that consists of an icon, some text and a progress bar.

@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.stream.Stream;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import java.util.stream.Stream;
+
 import net.minecraft.util.ARGB;
 
 public class ConfigFix3AnimatedDyeAndItemBackground extends ConfigDataFix {
