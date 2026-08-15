@@ -1,20 +1,21 @@
 package de.hysky.skyblocker.utils.discord;
 
 
+import java.text.DecimalFormat;
+import java.util.concurrent.CompletableFuture;
+
+import meteordevelopment.discordipc.DiscordIPC;
+import meteordevelopment.discordipc.RichPresence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.MiscConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
-import meteordevelopment.discordipc.DiscordIPC;
-import meteordevelopment.discordipc.RichPresence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.DecimalFormat;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 /**
  * Manages the discord rich presence. Automatically connects to discord and displays a customizable activity when playing Skyblock.
@@ -94,7 +95,7 @@ public class DiscordRPCManager {
 				} else if (initialization) {
 					LOGGER.info("[Skyblocker] Discord RPC is currently disabled, will not connect");
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 

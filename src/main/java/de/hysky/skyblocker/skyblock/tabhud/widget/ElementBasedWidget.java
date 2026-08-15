@@ -1,22 +1,24 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import de.hysky.skyblocker.utils.SkyBlockColors;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 
 /**
  * Abstract base class for a element based Widget.

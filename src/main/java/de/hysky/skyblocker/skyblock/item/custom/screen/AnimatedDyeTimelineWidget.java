@@ -1,18 +1,14 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.NativeImage;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import org.jspecify.annotations.Nullable;
-
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
@@ -27,6 +23,12 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class AnimatedDyeTimelineWidget extends AbstractContainerWidget implements Closeable {
 	private static final Identifier GRADIENT_TEXTURE = SkyblockerMod.id("generated/dye_gradient");

@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class ConfigSchema extends Schema {
 	public ConfigSchema(int versionKey, Schema parent) {

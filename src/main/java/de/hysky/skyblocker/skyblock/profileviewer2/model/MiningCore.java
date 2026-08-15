@@ -1,8 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import org.jspecify.annotations.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+import org.jspecify.annotations.Nullable;
 
 public class MiningCore {
 	@SerializedName("powder_mithril")

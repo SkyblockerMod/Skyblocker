@@ -1,5 +1,13 @@
 package de.hysky.skyblocker.utils.chat;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.barn.CallTrevor;
@@ -20,25 +28,18 @@ import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SpiritSceptreFilter;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilMuncher;
-import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
-import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
 import de.hysky.skyblocker.skyblock.dwarven.Puzzler;
-import de.hysky.skyblocker.skyblock.galatea.SweepDetailsListener;
+import de.hysky.skyblocker.skyblock.dwarven.RedialOnBadSignal;
+import de.hysky.skyblocker.skyblock.dwarven.fossil.FossilMuncher;
+import de.hysky.skyblocker.skyblock.foraging.galatea.SweepDetailsListener;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.HellionShieldFilter;
+import de.hysky.skyblocker.skyblock.slayers.features.SlayerMinibossSpawnFilter;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.gui.BasicToast;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 
 @FunctionalInterface
 public interface ChatMessageListener {

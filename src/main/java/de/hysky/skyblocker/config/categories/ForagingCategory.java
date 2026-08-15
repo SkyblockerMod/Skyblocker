@@ -2,13 +2,6 @@ package de.hysky.skyblocker.config.categories;
 
 import java.awt.Color;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
-import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -18,6 +11,15 @@ import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
+import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+
 public class ForagingCategory {
 
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -25,80 +27,117 @@ public class ForagingCategory {
 				.id(SkyblockerMod.id("config/foraging"))
 				.name(Component.translatable("skyblocker.config.foraging"))
 
-				//Galatea
+				// Ungrouped Options
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification"))
+						.description(Component.translatable("skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip"))
+						.tags(CommonTags.ADDED_IN_6_9_1)
+						.binding(defaults.foraging.enableTreeFelledNotification,
+								() -> config.foraging.enableTreeFelledNotification,
+								newValue -> config.foraging.enableTreeFelledNotification = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+
+				// Moonglade Marsh
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.foraging.galatea"))
+						.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh"))
 						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableForestNodeHelper.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableForestNodeHelper,
-										() -> config.foraging.galatea.enableForestNodeHelper,
-										newValue -> config.foraging.galatea.enableForestNodeHelper = newValue)
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.solveForestTemplePuzzle,
+										() -> config.foraging.moongladeMarsh.solveForestTemplePuzzle,
+										newValue -> config.foraging.moongladeMarsh.solveForestTemplePuzzle = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.solveForestTemplePuzzle.@Tooltip"))
-								.binding(defaults.foraging.galatea.solveForestTemplePuzzle,
-										() -> config.foraging.galatea.solveForestTemplePuzzle,
-										newValue -> config.foraging.galatea.solveForestTemplePuzzle = newValue)
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.enableLushlilacHighlighter,
+										() -> config.foraging.moongladeMarsh.enableLushlilacHighlighter,
+										newValue -> config.foraging.moongladeMarsh.enableLushlilacHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableLushlilacHighlighter.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableLushlilacHighlighter,
-										() -> config.foraging.galatea.enableLushlilacHighlighter,
-										newValue -> config.foraging.galatea.enableLushlilacHighlighter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableSeaLumiesHighlighter.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableSeaLumiesHighlighter,
-										() -> config.foraging.galatea.enableSeaLumiesHighlighter,
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.enableSeaLumiesHighlighter,
+										() -> config.foraging.moongladeMarsh.enableSeaLumiesHighlighter,
 										newValue -> {
-											config.foraging.galatea.enableSeaLumiesHighlighter = newValue;
+											config.foraging.moongladeMarsh.enableSeaLumiesHighlighter = newValue;
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.seaLumieMinCount.@Tooltip"))
-								.binding(defaults.foraging.galatea.seaLumiesMinimumCount,
-										() -> config.foraging.galatea.seaLumiesMinimumCount,
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.seaLumiesMinimumCount,
+										() -> config.foraging.moongladeMarsh.seaLumiesMinimumCount,
 										newValue -> {
-											config.foraging.galatea.seaLumiesMinimumCount = newValue;
+											config.foraging.moongladeMarsh.seaLumiesMinimumCount = newValue;
 											SeaLumiesHighlighter.INSTANCE.configCallback();
 										})
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
 						.option(ButtonOption.createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTreeBreakHud"))
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakHud"))
 								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableTunerSolver.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableTunerSolver,
-										() -> config.foraging.galatea.enableTunerSolver,
-										newValue -> config.foraging.galatea.enableTunerSolver = newValue)
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTunerSolver"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTunerSolver.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.enableTunerSolver,
+										() -> config.foraging.moongladeMarsh.enableTunerSolver,
+										newValue -> config.foraging.moongladeMarsh.enableTunerSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget"))
-								.description(Component.translatable("skyblocker.config.foraging.galatea.enableSweepDetailsWidget.@Tooltip"))
-								.binding(defaults.foraging.galatea.enableSweepDetailsWidget,
-										() -> config.foraging.galatea.enableSweepDetailsWidget,
-										newValue -> config.foraging.galatea.enableSweepDetailsWidget = newValue)
+								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget"))
+								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip"))
+								.binding(defaults.foraging.moongladeMarsh.enableSweepDetailsWidget,
+										() -> config.foraging.moongladeMarsh.enableSweepDetailsWidget,
+										newValue -> config.foraging.moongladeMarsh.enableSweepDetailsWidget = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				//Sweep Overlays
+
+				// Torrhus Canyon
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.foraging.torrhusCanyon.solveDesertTemplePuzzles,
+										() -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles,
+										newValue -> config.foraging.torrhusCanyon.solveDesertTemplePuzzles = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
+										() -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter,
+										newValue -> config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter"))
+								.description(Component.translatable("skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
+										() -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter,
+										newValue -> config.foraging.torrhusCanyon.enableHoneyhiveHighlighter = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Sweep Overlay
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.foraging.sweepOverlay"))
 						.collapsed(true)

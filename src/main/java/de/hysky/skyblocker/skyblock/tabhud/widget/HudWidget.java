@@ -1,22 +1,24 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.JsonValueInput;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.network.chat.Component;
-
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import com.google.gson.JsonObject;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
 public abstract class HudWidget implements LayoutElement {
 	protected int w = 0, h = 0;

@@ -1,5 +1,23 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.mojang.logging.LogUtils;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
@@ -13,48 +31,35 @@ import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
-import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StatusBarTracker {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Pattern STATUS_PATTERN = Pattern.compile("(?<status>.+?)(?: {2,}|$)");
 	private static final Pattern RIFT_TIME_STATUS = Pattern.compile(String.format("(?:[\\d,]+m)?[\\d,]+s[ф%s] Left", SkyBlockIcons.RIFT_TIME));
 	private static final Pattern HEALTH_STATUS = Pattern.compile(String.format("(?<health>[\\d,]+)/(?<max>[\\d,]+)[❤%s](?<healing>\\+([\\d,]+)[▁-▆])?", SkyBlockIcons.HEALTH));
+	private static final Pattern VITALITY_STATUS = Pattern.compile(String.format("(?<vitality>[\\d,]+)/(?<max>[\\d,]+)%s", SkyBlockIcons.VITALITY));
 	private static final Pattern HEALING = Pattern.compile(String.format("(?:§[\\da-z])*[❤%s]", SkyBlockIcons.HEALTH));
 	private static final Pattern DEFENSE_STATUS = Pattern.compile(String.format("(?<defense>[\\d,]+)[❈%s]( Defense)?", SkyBlockIcons.DEFENSE));
 	private static final Pattern MANA_USE = Pattern.compile("-([\\d,]+) Mana \\(.*?\\)");
 	private static final Pattern MANA_STATUS = Pattern.compile(String.format("(?<mana>[\\d,]+)/(?<max>[\\d,]+)[✎%s] ?(?:Mana|(?<overflow>[\\d,]+)[ʬ%s])?", SkyBlockIcons.MANA, SkyBlockIcons.OVERFLOW_MANA));
 
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
+
+	/// Caches the last message to avoid parsing the same message multiple times.
+	private static String lastMessage = "";
+	/// Caches the last return value of {@link #onOverlayMessage(Component, boolean)}.
+	private static Component lastReturn = Component.empty();
+	private static long lastMessageTime = 0;
+
 	private static Resource health = new Resource(100, 100, 0);
-	private static Resource mana = new Resource(100, 100, 0);
+	private static final EstimatedResource vitality = new EstimatedResource(new Resource(100, 100, 0));
+	private static final EstimatedResource mana = new EstimatedResource(new Resource(100, 100, 0));
 	private static Resource speed = new Resource(100, 400, 0);
 	private static Resource air = new Resource(100, 300, 0);
 	private static int defense = 0;
 	private static int absorption = 0;
 
 	private static int ticks;
-	private static int lastManaTick;
-	private static int lastMana;
-	private static int manaPerSecond;
 
 	@Init
 	public static void init() {
@@ -68,12 +73,12 @@ public class StatusBarTracker {
 		return health;
 	}
 
-	public static Resource getMana() {
-		return mana;
+	public static EstimatedResource getVitality() {
+		return vitality;
 	}
 
-	public static boolean isManaEstimated() {
-		return ticks - lastManaTick > 30;
+	public static EstimatedResource getMana() {
+		return mana;
 	}
 
 	public static int getDefense() {
@@ -94,9 +99,8 @@ public class StatusBarTracker {
 		updateHealth(health.value, health.max);
 		updateSpeed();
 		updateAir();
-		if (ticks - lastManaTick > 0 && (ticks - lastManaTick) % 20 == 0) {
-			mana = new Resource(Math.min(mana.value() + manaPerSecond, mana.max()), mana.max(), mana.overflow());
-		}
+		mana.tick();
+		vitality.tick();
 	}
 
 	@SuppressWarnings("SameReturnValue")
@@ -110,27 +114,32 @@ public class StatusBarTracker {
 				break;
 			}
 		}
-		if (manaCost > 0 && manaCost <= mana.value()) {
-			mana = new Resource(Math.max(mana.value() - manaCost, 0), mana.max(), mana.overflow());
+		if (manaCost > 0 && manaCost <= mana.resource().value()) {
+			mana.resource = new Resource(Math.max(mana.resource().value() - manaCost, 0), mana.resource().max(), mana.resource().overflow());
 		}
 		return InteractionResult.PASS;
 	}
 
 	private static boolean allowOverlayMessage(Component text, boolean overlay) {
-		onOverlayMessage(text, overlay);
-		return true;
+		return !onOverlayMessage(text, overlay).getString().isEmpty();
 	}
 
 	private static Component onOverlayMessage(Component text, boolean overlay) {
 		if (!overlay || !Utils.isOnSkyblock()) {
 			return text;
 		}
-
 		String stringified = text.getString();
+
+		long now = System.currentTimeMillis();
+		if (lastMessage.equals(stringified) && lastMessageTime + 367 > now) { // Prime ms for a prime 7 ticks
+			return lastReturn;
+		}
+		lastMessage = stringified;
+		lastMessageTime = now;
 
 		try {
 			if (FancyStatusBars.isEnabled()) {
-				return Component.nullToEmpty(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
+				return lastReturn = Component.literal(update(stringified, SkyblockerConfigManager.get().chat.hideMana));
 			} else {
 				// Still update values for other parts of the mod to use
 				update(stringified, SkyblockerConfigManager.get().chat.hideMana);
@@ -140,11 +149,11 @@ public class StatusBarTracker {
 			LOGGER.error("[Skyblocker Status Bar Tracker] Failed to update status bars! Content: '{}'", stripped, e);
 		}
 
-		return text;
+		return lastReturn = text;
 	}
 
 	@VisibleForTesting
-	protected static @Nullable String update(String actionBar, boolean filterManaUse) {
+	protected static String update(String actionBar, boolean filterManaUse) {
 		Matcher statuses = STATUS_PATTERN.matcher(actionBar);
 		var output = new StringBuilder();
 
@@ -188,6 +197,13 @@ public class StatusBarTracker {
 						statuses.appendReplacement(output, "");
 					else
 						statuses.appendReplacement(output, "$0");
+				// Vitality
+				} else if (status.usePattern(VITALITY_STATUS).find()) {
+					updateVitality(status);
+					if (FancyStatusBars.isBarEnabled(StatusBarType.VITALITY))
+						statuses.appendReplacement(output, "");
+					else
+						statuses.appendReplacement(output, "$0");
 				}
 			}
 			// Mana use
@@ -205,9 +221,7 @@ public class StatusBarTracker {
 			}
 		}
 
-		String result = statuses.appendTail(output).toString().trim();
-
-		return result.isEmpty() ? null : result;
+		return statuses.appendTail(output).toString().trim();
 	}
 
 	private static void updateHealth(Matcher matcher) {
@@ -233,14 +247,19 @@ public class StatusBarTracker {
 		health = new Resource(Math.min(value, max), max, absorption);
 	}
 
+	private static void updateVitality(Matcher m) {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.hasSeenVitalityAtLeastOnce) {
+			SkyblockerConfigManager.updateOnly(config -> config.uiAndVisuals.bars.hasSeenVitalityAtLeastOnce = true);
+			FancyStatusBars.makeVitalityVisible();
+		}
+		vitality.update(new Resource(RegexUtils.parseIntFromMatcher(m, "vitality"), RegexUtils.parseIntFromMatcher(m, "max"), 0));
+	}
+
 	private static void updateMana(Matcher m) {
 		int mana = RegexUtils.parseIntFromMatcher(m, "mana");
 		int max = RegexUtils.parseIntFromMatcher(m, "max");
 		int overflow = m.group("overflow") == null ? 0 : RegexUtils.parseIntFromMatcher(m, "overflow");
-		StatusBarTracker.mana = new Resource(mana, max, overflow);
-		if (mana != max && lastMana < mana) manaPerSecond = Math.max(mana - lastMana, 0);
-		if (lastMana != mana || mana == max) lastManaTick = ticks;
-		lastMana = mana;
+		StatusBarTracker.mana.update(new Resource(mana, max, overflow));
 	}
 
 	private static void updateSpeed() {
@@ -283,4 +302,46 @@ public class StatusBarTracker {
 	}
 
 	public record Resource(int value, int max, int overflow) {}
+
+	public static class EstimatedResource {
+		private Resource resource;
+		private int perSecond;
+		private int lastTick;
+		private int lastValue;
+
+		public EstimatedResource(Resource baseValue) {
+			this.resource = baseValue;
+		}
+
+		private void update(Resource newValue) {
+			this.resource = newValue;
+			if (resource.value() != resource.max() && lastValue < resource.value()) perSecond = Math.max(resource.value() - lastValue, 0);
+			if (lastValue != resource.value() || resource.value() == resource.max()) lastTick = ticks;
+			lastValue = resource.value();
+		}
+
+		private void tick() {
+			if (ticks - lastTick > 0 && (ticks - lastTick) % 20 == 0) {
+				resource = new Resource(Math.min(resource.value() + perSecond, resource.max()), resource.max(), resource.overflow());
+			}
+		}
+
+		public boolean isEstimated() {
+			return ticks - lastTick > 30;
+		}
+
+		public Resource resource() {
+			return resource;
+		}
+
+		public int value() {
+			return resource.value();
+		}
+		public int max() {
+			return resource.max();
+		}
+		public int overflow() {
+			return resource.overflow();
+		}
+	}
 }

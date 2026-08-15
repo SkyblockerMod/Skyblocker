@@ -11,16 +11,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
 @RegisterWidget
 public class DungeonDownedWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
+		super("Dungeon Downed", TITLE, TextColor.RED.getValue(), Location.DUNGEON);
 	}
 
 	@Override
@@ -29,14 +33,12 @@ public class DungeonDownedWidget extends TabHudWidget {
 		if (down == null) {
 			this.addElement(Elements.iconTextComponent());
 		} else {
-
 			ChatFormatting format = ChatFormatting.RED;
 			if (down.endsWith("NONE")) {
 				format = ChatFormatting.GRAY;
 			}
 			int idx = down.indexOf(": ");
-			Component downed = (idx == -1) ? null
-					: ElementCollector.simpleEntryText(down.substring(idx + 2), "Downed: ", format);
+			Component downed = idx >= 0 ? ElementCollector.simpleEntryText(down.substring(idx + 2), "Downed: ", format) : null;
 			this.addElement(Elements.iconTextComponent(Ico.SKULL, downed));
 		}
 

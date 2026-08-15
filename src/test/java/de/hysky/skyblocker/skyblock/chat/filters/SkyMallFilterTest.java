@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
-import de.hysky.skyblocker.utils.SkyBlockIcons;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 public class SkyMallFilterTest extends ChatFilterTest<SkyMallFilter> {
 

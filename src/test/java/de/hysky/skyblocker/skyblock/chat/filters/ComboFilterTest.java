@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
 import org.junit.jupiter.api.Test;
+
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 public class ComboFilterTest extends ChatFilterTest<ComboFilter> {

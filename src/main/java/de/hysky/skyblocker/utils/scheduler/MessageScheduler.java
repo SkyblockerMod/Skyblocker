@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.utils.scheduler;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * A scheduler for sending chat messages or commands. Use the instance in {@link #INSTANCE}. Do not instantiate this class.

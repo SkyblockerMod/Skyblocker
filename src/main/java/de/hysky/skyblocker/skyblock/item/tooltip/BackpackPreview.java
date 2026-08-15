@@ -1,15 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.Utils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -29,19 +35,15 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.Utils;
 
 public class BackpackPreview {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
@@ -51,7 +53,7 @@ public class BackpackPreview {
 	private static final Pattern STRORAGE_PATTERN = Pattern.compile("Storage", Pattern.CASE_INSENSITIVE);
 	private static final Pattern BACKPACK_SIZE_PATTERN = Pattern.compile("has (\\d+) slots", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
-	private static final Storage[] storages = new Storage[STORAGE_SIZE];
+	private static final @Nullable Storage[] storages = new Storage[STORAGE_SIZE];
 
 	/**
 	 * The profile id of the currently loaded backpack preview.
@@ -85,7 +87,7 @@ public class BackpackPreview {
 					} catch (Exception e) {
 						LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
 					}
-				}, Executors.newVirtualThreadPerTaskExecutor());
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 				// load storage again because profile id changed
 				loaded = id;
@@ -112,7 +114,7 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
 		}
 	}
 
@@ -139,7 +141,7 @@ public class BackpackPreview {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to save backpack preview file: {}", storageFile.getFileName(), e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
 	}
 
 	private static void updateStorage(AbstractContainerScreen<?> handledScreen) {
@@ -195,7 +197,7 @@ public class BackpackPreview {
 		}
 	}
 
-	public static Storage[] getStorages() {
+	public static @Nullable Storage[] getStorages() {
 		return storages;
 	}
 

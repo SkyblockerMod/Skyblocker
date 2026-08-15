@@ -12,9 +12,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class ConfigDataFixer {
 	public static final String VERSION_KEY = "version";
@@ -69,6 +70,8 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix8ItemList(schema9, true));
 		Schema schema10 = builder.addSchema(10, Schema::new);
 		builder.addFixer(new ConfigFix9EventNotifications(schema10, true));
+		Schema schema11 = builder.addSchema(11, Schema::new);
+		builder.addFixer(new ConfigFix10TorrhusCanyonAndSafari(schema11, true));
 		Schema schema11 = builder.addSchema(11, Schema::new);
 		builder.addFixer(new ConfigFix10NewHud(schema11, true));
 

@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.mixins.adaptivetooltips;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
 import de.hysky.skyblocker.utils.render.text.GridTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
 @Pseudo
 @Mixin(targets = "dev.isxander.adaptivetooltips.helpers.ScrollTracker")

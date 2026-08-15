@@ -1,5 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -7,6 +12,38 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.ChestValue;
@@ -27,41 +64,6 @@ import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> extends Screen {
@@ -109,37 +111,31 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	@Shadow
 	protected abstract List<Component> getTooltipFromContainerItem(ItemStack stack);
 
-	@Shadow
-	protected int leftPos;
-	@Shadow
-	protected int topPos;
-	@Shadow
-	protected int imageWidth;
-
 	protected AbstractContainerScreenMixin(Component title) {
 		super(title);
 	}
 
 	@Inject(at = @At("HEAD"), method = "keyPressed")
 	public void skyblocker$keyPressed(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
-		if (this.minecraft.player != null && this.hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
+		Slot hoveredSlot = this.hoveredSlot; // To prevent some weird null analysis issues.
+		if (this.minecraft.player != null && hoveredSlot != null && !input.isEscape() && !this.minecraft.options.keyInventory.matches(input) && Utils.isOnSkyblock()) {
 			SkyblockerConfig config = SkyblockerConfigManager.get();
 
 			// Wiki lookup
-			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(this.hoveredSlot), this.minecraft.player, input);
+			WikiLookupManager.handleWikiLookup(this.getTitle().getString(), Either.left(hoveredSlot), this.minecraft.player, input);
 
 			//item protection
 			if (ItemProtection.itemProtection.matches(input)) {
 				ItemProtection.itemProtection.consumeClick();
-				boolean ownItem = this.hoveredSlot.container == this.minecraft.player.getInventory()
+				boolean ownItem = hoveredSlot.container == this.minecraft.player.getInventory()
 						|| ItemProtection.isPersonalStorage(this.getTitle().getString());
 				if (ownItem) {
-					ItemProtection.handleKeyPressed(this.hoveredSlot.getItem());
+					ItemProtection.handleKeyPressed(hoveredSlot.getItem());
 				}
 			}
 			//Item Price Lookup
 			if (config.helpers.itemPrice.enableItemPriceLookup && ItemPrice.ITEM_PRICE_LOOKUP.matches(input)) {
-				ItemPrice.itemPriceLookup(minecraft.player, this.hoveredSlot);
+				ItemPrice.itemPriceLookup(minecraft.player, hoveredSlot);
 			}
 		}
 	}
@@ -160,10 +156,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		return superClicked;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Inject(method = "extractTooltip", at = @At("HEAD"))
 	private void skyblocker$beforeTooltipExtracted(CallbackInfo ci, @Local(name = "graphics") GuiGraphicsExtractor graphics) {
-		ContainerSolverManager.onExtract(graphics, (AbstractContainerScreen<ChestMenu>) (Object) this, this.menu.slots);
+		ContainerSolverManager.onExtract(graphics, (AbstractContainerScreen<?>) (Object) this, this.menu.slots);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -214,8 +209,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		original.call(graphics, textRenderer, text, data, x, y, texture);
 	}
 
-	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"))
+	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"), name = "item")
 	private ItemStack skyblocker$modifyTooltipDisplayStack(ItemStack stack) {
+		// hoveredSlot can not be null here.
 		return skyblocker$modifyDisplayStack(hoveredSlot, stack, ContainerSolverManager.getCurrentSolver());
 	}
 
@@ -235,7 +231,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	@Unique
-	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, ContainerSolver solver) {
+	private ItemStack skyblocker$modifyDisplayStack(Slot slot, ItemStack stack, @Nullable ContainerSolver solver) {
 		if (solver instanceof StackDisplayModifier modifier && solver.isSolverSlot(slot, this)) {
 			return modifier.modifyDisplayStack(slot.getContainerSlot(), stack);
 		}
@@ -243,13 +239,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 	}
 
 	/**
-	 * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks)
-	 * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item
+	 * The naming of this method in yarn is half true, its mostly to handle slot/item interactions (which are mouse or keyboard clicks).
+	 * For example, using the drop key bind while hovering over an item will invoke this method to drop the players item.
 	 *
 	 * @implNote This runs before {@link AbstractContainerMenu#clicked(int, int, ContainerInput, net.minecraft.world.entity.player.Player)}
 	 */
 	@Inject(method = "slotClicked(Lnet/minecraft/world/inventory/Slot;IILnet/minecraft/world/inventory/ContainerInput;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;handleContainerInput(IIILnet/minecraft/world/inventory/ContainerInput;Lnet/minecraft/world/entity/player/Player;)V"), cancellable = true)
-	private void skyblocker$onSlotClick(Slot slot, int slotId, int button, ContainerInput containerInput, CallbackInfo ci) {
+	private void skyblocker$onSlotClick(@Nullable Slot slot, int slotId, int button, ContainerInput containerInput, CallbackInfo ci) {
 		if (!Utils.isOnSkyblock()) return;
 
 		// Item Protection
@@ -325,7 +321,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			case ChestMenu genericContainerScreenHandler when title.equals(MuseumItemCache.DONATION_CONFIRMATION_SCREEN_TITLE) -> //Museum Item Cache donation tracking
 					MuseumItemCache.handleClick(slot, slotId, genericContainerScreenHandler.slots);
 
-			case null, default -> {}
+			default -> {}
 		}
 
 		//Pet Caching

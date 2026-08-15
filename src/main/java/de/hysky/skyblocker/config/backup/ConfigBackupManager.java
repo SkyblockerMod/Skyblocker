@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.config.backup;
 
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,8 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 /**
  * Handles automatic backups of the main config file.
@@ -36,7 +37,7 @@ public class ConfigBackupManager {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to create backup directory!", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> backupConfig());
 	}

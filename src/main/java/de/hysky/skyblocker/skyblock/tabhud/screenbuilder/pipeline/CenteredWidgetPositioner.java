@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
-import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import java.util.ArrayList;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectIntMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.joml.Vector2i;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetPositioner;
+import de.hysky.skyblocker.skyblock.tabhud.util.ScreenConst;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 public class CenteredWidgetPositioner extends WidgetPositioner {
 

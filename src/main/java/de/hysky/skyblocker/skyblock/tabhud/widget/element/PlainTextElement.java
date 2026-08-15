@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Element that consists of 1 or 2 lines of text.

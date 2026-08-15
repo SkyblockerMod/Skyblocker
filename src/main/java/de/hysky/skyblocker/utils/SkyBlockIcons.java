@@ -10,6 +10,7 @@ public final class SkyBlockIcons {
 	public static final char INTELLIGENCE = '\uE003';
 	public static final char MANA = INTELLIGENCE;
 	public static final char OVERFLOW_MANA = '\uE017';
+	public static final char VITALITY = '\uE028';
 
 	// Mining Stats
 	public static final char MINING_FORTUNE = '\uE053';

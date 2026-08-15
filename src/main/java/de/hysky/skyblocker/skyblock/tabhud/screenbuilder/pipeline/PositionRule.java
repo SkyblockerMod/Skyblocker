@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline;
 
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import java.util.Optional;
 
 public record PositionRule(Optional<String> parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY) {
 	public static final PositionRule DEFAULT = new PositionRule(Optional.empty(), Point.DEFAULT, Point.DEFAULT, 5, 5);

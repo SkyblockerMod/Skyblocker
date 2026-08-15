@@ -1,21 +1,14 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jspecify.annotations.Nullable;
-
 import java.awt.Color;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,6 +29,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffects;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class StatusBar implements LayoutElement, Renderable, GuiEventListener, NarratableEntry {
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
@@ -486,7 +486,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	public static class ManaStatusBar extends StatusBar {
 
 		public ManaStatusBar(StatusBarType type) {
-			super(type, mana -> StatusBarTracker.isManaEstimated() ? "~" + mana : mana.toString());
+			super(type, mana -> StatusBarTracker.getMana().isEstimated() && SkyblockerConfigManager.get().uiAndVisuals.bars.showEstimatedTilde ? "~" + mana : mana.toString());
 		}
 
 		@Override
@@ -562,6 +562,12 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 				else if (client.player.hasEffect(MobEffects.POISON)) return POISON_ICON;
 			}
 			return super.getIcon();
+		}
+	}
+
+	public static class VitalityStatusBar extends StatusBar {
+		public VitalityStatusBar(StatusBarType type) {
+			super(type, vitality -> StatusBarTracker.getVitality().isEstimated() && SkyblockerConfigManager.get().uiAndVisuals.bars.showEstimatedTilde ? "~" + vitality : vitality.toString());
 		}
 	}
 }

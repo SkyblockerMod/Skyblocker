@@ -5,20 +5,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult.Error;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.mojang.serialization.DataResult.Error;
-
-import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.mixins.accessors.DataComponentPatchAccessor;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentPatch;
@@ -31,15 +25,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 
+import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.mixins.accessors.DataComponentPatchAccessor;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+
 /// Allows for the flexibility when working with {@link ItemStack ItemStacks} in any situation.
 public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	public static final MapCodec<FlexibleItemStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	private static final Codec<FlexibleItemStack> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Item.CODEC.fieldOf(FIELD_ID).forGetter(FlexibleItemStack::typeHolder),
 			ExtraCodecs.intRange(1, Item.ABSOLUTE_MAX_STACK_SIZE).optionalFieldOf(FIELD_COUNT, 1).forGetter(FlexibleItemStack::count),
 			DataComponentPatch.CODEC.optionalFieldOf(FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(FlexibleItemStack::components)
-			).apply(instance, FlexibleItemStack::new));
-	public static final Codec<FlexibleItemStack> CODEC = Codec.withAlternative(MAP_CODEC.codec(), Item.CODEC, item -> new FlexibleItemStack(item.value()));
+	).apply(instance, FlexibleItemStack::new));
+	public static final Codec<FlexibleItemStack> CODEC = Codec.withAlternative(MAP_CODEC, Item.CODEC, item -> new FlexibleItemStack(item.value()));
 	public static final FlexibleItemStack EMPTY = new FlexibleItemStack((Void) null);
 	private static final DataComponentGetter FALLBACK_COMPONENT_GETTER = new FallbackComponentGetter();
 	private final Holder<Item> item;

@@ -1,26 +1,26 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.Location;
+import java.util.regex.Pattern;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 
-// this widget shows info about the secrets of the dungeon
+/// This widget shows info about the secrets of the dungeon.
 @RegisterWidget
 public class DungeonSecretWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Discoveries").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Discoveries").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD);
 	private static final Pattern DISCOVERIES = Pattern.compile("Discoveries: (\\d+)");
 
 	public DungeonSecretWidget() {
-		super("Dungeon Discoveries", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
+		super("Dungeon Discoveries", TITLE, TextColor.BLUE.getValue(), Location.DUNGEON);
 	}
 
 	@Override

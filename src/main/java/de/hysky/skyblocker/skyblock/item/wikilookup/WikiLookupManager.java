@@ -2,19 +2,13 @@ package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Constants;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.input.KeyEvent;
@@ -23,10 +17,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
+
 public final class WikiLookupManager {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static KeyMapping officialWikiLookup;
 	public static KeyMapping independentWikiLookup;
 
 	private static final WikiLookup[] LOOKUPS = new WikiLookup[] {
@@ -40,13 +39,6 @@ public final class WikiLookupManager {
 
 	@Init
 	public static void init() {
-		officialWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.skyblocker.wikiLookup.official",
-				InputConstants.Type.KEYSYM,
-				InputConstants.KEY_F4,
-				SkyblockerMod.KEYBINDING_CATEGORY
-		));
-
 		independentWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.independent",
 				InputConstants.Type.KEYSYM,
@@ -56,14 +48,13 @@ public final class WikiLookupManager {
 	}
 
 	public static String getKeysText() {
-		String official = officialWikiLookup.isUnbound() ? null : officialWikiLookup.getTranslatedKeyMessage().getString();
 		String independent = independentWikiLookup.isUnbound() ? null : independentWikiLookup.getTranslatedKeyMessage().getString();
 
-		if (official == null && independent == null) return "";
-		if (official == null) return independent.toUpperCase(Locale.ENGLISH);
-		if (independent == null) return official.toUpperCase(Locale.ENGLISH);
+		if (independent == null) {
+			return "";
+		}
 
-		return (official + "/" + independent).toUpperCase(Locale.ENGLISH);
+		return independent.toUpperCase(Locale.ENGLISH);
 	}
 
 	public static boolean handleWikiLookup(Either<Slot, ItemStack> either, Player player, KeyEvent input) {
@@ -72,36 +63,35 @@ public final class WikiLookupManager {
 
 	public static boolean handleWikiLookup(@Nullable String title, Either<Slot, ItemStack> either, Player player, KeyEvent input) {
 		if (SkyblockerConfigManager.get().general.wikiLookup.enableWikiLookup) {
-			boolean official = officialWikiLookup.matches(input);
-			if (official || independentWikiLookup.matches(input)) {
-				openWiki(title, either, player, official);
+			if (independentWikiLookup.matches(input)) {
+				openWiki(title, either, player);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static void openWiki(ItemStack itemStack, Player player, boolean useOfficial) {
-		openWiki(null, Either.right(itemStack), player, useOfficial);
+	public static void openWiki(ItemStack itemStack, Player player) {
+		openWiki(null, Either.right(itemStack), player);
 	}
 
-	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, Player player, boolean useOfficial) {
+	public static void openWiki(@Nullable String title, Either<Slot, ItemStack> either, Player player) {
 		for (WikiLookup lookup : LOOKUPS) {
 			if (lookup.canSearch(title, either)) {
 				ItemStack itemStack = mapEitherToItemStack(either);
-				lookup.open(itemStack, player, useOfficial);
+				lookup.open(itemStack, player);
 				break;
 			}
 		}
 	}
 
-	public static void openWikiLinkName(String name, Player player, boolean useOfficial) {
-		String wikiLink = ItemRepository.getWikiLink(useOfficial) + "/" + name;
+	public static void openWikiLinkName(String name, Player player) {
+		String wikiLink = ItemRepository.getWikiLink() + "/" + name;
 		openWikiLink(wikiLink, player);
 	}
 
 	public static void openWikiLink(String wikiLink, Player player) {
-		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
 			player.sendSystemMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."));
 			return null;

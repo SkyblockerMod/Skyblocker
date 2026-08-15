@@ -1,5 +1,16 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
@@ -10,24 +21,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
-import de.hysky.skyblocker.skyblock.ChestValue;
-import de.hysky.skyblocker.skyblock.hunting.Attribute;
-import de.hysky.skyblocker.skyblock.hunting.Attributes;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.apache.commons.lang3.Strings;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -60,21 +62,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.apache.commons.lang3.Strings;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
+import de.hysky.skyblocker.skyblock.ChestValue;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -215,7 +217,7 @@ public final class ItemUtils {
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
 				}
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				if (customData.contains("runes")) {
 					CompoundTag runes = customData.getCompoundOrEmpty("runes");
 					String rune = runes.keySet().stream().findFirst().orElse("");
@@ -265,7 +267,7 @@ public final class ItemUtils {
 					};
 				}
 
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().equals("Attribute Menu")) {
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Attribute Menu")) {
 					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
 					if (attribute != null) return attribute.apiId();
@@ -311,7 +313,7 @@ public final class ItemUtils {
 				PetInfo petInfo = getPetInfo(stack);
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				CompoundTag runes = customData.getCompoundOrEmpty("runes");
 				String rune = runes.keySet().stream().findFirst().orElse("");
 				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getIntOr(rune, 0);

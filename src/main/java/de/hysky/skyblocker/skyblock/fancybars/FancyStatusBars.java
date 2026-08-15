@@ -1,33 +1,5 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -42,8 +14,37 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
+
+import com.google.gson.JsonObject;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class FancyStatusBars {
 	private static final Identifier HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
@@ -65,6 +66,14 @@ public class FancyStatusBars {
 	public static boolean isBarEnabled(StatusBarType type) {
 		StatusBar statusBar = statusBars.get(type);
 		return Debug.isTestEnvironment() || statusBar.enabled || statusBar.inMouse;
+	}
+
+	/**
+	 * Called when vitality is first discovered.
+	 */
+	public static void makeVitalityVisible() {
+		statusBars.get(StatusBarType.VITALITY).visible = true;
+		updatePositionsNextFrame = true;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -108,24 +117,22 @@ public class FancyStatusBars {
 			if (Utils.isOnSkyblock()) extractRenderState(context, Minecraft.getInstance());
 		});
 
-		statusBars.put(StatusBarType.HEALTH, StatusBarType.HEALTH.newStatusBar());
-		statusBars.put(StatusBarType.INTELLIGENCE, StatusBarType.INTELLIGENCE.newStatusBar());
-		statusBars.put(StatusBarType.DEFENSE, StatusBarType.DEFENSE.newStatusBar());
-		statusBars.put(StatusBarType.EXPERIENCE, StatusBarType.EXPERIENCE.newStatusBar());
-		statusBars.put(StatusBarType.SPEED, StatusBarType.SPEED.newStatusBar());
-		statusBars.put(StatusBarType.AIR, StatusBarType.AIR.newStatusBar());
+		for (StatusBarType type : StatusBarType.values()) {
+			statusBars.put(type, type.newStatusBar());
+		}
+		statusBars.get(StatusBarType.VITALITY).visible = SkyblockerConfigManager.get().uiAndVisuals.bars.hasSeenVitalityAtLeastOnce;
+		// Fill defaults
+		resetBarPositions();
 
 		// Fetch from old status bar config
 		int[] counts = new int[3]; // counts for RIGHT, LAYER1, LAYER2
 		UIAndVisualsConfig.LegacyBarPositions barPositions = SkyblockerConfigManager.get().uiAndVisuals.bars.barPositions;
-		initBarPosition(statusBars.get(StatusBarType.HEALTH), counts, barPositions.healthBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.INTELLIGENCE), counts, barPositions.manaBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
-		initBarPosition(statusBars.get(StatusBarType.SPEED), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
-		initBarPosition(statusBars.get(StatusBarType.AIR), counts, UIAndVisualsConfig.LegacyBarPosition.RIGHT);
+		updateLegacyPosition(statusBars.get(StatusBarType.HEALTH), counts, barPositions.healthBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.INTELLIGENCE), counts, barPositions.manaBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.DEFENSE), counts, barPositions.defenceBarPosition);
+		updateLegacyPosition(statusBars.get(StatusBarType.EXPERIENCE), counts, barPositions.experienceBarPosition);
 
-		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(object -> {
+		CompletableFuture.supplyAsync(FancyStatusBars::loadBarConfig, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(object -> {
 			if (object != null) {
 				for (String s : object.keySet()) {
 					StatusBarType type = StatusBarType.from(s);
@@ -142,7 +149,7 @@ public class FancyStatusBars {
 			}
 			placeBarsInPositioner();
 			configLoaded = true;
-		}).exceptionally(throwable -> {
+		}, Minecraft.getInstance()).exceptionally(throwable -> {
 			LOGGER.error("[Skyblocker] Failed reading status bars config", throwable);
 			return null;
 		});
@@ -163,7 +170,7 @@ public class FancyStatusBars {
 	 * @param position the position to load
 	 */
 	@SuppressWarnings("incomplete-switch")
-	private static void initBarPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
+	private static void updateLegacyPosition(StatusBar bar, int[] counts, UIAndVisualsConfig.LegacyBarPosition position) {
 		switch (position) {
 			case RIGHT:
 				bar.anchor = BarPositioner.BarAnchor.HOTBAR_RIGHT;
@@ -204,6 +211,15 @@ public class FancyStatusBars {
 				barPositioner.addBar(barAnchor, rowNum, statusBar);
 			}
 		}
+	}
+
+	public static void resetBarPositions() {
+		statusBars.forEach((type, bar) -> {
+			bar.anchor = type.getDefaultAnchor();
+			bar.gridY = type.getDefaultGridY();
+			bar.size = type.getDefaultAnchor().getSizeRule().minSize();
+		});
+		placeBarsInPositioner();
 	}
 
 	public static @Nullable JsonObject loadBarConfig() {
@@ -374,24 +390,31 @@ public class FancyStatusBars {
 			statusBar.extractText(graphics);
 		}
 
+		StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+		StatusBar vitalityBar = statusBars.get(StatusBarType.VITALITY);
 		if (Utils.isInTheRift()) {
 			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
 			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
-			statusBars.get(StatusBarType.DEFENSE).visible = false;
+			defenseBar.visible = false;
+			vitalityBar.visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
 			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+
 			int defense = StatusBarTracker.getDefense();
-			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
 			defenseBar.visible = true;
 			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+
+			StatusBarTracker.EstimatedResource vitality = StatusBarTracker.getVitality();
+			vitalityBar.visible = true;
+			vitalityBar.updateWithResource(vitality.resource());
 		}
 
-		StatusBarTracker.Resource intelligence = StatusBarTracker.getMana();
+		StatusBarTracker.EstimatedResource intelligence = StatusBarTracker.getMana();
 		if (SkyblockerConfigManager.get().uiAndVisuals.bars.intelligenceDisplay == UIAndVisualsConfig.IntelligenceDisplay.ACCURATE) {
 			float totalIntelligence = (float) intelligence.max() + intelligence.overflow();
 			statusBars.get(StatusBarType.INTELLIGENCE).updateValues(intelligence.value() / totalIntelligence + intelligence.overflow() / totalIntelligence, intelligence.overflow() / totalIntelligence, intelligence.value(), intelligence.max(), intelligence.overflow());
-		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence);
+		} else statusBars.get(StatusBarType.INTELLIGENCE).updateWithResource(intelligence.resource());
 
 		StatusBarTracker.Resource speed = StatusBarTracker.getSpeed();
 		statusBars.get(StatusBarType.SPEED).updateWithResource(speed);

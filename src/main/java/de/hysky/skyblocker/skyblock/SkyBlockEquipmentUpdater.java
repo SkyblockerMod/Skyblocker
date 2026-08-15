@@ -1,23 +1,24 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.intellij.lang.annotations.Language;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.intellij.lang.annotations.Language;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+
 public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public SkyBlockEquipmentUpdater() {
-		super("^Your Equipment and Stats|(?:\\(\\d/\\d\\) )?Loadouts$");
+		super("^Stats & Equipment|(?:\\(\\d/\\d\\) )?Loadouts$");
 	}
 
 	public SkyBlockEquipmentUpdater(@Language("RegExp") String titlePattern) {
@@ -40,7 +41,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		ItemStack[] equipment = getEquipmentInColumn(slots, 1);
 		if (equipment.length < 4) return List.of();
-		ItemStack[] destination = Utils.isInTheRift() ? SkyblockInventoryScreen.equipment_rift : SkyblockInventoryScreen.equipment;
+		ItemStack[] destination = SkyblockInventoryScreen.getCurrentEquipmentSet();
 		System.arraycopy(equipment, 0, destination, 0, 4);
 		return List.of();
 	}
@@ -65,14 +66,14 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 			if (selectedSet.isEmpty()) return List.of();
 			ItemStack[] equipment = getEquipmentInColumn(slots, selectedSet.get());
 			if (equipment.length < 4) return List.of();
-			System.arraycopy(equipment, 0, SkyblockInventoryScreen.equipment, 0, 4);
+			System.arraycopy(equipment, 0, SkyblockInventoryScreen.EQUIPMENT, 0, 4);
 			return List.of();
 		}
 
 		@Override
 		public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 			if (stack.is(Items.DYE.lime()) && slot > 35 && slot < 45) {
-				Arrays.fill(SkyblockInventoryScreen.equipment, ItemStack.EMPTY);
+				Arrays.fill(SkyblockInventoryScreen.EQUIPMENT, ItemStack.EMPTY);
 			}
 			return false;
 		}

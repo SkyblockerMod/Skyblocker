@@ -16,25 +16,23 @@ import java.util.Comparator;
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, TextColor.DARK_PURPLE.getValue(), new Information("dungeon_buffs", Component.literal("Dungeon Buffs"), Location.DUNGEON));
+		super("Dungeon Buffs", TITLE, TextColor.GREEN.getValue(), new Information("dungeon_buffs", Component.literal("Dungeon Buffs"), Location.DUNGEON));
 	}
 
 	@Override
 	public void updateContent(PlayerListManager.Widget ignored) {
 
-		String footertext = PlayerListManager.getFooter();
+		String footer = PlayerListManager.getFooter();
 
-		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
+		if (footer == null || !footer.contains("Dungeon Buffs")) {
 			this.addElement(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
-		String interesting = footertext.split("Dungeon Buffs")[1];
-		String[] lines = interesting.split("\n");
+		String[] lines = footer.split("Dungeon Buffs")[1].split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
 			this.addElement(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
@@ -52,12 +50,10 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addElement(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addElement(new PlainTextElement(Component.literal(line).withColor(color)));
 		}
-
 	}
 
-	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
 		if (blessing.contains("Life")) return TextColor.LIGHT_PURPLE.getValue();
 		if (blessing.contains("Power")) return TextColor.RED.getValue();
