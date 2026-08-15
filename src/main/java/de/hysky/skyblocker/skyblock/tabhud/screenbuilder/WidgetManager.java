@@ -42,7 +42,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
-import de.hysky.skyblocker.skyblock.galatea.SweepDetailsHudWidget;
+import de.hysky.skyblocker.skyblock.foraging.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;

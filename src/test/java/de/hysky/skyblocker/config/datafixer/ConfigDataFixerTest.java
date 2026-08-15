@@ -67,6 +67,6 @@ public class ConfigDataFixerTest {
 
 	@Test
 	void testDataFixerHudWidgets() {
-		testDataFix(1, 11, ConfigDataFixer.HUD_WIDGETS_TYPE, "/assets/skyblocker/config/skyblocker/hud_widgets_v");
+		testDataFix(1, 12, ConfigDataFixer.HUD_WIDGETS_TYPE, "/assets/skyblocker/config/skyblocker/hud_widgets_v");
 	}
 }

@@ -12,6 +12,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 /// This widget shows broad info about the current dungeon,
 /// opened/completed rooms, % of secrets found, and time taken.

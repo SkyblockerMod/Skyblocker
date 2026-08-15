@@ -11,8 +11,8 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 
-public class ConfigFix10NewHud extends ConfigDataFix {
-	public ConfigFix10NewHud(Schema outputSchema, boolean changesType) {
+public class ConfigFix11NewHud extends ConfigDataFix {
+	public ConfigFix11NewHud(Schema outputSchema, boolean changesType) {
 		super(outputSchema, changesType);
 	}
 
@@ -41,7 +41,7 @@ public class ConfigFix10NewHud extends ConfigDataFix {
 	 * Fixes the map of skyblock locations to widgets.
 	 */
 	private static UnaryOperator<Dynamic<?>> fixWidgets() {
-		return locations -> locations.updateMapValues(ConfigFix10NewHud::fixWidgetsForLocation);
+		return locations -> locations.updateMapValues(ConfigFix11NewHud::fixWidgetsForLocation);
 	}
 
 	/**

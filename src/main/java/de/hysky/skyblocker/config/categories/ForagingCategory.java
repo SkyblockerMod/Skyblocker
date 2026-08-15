@@ -16,7 +16,7 @@ import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
-import de.hysky.skyblocker.skyblock.galatea.SeaLumiesHighlighter;
+import de.hysky.skyblocker.skyblock.foraging.galatea.SeaLumiesHighlighter;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 

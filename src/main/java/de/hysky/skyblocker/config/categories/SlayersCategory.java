@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
+import java.awt.Color;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;

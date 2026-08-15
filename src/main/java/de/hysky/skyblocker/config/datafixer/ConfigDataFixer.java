@@ -72,8 +72,8 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix9EventNotifications(schema10, true));
 		Schema schema11 = builder.addSchema(11, Schema::new);
 		builder.addFixer(new ConfigFix10TorrhusCanyonAndSafari(schema11, true));
-		Schema schema11 = builder.addSchema(11, Schema::new);
-		builder.addFixer(new ConfigFix10NewHud(schema11, true));
+		Schema schema12 = builder.addSchema(12, Schema::new);
+		builder.addFixer(new ConfigFix11NewHud(schema12, true));
 
 		return dataFixer = builder.build().fixer();
 	}
