@@ -92,7 +92,10 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		vertical.addChild(pieceSelectionWidget);
 		layout.addChild(vertical, 0, 0, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
-		int width = 200;
+		// 444 results in a head selection widget of 330,
+		// for which subtracting 10 pixels of padding and scrollbar,
+		// gives a perfect 16 column head grid
+		int width = Math.min(444, parent.width) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget = new HeadSelectionWidget(0, 0, width, 165);
 		layout.addChild(headSelectionWidget, 0, 1, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
@@ -156,7 +159,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 	@Override
 	public void doLayout(ScreenRectangle tabArea) {
-		int width = Math.min(460, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
+		int width = Math.min(444, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget.setWidth(width);
 		int modelFieldWidth = (int) (width * (1 / 3f));
 		trimSelectionWidget.setWidth(width - modelFieldWidth - PADDING / 2);
@@ -166,7 +169,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	}
 
 	public void recreate() {
-		if (colorSelectionWidget != null) colorSelectionWidget.getTimelineWidget().recreateImage();
+		colorSelectionWidget.getTimelineWidget().recreateImage();
 	}
 
 	@Override
