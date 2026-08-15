@@ -168,6 +168,21 @@ public class HuntingCategory {
 										newValue -> config.hunting.safari.sparklingCritterHighlightColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelper"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelper.@Tooltip"))
+								.binding(defaults.hunting.safari.CritterCapsuleHelper,
+										() -> config.hunting.safari.CritterCapsuleHelper,
+										newValue -> config.hunting.safari.CritterCapsuleHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelperColor"))
+								.binding(defaults.hunting.safari.CritterCapsuleHelperColor,
+										() -> config.hunting.safari.CritterCapsuleHelperColor,
+										newValue -> config.hunting.safari.CritterCapsuleHelperColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Cavern Biome
