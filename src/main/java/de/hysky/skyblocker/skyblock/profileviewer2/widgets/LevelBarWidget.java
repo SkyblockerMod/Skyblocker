@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
@@ -38,17 +41,19 @@ public final class LevelBarWidget extends AbstractWidget {
 	private final double barFillPercentage;
 	private final Color barFillColour;
 	private final List<Component> tooltip;
+	private final @Nullable Identifier tooltipStyle;
 
 	public LevelBarWidget(int width) {
-		this(width, Ico.BARRIER, Component.literal("Placeholder"), 0.75d, Color.CYAN, List.of());
+		this(width, Ico.BARRIER, Component.literal("Placeholder"), 0.75d, Color.CYAN, List.of(), null);
 	}
 
-	private LevelBarWidget(int width, FlexibleItemStack icon, Component label, double barFillPercentage, Color barFillColour, List<Component> tooltip) {
+	private LevelBarWidget(int width, FlexibleItemStack icon, Component label, double barFillPercentage, Color barFillColour, List<Component> tooltip, @Nullable Identifier tooltipStyle) {
 		super(0, 0, width, HEIGHT, label);
 		this.icon = icon;
 		this.barFillPercentage = barFillPercentage;
 		this.barFillColour = barFillColour;
 		this.tooltip = tooltip;
+		this.tooltipStyle = tooltipStyle;
 
 		// Make the widget ignore clicks
 		this.active = false;
@@ -76,7 +81,15 @@ public final class LevelBarWidget extends AbstractWidget {
 			tooltip.add(Component.literal("Progress: " + Formatters.INTEGER_NUMBERS.format(progress.xpProgress()) + "/" + Formatters.INTEGER_NUMBERS.format(progress.xpNeeded())).withStyle(ChatFormatting.GOLD));
 		}
 
-		return new LevelBarWidget(width, skill.getIcon(), label, barFillPercentage, barFillColour, List.copyOf(tooltip));
+		SkyblockItemRarity tooltipRarity = null;
+
+		if (skill == Skill.RUNECRAFTING || skill == Skill.SOCIAL) {
+			tooltipRarity = SkyblockItemRarity.values()[levelInfo.level() / 5];
+		} else {
+			tooltipRarity = SkyblockItemRarity.values()[Math.min(levelInfo.level() / 10, 60)];
+		}
+
+		return new LevelBarWidget(width, skill.getIcon(), label, barFillPercentage, barFillColour, List.copyOf(tooltip), tooltipRarity.toTooltipStyle());
 	}
 
 	@Override
@@ -99,7 +112,7 @@ public final class LevelBarWidget extends AbstractWidget {
 
 		// Tooltip
 		if (GuiHelper.pointIsInArea(mouseX, mouseY, barX, barY, barX + BAR_WIDTH, barY + BAR_HEIGHT)) {
-			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, this.tooltip, mouseX, mouseY);
+			graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, this.tooltip, mouseX, mouseY, this.tooltipStyle);
 		}
 	}
 
