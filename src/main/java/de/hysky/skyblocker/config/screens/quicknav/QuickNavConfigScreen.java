@@ -150,13 +150,8 @@ public class QuickNavConfigScreen extends Screen {
 	}
 
 	@Override
-	public void removed() {
-		super.removed();
-		SkyblockerConfigManager.update(_ -> {});
-	}
-
-	@Override
 	public void onClose() {
+		SkyblockerConfigManager.update(_ -> {});
 		minecraft.gui.setScreen(parent);
 	}
 
