@@ -33,7 +33,7 @@ public abstract class AbstractContainerMenuMixin {
 
 		// instanceof check to prevent changing behavior from old ChestMenuMixin
 		if ((Object) this instanceof ChestMenu) {
-			if (Minecraft.getInstance().gui.screen() instanceof PartyFinderScreen screen) {
+			if (Minecraft.getInstance().screen instanceof PartyFinderScreen screen) {
 				screen.markDirty();
 			}
 			broadcastChanges();
@@ -46,7 +46,7 @@ public abstract class AbstractContainerMenuMixin {
 
 		// instanceof check to prevent changing behavior from old ChestMenuMixin
 		if ((Object) this instanceof ChestMenu) {
-			if (Minecraft.getInstance().gui.screen() instanceof PartyFinderScreen screen) {
+			if (Minecraft.getInstance().screen instanceof PartyFinderScreen screen) {
 				screen.markDirty();
 			}
 			broadcastChanges();
