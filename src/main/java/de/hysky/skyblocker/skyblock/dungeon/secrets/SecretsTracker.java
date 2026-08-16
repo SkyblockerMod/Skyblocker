@@ -21,6 +21,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.utils.ApiUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
@@ -104,7 +105,8 @@ public class SecretsTracker {
 	private static void sendResultMessage(String player, SecretData secretData) {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
+		DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player);
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + dungeonClass.displayName() + ")").withColor(dungeonClass != DungeonClass.UNKNOWN ? dungeonClass.color() : 0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
 	}
 
 	private static void sendFailureMessage() {
