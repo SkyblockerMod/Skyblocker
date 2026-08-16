@@ -153,7 +153,7 @@ public class MayorUtils {
 					mayor = Mayor.CODEC.parse(JsonOps.INSTANCE, mayorObject)
 							.setPartial(Mayor.EMPTY)
 							.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response. Error: {}", error))
-							.get();
+							.orElseThrow();
 				} catch (Exception e) {
 					LOGGER.warn("[Skyblocker] Failed to parse mayor status from the API response.", e);
 					mayor = Mayor.EMPTY;
@@ -167,7 +167,7 @@ public class MayorUtils {
 						minister = Minister.CODEC.parse(JsonOps.INSTANCE, ministerObject)
 								.setPartial(Minister.EMPTY)
 								.resultOrPartial(error -> LOGGER.warn("[Skyblocker] Failed to parse minister status from the API response. Error: {}", error))
-								.get();
+								.orElseThrow();
 					} else {
 						LOGGER.info("[Skyblocker] No minister data found for the current mayor.");
 						minister = Minister.EMPTY;

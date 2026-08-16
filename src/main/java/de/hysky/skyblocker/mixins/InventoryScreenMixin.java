@@ -78,7 +78,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 	@Override
 	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
 		if (super.mouseScrolled(x, y, scrollX, scrollY)) return true;
-		return getRecipeBookComponent().mouseScrolled(x, y, scrollX, scrollY);
+		return skb$getRecipeBookComponent().mouseScrolled(x, y, scrollX, scrollY);
 	}
 
 	@Inject(method = "onRecipeBookButtonClick", at = @At("TAIL"))

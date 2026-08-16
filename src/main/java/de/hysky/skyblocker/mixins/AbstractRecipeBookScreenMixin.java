@@ -27,7 +27,7 @@ public abstract class AbstractRecipeBookScreenMixin<T extends RecipeBookMenu> ex
 	public void registerRecipeBookToggleCallback(Runnable callback) {}
 
 	@Override
-	public RecipeBookComponent<?> getRecipeBookComponent() {
+	public RecipeBookComponent<?> skb$getRecipeBookComponent() {
 		return recipeBookComponent;
 	}
 }

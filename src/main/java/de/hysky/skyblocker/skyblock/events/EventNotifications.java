@@ -8,9 +8,6 @@ import java.util.Optional;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -95,34 +92,4 @@ public class EventNotifications {
 			case EVERYWHERE -> true;
 		};
 	}
-
-	/**
-	 * An event with info that changes every event.
-	 */
-	public record DetailedEvent(EventInstance event, Either<List<String>, ExtraEventData.JerryPerks> extras) {
-		private static final Codec<DetailedEvent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				EventInstance.MAP_CODEC.fieldOf("event").forGetter(DetailedEvent::event),
-				Codec.either(Codec.STRING.listOf(), ExtraEventData.JerryPerks.CODEC)
-						.fieldOf("extras").forGetter(DetailedEvent::extras)
-		).apply(instance, DetailedEvent::new));
-
-		public static final Codec<List<DetailedEvent>> LIST_CODEC = CODEC.listOf();
-
-		public Instant start() {
-			return event.start();
-		}
-
-		public Duration duration() {
-			return event.duration();
-		}
-
-		public Instant end() {
-			return event.end();
-		}
-
-		public Optional<String> warpCommand() {
-			return event.additionalInfo().warpCommand();
-		}
-	}
-
 }

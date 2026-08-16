@@ -18,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 
+@SuppressWarnings("unused")
 public class SkyblockEvents {
 	public static final Codec<SkyblockEvent> CODEC = Codec.STRING.xmap(SkyblockEvents::getOrNew, SkyblockEvent::name);
 	private static final List<SkyblockEvent> ALL_EVENTS = new ArrayList<>();

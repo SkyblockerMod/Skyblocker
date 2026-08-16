@@ -13,7 +13,7 @@ public interface RecipeBookHolder {
 	default void registerRecipeBookToggleCallback(Runnable callback) {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
-	default RecipeBookComponent<?> getRecipeBookComponent() {
+	default RecipeBookComponent<?> skb$getRecipeBookComponent() {
 		throw new UnsupportedOperationException("Implemented via Mixin");
 	}
 }
