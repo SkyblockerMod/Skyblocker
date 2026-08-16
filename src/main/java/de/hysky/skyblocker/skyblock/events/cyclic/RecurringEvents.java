@@ -1,23 +1,5 @@
 package de.hysky.skyblocker.skyblock.events.cyclic;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multimaps;
-import com.google.gson.JsonParser;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.events.EventInstance;
-import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
-import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-import de.hysky.skyblocker.utils.time.SkyblockTimeUnit;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
-import org.slf4j.Logger;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -25,6 +7,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.slf4j.Logger;
+
+import net.minecraft.client.Minecraft;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.events.EventInstance;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTimeUnit;
 
 public final class RecurringEvents {
 	// Hard coded because it is used for certain stuff

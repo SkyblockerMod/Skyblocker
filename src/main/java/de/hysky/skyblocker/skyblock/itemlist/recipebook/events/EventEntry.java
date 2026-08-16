@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook.events;
 
-import de.hysky.skyblocker.skyblock.events.EventInstance;
-import de.hysky.skyblocker.skyblock.events.EventManager;
-import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
+import java.time.Instant;
+import java.util.List;
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
@@ -22,11 +22,13 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import org.jspecify.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.function.Consumer;
+import de.hysky.skyblocker.skyblock.events.EventInstance;
+import de.hysky.skyblocker.skyblock.events.EventManager;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public abstract class EventEntry extends ContainerObjectSelectionList.Entry<EventEntry> {
 	protected final Minecraft minecraft;

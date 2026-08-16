@@ -1,14 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import com.ibm.icu.text.DateTimePatternGenerator;
-
-import de.hysky.skyblocker.compatibility.MacCompatibility;
-import de.hysky.skyblocker.compatibility.WindowsCompatibility;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
-import de.hysky.skyblocker.utils.time.SkyblockTimeField;
-import net.minecraft.util.Util;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -27,6 +18,8 @@ import net.minecraft.util.Util;
 import de.hysky.skyblocker.compatibility.MacCompatibility;
 import de.hysky.skyblocker.compatibility.WindowsCompatibility;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
+import de.hysky.skyblocker.utils.time.SkyblockTimeField;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter

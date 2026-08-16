@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.events;
 
-import de.hysky.skyblocker.skyblock.events.cyclic.RecurringEvents;
-
 import java.time.Instant;
 import java.util.Optional;
+
+import de.hysky.skyblocker.skyblock.events.cyclic.RecurringEvents;
 
 public final class EventManager {
 	public static Optional<EventInstance> getNext(SkyblockEvent event, Instant after, boolean includeRunning) {

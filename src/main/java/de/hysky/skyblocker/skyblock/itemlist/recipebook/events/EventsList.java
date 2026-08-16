@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook.events;
 
-import de.hysky.skyblocker.skyblock.events.EventInstance;
-import de.hysky.skyblocker.skyblock.events.EventManager;
-import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
+import java.time.Instant;
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import org.jspecify.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.Optional;
+import de.hysky.skyblocker.skyblock.events.EventInstance;
+import de.hysky.skyblocker.skyblock.events.EventManager;
+import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
 
 public class EventsList extends ContainerObjectSelectionList<EventEntry> {
 	private @Nullable SkyblockEvent autoFetch;

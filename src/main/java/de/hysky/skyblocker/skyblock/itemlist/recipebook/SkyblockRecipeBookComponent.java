@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import com.google.common.collect.Lists;
-import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.events.UpcomingEventsTab;
-import de.hysky.skyblocker.utils.FunUtils;
-import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
-import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +29,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.events.UpcomingEventsTab;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 

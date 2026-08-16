@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,8 +17,8 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
-import java.util.Optional;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.JacobsContestWidget;
 
 public interface ExtraEventData {
 	MapCodec<Optional<? extends ExtraEventData>> CODEC = SkyblockEvents.CODEC.dispatchMap(

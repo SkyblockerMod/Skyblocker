@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.utils.mayor;
 
+import java.util.List;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.ChatFormatting;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
+import net.minecraft.ChatFormatting;
 
 public record ElectionCandidate(String key, String name, List<CandidatePerk> perks, int votes) {
 	public static final Codec<ElectionCandidate> CODEC = RecordCodecBuilder.create(instance -> instance.group(

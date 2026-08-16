@@ -1,16 +1,5 @@
 package de.hysky.skyblocker.skyblock.events;
 
-import com.google.gson.JsonParser;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Http;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
-import org.slf4j.Logger;
-
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -18,6 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.slf4j.Logger;
+
+import net.minecraft.client.Minecraft;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Http;
 
 /**
  * Handles events that are parsed from the in-game calendar

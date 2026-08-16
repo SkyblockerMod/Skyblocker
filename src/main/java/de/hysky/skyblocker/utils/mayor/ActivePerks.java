@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.utils.mayor;
 
-import net.minecraft.ChatFormatting;
+import java.util.List;
+
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
+import net.minecraft.ChatFormatting;
 
 public record ActivePerks(List<Perk> perks) {
 	public boolean hasPerk(String perkName, @Nullable String descriptionContains) {

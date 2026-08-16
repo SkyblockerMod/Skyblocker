@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.utils.time;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import de.hysky.skyblocker.utils.Formatters;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +9,11 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+
+import de.hysky.skyblocker.utils.Formatters;
 
 public final class TimeParsing {
 	private static final Pattern DURATION_UNIT_PATTERN = Pattern.compile("(\\d+)(y|mo|d|h|m|s)");

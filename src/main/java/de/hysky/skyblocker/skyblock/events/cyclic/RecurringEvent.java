@@ -1,9 +1,20 @@
 package de.hysky.skyblocker.skyblock.events.cyclic;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.util.StringRepresentable;
+
 import de.hysky.skyblocker.skyblock.events.EventInstance;
 import de.hysky.skyblocker.skyblock.events.EventManager;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
@@ -12,15 +23,6 @@ import de.hysky.skyblocker.utils.mayor.ElectionCandidate;
 import de.hysky.skyblocker.utils.mayor.MayorUtils;
 import de.hysky.skyblocker.utils.time.SkyblockTimeUnit;
 import de.hysky.skyblocker.utils.time.TimeParsing;
-import net.minecraft.util.StringRepresentable;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * @param routineStart When the routine starts

@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.utils.mayor;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import java.util.Comparator;
 import java.util.List;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record Election(int year, List<ElectionCandidate> candidates) {
 	public static final Codec<Election> CODEC = RecordCodecBuilder.create(instance -> instance.group(

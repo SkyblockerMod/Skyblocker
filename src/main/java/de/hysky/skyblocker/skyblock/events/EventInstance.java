@@ -1,5 +1,13 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -8,19 +16,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.Formatters;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.utils.Formatters;
 
 public record EventInstance(SkyblockEvent event, Instant start, Duration duration, Optional<? extends ExtraEventData> eventData, AdditionalInfo additionalInfo) {
 	public static final MapCodec<EventInstance> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
