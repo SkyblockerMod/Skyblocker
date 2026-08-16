@@ -1,20 +1,13 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.HudAccessor;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -25,6 +18,14 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 /**
  * The preview widget that captures clicks and displays the current state of the widgets.

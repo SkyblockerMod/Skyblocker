@@ -1,5 +1,11 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -7,11 +13,6 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 public abstract class AbstractSelectionPopup<W extends AbstractWidget> extends AbstractPopupScreen {
 	private final Consumer<Optional<W>> onDone;

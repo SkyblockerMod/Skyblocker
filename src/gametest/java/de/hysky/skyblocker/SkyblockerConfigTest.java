@@ -1,10 +1,11 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.minecraft.client.gui.screens.Screen;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyblockerConfigTest implements FabricClientGameTest {

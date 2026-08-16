@@ -3,8 +3,9 @@ package de.hysky.skyblocker.skyblock.crimson.dojo;
 import java.util.Map;
 import java.util.Objects;
 
-import de.hysky.skyblocker.utils.SkyBlockIcons;
 import net.minecraft.client.Minecraft;
+
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 public class DisciplineTestHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

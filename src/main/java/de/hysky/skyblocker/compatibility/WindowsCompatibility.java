@@ -8,9 +8,8 @@ import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 /// Platform helper for Windows.
 public class WindowsCompatibility {

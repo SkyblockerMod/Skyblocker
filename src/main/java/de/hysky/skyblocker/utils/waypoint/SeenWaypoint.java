@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.utils.Tickable;
 import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.utils.Tickable;
 
 /**
  * A waypoint that does not render until it is seen.

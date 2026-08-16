@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.OptionalInt;
+import java.util.function.Supplier;
+
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
-import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Utils;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -26,16 +29,16 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.OptionalInt;
-import java.util.function.Supplier;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Utils;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Hud.class)
@@ -124,5 +127,10 @@ public abstract class HudMixin {
 		}
 
 		return cooldownProgress;
+	}
+
+	@ModifyExpressionValue(method = "extractCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getTicksFrozen()I"))
+	private int skyblocker$hideSafariColdOverlay(int original) {
+		return Utils.isOnSkyblock() && SafariUtils.isInIcyBiome() && SkyblockerConfigManager.get().hunting.icyBiome.hideColdOverlay ? 0 : original;
 	}
 }

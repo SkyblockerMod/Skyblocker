@@ -2,6 +2,11 @@ package de.hysky.skyblocker.skyblock.radialMenu;
 
 
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
+
 import de.hysky.skyblocker.skyblock.radialMenu.menus.BagsMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.BankMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.BoosterCookieMenu;
@@ -16,10 +21,6 @@ import de.hysky.skyblocker.skyblock.radialMenu.menus.SkillsMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.SkyblockMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.Storage;
 import de.hysky.skyblocker.skyblock.radialMenu.menus.WardrobeMenu;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class RadialMenuManager {
 	private static final RadialMenu[] menus = new RadialMenu[]{

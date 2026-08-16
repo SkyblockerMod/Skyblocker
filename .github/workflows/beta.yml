@@ -31,13 +31,10 @@ env:
   PR_SHA: ${{ github.event.pull_request.head.sha }}
 
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    timeout-minutes: 15
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v6
 
@@ -103,6 +100,7 @@ jobs:
 
   client_game_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:

@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gson.annotations.SerializedName;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 
 public class PlayerData {
 	@SerializedName("visited_zones")
@@ -24,6 +24,10 @@ public class PlayerData {
 	public List<Effect> activeEffects = List.of();
 	@SerializedName("reaper_peppers_eaten")
 	public int reaperPeppersEaten;
+	@SerializedName("isopod_husks_eaten")
+	public int isopodHusksEaten;
+	@SerializedName("bee_saliva_eaten")
+	public int beeSalivaEaten;
 	@SerializedName("death_count")
 	public int deathCount;
 	@SerializedName("disabled_potion_effects")
@@ -47,7 +51,6 @@ public class PlayerData {
 	@SerializedName("fishing_treasure_caught")
 	public int fishingTreasuresCaught;
 	public Map<String, Double> experience = Map.of();
-
 
 	/// @param tier one indexed minion tier
 	public boolean hasCraftedMinionTier(String minionType, int tier) {

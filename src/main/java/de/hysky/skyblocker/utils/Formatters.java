@@ -20,6 +20,14 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import com.ibm.icu.text.DateTimePatternGenerator;
+
+import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.compatibility.MacCompatibility;
+import de.hysky.skyblocker.compatibility.WindowsCompatibility;
+import de.hysky.skyblocker.debug.Debug;
+
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter
  * then {@link NumberFormat#clone()} the object and modify it as needed.

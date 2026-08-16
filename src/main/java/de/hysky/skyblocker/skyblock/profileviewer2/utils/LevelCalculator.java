@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
-import java.util.Arrays;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 
@@ -26,59 +22,81 @@ public class LevelCalculator {
 	// TODO make member parameter nullable?
 	public static LevelInfo getSkillLevel(long xp, Skill skill, ProfileMember member) {
 		int[] xpChart = switch (skill) {
-			case Skill.CATACOMBS -> DUNGEONS_XP_CHART;
-			case Skill.RUNECRAFTING -> RUNECRAFTING_XP_CHART;
-			case Skill.SOCIAL -> SOCIAL_XP_CHART;
+			case CATACOMBS -> DUNGEONS_XP_CHART;
+			case RUNECRAFTING -> RUNECRAFTING_XP_CHART;
+			case SOCIAL -> SOCIAL_XP_CHART;
 
 			default -> REGULAR_XP_CHART;
 		};
 		int levelCapIncrease = getSkillCapIncrease(skill, member);
 		int levelCap = skill.getBaseCap() + levelCapIncrease;
 
-		long xpTotal = 0;
-		int level = 1;
+		int level = 0;
+		long remainingXp = xp;
 
-		for (int i = 0; i < xpChart.length; i++) {
-			xpTotal += xpChart[i];
-			level = i + 1;
-
-			if (xp < xpTotal) {
-				level = i;
+		for (int xpRequired : xpChart) {
+			if (remainingXp >= xpRequired) {
+				level++;
+				remainingXp -= xpRequired;
+			} else {
 				break;
 			}
 		}
 
 		// For Catacombs we want to apply the overflow levels and return the level without it being capped to 50
 		if (skill == Skill.CATACOMBS && level == levelCap) {
-			long xpLeft = xp - xpTotal;
+			long xpLeft = remainingXp;
 
 			while (xpLeft >= DUNGEONS_OVERFLOW_THRESHOLD) {
 				level++;
 				xpLeft -= DUNGEONS_OVERFLOW_THRESHOLD;
 			}
 
-			return new LevelInfo(xp, level, DUNGEONS_OVERFLOW_THRESHOLD, DUNGEONS_OVERFLOW_THRESHOLD - xpLeft);
+			return new LevelInfo(xp, level, new LevelInfo.Cap(Integer.MAX_VALUE, Integer.MAX_VALUE), new LevelInfo.Progress(DUNGEONS_OVERFLOW_THRESHOLD - xpLeft, DUNGEONS_OVERFLOW_THRESHOLD));
 		} else {
 			int cappedLevel = Math.min(levelCap, level);
-			long xpForNextLevel = xpChart.length > level ? xpChart[level] : 0;
-			long xpTowardsNextLevel = (cappedLevel == skill.getAbsoluteCap()) ? 0 : xp - Arrays.stream(xpChart)
-					.limit(cappedLevel)
-					.sum();
+			LevelInfo.Progress progress = null;
+
+			if (cappedLevel < levelCap) {
+				long xpForNextLevel = xpChart[cappedLevel];
+
+				progress = new LevelInfo.Progress(remainingXp, xpForNextLevel);
+			}
 
 			// Use cumulative xp in subtraction
-			return new LevelInfo(xp, cappedLevel, xpForNextLevel, cappedLevel == levelCap ? 0 : xpTowardsNextLevel);
+			return new LevelInfo(xp, cappedLevel, new LevelInfo.Cap(levelCap, skill.getAbsoluteCap()), progress);
 		}
 	}
 
 	private static int getSkillCapIncrease(Skill skill, ProfileMember member) {
 		return switch (skill) {
-			case Skill.FARMING -> member.jacobsContest.perks.farmingLevelCap;
-			case Skill.TAMING -> member.petsData.petCare.petTypesSacrificed.size();
+			case FARMING -> member.jacobsContest.perks.farmingLevelCap;
+			case FORAGING -> {
+				int increase = 0;
+
+				if (CollectionTiers.unlockedTier(member, "FIG_LOG", 9)) {
+					increase++;
+				}
+
+				if (CollectionTiers.unlockedTier(member, "MANGROVE_LOG", 9)) {
+					increase++;
+				}
+
+				if (CollectionTiers.unlockedTier(member, "HELIX_LOG", 9)) {
+					increase++;
+				}
+
+				yield increase;
+			}
+			case TAMING -> member.petsData.petCare.petTypesSacrificed.size();
 			default -> 0;
 		};
 	}
 
 	public static LevelInfo getSlayerLevel(long xp, SlayerType slayer) {
+		// TODO
+		return null;
+		/*
 		// Note: Slayer XP is stored cumulatively
 		int[] xpChart = slayer.levelMilestones.clone();
 		// Reverse the array so its easier to calculate the level, the original array is cloned to avoid mutation
@@ -91,7 +109,7 @@ public class LevelCalculator {
 			}
 		}
 
-		return new LevelInfo(xp, 0, 0, 0);
+		return new LevelInfo(xp, 0, 0, 0);*/
 	}
 
 	public static int getSkyblockLevel(int xp) {

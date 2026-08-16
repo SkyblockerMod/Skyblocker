@@ -1,20 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
-import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.SkyBlockColors;
-import de.hysky.skyblocker.utils.render.GuiHelper;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -48,10 +41,19 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-import java.util.function.Predicate;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
+import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.SkyBlockColors;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class CustomizeNameWidget extends AbstractContainerWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");

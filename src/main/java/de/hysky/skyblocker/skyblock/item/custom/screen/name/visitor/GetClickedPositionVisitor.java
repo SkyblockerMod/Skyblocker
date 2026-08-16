@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;

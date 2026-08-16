@@ -1,13 +1,5 @@
 package de.hysky.skyblocker.config.backup;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +8,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -29,6 +29,8 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class ConfigBackupScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();

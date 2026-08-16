@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
-import com.google.common.collect.Comparators;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.serialization.Codec;
-import de.hysky.skyblocker.annotations.GenEquals;
-import de.hysky.skyblocker.annotations.GenHashCode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Comparators;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.serialization.Codec;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import de.hysky.skyblocker.annotations.GenEquals;
+import de.hysky.skyblocker.annotations.GenHashCode;
 
 /**
  * Modified from {@link net.minecraft.client.KeyMapping}.

@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +18,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.util.datafix.fixes.ItemIdFix;
 import net.minecraft.util.datafix.fixes.ItemStackTheFlatteningFix;
 

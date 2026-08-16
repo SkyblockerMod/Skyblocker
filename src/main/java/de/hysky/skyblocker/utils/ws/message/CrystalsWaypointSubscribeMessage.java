@@ -3,18 +3,18 @@ package de.hysky.skyblocker.utils.ws.message;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.debug.Debug;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
 import net.minecraft.world.clock.ClockManager;
 import net.minecraft.world.timeline.Timeline;
 import net.minecraft.world.timeline.Timelines;
+
+import de.hysky.skyblocker.debug.Debug;
 
 /// @param timestamp The time at which the lobby will close in epoch seconds.
 public record CrystalsWaypointSubscribeMessage(long timestamp) implements Message<CrystalsWaypointSubscribeMessage> {

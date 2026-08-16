@@ -1,3 +1,96 @@
+# Release 6.9.1
+
+## Highlight
+* Add Tree Felled Notification
+* Add Sparkling Critter Highlight
+* Add Bloodbat Highlight
+* Add ignore slot lock for Shining Coins
+* Add Safari equipment preview support
+* Add slot text to level 100 Golden/Jade/Rose Dragons
+* Fix moving Hideonfloors not highlighting
+* Fix Duplico Highlight targeting Hideonwalls and Gimmiegolds
+* Fix Rockmite Highlight targeting the Critter Capsule capture animation
+* Fix HOTF perk slot text
+* Fix aligned tooltips not working with compactor/deletor preview
+* Fix compactors and deletors losing their tooltip style with the preview
+* Fix tooltip connections not having limits
+* Fix Base64 Fixer crash
+* Fix some typos
+
+## What's Changed
+* move aligned tooltip injection point by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2631
+* Fix Base64 Fixer Crashing My Game by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2636
+* Add Workflow Timeouts by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2642
+* Show Level 100 Slot Text on Dragon Pets by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2645
+* Prevent tooltip download connection exhaustion by @Kici33 in https://github.com/SkyblockerMod/Skyblocker/pull/2646
+* compress customization button by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2650
+* fix(lang): correct English grammatical typos in en_us.json by @LazeXD in https://github.com/SkyblockerMod/Skyblocker/pull/2649
+
+## New Contributors
+* @LazeXD made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2649
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.9.0+26.2...v6.9.1+26.2
+
+___
+
+# Release 6.9.0
+
+## Highlight
+* Add support for Torrhus Canyon & Critter Safari locations
+  * This means you can now create waypoints and customize HUDs on these islands.
+* Add Sweep Overlay support to the Torrhus Canyon & Helix Trees
+* Add Floor Drop Highlight
+  * Works in the Moonglade Marsh, Torrhus Canyon, and Critter Safari.
+  * Supersedes the Forest Node Helper.
+* Add Desert Temple Puzzles Solver
+* Add Hideonsun Highlight
+* Add Blue Jay Highlight
+* Add Ruby Veilshroom Highlight
+* Add Honeyhive Highlight
+* Add Phantom Silencer for Safari
+* Add Rockmite Mound Highlight
+* Add Hideonfloor Highlight
+* Add Duplico Highlight
+* Add Hide Cold Overlay for the Icy Biome
+* Add Dungeon Score support for Murkbat Shard (+1 score from bat kill) & bat kill message
+* Add Fairy Soul Finder support for Torrhus Canyon & Critter Safari
+* Add Egg Finder support to the Torrhus Canyon
+* Add Helix Tree support to Tree Break Progress HUD & Sweep Details HUD
+* Add Torrhus Canyon support to Lasso HUD
+* Add Torrhus Canyon support to Fishing Helper & HUD
+* Add Safari Essence support to Essence Shop Price tooltip
+* Add chat filter for "Toggle Beekeeper" messages
+* Update references of "Galatea" to "Moonglade Marsh"
+* Update enchantment abbreviations
+* Fix HUD editing on the Moonglade Marsh
+* Fix Shortcuts mouse binds
+* Fix Shortcuts keyboard binds conflict detection
+* Fix Vitality bar showing in the Rift
+* Fix Shredded Sinew not working with Rare Drop Special Effects
+* Fix Fancy Auction House item view breaking with grace periods
+* Fix Search Overlay incompatibility with Firmament
+* Fix Hunting Box shard price tooltips being unaligned
+* Fix Catharsis compatibility
+
+## What's Changed
+* i hate juna by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2612
+* Fix Shortcuts Mouse Keybinds by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2614
+* Disable livid color text and title options by default by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/2604
+* Change /ahSearch to /auctionsearch by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/2617
+* Clean up nullability by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2611
+* Fix Shredded Sinew Name for Rare Drop Special Effects by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2623
+* fix keybind shortcut conflicts by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2622
+* Torrhus Canyon + Critter Safari by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2624
+* hopefully fix fancy AH breaking on views in grace period by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2625
+* no vitality in rift by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2626
+* Add Torrhus Canyon Sea Creatures by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2627
+* Improve Attributes Debug Exporter by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2628
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.8.2+26.2...v6.9.0+26.2
+
+___
+
 # Release 6.8.2
 
 ## Highlight
