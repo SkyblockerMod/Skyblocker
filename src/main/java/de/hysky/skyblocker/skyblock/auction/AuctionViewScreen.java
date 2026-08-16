@@ -193,7 +193,8 @@ public class AuctionViewScreen extends AbstractCustomHypixelGUI<AuctionHouseScre
 	protected void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		super.extractTooltip(graphics, x, y);
 		if (x > this.leftPos + 75 && x < this.leftPos + 75 + 26 && y > this.topPos + 13 && y < this.topPos + 13 + 26) {
-			graphics.setComponentTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(menu.getSlot(13).getItem()), x, y);
+			ItemStack itemStack = menu.getSlot(13).getItem();
+			graphics.setTooltipForNextFrame(this.font, itemStack, x, y);
 		}
 	}
 
