@@ -1,5 +1,15 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -9,14 +19,6 @@ import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import de.hysky.skyblocker.utils.render.gui.BasicToast;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 import static java.util.Map.entry;
 
