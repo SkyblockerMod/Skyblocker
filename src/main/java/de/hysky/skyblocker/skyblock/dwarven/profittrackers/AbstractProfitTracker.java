@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.utils.SkyBlockIcons;
-
 import java.nio.file.Path;
 import java.util.regex.Pattern;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 /**
  * Abstract class for profit trackers that use the chat messages.

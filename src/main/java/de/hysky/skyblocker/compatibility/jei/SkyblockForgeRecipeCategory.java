@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.compatibility.jei;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.types.IRecipeType;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockForgeRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class SkyblockForgeRecipeCategory extends AbstractSkyblockRecipeCategory<SkyblockForgeRecipe> {
 	private static final IRecipeType<SkyblockForgeRecipe> RECIPE_TYPE = IRecipeType.create(SkyblockForgeRecipe.ID, SkyblockForgeRecipe.class);

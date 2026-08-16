@@ -1,30 +1,35 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.container.StackDisplayModifier;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.StackDisplayModifier;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class ColorTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorTerminal.class.getName());
 	private static final Map<String, DyeColor> colorFromName;
-	private DyeColor targetColor;
+	private @Nullable DyeColor targetColor;
 	private static final Map<Item, DyeColor> itemColor;
 
 	public ColorTerminal() {
@@ -61,7 +66,7 @@ public final class ColorTerminal extends SimpleContainerSolver implements Termin
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (stack.hasFoil() || !targetColor.equals(itemColor.get(stack.getItem()))) {
+		if (stack.hasFoil() || !Objects.equals(targetColor, itemColor.get(stack.getItem()))) {
 			return shouldBlockIncorrectClicks();
 		}
 

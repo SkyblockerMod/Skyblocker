@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;

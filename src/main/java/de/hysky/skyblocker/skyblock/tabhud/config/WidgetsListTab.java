@@ -1,23 +1,16 @@
 package de.hysky.skyblocker.skyblock.tabhud.config;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
-import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
-import de.hysky.skyblocker.utils.ContainerUtils;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -34,9 +27,16 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
 
-import com.mojang.blaze3d.platform.InputConstants;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.WidgetEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.BooleanSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.DefaultSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.EditableSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetSlotEntry;
+import de.hysky.skyblocker.skyblock.tabhud.config.entries.slot.WidgetsListSlotEntry;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 // TODO: recommend disabling spacing and enabling wrapping
 public class WidgetsListTab implements Tab {

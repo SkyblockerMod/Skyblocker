@@ -37,14 +37,23 @@ public enum SeaCreature {
 	DROWNED_CAPTAIN("Drowned Captain", "A Drowned Captain takes hold of your bobber!", SkyblockItemRarity.EPIC, SeaCreatureCategory.LOTUS_ATOLL),
 	//endregion
 
-	// region Galatea
-	BOGGED("Bogged", "You've hooked a Bogged!", SkyblockItemRarity.COMMON, SeaCreatureCategory.GALATEA),
-	WETWING("Wetwing", "Look! A Wetwing emerges!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.GALATEA),
-	TADGANG("Tadgang", "A gang of Liltads!", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
-	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.GALATEA),
-	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.GALATEA),
-	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.GALATEA),
-	NESSIE("Nessie", "You've caused a disturbance in the loch. Could it be... Nessie?", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.GALATEA),
+	// region Moonglade Marsh
+	BOGGED("Bogged", "You've hooked a Bogged!", SkyblockItemRarity.COMMON, SeaCreatureCategory.MOONGLADE_MARSH),
+	WETWING("Wetwing", "Look! A Wetwing emerges!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.MOONGLADE_MARSH),
+	TADGANG("Tadgang", "A gang of Liltads!", SkyblockItemRarity.RARE, SeaCreatureCategory.MOONGLADE_MARSH),
+	ENT("Ent", "You've hooked an Ent, as ancient as the forest itself.", SkyblockItemRarity.EPIC, SeaCreatureCategory.MOONGLADE_MARSH),
+	STRIDERSURFER("Stridersurfer", "You caught a Stridersurfer.", SkyblockItemRarity.RARE, SeaCreatureCategory.MOONGLADE_MARSH),
+	THE_LOCH_EMPEROR("The Loch Emperor", "The Loch Emperor arises from the depths.", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.MOONGLADE_MARSH),
+	NESSIE("Nessie", "You've caused a disturbance in the loch. Could it be... Nessie?", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.MOONGLADE_MARSH),
+	//endregion
+
+	//region Torrhus Canyon
+	HAGGARD("Haggard", "A Haggard stumbles to the shore, ready for a fight!", SkyblockItemRarity.COMMON, SeaCreatureCategory.TORRHUS_CANYON),
+	BRINELING("Brineling", "A Brineling interrupts you with a stream of bubbles!", SkyblockItemRarity.UNCOMMON, SeaCreatureCategory.TORRHUS_CANYON),
+	SPRAWL("Sprawl", "A Sprawl emerges from the blue, and it's looking for you!", SkyblockItemRarity.RARE, SeaCreatureCategory.TORRHUS_CANYON),
+	TORRID("Torrid", "The laughter of a Torrid echoes through the air.", SkyblockItemRarity.EPIC, SeaCreatureCategory.TORRHUS_CANYON),
+	SILKBREEZE("Silkbreeze", "Something zips through the air - it's a Silkbreeze!", SkyblockItemRarity.LEGENDARY, SeaCreatureCategory.TORRHUS_CANYON),
+	GIANT_ISOPOD("Giant Isopod", "A Giant Isopod was dredged up from the depths!", SkyblockItemRarity.MYTHIC, SeaCreatureCategory.TORRHUS_CANYON),
 	//endregion
 
 	//region Crimson Isle

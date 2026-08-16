@@ -18,6 +18,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+
 public class QuickNavigationCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
 		return ConfigCategory.createBuilder()

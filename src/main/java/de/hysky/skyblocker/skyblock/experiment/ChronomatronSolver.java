@@ -1,17 +1,21 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class ChronomatronSolver extends ExperimentSolver implements ContainerListener {
 	public static final Object2ObjectMap<Item, Item> TERRACOTTA_TO_GLASS = Object2ObjectMap.ofEntries(
@@ -27,7 +31,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Contai
 			Object2ObjectMap.entry(Items.DYED_TERRACOTTA.pink(), Items.STAINED_GLASS.pink())
 	);
 
-	private ContainerScreen screen;
+	private @Nullable AbstractContainerScreen<?> screen;
 
 	/**
 	 * The list of items to remember, in order.
@@ -63,8 +67,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Contai
 	}
 
 	@Override
-	protected void tick(ContainerScreen screen) {
-	}
+	protected void tick(AbstractContainerScreen<?> screen) {}
 
 	/**
 	 * Only process the changes for items in the center row (one or two rows, depending on the Chronomatron level), and for the instruction/clock item
@@ -154,7 +157,7 @@ public final class ChronomatronSolver extends ExperimentSolver implements Contai
 	}
 
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		super.start(screen);
 		this.screen = screen;
 		screen.getMenu().addSlotListener(this);

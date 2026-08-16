@@ -1,11 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import de.hysky.skyblocker.utils.Utils;
 

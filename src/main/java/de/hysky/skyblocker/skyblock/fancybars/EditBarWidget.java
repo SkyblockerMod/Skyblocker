@@ -1,8 +1,16 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import java.awt.Color;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import com.google.common.collect.ImmutableList;
-import de.hysky.skyblocker.utils.EnumUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
@@ -22,15 +30,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import de.hysky.skyblocker.utils.EnumUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class EditBarWidget extends AbstractContainerWidget {
 	private static final int BASE_WIDTH = 100;

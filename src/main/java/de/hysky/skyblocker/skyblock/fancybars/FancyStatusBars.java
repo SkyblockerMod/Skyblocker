@@ -1,33 +1,5 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -43,6 +15,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+
+import com.google.gson.JsonObject;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class FancyStatusBars {
 	private static final Identifier HUD_LAYER = SkyblockerMod.id("fancy_status_bars");
@@ -388,17 +390,24 @@ public class FancyStatusBars {
 			statusBar.extractText(graphics);
 		}
 
+		StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
+		StatusBar vitalityBar = statusBars.get(StatusBarType.VITALITY);
 		if (Utils.isInTheRift()) {
 			final int div = SkyblockerConfigManager.get().uiAndVisuals.bars.riftHealthHP ? 1 : 2;
 			statusBars.get(StatusBarType.HEALTH).updateValues(Math.round(player.getHealth()) / player.getMaxHealth(), 0, Math.round(player.getHealth()) / div, Math.round(player.getMaxHealth()) / div, null);
-			statusBars.get(StatusBarType.DEFENSE).visible = false;
+			defenseBar.visible = false;
+			vitalityBar.visible = false;
 		} else {
 			StatusBarTracker.Resource health = StatusBarTracker.getHealth();
 			statusBars.get(StatusBarType.HEALTH).updateWithResource(health);
+
 			int defense = StatusBarTracker.getDefense();
-			StatusBar defenseBar = statusBars.get(StatusBarType.DEFENSE);
 			defenseBar.visible = true;
 			defenseBar.updateValues(defense / (defense + 100.f), 0, defense, null, null);
+
+			StatusBarTracker.EstimatedResource vitality = StatusBarTracker.getVitality();
+			vitalityBar.visible = true;
+			vitalityBar.updateWithResource(vitality.resource());
 		}
 
 		StatusBarTracker.EstimatedResource intelligence = StatusBarTracker.getMana();
@@ -417,9 +426,6 @@ public class FancyStatusBars {
 			airBar.visible = player.isUnderWater();
 			updatePositionsNextFrame = true;
 		}
-		StatusBar vitality = statusBars.get(StatusBarType.VITALITY);
-		StatusBarTracker.EstimatedResource vitalityResource = StatusBarTracker.getVitality();
-		vitality.updateWithResource(vitalityResource.resource());
 		if (updatePositionsNextFrame) {
 			updatePositions(false);
 			updatePositionsNextFrame = false;

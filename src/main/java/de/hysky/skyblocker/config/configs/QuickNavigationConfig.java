@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
+import org.intellij.lang.annotations.Language;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.intellij.lang.annotations.Language;
 
 public class QuickNavigationConfig {
 	public boolean enableQuickNav = true;

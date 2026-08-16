@@ -1,13 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
-import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
+import java.awt.Color;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -18,7 +12,15 @@ import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import java.awt.Color;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
+import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 
 public class DungeonsCategory {
 
@@ -852,6 +854,21 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.princeMessage.sendPrinceMessage,
 										() -> config.dungeons.princeMessage.sendPrinceMessage,
 										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
+				// Bat Message
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.batMessage"))
+						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage"))
+								.description(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.dungeons.batMessage.sendBatMessage,
+										() -> config.dungeons.batMessage.sendBatMessage,
+										newValue -> config.dungeons.batMessage.sendBatMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

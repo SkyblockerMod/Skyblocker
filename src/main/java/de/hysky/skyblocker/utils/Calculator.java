@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import com.demonwav.mcdev.annotations.Translatable;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import java.io.Serial;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -10,8 +8,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.util.StringRepresentable;
+
+import com.demonwav.mcdev.annotations.Translatable;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.util.StringRepresentable;
 
 public class Calculator {
 	public enum TokenType {

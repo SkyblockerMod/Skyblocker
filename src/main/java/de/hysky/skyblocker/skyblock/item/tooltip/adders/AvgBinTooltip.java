@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.render.text.GridComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-
-import java.util.List;
 
 public class AvgBinTooltip extends SimpleTooltipAdder {
 	public AvgBinTooltip(int priority) {

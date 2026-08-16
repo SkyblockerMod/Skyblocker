@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 

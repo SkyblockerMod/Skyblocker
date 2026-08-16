@@ -1,20 +1,22 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.OkLabColor;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.OkLabColor;
 
 
 public class CompactDamage {
@@ -150,11 +152,10 @@ public class CompactDamage {
 			1000000000000000000L,
 	};
 
-	/// Equivalent to floor(log10(x)) + 1
-	/// https://stackoverflow.com/a/25934909
+	/// Equivalent to `floor(log10(x)) + 1` according to [this answer](https://stackoverflow.com/a/25934909).
 	@VisibleForTesting
 	static int baseTenDigits(long x) {
 		int guess = guesses[baseTwoDigits(x)];
-		return guess + ((x >= powersOfTen[guess]) ? 1 : 0);
+		return guess + (x >= powersOfTen[guess] ? 1 : 0);
 	}
 }

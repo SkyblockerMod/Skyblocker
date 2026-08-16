@@ -6,10 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
-import org.joml.Matrix4fStack;
-import org.joml.Vector4f;
-import org.jspecify.annotations.Nullable;
-
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -17,6 +13,9 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.joml.Matrix4fStack;
+import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;

@@ -8,6 +8,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
 import de.hysky.skyblocker.utils.RegistryUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;

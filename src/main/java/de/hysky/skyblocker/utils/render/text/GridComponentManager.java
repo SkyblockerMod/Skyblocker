@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.utils.render.text;
 
+import java.util.Set;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.client.gui.Font;
 
-import java.util.Set;
+import net.minecraft.client.gui.Font;
 
 public class GridComponentManager {
 	private static final int PADDING = 4;
