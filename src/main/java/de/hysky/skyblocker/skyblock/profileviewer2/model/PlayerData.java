@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
@@ -61,15 +62,15 @@ public class PlayerData {
 		return this.experience.getOrDefault("SKILL_" + skill.name(), 0.0d);
 	}
 
-	public LevelInfo getSkillLevel(Skill skill, ProfileMember member) {
-		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
+	public LevelInfo getSkillLevel(Skill skill, LoadingInformation info) {
+		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, info);
 	}
 
-	public float getSkillAverage(ProfileMember member) {
+	public float getSkillAverage(LoadingInformation info) {
 		float average = 0;
 
 		for (Skill skill : Skill.CONVENTIONAL_SKILLS) {
-			average += this.getSkillLevel(skill, member).level();
+			average += this.getSkillLevel(skill, info).level();
 		}
 
 		average /= Skill.CONVENTIONAL_SKILLS.size();

@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 
@@ -20,7 +22,7 @@ public class LevelCalculator {
 	private static final int DUNGEONS_OVERFLOW_THRESHOLD = 200_000_000;
 
 	// TODO make member parameter nullable?
-	public static LevelInfo getSkillLevel(long xp, Skill skill, ProfileMember member) {
+	public static LevelInfo getSkillLevel(long xp, Skill skill, LoadingInformation info) {
 		int[] xpChart = switch (skill) {
 			case CATACOMBS -> DUNGEONS_XP_CHART;
 			case RUNECRAFTING -> RUNECRAFTING_XP_CHART;
@@ -28,7 +30,7 @@ public class LevelCalculator {
 
 			default -> REGULAR_XP_CHART;
 		};
-		int levelCapIncrease = getSkillCapIncrease(skill, member);
+		int levelCapIncrease = getSkillCapIncrease(skill, info);
 		int levelCap = skill.getBaseCap() + levelCapIncrease;
 
 		int level = 0;
@@ -68,27 +70,30 @@ public class LevelCalculator {
 		}
 	}
 
-	private static int getSkillCapIncrease(Skill skill, ProfileMember member) {
+	private static int getSkillCapIncrease(Skill skill, LoadingInformation info) {
+		ApiProfile profile = info.profile();
+		ProfileMember currentMember = info.member();
+
 		return switch (skill) {
-			case FARMING -> member.jacobsContest.perks.farmingLevelCap;
+			case FARMING -> currentMember.jacobsContest.perks.farmingLevelCap;
 			case FORAGING -> {
 				int increase = 0;
 
-				if (CollectionTiers.unlockedTier(member, "FIG_LOG", 9)) {
+				if (CollectionTiers.unlockedTier(profile, "FIG_LOG", 9)) {
 					increase++;
 				}
 
-				if (CollectionTiers.unlockedTier(member, "MANGROVE_LOG", 9)) {
+				if (CollectionTiers.unlockedTier(profile, "MANGROVE_LOG", 9)) {
 					increase++;
 				}
 
-				if (CollectionTiers.unlockedTier(member, "HELIX_LOG", 9)) {
+				if (CollectionTiers.unlockedTier(profile, "HELIX_LOG", 9)) {
 					increase++;
 				}
 
 				yield increase;
 			}
-			case TAMING -> member.petsData.petCare.petTypesSacrificed.size();
+			case TAMING -> currentMember.petsData.petCare.petTypesSacrificed.size();
 			default -> 0;
 		};
 	}

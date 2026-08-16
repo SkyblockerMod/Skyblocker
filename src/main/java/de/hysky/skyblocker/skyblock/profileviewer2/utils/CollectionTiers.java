@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonElement;
@@ -17,7 +18,7 @@ import net.minecraft.client.Minecraft;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.utils.Http;
 
 public class CollectionTiers {
@@ -37,36 +38,40 @@ public class CollectionTiers {
 		.thenAcceptAsync(CollectionTiers::parseCollectionsData, Minecraft.getInstance());
 	}
 
-	/// {@return whether the member has unlocked the given tier of the collection}
-	public static boolean unlockedTier(ProfileMember member, String collection, int tier) {
-		IntList collectionTiers = tiers.getOrDefault(collection, IntList.of());
-		long collected = member.collection.getOrDefault(collection, 0L);
-
-		if (collectionTiers.size() >= tier) {
-			int amountRequired = collectionTiers.getInt(tier - 1);
-
-			return collected >= amountRequired;
-		}
-
-		return false;
+	/// {@return whether the profile has unlocked the given tier of the collection}
+	public static boolean unlockedTier(ApiProfile profile, String collection, int tier) {
+		return getMaxUnlockedTier(profile, collection) >= tier;
 	}
 
-	/// {@return the highest tier of the given collection the member has unlocked}.
-	public static int getMaxUnlockedTier(ProfileMember member, String collection) {
+	/// {@return the highest tier of the given collection the profile has unlocked}.
+	public static int getMaxUnlockedTier(ApiProfile profile, String collection) {
+		long collected = profile.members.entrySet().stream()
+				.map(Map.Entry::getValue)
+				.mapToLong(member -> member.collection.getOrDefault(collection, 0L))
+				.sum();
+
+		return getMaxUnlockedTier(collection, collected);
+	}
+
+	private static int getMaxUnlockedTier(String collection, long collected) {
 		IntList collectionTiers = tiers.getOrDefault(collection, IntList.of());
-		long collected = member.collection.getOrDefault(collection, 0L);
 
 		if (!collectionTiers.isEmpty()) {
-			for (int i = collectionTiers.size(); i-- > 0;) {
+			for (int i = collectionTiers.size() - 1; i >= 0; i--) {
 				int amountRequired = collectionTiers.getInt(i);
 
 				if (amountRequired <= collected) {
-					return i - 1;
+					return i + 1;
 				}
 			}
 		}
 
 		return 0;
+	}
+
+	/// {@return the highest tier of the given collection}
+	public static int getMaxTier(String collection) {
+		return tiers.getOrDefault(collection, IntList.of()).size();
 	}
 
 	/// {@return a mapping of collection categories to their items}
@@ -75,6 +80,22 @@ public class CollectionTiers {
 	public static Map<String, List<String>> getCollectionCategoryContents() {
 		return categories;
 	}
+
+	/// {@return a report of the collection for the current member & profile}
+	public static Report getCollectionReport(ApiProfile profile, UUID member, String collection) {
+		long personal = profile.members.get(member).collection.getOrDefault(collection, 0L);
+		long coop = profile.members.entrySet().stream()
+				.filter(entry -> !entry.getKey().equals(member))
+				.map(Map.Entry::getValue)
+				.mapToLong(profileMember -> profileMember.collection.getOrDefault(collection, 0L))
+				.sum();
+		long total = personal + coop;
+		int tier = getMaxUnlockedTier(collection, total);
+
+		return new Report(personal, coop, total, tier);
+	}
+
+	public record Report(long personal, long coop, long total, int tier) {}
 
 	private static @Nullable JsonElement loadCollectionsData() {
 		try {
@@ -104,9 +125,6 @@ public class CollectionTiers {
 				String typeName = typeEntry.getKey();
 				JsonObject items = typeEntry.getValue().getAsJsonObject().getAsJsonObject("items");
 
-				// Store the items this collection type has (e.g. all FARMING items)
-				parsedCategories.put(typeName, List.copyOf(items.keySet()));
-
 				for (Map.Entry<String, JsonElement> itemsEntry : items.entrySet()) {
 					String itemName = itemsEntry.getKey();
 					JsonObject item = itemsEntry.getValue().getAsJsonObject();
@@ -120,6 +138,18 @@ public class CollectionTiers {
 
 					parsedTiers.put(itemName, IntList.of(itemTiers));
 				}
+
+				// Store the items this collection type has (e.g. all FARMING items) alphabetically
+				List<String> collectionItems = items.entrySet().stream()
+						.sorted((o1, o2) -> {
+							String name1 = o1.getValue().getAsJsonObject().get("name").getAsString();
+							String name2 = o2.getValue().getAsJsonObject().get("name").getAsString();
+
+							return String.CASE_INSENSITIVE_ORDER.compare(name1, name2);
+						})
+						.map(Map.Entry::getKey)
+						.toList();
+				parsedCategories.put(typeName, collectionItems);
 			}
 
 			tiers = Map.copyOf(parsedTiers);
