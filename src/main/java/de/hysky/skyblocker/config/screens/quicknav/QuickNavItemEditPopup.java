@@ -172,7 +172,7 @@ class QuickNavItemEditPopup extends AbstractPopupScreen {
 					patternBox.setValue(quickNavItem.uiTitle);
 					itemBox.setValue(quickNavItem.itemData.item + quickNavItem.itemData.components);
 					countBox.setValue(String.valueOf(quickNavItem.itemData.count));
-					((CheckboxAccessor)doubleClickCheckbox).setSelected(quickNavItem.doubleClick);
+					((CheckboxAccessor) doubleClickCheckbox).setSelected(quickNavItem.doubleClick);
 
 				}
 		))).width(Button.DEFAULT_WIDTH * 2 + 4).build(), LayoutSettings::alignHorizontallyCenter);

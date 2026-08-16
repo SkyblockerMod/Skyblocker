@@ -61,7 +61,7 @@ class QuickNavPresetsPopup extends AbstractPopupScreen {
 
 	private static class PresetsList extends ContainerObjectSelectionList<PresetEntry> {
 
-		public PresetsList(Minecraft minecraft, Consumer<QuickNavigationConfig.QuickNavItem> onClick) {
+		private PresetsList(Minecraft minecraft, Consumer<QuickNavigationConfig.QuickNavItem> onClick) {
 			super(minecraft, 250, 150, 0, 24);
 			for (QuickNavigationConfig.QuickNavItem preset : QuickNavigationConfig.Presets.ALL_PRESETS) {
 				addEntry(new PresetEntry(preset, () -> onClick.accept(preset)));
@@ -111,7 +111,7 @@ class QuickNavPresetsPopup extends AbstractPopupScreen {
 		private final QuickNavigationConfig.QuickNavItem item;
 		private final ItemStack itemStack;
 
-		protected PresetButton(QuickNavigationConfig.QuickNavItem item, OnPress onPress) {
+		private PresetButton(QuickNavigationConfig.QuickNavItem item, OnPress onPress) {
 			super(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, item.getParsedTooltip(), onPress, DEFAULT_NARRATION);
 			this.item = item;
 			setTooltip(Tooltip.create(getMessage()));
