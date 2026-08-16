@@ -1,47 +1,58 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import org.intellij.lang.annotations.Language;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class QuickNavigationConfig {
 	public boolean enableQuickNav = true;
 
-	public QuickNavItem button1 = new QuickNavItem(false, new ItemData(Items.DIAMOND_SWORD), "Your Skills", "/skills", "Skills");
+	public QuickNavItem button1 = new QuickNavItem(Presets.SKILLS);
 
-	public QuickNavItem button2 = new QuickNavItem(false, new ItemData(Items.PAINTING), "Collections", "/collection", "Collections");
+	public QuickNavItem button2 = new QuickNavItem(Presets.COLLECTIONS);
 
 	/* REGEX Explanation
 	 * "Pets" : simple match on letters
 	 * "(?: \\(\\d+/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
 	 */
-	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "(?:\\(\\d+/\\d+\\) )?Pets", "/pets", "Pets");
+	public QuickNavItem button3 = new QuickNavItem(Presets.PETS);
 
 	/* REGEX Explanation
 	 * "Wardrobe" : simple match on letters
 	 * " \\(\\d+/\\d+\\)" : match on any page with format ($number/$number), in case it is updated again in the future.
 	 */
-	public QuickNavItem button4 = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "\\(\\d+/\\d+\\) Armor Sets", "/armor", "Armor Sets");
+	public QuickNavItem button4 = new QuickNavItem(Presets.ARMOR_SETS);
 
-	public QuickNavItem button5 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-2081424676,-57521078,-2073572414,158072763],name:\"\",properties:[{name:\"textures\",value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}]"), "Sack of Sacks", "/sacks", "Sacks");
+	public QuickNavItem button5 = new QuickNavItem(Presets.SACKS);
 
-	public QuickNavItem button6 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"5da6bec64bd942bc\",id:[I;1571208902,1272529596,-1566400349,-679283814],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxYTkxOGMwYzQ5YmE4ZDA1M2U1MjJjYjkxYWJjNzQ2ODkzNjdiNGQ4YWEwNmJmYzFiYTkxNTQ3MzA5ODVmZiJ9fX0=\"}]}]"), "Accessory Bag(?: \\(\\d/\\d\\))?", "/accessories", "Accessories");
+	public QuickNavItem button6 = new QuickNavItem(Presets.ACCESSORIES);
 
 	/* REGEX Explanation
 	 * "(?:Rift )?" : optional match on the non-capturing group "Rift "
 	 * "Storage" : simple match on letters
 	 * "(?: \\(\\d/\\d\\))?" : optional match on the non-capturing group " (1/2)" or " (2/2)"
 	 */
-	public QuickNavItem button7 = new QuickNavItem(false, new ItemData(Items.ENDER_CHEST), "(?:Rift )?Storage(?: \\(\\d/\\d\\))?", "/storage", "Storage");
+	public QuickNavItem button7 = new QuickNavItem(Presets.STORAGE);
 
-	public QuickNavItem button8 = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"421a8ef40eff47f4\",id:[I;1109036788,251611124,-2126904485,-130621758],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzljODg4MWU0MjkxNWE5ZDI5YmI2MWExNmZiMjZkMDU5OTEzMjA0ZDI2NWRmNWI0MzliM2Q3OTJhY2Q1NiJ9fX0=\"}]}]"), "/is", "Home");
+	public QuickNavItem button8 = new QuickNavItem(Presets.HOME_WARP);
 
-	public QuickNavItem button9 = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"e30e30d02878417c\",id:[I;-485609264,678969724,-1929747597,-718202427],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjQ4ODBkMmMxZTdiODZlODc1MjJlMjA4ODI2NTZmNDViYWZkNDJmOTQ5MzJiMmM1ZTBkNmVjYWE0OTBjYjRjIn19fQ==\"}]}]"), "/warp garden", "Garden");
+	public QuickNavItem button9 = new QuickNavItem(Presets.GARDEN_WARP);
 
-	public QuickNavItem button10 = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-300151517,-631415889,-1193921967,-1821784279],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}]"), "/hub", "Skyblock Hub");
+	public QuickNavItem button10 = new QuickNavItem(Presets.HUB_WARP);
 
-	public QuickNavItem button11 = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;1605800870,415127827,-1236127084,15358548],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}]"), "/warp dungeon_hub", "Dungeons Hub");
+	public QuickNavItem button11 = new QuickNavItem(Presets.DUNGEON_HUB_WARP);
 
 	/* REGEX Explanation
 	 * "Auctions Browser" : simple exact match
@@ -54,11 +65,11 @@ public class QuickNavigationConfig {
 	 * "Auctions:.*" : match "Auctions:" followed by anything (`/ahs <query>` results)
 	 * "(?: ... )" : combine all valid titles
 	 */
-	public QuickNavItem button12 = new QuickNavItem(false, new ItemData(Items.GOLD_BLOCK), "^(?:Auctions Browser|Co-op Auction House|Auction House|Manage Auctions|Your Bids|BIN Auction View|Auction View|Auctions:.*)$", "/ah", "Auction House");
+	public QuickNavItem button12 = new QuickNavItem(Presets.AUCTION_HOUSE);
 
-	public QuickNavItem button13 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlMmRjZGE0MWVjM2FmZjhhZjUwZjI3MmVjMmUwNmE4ZjUwOWUwZjgwN2YyMzU1YTFmNWEzM2MxYjY2ZTliNCJ9fX0=\"}]}]"), "(?:Co-op )?Bazaar .*", "/bz", "Bazaar");
+	public QuickNavItem button13 = new QuickNavItem(Presets.BAZAAR);
 
-	public QuickNavItem button14 = new QuickNavItem(false, new ItemData(Items.CRAFTING_TABLE), "Craft Item", "/craft", "Crafting Table");
+	public QuickNavItem button14 = new QuickNavItem(Presets.CRAFTING_TABLE);
 
 	public static class QuickNavItem {
 		/**
@@ -81,7 +92,7 @@ public class QuickNavigationConfig {
 
 		public QuickNavItem(QuickNavItem quickNavItem) {
 			this.doubleClick = quickNavItem.doubleClick;
-			this.itemData = quickNavItem.itemData;
+			this.itemData = new ItemData(quickNavItem.itemData);
 			this.uiTitle = quickNavItem.uiTitle;
 			this.clickEvent = quickNavItem.clickEvent;
 			this.tooltip = quickNavItem.tooltip;
@@ -99,6 +110,14 @@ public class QuickNavigationConfig {
 		public String tooltip = "";
 
 		public String clickEvent = "/help";
+
+		public Component getParsedTooltip() {
+			try {
+				return ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(tooltip, JsonElement.class)).getOrThrow().getFirst();
+			} catch (Exception _) {
+				return Component.literal(tooltip);
+			}
+		}
 	}
 
 	public static class ItemData {
@@ -111,10 +130,49 @@ public class QuickNavigationConfig {
 			this.components = components;
 		}
 
+		public ItemData(ItemData itemData) {
+			this.item = itemData.item;
+			this.count = itemData.count;
+			this.components = itemData.components;
+		}
+
 		public Item item;
 
 		public int count = 1;
 
 		public String components;
+	}
+
+	public static final class Presets {
+		public static final List<QuickNavItem> ALL_PRESETS = new ArrayList<>();
+		public static final QuickNavItem SKILLS = new QuickNavItem(false, new ItemData(Items.DIAMOND_SWORD), "Your Skills", "/skills", "Skills");
+		public static final QuickNavItem COLLECTIONS = new QuickNavItem(false, new ItemData(Items.PAINTING), "Collections", "/collection", "Collections");
+		public static final QuickNavItem PETS = new QuickNavItem(false, new ItemData(Items.BONE), "(?:\\(\\d+/\\d+\\) )?Pets", "/pets", "Pets");
+		public static final QuickNavItem ARMOR_SETS = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "\\(\\d+/\\d+\\) Armor Sets", "/armor", "Armor Sets");
+		public static final QuickNavItem EQUIPMENT_SETS = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=436093]"), "\\(\\d+/\\d+\\) Equipments Sets", "/eq", "Equipment Sets");
+		public static final QuickNavItem SACKS = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-2081424676,-57521078,-2073572414,158072763],name:\"\",properties:[{name:\"textures\",value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}]"), "Sack of Sacks", "/sacks", "Sacks");
+		public static final QuickNavItem ACCESSORIES = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"5da6bec64bd942bc\",id:[I;1571208902,1272529596,-1566400349,-679283814],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxYTkxOGMwYzQ5YmE4ZDA1M2U1MjJjYjkxYWJjNzQ2ODkzNjdiNGQ4YWEwNmJmYzFiYTkxNTQ3MzA5ODVmZiJ9fX0=\"}]}]"), "Accessory Bag(?: \\(\\d/\\d\\))?", "/accessories", "Accessories");
+		public static final QuickNavItem STORAGE = new QuickNavItem(false, new ItemData(Items.ENDER_CHEST), "(?:Rift )?Storage(?: \\(\\d/\\d\\))?", "/storage", "Storage");
+		public static final QuickNavItem HOME_WARP = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"421a8ef40eff47f4\",id:[I;1109036788,251611124,-2126904485,-130621758],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzljODg4MWU0MjkxNWE5ZDI5YmI2MWExNmZiMjZkMDU5OTEzMjA0ZDI2NWRmNWI0MzliM2Q3OTJhY2Q1NiJ9fX0=\"}]}]"), "/is", "Home");
+		public static final QuickNavItem GARDEN_WARP = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={name:\"e30e30d02878417c\",id:[I;-485609264,678969724,-1929747597,-718202427],properties:[{name:\"textures\",value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjQ4ODBkMmMxZTdiODZlODc1MjJlMjA4ODI2NTZmNDViYWZkNDJmOTQ5MzJiMmM1ZTBkNmVjYWE0OTBjYjRjIn19fQ==\"}]}]"), "/warp garden", "Garden");
+		public static final QuickNavItem HUB_WARP = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-300151517,-631415889,-1193921967,-1821784279],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYzY2ODc0MjNkMDU3MGQ1NTZhYzUzZTA2NzZjYjU2M2JiZGQ5NzE3Y2Q4MjY5YmRlYmVkNmY2ZDRlN2JmOCJ9fX0=\"}]}]"), "/hub", "Skyblock Hub");
+		public static final QuickNavItem DUNGEON_HUB_WARP = new QuickNavItem(true, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;1605800870,415127827,-1236127084,15358548],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg5MWQ1YjI3M2ZmMGJjNTBjOTYwYjJjZDg2ZWVmMWM0MGExYjk0MDMyYWU3MWU3NTQ3NWE1NjhhODI1NzQyMSJ9fX0=\"}]}]"), "/warp dungeon_hub", "Dungeons Hub");
+		public static final QuickNavItem AUCTION_HOUSE = new QuickNavItem(false, new ItemData(Items.GOLD_BLOCK), "^(?:Auctions Browser|Co-op Auction House|Auction House|Manage Auctions|Your Bids|BIN Auction View|Auction View|Auctions:.*)$", "/ah", "Auction House");
+		public static final QuickNavItem BAZAAR = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-562285948,532499670,-1705302742,775653035],name:\"\",properties:[{name:\"textures\",value:\"e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlMmRjZGE0MWVjM2FmZjhhZjUwZjI3MmVjMmUwNmE4ZjUwOWUwZjgwN2YyMzU1YTFmNWEzM2MxYjY2ZTliNCJ9fX0=\"}]}]"), "(?:Co-op )?Bazaar .*", "/bz", "Bazaar");
+		public static final QuickNavItem CRAFTING_TABLE = new QuickNavItem(false, new ItemData(Items.CRAFTING_TABLE), "Craft Item", "/craft", "Crafting Table");
+		public static final QuickNavItem ANVIL = new QuickNavItem(false, new ItemData(Items.ANVIL), "Anvil", "/anvil", "Anvil");
+
+
+		// I love reflection
+		static {
+			for (Field field : Presets.class.getDeclaredFields()) {
+				if (field.getType() == QuickNavItem.class) {
+					try {
+						ALL_PRESETS.add((QuickNavItem) field.get(null));
+					} catch (IllegalAccessException _) {}
+				}
+			}
+			ALL_PRESETS.sort(Comparator.comparing(quickNavItem -> quickNavItem.getParsedTooltip().getString()));
+		}
 	}
 }

@@ -61,7 +61,7 @@ public class SuggestionsEditBox extends EditBox {
 	}
 
 	private void onUpdate(String string) {
-		suggestions.updateCommandInfo();
+		if (isActive()) suggestions.updateCommandInfo();
 		if (responder != null) responder.accept(string);
 	}
 

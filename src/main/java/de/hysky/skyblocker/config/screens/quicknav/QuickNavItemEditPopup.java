@@ -3,7 +3,6 @@ package de.hysky.skyblocker.config.screens.quicknav;
 import java.util.regex.Pattern;
 
 import com.demonwav.mcdev.annotations.Translatable;
-import com.google.gson.JsonElement;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ScrollableLayout;
@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.utils.command.CommandUtils;
 import de.hysky.skyblocker.utils.command.argumenttypes.RegexArgumentType;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
@@ -62,11 +62,7 @@ class QuickNavItemEditPopup extends AbstractPopupScreen {
 		this.onClose = onClose;
 		this.item = new QuickNavigationConfig.QuickNavItem(item);
 		this.setter = setter;
-		try {
-			currentTooltip = ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, SkyblockerMod.GSON.fromJson(item.tooltip, JsonElement.class)).getOrThrow().getFirst();
-		} catch (Exception _) {
-			currentTooltip = Component.literal(item.tooltip);
-		}
+		currentTooltip = item.getParsedTooltip();
 	}
 
 	@Override
@@ -142,7 +138,7 @@ class QuickNavItemEditPopup extends AbstractPopupScreen {
 			itemWidget.stack = itemWidget.stack.copyWithCount(item.itemData.count);
 		});
 
-		iconLayout.addChild(ButtonWidget.builder(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"), _ -> minecraft.gui.setScreen(
+		iconLayout.addChild(Button.builder(Component.translatable("skyblocker.config.quickNav.button.chooseSkyblockItem"), _ -> minecraft.gui.setScreen(
 				new ItemSelectionPopup(this, itemStack -> {
 					if (itemStack != null) {
 						itemWidget.stack = itemStack;
@@ -156,19 +152,33 @@ class QuickNavItemEditPopup extends AbstractPopupScreen {
 
 		// require double click
 		LinearLayout doubleClickLayout = content.addChild(createSectionLayout());
-		doubleClickLayout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.quickNav.button.doubleClick"), font)
+		Checkbox doubleClickCheckbox = doubleClickLayout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.quickNav.button.doubleClick"), font)
 				.onValueChange((_, value) -> item.doubleClick = value)
 				.selected(item.doubleClick)
 				.build()
-		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.doubleClick.@Tooltip")));
+		);
+		doubleClickCheckbox.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.quickNav.button.doubleClick.@Tooltip")));
 
 		content.addChild(SpacerElement.height(0));
 		scrollableContent = layout.addChild(new ScrollableLayout(minecraft, content, height - SCROLLABLE_CONTENT_HEIGHT_DIFF));
 
 		// the buttons at the bottom
+		layout.addChild(Button.builder(Component.literal("Presets"), _ -> minecraft.gui.setScreen(new QuickNavPresetsPopup(
+				this,
+				quickNavItem -> {
+					// doing set value calls the responders
+					commandBox.setValue(quickNavItem.clickEvent);
+					editWidget.setText(quickNavItem.getParsedTooltip());
+					patternBox.setValue(quickNavItem.uiTitle);
+					itemBox.setValue(quickNavItem.itemData.item + quickNavItem.itemData.components);
+					countBox.setValue(String.valueOf(quickNavItem.itemData.count));
+					((CheckboxAccessor)doubleClickCheckbox).setSelected(quickNavItem.doubleClick);
+
+				}
+		))).width(Button.DEFAULT_WIDTH * 2 + 4).build(), LayoutSettings::alignHorizontallyCenter);
 		LinearLayout buttonsLayout = layout.addChild(LinearLayout.horizontal().spacing(4), LayoutSettings::alignHorizontallyCenter);
-		buttonsLayout.addChild(ButtonWidget.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).build());
-		buttonsLayout.addChild(ButtonWidget.builder(CommonComponents.GUI_DONE, _ -> {
+		buttonsLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> onClose()).build());
+		buttonsLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 			save();
 			onClose();
 		}).build());
