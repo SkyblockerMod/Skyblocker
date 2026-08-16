@@ -237,7 +237,7 @@ public class QuickNavConfigScreen extends Screen {
 				}
 				dragging = false;
 			} else {
-				minecraft.gui.setScreen(new ItemEditPopup(QuickNavConfigScreen.this, () -> refreshButton(index), ITEM_SUPPLIERS[index].apply(SkyblockerConfigManager.get().quickNav), SETTERS[index], index));
+				minecraft.gui.setScreen(new QuickNavItemEditPopup(QuickNavConfigScreen.this, () -> refreshButton(index), ITEM_SUPPLIERS[index].apply(SkyblockerConfigManager.get().quickNav), SETTERS[index], index));
 			}
 			setTooltip(tooltip);
 		}

@@ -45,7 +45,7 @@ import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
 import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
 import de.hysky.skyblocker.utils.render.gui.SuggestionsEditBox;
 
-class ItemEditPopup extends AbstractPopupScreen {
+class QuickNavItemEditPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final int SCROLLABLE_CONTENT_HEIGHT_DIFF = BACKGROUND_MARGIN * 2 + 20 + 50; // 20: height of buttons, 50: some hardcoded constant
 
@@ -57,7 +57,7 @@ class ItemEditPopup extends AbstractPopupScreen {
 
 	private Component currentTooltip;
 
-	ItemEditPopup(Screen backgroundScreen, Runnable onClose, QuickNavigationConfig.QuickNavItem item, QuickNavConfigScreen.ConfigItemSetter setter, int index) {
+	QuickNavItemEditPopup(Screen backgroundScreen, Runnable onClose, QuickNavigationConfig.QuickNavItem item, QuickNavConfigScreen.ConfigItemSetter setter, int index) {
 		super(Component.translatable("skyblocker.config.quickNav.screen.title", index + 1).withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE), backgroundScreen);
 		this.onClose = onClose;
 		this.item = new QuickNavigationConfig.QuickNavItem(item);
