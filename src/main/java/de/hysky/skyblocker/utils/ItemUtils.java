@@ -746,22 +746,23 @@ public final class ItemUtils {
 			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 		}
 
-		// Tooltip style shortcut to make reforge stone core work, and this is probably faster than parsing lore
-		Identifier tooltipStyle = stack.getOrDefault(DataComponents.TOOLTIP_STYLE, Identifier.fromNamespaceAndPath("", ""));
-		if (tooltipStyle.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE)) {
-			Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(tooltipStyle.getPath().toUpperCase(Locale.ENGLISH));
-			if (rarity.isPresent()) return rarity.get();
-		}
-
-		// Fallback to lore
-		return ItemUtils.getLore(stack)
+		// Attempt to parse rarity from lore
+		Optional<SkyblockItemRarity> rarity = ItemUtils.getLore(stack)
 				.reversed()
 				.stream()
 				.map(Component::getString)
 				.map(SkyblockItemRarity::containsName)
 				.flatMap(Optional::stream)
-				.findFirst()
-				.orElse(SkyblockItemRarity.UNKNOWN);
+				.findFirst();
+		if (rarity.isPresent()) return rarity.get();
+
+		// Fall back to tooltip style for reforge stone core to work
+		Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
+		if (tooltipStyle != null && tooltipStyle.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE)) {
+			return SkyblockItemRarity.containsName(tooltipStyle.getPath().toUpperCase(Locale.ENGLISH)).orElse(SkyblockItemRarity.UNKNOWN);
+		}
+
+		return SkyblockItemRarity.UNKNOWN;
 	}
 
 	/**
