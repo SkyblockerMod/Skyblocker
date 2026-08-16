@@ -21,6 +21,7 @@ import net.minecraft.util.CommonColors;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
@@ -37,9 +38,9 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final GameProfile userProfile;
 	private final ProfileMember member;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage(), new CollectionsPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2));
+	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2), createPageTab(3));
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 

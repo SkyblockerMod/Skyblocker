@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
@@ -20,18 +21,19 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 	private static final int INFO_OFFSET = 2;
-	private final ApiProfile profile;
-	private final ProfileMember member;
+	private final LoadingInformation info;
 
-	public SkillsInfoBoxWidget(int width, int height, ApiProfile profile, ProfileMember member) {
+	public SkillsInfoBoxWidget(int width, int height, LoadingInformation info) {
 		super(width, height);
-		this.profile = profile;
-		this.member = member;
+		this.info = info;
 	}
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+
+		ApiProfile profile = this.info.profile();
+		ProfileMember member = this.info.member();
 
 		graphics.pose().pushMatrix();
 		graphics.pose().translate(INFO_OFFSET, INFO_OFFSET);
@@ -49,15 +51,15 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 
 		// The item is scaled down to 12x12 so we use 12 as the base x offset and offset by 2 more so that there's space between
 		// the text and icon
-		Component profileText = Component.literal(this.profile.cuteName).withStyle(ChatFormatting.UNDERLINE);
+		Component profileText = Component.literal(profile.cuteName).withStyle(ChatFormatting.UNDERLINE);
 		graphics.text(font, profileText, this.getX() + 12 + 2, this.getY(), CommonColors.WHITE);
 
 		// Offset all following elements by 1 to ensure that the joined text does not "clash" with the underline
 		graphics.pose().translate(0f, 1f);
 
 		// Joined
-		Instant firstJoin = Instant.ofEpochMilli(this.member.profile.firstJoin);
-		int firstJoinYear = Instant.ofEpochMilli(this.member.profile.firstJoin)
+		Instant firstJoin = Instant.ofEpochMilli(member.profile.firstJoin);
+		int firstJoinYear = Instant.ofEpochMilli(member.profile.firstJoin)
 				.atZone(ZoneId.systemDefault())
 				.getYear();
 		Component joinedText = Component.empty()
@@ -82,20 +84,20 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 		// Skill Average
 		Component skillAverageText = Component.empty()
 				.append(Component.literal("Skill Avg: ").withStyle(ChatFormatting.GREEN))
-				.append(Formatters.FLOAT_NUMBERS.format(this.member.playerData.getSkillAverage(this.member)));
+				.append(Formatters.FLOAT_NUMBERS.format(member.playerData.getSkillAverage(this.info)));
 		graphics.text(font, skillAverageText, this.getX(), this.getY() + (font.lineHeight * 3) + 1, CommonColors.WHITE);
 
 		// Purse
 		Component purseText = Component.empty()
 				.append(Component.literal("Purse: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(this.member.currencies.coinsInPurse));
+				.append(Formatters.SHORT_FLOAT_NUMBERS.format(member.currencies.coinsInPurse));
 		graphics.text(font, purseText, this.getX(), this.getY() + (font.lineHeight * 4) + 1, CommonColors.WHITE);
 
 		// Bank
 		// TODO check that banking can't be null
 		Component bankText = Component.empty()
 				.append(Component.literal("Bank: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(this.profile.banking.balance));
+				.append(Formatters.SHORT_FLOAT_NUMBERS.format(profile.banking.balance));
 		graphics.text(font, bankText, this.getX(), this.getY() + (font.lineHeight * 5) + 1, CommonColors.WHITE);
 
 		graphics.pose().popMatrix();

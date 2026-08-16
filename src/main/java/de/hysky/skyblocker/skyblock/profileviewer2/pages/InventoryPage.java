@@ -78,15 +78,17 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				// Personal Vault
 				);
 
+		// Inventory tabs
 		LinearLayout tabLayout = LinearLayout.vertical().spacing(1);
 		tabButtons.forEach(button -> this.widgets.add(tabLayout.addChild(button)));
-		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignHorizontallyCenter());
+		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignVerticallyMiddle());
 
+		// Add space between the tabs and the content
 		pageLayout.addChild(SpacerElement.width(16));
 
+		// One big frame layout with each tab's content essentially overlapping each other
 		FrameLayout inventoryFrame = new FrameLayout();
 		tabContentLayouts.forEach(layout -> inventoryFrame.addChild(layout, LayoutSettings.defaults().alignHorizontallyCenter()));
-
 		pageLayout.addChild(inventoryFrame);
 
 		// Select main page by default

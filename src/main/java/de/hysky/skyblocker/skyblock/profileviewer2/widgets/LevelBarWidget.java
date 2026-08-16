@@ -19,7 +19,7 @@ import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -59,8 +59,8 @@ public final class LevelBarWidget extends AbstractWidget {
 		this.active = false;
 	}
 
-	public static LevelBarWidget forSkill(int width, Skill skill, ProfileMember member) {
-		LevelInfo levelInfo = member.playerData.getSkillLevel(skill, member);
+	public static LevelBarWidget forSkill(int width, Skill skill, LoadingInformation info) {
+		LevelInfo levelInfo = info.member().playerData.getSkillLevel(skill, info);
 		Component label = Component.literal(skill.getFriendlyName() + " " + levelInfo.level());
 		double barFillPercentage = levelInfo.progress().isPresent() ? levelInfo.progress().get().percentageToNextLevel() : 1f;
 		Color barFillColour = Color.GREEN;
