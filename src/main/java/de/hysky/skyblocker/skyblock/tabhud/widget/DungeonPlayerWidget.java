@@ -3,7 +3,10 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -52,15 +55,12 @@ public class DungeonPlayerWidget extends TabHudWidget {
 			return;
 		}
 
-		String name = m.group("name");
 		String clazz = m.group("class");
 		String level = m.group("level");
 		DungeonClass dungeonClass = DungeonClass.from(clazz);
 
-		this.addComponent(new PlayerElement(
-				PlayerListManager.getRaw(index),
-				Component.literal("Name: ").append(Component.literal(name).withStyle(ChatFormatting.YELLOW))
-		));
+		PlayerInfo playerInfo = PlayerListManager.getRaw(index);
+		this.addComponent(new PlayerElement(playerInfo, removeDungeonClass(playerInfo.getTabListDisplayName()), true));
 
 		if (level == null) {
 			this.addComponent(new PlainTextElement(Component.literal("Player is dead").withStyle(ChatFormatting.RED)));
@@ -70,5 +70,20 @@ public class DungeonPlayerWidget extends TabHudWidget {
 				dungeonClass.icon(),
 				Component.literal("Class: ").append(Component.literal(clazz + " " + level).withColor(dungeonClass.color()))
 		));
+	}
+
+	/// Removes the last pair of parentheses from the input component.
+	/// This method is very strict on formatting so that
+	/// if the formatting changes, this will just no-op.
+	private @Nullable Component removeDungeonClass(@Nullable Component name) {
+		if (name == null || !name.getSiblings().getLast().getString().equals(")")) return name;
+
+		MutableComponent playerName = name.copy();
+		for (int i = playerName.getSiblings().size() - 1; i >= 0; i--) {
+			if (playerName.getSiblings().remove(i).getString().trim().equals("(")) {
+				break;
+			}
+		}
+		return playerName;
 	}
 }
