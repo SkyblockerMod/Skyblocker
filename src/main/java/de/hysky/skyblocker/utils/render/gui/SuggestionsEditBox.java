@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
-import de.hysky.skyblocker.utils.command.suggestions.TextFieldSuggestions;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,10 +24,8 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import de.hysky.skyblocker.utils.command.suggestions.TextFieldSuggestions;
 
 /// An edit box that can display suggestions using brigadier.
 ///

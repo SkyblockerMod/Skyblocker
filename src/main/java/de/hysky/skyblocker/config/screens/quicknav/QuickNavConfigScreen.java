@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.config.screens.quicknav;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import com.mojang.blaze3d.platform.InputConstants;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,10 +20,11 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.feline.Cat;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.skyblock.quicknav.QuickNavButton;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
 
 public class QuickNavConfigScreen extends Screen {
 	private static final int INVENTORY_WIDTH = 176;

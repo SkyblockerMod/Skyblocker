@@ -1,14 +1,19 @@
 package de.hysky.skyblocker.utils.command;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.RootCommandNode;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import org.jspecify.annotations.Nullable;
 
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
@@ -21,12 +26,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import de.hysky.skyblocker.utils.RegistryUtils;
 
 public final class CommandUtils {
 	private static @Nullable CommandDispatcher<ClientSuggestionProvider> offlineCommandDispatcher;

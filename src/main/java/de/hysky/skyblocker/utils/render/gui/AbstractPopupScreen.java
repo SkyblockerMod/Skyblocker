@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.Font;
@@ -11,7 +10,8 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.

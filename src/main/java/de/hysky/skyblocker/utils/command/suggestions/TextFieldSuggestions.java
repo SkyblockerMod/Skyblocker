@@ -1,12 +1,16 @@
 package de.hysky.skyblocker.utils.command.suggestions;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.SuggestionContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-import de.hysky.skyblocker.utils.command.CommandUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -19,10 +23,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-import java.util.Optional;
+import de.hysky.skyblocker.utils.command.CommandUtils;
 
 /**
  * A modified version of {@link CommandSuggestions} that doesn't have hardcoded positions

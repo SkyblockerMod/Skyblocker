@@ -1,21 +1,14 @@
 package de.hysky.skyblocker.config.screens.quicknav;
 
+import java.util.regex.Pattern;
+
 import com.demonwav.mcdev.annotations.Translatable;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import de.hysky.skyblocker.utils.command.argumenttypes.RegexArgumentType;
-import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
-import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
-import de.hysky.skyblocker.utils.render.gui.SuggestionsEditBox;
+import org.slf4j.Logger;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -39,9 +32,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
-import org.slf4j.Logger;
 
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.QuickNavigationConfig;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+import de.hysky.skyblocker.utils.command.argumenttypes.RegexArgumentType;
+import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
+import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
+import de.hysky.skyblocker.utils.render.gui.ItemSelectionPopup;
+import de.hysky.skyblocker.utils.render.gui.SuggestionsEditBox;
 
 class ItemEditPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();

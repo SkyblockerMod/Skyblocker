@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.CustomizeNameWidget;
+import de.hysky.skyblocker.utils.render.gui.ComponentEditWidget;
 
 public class ItemTab extends GridLayoutTab {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
