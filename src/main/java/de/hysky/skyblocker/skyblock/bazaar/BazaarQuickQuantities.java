@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 
 public class BazaarQuickQuantities {
 	private static final Minecraft client = Minecraft.getInstance();

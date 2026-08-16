@@ -1,25 +1,27 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.CommandUtils;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.commands.SharedSuggestionProvider;
-import org.jspecify.annotations.Nullable;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class AuctionBazaarAutocomplete {
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> ahsNode;

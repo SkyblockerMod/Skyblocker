@@ -9,13 +9,6 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
 
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.system.MemoryUtil;
-
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -31,7 +24,6 @@ import com.mojang.blaze3d.vertex.MeshData.DrawState;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.IndexType;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
@@ -39,6 +31,13 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.system.MemoryUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.MappableRingBuffer;

@@ -4,12 +4,12 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.hysky.skyblocker.utils.SkyBlockIcons;
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.apache.commons.lang3.StringUtils;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -19,6 +19,7 @@ import de.hysky.skyblocker.skyblock.garden.GardenConstants;
 import de.hysky.skyblocker.skyblock.garden.VacuumCache;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 

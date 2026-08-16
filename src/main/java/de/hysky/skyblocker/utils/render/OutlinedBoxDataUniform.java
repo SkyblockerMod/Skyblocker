@@ -4,9 +4,10 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.util.List;
 
-import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.ARGB;
+
+import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
 
 public class OutlinedBoxDataUniform extends AbstractUniformTexelBuffer<OutlinedBoxRenderState> {
 	private static final int TEXELS_PER_INSTANCE = 2;

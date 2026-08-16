@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import de.hysky.skyblocker.utils.render.Renderer;
-import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
-import de.hysky.skyblocker.utils.render.state.LinesRenderState;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.utils.render.Renderer;
+import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
+import de.hysky.skyblocker.utils.render.state.LinesRenderState;
 
 public final class LinesRenderer implements PrimitiveRenderer<LinesRenderState> {
 	protected static final LinesRenderer INSTANCE = new LinesRenderer();

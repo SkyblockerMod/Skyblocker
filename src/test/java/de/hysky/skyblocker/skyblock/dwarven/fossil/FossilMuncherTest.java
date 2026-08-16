@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 
 class FossilMuncherTest extends ChatPatternListenerTest<FossilMuncher> {
 	FossilMuncherTest() {

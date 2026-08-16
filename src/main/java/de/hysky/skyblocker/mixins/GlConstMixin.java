@@ -1,13 +1,12 @@
 package de.hysky.skyblocker.mixins;
 
+import com.mojang.blaze3d.opengl.GlConst;
+import com.mojang.blaze3d.textures.TextureFormat;
 import org.lwjgl.opengl.GL33;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.textures.TextureFormat;
 
 @Mixin(GlConst.class)
 public class GlConstMixin {

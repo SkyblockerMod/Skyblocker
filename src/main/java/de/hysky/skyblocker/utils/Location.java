@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils;
 
-import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.EnumSet;
+
+import com.mojang.serialization.Codec;
+
 import net.minecraft.util.StringRepresentable;
 
 /**

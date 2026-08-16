@@ -1,14 +1,14 @@
 package de.hysky.skyblocker.mixins;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.client.renderer.RenderPipelines;
 
 import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.renderer.RenderPipelines;
 
 @Mixin(RenderPipeline.class)
 public class RenderPipelineMixin {

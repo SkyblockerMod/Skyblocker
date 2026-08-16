@@ -1,15 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.config.configs.GeneralConfig.Craft;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.BazaarProduct;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import io.github.moulberry.repo.data.NEUIngredient;
 import io.github.moulberry.repo.data.NEUKatUpgradeRecipe;
 import io.github.moulberry.repo.data.NEUMobDropRecipe;
@@ -23,14 +18,21 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.config.configs.GeneralConfig.Craft;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.BazaarProduct;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class CraftPriceTooltip extends SimpleTooltipAdder {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());

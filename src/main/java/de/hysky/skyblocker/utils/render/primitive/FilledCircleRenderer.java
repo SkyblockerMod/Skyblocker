@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import org.joml.Matrix4f;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import org.joml.Matrix4f;
+
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 
 public final class FilledCircleRenderer implements PrimitiveRenderer<FilledCircleRenderState> {
 	protected static final FilledCircleRenderer INSTANCE = new FilledCircleRenderer();

@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.skyblock.item.background;
 
+import java.util.List;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.item.background.adders.ItemRarityBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.JacobMedalBackground;
 import de.hysky.skyblocker.skyblock.item.background.adders.LegacyAttributeBackground;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.item.ItemStack;
-import java.util.List;
 
 public class ItemBackgroundManager {
 

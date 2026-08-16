@@ -4,18 +4,6 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.injected.EntityRenderMarker;
-import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,6 +13,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.EntityRenderMarker;
+import de.hysky.skyblocker.skyblock.dwarven.BlockBreakPrediction;
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin implements EntityRenderMarker {

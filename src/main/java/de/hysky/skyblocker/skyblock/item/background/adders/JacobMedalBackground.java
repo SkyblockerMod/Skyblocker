@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.background.adders;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.background.ColoredItemBackground;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class JacobMedalBackground extends ColoredItemBackground<Integer> {
 

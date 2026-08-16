@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import it.unimi.dsi.fastutil.chars.CharList;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +11,13 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.chars.CharList;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 /**
  * Contains utilities for transforming text. These methods are from Aaron's Mod.

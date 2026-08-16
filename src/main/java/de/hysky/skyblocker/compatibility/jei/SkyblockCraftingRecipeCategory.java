@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.compatibility.jei;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
-import de.hysky.skyblocker.utils.ItemUtils;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.types.IRecipeType;
+
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockCraftingRecipe;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public final class SkyblockCraftingRecipeCategory extends AbstractSkyblockRecipeCategory<SkyblockCraftingRecipe> {
 	private static final IRecipeType<SkyblockCraftingRecipe> RECIPE_TYPE = IRecipeType.create(SkyblockCraftingRecipe.ID, SkyblockCraftingRecipe.class);

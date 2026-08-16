@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import java.util.function.Predicate;
+
 import net.minecraft.client.gui.screens.Screen;
 
 public interface ContainerMatcher extends Predicate<Screen> {

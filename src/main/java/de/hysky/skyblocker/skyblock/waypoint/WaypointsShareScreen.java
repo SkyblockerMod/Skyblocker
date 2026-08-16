@@ -1,12 +1,10 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import com.google.common.collect.Multimap;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
-import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.collect.Multimap;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
@@ -15,6 +13,10 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
+import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
 
 public class WaypointsShareScreen extends AbstractWaypointsScreen<WaypointsScreen> {
 	private final Set<NamedWaypoint> selectedWaypoints = new HashSet<>();

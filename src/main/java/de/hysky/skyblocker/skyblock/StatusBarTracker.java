@@ -1,5 +1,23 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.mojang.logging.LogUtils;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
@@ -13,24 +31,6 @@ import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
-import org.jetbrains.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StatusBarTracker {
 	private static final Logger LOGGER = LogUtils.getLogger();

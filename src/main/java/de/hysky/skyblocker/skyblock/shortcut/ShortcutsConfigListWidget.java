@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
-import com.demonwav.mcdev.annotations.Translatable;
-import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +10,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.demonwav.mcdev.annotations.Translatable;
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -29,7 +31,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
 
 public class ShortcutsConfigListWidget extends ContainerObjectSelectionList<ShortcutsConfigListWidget.AbstractShortcutEntry> {
 	private static final int TEXT_Y_OFFSET = 5 + 2;

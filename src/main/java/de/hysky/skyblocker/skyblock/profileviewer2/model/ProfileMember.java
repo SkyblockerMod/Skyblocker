@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 import java.util.UUID;
+
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 public class ProfileMember {
 	@SerializedName("player_id")

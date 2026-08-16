@@ -1,15 +1,15 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.Pair;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import com.google.common.base.Predicates;
+import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -22,9 +22,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import org.jspecify.annotations.Nullable;
 
-import com.google.common.base.Predicates;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
 /**
  * A popup allowing the user to select a skyblock item.
  */

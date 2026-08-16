@@ -1,5 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
+import java.util.regex.Matcher;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
@@ -7,12 +14,6 @@ import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 /// This widget shows info about a player in the current dungeon group.
 public class DungeonPlayerWidget extends TabHudWidget {

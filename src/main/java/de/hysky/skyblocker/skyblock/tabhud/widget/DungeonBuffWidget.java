@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +7,10 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 
 /// This widget shows a list of obtained dungeon buffs.
 @RegisterWidget

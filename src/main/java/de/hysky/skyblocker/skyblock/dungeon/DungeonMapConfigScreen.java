@@ -1,6 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
 import java.awt.Color;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -8,10 +12,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.blaze3d.platform.InputConstants;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;

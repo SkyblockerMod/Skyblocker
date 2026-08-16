@@ -1,17 +1,15 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.apache.commons.lang3.function.Consumers;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -34,13 +32,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-import org.apache.commons.lang3.function.Consumers;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class CustomizeScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();

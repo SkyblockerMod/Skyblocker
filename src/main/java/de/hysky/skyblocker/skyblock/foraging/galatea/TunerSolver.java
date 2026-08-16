@@ -1,15 +1,14 @@
 package de.hysky.skyblocker.skyblock.foraging.galatea;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.platform.InputConstants;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.container.SlotTextAdder;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -19,12 +18,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.PlaySoundEvents;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public class TunerSolver extends SimpleContainerSolver implements SlotTextAdder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TunerSolver.class);

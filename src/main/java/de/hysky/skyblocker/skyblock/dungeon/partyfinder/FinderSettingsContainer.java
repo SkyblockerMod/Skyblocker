@@ -3,6 +3,9 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractScrollArea;
@@ -15,8 +18,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-
-import org.jspecify.annotations.Nullable;
 
 public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;

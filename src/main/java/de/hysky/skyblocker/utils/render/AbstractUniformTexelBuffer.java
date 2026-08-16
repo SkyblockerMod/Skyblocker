@@ -4,10 +4,9 @@ import java.lang.foreign.MemorySegment;
 import java.nio.ByteOrder;
 import java.util.List;
 
-import org.lwjgl.system.MemoryUtil;
-
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.lwjgl.system.MemoryUtil;
 
 import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;

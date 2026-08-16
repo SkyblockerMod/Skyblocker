@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.entries;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
-import de.hysky.skyblocker.utils.Location;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.Location;
 
 public class WidgetEntry extends WidgetsListEntry {
 	private final HudWidget widget;

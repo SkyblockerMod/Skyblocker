@@ -1,10 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import java.util.Arrays;
 import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -24,6 +22,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
 public class ItemSelectPopup extends AbstractPopupScreen {
 

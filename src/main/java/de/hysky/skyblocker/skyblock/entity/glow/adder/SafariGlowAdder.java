@@ -2,6 +2,17 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Display.ItemDisplay;
+import net.minecraft.world.entity.Display.TextDisplay;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HuntingConfig;
@@ -11,16 +22,6 @@ import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.world.entity.Display.ItemDisplay;
-import net.minecraft.world.entity.Display.TextDisplay;
-import net.minecraft.world.entity.monster.Shulker;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class SafariGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")

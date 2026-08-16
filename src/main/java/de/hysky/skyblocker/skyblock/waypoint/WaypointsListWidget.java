@@ -5,7 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.ints.IntConsumer;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -37,9 +43,9 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.utils.Location;
@@ -51,10 +57,6 @@ import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
-import it.unimi.dsi.fastutil.ints.IntConsumer;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import org.jspecify.annotations.Nullable;
 
 public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsListWidget.AbstractWaypointEntry> {
 	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");

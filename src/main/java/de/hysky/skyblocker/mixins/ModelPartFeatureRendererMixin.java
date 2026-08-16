@@ -1,18 +1,18 @@
 package de.hysky.skyblocker.mixins;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
-
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.ModelPartFeatureRenderer;
+
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
+import de.hysky.skyblocker.utils.render.GlowRenderer;
 
 @Mixin(ModelPartFeatureRenderer.class)
 public class ModelPartFeatureRendererMixin {

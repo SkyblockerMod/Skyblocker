@@ -1,15 +1,18 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.Locale;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
+
+import net.minecraft.nbt.TagParser;
+
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.datafixer.ItemStackComponentizationFixer;
-import java.util.Locale;
-import net.minecraft.nbt.TagParser;
 
 public class ConfigFix1 extends ConfigDataFix {
 	public ConfigFix1(Schema outputSchema, boolean changesType) {

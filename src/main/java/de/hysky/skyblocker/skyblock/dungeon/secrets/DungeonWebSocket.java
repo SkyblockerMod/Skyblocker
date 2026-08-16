@@ -1,6 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Optional;
+
 import com.mojang.serialization.Dynamic;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.utils.render.RenderHelper;
@@ -13,8 +16,6 @@ import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomMatchMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
-
-import java.util.Optional;
 
 public class DungeonWebSocket {
 	@Init

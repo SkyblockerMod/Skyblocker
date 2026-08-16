@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
@@ -13,13 +21,6 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.SkillsInfoBoxWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.layouts.GridLayout;
-import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.gui.layouts.SpacerElement;
-import net.minecraft.network.chat.Component;
 
 public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private static final int SPACING = 2;

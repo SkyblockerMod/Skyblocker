@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.skyblock.chat;
 
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -17,6 +17,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class ChatRulesConfigListWidget extends ContainerObjectSelectionList<ChatRulesConfigListWidget.AbstractChatRuleEntry> {
 	private static final int ROW_HEIGHT = 26;

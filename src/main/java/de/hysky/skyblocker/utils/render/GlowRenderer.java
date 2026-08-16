@@ -7,13 +7,15 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.hysky.skyblocker.mixins.accessors.OutlineBufferSourceAccessor;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.mixins.accessors.OutlineBufferSourceAccessor;
 
 public class GlowRenderer implements AutoCloseable {
 	private static GlowRenderer instance = null;

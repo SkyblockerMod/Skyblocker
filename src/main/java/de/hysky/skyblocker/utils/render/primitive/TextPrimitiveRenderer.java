@@ -1,14 +1,12 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
-import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import de.hysky.skyblocker.utils.render.Renderer;
-import de.hysky.skyblocker.utils.render.state.TextRenderState;
+import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.TextRenderable;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -16,7 +14,9 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.LightCoordsUtil;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.compatibility.CaxtonCompatibility;
+import de.hysky.skyblocker.utils.render.Renderer;
+import de.hysky.skyblocker.utils.render.state.TextRenderState;
 
 public final class TextPrimitiveRenderer implements PrimitiveRenderer<TextRenderState> {
 	protected static final TextPrimitiveRenderer INSTANCE = new TextPrimitiveRenderer();

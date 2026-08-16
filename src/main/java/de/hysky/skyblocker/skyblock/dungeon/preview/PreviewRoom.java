@@ -1,10 +1,13 @@
 package de.hysky.skyblocker.skyblock.dungeon.preview;
 
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretWaypoint;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
@@ -13,12 +16,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.SecretWaypoint;
 
 public class PreviewRoom extends Room {
 	private static final Vector2ic ORIGIN = new Vector2i(0, 0);
