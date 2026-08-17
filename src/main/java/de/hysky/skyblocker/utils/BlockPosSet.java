@@ -18,19 +18,19 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	/// [31_556_398, 107, 9_164_935].
 	/// However, this is unlikely to be an issue, as both positions
 	/// are outside the world border (+-30_000_000, +-30_000_000)
-	public static final long TOMBSTONE = Long.MAX_VALUE;
-	public static final long EMPTY = TOMBSTONE - 1;
-	public static final float LOAD_FACTOR = 0.75f;
-	public static final int LANES = 4;
+	protected static final long TOMBSTONE = Long.MAX_VALUE;
+	protected static final long EMPTY = TOMBSTONE - 1;
+	protected static final float LOAD_FACTOR = 0.75f;
+	protected static final int LANES = 4;
 
-	public int size = 0;
-	public int tombstones = 0;
+	protected int size = 0;
+	protected int tombstones = 0;
 	///  Must be a power of two
-	public int capacity = 8;
+	protected int capacity = 8;
 	/// Saves a single subtraction. WOW
-	public int mask = capacity - 1;
-	public int nextGrowThreshold = Math.min((int) (this.capacity * LOAD_FACTOR), this.capacity - 1);
-	public long[] entries = new long[this.capacity + LANES - 1];
+	protected int mask = capacity - 1;
+	protected int nextGrowThreshold = Math.min((int) (this.capacity * LOAD_FACTOR), this.capacity - 1);
+	protected long[] entries = new long[this.capacity + LANES - 1];
 
 	public BlockPosSet() {
 		Arrays.fill(this.entries, EMPTY);
@@ -46,7 +46,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		do {
 			// TODO: Switch to this when Vector API stabilizes
 			/*
-			LongVector n = LongVector.fromArray(LongVector.SPECIES_512, this.entries, i);
+			LongVector n = LongVector.fromArray(LongVector.SPECIES_PREFERRED, this.entries, i);
 			if (n.compare(VectorOperators.EQ, hash).anyTrue()) return true;
 			if (n.compare(VectorOperators.EQ, EMPTY).anyTrue()) return false;
 			*/
@@ -76,7 +76,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	}
 
 	public int indexOf(BlockPos pos) {
-		final long hash = hashXyz(pos.getX(), pos.getY(), pos.getZ());
+		final long hash = hashPos(pos);
 		final int mask = this.mask;
 		int i = (int) hash & mask;
 
@@ -122,12 +122,13 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 				this.entries[slotToInsert] = hash;
 				this.size++;
 
+				// duplicate entries near the start to the extra padding at the end
 				if (slotToInsert < LANES - 1) this.entries[slotToInsert + this.capacity] = hash;
 				return true;
 			}
+
 			// wrap to beginning
 			// we will never enter an infinite loop because there is at least 1 empty slot
-
 			slotToInsert = (slotToInsert + 1) & mask;
 		} while (true);
 	}
@@ -136,7 +137,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		if (this.size == 0) return false;
 
 		final long hash = hashXyz(x, y, z);
-		final int mask = this.capacity - 1;
+		final int mask = this.mask;
 		int i = (int) hash & mask;
 
 		do {
@@ -156,9 +157,8 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 				// */
 
 				// travel backwards and attempt to remove tombstones if the next slot is empty
+				if (this.entries[(i + 1) & mask] != EMPTY) return true;
 				do {
-					if (this.entries[(i + 1) & mask] != EMPTY) break;
-
 					this.entries[i] = EMPTY;
 					this.tombstones--;
 
@@ -183,19 +183,18 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		// iterate through the current entries array
 		for (int currentIndex = 0; currentIndex < this.capacity; currentIndex++) {
 			// skip tombstones and absents
-			if (this.entries[currentIndex] >= EMPTY) continue;
+			final long hash = this.entries[currentIndex];
+			if (hash >= EMPTY) continue;
 
 			// add to new entries array
-			final long hash = this.entries[currentIndex];
 			int newIndex = (int) hash & mask;
-			inner:
 			while (true) {
 				// found new slot, add here
 				// no need to check for tombstones here
 				if (newEntries[newIndex] == EMPTY) {
 					newEntries[newIndex] = hash;
 					if (newIndex < LANES - 1) newEntries[newIndex + newCapacity] = hash;
-					break inner;
+					break;
 				}
 				// wrap to beginning
 				// no need to worry about an infinite loop, because we always have space
@@ -246,12 +245,12 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 	@Override
 	public boolean isEmpty() {
-		return this.size > 0;
+		return this.size == 0;
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		return o instanceof BlockPos pos && this.containsXyz(pos.getX(), pos.getY(), pos.getZ());
+		return o instanceof BlockPos pos && this.contains(pos);
 	}
 
 	public boolean contains(BlockPos pos) {
@@ -301,7 +300,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 	@Override
 	public boolean remove(Object o) {
-		return o instanceof BlockPos pos && this.removeXyz(pos.getX(), pos.getY(), pos.getZ());
+		return o instanceof BlockPos pos && this.remove(pos);
 	}
 
 	public boolean remove(BlockPos pos) {
@@ -310,19 +309,18 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		Iterator<?> iter = c.iterator();
-		while (iter.hasNext() && iter.next() instanceof BlockPos pos) {
-			if (!this.contains(pos)) return false;
+		for (Object o : c) {
+			if (!this.contains(o)) return false;
 		}
 		return true;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends BlockPos> c) {
-		Iterator<?> iter = c.iterator();
+		Iterator<? extends BlockPos> iter = c.iterator();
 		boolean anyAdded = false;
-		while (iter.hasNext() && iter.next() instanceof BlockPos pos) {
-			anyAdded |= this.add(pos);
+		while (iter.hasNext()) {
+			anyAdded |= this.add(iter.next());
 		}
 		return anyAdded;
 	}
@@ -336,7 +334,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		for (int i = 0, capacity = this.capacity; i < capacity; i++) {
 			long h = longs[i];
 			if (h >= EMPTY) continue;
-			pos.set(h);
+			pos.set(unhashLong(h));
 			if (!c.contains(pos)) {
 				longs[i] = TOMBSTONE;
 				this.size--;
@@ -498,9 +496,9 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		}
 	}
 
-	/// Compacts the entries array before iterating
-	/// Consider using the default iterator if you're going to early out, as this might result in wasted work
-	/// Using any other methods on the set after this returns is undefined behavior
+	/// Compacts the entries array before iterating.
+	/// Consider using the default iterator if you're going to early out, as this might result in wasted work.
+	/// Using any other methods on the set after this returns is undefined behavior.
 	public Iterable<BlockPos> destroyAndIterate() {
 		return new OwningIter(this.size, this.entries);
 	}
@@ -539,9 +537,9 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	}
 
 
-	/// Compacts the entries array before iterating
-	/// Consider using the default iterator if you're going to early out, as this might result in wasted work
-	/// Using any other methods on the set after this returns is undefined behavior
+	/// Compacts the entries array before iterating.
+	/// Consider using the default iterator if you're going to early out, as this might result in wasted work.
+	/// Using any other methods on the set after this returns is undefined behavior.
 	/// Returns the same {@link BlockPos.MutableBlockPos} each time {@link Iterator#next} is called.
 	public Iterable<BlockPos.MutableBlockPos> destroyAndIterateMut() {
 		return new OwningIterMut(this.size, this.entries);

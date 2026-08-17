@@ -51,7 +51,7 @@ public class BlockPosSetTest {
 				switch (action) {
 					case 0 -> {
 						expectEqual(javaSet.add(pos), set.add(pos));
-						log.printf("add %s t %d @ %d\n", pos, BlockPosSet.hashPos(pos) & (set.capacity - 1), set.indexOf(pos));
+						log.printf("add %s t %d @ %d\n", pos, BlockPosSet.hashPos(pos) & set.mask, set.indexOf(pos));
 					}
 					case 1 -> {
 						boolean success = javaSet.remove(pos);
@@ -74,8 +74,8 @@ public class BlockPosSetTest {
 				try {
 					expectEqual(true, set.contains(present));
 				} catch (AssertionError e) {
-					err.printf("missing %s from custom @ %s\n", present, (int) BlockPosSet.hashPos(pos) & (set.capacity - 1));
-					for (int i = (int) BlockPosSet.hashPos(pos) & (set.capacity - 1), j = 0; j < 16; j++, i++) {
+					err.printf("missing %s from custom @ %s\n", present, (int) BlockPosSet.hashPos(pos) & set.mask);
+					for (int i = (int) BlockPosSet.hashPos(pos) & set.mask, j = 0; j < 16; j++, i++) {
 						long h = set.entries[i];
 						if (h == BlockPosSet.EMPTY) err.print("E ");
 						else if (h == BlockPosSet.TOMBSTONE) err.print("T ");

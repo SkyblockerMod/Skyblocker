@@ -112,7 +112,7 @@ public class FairySouls {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
 				for (String profile : fairySoul.foundProfiles) {
 					foundFairies.computeIfAbsent(profile, _ -> new HashMap<>());
-					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new BlockPosSet<>());
+					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new BlockPosSet());
 					foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
 				}
 			}
