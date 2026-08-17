@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.profileviewer2.ProfileViewer;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.utils.Http;
 
@@ -34,6 +35,8 @@ public class CollectionTiers {
 
 	@Init
 	public static void init() {
+		if (!ProfileViewer.ENABLED) return;
+
 		CompletableFuture.supplyAsync(CollectionTiers::loadCollectionsData, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 		.thenAcceptAsync(CollectionTiers::parseCollectionsData, Minecraft.getInstance());
 	}
