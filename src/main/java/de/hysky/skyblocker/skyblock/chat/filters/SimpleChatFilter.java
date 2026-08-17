@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListener;
+import java.util.regex.Matcher;
+
 import org.intellij.lang.annotations.Language;
 
-import java.util.regex.Matcher;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 
 public abstract class SimpleChatFilter extends ChatPatternListener {
 	protected SimpleChatFilter(@Language("RegExp") String pattern) {

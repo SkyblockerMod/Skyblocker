@@ -1,20 +1,16 @@
 package de.hysky.skyblocker.debug;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.GuiInvoker;
-import de.hysky.skyblocker.skyblock.events.EventNotifications;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -26,11 +22,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.resources.server.ServerPackManager;
+import net.minecraft.client.resources.server.ServerPackManager.ServerPackData;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -38,17 +37,25 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import java.util.List;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.events.EventNotifications;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class Debug {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final boolean DEBUG_ENABLED = Boolean.parseBoolean(System.getProperty("skyblocker.debug", "false"));
+	public static KeyMapping dumpNearbyEntitiesKey;
+	public static KeyMapping dumpHoveredItemKey;
 	//This is necessary to not spam the chat with 20 messages per second
 	private static boolean keyDown = false;
 
@@ -71,8 +78,8 @@ public class Debug {
 	public static void init() {
 		if (!debugEnabled()) return;
 		SnapshotDebug.init();
-		KeyMapping dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", GLFW.GLFW_KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
-		KeyMapping dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", GLFW.GLFW_KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpNearbyEntitiesKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpNearbyEntities", InputConstants.KEY_I, SkyblockerMod.KEYBINDING_CATEGORY));
+		dumpHoveredItemKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.debug.dumpHoveredItem", InputConstants.KEY_U, SkyblockerMod.KEYBINDING_CATEGORY));
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(
 				literal(SkyblockerMod.NAMESPACE).then(literal("debug")
 						.then(dumpPlayersCommand())
@@ -84,8 +91,11 @@ public class Debug {
 						.then(EventNotifications.debugToasts())
 						.then(dumpBiome())
 						.then(dumpActionBar())
+						.then(dumpServerResourcePacks())
 						.then(auditMixins())
 						.then(prefixTest())
+						.then(apiId())
+						.then(neuName())
 				)
 		));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -186,11 +196,27 @@ public class Debug {
 		return literal("dumpActionBar")
 				.executes(context -> {
 					FabricClientCommandSource source = context.getSource();
-					Component actionBar = ((GuiInvoker) (source.getClient().gui)).getOverlayMessageString();
+					Component actionBar = ((HudAccessor) (source.getClient().gui.hud)).getOverlayMessageString();
 
 					if (actionBar != null) {
 						Component pretty = NbtUtils.toPrettyComponent(ComponentSerialization.CODEC.encodeStart(RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE), actionBar).getOrThrow());
 						source.sendFeedback(Constants.PREFIX.get().append("Action Bar: ").append(pretty));
+					}
+
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> dumpServerResourcePacks() {
+		return literal("dumpServerResourcePacks")
+				.executes(context -> {
+					FabricClientCommandSource source = context.getSource();
+					ServerPackManager packManager = source.getClient().getDownloadedPackSource().manager;
+
+					for (ServerPackData packData : packManager.packs) {
+						Component packText = ComponentUtils.copyOnClickText(packData.url.toString());
+						Component message = Constants.PREFIX.get().append(packText);
+						source.sendFeedback(message);
 					}
 
 					return Command.SINGLE_SUCCESS;
@@ -210,6 +236,22 @@ public class Debug {
 		return literal("prefixTest")
 				.executes(context -> {
 					context.getSource().sendFeedback(Constants.PREFIX.get());
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> apiId() {
+		return literal("apiId")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get().append("Item API ID: " + context.getSource().getPlayer().getMainHandItem().getSkyblockApiId()));
+					return Command.SINGLE_SUCCESS;
+				});
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> neuName() {
+		return literal("neuName")
+				.executes(context -> {
+					context.getSource().sendFeedback(Constants.PREFIX.get().append("Item NEU Name: " + context.getSource().getPlayer().getMainHandItem().getNeuName()));
 					return Command.SINGLE_SUCCESS;
 				});
 	}

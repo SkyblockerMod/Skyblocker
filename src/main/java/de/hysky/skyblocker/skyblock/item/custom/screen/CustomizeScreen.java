@@ -1,16 +1,15 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.GeneralConfig;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.apache.commons.lang3.function.Consumers;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -20,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -33,13 +33,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-import org.apache.commons.lang3.function.Consumers;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class CustomizeScreen extends Screen {
 	static final Logger LOGGER = LogUtils.getLogger();
@@ -62,7 +65,7 @@ public class CustomizeScreen extends Screen {
 				ClientCommands.literal(SkyblockerMod.NAMESPACE).then(ClientCommands.literal("custom").executes(Scheduler.queueOpenScreenCommand(() -> new CustomizeScreen(null, false))))
 		));
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen) {
+			if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showCustomizeButton && screen instanceof InventoryScreen inventoryScreen && !CatharsisCompatibility.isGuiElementHidden("skyblocker:customizeButton")) {
 				CustomizeButton button = new CustomizeButton(
 						((AbstractContainerScreenAccessor) inventoryScreen).getX() + 63,
 						((AbstractContainerScreenAccessor) inventoryScreen).getY() + 10
@@ -109,11 +112,11 @@ public class CustomizeScreen extends Screen {
 		super.init();
 
 		armorTab = new ArmorTab(this);
-		tabNavigation = TabNavigationBar.builder(tabManager, width)
+		tabNavigation = MenuTabBar.builder(tabManager, width)
 				.addTabs(armorTab, new ItemTab(this))
 				.build();
 		int i = tabNavigation.getRectangle().bottom();
-		tabNavigation.arrangeElements();
+		tabNavigation.arrangeElements(width);
 		tabManager.setTabArea(new ScreenRectangle(0, i, width, height - i - 30));
 		tabNavigation.selectTab(item ? 1 : 0, false);
 		addRenderableWidget(tabNavigation);
@@ -182,8 +185,7 @@ public class CustomizeScreen extends Screen {
 	@Override
 	protected void repositionElements() {
 		int i = tabNavigation.getRectangle().bottom();
-		tabNavigation.updateWidth(width);
-		tabNavigation.arrangeElements();
+		tabNavigation.arrangeElements(width);
 		footerLayout.setPosition((width - footerLayout.getWidth()) / 2, height - footerLayout.getHeight() - 5);
 		tabManager.setTabArea(new ScreenRectangle(0, i, width, footerLayout.getY() - i - 2));
 	}
@@ -208,7 +210,7 @@ public class CustomizeScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(previousScreen);
+		minecraft.gui.setScreen(previousScreen);
 		SkyblockerConfigManager.update(Consumers.nop());
 	}
 
@@ -238,7 +240,7 @@ public class CustomizeScreen extends Screen {
 
 		@Override
 		public void onClick(MouseButtonEvent click, boolean doubled) {
-			CLIENT.setScreen(new CustomizeScreen(CLIENT.screen, false));
+			CLIENT.gui.setScreen(new CustomizeScreen(CLIENT.gui.screen(), false));
 		}
 
 		@Override

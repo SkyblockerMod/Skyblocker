@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.tabhud.util;
 
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
-import net.minecraft.world.item.Items;
 
 /**
  * Stores convenient shorthands for common FlexibleItemStack definitions
@@ -23,6 +24,7 @@ public class Ico {
 	public static final FlexibleItemStack COMPASS = new FlexibleItemStack(Items.COMPASS);
 	public static final FlexibleItemStack SUGAR = new FlexibleItemStack(Items.SUGAR);
 	public static final FlexibleItemStack IRON_HOE = new FlexibleItemStack(Items.IRON_HOE);
+	public static final FlexibleItemStack GOLDEN_AXE = new FlexibleItemStack(Items.GOLDEN_AXE);
 	public static final FlexibleItemStack GOLDEN_HOE = new FlexibleItemStack(Items.GOLDEN_HOE);
 	public static final FlexibleItemStack GOLD = new FlexibleItemStack(Items.GOLD_INGOT);
 	public static final FlexibleItemStack IRON = new FlexibleItemStack(Items.IRON_INGOT);
@@ -37,10 +39,12 @@ public class Ico {
 	public static final FlexibleItemStack GOD_POTION = ItemUtils.createSkull(HeadTextures.GOD_POTION);
 	public static final FlexibleItemStack S_POTION = new FlexibleItemStack(Items.SPLASH_POTION);
 	public static final FlexibleItemStack BARRIER = new FlexibleItemStack(Items.BARRIER);
-	public static final FlexibleItemStack RED_CONCRETE = new FlexibleItemStack(Items.RED_CONCRETE);
+	public static final FlexibleItemStack RED_CONCRETE = new FlexibleItemStack(Items.CONCRETE.red());
 	public static final FlexibleItemStack POISONOUS_POTATO = new FlexibleItemStack(Items.POISONOUS_POTATO);
 	public static final FlexibleItemStack PLAYER = new FlexibleItemStack(Items.PLAYER_HEAD);
 	public static final FlexibleItemStack FAIRY_SOUL = ItemUtils.createSkull(HeadTextures.FAIRY_SOUL);
+	public static final FlexibleItemStack JUMBO_BACKPACK = ItemUtils.createSkull(HeadTextures.JUMBO_BACKPACK);
+	public static final FlexibleItemStack ACCESSORY_BAG = ItemUtils.createSkull(HeadTextures.ACCESSORY_BAG);
 	public static final FlexibleItemStack WATER = new FlexibleItemStack(Items.WATER_BUCKET);
 	public static final FlexibleItemStack LEATHER = new FlexibleItemStack(Items.LEATHER);
 	public static final FlexibleItemStack MITHRIL = new FlexibleItemStack(Items.PRISMARINE_CRYSTALS);
@@ -60,6 +64,7 @@ public class Ico {
 	public static final FlexibleItemStack FURNACE = new FlexibleItemStack(Items.FURNACE);
 	public static final FlexibleItemStack CHESTPLATE = new FlexibleItemStack(Items.IRON_CHESTPLATE);
 	public static final FlexibleItemStack L_CHESTPLATE = new FlexibleItemStack(Items.LEATHER_CHESTPLATE);
+	public static final FlexibleItemStack BROWN_HARNESS = new FlexibleItemStack(Items.HARNESS.brown());
 	public static final FlexibleItemStack B_ROD = new FlexibleItemStack(Items.BLAZE_ROD);
 	public static final FlexibleItemStack B_POWDER = new FlexibleItemStack(Items.BLAZE_POWDER);
 	public static final FlexibleItemStack BOW = new FlexibleItemStack(Items.BOW);
@@ -69,14 +74,16 @@ public class Ico {
 	public static final FlexibleItemStack SAPLING = new FlexibleItemStack(Items.OAK_SAPLING);
 	public static final FlexibleItemStack SEEDS = new FlexibleItemStack(Items.WHEAT_SEEDS);
 	public static final FlexibleItemStack LODESTONE = new FlexibleItemStack(Items.LODESTONE);
+	public static final FlexibleItemStack STONE_AXE = new FlexibleItemStack(Items.STONE_AXE);
 	public static final FlexibleItemStack STONE_PICKAXE = new FlexibleItemStack(Items.STONE_PICKAXE);
+	public static final FlexibleItemStack IRON_AXE = new FlexibleItemStack(Items.IRON_AXE);
 	public static final FlexibleItemStack IRON_PICKAXE = new FlexibleItemStack(Items.IRON_PICKAXE);
 	public static final FlexibleItemStack NETHER_STAR = new FlexibleItemStack(Items.NETHER_STAR);
 	public static final FlexibleItemStack HEART_OF_THE_SEA = new FlexibleItemStack(Items.HEART_OF_THE_SEA);
 	public static final FlexibleItemStack EXPERIENCE_BOTTLE = new FlexibleItemStack(Items.EXPERIENCE_BOTTLE);
-	public static final FlexibleItemStack PINK_DYE = new FlexibleItemStack(Items.PINK_DYE);
-	public static final FlexibleItemStack LIME_DYE = new FlexibleItemStack(Items.LIME_DYE);
-	public static final FlexibleItemStack GRAY_DYE = new FlexibleItemStack(Items.GRAY_DYE);
+	public static final FlexibleItemStack PINK_DYE = new FlexibleItemStack(Items.DYE.pink());
+	public static final FlexibleItemStack LIME_DYE = new FlexibleItemStack(Items.DYE.lime());
+	public static final FlexibleItemStack GRAY_DYE = new FlexibleItemStack(Items.DYE.gray());
 	public static final FlexibleItemStack ENCHANTED_BOOK = new FlexibleItemStack(Items.ENCHANTED_BOOK);
 	public static final FlexibleItemStack SPIDER_EYE = new FlexibleItemStack(Items.SPIDER_EYE);
 	public static final FlexibleItemStack PACKED_ICE = new FlexibleItemStack(Items.PACKED_ICE);
@@ -91,8 +98,10 @@ public class Ico {
 	public static final FlexibleItemStack MYCELIUM = new FlexibleItemStack(Items.MYCELIUM);
 	public static final FlexibleItemStack SALMON_BUCKET = new FlexibleItemStack(Items.SALMON_BUCKET);
 	public static final FlexibleItemStack TROPICAL_FISH_BUCKET = new FlexibleItemStack(Items.TROPICAL_FISH_BUCKET);
+	public static final FlexibleItemStack STRIPPED_SPRUCE_LOG = new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG);
 	public static final FlexibleItemStack STRIPPED_SPRUCE_WOOD = new FlexibleItemStack(Items.STRIPPED_SPRUCE_WOOD);
 	public static final FlexibleItemStack MANGROVE_LOG = new FlexibleItemStack(Items.MANGROVE_LOG);
+	public static final FlexibleItemStack STRIPPED_MANGROVE_LOG = new FlexibleItemStack(Items.STRIPPED_MANGROVE_LOG);
 	public static final FlexibleItemStack OMINOUS_BOTTLE = new FlexibleItemStack(Items.OMINOUS_BOTTLE);
 	public static final FlexibleItemStack CATACOMBS = ItemUtils.createSkull(HeadTextures.CATACOMBS);
 	public static final FlexibleItemStack MADDOX_BATPHONE = ItemUtils.createSkull(HeadTextures.MADDOX_BATPHONE);
@@ -111,4 +120,7 @@ public class Ico {
 	public static final FlexibleItemStack SUNFLOWER = new FlexibleItemStack(Items.SUNFLOWER);
 	public static final FlexibleItemStack BLUE_ORCHID = new FlexibleItemStack(Items.BLUE_ORCHID);
 	public static final FlexibleItemStack ROSE_BUSH = new FlexibleItemStack(Items.ROSE_BUSH);
+	public static final FlexibleItemStack GOLD_NUGGET = new FlexibleItemStack(Items.GOLD_NUGGET);
+	public static final FlexibleItemStack NAUTILUS_SHELL = new FlexibleItemStack(Items.NAUTILUS_SHELL);
+	public static final FlexibleItemStack FLOWERING_AZALEA_LEAVES = new FlexibleItemStack(Items.FLOWERING_AZALEA_LEAVES);
 }

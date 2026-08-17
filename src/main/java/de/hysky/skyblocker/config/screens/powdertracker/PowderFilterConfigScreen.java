@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.config.screens.powdertracker;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -13,7 +14,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
 
 public class PowderFilterConfigScreen extends Screen {
 	private final @Nullable Screen parent;
@@ -30,8 +33,7 @@ public class PowderFilterConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		addRenderableOnly((context, _, _, _) -> {
-			assert minecraft != null;
-			context.text(minecraft.font, Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
+			context.centeredText(minecraft.font, Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.screenTitle").withStyle(ChatFormatting.BOLD), width / 2, (32 - minecraft.font.lineHeight) / 2, CommonColors.WHITE);
 		});
 		ItemTickList<String> itemTickList = addRenderableWidget(new ItemTickList<>(Minecraft.getInstance(), width, height - 96, 32, 24, filters, allItems).init());
 		//Grid code gratuitously stolen from WaypointsScreen. Same goes for the y and heights above.
@@ -66,7 +68,6 @@ public class PowderFilterConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 }

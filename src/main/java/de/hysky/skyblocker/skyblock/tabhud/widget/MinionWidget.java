@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -14,7 +9,13 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 // this widget shows info about minions placed on the home island
 @RegisterWidget
@@ -48,11 +49,12 @@ public class MinionWidget extends TabHudWidget {
 		MIN_ICOS.put("Potato", new FlexibleItemStack(Items.POTATO));
 		MIN_ICOS.put("Pumpkin", new FlexibleItemStack(Items.PUMPKIN));
 		MIN_ICOS.put("Rabbit", new FlexibleItemStack(Items.RABBIT));
-		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WHITE_WOOL));
+		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WOOL.white()));
 		MIN_ICOS.put("Sugar Cane", new FlexibleItemStack(Items.SUGAR_CANE));
 		MIN_ICOS.put("Wheat", new FlexibleItemStack(Items.WHEAT));
 		MIN_ICOS.put("Clay", new FlexibleItemStack(Items.CLAY));
 		MIN_ICOS.put("Fishing", new FlexibleItemStack(Items.FISHING_ROD));
+		MIN_ICOS.put("Lily Pad", new FlexibleItemStack(Items.LILY_PAD));
 		MIN_ICOS.put("Coal", new FlexibleItemStack(Items.COAL));
 		MIN_ICOS.put("Cobblestone", new FlexibleItemStack(Items.COBBLESTONE));
 		MIN_ICOS.put("Diamond", new FlexibleItemStack(Items.DIAMOND));
@@ -94,7 +96,7 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Minions", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

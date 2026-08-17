@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.teleport;
 
 import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -38,6 +40,11 @@ public class TeleportOverlay {
 				case "ASPECT_OF_THE_LEECH_2" -> {
 					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
 						extractRendering(collector, 4, false);
+					}
+				}
+				case "ASPECT_OF_THE_LEECH_3" -> {
+					if (SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.enableWeirdTransmission) {
+						extractRendering(collector, 5, false);
 					}
 				}
 				case "ASPECT_OF_THE_END", "ASPECT_OF_THE_VOID" -> {

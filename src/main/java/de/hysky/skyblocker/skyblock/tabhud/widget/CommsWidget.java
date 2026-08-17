@@ -1,19 +1,21 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.slf4j.Logger;
+import net.minecraft.network.chat.TextColor;
 
-import com.mojang.logging.LogUtils;
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -31,7 +33,7 @@ public class CommsWidget extends TabHudWidget {
 	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	public CommsWidget() {
-		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Commissions", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

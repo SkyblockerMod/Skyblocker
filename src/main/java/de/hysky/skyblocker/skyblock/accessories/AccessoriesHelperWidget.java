@@ -1,6 +1,53 @@
 package de.hysky.skyblocker.skyblock.accessories;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.LoadingDotsText;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -20,53 +67,6 @@ import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.LoadingDotsText;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.AbstractContainerWidget;
-import net.minecraft.client.gui.components.AbstractScrollArea;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Util;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 class AccessoriesHelperWidget extends AbstractContainerWidget implements HoveredItemStackProvider {
 	private static final Identifier TEXTURE = SkyblockerMod.id("background");
@@ -207,9 +207,9 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static OptionalDouble getPrice(Accessory acc) {
 		FlexibleItemStack stack = ItemRepository.getItemStack(acc.id());
 		if (stack == null) return OptionalDouble.empty();
-		DoubleBooleanPair optionalPrice = ItemUtils.getItemPrice(stack);
+		OptionalDouble optionalPrice = ItemUtils.getItemPrice(stack);
 		double price;
-		if (optionalPrice.rightBoolean()) price = optionalPrice.firstDouble();
+		if (optionalPrice.isPresent()) price = optionalPrice.getAsDouble();
 		else price = ItemUtils.getCraftCost(stack.getNeuName());
 		if (price <= 0) return OptionalDouble.empty();
 		return OptionalDouble.of(price);
@@ -399,7 +399,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private static class Source implements MagicPowerSource {
 			private static final Component smoothLine = LineSmoothener.createSmoothLine();
 			private static final Component wikiLine = Component.translatable("skyblocker.accessoryHelper.openWiki").withStyle(ChatFormatting.YELLOW);
-			private static final Component fandomLine = Component.translatable("skyblocker.accessoryHelper.fandom").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
 			private final AccessoryInfo info;
 			private final @Nullable List<FormattedCharSequence> afterSelling;
@@ -414,11 +413,11 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 						.flatMap(accStack -> {
 							OptionalDouble priceOpt = getPrice(info.accessory());
 							if (priceOpt.isEmpty()) return Optional.empty();
-							DoubleBooleanPair price = ItemUtils.getItemPrice(accStack);
-							if (!price.rightBoolean()) return Optional.empty();
+							OptionalDouble price = ItemUtils.getItemPrice(accStack);
+							if (price.isEmpty()) return Optional.empty();
 							Component translatable = Component.translatable(
 									"skyblocker.accessoryHelper.afterSelling",
-									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.leftDouble(), 1),
+									ItemTooltip.getCoinsMessage(priceOpt.getAsDouble() - price.getAsDouble(), 1),
 									accStack.getStackOrThrow().getHoverName());
 							return Optional.of(Minecraft.getInstance().font.split(translatable, 170));
 						})
@@ -444,7 +443,6 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 					tooltip.add(FormattedCharSequence.EMPTY);
 				}
 				tooltip.add(wikiLine.getVisualOrderText());
-				tooltip.add(fandomLine.getVisualOrderText());
 				graphics.setTooltipForNextFrame(client.font, tooltip, mouseX, mouseY, icon.get(DataComponents.TOOLTIP_STYLE));
 			}
 
@@ -471,7 +469,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 				if (icon == null) return;
 				LocalPlayer player = Minecraft.getInstance().player;
 				if (player == null) return;
-				WikiLookupManager.openWiki(icon.getStackOrThrow(), player, !Minecraft.getInstance().hasShiftDown());
+				WikiLookupManager.openWiki(icon.getStackOrThrow(), player);
 			}
 		}
 	}
@@ -482,8 +480,8 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		private final List<Component> tooltip;
 		private RecombobulateSource(SkyblockItemRarity rarity) {
 			this.icon = ItemRepository.getItemStack("RECOMBOBULATOR_3000", Ico.BARRIER);
-			DoubleBooleanPair pair = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
-			double price = pair.rightBoolean() ? pair.leftDouble() : 6000000;
+			OptionalDouble opt = ItemUtils.getItemPrice("RECOMBOBULATOR_3000");
+			double price = opt.orElse(6000000);
 			int mp = rarity.recombobulate().getMP() - rarity.getMP();
 			pricePerMp = mp <= 0 ? Double.MAX_VALUE : price / mp;
 			tooltip = List.of(
@@ -515,7 +513,7 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 		public void click() {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
-			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player, !Minecraft.getInstance().hasShiftDown());
+			WikiLookupManager.openWikiLinkName("Recombobulator_3000#Usage", player);
 		}
 	}
 

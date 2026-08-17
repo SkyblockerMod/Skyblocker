@@ -1,48 +1,93 @@
 package de.hysky.skyblocker.mixins;
 
+import java.util.List;
+
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.PoseStack;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import de.hysky.skyblocker.injected.CustomGlowState;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.SubmitNodeCollection;
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.feature.phase.SimpleFeatureRenderPhase;
+import net.minecraft.client.renderer.feature.submit.SubmitNode;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.LightCoordsUtil;
+
+import de.hysky.skyblocker.skyblock.entity.MobGlow;
 
 @Mixin(SubmitNodeCollection.class)
 public class SubmitNodeCollectionMixin {
+	@Shadow
+	@Final
+	public SimpleFeatureRenderPhase outline;
 
-	// NB: Custom glow must be initialized after the record constructor is run (so that the field value is not overridden by false).
-
-	@WrapOperation(method = { "submitModel", "submitModelPart" }, at = {
-			@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/ModelFeatureRenderer$Storage;add(Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;)V"),
-			@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/ModelPartFeatureRenderer$Storage;add(Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelPartSubmit;)V")
-	}, require = 2)
-	private void skyblocker$markCustomGlow(@Coerce Object commandList, RenderType layer, @Coerce CustomGlowState command, Operation<Void> operation) {
+	@Inject(method = "submitModel", at = @At("RETURN"))
+	private <S> void skyblocker$useCustomGlowRenderType(CallbackInfo ci, @Local(name = "model") Model<? super S> model, @Local(name = "state") S state, @Local(name = "renderType") RenderType renderType, @Local(name = "sprite") TextureAtlasSprite sprite, @Local(name = "pose") PoseStack.Pose pose) {
 		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
 
 		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
-			command.skyblocker$setCustomGlowColour(entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR));
+			int customGlowColour = entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR);
+			RenderType outlineRenderType = renderType.isOutline() ? renderType : renderType.skyblocker$getGlowRenderType().orElse(null);
+
+			if (outlineRenderType != null) {
+				this.outline.submit(new ModelFeatureRenderer.Submit<>(outlineRenderType, pose, model, state, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, customGlowColour, sprite, null));
+			}
 		}
 
-		operation.call(commandList, layer, command);
 	}
 
-	@ModifyArg(method = "submitItem", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
-	private Object skyblocker$markCustomGlow(Object command) {
+	@Inject(method = "submitBlockModel", at = @At("RETURN"))
+	private <S> void skyblocker$useCustomGlowRenderType(CallbackInfo ci, @Local(name = "renderType") RenderType renderType, @Local(name = "modelParts") List<BlockStateModelPart> modelParts, @Local(name = "pose") PoseStack.Pose pose) {
 		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
 
 		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
-			((SubmitNodeStorage.ItemSubmit) command).skyblocker$setCustomGlowColour(entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR));
+			int customGlowColour = entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR);
+			RenderType outlineRenderType = renderType.isOutline() ? renderType : renderType.skyblocker$getGlowRenderType().orElse(null);
+
+			if (outlineRenderType != null) {
+				this.outline.submit(new BlockModelFeatureRenderer.Submit(pose, outlineRenderType, modelParts, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, customGlowColour, null));
+			}
+		}
+	}
+
+	@ModifyVariable(method = "submitItem", name = "outlineColor", at = @At("LOAD"))
+	private int skyblocker$useCustomOutlineColour(int original) {
+		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
+
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			return entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR);
 		}
 
-		return command;
+		return original;
+	}
+
+	// NB: Custom glow must be initialized after the record constructor is run (so that the field value is not overridden by false).
+	@ModifyArg(method = "submitItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/phase/SimpleFeatureRenderPhase;submit(Lnet/minecraft/client/renderer/feature/submit/SubmitNode;)V"), slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/SubmitNodeCollection;outline:Lnet/minecraft/client/renderer/feature/phase/SimpleFeatureRenderPhase;", opcode = Opcodes.GETFIELD)))
+	private SubmitNode skyblocker$markCustomGlow(SubmitNode submit) {
+		EntityRenderState entityStateBeingRendered = Minecraft.getInstance().levelRenderer.skyblocker$getEntityStateBeingRendered();
+
+		if (entityStateBeingRendered != null && entityStateBeingRendered.getDataOrDefault(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, MobGlow.NO_GLOW) != MobGlow.NO_GLOW) {
+			((ItemFeatureRenderer.Submit) submit).skyblocker$setCustomGlowColour(entityStateBeingRendered.getData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR));
+		}
+
+		return submit;
 	}
 }

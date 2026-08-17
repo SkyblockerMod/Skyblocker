@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 
 // this widget shows your dungeon essences (dungeon hub only)
 @RegisterWidget
@@ -19,7 +21,7 @@ public class EssenceWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 
 	public EssenceWidget() {
-		super("Essence", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Essence", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override
@@ -34,6 +36,8 @@ public class EssenceWidget extends TabHudWidget {
 				case String s when s.contains("diamond") -> this.addComponent(Elements.iconTextComponent(Ico.DIAMOND, line));
 				case String s when s.contains("ice") -> this.addComponent(Elements.iconTextComponent(Ico.ICE, line));
 				case String s when s.contains("crimson") -> this.addComponent(Elements.iconTextComponent(Ico.REDSTONE, line));
+				case String s when s.contains("forest") -> this.addComponent(Elements.iconTextComponent(Ico.FLOWERING_AZALEA_LEAVES, line));
+				case String s when s.contains("fossil") -> this.addComponent(Elements.iconTextComponent(Ico.NAUTILUS_SHELL, line));
 				default -> this.addComponent(new PlainTextElement(line));
 			}
 		}

@@ -11,6 +11,7 @@ jobs:
   webhook:
     if: github.repository_owner == 'SkyblockerMod'
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -21,11 +22,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: '1.20'
-
-      - uses: actions/cache@v5
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-pkg-mod-${{ hashFiles('go.sum') }}
+          cache: false
 
       - name: Install jd
         run: go install github.com/josephburnett/jd@latest

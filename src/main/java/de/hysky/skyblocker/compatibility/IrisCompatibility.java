@@ -5,14 +5,14 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.RenderPipelines;
+
+import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 
 public class IrisCompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -28,8 +28,12 @@ public class IrisCompatibility {
 	 */
 	public static void assignPipelines() {
 		if (IRIS_ENABLED) {
+			assignPipeline(SkyblockerRenderPipelines.FILLED_INSTANCED, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED, "BASIC");
 			assignPipeline(RenderPipelines.DEBUG_FILLED_BOX, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS, "BASIC");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_INSTANCED, "LINES");
+			assignPipeline(SkyblockerRenderPipelines.OUTLINED_BOX_THROUGH_WALLS_INSTANCED, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, "LINES");
 			assignPipeline(SkyblockerRenderPipelines.QUADS_THROUGH_WALLS, "BASIC");
 			assignPipeline(SkyblockerRenderPipelines.TEXTURE, "TEXTURED");

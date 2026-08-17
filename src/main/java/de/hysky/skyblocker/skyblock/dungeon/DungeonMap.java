@@ -1,16 +1,15 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.mixins.accessors.MapItemSavedDataAccessor;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
+
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -30,15 +29,18 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.joml.Vector2d;
-import org.joml.Vector2dc;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.mixins.accessors.MapItemSavedDataAccessor;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class DungeonMap {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonMap.class);
@@ -180,7 +182,7 @@ public class DungeonMap {
 			// Use the player entity if it exists, since it gives the most accurate position and rotation
 			Player playerEntity = world.getPlayerByUUID(dungeonPlayer.uuid());
 			Vector2dc mapPos = playerEntity != null ? DungeonMapUtils.getMapPosFromPhysical(DungeonManager.getPhysicalEntrancePos(), DungeonManager.getMapEntrancePos(), DungeonManager.getMapRoomSize(), playerEntity.position()) : new Vector2d(mapDecoration.x() / 2d + 64, mapDecoration.y() / 2d + 64);
-			float deg = playerEntity != null ? playerEntity.getYRot() : mapDecoration.rot() * 360 / 16.0F;
+			float deg = playerEntity != null ? playerEntity.getYRot() : mapDecoration.rot() * 360 / 16.0f;
 
 			return new PlayerRenderState(dungeonPlayer.uuid(), dungeonPlayer.name(), mapPos, deg);
 		}

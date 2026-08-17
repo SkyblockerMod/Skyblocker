@@ -1,16 +1,13 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
-import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
+import java.awt.Color;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Supplier;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -18,12 +15,7 @@ import org.joml.Matrix3x2fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -45,6 +37,17 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.auction.widgets.AuctionTypeWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.CategoryTabWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.RarityWidget;
+import de.hysky.skyblocker.skyblock.auction.widgets.SortWidget;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.render.gui.AbstractCustomHypixelGUI;
 
 public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseScreenHandler> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuctionBrowserScreen.class);
@@ -80,7 +83,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private String search = "";
 
 	public AuctionBrowserScreen(AuctionHouseScreenHandler handler, Inventory inventory) {
-		super(handler, inventory, ResourcePackCompatibility.options.renameAuctionBrowser().orElse(false) ? Component.literal("AuctionBrowserSkyblocker") : Component.literal("Auctions Browser"), 187);
+		super(handler, inventory, Component.literal("Auctions Browser"), 187);
 		this.titleLabelX = 999;
 	}
 
@@ -108,7 +111,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 		if (categoryTabWidgets.isEmpty())
 			for (int i = 0; i < 6; i++) {
-				CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot);
+				CategoryTabWidget categoryTabWidget = new CategoryTabWidget(new ItemStack(Items.SPONGE), this::clickSlot, i);
 				categoryTabWidgets.add(categoryTabWidget);
 				addWidget(categoryTabWidget); // This method only makes it clickable, does not add it to the drawables list
 				// manually rendered in the render method to have it not render behind the durability bars
@@ -125,7 +128,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 
 	private void onResetPressed(Button buttonWidget) {
 		buttonWidget.setFocused(false); // Annoying.
-		this.clickSlot(RESET_BUTTON_SLOT, 0);
+		this.clickSlot(RESET_BUTTON_SLOT, InputConstants.MOUSE_BUTTON_LEFT);
 	}
 
 	@Override
@@ -263,6 +266,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 				List<String> tooltipSearch = stack.skyblocker$getLoreStrings();
 				for (String string : tooltipSearch) {
 					if (string.contains("Filtered:")) {
+						string = ChatFormatting.stripFormatting(string);
 						String[] splitSearch = string.split(":");
 						if (splitSearch.length < 2) {
 							search = "";
@@ -340,7 +344,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 	private void parsePage(ItemStack stack) {
 		try {
 			List<String> tooltip = stack.skyblocker$getLoreStrings();
-			String str = tooltip.getFirst().trim();
+			String str = ChatFormatting.stripFormatting(tooltip.getFirst().trim());
 			str = str.substring(1, str.length() - 1); // remove parentheses
 			String[] parts = str.split("/"); // split the string
 			currentPage = Integer.parseInt(parts[0].replace(",", "")); // parse current page
@@ -372,7 +376,7 @@ public class AuctionBrowserScreen extends AbstractCustomHypixelGUI<AuctionHouseS
 			matrices.pushMatrix();
 			matrices.translate(((this.getX() + this.width / 2f) - font.width(getMessage()) * textScale / 2) + 1, (float) this.getY() + (this.height - font.lineHeight * textScale) / 2f - 1);
 			matrices.scale(textScale, textScale);
-			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0F) << 24, true);
+			graphics.text(font, getMessage(), 0, 0, CommonColors.WHITE | Mth.ceil(this.alpha * 255.0f) << 24, true);
 			matrices.popMatrix();
 		}
 	}

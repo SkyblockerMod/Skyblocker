@@ -4,6 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.ints.IntConsumer;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -35,9 +43,9 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.utils.Location;
@@ -49,9 +57,6 @@ import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.waypoint.NamedWaypoint;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import de.hysky.skyblocker.utils.waypoint.WaypointGroup;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
-import it.unimi.dsi.fastutil.ints.IntConsumer;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsListWidget.AbstractWaypointEntry> {
 	private static final Identifier DELETE_ICON = SkyblockerMod.id("trash_can");
@@ -62,7 +67,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 	private final AbstractWaypointsScreen<?> screen;
 	private Location island;
 	private List<WaypointGroup> waypoints;
-	private InsertPosition insertPosition = null;
+	private @Nullable InsertPosition insertPosition = null;
 	private final Set<WaypointGroup> collapsedGroups = new ReferenceOpenHashSet<>(); // use identity hash code
 
 	public WaypointsListWidget(Minecraft client, AbstractWaypointsScreen<?> screen, int width, int height, int y, int itemHeight) {
@@ -133,7 +138,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 						groupEntry = waypointGroupEntry;
 						position = 0;
 					}
-					case null, default -> {
+					default -> {
 						return;
 					}
 				}
@@ -208,6 +213,7 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 
 	void updateEntries() {
 		clearEntries();
+		checkAndAddWarning();
 		for (WaypointGroup group : waypoints) {
 			boolean collapsed = collapsedGroups.contains(group);
 			WaypointGroupEntry groupEntry = new WaypointGroupEntry(group, collapsed);
@@ -229,11 +235,40 @@ public class WaypointsListWidget extends ContainerObjectSelectionList<WaypointsL
 		}
 	}
 
+	void checkAndAddWarning() {
+		if (!SkyblockerConfigManager.get().uiAndVisuals.waypoints.enableWaypoints) {
+			addEntryToTop(new WaypointsDisabledWarningEntry());
+		}
+	}
+
 	private BlockPos getDefaultPos() {
 		return minecraft.hitResult instanceof BlockHitResult blockHitResult && minecraft.hitResult.getType() == HitResult.Type.BLOCK ? blockHitResult.getBlockPos() : minecraft.player != null ? minecraft.player.blockPosition() : BlockPos.ZERO;
 	}
 
 	protected abstract static class AbstractWaypointEntry extends ContainerObjectSelectionList.Entry<AbstractWaypointEntry> {
+	}
+
+	protected class WaypointsDisabledWarningEntry extends AbstractWaypointEntry {
+		Component text = Component.translatable("skyblocker.waypoints.disabledWarning").withStyle(ChatFormatting.RED);
+		StringWidget textWidget = new StringWidget(text, minecraft.font);
+		int textSize = minecraft.font.width(text);
+		List<AbstractWidget> children = List.of(textWidget);
+
+		@Override
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			textWidget.setPosition(getX() + (getRowWidth() - textSize) / 2, getY() + (getHeight() - minecraft.font.lineHeight) / 2);
+			textWidget.extractRenderState(graphics, mouseX, mouseY, a);
+		}
+
+		@Override
+		public List<? extends GuiEventListener> children() {
+			return children;
+		}
+
+		@Override
+		public List<? extends NarratableEntry> narratables() {
+			return children;
+		}
 	}
 
 	protected class WaypointGroupEntry extends AbstractWaypointEntry {

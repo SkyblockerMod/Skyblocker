@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
 	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
@@ -78,8 +81,8 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 	@Override
 	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
-		// rows * 9 = 54
-		return slotIndex >= 54 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
+		// 5 rows * 9 = 45
+		return slotIndex >= 45 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
 	}
 
 	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)

@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ServerTickCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -16,6 +12,11 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ServerTickCallback;
 
 public class FireFreezeStaffTimer {
 	private static final Identifier FIRE_FREEZE_STAFF_TIMER = SkyblockerMod.id("fire_freeze_staff_timer");
@@ -37,7 +38,7 @@ public class FireFreezeStaffTimer {
 	private static void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
 		Minecraft client = Minecraft.getInstance();
 
-		if (client.screen != null) return;
+		if (client.gui.screen() != null) return;
 
 		if (SkyblockerConfigManager.get().dungeons.theProfessor.fireFreezeStaffTimer && fireFreezeTimer != 0) {
 			if (fireFreezeTimer <= -5000) {

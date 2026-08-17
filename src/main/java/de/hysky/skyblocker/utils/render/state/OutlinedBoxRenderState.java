@@ -1,14 +1,4 @@
 package de.hysky.skyblocker.utils.render.state;
 
-public class OutlinedBoxRenderState {
-	public double minX;
-	public double minY;
-	public double minZ;
-	public double maxX;
-	public double maxY;
-	public double maxZ;
-	public float[] colourComponents;
-	public float alpha;
-	public float lineWidth;
-	public boolean throughWalls;
+public record OutlinedBoxRenderState(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
 }

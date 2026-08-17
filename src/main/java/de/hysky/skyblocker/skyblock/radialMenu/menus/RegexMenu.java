@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
-import org.intellij.lang.annotations.Language;
-
 import java.util.regex.Pattern;
+
+import org.intellij.lang.annotations.Language;
 
 public abstract class RegexMenu extends BasicMenu {
 	private final Pattern pattern;
@@ -12,6 +12,7 @@ public abstract class RegexMenu extends BasicMenu {
 		pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	}
 
+	@Override
 	public boolean titleMatches(String title) {
 		return this.getEnabled() && this.pattern.matcher(title).matches();
 	}

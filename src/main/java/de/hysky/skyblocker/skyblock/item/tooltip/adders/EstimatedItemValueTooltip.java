@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.azureaaron.networth.NetworthResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import java.util.List;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
@@ -31,9 +34,9 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 
 		if (result.price() > 0) {
-			lines.add(Component.literal(String.format("%-20s", "Est. Item Value:"))
-					.withStyle(ChatFormatting.GOLD)
-					.append(ItemTooltip.getCoinsMessage(result.price(), count, true)));
+			lines.add(GridComponent.of(
+					Component.literal("Est. Item Value:").withStyle(ChatFormatting.GOLD),
+					ItemTooltip.getCoinsMessage(result.price(), count, true)));
 		}
 	}
 

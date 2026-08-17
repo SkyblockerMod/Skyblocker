@@ -1,5 +1,16 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
@@ -10,25 +21,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.injected.SkyblockerStack;
-import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
-import de.hysky.skyblocker.skyblock.ChestValue;
-import de.hysky.skyblocker.skyblock.hunting.Attribute;
-import de.hysky.skyblocker.skyblock.hunting.Attributes;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import io.github.moulberry.repo.util.NEUId;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.longs.LongBooleanPair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.apache.commons.lang3.Strings;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.azureaaron.networth.Calculation;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -48,6 +49,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.objects.AtlasSprite;
 import net.minecraft.network.chat.contents.objects.ObjectInfo;
 import net.minecraft.network.chat.contents.objects.PlayerSprite;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -61,21 +63,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.apache.commons.lang3.Strings;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerStack;
+import de.hysky.skyblocker.mixins.accessors.CustomDataAccessor;
+import de.hysky.skyblocker.skyblock.ChestValue;
+import de.hysky.skyblocker.skyblock.hunting.Attribute;
+import de.hysky.skyblocker.skyblock.hunting.Attributes;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -204,21 +206,19 @@ public final class ItemUtils {
 				}
 			}
 			case "PET" -> {
-				if (customData.contains("petInfo")) {
-					PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
-					return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
-				}
+				PetInfo petInfo = getPetInfo(stack);
+				return "LVL_1_" + petInfo.tier() + "_" + petInfo.type();
 			}
 			case "POTION" -> {
-				String enhanced = customData.contains("enhanced") ? "_ENHANCED" : "";
-				String extended = customData.contains("extended") ? "_EXTENDED" : "";
-				String splash = customData.contains("splash") ? "_SPLASH" : "";
+				String enhanced = customData.getBooleanOr("enhanced", false) ? "_ENHANCED" : "";
+				String extended = customData.getBooleanOr("extended", false) ? "_EXTENDED" : "";
+				String splash = customData.getBooleanOr("splash", false) ? "_SPLASH" : "";
 				if (customData.contains("potion") && customData.contains("potion_level")) {
 					return (customData.getStringOr("potion", "") + "_" + id + "_" + customData.getIntOr("potion_level", 0)
 							+ enhanced + extended + splash).toUpperCase(Locale.ENGLISH);
 				}
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				if (customData.contains("runes")) {
 					CompoundTag runes = customData.getCompoundOrEmpty("runes");
 					String rune = runes.keySet().stream().findFirst().orElse("");
@@ -233,7 +233,7 @@ public final class ItemUtils {
 			case "NEW_YEAR_CAKE" -> {
 				return id + "_" + customData.getIntOr("new_years_cake", 0);
 			}
-			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> {
+			case "PARTY_HAT_CRAB", "PARTY_HAT_CRAB_ANIMATED", "BALLOON_HAT_2024", "BALLOON_HAT_2025", "CAKE_HAT_2026" -> {
 				return id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			}
 			case "PARTY_HAT_SLOTH" -> {
@@ -250,13 +250,29 @@ public final class ItemUtils {
 				}
 			}
 			case "" -> {
-				Screen currentScreen = Minecraft.getInstance().screen;
+				Screen currentScreen = Minecraft.getInstance().gui.screen();
 				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
 					ItemLore lore = stack.get(DataComponents.LORE);
 					if (lore == null) return id;
 					List<Component> lines = lore.lines();
 					if (lines.size() < 3) return id;
 					return EnchantedBookUtils.getApiIdByName(lines.get(2));
+				}
+
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Experimentation Table RNG")) {
+					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					return switch (stackName.getString()) {
+							case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
+							case "Grand Experience Bottle" -> "GRAND_EXP_BOTTLE";
+							default -> EnchantedBookUtils.getApiIdByName(stackName);
+					};
+				}
+
+				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Attribute Menu")) {
+					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
+					if (attribute != null) return attribute.apiId();
+					return id;
 				}
 
 				if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
@@ -295,11 +311,10 @@ public final class ItemUtils {
 				yield enchant.toUpperCase(Locale.ENGLISH) + ";" + enchantments.getIntOr(enchant, 0);
 			}
 			case "PET" -> {
-				if (!customData.contains("petInfo")) yield id;
-				PetInfo petInfo = PetInfo.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(customData.getStringOr("petInfo", ""))).getOrThrow();
+				PetInfo petInfo = getPetInfo(stack);
 				yield petInfo.type() + ';' + petInfo.tierIndex();
 			}
-			case "RUNE" -> {
+			case "RUNE", "UNIQUE_RUNE" -> {
 				CompoundTag runes = customData.getCompoundOrEmpty("runes");
 				String rune = runes.keySet().stream().findFirst().orElse("");
 				yield rune.toUpperCase(Locale.ENGLISH) + "_RUNE;" + runes.getIntOr(rune, 0);
@@ -310,11 +325,35 @@ public final class ItemUtils {
 				if (attribute == null) yield id;
 				yield attribute.neuId();
 			}
-			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025" -> id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
+			case "PARTY_HAT_CRAB", "BALLOON_HAT_2024", "BALLOON_HAT_2025", "CAKE_HAT_2026" -> id + "_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH);
 			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			default -> id.replace(":", "-");
 		};
+	}
+
+	public static @NEUId String getNeuIdFromApiId(String apiId) {
+		// Pets
+		if (apiId.startsWith("LVL_")) {
+			String[] parts = apiId.split("_", 4);
+			if (parts.length != 4) return apiId;
+			Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(parts[2]);
+			//noinspection OptionalIsPresent
+			if (rarity.isEmpty()) return apiId;
+			return parts[3] + ";" + rarity.get().ordinal() + "+" + parts[1];
+		}
+
+		// Potions
+		if (apiId.contains("_POTION_")) {
+			String[] parts = apiId.split("_POTION_", 2);
+			if (parts.length != 2) return apiId;
+			String potionName = parts[0];
+			parts = parts[1].split("_", 2);
+			String potionLevel = parts[0];
+			return "POTION_" + potionName + ";" + potionLevel;
+		}
+
+		return apiId;
 	}
 
 	/**
@@ -351,44 +390,53 @@ public final class ItemUtils {
 	/**
 	 * Gets the bazaar sell price or the lowest bin based on the id of the item stack.
 	 *
-	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
-	 * and the {@code right boolean} indicating if the price was based on complete data.
+	 * @return An {@link OptionalDouble}, empty if the value could not be gotten due to missing data
 	 */
-	public static DoubleBooleanPair getItemPrice(SkyblockerStack stack) {
+	public static OptionalDouble getItemPrice(SkyblockerStack stack) {
 		return getItemPrice(stack.getSkyblockApiId(), false);
 	}
 
 	/**
-	 * @see #getItemPrice(String, boolean)
+	 * @see #getItemPrice(String, boolean, boolean)
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId) {
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId) {
 		return getItemPrice(skyblockApiId, false);
+	}
+
+	/**
+	 * @see #getItemPrice(String, boolean, boolean)
+	 */
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice)  {
+		return getItemPrice(skyblockApiId, useBazaarBuyPrice, false);
 	}
 
 	/**
 	 * Gets the bazaar sell price or the lowest bin of the item with the specified skyblock api id.
 	 *
-	 * @return An {@link LongBooleanPair} with the {@code left long} representing the item's price,
-	 * and the {@code right boolean} indicating if the price was based on complete data.
+	 * @return An {@link OptionalDouble}, empty if the value could not be gotten due to missing data
 	 */
-	public static DoubleBooleanPair getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice) {
+	public static OptionalDouble getItemPrice(@Nullable String skyblockApiId, boolean useBazaarBuyPrice, boolean useAuctionAverage) {
 		Object2ObjectMap<String, BazaarProduct> bazaarPrices = TooltipInfoType.BAZAAR.getData();
+		Object2DoubleMap<String> threeDayAveragePrices = TooltipInfoType.THREE_DAY_AVERAGE.getData();
 		Object2DoubleMap<String> lowestBinPrices = TooltipInfoType.LOWEST_BINS.getData();
 
-		if (skyblockApiId == null || skyblockApiId.isEmpty() || bazaarPrices == null || lowestBinPrices == null) return DoubleBooleanPair.of(0, false);
+		if (skyblockApiId == null || skyblockApiId.isEmpty()) return OptionalDouble.empty();
 
-		if (bazaarPrices.containsKey(skyblockApiId)) {
+		if (bazaarPrices != null && bazaarPrices.containsKey(skyblockApiId)) {
 			BazaarProduct product = bazaarPrices.get(skyblockApiId);
-			OptionalDouble price = useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
 
-			return DoubleBooleanPair.of(price.orElse(0d), price.isPresent());
+			return useBazaarBuyPrice ? product.buyPrice() : product.sellPrice();
 		}
 
-		if (lowestBinPrices.containsKey(skyblockApiId)) {
-			return DoubleBooleanPair.of(lowestBinPrices.getDouble(skyblockApiId), true);
+		if (useAuctionAverage && threeDayAveragePrices != null && threeDayAveragePrices.containsKey(skyblockApiId)) {
+			return OptionalDouble.of(threeDayAveragePrices.getDouble(skyblockApiId));
 		}
 
-		return DoubleBooleanPair.of(0, false);
+		if (lowestBinPrices != null && lowestBinPrices.containsKey(skyblockApiId)) {
+			return OptionalDouble.of(lowestBinPrices.getDouble(skyblockApiId));
+		}
+
+		return OptionalDouble.empty();
 	}
 
 	public static double getCraftCost(String neuId) {
@@ -420,7 +468,7 @@ public final class ItemUtils {
 
 	public static boolean hasCustomDurability(ItemStack stack) {
 		CompoundTag customData = getCustomData(stack);
-		return !customData.isEmpty() && (customData.contains("drill_fuel") || customData.getStringOr(ID, "").equals("PICKONIMBUS"));
+		return !customData.isEmpty() && (customData.contains("drill_fuel") || stack.getSkyblockId().equals("PICKONIMBUS"));
 	}
 
 	public static @Nullable IntIntPair getDurability(ItemStack stack) {
@@ -559,6 +607,10 @@ public final class ItemUtils {
 		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzJkZGQ4OWE2YWU5NTdmNzY2ZDMwMDAxMWZmNDQ3MTQ4MWMzYmI2MWI2NzYwNzhhOGM2YzNjNDA4MzIwMWI1YzIifX19");
 	}
 
+	public static FlexibleItemStack getSkyblockerKatStack() {
+		return createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWFhZTgxMjc3NTcwNmI1NjU5NjY4MzQ4NmFiZWFmODU3ZWExYzA2OGNiMzRhOGJjMWRlOWE1N2M2MzhjZjQxMSIsIm1ldGFkYXRhIjp7fX19LCJwcm9maWxlSWQiOiIzNjYwYWEzNzBiYjAyZjk1YTQwNTRmNTVmODlhYTI5ZCIsInByb2ZpbGVOYW1lIjoibmVhODkiLCJpc1B1YmxpYyI6dHJ1ZSwidGltZXN0YW1wIjoxNzcxOTU3MjE2NDE4fQ==");
+	}
+
 	/**
 	 * Utility method.
 	 */
@@ -669,9 +721,13 @@ public final class ItemUtils {
 	 * For all other items, returns empty.
 	 */
 	public static OptionalInt getItemCountInSuperpairs(ItemStack stack) {
-		Screen currentScreen = Minecraft.getInstance().screen;
-		if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
-			if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
+		if (currentScreen instanceof ContainerScreen container) {
+			if (container.getTitle().getString().startsWith("Superpairs")) {
+				if (stack.getHoverName().getString().contains("Enchanted Book")) return OptionalInt.of(1);
+			} else if (container.getTitle().getString().contains("Experimentation Table RNG")) {
+				return OptionalInt.of(1);
+			}
 		}
 		return OptionalInt.empty();
 	}
@@ -683,20 +739,30 @@ public final class ItemUtils {
 	public static <T extends ItemInstance & SkyblockerStack> SkyblockItemRarity getItemRarity(T stack) {
 		if (stack.is(Items.AIR)) return SkyblockItemRarity.UNKNOWN;
 
-		if (!getCustomData(stack).getStringOr(ID, "").equals("PET")) {
-			return ItemUtils.getLore(stack)
-					.reversed()
-					.stream()
-					.map(Component::getString)
-					.map(SkyblockItemRarity::containsName)
-					.flatMap(Optional::stream)
-					.findFirst()
-					.orElse(SkyblockItemRarity.UNKNOWN);
-		} else {
+		// Pets
+		if (getCustomData(stack).getStringOr(ID, "").equals("PET")) {
 			PetInfo info = stack.getPetInfo();
 			if (info.isEmpty()) return SkyblockItemRarity.UNKNOWN;
 			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 		}
+
+		// Attempt to parse rarity from lore
+		Optional<SkyblockItemRarity> rarity = ItemUtils.getLore(stack)
+				.reversed()
+				.stream()
+				.map(Component::getString)
+				.map(SkyblockItemRarity::containsName)
+				.flatMap(Optional::stream)
+				.findFirst();
+		if (rarity.isPresent()) return rarity.get();
+
+		// Fall back to tooltip style for reforge stone core to work
+		Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
+		if (tooltipStyle != null && tooltipStyle.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE)) {
+			return SkyblockItemRarity.containsName(tooltipStyle.getPath().toUpperCase(Locale.ENGLISH)).orElse(SkyblockItemRarity.UNKNOWN);
+		}
+
+		return SkyblockItemRarity.UNKNOWN;
 	}
 
 	/**

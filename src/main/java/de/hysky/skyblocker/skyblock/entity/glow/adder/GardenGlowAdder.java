@@ -3,11 +3,13 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
+
+import org.apache.commons.lang3.StringUtils;
+
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import org.apache.commons.lang3.StringUtils;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,13 +19,14 @@ import de.hysky.skyblocker.skyblock.garden.GardenConstants;
 import de.hysky.skyblocker.skyblock.garden.VacuumCache;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class GardenGlowAdder extends MobGlowAdder {
 	private static final GardenGlowAdder INSTANCE = new GardenGlowAdder();
 	private static final int PEST_COLOUR = 0xB62F00;
-	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile("^ [○☘] (?<crop>.+) .+$");
+	private static final Pattern CURRENT_CROP_PATTERN = Pattern.compile(String.format("^ [○%s] (?<crop>.+) .+$", SkyBlockIcons.FARMING_FORTUNE));
 
 	@Init
 	public static void init() {
@@ -36,10 +39,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 			case ArmorStand as when isPestHead(as) ->
 					doesPestMatchCurrentContest(as) ?
 							// Pests but during Jacob's Contest
-							ChatFormatting.GREEN.getColor() :
+							TextColor.GREEN.getValue() :
 							// Pests from currently playing vinyl
 							doesPestMatchCurrentVinyl(as) ?
-									ChatFormatting.DARK_AQUA.getColor() :
+									TextColor.DARK_AQUA.getValue() :
 									// Default color
 									PEST_COLOUR;
 			default -> NO_GLOW;
@@ -49,6 +52,10 @@ public class GardenGlowAdder extends MobGlowAdder {
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().farming.pestHighlighter.enabled && Utils.isInGarden();
+	}
+
+	public boolean contestEnabled() {
+		return SkyblockerConfigManager.get().farming.pestHighlighter.contestHighlighter && !StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST);
 	}
 
 	/**
@@ -84,7 +91,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 	 * Matches the armor stand head with current collected crop during Jacob's Contest.
 	 */
 	public static boolean doesPestMatchCurrentContest(ArmorStand entity) {
-		if (StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST)) {
+		if (!INSTANCE.contestEnabled()) {
 			return false;
 		}
 
@@ -104,7 +111,7 @@ public class GardenGlowAdder extends MobGlowAdder {
 		String vinyl = VacuumCache.getVinyl();
 
 		// Only applies outside of Jacob's Contests
-		if (!StringUtils.isEmpty(CurrentJacobCrop.CURRENT_CROP_CONTEST) || vinyl.isEmpty()) {
+		if (INSTANCE.contestEnabled() || vinyl.isEmpty()) {
 			return false;
 		}
 

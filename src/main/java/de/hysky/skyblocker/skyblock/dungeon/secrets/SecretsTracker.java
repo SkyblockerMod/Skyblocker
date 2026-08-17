@@ -1,29 +1,31 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Http.ApiResponse;
-import de.hysky.skyblocker.utils.render.RenderHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.entity.player.Player;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.utils.ApiUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Http.ApiResponse;
 
 /**
  * Tracks the amount of secrets players get every run
@@ -65,7 +67,7 @@ public class SecretsTracker {
 				}
 
 				currentRun = newlyStartedRun;
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 			case END -> CompletableFuture.runAsync(() -> {
 				TrackedRun thisRun = currentRun;
@@ -86,7 +88,7 @@ public class SecretsTracker {
 
 					//Print the results all in one go, so its clean and less of a chance of it being broken up
 					for (Map.Entry<String, SecretData> entry : secretsFound.entrySet()) {
-						RenderHelper.runOnRenderThread(() -> sendResultMessage(entry.getKey(), entry.getValue()));
+						Minecraft.getInstance().execute(() -> sendResultMessage(entry.getKey(), entry.getValue()));
 					}
 
 					//Swap the current and last run as well as mark the run end time
@@ -94,16 +96,17 @@ public class SecretsTracker {
 					lastRun = thisRun;
 					currentRun = null;
 				} else {
-					RenderHelper.runOnRenderThread(SecretsTracker::sendFailureMessage);
+					Minecraft.getInstance().execute(SecretsTracker::sendFailureMessage);
 				}
-			}, Executors.newVirtualThreadPerTaskExecutor());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		}
 	}
 
 	private static void sendResultMessage(String player, SecretData secretData) {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
+		DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player);
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + dungeonClass.displayName() + ")").withColor(dungeonClass != DungeonClass.UNKNOWN ? dungeonClass.color() : 0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
 	}
 
 	private static void sendFailureMessage() {

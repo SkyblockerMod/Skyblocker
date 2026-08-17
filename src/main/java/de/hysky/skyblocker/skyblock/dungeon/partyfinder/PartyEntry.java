@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
-import de.hysky.skyblocker.SkyblockerMod;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +8,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -32,7 +35,8 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.joml.Matrix3x2fStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 	private static final Identifier PARTY_CARD_TEXTURE = SkyblockerMod.id("textures/gui/party_card.png");
@@ -111,7 +115,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 
 			} else if (lowerCase.contains("dungeon:")) {
 				dungeon = tooltipText.split(":")[1].trim();
-			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.fromRgb(ChatFormatting.RED.getColor())) && !lowerCase.startsWith(" ")) {
+			} else if (!text.getSiblings().isEmpty() && Objects.equals(text.getSiblings().getFirst().getStyle().getColor(), TextColor.RED) && !lowerCase.startsWith(" ")) {
 				isLocked = true;
 				lockReason = text;
 			} else if (lowerCase.contains("note:")) {
@@ -133,12 +137,13 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 				if (!memberText.startsWith(" ")) continue; // Member thingamajigs start with a space
 
 				String[] parts = memberText.split(":", 2);
+				if (parts.length != 2) continue;
 				String playerNameTrim = parts[0].trim();
 
 				if (playerNameTrim.equals("Empty")) continue; // Don't care about these idiots lol
 
 				List<Component> siblings = text.getSiblings();
-				Style nameStyle = !siblings.isEmpty() ? siblings.get(Math.min(1, siblings.size() - 1)).getStyle() : text.getStyle();
+				Style nameStyle = !siblings.isEmpty() ? siblings.getFirst().getStyle() : text.getStyle();
 				Component playerName = Component.literal(playerNameTrim).setStyle(nameStyle);
 				String className = parts[1].trim().split(" ")[0];
 				int classLevel = -1;
@@ -266,7 +271,7 @@ public class PartyEntry extends ContainerObjectSelectionList.Entry<PartyEntry> {
 		if (slotID == -1) {
 			PartyFinderScreen.LOGGER.error("[Skyblocker] Slot ID is null for " + partyLeader.name.getString() + "'s party");
 		}
-		if (click.button() == 0 && !screen.isWaitingForServer() && slotID != -1) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && !screen.isWaitingForServer() && slotID != -1) {
 			screen.clickAndWaitForServer(slotID);
 			return true;
 		}

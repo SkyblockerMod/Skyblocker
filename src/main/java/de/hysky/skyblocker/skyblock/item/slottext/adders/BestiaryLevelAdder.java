@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RomanNumerals;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RomanNumerals;
 
 public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 	//^[\w '-]+ (?<level>[IVXLCDM]+)$
@@ -31,7 +34,7 @@ public class BestiaryLevelAdder extends SimpleSlotTextAdder {
 		//Ignore slots that cannot have bestiary texts
 		if (!((slotId >= 10 && slotId <= 16) || (slotId >= 19 && slotId <= 25) || (slotId >= 28 && slotId <= 34) || (slotId >= 37 && slotId <= 43))) return List.of();
 		//Ignore slots without an item or bestiaries that aren't unlocked
-		if (stack.isEmpty() || stack.is(Items.GRAY_DYE)) return List.of();
+		if (stack.isEmpty() || stack.is(Items.DYE.gray())) return List.of();
 		Matcher matcher = BESTIARY.matcher(stack.getHoverName().getString());
 		if (matcher.matches()) {
 			int level = RomanNumerals.romanToDecimal(matcher.group("level"));

@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
-import com.google.common.collect.Lists;
-import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
-import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
-import it.unimi.dsi.fastutil.Pair;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -26,7 +27,10 @@ import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
+import de.hysky.skyblocker.utils.FunUtils;
+import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 
 /**
  * Based on {@link net.minecraft.client.gui.screens.recipebook.RecipeBookComponent}.
@@ -225,6 +229,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 		assert this.searchBox != null;
 		lastSearch = this.searchBox.getValue();
 		String query = this.searchBox.getValue().toLowerCase(Locale.ENGLISH);
+		FunUtils.recipeBookEasterEgg(query);
 
 		this.pirateSpeechForThePeople(query);
 		//Note: The rest of the query checks are implemented by the results class

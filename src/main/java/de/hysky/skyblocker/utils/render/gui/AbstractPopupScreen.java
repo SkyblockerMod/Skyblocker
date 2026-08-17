@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.utils.render.gui;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -8,7 +10,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A more bare-bones version of Vanilla's Popup Screen. Meant to be extended.
@@ -24,8 +25,7 @@ public class AbstractPopupScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert this.minecraft != null;
-		this.minecraft.setScreen(this.backgroundScreen);
+		this.minecraft.gui.setScreen(this.backgroundScreen);
 	}
 
 	@Override

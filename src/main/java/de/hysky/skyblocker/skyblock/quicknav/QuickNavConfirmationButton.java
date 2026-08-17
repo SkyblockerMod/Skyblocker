@@ -43,7 +43,7 @@ public class QuickNavConfirmationButton extends QuickNavButton {
 			super.playDownSound(soundManager);
 			return;
 		}
-		soundManager.play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 1.0F));
+		soundManager.play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 1.0f));
 	}
 
 	@Override

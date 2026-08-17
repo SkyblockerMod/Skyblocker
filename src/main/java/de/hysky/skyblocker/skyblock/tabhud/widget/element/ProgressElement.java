@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.CommonColors;
 
 /**
  * Element that consists of an icon, some text and a progress bar.
@@ -39,7 +41,7 @@ class ProgressElement extends Element {
 			this.desc = Component.literal("No data").withStyle(ChatFormatting.GRAY);
 			this.bar = Component.literal("---").withStyle(ChatFormatting.GRAY);
 			this.pcnt = 100f;
-			this.color = 0xFF000000 | ChatFormatting.DARK_GRAY.getColor();
+			this.color = 0xFF000000 | TextColor.DARK_GRAY.getValue();
 		} else {
 			this.ico = showIcons ? (ico == null ? Ico.BARRIER : ico) : null;
 			this.desc = description;

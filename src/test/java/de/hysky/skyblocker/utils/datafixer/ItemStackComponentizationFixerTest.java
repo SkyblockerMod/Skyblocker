@@ -1,17 +1,15 @@
 package de.hysky.skyblocker.utils.datafixer;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import net.minecraft.core.component.DataComponentMap;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +21,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.RegistryUtils;
+
 public class ItemStackComponentizationFixerTest {
 	private final CompoundTag NBT = convertToNbt("{id:\"minecraft:diamond_sword\",Count:1,tag:{ExtraAttributes:{id:\"TEST\"}}}");
 	private final Gson GSON = new Gson();
@@ -33,6 +34,7 @@ public class ItemStackComponentizationFixerTest {
 		item.set(DataComponents.ENCHANTMENTS, builder.toImmutable());
 	});
 
+	@SuppressWarnings("deprecation")
 	@BeforeAll
 	public static void setup() {
 		SharedConstants.tryDetectVersion();
@@ -41,6 +43,7 @@ public class ItemStackComponentizationFixerTest {
 		Items.DIAMOND_SWORD.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
 	}
 
+	@SuppressWarnings("deprecation")
 	@AfterAll
 	public static void cleanUp() {
 		//noinspection deprecation,DataFlowIssue

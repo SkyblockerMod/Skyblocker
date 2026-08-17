@@ -1,7 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import java.awt.Color;
-
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
@@ -9,8 +7,8 @@ import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Boxes;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Resettable;
-import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.Renderable;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -20,6 +18,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+
+import java.awt.Color;
 
 /**
  * Highlights unbreakable carpets within ore veins in the Dwarven Mines.
@@ -77,9 +77,9 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 		// There are other colors for some ores in the royal mines,
 		// but since the actual ores don't include wool blocks
 		// they're not easily confused as ores so they are not accounted for here
-		if (!(actualBlock.is(Blocks.GRAY_CARPET) ||
-				actualBlock.is(Blocks.LIGHT_BLUE_CARPET) ||
-				actualBlock.is(Blocks.LIGHT_GRAY_CARPET))) return false;
+		if (!(actualBlock.is(Blocks.CARPET.gray()) ||
+				actualBlock.is(Blocks.CARPET.lightBlue()) ||
+				actualBlock.is(Blocks.CARPET.lightGray()))) return false;
 		BlockState blockBelow = Minecraft.getInstance().level.getBlockState(blockPos.below());
 		return blockBelow.is(Blocks.SEA_LANTERN);
 	}

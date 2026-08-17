@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.config.configs;
 
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import java.awt.Color;
+
 import net.minecraft.client.resources.language.I18n;
 
-import java.awt.Color;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class SlayersConfig {
 	public HighlightSlayerEntities highlightMinis = HighlightSlayerEntities.GLOW;
@@ -15,6 +17,7 @@ public class SlayersConfig {
 	public boolean displayBossbar = true;
 
 	public enum HighlightSlayerEntities {
+		@EnumDisabledValue
 		OFF, GLOW, HITBOX;
 
 		@Override
@@ -108,11 +111,12 @@ public class SlayersConfig {
 
 		public boolean attunementHighlights = true;
 
-		public boolean muteBlazeSounds = true;
+		public boolean muteBlazeSounds = false;
 
 		public ChatFilterResult hideHellionShield = ChatFilterResult.PASS;
 
 		public enum FirePillar {
+			@EnumDisabledValue
 			OFF,
 			VISUAL,
 			SOUND_AND_VISUAL;

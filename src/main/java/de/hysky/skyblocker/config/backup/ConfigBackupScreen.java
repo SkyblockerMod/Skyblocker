@@ -1,13 +1,5 @@
 package de.hysky.skyblocker.config.backup;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +8,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -30,10 +30,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+
 public class ConfigBackupScreen extends Screen {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	private final Screen parent;
+	private final @Nullable Screen parent;
 	private BackupListWidget listWidget;
 	private SettingsListWidget detailsWidget;
 
@@ -71,26 +73,25 @@ public class ConfigBackupScreen extends Screen {
 		Button restoreBtn = Button.builder(Component.translatable("skyblocker.config.general.backup.restore"), _ -> {
 			Path selected = listWidget.getSelectedPath();
 			if (selected != null) {
-				assert minecraft != null;
-				minecraft.setScreen(new ConfirmScreen(confirm -> {
+				minecraft.gui.setScreen(new ConfirmScreen(confirm -> {
 					if (confirm) {
 						try {
 							ConfigBackupManager.restoreBackup(selected);
 						} catch (IOException e) {
 							LOGGER.error("[Skyblocker] Failed to restore backup {}", selected.getFileName().toString(), e);
-							minecraft.getToastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+							minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
 									Component.translatable("skyblocker.config.general.backup.restore.error"),
 									null
 							));
 							return;
 						}
 						if (parent != null) {
-							minecraft.setScreen(SkyblockerConfigManager.createGUI(parent));
+							minecraft.gui.setScreen(SkyblockerConfigManager.createGUI(parent));
 						} else {
-							minecraft.setScreen(null);
+							minecraft.gui.setScreen(null);
 						}
 					} else {
-						minecraft.setScreen(this);
+						minecraft.gui.setScreen(this);
 					}
 				}, Component.translatable("skyblocker.config.general.backup.confirm.title"),
 						Component.translatableEscape("skyblocker.config.general.backup.confirm.text", selected.getFileName().toString()),
@@ -109,8 +110,7 @@ public class ConfigBackupScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
-		minecraft.setScreen(parent);
+		minecraft.gui.setScreen(parent);
 	}
 
 	private class BackupListWidget extends ObjectSelectionList<BackupEntry> {

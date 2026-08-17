@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 @RegisterWidget
 public class PickobulusHudWidget extends ElementBasedWidget {
@@ -19,7 +22,7 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, ChatFormatting.BLUE.getColor(), "hud_pickobulus");
+		super(TITLE, TextColor.BLUE.getValue(), "hud_pickobulus");
 		instance = this;
 		update();
 	}

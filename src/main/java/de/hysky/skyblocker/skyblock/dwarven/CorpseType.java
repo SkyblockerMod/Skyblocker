@@ -1,11 +1,14 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.util.Locale;
+
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.util.StringRepresentable;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.serialization.Codec;
+
 import de.hysky.skyblocker.utils.ItemUtils;
 
 public enum CorpseType implements StringRepresentable {
@@ -48,11 +51,7 @@ public enum CorpseType implements StringRepresentable {
 		return switch (this) {
 			case UNKNOWN -> throw new IllegalStateException("There's no key or key price for the UNKNOWN corpse type!");
 			case LAPIS -> 0; // Lapis corpses don't need a key
-			default -> {
-				var result = ItemUtils.getItemPrice(keyItemId);
-				if (!result.rightBoolean()) throw new IllegalStateException("No price found for key item `" + keyItemId + "`!");
-				yield result.leftDouble();
-			}
+			default -> ItemUtils.getItemPrice(keyItemId).orElseThrow(() -> new IllegalStateException("No price found for key item `" + keyItemId + "`!"));
 		};
 	}
 

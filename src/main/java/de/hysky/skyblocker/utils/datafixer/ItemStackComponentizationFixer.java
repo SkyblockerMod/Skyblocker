@@ -7,8 +7,6 @@ import java.util.Optional;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.RegistryUtils;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentPatch;
@@ -23,6 +21,9 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.RegistryUtils;
 
 /**
  * Contains a data fixer to convert legacy item NBT to the new components system, among other fixers related to the item components system.

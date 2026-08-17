@@ -1,15 +1,12 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
+import java.io.Closeable;
+import java.util.List;
+import java.util.stream.Stream;
+
 import com.demonwav.mcdev.annotations.Translatable;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
-import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
-import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -42,9 +39,14 @@ import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 
-import java.io.Closeable;
-import java.util.List;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
+import de.hysky.skyblocker.mixins.accessors.EntityRenderDispatcherAccessor;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.render.gui.ARGBTextInput;
+import de.hysky.skyblocker.utils.render.gui.ColorPickerWidget;
 
 public class ColorSelectionWidget extends AbstractContainerWidget implements Closeable {
 	private static final int PADDING = 3;
@@ -267,8 +269,8 @@ public class ColorSelectionWidget extends AbstractContainerWidget implements Clo
 
 	private void onClickPickDye(Button button) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.screen == null) return;
-		client.setScreen(new DyeSelectPopup(client.screen, this::setFromSolidDye, this::setFromAnimatedDye));
+		if (client.gui.screen() == null) return;
+		client.gui.setScreen(new DyeSelectPopup(client.gui.screen(), this::setFromSolidDye, this::setFromAnimatedDye));
 	}
 
 	private void setFromSolidDye(Button button, int hex) {

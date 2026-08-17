@@ -2,12 +2,13 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import java.util.function.IntConsumer;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class PageTabWidget extends ProfileViewerWidget {
 	private static final Identifier TEXTURE_1_UNSELECTED = Identifier.withDefaultNamespace("container/creative_inventory/tab_top_unselected_1");
@@ -50,5 +51,7 @@ public final class PageTabWidget extends ProfileViewerWidget {
 
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		graphics.fakeItem(this.icon.getStackOrThrow(), this.getX() + (this.getWidth() - ITEM_SIZE) / 2, this.getY() + iconYOffset + (this.getHeight() - ITEM_SIZE) / 2);
+
+		super.handleCursor(graphics);
 	}
 }

@@ -39,7 +39,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -48,7 +47,7 @@ public class EnigmaSouls {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnigmaSouls.class);
 	private static final Supplier<Waypoint.Type> TYPE_SUPPLIER = () -> SkyblockerConfigManager.get().uiAndVisuals.waypoints.waypointType;
 	private static final Identifier WAYPOINTS_JSON = SkyblockerMod.id("rift/enigma_soul_waypoints.json");
-	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(42);
+	private static final Map<BlockPos, ProfileAwareWaypoint> SOUL_WAYPOINTS = new HashMap<>(52);
 	private static final Path FOUND_SOULS_FILE = SkyblockerMod.CONFIG_DIR.resolve("found_enigma_souls.json");
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.GREEN);
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
@@ -83,7 +82,7 @@ public class EnigmaSouls {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] There was an error while loading found enigma souls!", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	static void save(Minecraft client) {
@@ -130,7 +129,7 @@ public class EnigmaSouls {
 			String message = text.getString();
 
 			if (message.equals("You have already found that Enigma Soul!") || ChatFormatting.stripFormatting(message).equals("SOUL! You unlocked an Enigma Soul!"))
-				markClosestSoulAsFound();
+				markClosestSoul(true);
 		}
 
 		return true;
@@ -151,10 +150,22 @@ public class EnigmaSouls {
 									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markAllMissing")));
 
 									return Command.SINGLE_SUCCESS;
+								}))
+								.then(literal("markClosestFound").executes(context -> {
+									markClosestSoul(true);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestFound")));
+
+									return Command.SINGLE_SUCCESS;
+								}))
+								.then(literal("markClosestMissing").executes(context -> {
+									markClosestSoul(false);
+									context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.rift.enigmaSouls.markClosestMissing")));
+
+									return Command.SINGLE_SUCCESS;
 								})))));
 	}
 
-	private static void markClosestSoulAsFound() {
+	private static void markClosestSoul(boolean asFound) {
 		LocalPlayer player = Minecraft.getInstance().player;
 
 		if (!soulsLoaded.isDone() || player == null) return;
@@ -163,7 +174,7 @@ public class EnigmaSouls {
 				.filter(Waypoint::shouldRender)
 				.min(Comparator.comparingDouble(soul -> soul.pos.distToCenterSqr(player.position())))
 				.filter(soul -> soul.pos.distToCenterSqr(player.position()) <= 16)
-				.ifPresent(Waypoint::setFound);
+				.ifPresent(asFound ? Waypoint::setFound : Waypoint::setMissing);
 	}
 
 	private static class EnigmaSoul extends ProfileAwareWaypoint {

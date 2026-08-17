@@ -1,26 +1,19 @@
 package de.hysky.skyblocker.mixins;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.compatibility.ResourcePackCompatibility;
-import de.hysky.skyblocker.injected.RecipeBookHolder;
-import de.hysky.skyblocker.mixins.accessors.ScreenAccessor;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
-import de.hysky.skyblocker.utils.Utils;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Local;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -28,9 +21,16 @@ import net.minecraft.client.gui.screens.inventory.EffectsInInventory;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.injected.RecipeBookHolder;
+import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends AbstractContainerScreen<InventoryMenu> implements RecipeBookHolder {
@@ -68,6 +68,13 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 		return original;
 	}
 
+	@ModifyExpressionValue(method = "extractBackground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;INVENTORY_LOCATION:Lnet/minecraft/resources/Identifier;", opcode = Opcodes.GETSTATIC))
+	private Identifier skyblocker$getBackground(Identifier original) {
+		// gotta do this, if I don't call super in SkyblockInventoryScreen quick nav doesn't get rendered
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) return SkyblockInventoryScreen.BACKGROUND.get();
+		return original;
+	}
+
 	@Inject(method = "onRecipeBookButtonClick", at = @At("TAIL"))
 	private void skyblocker$callRecipeToggleCallbacks(CallbackInfo ci) {
 		recipeBookToggleCallbacks.forEach(Runnable::run);
@@ -76,13 +83,6 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 	@Inject(method = "init", at = @At("HEAD"))
 	private void skyblocker$clearRecipeToggleCallbacks(CallbackInfo ci) {
 		recipeBookToggleCallbacks.clear();
-	}
-
-	@Inject(method = "<init>", at = @At("TAIL"), order = 900) // run it a little earlier in case firmament do stuff
-	private void skyblocker$furfskyCompat(CallbackInfo ci) {
-		if (Utils.isOnSkyblock() && ResourcePackCompatibility.options.renameInventoryScreen().orElse(false)) {
-			((ScreenAccessor) this).setTitle(Component.literal(SkyblockerConfigManager.get().quickNav.enableQuickNav ? "InventoryScreenQuickNavSkyblocker" : "InventoryScreenSkyblocker"));
-		}
 	}
 
 	@Override

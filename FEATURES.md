@@ -6,7 +6,7 @@
     - Support for showing player heads
     - Integration with Spirit Leap Overlay
     - Room Labels
-      - Can show either the Room Name, Secrets Found, or Both
+        - Can show either the Room Name, Secrets Found, or Both
     - Hidable room checkmarks
     - Configurable outline and background blur
 - **Score Calculation**
@@ -55,7 +55,7 @@
 - **Sellable Dungeon Item Highlighter**
 - **Resource Pack recoloring textures in dungeons**
 - **Score title and sound**
-- **Mimic & Prince Messages**
+- **Mimic, Prince, and Bat Messages**
 - **Prevent teammates glow during Livid**
 - **Block Incorrect Terminal Clicks**
 - **Hide Soulweaver Skulls**
@@ -70,21 +70,34 @@
     - Shows a message on screen when Trinity, Tomioka, or Duncan are discovered.
 
 ### Hunting Features:
-- **Forest Node Highlighter**
+- **Floor Drop Highlighter**
 - **Lushlilac and Sea Lumies Highlighters**
+- **Ruby Veilshroom and HoneyHive Highlighters**
 - **Forest Temple puzzle solver**
+- **Desert Temple puzzles solver**
 - **Hunting Box Helper**
 - **Hunting Box Shard Prices**
-- **Various Mob Features**
+- **Moonglade Mob Features**
     - Phantom Silencer
     - Hideonleaf Highlighter
     - Carolat Highlighter
     - Shellwise Highlighter
+- **Torrhus Mob Features**
+    - Hideonsun Highlighter
+    - Blue Jay Highlighter
+- ** Safari Mob Features**
+     - Phantom Silencer
+     - Sparkling Critter Highlighter
+     - Rockmite Mound Highlighter
+     - Hideonfloor Highlighter
+     - Duplico Highlighter
+     - Bloodbat Highlighter
+     - Ignore Slot Locking for Shining Coins
+     - Hide Cold Overlay
 - **Lasso HUD**
 
 ### Foraging Features:
 - **Sweep Overlay**
-    - Disclaimer: Sweep Overlay is not accurate on Galatea due to technical limitations. The sweep formula is currently unknown.
 - **Moonglade Beacon Tuner Helper**
 - **Tree Break Progress HUD**
 - **Sweep Details HUD**
@@ -114,6 +127,8 @@
     - *Custom Armor Trims*
     - *Custom Animated Dyes*
     - *Custom Head Textures*
+    - *Custom Item Models*
+    - *Custom Glint*
 
 ### Health and Status Bars:
 - **Bars:**
@@ -123,6 +138,7 @@
     - *XP*
     - *Speed*
     - *Oxygen*
+    - *Vitality*
 - **Vanilla health/xp and fancy bar shown in parallel**
 - Place the bars on anchors or anywhere on screen
 
@@ -146,6 +162,7 @@
     - Solver:
         - Fetchur
         - Puzzler
+        - Fossil Muncher
     - Unbreakable carpet highlighter
 - **Crystal Hollows:**
     - Crystal Hollows Map:
@@ -199,7 +216,7 @@
     - Slayer HUD
     - Bossbars
     - Boss Kill Time
-      - Personal Bests
+        - Personal Bests
     - Boss and MiniBoss spawn alerts
     - Mute Blaze, Wolf, Spider, and Enderman sounds
     - Slayer Boss and Mini-Boss Highlighting
@@ -223,9 +240,11 @@
 - **Mouse Locking**
     - (sets mouse sensitivity to 0)
 - **Pest Highlighter**
-    - Option to separately highlight pests for the active Stereo Harmony vinyl.
+    - Highlight pests for the current Jacob's contest.
+    - Highlight pests for the active Stereo Harmony vinyl.
 - **Stereo Harmony Helper**
     - Highlights the vinyl for the current Jacob's contest
+- **Greenhouse Paste Preview**
 
 ### Visual Enhancements:
 - **Smooth AOTE**
@@ -267,6 +286,7 @@
     - Auction House
     - Bazaar
     - Museum
+- **Storage Overlay**
 - **Bazaar Quick Quantities**
 - **Slot Text:**
     - *Attribute level*
@@ -296,12 +316,15 @@
     - *HOTM*
     - *HOTF*
     - *Bestiary*
-    - *Hunting Toolkit Indicator*
+    - *Farming/Hunting Toolkit Indicator*
     - *Garden Chip Level*
+    - *Crop Milestones*
+    - *Crop/Greenhouse Upgrades*
 - **Drill Fuel and Pickonimbus 2000 in Item Durability Bar**
 - **Hotbar Slot Lock Keybind:** Select the hotbar slot you want to lock/unlock and press the lock button.
 - **Item Tooltip:** (Provides information on)
     - *NPC Sell Prices*
+    - *George Sell Prices*
     - *Motes Prices*
     - *Bazaar (average, lowest bin)*
     - *Auction House*
@@ -311,7 +334,7 @@
     - *Accessories Helper*
     - *Craft Cost*
     - *Essence Shop Price*
-    - *True HEX display for dye items*
+  - *True Hex Color for Dye items*
     - *Estimated Item Value*
     - *Skyblock ID*
     - *Bazaar Reorder Helper*
@@ -351,6 +374,8 @@
     - *`/joininstance, /joindungeon, /joinkuudra` commands*
     - *RNG Meter*
     - *`/call` command*
+    - *`/chapters` command*
+    - *`/ahs`, `/bz` commands*
 - **Hide Messages:**
     - *Ability Cooldown*
     - *Heal*
@@ -361,7 +386,9 @@
     - *Teleport Pad Messages*
     - *Sky Mall*
     - *Lottery*
+    - *Beekeeper*
     - *Dungeonbreaker*
+    - *Spirit Sceptre*
 
 ### Miscellaneous Helpers:
 - **Experiments Solvers**
@@ -376,11 +403,13 @@
 - **Chocolate Factory Helper**
 - **Hoppity's Hunt Helper**
 - **Jerry timer**
-- **Wardrobe Keybinds**
+- **Loadouts Helper**
+    - Works with Loadouts, Armour Wardrobe, and Equipment Wardrobe
 - **Carnival Helpers**
 - **Bits Helper**
 - **Math teacher helper**
 - **Raffle task highlighter**
+- **Raffle reward highlighter**
 - **Disable All Command**
 - **Abiphone Call Prompts**
     - Adds clickable messages in chat to quickly call Trevor the Trapper, Maddox, and Queen Mismyla
@@ -388,22 +417,23 @@
 - **Accessory Helper**
 
 ### Miscellaneous Features:
-- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei), [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei/) Support**
+- **[Roughly Enough Items (REI)](https://modrinth.com/mod/rei) (1.21.11 only) and [JEI](https://modrinth.com/mod/jei/) Support**
     - Crafting
     - Forge
     - NPC Shop Recipes
+  - Kat Pet Upgrade Recipes
     - Skyblock Info
     - Collapsible Entries
 - **Item Protection**
     - config option to toggle item protection chat notifications
 - **Discord Rich Presence:** Allows users to show their Piggy, Bits, or location, along with a custom message.
-- **Wiki Lookup:** Press F4 to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
+- **Wiki Lookup:** Press F1 (Independent) or F4 (Official) to open the wiki page about a hovered item, pet, garden visitor, or calendar event.
 - **Waypoints API**
 - **Config Button in Skyblock Menu**
 - **True Quiver Count**
 - **Chest Value**
 - **Add useful tips in chat**
-- **Suppress badlion packet warnings**
+- **Suppress Badlion packet warnings**
 - **Remove screens when switching island**
 - **Skin transparency correction**
 - **Skyblock XP Messages**

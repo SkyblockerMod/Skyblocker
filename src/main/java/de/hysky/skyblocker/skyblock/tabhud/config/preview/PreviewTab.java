@@ -1,6 +1,42 @@
 package de.hysky.skyblocker.skyblock.tabhud.config.preview;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+
 import com.mojang.authlib.GameProfile;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.layouts.Layout;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenPosition;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.numbers.BlankFormat;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.config.DungeonsTabPlaceholder;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
@@ -18,38 +54,6 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.gui.DropdownWidget;
 import de.hysky.skyblocker.utils.render.gui.NoopInput;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractScrollArea;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.tabs.Tab;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.MouseButtonInfo;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.numbers.BlankFormat;
-import net.minecraft.util.CommonColors;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.ScoreHolder;
-import net.minecraft.world.scores.Scoreboard;
-import net.minecraft.world.scores.criteria.ObjectiveCriteria;
-import org.jspecify.annotations.Nullable;
 
 public class PreviewTab implements Tab {
 	public static final int RIGHT_SIDE_WIDTH = 120;
@@ -568,5 +572,10 @@ public class PreviewTab implements Tab {
 	@Override
 	public Component getTabExtraNarration() {
 		return Component.empty();
+	}
+
+	@Override
+	public Layout getLayout() {
+		throw new UnsupportedOperationException();
 	}
 }

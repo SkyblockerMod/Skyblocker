@@ -31,13 +31,10 @@ env:
   PR_SHA: ${{ github.event.pull_request.head.sha }}
 
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    timeout-minutes: 15
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v6
 
@@ -71,6 +68,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
       - name: Build with Gradle
         run: ./gradlew build
 
@@ -101,6 +100,11 @@ jobs:
 
   client_game_test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        graphics_backend: [opengl, vulkan]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -111,14 +115,19 @@ jobs:
           java-version: '25'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-
-      - name: Run client gametest with Xvfb
-        uses: modmuss50/xvfb-action@v1
         with:
-          run: ./gradlew runClientGametest
+          cache-disabled: true
+
+      - run: sudo apt-get update && sudo apt-get install -y mesa-vulkan-drivers
+        if: matrix.graphics_backend == 'vulkan'
+
+      - run: ./gradlew runClientGametest
+        env:
+          GRAPHICS_BACKEND: ${{ matrix.graphics_backend }}
+
       - name: Upload test screenshots
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: Test Screenshots
+          name: Test Screenshots (${{ matrix.graphics_backend }})
           path: build/run/clientGameTest/screenshots

@@ -1,18 +1,19 @@
 package de.hysky.skyblocker.utils;
 
-import com.ibm.icu.text.DateTimePatternGenerator;
-
-import de.hysky.skyblocker.compatibility.MacCompatibility;
-import de.hysky.skyblocker.compatibility.WindowsCompatibility;
-import de.hysky.skyblocker.debug.Debug;
-import net.minecraft.util.Util;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import com.ibm.icu.text.DateTimePatternGenerator;
+
+import net.minecraft.util.Util;
+
+import de.hysky.skyblocker.compatibility.MacCompatibility;
+import de.hysky.skyblocker.compatibility.WindowsCompatibility;
+import de.hysky.skyblocker.debug.Debug;
 
 /**
  * Provides useful constants for formatting numbers and dates. If you need to make slight tweaks to a formatter
@@ -25,6 +26,13 @@ public class Formatters {
 	 * Example: 100,000,000
 	 */
 	public static final NumberFormat INTEGER_NUMBERS = NumberFormat.getIntegerInstance(Locale.US);
+	/**
+	 * Formats numbers as floats with up to three digits of precision.
+	 * This is closest to the default number format from {@link NumberFormat#getInstance()}.
+	 * <p>
+	 * Example: 100,000.158
+	 */
+	public static final NumberFormat TRIPLE_NUMBERS = Util.make(NumberFormat.getInstance(Locale.US), nf -> nf.setMaximumFractionDigits(3));
 	/**
 	 * Formats numbers as floats with up to two digits of precision.
 	 * This is closest to the default number format from {@link NumberFormat#getInstance()}.

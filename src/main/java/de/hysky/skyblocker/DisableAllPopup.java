@@ -2,8 +2,6 @@ package de.hysky.skyblocker;
 
 import java.util.concurrent.TimeUnit;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.CountdownComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -13,6 +11,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.CountdownComponent;
 
 public final class DisableAllPopup {
 	private static final long DELAY_S = 10;
@@ -32,7 +33,7 @@ public final class DisableAllPopup {
 				.addButton(confirmComponent, this::tryReset)
 				.addButton(CommonComponents.GUI_CANCEL, PopupScreen::onClose);
 
-		Minecraft.getInstance().setScreen(builder.build());
+		Minecraft.getInstance().gui.setScreen(builder.build());
 	}
 
 	private void tryReset(PopupScreen popupScreen) {
@@ -42,18 +43,18 @@ public final class DisableAllPopup {
 			try {
 				SkyblockerConfigManager.update(config -> {
 					try {
-						DisableAll.disableBooleans(config);
+						DisableAll.disableEntries(config);
 					} catch (IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}
 				});
 
 				popupScreen.onClose();
-				minecraft.setScreen(SkyblockerConfigManager.createGUI(null));
-				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED));
+				minecraft.gui.setScreen(SkyblockerConfigManager.createGUI(null));
+				SystemToast.add(minecraft.gui.toastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED));
 			} catch (Exception e) {
 				DisableAll.LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
-				SystemToast.add(minecraft.getToastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED));
+				SystemToast.add(minecraft.gui.toastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED));
 			}
 		}
 	}

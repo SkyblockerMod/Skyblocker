@@ -1,22 +1,24 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -41,6 +43,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("big_brain", "BB");
 		ENCHANTMENT_ABBREVIATIONS.put("blast_protection", "BP");
 		ENCHANTMENT_ABBREVIATIONS.put("blessing", "BL");
+		ENCHANTMENT_ABBREVIATIONS.put("bug_blender", "BUG");
 
 		ENCHANTMENT_ABBREVIATIONS.put("caster", "CAT");
 		ENCHANTMENT_ABBREVIATIONS.put("cayenne", "CAY");
@@ -68,8 +71,9 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("experience", "EXP");
 		ENCHANTMENT_ABBREVIATIONS.put("expertise", "EPR");
 
+		ENCHANTMENT_ABBREVIATIONS.put("feast", "FE");
 		ENCHANTMENT_ABBREVIATIONS.put("feather_falling", "FF");
-		ENCHANTMENT_ABBREVIATIONS.put("ferocious_mana", "FM");
+		ENCHANTMENT_ABBREVIATIONS.put("ferocious_mana", "VIV"); // Vivacious Vitality
 		ENCHANTMENT_ABBREVIATIONS.put("fire_aspect", "FA");
 		ENCHANTMENT_ABBREVIATIONS.put("fire_protection", "FPR");
 		ENCHANTMENT_ABBREVIATIONS.put("first_strike", "FS");
@@ -83,7 +87,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("green_thumb", "GT");
 		ENCHANTMENT_ABBREVIATIONS.put("growth", "GR");
 
-		ENCHANTMENT_ABBREVIATIONS.put("hardened_mana", "HM");
+		ENCHANTMENT_ABBREVIATIONS.put("hardened_mana", "HV"); // Hardened Vitality
 		ENCHANTMENT_ABBREVIATIONS.put("harvesting", "HRV");
 		ENCHANTMENT_ABBREVIATIONS.put("hecatomb", "HEC");
 
@@ -91,6 +95,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("impaling", "IMP");
 		ENCHANTMENT_ABBREVIATIONS.put("infinite_quiver", "IQ");
 
+		ENCHANTMENT_ABBREVIATIONS.put("karma", "KA");
 		ENCHANTMENT_ABBREVIATIONS.put("knockback", "KB");
 
 		ENCHANTMENT_ABBREVIATIONS.put("lapidary", "LAP");
@@ -101,14 +106,16 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("luck_of_the_sea", "LTS");
 		ENCHANTMENT_ABBREVIATIONS.put("lure", "LR");
 
+		ENCHANTMENT_ABBREVIATIONS.put("magmarizer", "PY"); // Pyroclasm
 		ENCHANTMENT_ABBREVIATIONS.put("magnet", "MAG");
 		ENCHANTMENT_ABBREVIATIONS.put("mana_steal", "MS");
-		ENCHANTMENT_ABBREVIATIONS.put("mana_vampire", "MV");
+		ENCHANTMENT_ABBREVIATIONS.put("mana_vampire", "VV"); // Vampiric Vitality
 
 		ENCHANTMENT_ABBREVIATIONS.put("overload", "OV");
 
 		ENCHANTMENT_ABBREVIATIONS.put("paleontologist", "PAL");
 		ENCHANTMENT_ABBREVIATIONS.put("pesterminator", "PS");
+		ENCHANTMENT_ABBREVIATIONS.put("petalfall", "PET");
 		ENCHANTMENT_ABBREVIATIONS.put("piercing", "PR");
 		ENCHANTMENT_ABBREVIATIONS.put("piscary", "PSC");
 		ENCHANTMENT_ABBREVIATIONS.put("power", "POW");
@@ -141,9 +148,8 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("snipe", "SN");
 		ENCHANTMENT_ABBREVIATIONS.put("spiked_hook", "SPH");
 		ENCHANTMENT_ABBREVIATIONS.put("stealth", "STL");
-		ENCHANTMENT_ABBREVIATIONS.put("strong_mana", "SM");
+		ENCHANTMENT_ABBREVIATIONS.put("strong_mana", "SV"); // Strong Vitality
 		ENCHANTMENT_ABBREVIATIONS.put("sugar_rush", "SR");
-		ENCHANTMENT_ABBREVIATIONS.put("sunder", "SU");
 		ENCHANTMENT_ABBREVIATIONS.put("syphon", "DR"); // Drain
 
 		ENCHANTMENT_ABBREVIATIONS.put("tabasco", "TAB");
@@ -197,8 +203,9 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_refrigerate", "RF");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_rend", "RN");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_soul_eater", "SE");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_sunset", "SU");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_swarm", "SW");
-		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("the_one", "TO");
+		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_the_one", "TO");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_jerry", "UJ");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wise", "UW");
 		ULTIMATE_ENCHANTMENT_ABBREVIATIONS.put("ultimate_wisdom", "W");

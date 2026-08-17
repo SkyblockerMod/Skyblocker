@@ -1,10 +1,7 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.StatusBarTracker;
-import de.hysky.skyblocker.utils.Utils;
+import java.util.function.Function;
+
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -13,7 +10,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
-import java.util.function.Function;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.HudAccessor;
+import de.hysky.skyblocker.skyblock.StatusBarTracker;
+import de.hysky.skyblocker.utils.Utils;
 
 public class VanillaStyleManaBar {
 	private static int lastManaValue;
@@ -78,7 +80,12 @@ public class VanillaStyleManaBar {
 		int top = graphics.guiHeight() - 39;       // Top of mana bar area
 		int right = graphics.guiWidth() / 2 + 91;  // Rightmost point of mana bar area
 
-		Identifier texture = switch (notchtype) {
+		Identifier texture = SkyblockerConfigManager.get().uiAndVisuals.bars.useHungerBarSprites ? switch (notchtype) {
+			case CONTAINER -> HudAccessor.getFOOD_EMPTY_SPRITE();
+			case MANA -> !isHalf ? HudAccessor.getFOOD_FULL_SPRITE() : HudAccessor.getFOOD_HALF_SPRITE();
+			case OVERFLOW -> !isHalf ? HudAccessor.getFOOD_FULL_HUNGER_SPRITE() : HudAccessor.getFOOD_HALF_HUNGER_SPRITE();
+			case OVERFLOW_DARK -> HudAccessor.getFOOD_EMPTY_HUNGER_SPRITE();
+		} : switch (notchtype) {
 			case CONTAINER -> isBlinking ? CONTAINER_BLINK_TEXTURE : CONTAINER_TEXTURE;
 			case MANA -> !isHalf ? (isBlinking ? MANA_FULL_BLINK_TEXTURE : MANA_FULL_TEXTURE) : (isBlinking ? MANA_HALF_BLINK_TEXTURE : MANA_HALF_TEXTURE);
 			case OVERFLOW -> !isHalf ? (isBlinking ? OVERFLOW_FULL_BLINK_TEXTURE : OVERFLOW_FULL_TEXTURE) : (isBlinking ? OVERFLOW_HALF_BLINK_TEXTURE : OVERFLOW_HALF_TEXTURE);
@@ -89,13 +96,14 @@ public class VanillaStyleManaBar {
 	}
 
 	public static boolean extractRenderState(GuiGraphicsExtractor graphics) {
-		StatusBarTracker.Resource mana = StatusBarTracker.getMana();
+		StatusBarTracker.EstimatedResource mana = StatusBarTracker.getMana();
 
 		// Detect loss of mana to start blinking
 		long currentTime = Util.getMillis();
 		final long BLINK_TIME_LENGTH = 1000;
 		final long BLINK_FREQUENCY = 300;
-		if (lastManaValue + lastOverflowValue > mana.value() + mana.overflow() && mana.value() != mana.max()) {
+		boolean blinkingEnabled = SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBarBlinking;
+		if (blinkingEnabled && lastManaValue + lastOverflowValue > mana.value() + mana.overflow() && mana.value() != mana.max()) {
 			boolean justStartedBlinking = blinkEndTime <= currentTime;
 			if (justStartedBlinking) {
 				manaValueBlinkStart = lastManaValue;
@@ -109,7 +117,7 @@ public class VanillaStyleManaBar {
 				blinkEndTime = currentTime + BLINK_TIME_LENGTH;
 			}
 		}
-		boolean blinking = blinkEndTime > currentTime && (blinkEndTime - currentTime) / (BLINK_FREQUENCY/2) % 2 == 1;
+		boolean blinking = blinkingEnabled && blinkEndTime > currentTime && (blinkEndTime - currentTime) / (BLINK_FREQUENCY/2) % 2 == 1;
 		if (blinkEndTime <= currentTime) {
 			manaValueBlinkStart = 0;
 			overflowValueBlinkStart = 0;

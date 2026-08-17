@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 // this widget shows info about a skill and some stats,
 // as seen in the rightmost column of the default HUD
@@ -26,7 +29,7 @@ public class SkillsWidget extends TabHudWidget {
 	private static final Pattern SKILL_PATTERN = Pattern.compile("([A-Za-z]* [0-9]*): ([0-9.MAX]*)%?");
 
 	public SkillsWidget() {
-		super("Skills", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Skills", TITLE, TextColor.YELLOW.getValue());
 
 	}
 
@@ -41,7 +44,7 @@ public class SkillsWidget extends TabHudWidget {
 
 				if (!pcntStr.equals("MAX")) {
 					float pcnt = Float.parseFloat(pcntStr);
-					progress = Elements.progressComponent(Ico.LANTERN, Component.nullToEmpty(skill), pcnt, ChatFormatting.GOLD.getColor());
+					progress = Elements.progressComponent(Ico.LANTERN, Component.nullToEmpty(skill), pcnt, TextColor.GOLD.getValue());
 				} else {
 					addSimpleIcoText(Ico.LANTERN, skill + ": ", ChatFormatting.RED, pcntStr);
 					continue;

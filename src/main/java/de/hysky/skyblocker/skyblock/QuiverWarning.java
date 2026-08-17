@@ -2,15 +2,16 @@ package de.hysky.skyblocker.skyblock;
 
 import org.jspecify.annotations.Nullable;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Hud;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.network.chat.Component;
 
 public class QuiverWarning {
 	private static @Nullable Type warning = null;
@@ -24,7 +25,7 @@ public class QuiverWarning {
 	public static boolean onChatMessage(Component text, boolean overlay) {
 		String message = text.getString();
 		if (SkyblockerConfigManager.get().general.quiverWarning.enableQuiverWarning && message.endsWith("left in your Quiver!")) {
-			Minecraft.getInstance().gui.resetTitleTimes();
+			Minecraft.getInstance().gui.hud.resetTitleTimes();
 			if (message.startsWith("You only have 50")) {
 				onChatMessage(Type.FIFTY_LEFT);
 			} else if (message.startsWith("You only have 10")) {
@@ -38,18 +39,18 @@ public class QuiverWarning {
 
 	private static void onChatMessage(Type warning) {
 		if (!Utils.isInDungeons()) {
-			Minecraft.getInstance().gui.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
+			Minecraft.getInstance().gui.hud.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
 		} else if (SkyblockerConfigManager.get().general.quiverWarning.enableQuiverWarningInDungeons) {
-			Minecraft.getInstance().gui.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
+			Minecraft.getInstance().gui.hud.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
 			QuiverWarning.warning = warning;
 		}
 	}
 
 	public static void update() {
 		if (warning != null && SkyblockerConfigManager.get().general.quiverWarning.enableQuiverWarning && SkyblockerConfigManager.get().general.quiverWarning.enableQuiverWarningAfterDungeon && !Utils.isInDungeons()) {
-			Gui inGameHud = Minecraft.getInstance().gui;
-			inGameHud.resetTitleTimes();
-			inGameHud.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
+			Hud hud = Minecraft.getInstance().gui.hud;
+			hud.resetTitleTimes();
+			hud.setTitle(Component.translatable(warning.key).withStyle(ChatFormatting.RED));
 			warning = null;
 		}
 	}

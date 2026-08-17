@@ -1,5 +1,17 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
+import java.util.Objects;
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
@@ -12,17 +24,8 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
-
-import java.util.Objects;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 @RegisterWidget
 public class FishingHudWidget extends ElementBasedWidget {
@@ -36,7 +39,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	}
 
 	public FishingHudWidget() {
-		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), ChatFormatting.DARK_AQUA.getColor(), "hud_fishing");
+		super(Component.literal("Fishing").withStyle(ChatFormatting.DARK_AQUA, ChatFormatting.BOLD), TextColor.DARK_AQUA.getValue(), "hud_fishing");
 		instance = this;
 	}
 
@@ -86,7 +89,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().screen instanceof WidgetsConfigurationScreen) {
+		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
 			addComponent(Elements.progressComponent(Ico.SALMON_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty("3/5"), 60, ColorUtils.percentToColor(40)));
 			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), Component.nullToEmpty("1m"), 60f / SkyblockerConfigManager.get().helpers.fishing.timerLength * 100));
 			return;
@@ -95,7 +98,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 		if (SkyblockerConfigManager.get().helpers.fishing.enableSeaCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
 
 			ObjectFloatPair<Component> timer = SeaCreatureTracker.getTimerText(SeaCreatureTracker.getOldestSeaCreatureAge());
-			int seaCreatureCap = SeaCreatureTracker.getSeaCreatureCap();
+			int seaCreatureCap = SeaCreatureTracker.SEA_CREATURE_CAP;
 			float seaCreaturePercent = (float) SeaCreatureTracker.seaCreatureCount() / seaCreatureCap * 100;
 			addComponent(Elements.progressComponent(Ico.TROPICAL_FISH_BUCKET, Component.nullToEmpty("Alive Creatures"), Component.nullToEmpty(SeaCreatureTracker.seaCreatureCount() + "/" + seaCreatureCap), seaCreaturePercent, ColorUtils.percentToColor(100 - seaCreaturePercent)));
 			addComponent(Elements.progressComponent(Ico.CLOCK, Component.nullToEmpty("Time Left"), timer.left(), timer.rightFloat()));

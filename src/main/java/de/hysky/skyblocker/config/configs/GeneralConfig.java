@@ -1,18 +1,22 @@
 package de.hysky.skyblocker.config.configs;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import java.util.ArrayList;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
-import java.util.List;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorAnimatedDyes;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
 
 public class GeneralConfig {
 	public boolean enableTips = true;
@@ -100,6 +104,8 @@ public class GeneralConfig {
 	public static class ItemTooltip {
 		public boolean enableNPCPrice = true;
 
+		public boolean enableGeorgePrice = true;
+
 		public boolean enableMotesPrice = true;
 
 		public boolean enableAvgBIN = true;
@@ -141,7 +147,9 @@ public class GeneralConfig {
 	}
 
 	public enum Craft {
-		SELL_ORDER, BUY_ORDER, OFF;
+		SELL_ORDER, BUY_ORDER,
+		@EnumDisabledValue
+		OFF;
 
 		@Override
 		public String toString() {
@@ -167,6 +175,8 @@ public class GeneralConfig {
 		public float itemBackgroundOpacity = 0.5f;
 
 		public boolean itemRarityBackgrounds = true;
+
+		public boolean itemRarityBackgroundsLegacyColors = false;
 
 		public boolean jacobMedalBackgrounds = true;
 
@@ -198,8 +208,8 @@ public class GeneralConfig {
 	}
 
 	public enum SlotLockStyle {
-		CLASSIC(SkyblockerMod.id("textures/gui/slot_lock.png")),
-		FANCY(SkyblockerMod.id("textures/gui/fancy_slot_lock.png"));
+		CLASSIC(SkyblockerMod.id("slot_lock")),
+		FANCY(SkyblockerMod.id("fancy_slot_lock"));
 
 		public final Identifier tex;
 
@@ -226,6 +236,10 @@ public class GeneralConfig {
 		public boolean rareDropEffects = true;
 
 		public boolean rareDyeDropEffects = true;
+
+		public boolean trophyDropEffects = true;
+
+		public boolean displayItemName = true;
 	}
 
 	@Deprecated

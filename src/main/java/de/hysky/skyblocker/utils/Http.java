@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.SharedConstants;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -16,11 +13,14 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
-import java.util.concurrent.Executors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.SharedConstants;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 /**
  * @implNote All http requests are sent using HTTP 2
@@ -28,16 +28,18 @@ import org.jspecify.annotations.Nullable;
 public class Http {
 	private static final String NAME_2_UUID = "https://api.minecraftservices.com/minecraft/profile/lookup/name/";
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
+	private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(60);
 	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
-			.executor(Executors.newVirtualThreadPerTaskExecutor())
+			.executor(SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 			.followRedirects(Redirect.NORMAL)
 			.build();
 
 	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 				.GET()
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", "application/json")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
@@ -60,6 +62,7 @@ public class Http {
 	public static InputStream downloadContent(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.GET()
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", "*/*")
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("User-Agent", USER_AGENT)
@@ -79,6 +82,7 @@ public class Http {
 	public static HttpHeaders sendHeadRequest(String url) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.method("HEAD", BodyPublishers.noBody())
+				.timeout(REQUEST_TIMEOUT)
 				.header("User-Agent", USER_AGENT)
 				.version(Version.HTTP_2)
 				.uri(URI.create(url))
@@ -91,6 +95,7 @@ public class Http {
 	public static String sendPostRequest(String url, String requestBody, String contentType) throws IOException, InterruptedException {
 		HttpRequest request = HttpRequest.newBuilder()
 				.POST(BodyPublishers.ofString(requestBody))
+				.timeout(REQUEST_TIMEOUT)
 				.header("Accept", contentType)
 				.header("Accept-Encoding", "gzip, deflate")
 				.header("Content-Type", contentType)

@@ -1,5 +1,15 @@
 package de.hysky.skyblocker.config.categories;
 
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.OptionListener.UpdateType;
+import net.azureaaron.dandelion.api.controllers.FloatController;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.DisableAllPopup;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.SkyblockerScreen;
@@ -9,19 +19,13 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.backup.ConfigBackupScreen;
 import de.hysky.skyblocker.config.configs.GeneralConfig;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.AccessoryTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.shortcut.ShortcutsConfigScreen;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresetsScreen;
-import net.azureaaron.dandelion.api.ButtonOption;
-import net.azureaaron.dandelion.api.ConfigCategory;
-import net.azureaaron.dandelion.api.Option;
-import net.azureaaron.dandelion.api.OptionGroup;
-import net.azureaaron.dandelion.api.OptionListener.UpdateType;
-import net.azureaaron.dandelion.api.controllers.FloatController;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class GeneralCategory {
 
@@ -34,7 +38,7 @@ public class GeneralCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.skyblockerScreen"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(_ -> Minecraft.getInstance().setScreen(new SkyblockerScreen()))
+						.action(_ -> Minecraft.getInstance().gui.setScreen(new SkyblockerScreen()))
 						.build())
 
 				// Disable All
@@ -83,7 +87,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.backup.manage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ConfigBackupScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ConfigBackupScreen(screen)))
 								.build())
 						.build())
 				// Speed Presets
@@ -100,7 +104,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.speedPresets.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new SpeedPresetsScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new SpeedPresetsScreen(screen)))
 								.build())
 						.build())
 
@@ -143,7 +147,7 @@ public class GeneralCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.general.shortcuts.config"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new ShortcutsConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new ShortcutsConfigScreen(screen)))
 								.build())
 						.build())
 
@@ -181,6 +185,7 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook"))
 								.description(Component.translatable("skyblocker.config.general.itemList.enableRecipeBook.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_3_0)
 								.binding(defaults.general.itemList.enableRecipeBook,
 										() -> config.general.itemList.enableRecipeBook,
 										newValue -> config.general.itemList.enableRecipeBook = newValue)
@@ -210,6 +215,7 @@ public class GeneralCategory {
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableNPCPrice"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableNPCPrice,
 										() -> config.general.itemTooltip.enableNPCPrice,
 										newValue -> config.general.itemTooltip.enableNPCPrice = newValue)
@@ -225,6 +231,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableAvgBIN"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableAvgBIN,
 										() -> config.general.itemTooltip.enableAvgBIN,
 										newValue -> config.general.itemTooltip.enableAvgBIN = newValue)
@@ -240,6 +247,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableLowestBIN"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableLowestBIN,
 										() -> config.general.itemTooltip.enableLowestBIN,
 										newValue -> config.general.itemTooltip.enableLowestBIN = newValue)
@@ -247,6 +255,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableBazaarPrice"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableBazaarPrice,
 										() -> config.general.itemTooltip.enableBazaarPrice,
 										newValue -> config.general.itemTooltip.enableBazaarPrice = newValue)
@@ -254,6 +263,7 @@ public class GeneralCategory {
 								.build())
 						.option(Option.<GeneralConfig.Craft>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.craft"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.craft.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableCraftingCost,
 										() -> config.general.itemTooltip.enableCraftingCost,
 										newValue -> config.general.itemTooltip.enableCraftingCost = newValue)
@@ -343,6 +353,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemTooltip.enableEvolvingItemProgress = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableGeorgePrice"))
+								.tags(CommonTags.ADDED_IN_6_4_0)
+								.binding(defaults.general.itemTooltip.enableGeorgePrice,
+										() -> config.general.itemTooltip.enableGeorgePrice,
+										newValue -> config.general.itemTooltip.enableGeorgePrice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Info Display
@@ -373,6 +391,15 @@ public class GeneralCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors"))
+								.description(Component.translatable("skyblocker.config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_8_0)
+								.binding(defaults.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors,
+										() -> config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors,
+										newValue -> config.general.itemInfoDisplay.itemRarityBackgroundsLegacyColors = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds"))
 								.description(Component.translatable("skyblocker.config.general.itemInfoDisplay.jacobMedalBackgrounds.@Tooltip"))
 								.binding(defaults.general.itemInfoDisplay.jacobMedalBackgrounds,
@@ -394,6 +421,11 @@ public class GeneralCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.general.itemProtection"))
 						.collapsed(true)
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.hotbarSlotLock"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(HotbarSlotLock.hotbarSlotLock)
+								.build())
 						.option(Option.<GeneralConfig.SlotLockStyle>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemProtection.slotLockStyle"))
 								.description(Component.translatable("skyblocker.config.general.itemProtection.slotLockStyle.@Tooltip"))
@@ -409,6 +441,11 @@ public class GeneralCategory {
 										() -> config.general.itemProtection.protectValuableConsumables,
 										newValue -> config.general.itemProtection.protectValuableConsumables = newValue)
 								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.itemProtection"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ItemProtection.itemProtection)
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemProtection.displayChatNotification"))
@@ -427,13 +464,17 @@ public class GeneralCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup"))
 								.description(Component.translatable("skyblocker.config.general.wikiLookup.enableWikiLookup.@Tooltip",
-										WikiLookupManager.officialWikiLookup.getTranslatedKeyMessage(), WikiLookupManager.fandomWikiLookup.getTranslatedKeyMessage()))
+										WikiLookupManager.independentWikiLookup.getTranslatedKeyMessage()))
 								.binding(defaults.general.wikiLookup.enableWikiLookup,
 										() -> config.general.wikiLookup.enableWikiLookup,
 										newValue -> config.general.wikiLookup.enableWikiLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.wikiLookup.independent"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(WikiLookupManager.independentWikiLookup)
+								.build())
 						.build())
 
 				//Special Effects
@@ -463,6 +504,24 @@ public class GeneralCategory {
 								.binding(defaults.general.specialEffects.rareDyeDropEffects,
 										() -> config.general.specialEffects.rareDyeDropEffects,
 										newValue -> config.general.specialEffects.rareDyeDropEffects = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_1)
+								.binding(defaults.general.specialEffects.trophyDropEffects,
+										() -> config.general.specialEffects.trophyDropEffects,
+										newValue -> config.general.specialEffects.trophyDropEffects = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.specialEffects.displayItemName"))
+								.description(Component.translatable("skyblocker.config.general.specialEffects.displayItemName.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_7_0)
+								.binding(defaults.general.specialEffects.displayItemName,
+										() -> config.general.specialEffects.displayItemName,
+										newValue -> config.general.specialEffects.displayItemName = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

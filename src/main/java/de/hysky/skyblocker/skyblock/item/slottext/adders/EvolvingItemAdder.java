@@ -1,18 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
-import java.util.List;
-import java.util.OptionalDouble;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 // Evolving items are those that get upgraded after holding them in your inventory for a certain amount of time.
 public class EvolvingItemAdder extends SimpleSlotTextAdder {
@@ -29,7 +32,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		switch (stack.getSkyblockId()) {
-			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK" -> {
+			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK", "NOT_VERY_MOLDY_BREAD" -> {
 				return actualLogic(stack, "Current Bonus: ");
 			}
 			case "TRAINING_WEIGHTS" -> {

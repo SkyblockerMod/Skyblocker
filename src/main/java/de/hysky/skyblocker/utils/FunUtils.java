@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.utils;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Random;
+import de.hysky.skyblocker.skyblock.CatPicture;
 
 public class FunUtils {
 	private static final boolean FUN_DISABLED = Boolean.parseBoolean(System.getProperty("skyblocker.iAmABoringPersonAndHateFun", "false"));
@@ -56,5 +58,11 @@ public class FunUtils {
 			component.append(Component.literal(String.valueOf(c)).withColor(ARGB.srgbLerp(progress, startColor, endColor)).withStyle(style -> style.withObfuscated(obfuscated)));
 		}
 		return component;
+	}
+
+	public static void recipeBookEasterEgg(String search) {
+		if (search.equals("hestalks")) {
+			CatPicture.recipeBook();
+		}
 	}
 }

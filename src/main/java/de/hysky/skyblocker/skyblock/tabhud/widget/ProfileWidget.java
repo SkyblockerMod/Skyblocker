@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 
 // this widget shows info about your profile and bank
 @RegisterWidget
@@ -18,7 +20,7 @@ public class ProfileWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Profile").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 
 	public ProfileWidget() {
-		super("Profile", TITLE, ChatFormatting.YELLOW.getColor());
+		super("Profile", TITLE, TextColor.YELLOW.getValue());
 	}
 
 	@Override

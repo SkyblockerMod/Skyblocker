@@ -1,5 +1,17 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.CommonColors;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -10,17 +22,6 @@ import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.CommonColors;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
 
 @RegisterWidget
 public class TerminalHud extends ElementBasedWidget {
@@ -79,14 +80,14 @@ public class TerminalHud extends ElementBasedWidget {
 	}
 
 	public void updateFromScheduler() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) update();
 		if (!GoldorWaypointsManager.isActive() || !shouldRender(Utils.getLocation())) return;
 		update();
 	}
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.screen instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
+		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
 			MutableComponent status = Component.empty();
 			if (CONFIG.get().showTerminalStatus) {
 				status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));

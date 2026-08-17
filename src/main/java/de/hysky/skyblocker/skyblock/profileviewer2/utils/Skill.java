@@ -1,5 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.utils;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
@@ -11,13 +14,15 @@ public enum Skill {
 	ENCHANTING("Enchanting", 60, Ico.ENCHANTING_TABLE),
 	FARMING("Farming", 50, 60, Ico.GOLDEN_HOE),
 	FISHING("Fishing", 50, Ico.FISH_ROD),
-	FORAGING("Foraging", 50, 54, Ico.JUNGLE_SAPLING),
-	HUNTING("Hunting", 25, Ico.LEAD),
+	FORAGING("Foraging", 50, 57, Ico.JUNGLE_SAPLING),
+	HUNTING("Hunting", 50, Ico.LEAD),
 	MINING("Mining", 60, Ico.STONE_PICKAXE),
 	RUNECRAFTING("Runecrafting", 25, Ico.MAGMA_CREAM),
 	SOCIAL("Social", 25, Ico.EMERALD),
 	TAMING("Taming", 50, 60, Ico.SPAWN_EGG);
 
+	/// The main skills that count towards skill average.
+	public static final Set<Skill> CONVENTIONAL_SKILLS = Set.copyOf(EnumSet.complementOf(EnumSet.of(CATACOMBS, RUNECRAFTING, SOCIAL)));
 	private final String name;
 	private final int baseCap;
 	private final int absoluteCap;

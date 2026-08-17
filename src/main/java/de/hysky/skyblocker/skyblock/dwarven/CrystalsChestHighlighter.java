@@ -10,6 +10,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
@@ -157,7 +158,7 @@ public class CrystalsChestHighlighter {
 		//render chest outline
 		float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
 		for (BlockPos chest : activeChests.iterateMut()) {
-			collector.submitOutlinedBox(AABB.ofSize(chest.getCenter().subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
+			collector.submitOutlinedBox(AABB.ofSize(Vec3.atCenterOf(chest).subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
 		}
 
 		//render lock picking if player is looking at chest that is in the active chests list
@@ -166,7 +167,7 @@ public class CrystalsChestHighlighter {
 		}
 		HitResult target = CLIENT.hitResult;
 		if (target instanceof BlockHitResult blockHitResult && activeChests.contains(blockHitResult.getBlockPos())) {
-			Vec3 chestPos = blockHitResult.getBlockPos().getCenter();
+			Vec3 chestPos = Vec3.atCenterOf(blockHitResult.getBlockPos());
 
 			if (!activeParticles.isEmpty()) {
 				//the player is looking at a chest use active particle to highlight correct spot
@@ -186,7 +187,7 @@ public class CrystalsChestHighlighter {
 
 				//render the spot
 				highlightSpot = highlightSpot.scale((double) 1 / addedParticles).subtract(LOCK_HIGHLIGHT_SIZE.scale(0.5));
-				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], true);
+				collector.submitFilledBox(highlightSpot, LOCK_HIGHLIGHT_SIZE, color, color[3], false);
 			}
 
 			//render total text if needed is more than 0

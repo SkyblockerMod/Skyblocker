@@ -1,17 +1,16 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.TextTransformer;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
+import org.slf4j.Logger;
+
 import net.azureaaron.networth.Calculation;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.utils.ItemConstants;
@@ -36,20 +35,24 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+	public static final KeyMapping KEY_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.skyblocker.valueBreadownPopup",
-			GLFW.GLFW_KEY_I,
+			InputConstants.KEY_I,
 			SkyblockerMod.KEYBINDING_CATEGORY
 	));
 
@@ -80,7 +83,8 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 						if (neuId == null) return Component.literal(s);
 						NEUItem neuItem = NEURepoManager.getItemByNeuId(neuId);
 						if (neuItem == null) return Component.literal(s);
-						return TextTransformer.fromLegacy(neuItem.getLore().getFirst());
+						String enchantName = EnchantedBookUtils.getEnchantNameFromLore(neuItem.getLore());
+						return TextTransformer.fromLegacy(enchantName);
 					}
 			)),
 			Map.entry(Calculation.Type.SKIN, new BasicSingleAppender(
@@ -230,7 +234,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 					Slot slot = ((AbstractContainerScreenAccessor) handledScreen).getFocusedSlot();
 					if (slot == null || !slot.hasItem()) return;
 					NetworthResult networth = NetworthCalculator.getItemNetworth(slot.getItem());
-					if (networth.price() > 0) client.setScreen(new ValueBreakdownPopup(screen, networth));
+					if (networth.price() > 0) client.gui.setScreen(new ValueBreakdownPopup(screen, networth));
 				});
 			}
 		});
@@ -265,8 +269,7 @@ public class ValueBreakdownPopup extends AbstractPopupScreen {
 		}
 		layout.addChild(SpacerElement.height(10));
 		layout.addChild(createTextWidget(Component.translatable("skyblocker.valueBreakdownPopup.total", getCoinsText(networthResult.price())), font), LayoutSettings::alignHorizontallyRight);
-		scrollable = new ScrollableLayout(minecraft, layout, 300);
-		scrollable.setMaxHeight(200);
+		scrollable = new ScrollableLayout(minecraft, layout, 200);
 		scrollable.visitWidgets(this::addRenderableWidget);
 		super.init();
 	}

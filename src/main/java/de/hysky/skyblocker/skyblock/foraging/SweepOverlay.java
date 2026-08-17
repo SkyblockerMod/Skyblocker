@@ -6,9 +6,26 @@ import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockItemTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,34 +36,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static float[] colorComponents;
 	private static final int MAX_WOOD_CAP = 35;
-	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile("Sweep:\\s*(?:∮|§[0-9a-fk-or])*(\\d+)");
+	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
 	private static final Set<String> VALID_AXES = Set.of(
-			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE",
+			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE", "HELIX_CHOPPER",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
 	);
 	private static final Set<String> THROWABLE_AXES = Set.of(
-			"FIG_AXE", "FIGSTONE_AXE", "JUNGLE_AXE", "TREECAPITATOR_AXE"
+			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE", "HELIX_CHOPPER"
 	);
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
@@ -64,10 +67,14 @@ public class SweepOverlay {
 	};
 
 	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
-			Blocks.STRIPPED_SPRUCE_LOG, 7.0f,
-			Blocks.STRIPPED_SPRUCE_WOOD, 7.0f,
-			Blocks.MANGROVE_LOG, 50.0f,
-			Blocks.MANGROVE_WOOD, 50.0f
+			Blocks.STRIPPED_SPRUCE_LOG, 10f,
+			Blocks.STRIPPED_SPRUCE_WOOD, 10f,
+			Blocks.MANGROVE_LOG, 50f,
+			Blocks.MANGROVE_WOOD, 50f,
+			Blocks.STRIPPED_BIRCH_LOG, 150f,
+			Blocks.STRIPPED_BIRCH_WOOD, 150f,
+			Blocks.STRIPPED_MANGROVE_LOG, 150f,
+			Blocks.STRIPPED_MANGROVE_WOOD, 150f
 	);
 
 	@Init
@@ -77,7 +84,7 @@ public class SweepOverlay {
 	}
 
 	private static boolean isValidLocation() {
-		return Utils.isInGalatea() || Utils.isInPark() || Utils.isInHub() || Utils.isInPrivateIsland();
+		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
 	}
 
 	/**
@@ -145,11 +152,33 @@ public class SweepOverlay {
 					|| state.is(Blocks.STRIPPED_SPRUCE_WOOD)
 					|| state.is(Blocks.MANGROVE_LOG)
 					|| state.is(Blocks.MANGROVE_WOOD);
+		} else if (Utils.isInTorrhusCanyon()) {
+			return state.is(Blocks.STRIPPED_BIRCH_LOG)
+					|| state.is(Blocks.STRIPPED_BIRCH_WOOD)
+					|| state.is(Blocks.STRIPPED_MANGROVE_LOG)
+					|| state.is(Blocks.STRIPPED_MANGROVE_WOOD);
 		} else if (Utils.isInHub()) {
 			return state.is(Blocks.OAK_LOG) || state.is(Blocks.OAK_WOOD);
 		}
 
 		return state.is(BlockTags.LOGS);
+	}
+
+	/// Checks if the {@code destination} block should be chopped based on the {@code source} block.
+	///
+	/// With Helix Trees you only chop one colour of wood at a time so this is needed to prevent
+	/// the overlay from highlighting the wrong colour of wood.
+	private static boolean shouldBeChopped(BlockState source, BlockState destination) {
+		if (Utils.isInTorrhusCanyon()) {
+			// These tags include non-stripped logs but it doesn't matter since at this point
+			// we have already checked for whether they are stripped in #isLog
+			TagKey<Block> birchLogs = BlockItemTags.BIRCH_LOGS.block();
+			TagKey<Block> mangroveLogs = BlockItemTags.MANGROVE_LOGS.block();
+
+			return (source.is(birchLogs) && destination.is(birchLogs)) || (source.is(mangroveLogs) && destination.is(mangroveLogs));
+		}
+
+		return true;
 	}
 
 	/**
@@ -179,7 +208,7 @@ public class SweepOverlay {
 				}
 			}
 		}
-		if (!sweepStatNoticeShown && (Utils.isInPark() || Utils.isInGalatea()) && CLIENT.player != null) {
+		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
 			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
 							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
 									.withStyle(ChatFormatting.RED)));
@@ -198,8 +227,14 @@ public class SweepOverlay {
 	 * @return the maximum number of logs that can be broken
 	 */
 	private static int calculateMaxWood(float sweepStat, float toughness) {
-		int logs = (int) (toughness <= 0 ? sweepStat : (3 * Math.log(sweepStat) - 1.75 * Math.log(toughness) + 2));
-		return Math.min(MAX_WOOD_CAP, logs);
+		double logs;
+		if (toughness <= 1) {
+			logs = Math.min(MAX_WOOD_CAP, (int) sweepStat);
+		} else {
+			double x = (sweepStat + Math.sqrt(sweepStat) - toughness) / Math.pow(toughness, 0.511);
+			logs = Math.log10(1 + Math.pow(x, 1.9)) * 4;
+		}
+		return (int) Math.ceil(Math.min(MAX_WOOD_CAP, logs));
 	}
 
 	/**
@@ -264,7 +299,9 @@ public class SweepOverlay {
 				BlockPos neighbor = pos.offset(offset);
 				if (visited.contains(neighbor) || queue.contains(neighbor)) continue;
 
-				if (isLog(world.getBlockState(neighbor))) {
+				BlockState neighborState = world.getBlockState(neighbor);
+
+				if (isLog(world.getBlockState(neighbor)) && shouldBeChopped(currentState, neighborState)) {
 					queue.add(neighbor);
 					visited.add(neighbor);
 				}

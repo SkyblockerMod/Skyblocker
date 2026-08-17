@@ -1,14 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.slayers.SlayerHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import java.awt.Color;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -19,7 +12,15 @@ import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import java.awt.Color;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.slayers.SlayerHudWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class SlayersCategory {
 
@@ -67,7 +68,7 @@ public class SlayersCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.slayerHud"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, SlayerHudWidget.getInstance().getInternalID(), screen)))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.slayer.bossbar"))
@@ -208,6 +209,7 @@ public class SlayersCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.slayer.endermanSlayer.highlightBeacons"))
+								.description(Component.translatable("skyblocker.config.slayer.endermanSlayer.highlightBeacons.@Toolip"))
 								.binding(defaults.slayers.endermanSlayer.highlightBeacons,
 										() -> config.slayers.endermanSlayer.highlightBeacons,
 										newValue -> config.slayers.endermanSlayer.highlightBeacons = newValue)

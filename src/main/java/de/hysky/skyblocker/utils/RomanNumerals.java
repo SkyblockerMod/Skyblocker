@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.Locale;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-
-import java.util.Locale;
+import org.jspecify.annotations.Nullable;
 
 public class RomanNumerals {
 	private static final Int2ObjectMap<String> ROMAN_NUMERALS = Int2ObjectMaps.unmodifiable(new Int2ObjectLinkedOpenHashMap<>(
@@ -35,7 +36,7 @@ public class RomanNumerals {
 	 * @return True if the string is a valid roman numeral, false otherwise.
 	 * @implNote This will only check if the string contains valid roman numeral characters. It won't check if the numeral is well-formed.
 	 */
-	public static boolean isValidRomanNumeral(String romanNumeral) {
+	public static boolean isValidRomanNumeral(@Nullable String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return false;
 		for (int i = 0; i < romanNumeral.length(); i++) {
 			if (getDecimalValue(romanNumeral.charAt(i)) == 0) return false;
@@ -49,7 +50,7 @@ public class RomanNumerals {
 	 * @param romanNumeral The roman numeral to convert.
 	 * @return The decimal number, or 0 if the string is empty, null, or malformed.
 	 */
-	public static int romanToDecimal(String romanNumeral) {
+	public static int romanToDecimal(@Nullable String romanNumeral) {
 		if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
 		romanNumeral = romanNumeral.trim().toUpperCase(Locale.ENGLISH);
 		int decimal = 0;

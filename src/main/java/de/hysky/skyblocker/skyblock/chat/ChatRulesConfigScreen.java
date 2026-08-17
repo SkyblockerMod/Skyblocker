@@ -26,16 +26,14 @@ public class ChatRulesConfigScreen extends Screen {
 		LinearLayout footerLayout = layout.addToFooter(new LinearLayout(0, 0, LinearLayout.Orientation.HORIZONTAL));
 		footerLayout.defaultCellSetting().paddingHorizontal(5).paddingVertical(2);
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_CANCEL, _ -> {
-			if (minecraft != null) onClose();
+			onClose();
 		}).build());
 		footerLayout.addChild(Button.builder(Component.translatable("skyblocker.config.chat.chatRules.screen.new"),
 				_ -> chatRulesConfigListWidget.addRuleAfterSelected()
 		).build());
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> {
 			chatRulesConfigListWidget.saveRules();
-			if (minecraft != null) {
-				onClose();
-			}
+			onClose();
 		}).build());
 
 		layout.arrangeElements();
@@ -51,16 +49,15 @@ public class ChatRulesConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		assert minecraft != null;
 		if (!chatRulesConfigListWidget.hasChanges()) {
-			this.minecraft.setScreen(parent);
+			this.minecraft.gui.setScreen(parent);
 			return;
 		}
-		minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
+		minecraft.gui.setScreen(new ConfirmScreen(confirmedAction -> {
 			if (confirmedAction) {
-				this.minecraft.setScreen(parent);
+				this.minecraft.gui.setScreen(parent);
 			} else {
-				minecraft.setScreen(this);
+				minecraft.gui.setScreen(this);
 			}
 		}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard"), CommonComponents.GUI_CANCEL));
 	}

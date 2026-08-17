@@ -4,11 +4,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Either;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-import com.mojang.datafixers.util.Either;
 
 /**
  * An item wiki lookup for certain screen.
@@ -30,9 +32,8 @@ public interface WikiLookup {
 	 * Called after {@link WikiLookup#canSearch(String, Either)} when pressing a wiki lookup key.
 	 * @param itemStack An Item Stack.
 	 * @param player The player entity.
-	 * @param useOfficial Use official will open Hypixel Wiki, other will open Fandom.
 	 */
-	void open(ItemStack itemStack, Player player, boolean useOfficial);
+	void open(ItemStack itemStack, Player player);
 
 	/**
 	 * Called before open the wiki lookup.

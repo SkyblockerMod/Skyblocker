@@ -2,8 +2,11 @@ package de.hysky.skyblocker.utils.chat;
 
 import net.minecraft.client.resources.language.I18n;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
+
 public enum ChatFilterResult {
 	// Skip this one / no action
+	@EnumDisabledValue
 	PASS,
 	// Filter
 	FILTER,

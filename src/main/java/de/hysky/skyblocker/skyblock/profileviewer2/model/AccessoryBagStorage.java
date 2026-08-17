@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 public class AccessoryBagStorage {
 	@SerializedName("highest_magical_power")
@@ -21,9 +21,7 @@ public class AccessoryBagStorage {
 		public int highestUnlockedSlot;
 		@SerializedName("refund_1")
 		public boolean refund1;
-		/*
-		 * Slot 0 is your current active Stats Tuning Points, Slots 1-4 are presets.
-		 */
+		/// Slot 0 is your current active Stats Tuning Points, Slots 1-4 are presets.
 		@SerializedName("slot_0")
 		public TuningSlot activeSlot = new TuningSlot();
 

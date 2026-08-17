@@ -1,18 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
-import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
-import de.hysky.skyblocker.utils.OkLabColor;
-import de.hysky.skyblocker.utils.render.GuiHelper;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -39,17 +34,26 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
-import java.util.function.Predicate;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.InsertTextVisitor;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.SetStyleVisitor;
+import de.hysky.skyblocker.utils.OkLabColor;
+import de.hysky.skyblocker.utils.SkyBlockColors;
+import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class CustomizeNameWidget extends AbstractContainerWidget {
 	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
@@ -91,10 +95,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		addFormattingButtons(builder);
 
 		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.customColor"), _ ->
-				client.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
+				client.gui.setScreen(ColorPopup.create(parent, color -> setStyle(Style.EMPTY.withColor(color))))
 		).size(48, 16).build(), 2, 17, 1, 3));
 		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), _ ->
-				client.setScreen(ColorPopup.createGradient(parent, this::createGradient))
+				client.gui.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
 		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));
 		builder.add(previewWidget = grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.empty(), textRenderer).setMaxWidth(20 * 16, StringWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, LayoutSettings.defaults().paddingVertical(2).alignHorizontallyCenter()));
@@ -114,7 +118,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 		int colorButtonIndex = 0;
 		for (ChatFormatting formatting : ChatFormatting.values()) {
-			if (formatting.isColor()) {
+			if (TextColor.fromLegacyFormat(formatting) != null) {
 				builder.add(grid.addChild(new ColorButton(formatting), 2, colorButtonIndex++));
 			}
 		}
@@ -396,7 +400,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(color.getColor());
+			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(TextColor.fromLegacyFormat(color).getValue()));
 		}
 
 		@Override
@@ -475,10 +479,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		public boolean keyPressed(KeyEvent input) {
 			boolean captured = true;
 			switch (input.key()) {
-				case GLFW.GLFW_KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
-				case GLFW.GLFW_KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
+				case InputConstants.KEY_LEFT -> moveCursor(true, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case InputConstants.KEY_RIGHT -> moveCursor(false, input.hasShiftDown(), input.hasControlDownWithQuirk());
+				case InputConstants.KEY_BACKSPACE -> erase(true, input.hasControlDownWithQuirk());
+				case InputConstants.KEY_DELETE -> erase(false, input.hasControlDownWithQuirk());
 				default -> captured = false;
 			}
 			if (captured) return true;

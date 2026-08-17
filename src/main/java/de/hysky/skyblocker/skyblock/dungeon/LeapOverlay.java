@@ -1,24 +1,16 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.joml.Matrix3x2fStack;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -44,6 +36,17 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ContainerUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 public class LeapOverlay extends Screen implements ContainerListener {
 	public static final String TITLE = "Spirit Leap";
@@ -127,10 +130,10 @@ public class LeapOverlay extends Screen implements ContainerListener {
 			return true;
 		} else if (CONFIG.get().leapKeybinds) {
 			return switch (input.key()) {
-				case GLFW.GLFW_KEY_1 -> leapToPlayer(0);
-				case GLFW.GLFW_KEY_2 -> leapToPlayer(1);
-				case GLFW.GLFW_KEY_3 -> leapToPlayer(2);
-				case GLFW.GLFW_KEY_4 -> leapToPlayer(3);
+				case InputConstants.KEY_1 -> leapToPlayer(0);
+				case InputConstants.KEY_2 -> leapToPlayer(1);
+				case InputConstants.KEY_3 -> leapToPlayer(2);
+				case InputConstants.KEY_4 -> leapToPlayer(3);
 				default -> false;
 			};
 		}
@@ -165,7 +168,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 
 	@Override
 	public void removed() {
-		if (this.minecraft != null && this.minecraft.player != null) {
+		if (this.minecraft.player != null) {
 			this.handler.removed(this.minecraft.player);
 			this.handler.removeSlotListener(this);
 		}
@@ -186,7 +189,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		public void onClick(MouseButtonEvent click, boolean doubled) {
 			if (LeapOverlay.this.hovered == null) return;
 
-			assert minecraft != null && minecraft.player != null && minecraft.gameMode != null;
+			assert minecraft.player != null && minecraft.gameMode != null;
 			references.stream()
 					.filter(ref -> ref.uuid().equals(LeapOverlay.this.hovered))
 					.findAny()
@@ -241,7 +244,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 				matrices.pushMatrix();
 				matrices.translate(centreX, this.getY() + this.getHeight() - (halfFontHeight * 3));
 				matrices.scale(scale, scale);
-				graphics.centeredText(CLIENT.font, reference.status().text.get(), 0, 0, CommonColors.WHITE);
+				graphics.centeredText(CLIENT.font, reference.status().text, 0, 0, CommonColors.WHITE);
 				matrices.popMatrix();
 
 				//Overlay
@@ -277,7 +280,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		}
 
 		private void clickSlot() {
-			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), GLFW.GLFW_MOUSE_BUTTON_LEFT, ContainerInput.PICKUP, CLIENT.player);
+			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
 			}
@@ -285,13 +288,13 @@ public class LeapOverlay extends Screen implements ContainerListener {
 	}
 
 	private enum PlayerStatus {
-		DEAD(() -> Component.translatable("text.skyblocker.dead").withColor(CommonColors.RED), ARGB.color(64, CommonColors.SOFT_RED)),
-		OFFLINE(() -> Component.translatable("text.skyblocker.offline").withColor(CommonColors.GRAY), ARGB.color(64, CommonColors.LIGHT_GRAY));
+		DEAD(Component.translatable("text.skyblocker.dead").withColor(CommonColors.RED), ARGB.color(64, CommonColors.SOFT_RED)),
+		OFFLINE(Component.translatable("text.skyblocker.offline").withColor(CommonColors.GRAY), ARGB.color(64, CommonColors.LIGHT_GRAY));
 
-		private final Supplier<Component> text;
+		private final Component text;
 		private final int overlayColor;
 
-		PlayerStatus(Supplier<Component> text, int overlayColor) {
+		PlayerStatus(Component text, int overlayColor) {
 			this.text = text;
 			this.overlayColor = overlayColor;
 		}

@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.compatibility;
 
-import net.fabricmc.loader.api.FabricLoader;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.util.List;
-import java.util.Set;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class MixinPlugin implements IMixinConfigPlugin {
-	private static final boolean OPTIFABRIC_LOADED = FabricLoader.getInstance().isModLoaded("optifabric");
+	private static final boolean ADAPTIVE_TOOLTIPS_LOADED = FabricLoader.getInstance().isModLoaded("adaptive_tooltips");
 
 	@Override
 	public void onLoad(String mixinPackage) {
@@ -26,7 +26,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		return switch (mixinClassName) {
-			case String s when s.endsWith("WorldRendererMixin") -> !OPTIFABRIC_LOADED;
+			case String s when s.endsWith("ScrollTrackerMixin") -> ADAPTIVE_TOOLTIPS_LOADED;
 			case String s when s.endsWith("GlCommandEncoderMixin") -> SystemUtils.IS_OS_MAC && "aarch64".equalsIgnoreCase(SystemUtils.OS_ARCH);
 
 			default -> true;

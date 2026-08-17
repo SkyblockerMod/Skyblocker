@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
 
 public class HuntingToolkitIndicatorAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(
@@ -22,7 +24,7 @@ public class HuntingToolkitIndicatorAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		String joinedTooltip = String.join("", stack.skyblocker$getLoreStrings());
-		if (joinedTooltip.contains("Part of the Hunting Toolkit!")) {
+		if (joinedTooltip.contains("Part of a Toolkit!")) {
 			return SlotText.topLeftList(Component.literal("❒").withColor(0xFFFF5555));
 		}
 

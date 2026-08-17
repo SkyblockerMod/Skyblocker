@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -14,32 +16,40 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 
 public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private static final int TEXT_FIELD_HEIGHT = 20;
 
 	private final List<AbstractWidget> filteredWidgets = new ObjectArrayList<>();
-	protected GridLayout grid = new GridLayout();
 
 	private final LinearLayout layoutWidget = LinearLayout.vertical();
 	private final EditBox searchField;
 	private final WidgetsContainer widgetsContainer;
 
 	private final int expectedWidgetWidth;
+	private final boolean spaceElementsOut;
 
-	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth) {
+	/// A grid of searchable widgets
+	/// @param expectedWidgetWidth The expected width of each widget in the grid. This class may place multiple grid widgets in the same row.
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, boolean spaceElementsOut) {
 		super(x, y, width, height, message, AbstractScrollArea.defaultSettings(8));
 		searchField = new EditBox(Minecraft.getInstance().font, width, TEXT_FIELD_HEIGHT, Component.translatable("gui.recipebook.search_hint"));
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		searchField.setResponder(this::filterInternal);
 		this.expectedWidgetWidth = expectedWidgetWidth;
+		this.spaceElementsOut = spaceElementsOut;
 
 		widgetsContainer = new WidgetsContainer();
 		layoutWidget.addChild(searchField);
 		layoutWidget.addChild(widgetsContainer);
 		layoutWidget.arrangeElements();
 		layoutWidget.setPosition(x, y);
+	}
+
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth) {
+		this(x, y, width, height, message, expectedWidgetWidth, false);
 	}
 
 	@Override
@@ -54,25 +64,45 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		layoutWidget.setY(y);
 	}
 
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		searchField.setWidth(width);
+		widgetsContainer.setWidth(width);
+		layoutWidget.arrangeElements();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		widgetsContainer.setHeight(height - TEXT_FIELD_HEIGHT);
+		layoutWidget.arrangeElements();
+	}
+
 	public void setSearch(String search) {
 		searchField.setValue(search);
 	}
 
-	protected void recreateGrid() {
-		GridLayout newGrid = new GridLayout();
-		GridLayout.RowHelper adder = newGrid.createRowHelper((getWidth() - 6) / expectedWidgetWidth);
-		filteredWidgets.forEach(adder::addChild);
-		newGrid.arrangeElements();
-		newGrid.setPosition(grid.getX(), grid.getY());
-		grid = newGrid;
+	public void setScrollAmount(double amount) {
+		widgetsContainer.setScrollAmount(amount);
+	}
+
+	public double getScrollAmount() {
+		return widgetsContainer.scrollAmount();
+	}
+
+	/**
+	 * @return the grid's rectangle. Does not include the search bar.
+	 */
+	public ScreenRectangle getGridRectangle() {
+		return widgetsContainer.getRectangle();
 	}
 
 	private void filterInternal(String input) {
 		Collection<? extends AbstractWidget> widgets = filterWidgets(input);
 		filteredWidgets.clear();
 		filteredWidgets.addAll(widgets);
-		recreateGrid();
-		widgetsContainer.refreshScrollAmount();
+		widgetsContainer.recreateGrid();
 	}
 
 	protected abstract Collection<? extends AbstractWidget> filterWidgets(String input);
@@ -89,6 +119,7 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	}
 
 	private class WidgetsContainer extends AbstractContainerWidget {
+		protected GridLayout grid = new GridLayout();
 
 		private WidgetsContainer() {
 			super(0, 0, SearchableGridWidget.this.getWidth(), SearchableGridWidget.this.getHeight() - TEXT_FIELD_HEIGHT, Component.literal("Grid"), AbstractScrollArea.defaultSettings(8));
@@ -104,6 +135,18 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		public void setY(int y) {
 			super.setY(y);
 			grid.setY(y);
+		}
+
+		@Override
+		public void setWidth(int width) {
+			super.setWidth(width);
+			recreateGrid();
+		}
+
+		@Override
+		public void setHeight(int height) {
+			super.setHeight(height);
+			recreateGrid();
 		}
 
 		@Override
@@ -143,6 +186,21 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 
 		@Override
 		protected void updateWidgetNarration(NarrationElementOutput builder) {}
+
+		protected void recreateGrid() {
+			GridLayout newGrid = new GridLayout();
+			int columns = (getWidth() - AbstractScrollArea.SCROLLBAR_WIDTH) / expectedWidgetWidth;
+			GridLayout.RowHelper adder = newGrid.createRowHelper(columns);
+			filteredWidgets.forEach(adder::addChild);
+			if (spaceElementsOut) {
+				newGrid.columnSpacing(((getWidth() - AbstractScrollArea.SCROLLBAR_WIDTH) - columns * expectedWidgetWidth) / columns);
+			}
+			newGrid.arrangeElements();
+			newGrid.setPosition(grid.getX(), grid.getY());
+			grid = newGrid;
+
+			widgetsContainer.refreshScrollAmount();
+		}
 	}
 
 	@Override

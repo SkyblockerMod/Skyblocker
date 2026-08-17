@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import org.lwjgl.glfw.GLFW;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -16,12 +15,16 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.utils.ContainerUtils;
 
 public class RadialMenuScreen extends Screen implements ContainerListener {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -104,12 +107,12 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	@Override
 	public void mouseMoved(double mouseX, double mouseY) {
 		super.mouseMoved(mouseX, mouseY);
-		if (CLIENT.screen == null) return;
-		float actualX = (float) (mouseX * 2) - CLIENT.screen.width;
-		float actualY = (float) (mouseY * 2) - CLIENT.screen.height;
+		if (CLIENT.gui.screen() == null) return;
+		float actualX = (float) (mouseX * 2) - CLIENT.gui.screen().width;
+		float actualY = (float) (mouseY * 2) - CLIENT.gui.screen().height;
 
 		//return if over hide button
-		if (actualX > CLIENT.screen.width - 100 && actualY > CLIENT.screen.height - 50) {
+		if (actualX > CLIENT.gui.screen().width - 100 && actualY > CLIENT.gui.screen().height - 50) {
 			buttonsHoveredIndex = -1;
 			return;
 		}
@@ -132,11 +135,11 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 	@Override
 	public boolean keyPressed(KeyEvent keyEvent) {
 		switch (keyEvent.key()) {
-			case GLFW.GLFW_KEY_RIGHT -> this.navigateDirection(ScreenDirection.RIGHT);
-			case GLFW.GLFW_KEY_LEFT -> this.navigateDirection(ScreenDirection.LEFT);
-			case GLFW.GLFW_KEY_DOWN -> this.navigateDirection(ScreenDirection.DOWN);
-			case GLFW.GLFW_KEY_UP -> this.navigateDirection(ScreenDirection.UP);
-			case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_SPACE -> this.clickSlot();
+			case InputConstants.KEY_RIGHT -> this.navigateDirection(ScreenDirection.RIGHT);
+			case InputConstants.KEY_LEFT -> this.navigateDirection(ScreenDirection.LEFT);
+			case InputConstants.KEY_DOWN -> this.navigateDirection(ScreenDirection.DOWN);
+			case InputConstants.KEY_UP -> this.navigateDirection(ScreenDirection.UP);
+			case InputConstants.KEY_RETURN, InputConstants.KEY_SPACE -> this.clickSlot();
 			default -> {
 				if (CLIENT.options.keyUp.matches(keyEvent)) this.navigateDirection(ScreenDirection.UP);
 				else if (CLIENT.options.keyDown.matches(keyEvent)) this.navigateDirection(ScreenDirection.DOWN);
@@ -189,7 +192,7 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 
 	private void hide(Button button) {
 		if (CLIENT.player == null) return;
-		CLIENT.setScreen(new ContainerScreen(handler, CLIENT.player.getInventory(), parentName));
+		CLIENT.gui.setScreen(new ContainerScreen(handler, CLIENT.player.getInventory(), parentName));
 	}
 
 	/**
@@ -214,7 +217,7 @@ public class RadialMenuScreen extends Screen implements ContainerListener {
 
 	private void clickSlot(int slotId, int button) {
 		if (CLIENT.gameMode == null) return;
-		CLIENT.gameMode.handleContainerInput(handler.containerId, slotId + menuType.clickSlotOffset(slotId), menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId)), ContainerInput.PICKUP, CLIENT.player);
+		CLIENT.gameMode.handleContainerInput(handler.containerId, slotId + menuType.clickSlotOffset(slotId), ContainerUtils.getContainerClickButton(menuType.remapClickSlotButton(button, slotId + menuType.clickSlotOffset(slotId))), ContainerInput.PICKUP, CLIENT.player);
 	}
 
 	@Override

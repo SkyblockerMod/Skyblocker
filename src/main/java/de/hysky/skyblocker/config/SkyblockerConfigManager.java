@@ -1,10 +1,39 @@
 package de.hysky.skyblocker.config;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.lang.StackWalker.Option;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import net.azureaaron.dandelion.api.ConfigManager;
+import net.azureaaron.dandelion.api.DandelionConfigScreen;
+import net.azureaaron.dandelion.api.PlatformLinks;
+import net.azureaaron.dandelion.api.patching.ConfigPatch;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import de.hysky.skyblocker.config.categories.ChatCategory;
@@ -28,38 +57,14 @@ import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.utils.datafixer.JsonHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.azureaaron.dandelion.api.ConfigManager;
-import net.azureaaron.dandelion.api.DandelionConfigScreen;
-import net.azureaaron.dandelion.api.PlatformLinks;
-import net.azureaaron.dandelion.api.patching.ConfigPatch;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.lang.StackWalker.Option;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-import org.slf4j.Logger;
 
 public class SkyblockerConfigManager {
-	public static final int CONFIG_VERSION = 9;
-	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final int CONFIG_VERSION = 11;
+	static final Logger LOGGER = LogUtils.getLogger();
+	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
 	private static final Path CONFIG_FILE = CONFIG_DIR.resolve("skyblocker.json");
 	private static final ConfigManager<SkyblockerConfig> CONFIG_MANAGER = ConfigManager.create(SkyblockerConfig.class, CONFIG_FILE, UnaryOperator.identity());
@@ -83,11 +88,14 @@ public class SkyblockerConfigManager {
 		dataFix(CONFIG_FILE, CONFIG_DIR.resolve("skyblocker.json.old"));
 
 		CONFIG_MANAGER.load();
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(configLiteral("config")).then(configLiteral("options"))));
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE)
+				.then(configLiteral("config"))
+				.then(configLiteral("options"))
+		));
 		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			if (get().uiAndVisuals.showConfigButton && screen instanceof ContainerScreen genericContainerScreen && screen.getTitle().getString().equals("SkyBlock Menu")) {
 				Screens.getWidgets(screen).add(Button
-						.builder(Component.literal("\uD83D\uDD27"), _ -> client.setScreen(createGUI(screen)))
+						.builder(Component.literal("\uD83D\uDD27"), _ -> client.gui.setScreen(createGUI(screen)))
 						.bounds(((AbstractContainerScreenAccessor) genericContainerScreen).getX() + ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 16, ((AbstractContainerScreenAccessor) genericContainerScreen).getY() + 4, 12, 12)
 						.tooltip(Tooltip.create(Component.translatable("skyblocker.config.title", Component.translatable("skyblocker.config.title.settings"))))
 						.build());
@@ -168,7 +176,24 @@ public class SkyblockerConfigManager {
 	 */
 	private static LiteralArgumentBuilder<FabricClientCommandSource> configLiteral(String name) {
 		return literal(name).executes(Scheduler.queueOpenScreenCommand(() -> createGUI(null)))
-				.then(argument("option", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("option", String.class)))));
+				.then(argument("search", StringArgumentType.greedyString()).executes(ctx -> Scheduler.queueOpenScreen(createGUI(null, ctx.getArgument("search", String.class)))));
+	}
+
+	/**
+	 * Returns {@code true} if the given class represents one of our config
+	 * classes. This prevents {@link de.hysky.skyblocker.DisableAll#disableEntries(Object)} from touching
+	 * unrelated objects from other mods.
+	 */
+	@SuppressWarnings("JavadocReference")
+	public static boolean isConfigClass(Class<?> clazz) {
+		return !clazz.isPrimitive()
+			&& !clazz.isEnum()
+			&& !clazz.isRecord()
+			&& !clazz.equals(String.class)
+			&& !Number.class.isAssignableFrom(clazz)
+			&& !Map.class.isAssignableFrom(clazz)
+			&& !Collection.class.isAssignableFrom(clazz)
+			&& clazz.getPackageName().startsWith(CONFIGS_PACKAGE);
 	}
 
 	public static void dataFix(Path configDir, Path backupDir) {

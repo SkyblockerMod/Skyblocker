@@ -1,14 +1,13 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.container.TooltipAdder;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -17,6 +16,10 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLongImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectLongPair;
+import org.intellij.lang.annotations.Language;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -25,16 +28,15 @@ import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.intellij.lang.annotations.Language;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -192,7 +194,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (!bitsMatcher.find()) return;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 
 			if (itemCost == 0) return;
 
@@ -249,7 +251,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	 */
 	private Int2ObjectMap<ItemStack> getSlots() {
 		Minecraft client = Minecraft.getInstance();
-		if (client.screen instanceof AbstractContainerScreen<?> screen) {
+		if (client.gui.screen() instanceof AbstractContainerScreen<?> screen) {
 			AbstractContainerMenu handler = screen.getMenu();
 
 			Int2ObjectMap<ItemStack> slots = new Int2ObjectOpenHashMap<>();
@@ -319,7 +321,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			if (!bitsMatcher.find()) continue;
 
 			long bitsCost = Long.parseLong(bitsMatcher.group("amount").replace(",", ""));
-			double itemCost = ItemUtils.getItemPrice(stack).keyDouble() * stack.getCount();
+			double itemCost = ItemUtils.getItemPrice(stack).orElse(0) * stack.getCount();
 			if (itemCost == 0 || bitsCost == 0) continue;
 
 			long coinsPerBit = Math.round(itemCost / bitsCost);
@@ -372,7 +374,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			for (Map.Entry<String, Integer> entry : category.entrySet()) {
 				String itemID = entry.getKey();
 				Integer itemBitsPrice = entry.getValue();
-				double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();
+				double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);
 				long coinsPerBit = Math.round(itemCost / itemBitsPrice);
 				results.put(itemID, coinsPerBit);
 			}
@@ -380,7 +382,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		} else if (categoryName.contains("Fuel Blocks")) {
 			String itemID = "INFERNO_FUEL_BLOCK";    // but I don't know if only 1x offer of 64x offer gets discount too
 			int[] itemBitsPrice = {75, 3600};   // if only 1x gets discount then it doesn't matter as x64 would be ALWAYS better even with it
-			double itemCost = ItemUtils.getItemPrice(itemID).keyDouble();   // TLDR: need blaze slayer 9 players to show their prices
+			double itemCost = ItemUtils.getItemPrice(itemID).orElse(0);   // TLDR: need blaze slayer 9 players to show their prices
 			long coinsPerBit = (long) (Math.max(itemCost / itemBitsPrice[0], itemCost * 64 / itemBitsPrice[1]));
 			Object2LongMap<String> fuelBlockResult = new Object2LongOpenHashMap<>();
 			fuelBlockResult.put(itemID, coinsPerBit);

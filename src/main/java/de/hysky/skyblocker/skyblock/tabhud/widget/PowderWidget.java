@@ -1,19 +1,22 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.Util;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Formatters;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Util;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // this widget shows how much mithril and gemstone powder you have
 // (dwarven mines and crystal hollows)
@@ -41,7 +44,7 @@ public class PowderWidget extends TabHudWidget {
 	private long lastUpdate = 0;
 
 	public PowderWidget() {
-		super("Powders", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Powders", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override

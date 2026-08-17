@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 

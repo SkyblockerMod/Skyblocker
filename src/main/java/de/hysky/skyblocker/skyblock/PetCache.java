@@ -1,17 +1,16 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegexUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.data.ProfiledData;
+import java.nio.file.Path;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.jspecify.annotations.Nullable;
+
 import net.azureaaron.networth.utils.PetConstants;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -24,14 +23,17 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.jspecify.annotations.Nullable;
 
-import java.nio.file.Path;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.ProfiledData;
 
 /**
  * Doesn't work with auto pet right now because that's complicated.
@@ -41,7 +43,7 @@ import java.util.regex.Pattern;
 public class PetCache {
 	private static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("pet_cache.json");
 	private static final ProfiledData<PetInfo> CACHED_PETS = new ProfiledData<>(FILE, PetInfo.CODEC);
-	private static final Pattern AUTOPET_PATTERN = Pattern.compile("^Autopet equipped your \\[Lvl (?<level>\\d+)\\] (?<name>[A-Za-z ]+)(?: ✦)?! VIEW RULE$");
+	private static final Pattern AUTOPET_PATTERN = Pattern.compile("^Autopet equipped your \\[Lvl (?<level>\\d+)] (?<name>[A-Za-z ]+)(?: ✦)?! VIEW RULE$");
 
 	/**
 	 * Used in case the server lags to prevent the screen tick check from overwriting the clicked pet logic
@@ -112,6 +114,7 @@ public class PetCache {
 	/**
 	 * Parses the Auto Pet messages to try and detect the active pet
 	 */
+	@SuppressWarnings("UnstableApiUsage")
 	private static boolean onMessage(Component text, boolean overlay) {
 		if (!Utils.isOnSkyblock() || overlay) return true;
 
@@ -142,7 +145,7 @@ public class PetCache {
 
 			SkyblockItemRarity rarity = SkyblockItemRarity.fromColor(color.intValue());
 
-			if (rarity != null && rarity != SkyblockItemRarity.UNKNOWN) {
+			if (rarity != SkyblockItemRarity.UNKNOWN) {
 				//This is technically an internal class but I don't feel like copying it out right now and I got no plans to change/remove it :shrug:
 				int petOffset = PetConstants.RARITY_OFFSETS.getOrDefault(rarity.name(), 0);
 				//The list is copied due to a FastUtil bug with sub list iterators

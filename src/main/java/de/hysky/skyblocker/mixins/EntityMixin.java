@@ -1,17 +1,10 @@
 package de.hysky.skyblocker.mixins;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.injected.SkyblockerEntity;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.LazerTimer;
-import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +14,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.time.Instant;
-import java.util.UUID;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.player.Player;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.injected.SkyblockerEntity;
+import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.slayers.boss.voidgloom.LazerTimer;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SkyblockerEntity {
@@ -47,14 +51,14 @@ public abstract class EntityMixin implements SkyblockerEntity {
 
 	@ModifyExpressionValue(method = "isInvisibleTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z"))
 	public boolean skyblocker$showInvisibleArmorStands(boolean isSpectator, Player player) {
-		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityType.ARMOR_STAND));
+		return isSpectator || (isInvisible() && Utils.isOnHypixel() && Debug.debugEnabled() && SkyblockerConfigManager.get().debug.showInvisibleArmorStands && type.equals(EntityTypes.ARMOR_STAND));
 	}
 
 	@ModifyReturnValue(method = "startRiding(Lnet/minecraft/world/entity/Entity;ZZ)Z", at = @At("RETURN"))
 	private boolean modifyStartRidingReturnValue(boolean originalReturnValue, Entity entity, boolean force) {
 		if (originalReturnValue && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
-				type == EntityType.ENDERMAN &&
-				entity.getType() == EntityType.ARMOR_STAND &&
+				type == EntityTypes.ENDERMAN &&
+				entity.getType() == EntityTypes.ARMOR_STAND &&
 				SlayerManager.isSelectedBoss(uuid) &&
 				!LazerTimer.isActive()) LazerTimer.activate();
 		return originalReturnValue;
@@ -62,7 +66,7 @@ public abstract class EntityMixin implements SkyblockerEntity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
-		if (type == EntityType.ENDERMAN && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
+		if (type == EntityTypes.ENDERMAN && SkyblockerConfigManager.get().slayers.endermanSlayer.lazerTimer &&
 				SlayerManager.isSelectedBoss(uuid) && LazerTimer.isActive()) LazerTimer.tick();
 	}
 
@@ -77,5 +81,9 @@ public abstract class EntityMixin implements SkyblockerEntity {
 			}
 			SlayerManager.BossFight.remove();
 		}
+
+		// literal voodoo magic
+		Entity entity = (Entity) (Object) this;
+		GreenhousePaste.onEntityChange(entity);
 	}
 }

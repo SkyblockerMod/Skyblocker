@@ -1,11 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.ItemUtils;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
@@ -34,6 +32,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.EntityUtils;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 import static de.hysky.skyblocker.skyblock.item.custom.screen.CustomizeScreen.CLIENT;
 
@@ -67,6 +70,11 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		public boolean isModelPartShown(PlayerModelPart modelPart) {
 			return modelPart != PlayerModelPart.CAPE && CLIENT.options.isModelPartEnabled(modelPart);
 		}
+
+		@Override
+		public int getId() {
+			return EntityUtils.PLACEHOLDER_ID;
+		}
 	};
 
 	public ArmorTab(CustomizeScreen parent) {
@@ -90,7 +98,10 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		vertical.addChild(pieceSelectionWidget);
 		layout.addChild(vertical, 0, 0, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
-		int width = 200;
+		// 444 results in a head selection widget of 330,
+		// for which subtracting 10 pixels of padding and scrollbar,
+		// gives a perfect 16 column head grid
+		int width = Math.min(444, parent.width) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget = new HeadSelectionWidget(0, 0, width, 165);
 		layout.addChild(headSelectionWidget, 0, 1, 2, 1, LayoutSettings::alignVerticallyMiddle);
 
@@ -154,7 +165,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 
 	@Override
 	public void doLayout(ScreenRectangle tabArea) {
-		int width = Math.min(460, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
+		int width = Math.min(444, tabArea.width()) - PLAYER_WIDGET_WIDTH - PADDING * 3;
 		headSelectionWidget.setWidth(width);
 		int modelFieldWidth = (int) (width * (1 / 3f));
 		trimSelectionWidget.setWidth(width - modelFieldWidth - PADDING / 2);
@@ -164,7 +175,7 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 	}
 
 	public void recreate() {
-		if (colorSelectionWidget != null) colorSelectionWidget.getTimelineWidget().recreateImage();
+		colorSelectionWidget.getTimelineWidget().recreateImage();
 	}
 
 	@Override

@@ -1,15 +1,18 @@
 package de.hysky.skyblocker.mixins;
 
 import java.util.Objects;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import net.minecraft.world.entity.projectile.FishingHook;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
 
 @Mixin(FishingHookRenderer.class)
 public abstract class RenderFishMixin {

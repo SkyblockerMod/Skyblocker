@@ -2,6 +2,9 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
@@ -14,7 +17,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
 import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public class DropdownWidget<T> extends AbstractContainerWidget {
