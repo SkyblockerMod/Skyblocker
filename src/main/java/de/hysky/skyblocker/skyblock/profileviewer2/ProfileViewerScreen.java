@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -37,6 +38,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
+	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
 	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage(), new CollectionsPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
@@ -44,12 +46,13 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
-	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
+	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member, Map<String, Integer> leaderboards) {
 		super(Component.literal("Skyblocker Profile Viewer"));
 		this.apiProfileResponse = apiProfileResponse;
 		this.profile = profile;
 		this.userProfile = userProfile;
 		this.member = member;
+		this.leaderboards = leaderboards;
 		this.loadPages();
 		this.setSelectedPage(0);
 	}
@@ -59,7 +62,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	private LoadingInformation createLoadingInformation() {
-		return new LoadingInformation(this.profile, this.userProfile, this.member, ItemLoader.decodeItems(this.member));
+		return new LoadingInformation(this.profile, this.userProfile, this.member, this.leaderboards, ItemLoader.decodeItems(this.member));
 	}
 
 	private void loadPages() {
