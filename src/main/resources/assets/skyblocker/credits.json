@@ -334,6 +334,10 @@
 			"credit": "AzureAaron and contributors"
 		},
 		{
+			"name": "JGit",
+			"credit": "Eclipse Foundation"
+		},
+		{
 			"name": "Legacy Item DFU",
 			"credit": "AzureAaron"
 		},
@@ -354,8 +358,8 @@
 			"credit": "Nea and contributors"
 		},
 		{
-			"name": "JGit",
-			"credit": "Eclipse Foundation"
+			"name": "Render Chest",
+			"credit": "AzureAaron"
 		},
 		{
 			"name": "YetAnotherConfigLib",
