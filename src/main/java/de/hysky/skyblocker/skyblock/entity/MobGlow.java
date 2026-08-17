@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import net.azureaaron.renderchest.api.CustomGlowCallback;
+import net.azureaaron.renderchest.api.GlowConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.util.ARGB;
@@ -20,7 +21,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 
 public class MobGlow {
-	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;
+	public static final int NO_GLOW = GlowConstants.NO_GLOW;
 	private static final List<MobGlowAdder> ADDERS = new ArrayList<>();
 	/**
 	 * Cache for mob glow. Absence means the entity does not have custom glow.
@@ -32,18 +33,21 @@ public class MobGlow {
 	public static void init() {
 		// Clear the cache every tick
 		ClientTickEvents.END_LEVEL_TICK.register(_ -> clearCache());
-		CustomGlowCallback.EVENT.register((entity, _) -> applyCustomGlow(entity));
+		CustomGlowCallback.EVENT.register(MobGlow::applyCustomGlow);
 	}
 
-	private static int applyCustomGlow(Entity entity) {
+	private static int applyCustomGlow(Entity entity, EntityRenderState state) {
 		boolean allowGlowInLivid = LividColor.allowGlow();
 		boolean customGlow = hasOrComputeMobGlow(entity);
+		boolean allowGlow = allowGlowInLivid && state.appearsGlowing() || customGlow;
 
-		if (allowGlowInLivid && customGlow) {
-			return ARGB.opaque(MobGlow.getMobGlow(entity));
+		if (allowGlow && customGlow) {
+			return ARGB.opaque(getMobGlow(entity));
+		} else if (!allowGlow) {
+			return GlowConstants.REMOVE_GLOW;
 		}
 
-		return EntityRenderState.NO_OUTLINE;
+		return GlowConstants.NO_GLOW;
 	}
 
 	protected static void registerGlowAdder(MobGlowAdder adder) {

@@ -17,7 +17,6 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
 import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
@@ -27,16 +26,6 @@ import de.hysky.skyblocker.utils.ColorUtils;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
-
-	@Inject(method = "extractRenderState", at = @At("TAIL"), order = 1100)
-	private void skyblocker$customGlow(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state) {
-		boolean allowGlowInLivid = LividColor.allowGlow();
-		boolean allowGlow = allowGlowInLivid && state.appearsGlowing();
-
-		if (!allowGlow) {
-			state.outlineColor = EntityRenderState.NO_OUTLINE;
-		}
-	}
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))
