@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.Minecraft;

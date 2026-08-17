@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.foraging;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -81,7 +82,7 @@ public abstract class AbstractBlockHighlighter {
 	}
 
 	/**
-	 * Add initial highlights since {@link #onBlockUpdate(BlockPos, BlockState)} doesn't fire when the
+	 * Add initial highlights since {@link #onBlockUpdate(BlockPos, BlockState, BlockState)} doesn't fire when the
 	 * server sends chunk data via the {@code ChunkDataS2CPacket}.
 	 */
 	protected void onChunkLoad(ClientLevel level, LevelChunk chunk) {

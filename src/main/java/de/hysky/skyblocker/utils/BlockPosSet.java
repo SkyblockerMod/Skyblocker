@@ -586,7 +586,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 			var cloned = (BlockPosSet) super.clone();
 			cloned.entries = cloned.entries.clone();
 			return cloned;
-		} catch (CloneNotSupportedException unreachable) {
+		} catch (CloneNotSupportedException _) {
 			throw new RuntimeException();
 		}
 	}
