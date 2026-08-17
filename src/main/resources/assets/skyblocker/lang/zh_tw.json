@@ -11,7 +11,7 @@
     "skyblocker.config.chat.filter.hideAbility": "隱藏技能冷卻",
     "skyblocker.config.chat.filter.hideHeal": "隱藏治療訊息",
     "skyblocker.config.chat.filter.hideMana": "在動作欄中隱藏魔力消耗的提示訊息",
-    "skyblocker.config.uiAndVisuals.bars": "血量，魔力，防御，速度以及經驗計量條",
+    "skyblocker.config.uiAndVisuals.bars": "高級計量條",
     "skyblocker.config.chat": "訊息",
     "skyblocker.config.general.itemTooltip.avg": "平均類型",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "啟用計量條",
@@ -1832,5 +1832,14 @@
     "skyblocker.config.hunting.hauntedBiome.highlightBloodbat": "突顯Bloodbat",
     "skyblocker.config.hunting.hauntedBiome.highlightDuplico": "突顯Duplico",
     "skyblocker.config.hunting.safari.highlightSparklingCritters": "突顯Sparkling Critters",
-    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色"
+    "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色",
+    "skyblocker.config.foraging.enableTreeFelledNotification": "開啟完整砍伐提醒",
+    "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip": "顯示白色為第一個拼圖需要點擊的按鈕順序. 第二個拼圖為每一個雕像應該面對的方向.",
+    "skyblocker.config.helpers.buildersWand": "建築師魔杖",
+    "skyblocker.config.hunting.cavernBiome": "洞穴生態域",
+    "skyblocker.config.hunting.forestBiome": "森林生態域",
+    "skyblocker.config.uiAndVisuals.bars.@Tag[0]": "血量，mana，防禦，生命力，速度＆經驗計量條",
+    "skyblocker.config.uiAndVisuals.bars.enableBars.@Tooltip": "開啟高級血量，魔力，防禦，生命力，速度以及經驗計量條。",
+    "skyblocker.config.uiAndVisuals.bars.enableVanillaStyleManaBarBlinking": "開啟原版模式魔力計量條閃爍",
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened": "記住已開啟的背包/末影箱"
 }
