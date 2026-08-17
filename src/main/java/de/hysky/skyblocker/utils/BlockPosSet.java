@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.core.BlockPos;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import net.minecraft.core.BlockPos;
 
 public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable {
 	/// Sentinels for tombstones (deleted slots) and empty slots

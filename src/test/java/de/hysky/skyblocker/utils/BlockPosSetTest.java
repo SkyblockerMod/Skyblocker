@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.utils;
 
-import net.minecraft.core.BlockPos;
-import org.junit.jupiter.api.Test;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
@@ -10,6 +7,10 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.core.BlockPos;
 
 public class BlockPosSetTest {
 	@Test
