@@ -49,9 +49,6 @@ accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV2_FORMAT	Lcom/m
 accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	NORMAL_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
 accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	LINE_WIDTH_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
 
-# Glow
-accessible	class	net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding
-
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
 accessible	class	net/minecraft/client/gui/components/AbstractSelectionList$Entry
@@ -73,6 +70,3 @@ accessible	field	net/minecraft/client/resources/server/ServerPackManager$ServerP
 inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity
 inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack
 inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/hysky/skyblocker/injected/RecipeBookHolder
-inject-interface	net/minecraft/client/renderer/LevelRenderer	de/hysky/skyblocker/injected/EntityRenderMarker
-inject-interface	net/minecraft/client/renderer/feature/ItemFeatureRenderer$Submit	de/hysky/skyblocker/injected/CustomGlowState
-inject-interface	net/minecraft/client/renderer/rendertype/RenderType	de/hysky/skyblocker/injected/GlowRenderTypeHolder
