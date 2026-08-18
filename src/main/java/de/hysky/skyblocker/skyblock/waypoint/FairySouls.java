@@ -159,7 +159,7 @@ public class FairySouls {
 	private static void extractRendering(PrimitiveCollector collector) {
 		HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
-		if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
+		if (fairySoulsConfig.enableFairySoulsHelper && (fairySoulsConfig.highlightOnBingo || !Utils.isOnBingo()) && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
 			for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
 				boolean fairySoulNotFound = fairySoul.shouldRender();
 				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.distToCenterSqr(RenderHelper.getCamera().position()) > 2500) {
