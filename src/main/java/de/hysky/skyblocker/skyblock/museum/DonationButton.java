@@ -168,6 +168,10 @@ public class DonationButton extends AbstractWidget {
 		return Objects.requireNonNull(this.tooltip, "Tried to get tooltip before button was initialized.");
 	}
 
+	protected ItemStack getItem() {
+		return Objects.requireNonNull(this.itemStack);
+	}
+
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

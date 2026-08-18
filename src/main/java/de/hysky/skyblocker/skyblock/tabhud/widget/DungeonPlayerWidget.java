@@ -16,9 +16,9 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.RomanNumerals;
 
 /// This widget shows info about a player in the current dungeon group.
 public class DungeonPlayerWidget extends TabHudWidget {
@@ -60,12 +60,15 @@ public class DungeonPlayerWidget extends TabHudWidget {
 		String clazz = m.group("class");
 		String level = m.group("level");
 		DungeonClass dungeonClass = DungeonClass.from(clazz);
+		if (RomanNumerals.isValidRomanNumeral(level)) {
+			level = String.valueOf(RomanNumerals.romanToDecimal(level));
+		}
 
 		PlayerInfo playerInfo = PlayerListManager.getRaw(index);
 		this.addElement(new PlayerElement(playerInfo, removeDungeonClass(playerInfo.getTabListDisplayName()), true));
 
 		if (level == null) {
-			this.addElement(new PlainTextElement(Component.literal("Player is dead").withStyle(ChatFormatting.RED)));
+			this.addElement(Elements.iconTextComponent(Ico.SKULL, Component.literal("Player is dead").withStyle(ChatFormatting.RED)));
 			return;
 		}
 		this.addElement(Elements.iconTextComponent(

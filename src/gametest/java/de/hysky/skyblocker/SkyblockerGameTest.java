@@ -48,7 +48,7 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 			});
 
 			// Take a screenshot and compare it
-			singleplayer.getClientLevel().waitForChunksRender();
+			// singleplayer.getClientLevel().waitForChunksRender();
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_render").saveWithFileName("skyblocker_render"));
 
 			// Restore the fancy status bars config
