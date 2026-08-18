@@ -60,9 +60,8 @@ class CopyToPopup extends AbstractPopupScreen {
 	protected void init() {
 		layout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.hud.copy.copyPosition"), font)
 				.selected(selectedLocations.isEmpty()) // automatically select if it's empty
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyPosition.@Tooltip")))
 				.onValueChange((_, value) -> copyPosition = value).build()
-		);
+		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyPosition.@Tooltip")));
 		layout.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.copy.targetLocations").withStyle(ChatFormatting.BOLD), font), settings -> settings.paddingVertical(4));
 		LinearLayout content = LinearLayout.vertical().spacing(2);
 
