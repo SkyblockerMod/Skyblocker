@@ -80,8 +80,8 @@ public class EliteLeaderboards {
 			String id = entry.getKey();
 			LeaderboardInfo info = entry.getValue();
 
-			if (info.interval().toLowerCase(Locale.ENGLISH).equals("current") && info.itemId().isPresent()) {
-				collectionLeaderboardMapping.put(info.itemId().get(), id);
+			if (info.intervalType().toLowerCase(Locale.ENGLISH).equals("current") && info.collection().isPresent()) {
+				collectionLeaderboardMapping.put(info.collection().get(), id);
 			}
 		}
 
@@ -119,10 +119,10 @@ public class EliteLeaderboards {
 		}
 	}
 
-	private record LeaderboardInfo(Optional<String> itemId, String interval) {
+	private record LeaderboardInfo(Optional<String> collection, String intervalType) {
 		private static final Codec<LeaderboardInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.optionalFieldOf("itemId").forGetter(LeaderboardInfo::itemId),
-				Codec.STRING.fieldOf("interval").forGetter(LeaderboardInfo::interval)
+				Codec.STRING.optionalFieldOf("collection").forGetter(LeaderboardInfo::collection),
+				Codec.STRING.fieldOf("intervalType").forGetter(LeaderboardInfo::intervalType)
 				).apply(instance, LeaderboardInfo::new));
 		private static final Codec<Map<String, LeaderboardInfo>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 	}

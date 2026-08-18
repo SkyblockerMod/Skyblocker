@@ -143,7 +143,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 			FlexibleItemStack icon = ItemRepository.getItemStack(neuId, Ico.BARRIER);
 			CollectionTiers.Report report = entry.getValue();
 
-			CollectionItemWidget widget = new CollectionItemWidget(itemId, icon, info.profile(), report);
+			CollectionItemWidget widget = new CollectionItemWidget(itemId, icon, info, report);
 			this.widgets.add(collectionsRowHelper.addChild(widget));
 		}
 
