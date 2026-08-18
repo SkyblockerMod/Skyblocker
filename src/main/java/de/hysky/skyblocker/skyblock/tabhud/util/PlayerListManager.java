@@ -211,7 +211,7 @@ public class PlayerListManager {
 				// Now check for : because of the farming contest ACTIVE
 				// Check for mining event minutes CUZ THEY FUCKING FORGOT THE SPACE iefzeoifzeoifomezhif
 				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase(Locale.ENGLISH).startsWith("ends in"))) {
-					if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
+					if (!contents.isEmpty() || !sideThing.getString().isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
 
 					sideThing = Component.empty();
 					contents.clear();
@@ -234,7 +234,7 @@ public class PlayerListManager {
 			playerListEntries.add(playerListEntry);
 		}
 
-		if (!contents.isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
+		if (!contents.isEmpty() || !sideThing.getString().isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
 
 		TAB_LISTENERS.forEach(Runnable::run);
 		WIDGET_MAP.forEach((key, value) -> TAB_WIDGET_LISTENERS.get(key).forEach(c -> c.accept(value)));
@@ -446,6 +446,7 @@ public class PlayerListManager {
 
 		@Override
 		protected void updateContent(Widget widget) {
+			if (!widget.detail().getString().isEmpty()) addElement(new PlainTextElement(widget.detail()));
 			for (Component line : widget.lines()) {
 				addElement(new PlainTextElement(line));
 			}

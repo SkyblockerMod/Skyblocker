@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 
@@ -33,6 +34,7 @@ import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 class CopyToPopup extends AbstractPopupScreen {
 	private final LinearLayout layout = LinearLayout.vertical().spacing(2);
 	private final Set<Location> selectedLocations;
+	private final Set<Location> availableLocations;
 	private final PositionedWidget copiedWidget;
 	private final Location location;
 	private final WidgetManager.ScreenLayer layer;
@@ -47,6 +49,7 @@ class CopyToPopup extends AbstractPopupScreen {
 				.flatMap(s -> s.whereHas(location))
 				.map(EnumSet::copyOf)
 				.orElseGet(() -> EnumSet.noneOf(Location.class));
+		this.availableLocations = WidgetManager.ALLOWED_LOCATIONS.stream().filter(l -> copiedWidget.widget.getInformation().available().test(l)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Location.class)));
 		this.location = location;
 		this.layer = layer;
 
@@ -57,27 +60,26 @@ class CopyToPopup extends AbstractPopupScreen {
 	protected void init() {
 		layout.addChild(Checkbox.builder(Component.translatable("skyblocker.config.hud.copy.copyPosition"), font)
 				.selected(selectedLocations.isEmpty()) // automatically select if it's empty
-				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyPosition.@Tooltip")))
 				.onValueChange((_, value) -> copyPosition = value).build()
-		);
+		).setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyPosition.@Tooltip")));
 		layout.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.copy.targetLocations").withStyle(ChatFormatting.BOLD), font), settings -> settings.paddingVertical(4));
 		LinearLayout content = LinearLayout.vertical().spacing(2);
 
 		List<Checkbox> checkboxes = new ArrayList<>();
 		Checkbox selectAll = content.addChild(Checkbox.builder(Component.translatable("skyblocker.config.hud.copy.selectAll").withStyle(ChatFormatting.BOLD), font)
 				.maxWidth(200)
-				.selected(selectedLocations.containsAll(WidgetManager.ALLOWED_LOCATIONS))
+				.selected(selectedLocations.containsAll(availableLocations))
 				.onValueChange((_, value) -> {
 					if (value) {
 						selectedLocations.clear();
-						selectedLocations.addAll(WidgetManager.ALLOWED_LOCATIONS);
+						selectedLocations.addAll(availableLocations);
 					} else {
 						selectedLocations.clear();
 					}
 					checkboxes.forEach(checkbox -> ((CheckboxAccessor) checkbox).setSelected(value));
 				})
 				.build());
-		for (Location location : WidgetManager.ALLOWED_LOCATIONS) {
+		for (Location location : availableLocations) {
 			if (location == this.location) continue;
 			checkboxes.add(content.addChild(
 					Checkbox.builder(Component.literal(location.toString()), font)
@@ -114,6 +116,7 @@ class CopyToPopup extends AbstractPopupScreen {
 	private void apply() {
 		JsonObject widgetConfig = new JsonObject();
 		copiedWidget.widget.save(widgetConfig);
+		selectedLocations.retainAll(availableLocations);
 		for (Location loc : selectedLocations) {
 			LayerConfig config = WidgetManager.getScreenConfig(loc).get(layer);
 			if (copyPosition) {

@@ -202,6 +202,10 @@ public class WidgetManager {
 			if (CONFIG.defaultsVersion > 0) {
 				fillDefaultConfig(CONFIG.defaultsVersion);
 			}
+			// clean up widgets that are in islands they shouldn't be in
+			for (Map.Entry<Location, ScreenConfig> entry : CONFIG.screenConfigs.entrySet()) {
+				entry.getValue().allLayers().forEach(layer -> layer.widgets().keySet().removeIf(id -> WIDGET_INSTANCES.containsKey(id) && !WIDGET_INSTANCES.get(id).getInformation().available().test(entry.getKey())));
+			}
 		} catch (NoSuchFileException _) {
 			// Fill default config
 			fillDefaultConfig(0);
@@ -332,6 +336,7 @@ public class WidgetManager {
 	public static void addWidgetInstance(HudWidget widget) {
 		HudWidget put = WIDGET_INSTANCES.put(widget.getInternalID(), widget);
 		if (put != null && !(put instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
+		if (currentLayer != null && Minecraft.getInstance().level != null) SCREEN_BUILDER.get(currentLayer).update();
 	}
 
 	public enum ScreenLayer implements StringRepresentable {
