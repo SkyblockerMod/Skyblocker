@@ -336,7 +336,7 @@ public class WidgetManager {
 	public static void addWidgetInstance(HudWidget widget) {
 		HudWidget put = WIDGET_INSTANCES.put(widget.getInternalID(), widget);
 		if (put != null && !(put instanceof PlaceholderWidget)) LOGGER.warn("[Skyblocker] Duplicate hud widget found: {}", widget);
-		if (currentLayer != null) SCREEN_BUILDER.get(currentLayer).update();
+		if (currentLayer != null && Minecraft.getInstance().level != null) SCREEN_BUILDER.get(currentLayer).update();
 	}
 
 	public enum ScreenLayer implements StringRepresentable {
