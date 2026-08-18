@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
+import de.hysky.skyblocker.annotations.GenToString;
+
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
@@ -33,4 +35,8 @@ public final class PositionedWidget {
 	public int hashCode() {
 		return widget.hashCode();
 	}
+
+	@GenToString
+	@Override
+	public native String toString();
 }
