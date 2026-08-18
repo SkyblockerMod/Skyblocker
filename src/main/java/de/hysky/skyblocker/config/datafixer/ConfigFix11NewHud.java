@@ -100,6 +100,6 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	 * Returns the parent of the widget or empty if the parent is the screen.
 	 */
 	private static Optional<? extends Dynamic<?>> fixWidgetParent(Dynamic<?> widget) {
-		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").result();
+		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
 	}
 }

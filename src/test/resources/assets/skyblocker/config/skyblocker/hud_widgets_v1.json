@@ -1,7 +1,119 @@
 {
 	"positions": {
-		"hub": {
-			"hud_slayer": {
+		"dynamic": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"skills": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"minions": {
+				"parent": "active_effects",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"active_effects": {
+				"parent": "daily_quests",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"daily_quests": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"relative_x": 25,
+				"relative_y": -175,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"forges": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
 				"parent": "screen",
 				"parent_anchor": {
 					"v": "TOP",
@@ -11,22 +123,8 @@
 					"v": "TOP",
 					"h": "RIGHT"
 				},
-				"relative_x": -2,
-				"relative_y": 2,
-				"layer": "DEFAULT"
-			},
-			"sweepDetails": {
-				"parent": "hud_fishing",
-				"parent_anchor": {
-					"v": "BOTTOM",
-					"h": "LEFT"
-				},
-				"this_anchor": {
-					"v": "TOP",
-					"h": "LEFT"
-				},
-				"relative_x": 0,
-				"relative_y": 2,
+				"relative_x": -30,
+				"relative_y": 30,
 				"layer": "DEFAULT"
 			},
 			"hud_fishing": {
@@ -39,13 +137,55 @@
 					"v": "TOP",
 					"h": "LEFT"
 				},
-				"relative_x": 3,
-				"relative_y": 2,
+				"relative_x": 5,
+				"relative_y": 5,
 				"layer": "DEFAULT"
 			}
 		},
-		"crystal_hollows": {
-			"hud_pickobulus": {
+		"garden": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -10,
+				"relative_y": -10,
+				"layer": "HUD"
+			},
+			"pest_traps": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
 				"parent": "screen",
 				"parent_anchor": {
 					"v": "TOP",
@@ -55,8 +195,1258 @@
 					"v": "TOP",
 					"h": "LEFT"
 				},
-				"relative_x": 2,
-				"relative_y": 66,
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"jacobs_contest": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 29,
+				"relative_y": 259,
+				"layer": "DEFAULT"
+			},
+			"pests": {
+				"parent": "pest_traps",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"hud_farming": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 20,
+				"relative_y": 30,
+				"layer": "HUD"
+			}
+		},
+		"hub": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"hud_slayer": {
+				"parent": "sweepDetails",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "DEFAULT"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "LEFT"
+				},
+				"relative_x": 200,
+				"relative_y": -100,
+				"layer": "DEFAULT"
+			}
+		},
+		"farming_1": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"foraging_1": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"hud_slayer": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 40,
+				"relative_y": 88,
+				"layer": "DEFAULT"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"combat_1": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"hud_slayer": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 35,
+				"relative_y": 20,
+				"layer": "DEFAULT"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"combat_2": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"combat_3": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"hud_slayer": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"relative_x": 25,
+				"relative_y": 0,
+				"layer": "DEFAULT"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_end": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 25,
+				"relative_y": 25,
+				"layer": "HUD"
+			}
+		},
+		"crimson_isle": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"barbarian_reputation": {
+				"parent": "daily_quests",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"hud_slayer": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 40,
+				"relative_y": 40,
+				"layer": "DEFAULT"
+			},
+			"faction_quests": {
+				"parent": "daily_quests",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"mage_reputation": {
+				"parent": "daily_quests",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"daily_quests": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": -80,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": -100,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"mining_1": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"mining_2": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 5,
+				"relative_y": 5,
+				"layer": "DEFAULT"
+			}
+		},
+		"mining_3": {
+			"pet": {
+				"parent": "pickaxe_ability",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"daily_quests": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -20,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_pickobulus": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": 98,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"commissions": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			}
+		},
+		"fishing_1": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": -75,
+				"layer": "DEFAULT"
+			}
+		},
+		"dungeon_hub": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"party": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"winter": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"rift": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"dark_auction": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"crystal_hollows": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"powder_mining_tracker": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 940,
+				"relative_y": 296,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
 				"layer": "DEFAULT"
 			},
 			"hud_crystals": {
@@ -69,25 +1459,213 @@
 					"v": "TOP",
 					"h": "LEFT"
 				},
-				"relative_x": 2,
-				"relative_y": 2,
+				"relative_x": 30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_pickobulus": {
+				"parent": "pickaxe_ability",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"dungeon": {
+			"terminal_hud": {
+				"parent": "dungeon_discoveries",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "DEFAULT"
+			},
+			"dungeon_info": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"Dungeon Splits": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"relative_x": 20,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"dungeon_discoveries": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -20,
+				"relative_y": -20,
+				"layer": "HUD"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"kuudra": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
 				"layer": "DEFAULT"
 			},
 			"Item Pickup": {
 				"parent": "screen",
 				"parent_anchor": {
 					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"mineshaft": {
+			"frozen_corpses": {
+				"parent": "commissions",
+				"parent_anchor": {
+					"v": "BOTTOM",
 					"h": "LEFT"
 				},
 				"this_anchor": {
 					"v": "TOP",
 					"h": "LEFT"
 				},
-				"relative_x": 2,
-				"relative_y": 90,
-				"layer": "DEFAULT"
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
 			},
-			"hud_fishing": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"pickaxe_ability": {
+				"parent": "Item Pickup",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
 				"parent": "screen",
 				"parent_anchor": {
 					"v": "TOP",
@@ -97,8 +1675,282 @@
 					"v": "TOP",
 					"h": "LEFT"
 				},
-				"relative_x": 2,
-				"relative_y": 122,
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"commissions": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 30,
+				"relative_y": 30,
+				"layer": "HUD"
+			}
+		},
+		"foraging_2": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -35,
+				"relative_y": -35,
+				"layer": "HUD"
+			},
+			"Lasso HUD": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "CENTER",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "DEFAULT"
+			},
+			"pickaxe_ability": {
+				"parent": "pet",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": 0,
+				"relative_y": 0,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "CENTER"
+				},
+				"relative_x": 0,
+				"relative_y": -75,
+				"layer": "DEFAULT"
+			}
+		},
+		"foraging_3": {
+			"pet": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": -20,
+				"layer": "HUD"
+			},
+			"Lasso HUD": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 68,
+				"relative_y": 70,
+				"layer": "DEFAULT"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"relative_x": 30,
+				"relative_y": 0,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"safari": {
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			}
+		},
+		"lotus_atoll": {
+			"trophy_frogs": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "BOTTOM",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": -30,
+				"layer": "HUD"
+			},
+			"sweepDetails": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "LEFT"
+				},
+				"relative_x": 31,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"Item Pickup": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"this_anchor": {
+					"v": "TOP",
+					"h": "RIGHT"
+				},
+				"relative_x": -30,
+				"relative_y": 30,
+				"layer": "DEFAULT"
+			},
+			"hud_fishing": {
+				"parent": "screen",
+				"parent_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"this_anchor": {
+					"v": "CENTER",
+					"h": "LEFT"
+				},
+				"relative_x": 70,
+				"relative_y": 0,
 				"layer": "DEFAULT"
 			}
 		}
