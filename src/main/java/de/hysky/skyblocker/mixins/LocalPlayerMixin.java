@@ -81,15 +81,17 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 			boolean isInputSign = sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query");
 			if (!isInputSign) return;
 
-			if (config.enableAuctionHouse && minecraft.gui.screen().getTitle().getString().toLowerCase(Locale.ENGLISH).contains("auction")) {
+			String title = minecraft.gui.screen().getTitle().getString();
+			if (config.enableAuctionHouse && title.contains("Auction") ||
+					config.enableIronmanAuctionHouse && title.contains("Cosmetics")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.AUCTION);
 				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableBazaar && minecraft.gui.screen().getTitle().getString().toLowerCase(Locale.ENGLISH).contains("bazaar")) {
+			} else if (config.enableBazaar && title.contains("Bazaar")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.BAZAAR);
 				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
-			} else if (config.enableMuseum && minecraft.gui.screen().getTitle().getString().contains("Museum")) {
+			} else if (config.enableMuseum && title.contains("Museum")) {
 				SearchOverManager.updateSign(sign, front, SearchOverManager.SearchLocation.MUSEUM);
 				minecraft.gui.setScreen(new OverlayScreen());
 				ci.cancel();
