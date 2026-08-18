@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.utils;
 
+import java.lang.reflect.Array;
+import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 
-public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable {
+public class BlockPosSet extends AbstractSet<BlockPos> implements Cloneable {
 	/// Sentinels for tombstones (deleted slots) and empty slots
 	/// This does mean that the set cannot store the positions
 	/// new BlockPos(unhashLong(TOMBSTONE)) and
@@ -160,6 +161,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 				if (this.entries[(i + 1) & mask] != EMPTY) return true;
 				do {
 					this.entries[i] = EMPTY;
+					if (i < LANES - 1) this.entries[i + this.capacity] = EMPTY;
 					this.tombstones--;
 
 					i = (i - 1) & mask;
@@ -263,12 +265,12 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		int capacity = this.capacity;
 		long[] entries = this.entries;
 
-		BlockPos[] array = new BlockPos[size];
+		Object[] array = new Object[size];
 		for (int i = 0, j = 0; i < capacity && j < size; i++) {
 			long h = entries[i];
 			if (h >= EMPTY) continue;
 
-			array[j] = BlockPos.of(unhashLong(h));
+			array[j++] = BlockPos.of(unhashLong(h));
 		}
 		return array;
 	}
@@ -280,14 +282,14 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		int capacity = this.capacity;
 		long[] entries = this.entries;
 
-		if (a.length < size) a = (T[]) new BlockPos[size];
+		if (a.length < size) a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
 		else if (a.length > size) a[size] = null;
 
 		for (int i = 0, j = 0; i < capacity && j < size; i++) {
 			long h = entries[i];
 			if (h >= EMPTY) continue;
 
-			a[j] = (T) BlockPos.of(unhashLong(h));
+			a[j++] = (T) BlockPos.of(unhashLong(h));
 		}
 
 		return a;
@@ -305,24 +307,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 	public boolean remove(BlockPos pos) {
 		return this.removeXyz(pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		for (Object o : c) {
-			if (!this.contains(o)) return false;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends BlockPos> c) {
-		Iterator<? extends BlockPos> iter = c.iterator();
-		boolean anyAdded = false;
-		while (iter.hasNext()) {
-			anyAdded |= this.add(iter.next());
-		}
-		return anyAdded;
 	}
 
 	@Override
@@ -350,42 +334,6 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
-		Iterator<?> iter = c.iterator();
-		boolean removedAny = false;
-
-		final long[] entries = this.entries;
-		int capacity = this.capacity;
-		final int mask = this.mask;
-
-		while (iter.hasNext() && iter.next() instanceof BlockPos pos) {
-			boolean result = false;
-			if (this.size != 0) {
-				final long hash = hashPos(pos);
-				int i = (int) hash & mask;
-				do {
-					if (entries[i] == hash) {
-						// replace with tombstone
-						entries[i] = TOMBSTONE;
-						if (i < LANES - 1) entries[i + capacity] = TOMBSTONE;
-						this.size--;
-						this.tombstones++;
-
-						result = true;
-						break;
-					} else if (entries[i] == EMPTY) {
-						break;
-					}
-					i = (i + 1) & mask;
-				} while (true);
-			}
-
-			removedAny |= result;
-		}
-		return removedAny;
-	}
-
-	@Override
 	public void clear() {
 		this.clearRetainingCapacity();
 	}
@@ -395,7 +343,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		return new Iter(this.capacity, this.entries);
 	}
 
-	private static class Iter implements Iterator<BlockPos> {
+	private class Iter implements Iterator<BlockPos> {
 		private int index;
 		private int nextIndex;
 		private final int capacity;
@@ -435,7 +383,15 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 		@Override
 		public void remove() {
+			if (this.index == Integer.MIN_VALUE) {
+				throw new IllegalStateException();
+			}
 			this.entries[this.index] = TOMBSTONE;
+			if (this.index < LANES - 1) this.entries[this.index + this.capacity] = TOMBSTONE;
+			// prevent this element from being removed again
+			this.index = Integer.MIN_VALUE;
+			BlockPosSet.this.size--;
+			BlockPosSet.this.tombstones++;
 		}
 	}
 
@@ -444,7 +400,7 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 		return new IterMut(this.capacity, this.entries);
 	}
 
-	private static class IterMut implements Iterator<BlockPos.MutableBlockPos>, Iterable<BlockPos.MutableBlockPos> {
+	private class IterMut implements Iterator<BlockPos.MutableBlockPos>, Iterable<BlockPos.MutableBlockPos> {
 		private int index;
 		private int nextIndex;
 		private final int capacity;
@@ -487,7 +443,15 @@ public class BlockPosSet implements Iterable<BlockPos>, Set<BlockPos>, Cloneable
 
 		@Override
 		public void remove() {
+			if (this.index == Integer.MIN_VALUE) {
+				throw new IllegalStateException();
+			}
 			this.entries[this.index] = TOMBSTONE;
+			if (this.index < LANES - 1) this.entries[this.index + this.capacity] = TOMBSTONE;
+			// prevent this element from being removed again
+			this.index = Integer.MIN_VALUE;
+			BlockPosSet.this.size--;
+			BlockPosSet.this.tombstones++;
 		}
 
 		@Override
