@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
+package de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot;
 
 import java.util.List;
 
@@ -11,14 +11,14 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.WidgetsListScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 
 public class DefaultSlotEntry extends WidgetsListSlotEntry {
 	private final Button leftClick;
 	private final Button rightClick;
 
-	public DefaultSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public DefaultSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		leftClick = Button.builder(Component.literal("LEFT"), _ -> this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_LEFT))
 				.size(32, 12)

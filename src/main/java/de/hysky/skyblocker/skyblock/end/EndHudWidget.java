@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.end;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
@@ -25,7 +24,6 @@ import de.hysky.skyblocker.utils.Location;
 @RegisterWidget
 public class EndHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("The End").withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
 
 	private static @Nullable EndHudWidget instance = null;
 
@@ -33,7 +31,7 @@ public class EndHudWidget extends ElementBasedWidget {
 	private static final FlexibleItemStack POPPY = Util.make(new FlexibleItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
 	public EndHudWidget() {
-		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), "hud_end");
+		super(TITLE, ChatFormatting.DARK_PURPLE.getColor(), new Information("hud_end", Component.literal("End Hud"), Location.THE_END));
 		instance = this;
 		this.update();
 	}
@@ -43,51 +41,30 @@ public class EndHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.update(config -> config.otherLocations.end.hudEnabled = enabled);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
 	public void updateContent() {
 		// Zealots
 		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
 			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
-			addComponent(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
+			addElement(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
 			String avg = endStats.eyes() == 0 ? "???" : Formatters.DOUBLE_NUMBERS.format((float) endStats.totalZealotKills() / endStats.eyes());
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 
 		// Endstone protector
 		if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
-			addComponent(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
+			addElement(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
 			if (TheEnd.stage == 5) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
 			}
 			if (TheEnd.currentProtectorLocation == null) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
 			}
 		}
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("End Hud");
 	}
 }

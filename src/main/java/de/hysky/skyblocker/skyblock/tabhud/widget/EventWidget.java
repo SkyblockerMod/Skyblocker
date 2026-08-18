@@ -8,6 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 
 // this widget shows info about ongoing events (e.g. election)
@@ -21,8 +22,9 @@ public class EventWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		if (!lines.isEmpty()) this.addComponent(Elements.iconTextComponent(Ico.NTAG, lines.getFirst()));
-		if (lines.size() > 1) this.addComponent(Elements.iconTextComponent(Ico.CLOCK, lines.get(1)));
+	public void updateContent(PlayerListManager.Widget widget) {
+		List<Component> lines = widget.lines();
+		if (!widget.detail().getString().isEmpty()) this.addElement(Elements.iconTextComponent(Ico.NTAG, widget.detail()));
+		if (!lines.isEmpty()) this.addElement(Elements.iconTextComponent(Ico.CLOCK, lines.getFirst()));
 	}
 }

@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -11,31 +10,32 @@ import net.minecraft.network.chat.MutableComponent;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.Location;
 
-/// This widget shows a list of obtained dungeon buffs.
+// this widget shows a list of obtained dungeon buffs
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
 	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, ChatFormatting.GREEN.getColor());
+		super("Dungeon Buffs", TITLE, ChatFormatting.GREEN.getColor(), new Information("dungeon_buffs", Component.literal("Dungeon Buffs"), Location.DUNGEON));
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 
 		String footer = PlayerListManager.getFooter();
 
 		if (footer == null || !footer.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
+			this.addElement(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
 		String[] lines = footer.split("Dungeon Buffs")[1].split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
+			this.addElement(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -50,7 +50,7 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextElement(Component.literal(line).withColor(color)));
+			this.addElement(new PlainTextElement(Component.literal(line).withColor(color)));
 		}
 	}
 

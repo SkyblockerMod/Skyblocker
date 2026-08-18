@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,8 +12,10 @@ import net.minecraft.network.chat.MutableComponent;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 // this widget shows the status of the king's commissions.
 // (dwarven mines and crystal hollows)
@@ -32,16 +33,16 @@ public class CommsWidget extends TabHudWidget {
 	public static final Pattern COMM_PATTERN = Pattern.compile("(?<name>.*): (?<progress>.*)%?");
 
 	public CommsWidget() {
-		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Commissions", TITLE, ChatFormatting.DARK_AQUA.getColor(), new Information("commissions", Component.literal("Commissions"), Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS));
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		if (lines.isEmpty()) {
-			this.addComponent(Elements.iconTextComponent());
+	public void updateContent(PlayerListManager.Widget widget) {
+		if (widget.lines().isEmpty()) {
+			this.addElement(Elements.iconTextComponent());
 			return;
 		}
-		for (Component line : lines) {
+		for (Component line : widget.lines()) {
 			Matcher m = COMM_PATTERN.matcher(line.getString());
 			if (m.matches()) {
 				Element element;
@@ -61,7 +62,7 @@ public class CommsWidget extends TabHudWidget {
 					}
 					element = Elements.progressComponent(Ico.BOOK, Component.nullToEmpty(name), percent);
 				}
-				this.addComponent(element);
+				this.addElement(element);
 			}
 		}
 	}

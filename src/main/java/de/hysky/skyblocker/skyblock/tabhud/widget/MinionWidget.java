@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,9 +11,11 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Location;
 
 // this widget shows info about minions placed on the home island
 @RegisterWidget
@@ -95,15 +96,15 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor(), Location.PRIVATE_ISLAND);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		addComponent(new PlainTextElement(lines.getFirst().copy().append(Component.literal(" minions"))));
-		for (int i = 1; i < lines.size(); i++) {
-			String string = lines.get(i).getString();
-			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextElement(lines.get(i).copy().withStyle(ChatFormatting.GRAY)));
+	public void updateContent(PlayerListManager.Widget widget) {
+		addElement(new PlainTextElement(widget.detail().copy().append(Component.literal(" minions"))));
+		for (Component line : widget.lines()) {
+			String string = line.getString();
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addElement(new PlainTextElement(line.copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
 	}
@@ -128,7 +129,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Component.literal(stat).withStyle(format));
 
-			this.addComponent(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
+			this.addElement(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
 }

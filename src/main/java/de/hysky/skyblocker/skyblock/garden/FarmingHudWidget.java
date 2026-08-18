@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.garden;
 
 import java.util.Map;
 import java.util.OptionalDouble;
-import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +29,6 @@ import de.hysky.skyblocker.utils.Location;
 @RegisterWidget
 public class FarmingHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("Farming").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GARDEN);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
 			Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
 			Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
@@ -84,7 +82,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	private final Minecraft client = Minecraft.getInstance();
 
 	public FarmingHudWidget() {
-		super(TITLE, ChatFormatting.YELLOW.getColor(), "hud_farming");
+		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", Component.literal("Farming HUD"), Location.GARDEN));
 		instance = this;
 		update();
 	}
@@ -97,7 +95,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		if (client.player == null || client.level == null) {
-			addComponent(new PlainTextElement(Component.literal("Nothing to show :p")));
+			addElement(new PlainTextElement(Component.literal("Nothing to show :p")));
 			return;
 		}
 		FarmingConfig.FarmingHud config = SkyblockerConfigManager.get().farming.farmingHud;
@@ -126,17 +124,17 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
 		if (config.experience) {
 			//noinspection DataFlowIssue
-			addComponent(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+			addElement(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
 			addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.farming.farmingHud.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 		}
 
 		Entity cameraEntity = client.getCameraEntity();
 		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
 		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
 		if (LowerSensitivity.isSensitivityLowered()) {
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
 		}
 	}
 
@@ -221,26 +219,5 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		if (hasReplenish) cropsPerMinute -= (float) (usedByReplenish);
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
 		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.farmingHud.enabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.update(config -> config.farming.farmingHud.enabled = enabled);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Farming HUD");
 	}
 }
