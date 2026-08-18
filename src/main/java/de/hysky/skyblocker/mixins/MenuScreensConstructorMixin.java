@@ -30,6 +30,7 @@ import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuScreen;
 import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreenHandler;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.WidgetsListScreen;
 import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(MenuScreens.ScreenConstructor.class)
@@ -105,11 +106,11 @@ public interface MenuScreensConstructorMixin<T extends AbstractContainerMenu> {
 			}
 
 			// Excessive widgets config
-			case ChestMenu containerScreenHandler when SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled && WidgetsConfigurationScreen.overrideWidgetsScreen && (WidgetsConfigurationScreen.SCREEN_TITLE_PATTERN.matcher(nameLowercase).find() || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.gui.screen() instanceof WidgetsConfigurationScreen)) -> {
+			case ChestMenu containerScreenHandler when WidgetsListScreen.overrideWidgetsScreen && (WidgetsConfigurationScreen.SCREEN_TITLE_PATTERN.matcher(nameLowercase).find() || nameLowercase.equals("tablist widgets") || (nameLowercase.endsWith("widget settings") && !nameLowercase.startsWith("reset")) || (nameLowercase.startsWith("shown") && client.gui.screen() instanceof WidgetsListScreen)) -> {
 				client.player.containerMenu = containerScreenHandler;
 				switch (client.gui.screen()) {
-					case WidgetsConfigurationScreen screen -> screen.updateHandler(containerScreenHandler, nameLowercase);
-					case null, default -> client.gui.setScreen(new WidgetsConfigurationScreen(containerScreenHandler, nameLowercase));
+					case WidgetsListScreen screen -> screen.updateHandler(containerScreenHandler, name);
+					case null, default -> client.gui.setScreen(new WidgetsListScreen(containerScreenHandler, name));
 				}
 				ci.cancel();
 			}

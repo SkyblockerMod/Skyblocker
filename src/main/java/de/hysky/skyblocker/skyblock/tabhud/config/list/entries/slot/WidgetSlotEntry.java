@@ -1,4 +1,4 @@
-package de.hysky.skyblocker.skyblock.tabhud.config.entries.slot;
+package de.hysky.skyblocker.skyblock.tabhud.config.list.entries.slot;
 
 import java.util.List;
 import java.util.Locale;
@@ -16,8 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsElementList;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsListTab;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.WidgetsElementList;
+import de.hysky.skyblocker.skyblock.tabhud.config.list.WidgetsListScreen;
 import de.hysky.skyblocker.utils.ItemUtils;
 
 public class WidgetSlotEntry extends WidgetsListSlotEntry {
@@ -26,7 +26,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	private final Button enableButton;
 	private final boolean alwaysEnabled;
 
-	public WidgetSlotEntry(WidgetsListTab parent, int slotId, ItemStack icon) {
+	public WidgetSlotEntry(WidgetsListScreen parent, int slotId, ItemStack icon) {
 		super(parent, slotId, icon);
 		editButton = Button.builder(Component.literal("EDIT"), _ -> {
 					this.parent.clickAndWaitForServer(this.slotId, InputConstants.MOUSE_BUTTON_RIGHT);
@@ -86,7 +86,7 @@ public class WidgetSlotEntry extends WidgetsListSlotEntry {
 	}
 
 	private static void addToast(Component message) {
-		Minecraft.getInstance().gui.toastManager().addToast(new SystemToast(WidgetsListTab.SYSTEM_TOAST_ID, message, null));
+		Minecraft.getInstance().gui.toastManager().addToast(new SystemToast(WidgetsListScreen.SYSTEM_TOAST_ID, message, null));
 	}
 
 	@Override

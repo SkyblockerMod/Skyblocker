@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,13 +12,13 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 // this widget shows info about all puzzeles in the dungeon (name and status)
 @RegisterWidget
 public class DungeonPuzzleWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Puzzles").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Puzzles").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
 
 	// match a puzzle entry
 	// group 1: name
@@ -29,11 +28,11 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 	private static final Pattern PUZZLE_PATTERN = Pattern.compile("(?<name>.*): \\[(?<status>.*)\\] ?.*");
 
 	public DungeonPuzzleWidget() {
-		super("Dungeon Puzzles", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Puzzles", TITLE, TextColor.DARK_PURPLE.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		int pos = 48;
 
 		while (pos < 60) {
@@ -53,11 +52,11 @@ public class DungeonPuzzleWidget extends TabHudWidget {
 					.append(Component.literal("[").withStyle(ChatFormatting.GRAY))
 					.append(Component.literal(m.group("status")).withStyle(statcol, ChatFormatting.BOLD))
 					.append(Component.literal("]").withStyle(ChatFormatting.GRAY));
-			this.addComponent(Elements.iconTextComponent(Ico.SIGN, t));
+			this.addElement(Elements.iconTextComponent(Ico.SIGN, t));
 			pos++;
 		}
 		if (pos == 48) {
-			this.addComponent(Elements.iconTextComponent(Ico.BARRIER, Component.literal("No puzzles!").withStyle(ChatFormatting.GRAY)));
+			this.addElement(Elements.iconTextComponent(Ico.BARRIER, Component.literal("No puzzles!").withStyle(ChatFormatting.GRAY)));
 		}
 	}
 }
