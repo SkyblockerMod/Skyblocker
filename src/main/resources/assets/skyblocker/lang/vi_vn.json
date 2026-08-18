@@ -127,7 +127,6 @@
     "skyblocker.config.dungeons.dungeonScore.enableScoreHUD.@Tooltip": "Hiển thị điểm dungeon trong HUD.",
     "skyblocker.config.dungeons.secretWaypoints.enableStonkWaypoints": "Hiển thị địa điểm có thể Stonk",
     "skyblocker.config.mining.commissionWaypoints.mode.GLACITE": "Glacite",
-    "skyblocker.config.mining.crystalsHud.enabled": "Bật",
     "skyblocker.config.quickNav.button.render": "Hiển thị",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.pling": "Pling",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.sounds.none": "Không",
