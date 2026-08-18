@@ -4,15 +4,90 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
+import com.code_intelligence.jazzer.api.FuzzedDataProvider;
+import com.code_intelligence.jazzer.junit.FuzzTest;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class BlockPosSetTest {
+	@FuzzTest(maxDuration = "10s")
+	public void fuzz(FuzzedDataProvider data) {
+		BlockPosSet customSet = new BlockPosSet();
+		Set<BlockPos> referenceSet = new HashSet<>();
+
+		int operations = data.consumeInt(1, 200);
+
+		for (int i = 0; i < operations; i++) {
+			int action = data.consumeInt(0, 6);
+
+			BlockPos targetPos = new BlockPos(pickXZ(data), pickY(data), pickXZ(data));
+
+			switch (action) {
+				case 0 -> {
+					assertEquals(referenceSet.size(), customSet.size());
+					assertEquals(referenceSet.isEmpty(), customSet.isEmpty());
+					assertEquals(referenceSet.size(), customSet.toArray().length);
+					assertEquals(referenceSet.size(), customSet.toArray(new BlockPos[0]).length);
+				}
+				case 1 -> assertEquals(referenceSet.contains(targetPos), customSet.contains(targetPos), "Contains mismatch");
+				case 2 -> assertEquals(referenceSet.add(targetPos), customSet.add(targetPos), "Add mismatch at " + targetPos);
+				case 3 -> assertEquals(referenceSet.remove(targetPos), customSet.remove(targetPos), "Remove mismatch at " + targetPos);
+				case 4 -> {
+					Set<BlockPos> retain = new HashSet<>();
+					int retainSize = data.consumeInt(1, 100);
+					for (int b = 0; b < retainSize; b++) {
+						retain.add(new BlockPos(pickXZ(data), pickY(data), pickXZ(data)));
+					}
+					assertEquals(referenceSet.retainAll(retain), customSet.retainAll(retain));
+				}
+				case 5 -> {
+					customSet.clear();
+					referenceSet.clear();
+				}
+				case 6 -> {
+					if (customSet.isEmpty()) break;
+
+					boolean itMut = data.consumeBoolean();
+					Iterator<? extends BlockPos> customIt = itMut ? customSet.iterateMut().iterator() : customSet.iterator();
+					Iterator<BlockPos> refIt = referenceSet.iterator();
+
+					int steps = data.consumeInt(1, customSet.size());
+					BlockPos customLastSeen = null;
+					for (int s = 0; s < steps && customIt.hasNext(); s++) {
+						customLastSeen = customIt.next();
+						refIt.next();
+					}
+
+					if (customLastSeen != null && data.consumeBoolean()) {
+						customIt.remove();
+						refIt.remove();
+						assertThrows(IllegalStateException.class, customIt::remove);
+					}
+				}
+			}
+
+			assertEquals(referenceSet.size(), customSet.size(), "Size went out of sync after action " + action);
+		}
+
+		assertEquals(referenceSet.size(), customSet.toArray().length, "toArray() returned wrong length");
+	}
+
+	private static Integer pickXZ(FuzzedDataProvider data) {
+		return data.pickValue(new Integer[]{data.consumeInt(-30_000_000, 30_000_000), 0, 1, -1, 30_000_000, -30_000_000});
+	}
+
+	private static Integer pickY(FuzzedDataProvider data) {
+		return data.pickValue(new Integer[]{data.consumeInt(-64, 320), 0, 1, -1, -64, 320});
+	}
+
 	@Test
 	void testAddRemoveContains() {
 		long start = System.nanoTime();
@@ -51,18 +126,19 @@ public class BlockPosSetTest {
 			try {
 				switch (action) {
 					case 0 -> {
-						expectEqual(javaSet.add(pos), set.add(pos));
+						Object expected = javaSet.add(pos);
+						assertEquals(expected, set.add(pos));
 						log.printf("add %s t %d @ %d\n", pos, BlockPosSet.hashPos(pos) & set.mask, set.indexOf(pos));
 					}
 					case 1 -> {
 						boolean success = javaSet.remove(pos);
 						int index = set.indexOf(pos);
 						log.printf("remove %s %s @ %d\n", success ? "Y" : "N", pos, index);
-						expectEqual(success, set.remove(pos));
+						assertEquals(success, set.remove(pos));
 					}
 					case 2 -> {
 						log.printf("contains %s\n", pos);
-						expectEqual(javaSet.contains(pos), set.contains(pos));
+						assertEquals(javaSet.contains(pos), set.contains(pos));
 					}
 				}
 			} catch (AssertionError e) {
@@ -73,7 +149,7 @@ public class BlockPosSetTest {
 			// check sets are the same
 			for (BlockPos present : javaSet) {
 				try {
-					expectEqual(true, set.contains(present));
+					assertTrue(set.contains(present));
 				} catch (AssertionError e) {
 					err.printf("missing %s from custom @ %s\n", present, (int) BlockPosSet.hashPos(pos) & set.mask);
 					for (int i = (int) BlockPosSet.hashPos(pos) & set.mask, j = 0; j < 16; j++, i++) {
@@ -94,7 +170,7 @@ public class BlockPosSetTest {
 			}
 			for (BlockPos present : set) {
 				try {
-					expectEqual(true, javaSet.contains(present));
+					assertTrue(javaSet.contains(present));
 				} catch (AssertionError e) {
 					err.printf("missing %s from javaSet\n".formatted(present));
 					throw e;
@@ -130,16 +206,16 @@ public class BlockPosSetTest {
 				i++;
 				javaSet.add(pos);
 			}
-			expectEqual(javaSet.size(), i);
-			expectEqual(true, javaSet.containsAll(set));
-			expectEqual(true, set.containsAll(javaSet));
+			assertEquals(javaSet.size(), (Object) i);
+			assertTrue(javaSet.containsAll(set));
+			assertTrue(set.containsAll(javaSet));
 
 			Set<BlockPos> jSetClone = new HashSet<>(javaSet);
 			jSetClone.removeAll(set);
-			expectEqual(0, jSetClone.size());
+			assertEquals(0, (Object) jSetClone.size());
 
 			set.removeAll(javaSet);
-			expectEqual(0, set.size());
+			assertEquals(0, (Object) set.size());
 		}
 
 		{
@@ -151,16 +227,16 @@ public class BlockPosSetTest {
 				i++;
 				javaSet.add(pos);
 			}
-			expectEqual(javaSet.size(), i);
-			expectEqual(true, javaSet.containsAll(set));
-			expectEqual(true, set.containsAll(javaSet));
+			assertEquals(javaSet.size(), (Object) i);
+			assertTrue(javaSet.containsAll(set));
+			assertTrue(set.containsAll(javaSet));
 
 			Set<BlockPos> jSetClone = new HashSet<>(javaSet);
 			jSetClone.removeAll(set);
-			expectEqual(0, jSetClone.size());
+			assertEquals(0, (Object) jSetClone.size());
 
 			set.removeAll(javaSet);
-			expectEqual(0, set.size());
+			assertEquals(0, (Object) set.size());
 		}
 
 		{
@@ -172,21 +248,21 @@ public class BlockPosSetTest {
 				BlockPos pos = iterator.next();
 				if (rand.nextBoolean()) {
 					iterator.remove();
-					expectEqual(true, javaSet.remove(pos));
+					assertTrue(javaSet.remove(pos));
 				} else {
 					i++;
 				}
 			}
-			expectEqual(javaSet.size(), i);
-			expectEqual(true, javaSet.containsAll(set));
-			expectEqual(true, set.containsAll(javaSet));
+			assertEquals(javaSet.size(), (Object) i);
+			assertTrue(javaSet.containsAll(set));
+			assertTrue(set.containsAll(javaSet));
 
 			Set<BlockPos> jSetClone = new HashSet<>(javaSet);
 			jSetClone.removeAll(set);
-			expectEqual(0, jSetClone.size());
+			assertEquals(0, (Object) jSetClone.size());
 
 			set.removeAll(javaSet);
-			expectEqual(0, set.size());
+			assertEquals(0, (Object) set.size());
 		}
 
 		{
@@ -198,25 +274,19 @@ public class BlockPosSetTest {
 				i++;
 				javaSet.add(pos);
 			}
-			expectEqual(javaSet.size(), i);
-			expectEqual(true, javaSet.containsAll(set));
-			expectEqual(true, set.containsAll(javaSet));
+			assertEquals(javaSet.size(), (Object) i);
+			assertTrue(javaSet.containsAll(set));
+			assertTrue(set.containsAll(javaSet));
 
 			Set<BlockPos> jSetClone = new HashSet<>(javaSet);
 			jSetClone.removeAll(set);
-			expectEqual(0, jSetClone.size());
+			assertEquals(0, (Object) jSetClone.size());
 
 			set.removeAll(javaSet);
-			expectEqual(0, set.size());
+			assertEquals(0, (Object) set.size());
 		}
 	}
 
-
-	public static void expectEqual(Object expected, Object actual) {
-		if (!Objects.equals(expected, actual)) {
-			throw new AssertionError("Expected %s, got %s".formatted(expected, actual));
-		}
-	}
 
 	private record TestParams(int seed, int iters, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
 		private static TestParams fromRandom(Random random) {
