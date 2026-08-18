@@ -1,9 +1,8 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
-import de.hysky.skyblocker.annotations.GenToString;
-
 import org.jspecify.annotations.Nullable;
 
+import de.hysky.skyblocker.annotations.GenToString;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
