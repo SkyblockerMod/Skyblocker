@@ -21,8 +21,9 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.CollectionTiers;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.EliteLeaderboards;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
@@ -37,7 +38,7 @@ public final class CollectionItemWidget extends AbstractWidget {
 	private final List<Component> tooltip;
 	private final @Nullable Identifier tooltipStyle;
 
-	public CollectionItemWidget(String id, FlexibleItemStack icon, ApiProfile profile, CollectionTiers.Report report) {
+	public CollectionItemWidget(String id, FlexibleItemStack icon, LoadingInformation info, CollectionTiers.Report report) {
 		super(0, 0, WIDTH, WIDTH + TEXT_Y_OFFSET + Minecraft.getInstance().font.lineHeight, Component.empty());
 
 		boolean isMaxTier = report.tier() == CollectionTiers.getMaxTier(id);
@@ -53,20 +54,20 @@ public final class CollectionItemWidget extends AbstractWidget {
 		this.tierText = Component.literal(RomanNumerals.decimalToRoman(report.tier())).withStyle(isMaxTier ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY);
 
 		String name = icon.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString();
-		this.tooltip = buildTooltip(id, name, profile, report);
+		this.tooltip = buildTooltip(id, name, info, report);
 		this.tooltipStyle = isMaxTier ? SkyBlockTooltipStyles.LEGENDARY : null;
 
 		this.active = false;
 	}
 
-	private static List<Component> buildTooltip(String id, String name, ApiProfile profile, CollectionTiers.Report report) {
+	private static List<Component> buildTooltip(String id, String name, LoadingInformation info, CollectionTiers.Report report) {
 		List<Component> tooltip = new ArrayList<>();
 
 		tooltip.add(Component.literal(name));
 		tooltip.add(Component.literal("Collection Item").withStyle(ChatFormatting.DARK_GRAY));
 		tooltip.add(Component.empty());
 
-		if (profile.hasBeenCoop()) {
+		if (info.profile().hasBeenCoop()) {
 			tooltip.add(Component.literal("Personal: " + Formatters.INTEGER_NUMBERS.format(report.personal())).withStyle(ChatFormatting.GOLD));
 			tooltip.add(Component.literal("Co-op: " + Formatters.INTEGER_NUMBERS.format(report.coop())).withStyle(ChatFormatting.AQUA));
 		}
@@ -74,6 +75,13 @@ public final class CollectionItemWidget extends AbstractWidget {
 		tooltip.add(Component.literal("Collection: " + Formatters.INTEGER_NUMBERS.format(report.total())).withStyle(ChatFormatting.YELLOW));
 		tooltip.add(Component.empty());
 		tooltip.add(Component.literal(String.format(Locale.ENGLISH, "Collection Tier: %d/%d", report.tier(), CollectionTiers.getMaxTier(id))).withStyle(ChatFormatting.LIGHT_PURPLE));
+
+		String leaderboardId = EliteLeaderboards.getCollectionLeaderboardMappings().getOrDefault(id, "");
+		int leaderboardPosition = info.getLeaderboardPosition(leaderboardId);
+
+		if (leaderboardPosition != EliteLeaderboards.NO_POSITION) {
+			tooltip.add(Component.literal("Leaderboard: #" + Formatters.INTEGER_NUMBERS.format(leaderboardPosition)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		}
 
 		return List.copyOf(tooltip);
 	}
