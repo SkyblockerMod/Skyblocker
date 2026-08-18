@@ -447,7 +447,7 @@ public class PlayerListManager {
 
 		@Override
 		protected void updateContent(Widget widget) {
-			addElement(new PlainTextElement(widget.detail()));
+			if (!widget.detail().getString().isEmpty()) addElement(new PlainTextElement(widget.detail()));
 			for (Component line : widget.lines()) {
 				addElement(new PlainTextElement(line));
 			}
