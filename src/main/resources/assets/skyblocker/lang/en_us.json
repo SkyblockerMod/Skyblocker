@@ -865,6 +865,8 @@
 
   "skyblocker.config.hud.globalScale": "Global Scale",
 
+  "skyblocker.config.hud.help": "Help",
+
   "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nWidgets are per island. Widget options apply per island, use the 'Copy to...' button.\n\nFor Hypixel widgets, only the ones currently shown in the vanilla tab will automatically appear in the Fancy Tab preview.\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
 
   "skyblocker.config.hud.location.everywhere": "Everywhere",
@@ -1583,6 +1585,7 @@
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets": "Compact Widgets",
   "skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip": "Display widgets in a compact form.",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen": "Open Widget Config Screen",
+  "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag": "GUI",
   "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip": "Add, edit and remove HUD widgets here!\n\nCan also be accessed with /skyblocker hud.",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.CENTERED": "Centered",
   "skyblocker.config.uiAndVisuals.tabHud.defaultPosition.TOP": "Top",

@@ -41,11 +41,12 @@ class TopBarWidget extends AbstractContainerWidget {
 		LinearLayout leftButtons = LinearLayout.horizontal();
 		StyledButtonWidget optionsButton = new StyledButtonWidget(60, HEIGHT, Component.translatable("skyblocker.config.hud.topBar.options"), _ -> parent.openPopup(OtherOptionsScreen::new));
 		optionsButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.topBar.options.@Tooltip")));
-		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) ").append(Component.translatable("skyblocker.config.hud.topBar.help")), _ -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.literal("Help"))
-				.addMessage(Component.translatable("skyblocker.config.hud.helpText"))
-				.addButton(CommonComponents.GUI_OK, PopupScreen::onClose)
-				.setWidth(300)
-				.build()));
+		StyledButtonWidget helpButton = new StyledButtonWidget(60, HEIGHT, Component.literal("(?) ").append(Component.translatable("skyblocker.config.hud.topBar.help")),
+				_ -> parent.openPopup(screen -> new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.help"))
+						.addMessage(Component.translatable("skyblocker.config.hud.helpText"))
+						.addButton(CommonComponents.GUI_OK, PopupScreen::onClose)
+						.setWidth(300)
+						.build()));
 		leftButtons.addChild(optionsButton);
 		leftButtons.addChild(helpButton);
 		layout.add(leftButtons);

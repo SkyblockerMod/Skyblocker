@@ -11,11 +11,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -332,7 +332,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		if (hoveredWidget == null) {
 			if (sidePanelWidget.isOpen()) sidePanelWidget.close();
 			selectedWidget = null;
-			if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
 				availableWidgets.removeAll(layer.builder().getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
 				addWidgetWidget.openWith(availableWidgets);
@@ -348,9 +348,9 @@ public class WidgetsConfigurationScreen extends Screen {
 		mouseX /= TabHud.getScaleFactor();
 		mouseY /= TabHud.getScaleFactor();
 		if (!selectedWidget.fromTab) dragRelative = new ScreenPosition((int) (mouseX - selectedWidget.widget.getX()), (int) (mouseY - selectedWidget.widget.getY()));
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getPositionedWidget()))) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT && (!sidePanelWidget.isOpen() || !selectedWidget.equals(sidePanelWidget.getPositionedWidget()))) {
 			openSidePanel();
-		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getPositionedWidget())) {
+		} else if (click.button() == InputConstants.MOUSE_BUTTON_LEFT && sidePanelWidget.isOpen() && !selectedWidget.equals(sidePanelWidget.getPositionedWidget())) {
 			openSidePanel();
 		}
 		return true;
@@ -391,7 +391,7 @@ public class WidgetsConfigurationScreen extends Screen {
 					return true;
 				}
 			}
-			if (keyInput.key() == GLFW.GLFW_KEY_DELETE) {
+			if (keyInput.key() == InputConstants.KEY_DELETE) {
 				removeWidget(selectedWidget);
 				return true;
 			}
