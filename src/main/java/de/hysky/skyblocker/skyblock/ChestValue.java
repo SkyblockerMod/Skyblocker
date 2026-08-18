@@ -1,5 +1,38 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -19,37 +52,6 @@ import de.hysky.skyblocker.utils.RegexListUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.OptionalDouble;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ChestValue {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChestValue.class);
@@ -130,7 +132,7 @@ public class ChestValue {
 
 	@Init
 	public static void init() {
-		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
+		ScreenEvents.AFTER_INIT.register((client, screen, _, _) -> {
 			hideChestNameLabel = false;
 			if (Utils.isOnSkyblock() && screen instanceof ContainerScreen genericContainerScreen && !CatharsisCompatibility.isGuiElementHidden("skyblocker:chestValueButton")) {
 				Component title = screen.getTitle();
@@ -142,7 +144,7 @@ public class ChestValue {
 						ScreenEvents.afterTick(screen).register(_ -> {
 							Component dungeonChestProfit = getRewardChestProfit(genericContainerScreen.getMenu(), chestType);
 							if (dungeonChestProfit != null)
-								addValueToContainer(genericContainerScreen, dungeonChestProfit, title);
+								addValueToContainer(client, genericContainerScreen, dungeonChestProfit, title);
 						});
 					}
 				} else if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.enableChestValue && !titleString.equals("SkyBlock Menu")) {
@@ -153,7 +155,7 @@ public class ChestValue {
 								ScreenEvents.afterTick(screen).register(_ -> {
 									Component chestValue = getChestValue(genericContainerScreen.getMenu(), screenType);
 									if (chestValue != null) {
-										addValueToContainer(genericContainerScreen, chestValue, title);
+										addValueToContainer(client, genericContainerScreen, chestValue, title);
 									}
 								});
 							})
@@ -429,20 +431,22 @@ public class ChestValue {
 		return Component.literal(' ' + Formatters.INTEGER_NUMBERS.format(value) + " Coins").withStyle(hasIncompleteData ? config.incompleteColor : config.color);
 	}
 
-	private static void addValueToContainer(ContainerScreen genericContainerScreen, Component chestValue, Component title) {
-		Screens.getWidgets(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
-		int backgroundWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth();
-		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
-		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
+	private static void addValueToContainer(Minecraft client, ContainerScreen genericContainerScreen, Component chestValue, Component title) {
 		hideChestNameLabel = true;
-		Font textRenderer = Minecraft.getInstance().font;
-		int chestValueWidth = Math.min(textRenderer.width(chestValue), Math.max((backgroundWidth - 8) / 2 - 2, backgroundWidth - 8 - textRenderer.width(title)));
+		Screens.getWidgets(genericContainerScreen).removeIf(ChestValueTextWidget.class::isInstance);
 
-		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, textRenderer.lineHeight, chestValue, textRenderer);
-		chestValueWidget.setPosition(x + backgroundWidth - chestValueWidget.getWidth() - 4, y + 6);
+		int innerWidth = ((AbstractContainerScreenAccessor) genericContainerScreen).getImageWidth() - 8; // Subtract padding on both sides totaling 8
+		int x = ((AbstractContainerScreenAccessor) genericContainerScreen).getX();
+		int y = ((AbstractContainerScreenAccessor) genericContainerScreen).getY();
+
+		int maxChestValueWidth = Math.max((innerWidth) / 2 - 2, innerWidth - client.font.width(title)); // max width is at least half the width
+		int chestValueWidth = Math.min(client.font.width(chestValue), maxChestValueWidth); // Does not exceed max width
+
+		StringWidget chestValueWidget = new ChestValueTextWidget(chestValueWidth, client.font.lineHeight, chestValue, client.font);
+		chestValueWidget.setPosition(x + innerWidth - chestValueWidget.getWidth() + 4, y + 6);
 		Screens.getWidgets(genericContainerScreen).add(chestValueWidget);
 
-		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(backgroundWidth - 8 - chestValueWidth - 2, textRenderer.lineHeight, title.copy().withStyle(Style.EMPTY.withColor(4210752)), textRenderer);
+		ChestValueTextWidget chestTitleWidget = new ChestValueTextWidget(innerWidth - chestValueWidth - 2, client.font.lineHeight, title.copy().withStyle(Style.EMPTY.withColor(0x404040)), client.font);
 		chestTitleWidget.setPosition(x + 8, y + 6);
 		Screens.getWidgets(genericContainerScreen).add(chestTitleWidget);
 	}

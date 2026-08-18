@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

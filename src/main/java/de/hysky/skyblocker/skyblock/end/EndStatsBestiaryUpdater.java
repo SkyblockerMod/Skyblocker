@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.skyblock.end;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 	private static final Pattern KILLS_PATTERN = Pattern.compile("Kills: ([0-9,]+)");
@@ -33,7 +35,6 @@ public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 
 					int kills = NumberUtils.toInt(killsStr);
 					var stats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
-					assert stats != null;
 
 					if (entry.getIntKey() == ALL_ZEALOTS_INDEX) {
 						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(kills, stats.zealotsSinceLastEye(), stats.eyes()));

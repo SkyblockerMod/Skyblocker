@@ -5,18 +5,16 @@ import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.ints.IntSets;
+import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
 
 public class PlayerHeadHashCache {
 	private static final Logger LOGGER = LogUtils.getLogger();

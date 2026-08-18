@@ -1,16 +1,11 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.EnchantedBookUtils;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.brigadier.Command;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -22,11 +17,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.brigadier.Command;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.DataTooltipInfoType;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 public class ItemPrice {
 	public static final KeyMapping ITEM_PRICE_LOOKUP = KeyMappingHelper.registerKeyMapping(new KeyMapping(

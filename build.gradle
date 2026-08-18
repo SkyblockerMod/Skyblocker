@@ -164,6 +164,9 @@ dependencies {
 	// YACL
 	include implementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
+	// Render Chest
+	include implementation("net.azureaaron:render-chest:${project.render_chest_version}")
+
 	// HM API (Hypixel Mod API Library)
 	include implementation("net.azureaaron:hm-api:${project.hm_api_version}")
 
@@ -298,6 +301,7 @@ test {
 
 spotless {
 	java {
+		importOrder('java', 'javax', '', 'net', 'de.hysky', '\\#')
 		removeUnusedImports()
 		leadingSpacesToTabs()
 		trimTrailingWhitespace()

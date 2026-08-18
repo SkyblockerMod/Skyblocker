@@ -1,19 +1,16 @@
 package de.hysky.skyblocker.skyblock.item;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.EnchantedBookUtils;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.TextTransformer;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import io.github.moulberry.repo.data.NEUItem;
+import org.slf4j.Logger;
+
 import net.azureaaron.networth.Calculation;
 import net.azureaaron.networth.NetworthResult;
 import net.azureaaron.networth.utils.ItemConstants;
@@ -38,13 +35,18 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.TextTransformer;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
 public class ValueBreakdownPopup extends AbstractPopupScreen {
 	private static final Logger LOGGER = LogUtils.getLogger();

@@ -5,14 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import it.unimi.dsi.fastutil.Pair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -24,6 +18,14 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ProfileItemStorage;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ButtonWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.InventoryWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PaginationWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInformation, ProfileItemStorage>> {
 	private final List<AbstractWidget> widgets = new ArrayList<>();
@@ -76,15 +78,17 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 				// Personal Vault
 				);
 
+		// Inventory tabs
 		LinearLayout tabLayout = LinearLayout.vertical().spacing(1);
 		tabButtons.forEach(button -> this.widgets.add(tabLayout.addChild(button)));
-		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignHorizontallyCenter());
+		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignVerticallyMiddle());
 
+		// Add space between the tabs and the content
 		pageLayout.addChild(SpacerElement.width(16));
 
+		// One big frame layout with each tab's content essentially overlapping each other
 		FrameLayout inventoryFrame = new FrameLayout();
 		tabContentLayouts.forEach(layout -> inventoryFrame.addChild(layout, LayoutSettings.defaults().alignHorizontallyCenter()));
-
 		pageLayout.addChild(inventoryFrame);
 
 		// Select main page by default

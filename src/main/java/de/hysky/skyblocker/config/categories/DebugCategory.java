@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.debug.SkyBlockResourcePackDownloader;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
@@ -13,6 +7,13 @@ import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.OptionListener;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.debug.SkyBlockResourcePackDownloader;
 
 public class DebugCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {

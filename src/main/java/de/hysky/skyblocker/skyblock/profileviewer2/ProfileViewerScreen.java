@@ -3,23 +3,14 @@ package de.hysky.skyblocker.skyblock.profileviewer2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -27,6 +18,17 @@ import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 
 // TODO should this support tab navigation?
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
@@ -36,19 +38,21 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
+	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage(), new CollectionsPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2));
+	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2), createPageTab(3));
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
-	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
+	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member, Map<String, Integer> leaderboards) {
 		super(Component.literal("Skyblocker Profile Viewer"));
 		this.apiProfileResponse = apiProfileResponse;
 		this.profile = profile;
 		this.userProfile = userProfile;
 		this.member = member;
+		this.leaderboards = leaderboards;
 		this.loadPages();
 		this.setSelectedPage(0);
 	}
@@ -58,7 +62,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	}
 
 	private LoadingInformation createLoadingInformation() {
-		return new LoadingInformation(this.profile, this.userProfile, this.member, ItemLoader.decodeItems(this.member));
+		return new LoadingInformation(this.profile, this.userProfile, this.member, this.leaderboards, ItemLoader.decodeItems(this.member));
 	}
 
 	private void loadPages() {

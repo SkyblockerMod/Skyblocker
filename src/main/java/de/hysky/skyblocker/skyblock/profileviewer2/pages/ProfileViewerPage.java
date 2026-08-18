@@ -3,13 +3,14 @@ package de.hysky.skyblocker.skyblock.profileviewer2.pages;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
-public sealed interface ProfileViewerPage<T> permits InventoryPage, SkillsPage, SlayersPage {
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+
+public sealed interface ProfileViewerPage<T> permits CollectionsPage, InventoryPage, SkillsPage, SlayersPage {
 	/// {@return the icon of the page}
 	FlexibleItemStack getIcon();
 

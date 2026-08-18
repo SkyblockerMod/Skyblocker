@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
-import net.minecraft.world.phys.Vec3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.world.phys.Vec3;
 
 public class MythologicalRitualTest {
 	@Test

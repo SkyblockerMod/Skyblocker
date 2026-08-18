@@ -9,9 +9,22 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mojang.logging.LogUtils;
+import io.github.moulberry.repo.constants.PetLevelingBehaviourOverride;
+import io.github.moulberry.repo.constants.PetLevelingData;
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
+import io.github.moulberry.repo.util.PetId;
 import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
@@ -21,18 +34,6 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.TextTransformer;
-import io.github.moulberry.repo.constants.PetLevelingBehaviourOverride;
-import io.github.moulberry.repo.constants.PetLevelingData;
-import io.github.moulberry.repo.constants.PetNumbers;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.Rarity;
-import io.github.moulberry.repo.util.PetId;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemLore;
-import net.minecraft.world.item.component.ResolvableProfile;
 
 public class PetLoader {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -41,6 +42,7 @@ public class PetLoader {
 			.thenComparing(pet -> pet.type);
 	private static final Pattern STATS_NUMBER_PATTERN = Pattern.compile("\\{(?<name>[A-Za-z_]+)\\}");
 	private static final Pattern OTHER_NUMBER_PATTERN = Pattern.compile("\\{(?<index>\\d+)\\}");
+	private static final Style NO_ITALIC = Style.EMPTY.withItalic(false);
 
 	public static List<ItemStack> parsePets(List<PetsData.Pet> pets) {
 		// Allows us to add pets to the list in the order that they should display in their widget
@@ -86,11 +88,11 @@ public class PetLoader {
 			return ItemUtils.getItemIdPlaceholder(pet.type).getStackOrThrow();
 		}
 
-		int petLevel = calculatePetLevel(pet, pet.type, neuPetRarity, petLevellingData);
+		LevelInfo levelInfo = calculatePetLevel(pet, neuPetRarity, petLevellingData);
 		PetNumbers petNumbers = petNumbersData.get(pet.type).get(neuPetRarity);
 
-		Component name = formatName(petItem, petLevel);
-		List<Component> lore = formatLore(petItem, petNumbers, petLevel);
+		Component name = formatName(petItem, levelInfo.level());
+		List<Component> lore = appendLoreExtras(pet, levelInfo, formatLore(petItem, petNumbers, levelInfo.level()));
 		ResolvableProfile head = getHeadIcon(pet, baseStack.get(DataComponents.PROFILE));
 
 		FlexibleItemStack petStack = baseStack.copy();
@@ -101,13 +103,13 @@ public class PetLoader {
 		return petStack.getStackOrThrow();
 	}
 
-	private static int calculatePetLevel(PetsData.Pet pet, String petId, Rarity neuPetRarity, PetLevelingData petLevellingData) {
+	private static LevelInfo calculatePetLevel(PetsData.Pet pet, Rarity neuPetRarity, PetLevelingData petLevellingData) {
 		int maxLevel = 100;
 		int xpCostsOffset = petLevellingData.getPetLevelStartOffset().get(neuPetRarity);
 		List<Integer> allXpCosts = new ArrayList<>(petLevellingData.getPetExpCostForLevel());
 
-		if (petLevellingData.getPetLevelingBehaviourOverrides().containsKey(petId)) {
-			PetLevelingBehaviourOverride override = petLevellingData.getPetLevelingBehaviourOverrides().get(petId);
+		if (petLevellingData.getPetLevelingBehaviourOverrides().containsKey(pet.type)) {
+			PetLevelingBehaviourOverride override = petLevellingData.getPetLevelingBehaviourOverrides().get(pet.type);
 
 			// Adjust max level
 			if (override.getMaxLevel() != null) {
@@ -130,21 +132,29 @@ public class PetLoader {
 
 		List<Integer> xpCosts = allXpCosts.subList(xpCostsOffset, xpCostsOffset + maxLevel - 1);
 		int level = 1;
-		int totalXp = 0;
+		long remainingXp = (long) pet.exp;
 
-		for (int lvlXp : xpCosts) {
-			totalXp += lvlXp;
-
-			if (totalXp > pet.exp) {
-				totalXp -= lvlXp;
-
+		for (int xpRequired : xpCosts) {
+			if (remainingXp >= xpRequired) {
+				level++;
+				remainingXp -= xpRequired;
+			} else {
 				break;
 			}
-
-			level++;
 		}
 
-		return Math.min(level, maxLevel);
+		boolean isMaxLevel = level == maxLevel;
+		LevelInfo.Progress progress = null;
+
+		if (!isMaxLevel) {
+			long xpForNextLevel = xpCosts.get(level - 1);
+
+			progress = new LevelInfo.Progress(remainingXp, xpForNextLevel);
+		}
+
+		LevelInfo info = new LevelInfo((long) pet.exp, level, new LevelInfo.Cap(maxLevel, maxLevel), progress);
+
+		return info;
 	}
 
 	private static Component formatName(NEUItem petItem, int petLevel) {
@@ -208,14 +218,13 @@ public class PetLoader {
 		return componentLore;
 	}
 
-	@SuppressWarnings("unused")
-	private static void appendLoreExtras(PetsData.Pet pet, List<Component> lore) {
-		// Add pet skin name to first line if applicable
+	private static List<Component> appendLoreExtras(PetsData.Pet pet, LevelInfo levelInfo, List<Component> lore) {
+		// Add pet skin name to the first line if applicable
 		if (pet.skin != null) {
 			String petSkinName = ItemRepository.getItemStack("PET_SKIN_" + pet.skin, FlexibleItemStack.EMPTY)
 					.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty())
 					.getString();
-			Component newFirstLine = Component.empty()
+			Component newFirstLine = Component.empty().withStyle(NO_ITALIC)
 					.append(lore.getFirst())
 					.append(Component.literal(", " + petSkinName).withStyle(ChatFormatting.DARK_GRAY));
 
@@ -227,16 +236,42 @@ public class PetLoader {
 			FlexibleItemStack heldItem = ItemRepository.getItemStack(pet.heldItem);
 
 			if (heldItem != null && heldItem.get(DataComponents.CUSTOM_NAME) != null) {
-				Component text = Component.empty()
+				Component text = Component.empty().withStyle(NO_ITALIC)
 						.append(Component.literal("Held Item: ").withStyle(ChatFormatting.GOLD))
 						.append(heldItem.get(DataComponents.CUSTOM_NAME));
 
-				lore.add(lore.size(), text);
-				lore.add(lore.size(), Component.empty());
+				lore.add(lore.size() - 1, text);
+				lore.add(lore.size() - 1, Component.empty());
 			}
 		}
 
+		// Add max level text or level bar
+		if (levelInfo.isLevelAbsolutelyMaxed()) {
+			lore.add(lore.size() - 1, Component.literal("MAX LEVEL").withStyle(NO_ITALIC).withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD));
+			lore.add(lore.size() - 1, Component.literal("▸ " + Formatters.INTEGER_NUMBERS.format(levelInfo.xp()) + " XP").withStyle(NO_ITALIC).withStyle(ChatFormatting.DARK_GRAY));
+			lore.add(lore.size() - 1, Component.empty());
+		} else if (levelInfo.progress().isPresent()) {
+			// Realistically the progress should always be present if not maxed but we just check again anyways
+			LevelInfo.Progress progress = levelInfo.progress().get();
+			int nextLevel = levelInfo.level() + 1;
 
+			Component progressText = Component.empty().withStyle(NO_ITALIC)
+					.append(Component.literal("Progress to Level " + nextLevel + ": ").withStyle(ChatFormatting.GRAY))
+					.append(Component.literal(Formatters.FLOAT_NUMBERS.format(progress.percentageToNextLevel() * 100f) + "%").withStyle(ChatFormatting.YELLOW));
+			Component barText = Component.empty().withStyle(NO_ITALIC)
+					.append(Component.literal(" ".repeat((int) Math.round(progress.percentageToNextLevel() * 30f))).withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.STRIKETHROUGH))
+					.append(Component.literal(" ".repeat(30 - (int) Math.round(progress.percentageToNextLevel() * 30f))).withStyle(ChatFormatting.WHITE, ChatFormatting.STRIKETHROUGH))
+					.append(" ")
+					.append(Component.literal(Formatters.FLOAT_NUMBERS.format(progress.xpProgress())).withStyle(ChatFormatting.YELLOW))
+					.append(Component.literal("/").withStyle(ChatFormatting.GOLD))
+					.append(Component.literal(Formatters.FLOAT_NUMBERS.format(progress.xpNeeded())).withStyle(ChatFormatting.YELLOW));
+
+			lore.add(lore.size() - 1, progressText);
+			lore.add(lore.size() - 1, barText);
+			lore.add(lore.size() - 1, Component.empty());
+		}
+
+		return lore;
 	}
 
 	private static ResolvableProfile getHeadIcon(PetsData.Pet pet, ResolvableProfile original) {

@@ -1,8 +1,31 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
+import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
@@ -14,29 +37,6 @@ import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
-import org.joml.Vector2i;
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.CommonColors;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 //TODO when in recipe view set search hint to talk about close or smth
 /**
@@ -174,9 +174,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
-				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
-
-				graphics.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
+				graphics.setTooltipForNextFrame(this.client.font, stack, x, y);
 			} else if (this.hoveredText != null) {
 				//Draw text as a tooltip if it got truncated & we're hovering over it (for recipe display)
 				graphics.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);

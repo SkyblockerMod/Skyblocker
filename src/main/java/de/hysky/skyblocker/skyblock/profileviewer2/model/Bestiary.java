@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
+import com.google.gson.annotations.SerializedName;
 
 public class Bestiary {
 	/// Kill counts dived up by level: {@code [mob type]_[level]}

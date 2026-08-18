@@ -1,5 +1,17 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
+import java.util.Objects;
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
@@ -12,18 +24,8 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.time.SkyblockTime;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
-
-import java.util.Objects;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 @RegisterWidget
 public class FishingHudWidget extends ElementBasedWidget {

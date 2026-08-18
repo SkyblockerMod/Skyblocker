@@ -1,12 +1,15 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import static java.util.Map.entry;
 import java.util.Map;
 
-import net.minecraft.util.Util;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
+import net.minecraft.util.Util;
+
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
+
+import static java.util.Map.entry;
 
 public interface GardenConstants {
 	Map<String, String> CROP_BY_PEST = Map.ofEntries(

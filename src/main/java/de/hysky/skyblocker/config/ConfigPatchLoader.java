@@ -3,23 +3,23 @@ package de.hysky.skyblocker.config;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.slf4j.Logger;
-
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
+import org.slf4j.Logger;
+
+import net.azureaaron.dandelion.api.patching.ConfigPatch;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Http;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.azureaaron.dandelion.api.patching.ConfigPatch;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class ConfigPatchLoader {
 	private static final Logger LOGGER = LogUtils.getLogger();

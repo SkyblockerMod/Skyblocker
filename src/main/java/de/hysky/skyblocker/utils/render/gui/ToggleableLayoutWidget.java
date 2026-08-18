@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils.render.gui;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 

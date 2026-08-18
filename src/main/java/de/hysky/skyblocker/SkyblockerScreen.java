@@ -1,11 +1,5 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.Tips;
-import de.hysky.skyblocker.utils.FunUtils;
-import de.hysky.skyblocker.utils.LogsFolderFinder;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.minecraft.client.gui.Font;
@@ -26,6 +20,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.Tips;
+import de.hysky.skyblocker.utils.FunUtils;
+import de.hysky.skyblocker.utils.LogsFolderFinder;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 public class SkyblockerScreen extends Screen {
 	private static final int SPACING = 8;
 	private static final int BUTTON_WIDTH = 210;
@@ -43,8 +44,8 @@ public class SkyblockerScreen extends Screen {
 	private static final Component SUPPORT_US_TEXT = Component.translatable("text.skyblocker.supportUs");
 	private static final Component CREDITS_TEXT = Component.translatable("credits_and_attribution.button.credits");
 	private static final Component LOGS_FOLDER_TEXT = Component.translatable("text.skyblocker.logsFolder");
-	private HeaderAndFooterLayout layout;
-	private MultiLineTextWidget tip;
+	private HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this, 64, 100);
+	private MultiLineTextWidget tip = new MultiLineTextWidget(Component.empty(), this.font);
 
 	static {
 		if (FunUtils.shouldEnableFun()) {
@@ -62,10 +63,8 @@ public class SkyblockerScreen extends Screen {
 
 	@Init
 	public static void initClass() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
-			dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
-					.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new)));
-		});
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(ClientCommands.literal(SkyblockerMod.NAMESPACE)
+				.executes(Scheduler.queueOpenScreenCommand(SkyblockerScreen::new))));
 	}
 
 	@Override

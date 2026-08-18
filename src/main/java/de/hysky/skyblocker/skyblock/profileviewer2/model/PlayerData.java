@@ -1,14 +1,15 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gson.annotations.SerializedName;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 
 public class PlayerData {
 	@SerializedName("visited_zones")
@@ -24,6 +25,10 @@ public class PlayerData {
 	public List<Effect> activeEffects = List.of();
 	@SerializedName("reaper_peppers_eaten")
 	public int reaperPeppersEaten;
+	@SerializedName("isopod_husks_eaten")
+	public int isopodHusksEaten;
+	@SerializedName("bee_saliva_eaten")
+	public int beeSalivaEaten;
 	@SerializedName("death_count")
 	public int deathCount;
 	@SerializedName("disabled_potion_effects")
@@ -48,7 +53,6 @@ public class PlayerData {
 	public int fishingTreasuresCaught;
 	public Map<String, Double> experience = Map.of();
 
-
 	/// @param tier one indexed minion tier
 	public boolean hasCraftedMinionTier(String minionType, int tier) {
 		return this.craftedMinions.contains(String.format("%s_%d", minionType, tier));
@@ -58,15 +62,15 @@ public class PlayerData {
 		return this.experience.getOrDefault("SKILL_" + skill.name(), 0.0d);
 	}
 
-	public LevelInfo getSkillLevel(Skill skill, ProfileMember member) {
-		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
+	public LevelInfo getSkillLevel(Skill skill, LoadingInformation info) {
+		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, info);
 	}
 
-	public float getSkillAverage(ProfileMember member) {
+	public float getSkillAverage(LoadingInformation info) {
 		float average = 0;
 
 		for (Skill skill : Skill.CONVENTIONAL_SKILLS) {
-			average += this.getSkillLevel(skill, member).level();
+			average += this.getSkillLevel(skill, info).level();
 		}
 
 		average /= Skill.CONVENTIONAL_SKILLS.size();

@@ -1,28 +1,31 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.utils.ApiUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Http.ApiResponse;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.entity.player.Player;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.utils.ApiUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Http.ApiResponse;
 
 /**
  * Tracks the amount of secrets players get every run
@@ -102,7 +105,8 @@ public class SecretsTracker {
 	private static void sendResultMessage(String player, SecretData secretData) {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + DungeonPlayerManager.getClassFromPlayer(player).displayName() + ")").withColor(0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
+		DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player);
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + dungeonClass.displayName() + ")").withColor(dungeonClass != DungeonClass.UNKNOWN ? dungeonClass.color() : 0xF57542), "§7" + secretData.secrets(), getCacheText(secretData.cached(), secretData.cacheAge()))));
 	}
 
 	private static void sendFailureMessage() {

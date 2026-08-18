@@ -1,17 +1,17 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
-import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 
 public class Dungeons {
 	@SerializedName("last_dungeon_run")
@@ -42,8 +42,8 @@ public class Dungeons {
 	public static class ClassStats {
 		public double experience;
 
-		public LevelInfo getLevelInfo(ProfileMember member) {
-			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS, member);
+		public LevelInfo getLevelInfo(LoadingInformation info) {
+			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS, info);
 		}
 	}
 
