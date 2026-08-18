@@ -29,6 +29,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -45,6 +46,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.searchoverlay.OverlayScreen;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -86,6 +88,7 @@ public class VisitorHelper extends AbstractWidget {
 	public static void initialize() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			if (!shouldRender()) return;
+			if (!(screen instanceof AbstractContainerScreen<?> || screen instanceof AbstractSignEditScreen || screen instanceof OverlayScreen)) return;
 
 			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
 				processVisitor = true;

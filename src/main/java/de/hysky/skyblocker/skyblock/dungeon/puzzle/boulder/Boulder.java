@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
-import java.util.Arrays;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -29,17 +30,16 @@ public class Boulder extends DungeonPuzzle {
 	private static final Boulder INSTANCE = new Boulder();
 	private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
 	private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
-	private static final int BASE_Y = 65;
-	static Vec3[] linePoints;
-	static AABB boundingBox;
+	protected static final int BASE_Y = 65;
+	static Vec3 @Nullable [] linePoints;
+	static @Nullable AABB boundingBox;
 
 	private Boulder() {
 		super("boulder", "boxes-room");
 	}
 
 	@Init
-	public static void init() {
-	}
+	public static void init() {}
 
 	@Override
 	public void tick(Minecraft client) {
@@ -49,22 +49,24 @@ public class Boulder extends DungeonPuzzle {
 		}
 
 		Room room = DungeonManager.getCurrentRoom();
+		if (room == null) {
+			return;
+		}
 
+		@SuppressWarnings("unused") // Kept for documentation purposes
 		BlockPos chestPos = new BlockPos(15, BASE_Y, 29);
 		BlockPos start = new BlockPos(25, BASE_Y, 25);
 		BlockPos end = new BlockPos(5, BASE_Y, 8);
-		// Create a target BoulderObject for the puzzle
-		BoulderObject target = new BoulderObject(chestPos.getX(), chestPos.getX(), chestPos.getZ(), "T");
 		// Create a BoulderBoard representing the puzzle's grid
-		BoulderBoard board = new BoulderBoard(8, 7, target);
+		BoulderBoard board = new BoulderBoard(7, 7);
 
 		// Populate the BoulderBoard grid with BoulderObjects based on block types in the room
-		int column = 1;
+		int column = 0;
 		for (int z = start.getZ(); z > end.getZ(); z--) {
 			int row = 0;
 			for (int x = start.getX(); x > end.getX(); x--) {
 				if (Math.abs(start.getX() - x) % 3 == 1 && Math.abs(start.getZ() - z) % 3 == 1) {
-					String blockType = getBlockType(client.level, x, BASE_Y, z);
+					String blockType = getBlockType(client.level, room, x, BASE_Y, z);
 					board.placeObject(column, row, new BoulderObject(x, BASE_Y, z, blockType));
 					row++;
 				}
@@ -75,16 +77,7 @@ public class Boulder extends DungeonPuzzle {
 		}
 
 		// Generate initial game states for the A* solver
-		char[][] boardArray = board.getBoardCharArray();
-		List<BoulderSolver.GameState> initialStates = Arrays.asList(
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 1),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 2),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 3),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 4),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 5),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 6)
-		);
+		List<BoulderSolver.GameState> initialStates = getInitialStates(board);
 
 		// Solve the puzzle using the A* algorithm
 		List<int[]> solution = BoulderSolver.aStarSolve(initialStates);
@@ -126,6 +119,19 @@ public class Boulder extends DungeonPuzzle {
 		}
 	}
 
+	private static List<BoulderSolver.GameState> getInitialStates(BoulderBoard board) {
+		char[][] boardArray = board.getBoardCharArray();
+		return List.of(
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 1, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 2, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 3, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 4, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 5, 0),
+				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 6, 0)
+		);
+	}
+
 	/**
 	 * Retrieves the type of block at the specified position in the world.
 	 * If the block is Birch or Jungle plank, it will return "B"; otherwise, it will return ".".
@@ -136,8 +142,8 @@ public class Boulder extends DungeonPuzzle {
 	 * @param z     The z-coordinate of the block.
 	 * @return The type of block at the specified position.
 	 */
-	public static String getBlockType(ClientLevel world, int x, int y, int z) {
-		Block block = world.getBlockState(DungeonManager.getCurrentRoom().relativeToActual(new BlockPos(x, y, z))).getBlock();
+	public static String getBlockType(ClientLevel world, Room room, int x, int y, int z) {
+		Block block = world.getBlockState(room.relativeToActual(new BlockPos(x, y, z))).getBlock();
 		return (block == Blocks.BIRCH_PLANKS || block == Blocks.JUNGLE_PLANKS) ? "B" : ".";
 	}
 
@@ -150,7 +156,7 @@ public class Boulder extends DungeonPuzzle {
 	 * @param point2  The ending point of the line.
 	 * @return The position of the block found on the line, or null if no block is found.
 	 */
-	private static BlockPos checkForButtonBlocksOnLine(ClientLevel world, Vec3 point1, Vec3 point2) {
+	private static @Nullable BlockPos checkForButtonBlocksOnLine(ClientLevel world, Vec3 point1, Vec3 point2) {
 		double x1 = point1.x();
 		double y1 = point1.y() + 1;
 		double z1 = point1.z();

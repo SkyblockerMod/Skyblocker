@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 import it.unimi.dsi.fastutil.Pair;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A utility class that provides methods to solve the Boulder puzzle using the A* search algorithm.
@@ -24,7 +26,7 @@ public class BoulderSolver {
 	 * @return A list of coordinates representing the shortest path to solve the puzzle,
 	 *         or null if no solution is found within the maximum number of iterations.
 	 */
-	public static List<int[]> aStarSolve(List<GameState> initialStates) {
+	public static @Nullable List<int[]> aStarSolve(List<GameState> initialStates) {
 		Set<GameState> visited = new HashSet<>();
 		PriorityQueue<Pair<GameState, List<int[]>>> queue = new PriorityQueue<>(new AStarComparator());
 
@@ -40,20 +42,19 @@ public class BoulderSolver {
 			GameState state = pair.left();
 			List<int[]> path = pair.right();
 
-			if (state.isSolved()) {
-				return path;
-			}
-
 			if (visited.contains(state)) {
 				continue;
 			}
 			visited.add(state);
 
-			int[] currentCoord = {state.playerX, state.playerY};
-			path.add(currentCoord);
+			// Add current before checking for solved
+			path.add(new int[]{state.playerX, state.playerY});
+			if (state.isSolved()) {
+				return path;
+			}
 
 			for (int[] direction : new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}}) {
-				GameState newState = new GameState(state.grid, state.playerX, state.playerY);
+				GameState newState = new GameState(state.grid, state.playerX, state.playerY, state.movedBoxes);
 				if (newState.movePlayer(direction[0], direction[1])) {
 					queue.add(Pair.of(newState, new ArrayList<>(path)));
 				}
@@ -80,8 +81,8 @@ public class BoulderSolver {
 		 */
 		@Override
 		public int compare(Pair<GameState, List<int[]>> a, Pair<GameState, List<int[]>> b) {
-			int costA = a.right().size() + a.left().heuristic();
-			int costB = b.right().size() + b.left().heuristic();
+			int costA = a.right().size() + a.left().movedBoxes * 2 + a.left().heuristic();
+			int costB = b.right().size() + b.left().movedBoxes * 2 + b.left().heuristic();
 			return Integer.compare(costA, costB);
 		}
 	}
@@ -94,34 +95,31 @@ public class BoulderSolver {
 		private final char[][] grid;
 		private int playerX;
 		private int playerY;
+		private int movedBoxes;
 
 		/**
 		 * Constructs a new game state with the specified grid and theoretical player position.
 		 *
-		 * @param grid     The grid representing the Boulder puzzle configuration.
-		 * @param playerX  The x-coordinate of the player's position.
-		 * @param playerY  The y-coordinate of the player's position.
+		 * @param grid       The grid representing the Boulder puzzle configuration.
+		 * @param playerX    The x-coordinate of the player's position.
+		 * @param playerY    The y-coordinate of the player's position.
+		 * @param movedBoxes The number of boxes that have been moved in this game state.
 		 */
-		public GameState(char[][] grid, int playerX, int playerY) {
+		public GameState(char[][] grid, int playerX, int playerY, int movedBoxes) {
 			this.grid = copyGrid(grid);
 			this.playerX = playerX;
 			this.playerY = playerY;
+			this.movedBoxes = movedBoxes;
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (obj == null || getClass() != obj.getClass()) return false;
-			GameState gameState = (GameState) obj;
-			return Arrays.deepEquals(grid, gameState.grid) && playerX == gameState.playerX && playerY == gameState.playerY;
+		public boolean equals(@Nullable Object obj) {
+			return obj instanceof GameState gameState && Arrays.deepEquals(grid, gameState.grid) && playerX == gameState.playerX && playerY == gameState.playerY && movedBoxes == gameState.movedBoxes;
 		}
 
 		@Override
 		public int hashCode() {
-			int result = Arrays.deepHashCode(grid);
-			result = 31 * result + playerX;
-			result = 31 * result + playerY;
-			return result;
+			return Objects.hash(Arrays.deepHashCode(grid), playerX, playerY, movedBoxes);
 		}
 
 		/**
@@ -144,6 +142,7 @@ public class BoulderSolver {
 						grid[nextToBoxX][nextToBoxY] = 'B';
 						playerX = newX;
 						playerY = newY;
+						movedBoxes++;
 						return true;
 					}
 				} else {
@@ -160,30 +159,23 @@ public class BoulderSolver {
 		}
 
 		/**
-		 * Checks if the puzzle is solved, i.e., if the player is positioned on the target BoulderObject.
+		 * Checks if the puzzle is solved, i.e., if the player reaches the back wall (x=0).
 		 *
 		 * @return true if the theoretical puzzle is solved, false otherwise.
 		 */
 		public boolean isSolved() {
-			return grid[playerX][playerY] == 'T';
+			return playerX == 0;
 		}
 
 		/**
 		 * Calculates the heuristic value for the current game state, representing the estimated
-		 * distance from the player's position to the target BoulderObject.
+		 * distance from the player's position to the target. We intentially use the center of the back wall.
 		 *
 		 * @return The heuristic value for the current game state.
 		 */
 		public int heuristic() {
 			// should be improved maybe prioritize empty path first
-			for (int i = 0; i < grid.length; i++) {
-				for (int j = 0; j < grid[0].length; j++) {
-					if (grid[i][j] == 'T') {
-						return Math.abs(playerX - i) + Math.abs(playerY - j);
-					}
-				}
-			}
-			return Integer.MAX_VALUE;
+			return Math.abs(playerX) + Math.abs(playerY - grid[0].length / 2);
 		}
 
 		/**

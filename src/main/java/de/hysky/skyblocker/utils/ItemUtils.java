@@ -49,6 +49,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.objects.AtlasSprite;
 import net.minecraft.network.chat.contents.objects.ObjectInfo;
 import net.minecraft.network.chat.contents.objects.PlayerSprite;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -738,20 +739,29 @@ public final class ItemUtils {
 	public static <T extends ItemInstance & SkyblockerStack> SkyblockItemRarity getItemRarity(T stack) {
 		if (stack.is(Items.AIR)) return SkyblockItemRarity.UNKNOWN;
 
-		if (!getCustomData(stack).getStringOr(ID, "").equals("PET")) {
-			return ItemUtils.getLore(stack)
-					.reversed()
-					.stream()
-					.map(Component::getString)
-					.map(SkyblockItemRarity::containsName)
-					.flatMap(Optional::stream)
-					.findFirst()
-					.orElse(SkyblockItemRarity.UNKNOWN);
-		} else {
+		// Pets
+		if (getCustomData(stack).getStringOr(ID, "").equals("PET")) {
 			PetInfo info = stack.getPetInfo();
 			if (info.isEmpty()) return SkyblockItemRarity.UNKNOWN;
 			return info.item().isPresent() && info.item().get().equals("PET_ITEM_TIER_BOOST") ? info.rarity().next() : info.rarity();
 		}
+
+		// Tooltip style shortcut to make reforge stone core work, and this is probably faster than parsing lore
+		Identifier tooltipStyle = stack.getOrDefault(DataComponents.TOOLTIP_STYLE, Identifier.fromNamespaceAndPath("", ""));
+		if (tooltipStyle.getNamespace().equals(Utils.HYPIXEL_SKYBLOCK_NAMESPACE)) {
+			Optional<SkyblockItemRarity> rarity = SkyblockItemRarity.containsName(tooltipStyle.getPath().toUpperCase(Locale.ENGLISH));
+			if (rarity.isPresent()) return rarity.get();
+		}
+
+		// Fallback to lore
+		return ItemUtils.getLore(stack)
+				.reversed()
+				.stream()
+				.map(Component::getString)
+				.map(SkyblockItemRarity::containsName)
+				.flatMap(Optional::stream)
+				.findFirst()
+				.orElse(SkyblockItemRarity.UNKNOWN);
 	}
 
 	/**
