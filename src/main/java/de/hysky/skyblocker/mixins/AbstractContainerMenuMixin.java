@@ -23,10 +23,14 @@ public abstract class AbstractContainerMenuMixin {
 	@Shadow
 	public abstract void broadcastChanges();
 
+	@Inject(method = "setItem", at = @At("HEAD"))
+	private void beforeSetStackInSlot(int slot, int revision, ItemStack stack, CallbackInfo ci) {
+		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
+	}
+
 	@Inject(method = "setItem", at = @At("RETURN"))
 	private void onSetStackInSlot(int slot, int revision, ItemStack stack, CallbackInfo ci) {
 		ContainerSolverManager.markHighlightsDirty();
-		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
 		if (InventorySearch.isSearching()) {
 			InventorySearch.refreshSlot(slot);
 		}
