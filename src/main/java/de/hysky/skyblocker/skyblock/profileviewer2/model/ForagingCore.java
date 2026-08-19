@@ -10,7 +10,7 @@ public class ForagingCore {
 		public AbstractWhispersData desert = new AbstractWhispersData();
 
 		public static class AbstractWhispersData {
-			public int total;
+			public long total;
 			@SerializedName("1")
 			public WhispersSlot slot1 = new WhispersSlot();
 			@SerializedName("2")
@@ -23,9 +23,9 @@ public class ForagingCore {
 			public WhispersSlot slot5 = new WhispersSlot();
 
 			public static class WhispersSlot {
-				public int spent;
+				public long spent;
 				@SerializedName("spent_non_refundable")
-				public int spentNonRefundable;
+				public long spentNonRefundable;
 			}
 		}
 	}
