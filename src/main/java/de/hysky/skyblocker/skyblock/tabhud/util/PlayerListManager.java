@@ -55,6 +55,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class PlayerListManager {
 	public static boolean shouldUpdateNextTick = false;
 	private static boolean playerListLoaded = false;
+	private static int loadingTicks = 0;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
@@ -117,10 +118,21 @@ public class PlayerListManager {
 
 	@Init
 	public static void init() {
-		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> playerListLoaded = false);
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
+			playerListLoaded = false;
+			loadingTicks = 0;
+		});
 	}
 
 	public static void tryUpdateList() {
+		if (!playerListLoaded) {
+			// in the unlikely case someone has "Player List Info" disabled in Hypixel's settings
+			if (loadingTicks > 40) {
+				playerListLoaded = true;
+			} else {
+				loadingTicks++;
+			}
+		}
 		if (shouldUpdateNextTick) {
 			updateList();
 			shouldUpdateNextTick = false;
