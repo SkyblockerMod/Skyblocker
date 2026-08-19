@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.primitive;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -29,9 +30,11 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
 import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
+import de.hysky.skyblocker.utils.render.state.BlockSide;
 import de.hysky.skyblocker.utils.render.state.CursorLineRenderState;
 import de.hysky.skyblocker.utils.render.state.CylinderRenderState;
 import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
@@ -39,6 +42,7 @@ import de.hysky.skyblocker.utils.render.state.FilledCircleRenderState;
 import de.hysky.skyblocker.utils.render.state.LinesRenderState;
 import de.hysky.skyblocker.utils.render.state.OutlinedBoxRenderState;
 import de.hysky.skyblocker.utils.render.state.OutlinedCircleRenderState;
+import de.hysky.skyblocker.utils.render.state.OutlinedConnectedRenderState;
 import de.hysky.skyblocker.utils.render.state.QuadRenderState;
 import de.hysky.skyblocker.utils.render.state.SphereRenderState;
 import de.hysky.skyblocker.utils.render.state.TextRenderState;
@@ -55,6 +59,8 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private final List<FilledBoxRenderState> filledBoxThroughWallsStates = new ArrayList<>();
 	private final List<OutlinedBoxRenderState> outlinedBoxStates = new ArrayList<>();
 	private final List<OutlinedBoxRenderState> outlinedBoxThroughWallsStates = new ArrayList<>();
+	private final List<OutlinedConnectedRenderState> outlinedConnectedStates = new ArrayList<>();
+	private final List<OutlinedConnectedRenderState> outlinedConnectedThroughWallsStates = new ArrayList<>();
 	private final List<LinesRenderState> linesStates = new ArrayList<>();
 	private final List<LinesRenderState> linesThroughWallsStates = new ArrayList<>();
 	private final List<CursorLineRenderState> cursorLineStates = new ArrayList<>();
@@ -180,6 +186,41 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			this.outlinedBoxThroughWallsStates.add(state);
 		} else {
 			this.outlinedBoxStates.add(state);
+		}
+	}
+
+	@Override
+	public void submitOutlinedConnected(BlockPosSet blocks, float[] colourComponents, float lineWidth, boolean throughWalls) {
+		submitOutlinedConnected(blocks, colourComponents, 1f, lineWidth, throughWalls);
+	}
+
+	@Override
+	public void submitOutlinedConnected(BlockPosSet blocks, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
+		/* TODO, iterate over blocks to find block sides with no neighbor (including
+			diagonal neighbors, so 6 neighbor blocks to check for each side) and store
+			in a List<BlockSide> (or any better format) to then submit to the feature render */
+	}
+
+	private void submitOutlinedConnected(List<BlockSide> sides, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
+		ensureNotFrozen();
+
+		// Ensure the box is in view
+		double minX = Collections.min(sides.stream().map(BlockSide::x).toList());
+		double minY = Collections.min(sides.stream().map(BlockSide::y).toList());
+		double minZ = Collections.min(sides.stream().map(BlockSide::z).toList());
+		double maxX = Collections.max(sides.stream().map(BlockSide::x).toList());
+		double maxY = Collections.max(sides.stream().map(BlockSide::y).toList());
+		double maxZ = Collections.max(sides.stream().map(BlockSide::z).toList());
+		if (!FrustumUtils.isVisible(this.frustum, minX, minY, minZ, maxX, maxY, maxZ)) {
+			return;
+		}
+
+		OutlinedConnectedRenderState state = new OutlinedConnectedRenderState(sides, colourComponents, alpha, lineWidth);
+
+		if (throughWalls) {
+			this.outlinedConnectedThroughWallsStates.add(state);
+		} else {
+			this.outlinedConnectedStates.add(state);
 		}
 	}
 

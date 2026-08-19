@@ -310,6 +310,11 @@ public class WidgetManager {
 			));
 			hud.serializeConfig();
 
+			// Safari
+			editableScreenBuilder.setConfig(getScreenConfig(Location.SAFARI));
+			hud.add(getWidgetOrPlaceholder("hud_critters"));
+			hud.serializeConfig();
+
 			// Garden
 			editableScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
 			hud.add(getWidgetOrPlaceholder("hud_farming"));

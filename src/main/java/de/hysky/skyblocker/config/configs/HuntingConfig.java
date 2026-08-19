@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import java.awt.Color;
 
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.item.DyeColor;
 
 import de.hysky.skyblocker.utils.SkyBlockColors;
@@ -59,6 +60,23 @@ public class HuntingConfig {
 	}
 
 	public static class Safari {
+		public boolean highlightSnoozleWalls = true;
+
+		public WallHighlightType wallHighlightType = WallHighlightType.OUTLINED_HIGHLIGHT;
+
+		public enum WallHighlightType {
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
+
+			@Override
+			public String toString() {
+				return I18n.get("skyblocker.config.hunting.safari.wallHighlightType." + name());
+			}
+		}
+
+		public boolean highlightHoneybugNests = true;
+
 		public boolean silencePhantoms = true;
 
 		public boolean highlightSparklingCritters = false;
