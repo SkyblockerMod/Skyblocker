@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
@@ -15,6 +14,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
@@ -25,12 +25,12 @@ public class TargetPractice {
 	private static final int ACTIVATION_THRESHOLD = 1;
 	private static final int UNACTIVATED = 0;
 	// In the order you see the grid in the world by row.
-	private static final List<BlockPos> POSSIBLE_TARGETS = List.of(
+	private static final Set<BlockPos> POSSIBLE_TARGETS = Set.of(
 			new BlockPos(68, 130, 50), new BlockPos(66, 130, 50), new BlockPos(64, 130, 50),
 			new BlockPos(68, 128, 50), new BlockPos(66, 128, 50), new BlockPos(64, 128, 50),
 			new BlockPos(68, 126, 50), new BlockPos(66, 126, 50), new BlockPos(64, 126, 50)
-			);
-	private static final List<BlockPos> HIT_TARGETS = new ArrayList<>();
+	);
+	private static final BlockPosSet HIT_TARGETS = new BlockPosSet();
 	private static final float[] RED = ColorUtils.getFloatComponents(DyeColor.RED);
 
 	@Init
@@ -69,8 +69,7 @@ public class TargetPractice {
 		// player must shoot, so when that block turns back into Blue Terracotta it has either been successfully shot or the device reset.
 		if (POSSIBLE_TARGETS.contains(pos)) {
 			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.BLUE_TERRACOTTA)) {
-				// Convert position to immutable since it might be mutable and we can't have it changing
-				HIT_TARGETS.add(pos.immutable());
+				HIT_TARGETS.add(pos);
 			}
 		}
 	}
@@ -78,7 +77,7 @@ public class TargetPractice {
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (!shouldProcess()) return;
 
-		for (BlockPos pos : HIT_TARGETS) {
+		for (BlockPos pos : HIT_TARGETS.iterateMut()) {
 			collector.submitFilledBox(pos, RED, 0.5f, false);
 		}
 	}
