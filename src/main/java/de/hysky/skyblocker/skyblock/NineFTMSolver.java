@@ -8,6 +8,8 @@ import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
@@ -72,7 +74,7 @@ public class NineFTMSolver extends SimpleContainerSolver implements ContainerLis
 	}
 
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		isInMenu = true;
 		screen.getMenu().addSlotListener(this);
 	}
