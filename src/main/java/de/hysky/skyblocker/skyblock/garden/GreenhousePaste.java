@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -60,6 +61,7 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
+@SuppressWarnings("SameReturnValue")
 public class GreenhousePaste {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float PREVIEW_ALPHA = 0.6f;
@@ -206,10 +208,11 @@ public class GreenhousePaste {
 	private static void loadFromLink(String clipboard) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
+		Objects.requireNonNull(CLIENT.player);
 		String[] parts = clipboard.split("\\?layout=");
 		String encoded = parts.length > 1 ? parts[1] : clipboard;
 
-		if (encoded == null || encoded.isEmpty()) return;
+		if (encoded.isEmpty()) return;
 
 		boolean success = importGreenhouse(encoded);
 		if (!success) {
@@ -232,6 +235,7 @@ public class GreenhousePaste {
 	}
 
 	public static boolean isInGreenhouse() {
+		if (CLIENT.player == null || CLIENT.level == null) return false;
 		BlockPos playerPos = CLIENT.player.blockPosition();
 		BlockPos plotPos = playerPos.offset(240, 0, 240);
 
@@ -265,6 +269,8 @@ public class GreenhousePaste {
 
 	// Get info of current greenhouse
 	public static void locateGreenhouse() {
+		Objects.requireNonNull(CLIENT.player);
+		Objects.requireNonNull(CLIENT.level);
 		BlockPos playerPos = CLIENT.player.blockPosition();
 		/*
 			Math:
@@ -355,6 +361,8 @@ public class GreenhousePaste {
 	}
 
 	private static void adjustForPlantBoy(int x, int z) {
+		Objects.requireNonNull(greenhouseCorner);
+		Objects.requireNonNull(CLIENT.level);
 		if (greenhouse[x][z] != 26) return;
 
 		BlockPos pos = greenhouseCorner.offset(x, 0, z);
@@ -468,7 +476,7 @@ public class GreenhousePaste {
 
 	public static void renderPreview(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
-		if (greenhouseCorner == null) return;
+		if (greenhouseCorner == null || CLIENT.player == null) return;
 		// Only render if player is within greenhouse plot
 		if (CLIENT.player.getX() < greenhouseCorner.getX() - 43 || CLIENT.player.getX() > greenhouseCorner.getX() + 53 ||
 				CLIENT.player.getZ() < greenhouseCorner.getZ() - 43 || CLIENT.player.getZ() > greenhouseCorner.getZ() + 53) {
@@ -523,7 +531,7 @@ public class GreenhousePaste {
 				if (currentCropId != 0) { // Undesired spot that is not empty
 					collector.submitOutlinedBox(new AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
 				} else if (targetCrop.isHead()) {
-					ItemStack stack = targetCrop.displayStack().getStack();
+					ItemStack stack = targetCrop.displayStack().getStackOrEmpty();
 					ResolvableProfile profile = stack.get(DataComponents.PROFILE);
 					if (profile == null) continue;
 
@@ -537,6 +545,7 @@ public class GreenhousePaste {
 							.getOrDefault(profile)
 							.renderType();
 
+					//noinspection DataFlowIssue
 					collector.submitVanilla(
 							null,
 							(_, worldState, submitNodeCollector) -> {
@@ -626,6 +635,7 @@ public class GreenhousePaste {
 	}
 
 	private static void printGrid(int[][] grid) {
+		Objects.requireNonNull(CLIENT.player);
 		StringBuilder all = new StringBuilder();
 		for (int z = 0; z < 10; z++) {
 			StringBuilder row = new StringBuilder();
