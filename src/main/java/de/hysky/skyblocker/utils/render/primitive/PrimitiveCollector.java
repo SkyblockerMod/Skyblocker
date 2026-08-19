@@ -7,6 +7,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import de.hysky.skyblocker.utils.BlockPosSet;
+
 public interface PrimitiveCollector {
 
 	<S> void submitVanilla(S state, VanillaRenderer<S> renderer);
@@ -26,6 +28,10 @@ public interface PrimitiveCollector {
 	void submitOutlinedBox(AABB box, float[] colourComponents, float lineWidth, boolean throughWalls);
 
 	void submitOutlinedBox(AABB box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
+
+	void submitOutlinedConnected(BlockPosSet block, float[] colourComponents, float lineWidth, boolean throughWalls);
+
+	void submitOutlinedConnected(BlockPosSet blocks, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
 
 	/**
 	 * Submits lines to be drawn from point to point.<br><br>
@@ -53,7 +59,7 @@ public interface PrimitiveCollector {
 	 * @param textureHeight amount of texture rendered height
 	 * @param renderOffset  offset once it's been placed in the world facing the player
 	 * @param texture       reference to texture to render
-	 * @param shaderColor   colour to apply to the texture (use white if none)
+	 * @param shaderColour   colour to apply to the texture (use white if none)
 	 */
 	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls);
 
