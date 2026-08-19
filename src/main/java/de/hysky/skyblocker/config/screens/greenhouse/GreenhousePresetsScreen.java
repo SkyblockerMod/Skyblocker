@@ -27,7 +27,7 @@ public class GreenhousePresetsScreen extends Screen {
 	private PresetsList presetsList;
 
 	public GreenhousePresetsScreen(@Nullable Screen parent) {
-		super(Component.literal("Edit Greenhouse Plot Presets"));
+		super(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.title"));
 		this.parent = parent;
 	}
 
@@ -37,7 +37,7 @@ public class GreenhousePresetsScreen extends Screen {
 		presetsList = layout.addToContents(new PresetsList(minecraft, width, layout.getContentHeight()));
 		GreenhousePaste.PRESETS_DATA.getData().forEach((name, link) -> presetsList.addEntry(new PresetEntry(name, link)));
 		LinearLayout footer = LinearLayout.horizontal().spacing(8);
-		footer.addChild(Button.builder(Component.literal("Add preset"), _ -> presetsList.addEntry(new PresetEntry())).build());
+		footer.addChild(Button.builder(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.addPreset"), _ -> presetsList.addEntry(new PresetEntry())).build());
 		footer.addChild(Button.builder(CommonComponents.GUI_DONE, _ -> onClose()).build());
 		layout.addToFooter(footer);
 		repositionElements();
@@ -95,13 +95,13 @@ public class GreenhousePresetsScreen extends Screen {
 			nameBox.setWidth(100);
 			nameBox.setValue(name);
 			nameBox.setMaxLength(64);
-			nameBox.setHint(Component.literal("Name"));
+			nameBox.setHint(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.name"));
 			linkBox = layout.addChild(new EditBox(font, Component.empty()));
 			linkBox.setWidth(180);
 			linkBox.setMaxLength(2048);
 			linkBox.setValue(link);
-			linkBox.setHint(Component.literal("Skymutations Link"));
-			layout.addChild(Button.builder(Component.literal("Remove"), _ -> presetsList.removeEntry(this)).width(80).build());
+			linkBox.setHint(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.link"));
+			layout.addChild(Button.builder(Component.translatable("gui.remove"), _ -> presetsList.removeEntry(this)).width(80).build());
 			widgets = new ArrayList<>();
 			layout.arrangeElements();
 			layout.visitWidgets(widgets::add);
