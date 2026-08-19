@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.foraging;
 
 import java.awt.Color;
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +32,7 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.ItemCooldowns;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
@@ -277,7 +277,7 @@ public class SweepOverlay {
 			};
 		}
 
-		HashSet<BlockPos> visited = new HashSet<>();
+		BlockPosSet visited = new BlockPosSet();
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
 		int woodCount = 0;
 		float toughness = getToughness(state);
