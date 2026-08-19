@@ -311,25 +311,90 @@ public class BlockPosSet extends AbstractSet<BlockPos> implements Cloneable {
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		long[] longs = this.entries;
-		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+		final long[] longs = this.entries;
+		final int mask = this.mask;
+		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		boolean removedAny = false;
 
-		for (int i = 0, capacity = this.capacity; i < capacity; i++) {
+		for (int i = this.capacity - 1; i >= 0; i--) {
 			long h = longs[i];
 			if (h >= EMPTY) continue;
 			pos.set(unhashLong(h));
-			if (!c.contains(pos)) {
+			if (c.contains(pos)) continue;
+
+			if (longs[(i + 1) & mask] != EMPTY) {
 				longs[i] = TOMBSTONE;
+				if (i < LANES - 1) longs[i + this.capacity] = TOMBSTONE;
 				this.size--;
 				this.tombstones++;
-				removedAny = true;
+			} else {
+				// no need to use tombstones if the next slot is empty
+				// we might be able to use i instead of j in the do while loop,
+				// but then i may wrap around, and i don't want to deal with that
+				int j = i;
+				this.size--;
+				this.tombstones++;
 
-				if (i < LANES - 1) longs[i + capacity] = TOMBSTONE;
+				do {
+					longs[j] = EMPTY;
+					if (j < LANES - 1) longs[j + this.capacity] = EMPTY;
+					this.tombstones--;
+
+					j = (j - 1) & mask;
+				} while (longs[j] == TOMBSTONE);
 			}
+			removedAny = true;
 		}
 
-		// TODO: resize at the end
+		// TODO: profile and consider resizing here
+		return removedAny;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		boolean removedAny = false;
+
+		if (this.size > c.size()) {
+			for (Object e : c) {
+				removedAny |= remove(e);
+			}
+			return removedAny;
+		}
+
+		final long[] entries = this.entries;
+		final int mask = this.mask;
+		final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+		for (int i = this.capacity - 1; i >= 0; i--) {
+			long h = entries[i];
+			if (h >= EMPTY) continue;
+			pos.set(unhashLong(h));
+			if (!c.contains(pos)) continue;
+
+			if (entries[(i + 1) & mask] != EMPTY) {
+				entries[i] = TOMBSTONE;
+				if (i < LANES - 1) entries[i + this.capacity] = TOMBSTONE;
+				this.size--;
+				this.tombstones++;
+			} else {
+				// no need to use tombstones if the next slot is empty
+				// we might be able to use i instead of j in the do while loop,
+				// but then i may wrap around, and i don't want to deal with that
+				int j = i;
+				this.size--;
+				this.tombstones++;
+
+				do {
+					entries[j] = EMPTY;
+					if (j < LANES - 1) entries[j + this.capacity] = EMPTY;
+					this.tombstones--;
+
+					j = (j - 1) & mask;
+				} while (entries[j] == TOMBSTONE);
+			}
+			removedAny = true;
+		}
+
 		return removedAny;
 	}
 

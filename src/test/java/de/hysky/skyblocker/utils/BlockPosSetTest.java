@@ -26,7 +26,7 @@ public class BlockPosSetTest {
 		int operations = data.consumeInt(1, 200);
 
 		for (int i = 0; i < operations; i++) {
-			int action = data.consumeInt(0, 6);
+			int action = data.consumeInt(0, 7);
 
 			BlockPos targetPos = new BlockPos(pickXZ(data), pickY(data), pickXZ(data));
 
@@ -49,10 +49,18 @@ public class BlockPosSetTest {
 					assertEquals(referenceSet.retainAll(retain), customSet.retainAll(retain));
 				}
 				case 5 -> {
+					Set<BlockPos> remove = new HashSet<>();
+					int removeSize = data.consumeInt(1, 100);
+					for (int b = 0; b < removeSize; b++) {
+						remove.add(new BlockPos(pickXZ(data), pickY(data), pickXZ(data)));
+					}
+					assertEquals(referenceSet.removeAll(remove), customSet.removeAll(remove));
+				}
+				case 6 -> {
 					customSet.clear();
 					referenceSet.clear();
 				}
-				case 6 -> {
+				case 7 -> {
 					if (customSet.isEmpty()) break;
 
 					boolean itMut = data.consumeBoolean();
