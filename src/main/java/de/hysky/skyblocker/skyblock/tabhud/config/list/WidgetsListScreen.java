@@ -323,6 +323,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		entries.put(slot, entry);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void slotChanged(AbstractContainerMenu handler, int slotId, ItemStack stack) {
 		if (slotId >= 3 && slotId <= 5) {

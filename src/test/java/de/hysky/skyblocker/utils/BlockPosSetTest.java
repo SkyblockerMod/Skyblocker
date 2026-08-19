@@ -297,6 +297,7 @@ public class BlockPosSetTest {
 
 
 	private record TestParams(int seed, int iters, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		@SuppressWarnings("unused")
 		private static TestParams fromRandom(Random random) {
 			final int stddev = 100;
 			int x0 = (int) (random.nextGaussian(0, stddev));
