@@ -2,7 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import net.minecraft.network.chat.TextColor;
 
-public class SkyBlockColors {
+public final class SkyBlockColors {
 	public static final TextColor DARK_RED = TextColor.fromRgb(0xD13228);
 	public static final TextColor GOLD = TextColor.fromRgb(0xFF9000);
 	public static final TextColor DARK_BLUE = TextColor.fromRgb(0x353FCE);

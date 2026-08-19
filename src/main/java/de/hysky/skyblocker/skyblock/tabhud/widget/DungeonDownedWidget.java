@@ -1,43 +1,41 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 // this widget shows info about... something?
 // related to downed people in dungeons, not sure what this is supposed to show
 @RegisterWidget
 public class DungeonDownedWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Downed").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 
 	public DungeonDownedWidget() {
-		super("Dungeon Downed", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Downed", TITLE, TextColor.RED.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		String down = PlayerListManager.strAt(21);
 		if (down == null) {
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 		} else {
-
 			ChatFormatting format = ChatFormatting.RED;
 			if (down.endsWith("NONE")) {
 				format = ChatFormatting.GRAY;
 			}
 			int idx = down.indexOf(": ");
-			Component downed = (idx == -1) ? null
-					: simpleEntryText(down.substring(idx + 2), "Downed: ", format);
-			this.addComponent(Elements.iconTextComponent(Ico.SKULL, downed));
+			Component downed = idx >= 0 ? ElementCollector.simpleEntryText(down.substring(idx + 2), "Downed: ", format) : null;
+			this.addElement(Elements.iconTextComponent(Ico.SKULL, downed));
 		}
 
 		this.addSimpleIcoText(Ico.CLOCK, "Time:", ChatFormatting.GRAY, 22);

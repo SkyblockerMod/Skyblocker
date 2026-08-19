@@ -1,5 +1,13 @@
 package de.hysky.skyblocker.config.categories;
 
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
@@ -9,13 +17,6 @@ import de.hysky.skyblocker.skyblock.end.TheEnd;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import net.azureaaron.dandelion.api.ButtonOption;
-import net.azureaaron.dandelion.api.ConfigCategory;
-import net.azureaaron.dandelion.api.Option;
-import net.azureaaron.dandelion.api.OptionGroup;
-import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class OtherLocationsCategory {
 
@@ -140,12 +141,10 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.end.enderNodeWaypointType = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.hudEnabled"))
-								.binding(defaults.otherLocations.end.hudEnabled,
-										() -> config.otherLocations.end.hudEnabled,
-										newValue -> config.otherLocations.end.hudEnabled = newValue)
-								.controller(ConfigUtils.createBooleanController())
+						.option(ButtonOption.createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
+								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.THE_END, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"))
@@ -174,11 +173,6 @@ public class OtherLocationsCategory {
 										() -> config.otherLocations.end.waypoint,
 										newValue -> config.otherLocations.end.waypoint = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(ButtonOption.createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
-								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.resetName"))

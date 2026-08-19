@@ -3,28 +3,25 @@ package de.hysky.skyblocker.skyblock.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hysky.skyblocker.annotations.Init;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
+import net.azureaaron.renderchest.api.CustomGlowCallback;
+import net.azureaaron.renderchest.api.GlowConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.dungeon.LividColor;
+
 public class MobGlow {
-	public static final int NO_GLOW = EntityRenderState.NO_OUTLINE;
-	/**
-	 * Attached to {@code EntityRenderState}s to apply the custom glow colour.
-	 */
-	public static final RenderStateDataKey<Integer> ENTITY_CUSTOM_GLOW_COLOUR = RenderStateDataKey.create(() -> "Skyblocker custom glow colour");
-	/**
-	 * Attached to {@code WorldRenderState}s to indicate that the custom glow is being used this frame.
-	 */
-	public static final RenderStateDataKey<Boolean> FRAME_USES_CUSTOM_GLOW = RenderStateDataKey.create(() -> "Skyblocker frame uses custom glow");
+	public static final int NO_GLOW = GlowConstants.NO_GLOW;
 	private static final List<MobGlowAdder> ADDERS = new ArrayList<>();
 	/**
 	 * Cache for mob glow. Absence means the entity does not have custom glow.
@@ -36,6 +33,21 @@ public class MobGlow {
 	public static void init() {
 		// Clear the cache every tick
 		ClientTickEvents.END_LEVEL_TICK.register(_ -> clearCache());
+		CustomGlowCallback.EVENT.register(MobGlow::applyCustomGlow);
+	}
+
+	private static int applyCustomGlow(Entity entity, EntityRenderState state) {
+		boolean allowGlowInLivid = LividColor.allowGlow();
+		boolean customGlow = hasOrComputeMobGlow(entity);
+		boolean allowGlow = allowGlowInLivid && state.appearsGlowing() || customGlow;
+
+		if (allowGlow && customGlow) {
+			return ARGB.opaque(getMobGlow(entity));
+		} else if (!allowGlow) {
+			return GlowConstants.REMOVE_GLOW;
+		}
+
+		return GlowConstants.NO_GLOW;
 	}
 
 	protected static void registerGlowAdder(MobGlowAdder adder) {

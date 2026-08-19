@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipes;
 
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import org.jspecify.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.gui.navigation.ScreenPosition;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public interface CenteredRecipe extends SkyblockRecipe {
 	int SLOT_SIZE = 18;

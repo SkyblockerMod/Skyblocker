@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 
 public class RiftGlowAdder extends MobGlowAdder {
 	@SuppressWarnings("unused")

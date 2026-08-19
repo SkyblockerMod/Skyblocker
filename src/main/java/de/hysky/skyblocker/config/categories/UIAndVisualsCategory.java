@@ -1,27 +1,16 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.skyblock.GyroOverlay;
-import de.hysky.skyblocker.skyblock.ItemPickupWidget;
-import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
-import de.hysky.skyblocker.skyblock.item.ValueBreakdownPopup;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
-import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
-import de.hysky.skyblocker.skyblock.tabhud.TabHud;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
-import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.container.SlotTextAdder;
-import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import java.awt.Color;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
@@ -37,14 +26,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputQuirks;
 import net.minecraft.network.chat.Component;
 
-import java.awt.Color;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.GyroOverlay;
+import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
+import de.hysky.skyblocker.skyblock.item.ValueBreakdownPopup;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
+import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
+import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.Positioner;
+import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
+import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.container.SlotTextAdder;
+import de.hysky.skyblocker.utils.render.title.TitleContainerConfigScreen;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class UIAndVisualsCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -377,7 +380,8 @@ public class UIAndVisualsCategory {
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled"))
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip"))
 								.binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
 										() -> config.uiAndVisuals.tabHud.tabHudEnabled,
 										newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
@@ -386,9 +390,9 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								.tags(Component.literal("gui"))
+								.tags(ArrayUtils.add(WidgetManager.WIDGET_INSTANCES.values().stream().map(w -> w.getInformation().displayName()).toArray(Component[]::new), Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag")))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(WidgetsConfigurationScreen::openWidgetsConfigScreen)
+								.action(_ -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen()))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
@@ -458,7 +462,7 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
 										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
 								.build())
-						.option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+						.option(Option.<Positioner>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
 								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
 										() -> config.uiAndVisuals.tabHud.defaultPositioning,
@@ -824,6 +828,14 @@ public class UIAndVisualsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										() -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										newValue -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableMuseum.@Tooltip"))
 								.binding(defaults.uiAndVisuals.searchOverlay.enableMuseum,
@@ -1119,8 +1131,9 @@ public class UIAndVisualsCategory {
 						.collapsed(true)
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))

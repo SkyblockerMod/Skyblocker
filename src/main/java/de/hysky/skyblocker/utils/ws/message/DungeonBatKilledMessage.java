@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.utils.ws.message;
 
+import java.util.UUID;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
 
-import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 
 public record DungeonBatKilledMessage(String type, UUID sender) implements Message<DungeonBatKilledMessage> {
 	public static final String TYPE = "bat_killed";

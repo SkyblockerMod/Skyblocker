@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.resources.language.I18n;
+
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.resources.language.I18n;
 
 public class HelperConfig {
 	public boolean enableNewYearCakesHelper = true;
@@ -133,6 +135,8 @@ public class HelperConfig {
 		public boolean enableFairySoulsHelper = false;
 
 		public boolean highlightFoundSouls = true;
+
+		public boolean highlightOnBingo = true;
 
 		public boolean highlightOnlyNearbySouls = false;
 	}

@@ -1,10 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,31 +8,35 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
-// this widget shows various dungeon info
-// deaths, healing, dmg taken, milestones
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
+
+/// This widget shows various dungeon info:
+/// deaths, healing, damage taken, and milestones.
 @RegisterWidget
 public class DungeonDeathWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Death").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Death").withStyle(ChatFormatting.RED, ChatFormatting.BOLD);
 
 	// match the deaths entry
 	// group 1: amount of deaths
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Deaths", TITLE, TextColor.RED.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 		} else {
-			ChatFormatting f = (m.group("deathnum").equals("0")) ? ChatFormatting.GREEN : ChatFormatting.RED;
-			Component d = simpleEntryText(m.group("deathnum"), "Deaths: ", f);
-			this.addComponent(Elements.iconTextComponent(Ico.SKULL, d));
+			ChatFormatting f = m.group("deathnum").equals("0") ? ChatFormatting.GREEN : ChatFormatting.RED;
+			this.addSimpleIcoText(Ico.SKULL, "Deaths: ", f, m.group("deathnum"));
 		}
 
 		this.addSimpleIcoText(Ico.IRON_SWORD, "Damage Dealt:", ChatFormatting.RED, 26);

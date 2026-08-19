@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.chat;
 
+import java.util.EnumSet;
+import java.util.stream.Stream;
+
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.utils.Location;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.EnumSet;
-import java.util.stream.Stream;
+import de.hysky.skyblocker.utils.Location;
 
 class ChatRuleTest {
 

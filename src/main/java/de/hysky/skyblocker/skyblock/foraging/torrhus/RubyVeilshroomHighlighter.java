@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.foraging.torrhus;
 
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.foraging.AbstractBlockHighlighter;
 import de.hysky.skyblocker.utils.Utils;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Blocks;
 
 public final class RubyVeilshroomHighlighter extends AbstractBlockHighlighter {
 	private static final RubyVeilshroomHighlighter INSTANCE = new RubyVeilshroomHighlighter();

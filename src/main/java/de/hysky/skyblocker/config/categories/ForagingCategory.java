@@ -2,23 +2,23 @@ package de.hysky.skyblocker.config.categories;
 
 import java.awt.Color;
 
+import net.azureaaron.dandelion.api.ButtonOption;
+import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.Option;
+import net.azureaaron.dandelion.api.OptionGroup;
+import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.IntegerController;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.foraging.galatea.SeaLumiesHighlighter;
-import de.hysky.skyblocker.skyblock.foraging.galatea.TreeBreakProgressHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
-import net.azureaaron.dandelion.api.ConfigCategory;
-import net.azureaaron.dandelion.api.Option;
-import net.azureaaron.dandelion.api.OptionGroup;
-import net.azureaaron.dandelion.api.ButtonOption;
-import net.azureaaron.dandelion.api.controllers.ColourController;
-import net.azureaaron.dandelion.api.controllers.IntegerController;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class ForagingCategory {
 
@@ -80,18 +80,11 @@ public class ForagingCategory {
 										})
 								.controller(IntegerController.createBuilder().range(1, 4).slider(1).build())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress"))
-								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakProgress.@Tooltip"))
-								.binding(defaults.foraging.moongladeMarsh.enableTreeBreakProgress,
-										() -> config.foraging.moongladeMarsh.enableTreeBreakProgress,
-										newValue -> config.foraging.moongladeMarsh.enableTreeBreakProgress = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTreeBreakHud"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, TreeBreakProgressHud.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableTunerSolver"))

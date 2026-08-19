@@ -2,12 +2,11 @@ package de.hysky.skyblocker.mixins.jgit;
 
 import java.util.Map;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.eclipse.jgit.transport.UrlConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 @Mixin(UrlConfig.class)
 public class UrlConfigMixin {

@@ -3,8 +3,30 @@ package de.hysky.skyblocker.skyblock.profileviewer2.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ForagingCore {
-	@SerializedName("forests_whispers")
-	public int forestWhispers;
-	@SerializedName("forests_whispers_spent")
-	public int forestWhispersSpent;
+	public Whispers whispers = new Whispers();
+
+	public static class Whispers {
+		public AbstractWhispersData forest = new AbstractWhispersData();
+		public AbstractWhispersData desert = new AbstractWhispersData();
+
+		public static class AbstractWhispersData {
+			public int total;
+			@SerializedName("1")
+			public WhispersSlot slot1 = new WhispersSlot();
+			@SerializedName("2")
+			public WhispersSlot slot2 = new WhispersSlot();
+			@SerializedName("3")
+			public WhispersSlot slot3 = new WhispersSlot();
+			@SerializedName("4")
+			public WhispersSlot slot4 = new WhispersSlot();
+			@SerializedName("5")
+			public WhispersSlot slot5 = new WhispersSlot();
+
+			public static class WhispersSlot {
+				public int spent;
+				@SerializedName("spent_non_refundable")
+				public int spentNonRefundable;
+			}
+		}
+	}
 }

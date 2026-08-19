@@ -1,43 +1,42 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.Location;
+
 // this widget shows a list of obtained dungeon buffs
 @RegisterWidget
 public class DungeonBuffWidget extends TabHudWidget {
 
-	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.DARK_PURPLE,
-			ChatFormatting.BOLD);
+	private static final MutableComponent TITLE = Component.literal("Dungeon Buffs").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 
 	public DungeonBuffWidget() {
-		super("Dungeon Buffs", TITLE, TextColor.DARK_PURPLE.getValue());
+		super("Dungeon Buffs", TITLE, TextColor.GREEN.getValue(), new Information("dungeon_buffs", Component.literal("Dungeon Buffs"), Location.DUNGEON));
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 
-		String footertext = PlayerListManager.getFooter();
+		String footer = PlayerListManager.getFooter();
 
-		if (footertext == null || !footertext.contains("Dungeon Buffs")) {
-			this.addComponent(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
+		if (footer == null || !footer.contains("Dungeon Buffs")) {
+			this.addElement(new PlainTextElement(Component.literal("No data").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
-		String interesting = footertext.split("Dungeon Buffs")[1];
-		String[] lines = interesting.split("\n");
+		String[] lines = footer.split("Dungeon Buffs")[1].split("\n");
 
 		if (!lines[1].startsWith("Blessing")) {
-			this.addComponent(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
+			this.addElement(new PlainTextElement(Component.literal("No buffs found!").withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -52,12 +51,10 @@ public class DungeonBuffWidget extends TabHudWidget {
 				break;
 			}
 			int color = getBlessingColor(line);
-			this.addComponent(new PlainTextElement(Component.literal(line).withStyle(style -> style.withColor(color))));
+			this.addElement(new PlainTextElement(Component.literal(line).withColor(color)));
 		}
-
 	}
 
-	@SuppressWarnings("DataFlowIssue")
 	public int getBlessingColor(String blessing) {
 		if (blessing.contains("Life")) return TextColor.LIGHT_PURPLE.getValue();
 		if (blessing.contains("Power")) return TextColor.RED.getValue();

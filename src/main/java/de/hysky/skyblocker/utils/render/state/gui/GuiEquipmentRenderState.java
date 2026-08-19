@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.render.state.gui;
 
 import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;

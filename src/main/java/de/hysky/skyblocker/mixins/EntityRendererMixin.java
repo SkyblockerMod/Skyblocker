@@ -2,50 +2,30 @@ package de.hysky.skyblocker.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.SlayersConfig;
-import de.hysky.skyblocker.skyblock.dungeon.LividColor;
-import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
-import de.hysky.skyblocker.skyblock.entity.MobGlow;
-import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
-import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
-import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
-import de.hysky.skyblocker.utils.Boxes;
-import de.hysky.skyblocker.utils.ColorUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.SlayersConfig;
+import de.hysky.skyblocker.skyblock.entity.MobBoundingBoxes;
+import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
+import de.hysky.skyblocker.skyblock.teleport.PredictiveSmoothAOTE;
+import de.hysky.skyblocker.skyblock.teleport.ResponsiveSmoothAOTE;
+import de.hysky.skyblocker.utils.Boxes;
+import de.hysky.skyblocker.utils.ColorUtils;
+
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
-
-	@Inject(method = "extractRenderState", at = @At("TAIL"))
-	private void skyblocker$customGlow(CallbackInfo ci, @Local(name = "entity") Entity entity, @Local(name = "state") EntityRenderState state) {
-		boolean allowGlowInLivid = LividColor.allowGlow();
-		boolean customGlow = MobGlow.hasOrComputeMobGlow(entity);
-		boolean allowGlow = allowGlowInLivid && state.appearsGlowing() || customGlow;
-
-		if (allowGlow && customGlow) {
-			// Only use custom colour flag if the entity has no vanilla glow (so we can change Hypixel's glow colours without changing the glow's visibility)
-			// NB: Custom glow needs to be separate to avoid weird rendering bugs.
-			if (!entity.isCurrentlyGlowing()) {
-				state.setData(MobGlow.ENTITY_CUSTOM_GLOW_COLOUR, ARGB.opaque(MobGlow.getMobGlow(entity)));
-			} else {
-				state.outlineColor = ARGB.opaque(MobGlow.getMobGlow(entity));
-			}
-		} else if (!allowGlow) {
-			state.outlineColor = EntityRenderState.NO_OUTLINE;
-		}
-	}
 
 	// This is meant to be separate from the previous injection for organizational purposes.
 	@Inject(method = "extractRenderState", at = @At(value = "TAIL"))

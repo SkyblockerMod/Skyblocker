@@ -4,11 +4,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Either;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
-import com.mojang.datafixers.util.Either;
 
 /**
  * An item wiki lookup for certain screen.

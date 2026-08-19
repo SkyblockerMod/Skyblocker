@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.io.InputStreamReader;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
+import com.mojang.datafixers.DSL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStreamReader;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 public class ConfigDataFixerTest {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -20,13 +22,17 @@ public class ConfigDataFixerTest {
 		Bootstrap.bootStrap();
 	}
 
-	void testDataFix(int previousVersion, int newVersion) {
+	void testDataFix(int previousVersion, int newVersion, DSL.TypeReference type, String file) {
 		@SuppressWarnings("DataFlowIssue")
-		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v" + previousVersion + ".json")), JsonObject.class);
+		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream(file + previousVersion + ".json")), JsonObject.class);
 		@SuppressWarnings("DataFlowIssue")
-		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream("/assets/skyblocker/config/skyblocker-v" + newVersion + ".json")), JsonObject.class);
+		JsonObject expectedNewConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream(file + newVersion + ".json")), JsonObject.class);
 
-		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(ConfigDataFixer.CONFIG_TYPE, oldConfig, newVersion));
+		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(type, oldConfig, newVersion));
+	}
+
+	void testDataFix(int previousVersion, int newVersion) {
+		testDataFix(previousVersion, newVersion, ConfigDataFixer.CONFIG_TYPE, "/assets/skyblocker/config/skyblocker-v");
 	}
 
 	@Test
@@ -57,5 +63,10 @@ public class ConfigDataFixerTest {
 	@Test
 	void testDataFixer8() {
 		testDataFix(8, 9);
+	}
+
+	@Test
+	void testDataFixerHudWidgets() {
+		testDataFix(1, 12, ConfigDataFixer.HUD_WIDGETS_TYPE, "/assets/skyblocker/config/skyblocker/hud_widgets_v");
 	}
 }
