@@ -68,7 +68,7 @@ public class BlockPosSetTest {
 
 					if (customLastSeen != null && data.consumeBoolean()) {
 						customIt.remove();
-						refIt.remove();
+						referenceSet.remove(customLastSeen);
 						assertThrows(IllegalStateException.class, customIt::remove);
 					}
 				}
