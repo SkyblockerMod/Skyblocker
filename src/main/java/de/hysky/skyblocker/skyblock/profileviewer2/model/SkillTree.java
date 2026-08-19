@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
+import java.util.Map;
+
 import com.google.gson.annotations.SerializedName;
 import org.jspecify.annotations.Nullable;
 
@@ -14,18 +16,27 @@ public class SkillTree {
 	public SelectedSkillTreeSlot selectedSkillTreeSlot = new SelectedSkillTreeSlot();
 
 	public static class Nodes {
-		public Mining mining = new Mining();
-		public Foraging foraging = new Foraging();
+		@SerializedName("mining")
+		public Map<String, Object> mining1 = Map.of();
+		@SerializedName("mining_2")
+		public Map<String, Object> mining2 = Map.of();
+		@SerializedName("mining_3")
+		public Map<String, Object> mining3 = Map.of();
+		@SerializedName("mining_4")
+		public Map<String, Object> mining4 = Map.of();
+		@SerializedName("mining_5")
+		public Map<String, Object> mining5 = Map.of();
 
-		public static class Mining {
-			@SerializedName("core_of_the_mountain")
-			public int coreOfTheMountain;
-		}
-
-		public static class Foraging {
-			@SerializedName("center_of_the_forest")
-			public int centreOfTheForest;
-		}
+		@SerializedName("foraging")
+		public Map<String, Object> foraging1 = Map.of();
+		@SerializedName("foraging_2")
+		public Map<String, Object> foraging2 = Map.of();
+		@SerializedName("foraging_3")
+		public Map<String, Object> foraging3 = Map.of();
+		@SerializedName("foraging_4")
+		public Map<String, Object> foraging4 = Map.of();
+		@SerializedName("foraging_5")
+		public Map<String, Object> foraging5 = Map.of();
 	}
 
 	public static class TokensSpent {
