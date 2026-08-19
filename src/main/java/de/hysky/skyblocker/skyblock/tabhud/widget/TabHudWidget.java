@@ -49,6 +49,11 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 		});
 	}
 
+	@Override
+	public boolean shouldRender() {
+		return PlayerListManager.isPlayerListLoaded() && super.shouldRender();
+	}
+
 	public String getHypixelWidgetName() {
 		return hypixelWidgetName;
 	}

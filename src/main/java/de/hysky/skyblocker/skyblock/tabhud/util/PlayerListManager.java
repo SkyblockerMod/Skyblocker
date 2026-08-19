@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -38,6 +39,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
@@ -52,6 +54,7 @@ import de.hysky.skyblocker.utils.Utils;
  */
 public class PlayerListManager {
 	public static boolean shouldUpdateNextTick = false;
+	private static boolean playerListLoaded = false;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
@@ -105,6 +108,18 @@ public class PlayerListManager {
 		TAB_WIDGET_LISTENERS.put(widgetName, listener);
 	}
 
+	/**
+	 * @return whether the player list is loaded (all 80 lines are present)
+	 */
+	public static boolean isPlayerListLoaded() {
+		return playerListLoaded;
+	}
+
+	@Init
+	public static void init() {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> playerListLoaded = false);
+	}
+
 	public static void tryUpdateList() {
 		if (shouldUpdateNextTick) {
 			updateList();
@@ -128,6 +143,12 @@ public class PlayerListManager {
 					.map(Component::getString)
 					.map(String::strip)
 					.toList();
+		}
+
+		System.out.println("player list size: " + playerList.size());
+
+		if (playerList.size() >= 80) {
+			playerListLoaded = true;
 		}
 
 		if (Utils.isInDungeons()) updateDungeons(null);
