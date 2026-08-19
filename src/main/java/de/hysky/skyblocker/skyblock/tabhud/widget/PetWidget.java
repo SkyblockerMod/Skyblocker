@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

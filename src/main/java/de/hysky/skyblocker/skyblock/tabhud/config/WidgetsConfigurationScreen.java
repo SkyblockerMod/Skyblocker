@@ -442,7 +442,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.gui.setScreen(previousScreen);
+		this.minecraft.setScreen(previousScreen);
 	}
 
 	public void removeWidget(PositionedWidget widget) {
@@ -549,7 +549,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	public void openPopup(Function<WidgetsConfigurationScreen, Screen> popupCreator) {
-		minecraft.gui.setScreen(popupCreator.apply(this));
+		minecraft.setScreen(popupCreator.apply(this));
 	}
 
 	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {}
