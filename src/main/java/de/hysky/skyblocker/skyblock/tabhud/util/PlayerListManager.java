@@ -145,8 +145,6 @@ public class PlayerListManager {
 					.toList();
 		}
 
-		System.out.println("player list size: " + playerList.size());
-
 		if (playerList.size() >= 80) {
 			playerListLoaded = true;
 		}
