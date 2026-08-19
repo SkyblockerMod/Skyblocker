@@ -1,0 +1,78 @@
+{
+	"categories": {
+		"FARMING": [
+			"CACTUS",
+			"CARROT",
+			"COCOA",
+			"CHICKEN",
+			"COW",
+			"MELON",
+			"MUSHROOM",
+			"NETHER_WARTS",
+			"POTATO",
+			"PUMPKIN",
+			"CHICKEN",
+			"SHEEP",
+			"PIG",
+			"RABBIT",
+			"SUGAR_CANE",
+			"SUNFLOWER",
+			"WHEAT"
+		],
+		"MINING": [
+			"COAL",
+			"COBBLESTONE",
+			"DIAMOND",
+			"EMERALD",
+			"ENDER_STONE",
+			"GLOWSTONE",
+			"GOLD",
+			"GRAVEL",
+			"HARD_STONE",
+			"ICE",
+			"IRON",
+			"LAPIS",
+			"MITHRIL",
+			"MYCELIUM",
+			"QUARTZ",
+			"OBSIDIAN",
+			"RED_SAND",
+			"REDSTONE",
+			"SAND",
+			"SNOW"
+		],
+		"COMBAT": [
+			"BLAZE",
+			"SKELETON",
+			"INFERNO",
+			"ENDERMAN",
+			"GHAST",
+			"CREEPER",
+			"MAGMA_CUBE",
+			"ZOMBIE",
+			"SLIME",
+			"SPIDER",
+			"CAVESPIDER",
+			"REVENANT",
+			"TARANTULA",
+			"VOIDLING"
+		],
+		"FISHING": [
+			"CLAY",
+			"LILY_PAD",
+			"FISHING"
+		],
+		"FORAGING": [
+			"ACACIA",
+			"BIRCH",
+			"DARK_OAK",
+			"JUNGLE",
+			"OAK",
+			"SPRUCE",
+			"FLOWER"
+		],
+		"RIFT": [
+			"VAMPIRE"
+		]
+	}
+}
