@@ -1659,6 +1659,7 @@
   "skyblocker.config.uiAndVisuals.waypoints.waypointType.generalNote": "\n\n\nThis option does not apply to all waypoints. Some waypoints such as secret waypoints have their own waypoint type option.",
 
   "skyblocker.containerValue.chestValue.@Tooltip": "Calculate the value of this container.",
+  "skyblocker.containerValue.huntingBoxValue.@Tooltip": "Calculate the value of the shards in this hunting box.",
   "skyblocker.containerValue.minionValue.@Tooltip": "Calculate the value of this minion's generated resources.",
   "skyblocker.containerValue.sackValue.@Tooltip": "Calculate the value of the items in this sack.",
   "skyblocker.containerValue.stashValue.@Tooltip": "Calculate the value of the items in this stash.",
