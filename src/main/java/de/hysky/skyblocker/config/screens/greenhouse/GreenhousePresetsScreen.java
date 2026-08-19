@@ -31,6 +31,10 @@ public class GreenhousePresetsScreen extends Screen {
 		this.parent = parent;
 	}
 
+	public GreenhousePresetsScreen() {
+		this(null);
+	}
+
 	@Override
 	protected void init() {
 		layout.addTitleHeader(getTitle(), font);

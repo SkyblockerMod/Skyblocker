@@ -12,6 +12,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.serialization.Codec;
+
+import de.hysky.skyblocker.config.screens.greenhouse.GreenhousePresetsScreen;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
@@ -96,6 +100,7 @@ public class GreenhousePaste {
 									.executes(context -> runGreenhousePaste(StringArgumentType.getString(context, "preset")))
 					))
 					.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
+					.then(literal("presets").executes(Scheduler.queueOpenScreenCommand(GreenhousePresetsScreen::new)))
 					.then(literal("rotate")
 							.then(literal("right").executes(_ -> runRotateRight()))
 							.then(literal("left").executes(_ -> runRotateLeft())))
