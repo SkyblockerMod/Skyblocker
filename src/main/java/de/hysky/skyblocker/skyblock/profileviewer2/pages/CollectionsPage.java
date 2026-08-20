@@ -25,6 +25,7 @@ import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.PlayerData;
@@ -200,7 +201,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 
 		// Title
 		this.widgets.add(layout.addChild(
-				new StringWidget(Component.literal(title).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.BOLD).withoutShadow(), font),
+				new StringWidget(Component.literal(title).withColor(CommonColors.DARK_GRAY).withStyle(ChatFormatting.BOLD).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
 				));
 
@@ -208,7 +209,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 		double unlockedPercentage = calculatePercentage(unlocked, total);
 		String unlockedText = String.format(Locale.ENGLISH, "Unlocked: %d/%d (%s%%)", unlocked, total, Formatters.FLOAT_NUMBERS.format(unlockedPercentage));
 		this.widgets.add(layout.addChild(
-				new StringWidget(Component.literal(unlockedText).withStyle(ChatFormatting.DARK_GRAY).withoutShadow(), font),
+				new StringWidget(Component.literal(unlockedText).withColor(CommonColors.DARK_GRAY).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
 				));
 
@@ -216,7 +217,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 		double maxedPercentage = calculatePercentage(maxed, total);
 		String maxedText = String.format(Locale.ENGLISH, "Maxed: %d/%d (%s%%)", maxed, total, Formatters.FLOAT_NUMBERS.format(maxedPercentage));
 		this.widgets.add(layout.addChild(
-				new StringWidget(Component.literal(maxedText).withStyle(ChatFormatting.DARK_GRAY).withoutShadow(), font),
+				new StringWidget(Component.literal(maxedText).withColor(CommonColors.DARK_GRAY).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
 				));
 

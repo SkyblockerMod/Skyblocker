@@ -28,6 +28,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.utils.EliteLeaderboards;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.RomanNumerals;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 
 public sealed class CollectionItemWidget extends AbstractWidget permits MinionWidget {
@@ -71,7 +72,7 @@ public sealed class CollectionItemWidget extends AbstractWidget permits MinionWi
 
 	protected static Component buildTierText(int tier, boolean isMaxTier) {
 		String tierText = tier == 0 ? "0" : RomanNumerals.decimalToRoman(tier);
-		return Component.literal(tierText).withStyle(isMaxTier ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY);
+		return Component.literal(tierText).withColor(isMaxTier ? SkyBlockColors.GOLD.getValue() : CommonColors.DARK_GRAY);
 	}
 
 	private static List<Component> buildTooltip(String id, String name, LoadingInformation info, CollectionTiers.Report report) {
