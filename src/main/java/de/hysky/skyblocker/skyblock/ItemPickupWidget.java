@@ -22,9 +22,9 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.SeparatorElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
@@ -110,10 +110,6 @@ public class ItemPickupWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
-			return;
-		}
 		//add each diff item to the widget
 		//add positive changes
 		for (String item : addedCount.keySet()) {
@@ -159,6 +155,11 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 		}
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
 	}
 
 	/**

@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 
@@ -26,10 +25,11 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -322,17 +322,35 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public void updateContent() {
-		if (!(Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen)) {
-			updateFloor();
-			loadFloorSplits();
-		}
-
 		addElement(new PlainTextElement(Component.literal("Floor: " + floor)));
 
 		super.updateContent();
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
 		addElement(new PlainTextElement(Component.literal(formatTime(now)).withStyle(timerColor)));
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(new PlainTextElement(Component.literal("Floor: ???")));
+		TableElement element = new TableElement(3, 5, 0, false);
+		for (int i = 0; i < 5; i++) {
+			element.addToCell(0, i, new PlainTextElement(Component.literal("Split " + (i + 1))));
+			if (i < 3) {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("-5.24s").withStyle(ChatFormatting.GREEN)));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:" + ((i+1) * 10) + ".00").withStyle(ChatFormatting.YELLOW)));
+			} else if (i < 4) {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("00:05.45")));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:40.00")));
+			} else {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("--")));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:50.00")));
+
+			}
+		}
+		collector.addElement(element);
+		collector.addElement(new PlainTextElement(Component.literal("00:34.55").withStyle(ChatFormatting.YELLOW)));
+
 	}
 
 	@Override

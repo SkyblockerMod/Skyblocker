@@ -12,6 +12,7 @@ import net.minecraft.network.chat.MutableComponent;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
 
@@ -67,6 +68,18 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 
 	protected void updateContentMissing() {
 		for (Component component : createErrorMessage()) addElement(new PlainTextElement(component));
+	}
+
+	@Override
+	protected final void updateConfigContent(ElementCollector collector) {
+		PlayerListManager.Widget widget = PlayerListManager.getListWidget(hypixelWidgetName);
+		// if the widget is visible just use it, placeholder might cause confusion
+		if (widget != null) super.updateConfigContent(collector);
+		else updateConfigContentTab(collector);
+	}
+
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(new PlainTextElement(getInformation().displayName()));
 	}
 
 	/**
