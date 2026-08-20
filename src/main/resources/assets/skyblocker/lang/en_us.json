@@ -782,7 +782,7 @@
   "skyblocker.config.helpers.fairySouls.highlightOnBingo": "Highlight souls on Ⓑingo profiles",
   "skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip": "When disabled, souls are not highlighted on Ⓑingo profiles.",
   "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls": "Only highlight nearby fairy souls",
-  "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled only fairy souls in a radius of 50 blocks are highlighted.",
+  "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled, only fairy souls in a radius of 50 blocks are highlighted.",
 
   "skyblocker.config.helpers.fishing": "Fishing Helper",
   "skyblocker.config.helpers.fishing.changeTimerColor": "Change Timer At 20s",
