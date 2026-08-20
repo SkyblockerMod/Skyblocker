@@ -8,18 +8,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -56,16 +57,16 @@ public class SweepOverlay {
 
 	private static final BlockPos[] NEIGHBOR_OFFSETS = {
 			new BlockPos(-1, -1, -1), new BlockPos(-1, -1, 0), new BlockPos(-1, -1, 1),
-			new BlockPos(-1, 0, -1),  new BlockPos(-1, 0, 0),  new BlockPos(-1, 0, 1),
-			new BlockPos(-1, 1, -1),  new BlockPos(-1, 1, 0),  new BlockPos(-1, 1, 1),
+			new BlockPos(-1, 0, -1), new BlockPos(-1, 0, 0), new BlockPos(-1, 0, 1),
+			new BlockPos(-1, 1, -1), new BlockPos(-1, 1, 0), new BlockPos(-1, 1, 1),
 
-			new BlockPos(0, -1, -1),  new BlockPos(0, -1, 0),  new BlockPos(0, -1, 1),
-			new BlockPos(0, 0, -1),   						   new BlockPos(0, 0, 1),
-			new BlockPos(0, 1, -1),   new BlockPos(0, 1, 0),   new BlockPos(0, 1, 1),
+			new BlockPos(0, -1, -1), new BlockPos(0, -1, 0), new BlockPos(0, -1, 1),
+			new BlockPos(0, 0, -1), new BlockPos(0, 0, 1),
+			new BlockPos(0, 1, -1), new BlockPos(0, 1, 0), new BlockPos(0, 1, 1),
 
-			new BlockPos(1, -1, -1),  new BlockPos(1, -1, 0),  new BlockPos(1, -1, 1),
-			new BlockPos(1, 0, -1),   new BlockPos(1, 0, 0),   new BlockPos(1, 0, 1),
-			new BlockPos(1, 1, -1),   new BlockPos(1, 1, 0),   new BlockPos(1, 1, 1)
+			new BlockPos(1, -1, -1), new BlockPos(1, -1, 0), new BlockPos(1, -1, 1),
+			new BlockPos(1, 0, -1), new BlockPos(1, 0, 0), new BlockPos(1, 0, 1),
+			new BlockPos(1, 1, -1), new BlockPos(1, 1, 0), new BlockPos(1, 1, 1)
 	};
 
 	private static final Map<Block, Float> TOUGHNESS_MAP = Map.of(
@@ -84,6 +85,7 @@ public class SweepOverlay {
 		configCallback(SkyblockerConfigManager.get().foraging.sweepOverlay.sweepOverlayColor);
 		LevelRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
 	}
+
 
 	private static boolean isValidLocation() {
 		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
@@ -120,15 +122,11 @@ public class SweepOverlay {
 			blockHitResult = hitResult;
 		} else if (isThrowableAxe && config.enableThrownAbilityOverlay && !ItemCooldowns.isOnCooldown(heldItem)) {
 			// Cast a ray up to 50 blocks for throwable axes
-			// #todo gravity prediction
 			Vec3 start = CLIENT.player.getEyePosition(1.0f);
 			Vec3 look = CLIENT.player.getViewVector(1.0f);
-			Vec3 end = start.add(look.scale(50.0));
-			ClipContext context = new ClipContext(
-					start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CLIENT.player
-			);
-			HitResult hitResult = CLIENT.level.clip(context);
-			if (hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
+			double lookPitch = CLIENT.player.getXRot();
+			HitResult hitResult = thrownAxe(start, look, lookPitch, 50);
+			if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK && hitResult instanceof BlockHitResult rayHitResult) {
 				blockHitResult = rayHitResult;
 				isThrown = true;
 			}
@@ -140,6 +138,35 @@ public class SweepOverlay {
 				submitConnectedLogs(collector, blockHitResult, state, isThrown);
 			}
 		}
+	}
+
+	/**
+	 * Predict where a throwing axe is going to hit when thrown given the starting variables. Taking gravity into account.
+	 *
+	 * @param start       start position
+	 * @param look        direction vector
+	 * @param lookPitch   throwing pitch
+	 * @param maxDistance maximum search distance
+	 * @return hit result when found wood else null
+	 */
+	private static @Nullable BlockHitResult thrownAxe(Vec3 start, Vec3 look, Double lookPitch, int maxDistance) {
+		if (CLIENT.level == null) return null;
+		int max_distance = maxDistance;
+		for (int i = 0; i < max_distance; i++) {
+			Vec3 pos = start.add(look.scale(i));
+			//add gravity
+			double angle = Math.abs(lookPitch / 90);
+			double gravity = ((1 - angle) * (2.65 + 2.51827 * angle - 2.43475 * Math.pow(angle, 2) + 1.22748 * Math.pow(angle, 3))) / 1000;
+
+			pos = pos.subtract(0, gravity * Math.pow(i, 2), 0);
+			BlockPos block = BlockPos.containing(pos);
+			BlockState state = CLIENT.level.getBlockState(block);
+			if (isLog(state)) {
+				return new BlockHitResult(pos, Direction.DOWN, block, false);
+			}
+		}
+		//if no hits return null
+		return null;
 	}
 
 	/**
@@ -212,8 +239,8 @@ public class SweepOverlay {
 		}
 		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
 			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
-							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
-									.withStyle(ChatFormatting.RED)));
+					Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
+							.withStyle(ChatFormatting.RED)));
 			sweepStatNoticeShown = true;
 		}
 
@@ -257,8 +284,8 @@ public class SweepOverlay {
 	 * color and the blocks broken is halved.
 	 *
 	 * @param blockHitResult the block hit result from the crosshair or ray cast
-	 * @param state         the block state of the targeted block
-	 * @param isThrown      true if the hit comes from a ray cast (throwable axe)
+	 * @param state          the block state of the targeted block
+	 * @param isThrown       true if the hit comes from a ray cast (throwable axe)
 	 */
 	private static void submitConnectedLogs(PrimitiveCollector collector, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
@@ -269,7 +296,7 @@ public class SweepOverlay {
 		// Adjust color for ray-cast hits (dimmer: multiply RGB by 0.7, keep alpha)
 		float[] renderColor = colorComponents;
 		if (isThrown) {
-			renderColor = new float[] {
+			renderColor = new float[]{
 					colorComponents[0] * 0.7f,
 					colorComponents[1] * 0.7f,
 					colorComponents[2] * 0.7f,
