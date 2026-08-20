@@ -18,7 +18,6 @@ import net.minecraft.world.phys.AABB;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
@@ -77,7 +76,11 @@ public class GlowingMushrooms {
 	}
 
 	private static boolean shouldProcess() {
-		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm() && Utils.getArea() == Area.TheFarmingIslands.GLOWING_MUSHROOM_CAVE;
+		// Don't also require Area.TheFarmingIslands.GLOWING_MUSHROOM_CAVE here: that area is only
+		// detected once well inside the cave, so mushrooms glowing just outside the entrance were
+		// never tracked (#2630). Particle events are already specific to actual mushroom blocks,
+		// so gating on the whole island is enough to avoid false positives elsewhere.
+		return SkyblockerConfigManager.get().otherLocations.barn.enableGlowingMushroomHelper && Utils.isInFarm();
 	}
 
 	private static void reset() {
