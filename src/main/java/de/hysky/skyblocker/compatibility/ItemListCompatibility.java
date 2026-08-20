@@ -8,6 +8,8 @@ import com.operationpotato.itemlist.api.ExcludedScreensManager;
 import com.operationpotato.itemlist.api.ExclusionZoneManager;
 import com.operationpotato.itemlist.api.HoveredItemManager;
 import com.operationpotato.itemlist.api.Plugin;
+import com.operationpotato.itemlist.api.supportedscreen.ScreenBounds;
+import com.operationpotato.itemlist.api.supportedscreen.SupportedScreenManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -62,6 +64,15 @@ public class ItemListCompatibility implements Plugin {
 	@Override
 	public void registerExcludedScreens(ExcludedScreensManager manager) {
 		manager.addProvider(StorageOverlayScreen.class, _ -> Optional.of("Skyblocker Storage Overlay"));
+	}
+
+	@Override
+	public void registerSupportedScreens(SupportedScreenManager manager) {
+		manager.addProvider(StorageOverlayScreen.class, (screen, _, _) -> {
+			int leftPos = screen.getLeftPos();
+			int rightPos = leftPos + screen.getWidth();
+			return Optional.of(new ScreenBounds(leftPos, rightPos));
+		});
 	}
 
 	@Override
