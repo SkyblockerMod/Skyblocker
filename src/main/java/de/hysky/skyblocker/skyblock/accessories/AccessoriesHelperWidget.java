@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import org.jspecify.annotations.Nullable;
 
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookTabButton;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
@@ -90,11 +92,22 @@ class AccessoriesHelperWidget extends AbstractContainerWidget implements Hovered
 	private static boolean open;
 	private static boolean showHighestTierOnly;
 
+	// Tracks the widget attached to the currently open screen, if any, so its bounds can be
+	// exposed as an item list (REI/EMI/JEI) exclusion zone.
+	private static @Nullable AccessoriesHelperWidget currentWidget;
+
+	static @Nullable Rect2i getExclusionZone() {
+		if (currentWidget == null || !currentWidget.visible) return null;
+		return new Rect2i(currentWidget.getX(), currentWidget.getY(), currentWidget.getWidth(), currentWidget.getHeight());
+	}
+
 	static void attachToScreen(ContainerScreen screen) {
 		if (!SkyblockerConfigManager.get().general.itemTooltip.enableAccessoriesHelper || !SkyblockerConfigManager.get().helpers.enableAccessoriesHelperWidget) return;
 		final AccessoriesHelperWidget widget = new AccessoriesHelperWidget();
 		widget.setY((screen.height - widget.getHeight()) / 2);
 		Screens.getWidgets(screen).add(widget);
+		currentWidget = widget;
+		ScreenEvents.remove(screen).register(_ -> currentWidget = null);
 		final int previousX = ((AbstractContainerScreenAccessor) screen).getX();
 		final int offset = Math.max(180 - previousX, 0);
 		TabButton tabButton = new TabButton(button -> {

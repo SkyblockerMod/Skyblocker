@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,13 @@ public class AccessoriesHelper {
 	private static final ToIntFunction<Accessory> ACCESSORY_TIER = Accessory::tier;
 
 	public static Map<String, Accessory> ACCESSORY_DATA = new Object2ObjectOpenHashMap<>();
+
+	/**
+	 * @return the bounds of the accessory bag helper widget, if it's currently open, for use as an item list exclusion zone
+	 */
+	public static Optional<Rect2i> getExclusionZone() {
+		return Optional.ofNullable(AccessoriesHelperWidget.getExclusionZone());
+	}
 
 	@Init
 	public static void init() {

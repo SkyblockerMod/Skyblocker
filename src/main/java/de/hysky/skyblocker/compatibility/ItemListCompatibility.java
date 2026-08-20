@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.Rect2i;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.auction.AuctionBrowserScreen;
 import de.hysky.skyblocker.skyblock.garden.GardenPlots;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
@@ -47,6 +48,8 @@ public class ItemListCompatibility implements Plugin {
 			if (!VisitorHelper.shouldRender()) return List.of();
 			return VisitorHelper.getExclusionZones();
 		});
+
+		zones.addProvider(Screen.class, _ -> AccessoriesHelper.getExclusionZone().map(List::of).orElseGet(List::of));
 
 		zones.addProvider(AuctionBrowserScreen.class, screen -> {
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) screen;
