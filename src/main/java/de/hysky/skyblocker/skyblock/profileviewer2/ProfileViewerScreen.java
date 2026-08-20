@@ -23,10 +23,10 @@ import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CombatPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 
@@ -40,7 +40,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ProfileMember member;
 	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage(), new CollectionsPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new InventoryPage(), new CollectionsPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
 	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2), createPageTab(3));
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
