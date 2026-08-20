@@ -20,6 +20,7 @@ public class LevelCalculator {
 			1065000, 1410000, 1900000, 2500000, 3300000, 4300000, 5600000, 7200000, 9200000, 12000000, 15000000,
 			19000000, 24000000, 30000000, 38000000, 48000000, 60000000, 75000000, 93000000, 116250000 };
 	private static final int DUNGEONS_OVERFLOW_THRESHOLD = 200_000_000;
+	private static final int SKYBLOCK_LEVEL_INTERVAL = 100;
 
 	// TODO make member parameter nullable?
 	public static LevelInfo getSkillLevel(long xp, Skill skill, LoadingInformation info) {
@@ -54,7 +55,7 @@ public class LevelCalculator {
 				xpLeft -= DUNGEONS_OVERFLOW_THRESHOLD;
 			}
 
-			return new LevelInfo(xp, level, new LevelInfo.Cap(Integer.MAX_VALUE, Integer.MAX_VALUE), new LevelInfo.Progress(DUNGEONS_OVERFLOW_THRESHOLD - xpLeft, DUNGEONS_OVERFLOW_THRESHOLD));
+			return new LevelInfo(xp, level, new LevelInfo.Cap(Skill.CATACOMBS.getBaseCap(), Skill.CATACOMBS.getAbsoluteCap()), new LevelInfo.Progress(DUNGEONS_OVERFLOW_THRESHOLD - xpLeft, DUNGEONS_OVERFLOW_THRESHOLD));
 		} else {
 			int cappedLevel = Math.min(levelCap, level);
 			LevelInfo.Progress progress = null;
@@ -117,7 +118,13 @@ public class LevelCalculator {
 		return new LevelInfo(xp, 0, 0, 0);*/
 	}
 
-	public static int getSkyblockLevel(int xp) {
-		return xp / 100;
+	public static LevelInfo getSkyblockLevel(int xp) {
+		int level = (int) (xp / SKYBLOCK_LEVEL_INTERVAL);
+
+		LevelInfo.Cap cap = new LevelInfo.Cap(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		LevelInfo.Progress progress = new LevelInfo.Progress(xp - (level * SKYBLOCK_LEVEL_INTERVAL), SKYBLOCK_LEVEL_INTERVAL);
+		LevelInfo levelInfo = new LevelInfo(xp, level, cap, progress);
+
+		return levelInfo;
 	}
 }

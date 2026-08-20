@@ -31,7 +31,7 @@ public class Dungeons {
 	}
 
 	@SerializedName("dungeon_types")
-	public PerDungeonType dungeonInfo;
+	public PerDungeonType dungeonTypes = new PerDungeonType();
 
 	public static class PerDungeonType {
 		@SerializedName("master_catacombs")
