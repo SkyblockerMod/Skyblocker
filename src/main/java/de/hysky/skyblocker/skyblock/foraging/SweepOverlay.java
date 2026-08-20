@@ -46,6 +46,9 @@ public class SweepOverlay {
 	private static final int MAX_WOOD_CAP = 35;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
+	// Grace period so we don't warn before the tab list has actually loaded on higher-ping connections (see #2673).
+	private static final long SWEEP_STAT_MISSING_GRACE_PERIOD_MS = 5_000;
+	private static long sweepStatFirstMissingTime = -1;
 	private static final Set<String> VALID_AXES = Set.of(
 			"JUNGLE_AXE", "TREECAPITATOR_AXE", "FIG_AXE", "FIGSTONE_AXE", "HELIX_CHOPPER",
 			"ROOKIE_AXE", "PROMISING_AXE", "SWEET_AXE", "EFFICIENT_AXE"
@@ -186,9 +189,9 @@ public class SweepOverlay {
 	/**
 	 * Retrieves the player's Sweep stat.
 	 * <p>
-	 * The value is parsed from the tab list when available. If it cannot be
-	 * found, an informational chat message is sent once asking the player to
-	 * update their tab list using <code>/tablist</code>.
+	 * The value is parsed from the tab list when available. If it's still missing after the tab
+	 * list has had a few seconds to load, an informational chat message is sent once asking the
+	 * player to update their tab list using <code>/tablist</code>.
 	 *
 	 * @return the Sweep stat as a float
 	 */
@@ -203,6 +206,7 @@ public class SweepOverlay {
 				Matcher matcher = SWEEP_VALUE_PATTERN.matcher(entry);
 				if (matcher.find()) {
 					try {
+						sweepStatFirstMissingTime = -1;
 						return Float.parseFloat(matcher.group(1));
 					} catch (NumberFormatException e) {
 						LOGGER.warn("Failed to parse Sweep stat from tab list: {}. Error: {}", entry, e.getMessage());
@@ -211,10 +215,17 @@ public class SweepOverlay {
 			}
 		}
 		if (!sweepStatNoticeShown && Utils.isInForagingIsland() && CLIENT.player != null) {
-			CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
-							Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
-									.withStyle(ChatFormatting.RED)));
-			sweepStatNoticeShown = true;
+			long now = System.currentTimeMillis();
+			if (sweepStatFirstMissingTime == -1) {
+				// Tab list may not have loaded yet on higher-ping connections, especially right on join.
+				// Wait for the missing state to persist before assuming it's actually missing.
+				sweepStatFirstMissingTime = now;
+			} else if (now - sweepStatFirstMissingTime >= SWEEP_STAT_MISSING_GRACE_PERIOD_MS) {
+				CLIENT.player.sendSystemMessage(Constants.PREFIX.get().append(
+								Component.translatable("skyblocker.config.foraging.sweepOverlay.sweepStatMissingMessage")
+										.withStyle(ChatFormatting.RED)));
+				sweepStatNoticeShown = true;
+			}
 		}
 
 		return 0.0f;
