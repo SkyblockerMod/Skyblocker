@@ -86,7 +86,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 
 		// Collection category tabs
 		LinearLayout tabLayout = LinearLayout.vertical().spacing(1);
-		tabButtons.forEach(button -> this.widgets.add(tabLayout.addChild(button)));
+		tabButtons.forEach(button -> tabLayout.addChild(button));
 		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignVerticallyMiddle());
 
 		// Add space between the tabs and the content
@@ -96,6 +96,9 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 		FrameLayout contentFrame = new FrameLayout();
 		tabContentLayouts.forEach(layout -> contentFrame.addChild(layout, contentFrame.newChildLayoutSettings().alignVerticallyTop()));
 		pageLayout.addChild(contentFrame);
+
+		// Add all widgets
+		pageLayout.visitWidgets(this.widgets::add);
 
 		// Select farming by default
 		selectTab(0, tabContentLayouts);
@@ -139,7 +142,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 			}
 
 			CollectionItemWidget widget = CollectionItemWidget.create(itemId, info, report);
-			this.widgets.add(collectionsRowHelper.addChild(widget));
+			collectionsRowHelper.addChild(widget);
 		}
 
 		String title = WordUtils.capitalizeFully(collectionCategory) + " Collections";
@@ -186,7 +189,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 			}
 
 			MinionWidget widget = MinionWidget.create(minionId, maxTier, tiersCrafted, lowestUncraftedTier);
-			this.widgets.add(minionsRowHelper.addChild(widget));
+			minionsRowHelper.addChild(widget);
 		}
 
 		String title = WordUtils.capitalizeFully(category) + " Minions";
@@ -200,26 +203,26 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 		Font font = Minecraft.getInstance().font;
 
 		// Title
-		this.widgets.add(layout.addChild(
+		layout.addChild(
 				new StringWidget(Component.literal(title).withColor(CommonColors.DARK_GRAY).withStyle(ChatFormatting.BOLD).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
-				));
+				);
 
 		// Unlocked
 		double unlockedPercentage = calculatePercentage(unlocked, total);
 		String unlockedText = String.format(Locale.ENGLISH, "Unlocked: %d/%d (%s%%)", unlocked, total, Formatters.FLOAT_NUMBERS.format(unlockedPercentage));
-		this.widgets.add(layout.addChild(
+		layout.addChild(
 				new StringWidget(Component.literal(unlockedText).withColor(CommonColors.DARK_GRAY).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
-				));
+				);
 
 		// Maxed
 		double maxedPercentage = calculatePercentage(maxed, total);
 		String maxedText = String.format(Locale.ENGLISH, "Maxed: %d/%d (%s%%)", maxed, total, Formatters.FLOAT_NUMBERS.format(maxedPercentage));
-		this.widgets.add(layout.addChild(
+		layout.addChild(
 				new StringWidget(Component.literal(maxedText).withColor(CommonColors.DARK_GRAY).withoutShadow(), font),
 				layout.newCellSettings().alignHorizontallyCenter()
-				));
+				);
 
 		// Spacing
 		layout.addChild(SpacerElement.height(HEADING_CONTENT_SPACING));

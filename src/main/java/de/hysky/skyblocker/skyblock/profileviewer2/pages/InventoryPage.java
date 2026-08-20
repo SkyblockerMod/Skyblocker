@@ -80,7 +80,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 
 		// Inventory tabs
 		LinearLayout tabLayout = LinearLayout.vertical().spacing(1);
-		tabButtons.forEach(button -> this.widgets.add(tabLayout.addChild(button)));
+		tabButtons.forEach(button -> tabLayout.addChild(button));
 		pageLayout.addChild(tabLayout, pageLayout.newCellSettings().alignVerticallyMiddle());
 
 		// Add space between the tabs and the content
@@ -91,6 +91,9 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		tabContentLayouts.forEach(layout -> inventoryFrame.addChild(layout, LayoutSettings.defaults().alignHorizontallyCenter()));
 		pageLayout.addChild(inventoryFrame);
 
+		// Add all widgets
+		pageLayout.visitWidgets(this.widgets::add);
+
 		// Select main page by default
 		selectTab(0, tabContentLayouts);
 
@@ -100,12 +103,12 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 	private LayoutElement buildInventoryLayout(ProfileItemStorage itemStorage) {
 		// TODO translatable names
 		LinearLayout layout = LinearLayout.vertical();
-		this.widgets.add(layout.addChild(new InventoryWidget(Component.literal("Inventory"), 4, 9, List.of(itemStorage.inventory()), true)));
+		layout.addChild(new InventoryWidget(Component.literal("Inventory"), 4, 9, List.of(itemStorage.inventory()), true));
 		layout.addChild(SpacerElement.height(6));
 
 		LinearLayout gearLayout = LinearLayout.horizontal().spacing(4);
-		this.widgets.add(gearLayout.addChild(new InventoryWidget(Component.literal("Armour"), 1, 4, List.of(itemStorage.armour()), false)));
-		this.widgets.add(gearLayout.addChild(new InventoryWidget(Component.literal("Equipment"), 1, 4, List.of(itemStorage.equipment()), false)));
+		gearLayout.addChild(new InventoryWidget(Component.literal("Armour"), 1, 4, List.of(itemStorage.armour()), false));
+		gearLayout.addChild(new InventoryWidget(Component.literal("Equipment"), 1, 4, List.of(itemStorage.equipment()), false));
 		layout.addChild(gearLayout, layout.newCellSettings().alignHorizontallyCenter());
 
 		return layout;
@@ -165,7 +168,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 	private LayoutElement buildPaginatedLayout(Component name, int rows, List<List<ItemStack>> pages) {
 		LinearLayout layout = LinearLayout.vertical();
 		InventoryWidget inventory = new InventoryWidget(name, rows, 9, pages, false);
-		this.widgets.add(layout.addChild(inventory));
+		layout.addChild(inventory);
 
 		if (pages.size() > 1) {
 			layout.addChild(SpacerElement.height(8));
@@ -189,9 +192,9 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 			pageText.setMessage(Component.literal(String.format("Page %d/%d", inventory.getPage(), inventory.getMaxPages())));
 		};
 
-		this.widgets.add(layout.addChild(new PaginationWidget(false, backwards)));
-		this.widgets.add(layout.addChild(pageText, layout.newCellSettings().alignVerticallyMiddle()));
-		this.widgets.add(layout.addChild(new PaginationWidget(true, forwards)));
+		layout.addChild(new PaginationWidget(false, backwards));
+		layout.addChild(pageText, layout.newCellSettings().alignVerticallyMiddle());
+		layout.addChild(new PaginationWidget(true, forwards));
 
 		return layout;
 	}

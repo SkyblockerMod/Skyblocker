@@ -39,8 +39,11 @@ public final class CombatPage implements ProfileViewerPage<LoadingInformation> {
 	@Override
 	public LayoutElement buildWidgets(LoadingInformation data) {
 		LinearLayout vertical = LinearLayout.vertical();
-		this.widgets.add(vertical.addChild(new RulerWidget()));
-		this.widgets.add(vertical.addChild(new StringWidget(this.getName(), Minecraft.getInstance().font), l -> l.paddingLeft(18).paddingTop(18)));
+		vertical.addChild(new RulerWidget());
+		vertical.addChild(new StringWidget(this.getName(), Minecraft.getInstance().font), l -> l.paddingLeft(18).paddingTop(18));
+
+		vertical.visitWidgets(this.widgets::add);
+
 		return vertical;
 	}
 
