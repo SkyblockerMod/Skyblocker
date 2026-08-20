@@ -92,7 +92,7 @@ public final class CollectionsPage implements ProfileViewerPage<LoadingInformati
 		// Add space between the tabs and the content
 		pageLayout.addChild(SpacerElement.width(SECTION_SPACING));
 
-		// One big frame layout with each tab's content essentially overlapping each other
+		// One big frame layout with each tab's content overlapping each other
 		FrameLayout contentFrame = new FrameLayout();
 		tabContentLayouts.forEach(layout -> contentFrame.addChild(layout, contentFrame.newChildLayoutSettings().alignVerticallyTop()));
 		pageLayout.addChild(contentFrame);

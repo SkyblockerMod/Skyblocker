@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.network.chat.Component;
@@ -43,7 +42,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 	@Override
 	public CompletableFuture<LayoutElement> load(LoadingInformation info) {
 		return CompletableFuture.completedFuture(info)
-				.thenCombineAsync(info.itemStorage(), (loadingInfo, itemStorage) -> Pair.of(loadingInfo, itemStorage))
+				.thenCombineAsync(info.itemStorage(), Pair::of)
 				.thenApplyAsync(this::buildWidgets, Minecraft.getInstance());
 	}
 
@@ -54,6 +53,7 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		ProfileItemStorage itemStorage = data.right();
 
 		LinearLayout pageLayout = LinearLayout.horizontal();
+
 		List<LayoutElement> tabContentLayouts = List.of(
 				this.buildInventoryLayout(itemStorage),
 				this.buildEnderChestLayout(itemStorage),
@@ -86,10 +86,10 @@ public final class InventoryPage implements ProfileViewerPage<Pair<LoadingInform
 		// Add space between the tabs and the content
 		pageLayout.addChild(SpacerElement.width(16));
 
-		// One big frame layout with each tab's content essentially overlapping each other
-		FrameLayout inventoryFrame = new FrameLayout();
-		tabContentLayouts.forEach(layout -> inventoryFrame.addChild(layout, LayoutSettings.defaults().alignHorizontallyCenter()));
-		pageLayout.addChild(inventoryFrame);
+		// One big frame layout with each tab's content overlapping each other
+		FrameLayout contentFrame = new FrameLayout();
+		tabContentLayouts.forEach(layout -> contentFrame.addChild(layout, contentFrame.newChildLayoutSettings().alignHorizontallyCenter().alignVerticallyMiddle()));
+		pageLayout.addChild(contentFrame);
 
 		// Add all widgets
 		pageLayout.visitWidgets(this.widgets::add);
