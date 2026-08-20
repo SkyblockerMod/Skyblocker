@@ -25,6 +25,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.ImplosionFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.LotteryFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.RareCropFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SpiritSceptreFilter;
@@ -82,6 +83,7 @@ public interface ChatMessageListener {
 				new ImplosionFilter(),
 				new SpiritSceptreFilter(),
 				new MoltenWaveFilter(),
+				new RareCropFilter(),
 				new TeleportPadFilter(),
 				new AutopetFilter(),
 				new ShowOffFilter(),
