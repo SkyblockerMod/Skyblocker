@@ -1827,7 +1827,6 @@
     "skyblocker.config.hunting.safari.sparklingCritterHighlightColor": "Sparkling Critters突顯顔色",
     "skyblocker.config.foraging.enableTreeFelledNotification": "啟用樹木倒下通知",
     "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip": "在第一個謎題中，以白色文字顯示按鈕的正確點擊順序。在第二個謎題中，顯示各個雕像的朝向。",
-    "skyblocker.config.helpers.buildersWand": "",
     "skyblocker.config.hunting.cavernBiome": "洞穴生態域",
     "skyblocker.config.hunting.forestBiome": "森林生態域",
     "skyblocker.config.uiAndVisuals.bars.@Tag[0]": "血量，魔力，防禦，活力，速度以及經驗條",
