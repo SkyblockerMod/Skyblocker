@@ -1270,7 +1270,7 @@
     "skyblocker.museum.hud.filter.all": "全部",
     "skyblocker.museum.hud.filter": "物品筛选器",
     "skyblocker.museum.hud.filter.armor": "护甲",
-    "skyblocker.museum.hud.filter.rarities": "稀有物品",
+    "skyblocker.museum.hud.filter.rarities": "稀有度",
     "skyblocker.museum.hud.filter.weapons": "武器",
     "skyblocker.museum.hud.filter.switch": "点击切换筛选器！",
     "skyblocker.museum.hud.skyblockXp": "SkyBlock经验值",
@@ -1880,7 +1880,7 @@
     "skyblocker.config.hud.widgetsList.info.overflowWarning": "你似乎已经用完了TAB的小部件空间！一些小部件无法正确显示！",
     "skyblocker.config.hud.widgetsList.info.overflowWarning.columnTip": "请务必用右侧的按钮启用第三列。",
     "skyblocker.config.hud.movedMessage": "要启用/禁用此小部件，请单击按钮，然后右键单击任意位置以添加它，或者右键单击它并单击“移除”以删除。",
-    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "忽略Shining Coins的物品栏保护",
+    "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "忽略Shining Coins的快捷栏锁定",
     "skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow": "每行的背包数",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag": "GUI",
     "skyblocker.config.hud.fancyTab.positioner": "位置：%s"
