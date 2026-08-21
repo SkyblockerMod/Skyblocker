@@ -40,6 +40,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 
 	private boolean showCreatureCounter = true;
 	private boolean showFishingTimer = true;
+	private boolean onlyShowHudInBarn = true;
 
 	public static FishingHudWidget getInstance() {
 		return Objects.requireNonNull(instance, "FishingHudWidget not initialized");
@@ -59,7 +60,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 	public boolean shouldRender() {
 		// sea creature tracker
 		if (showCreatureCounter && SeaCreatureTracker.isCreaturesAlive()) {
-			if (Utils.getLocation() == Location.HUB && SkyblockerConfigManager.get().helpers.fishing.onlyShowHudInBarn) {
+			if (Utils.getLocation() == Location.HUB && onlyShowHudInBarn) {
 				return isBarnFishing();
 			}
 			return true;
@@ -106,7 +107,6 @@ public class FishingHudWidget extends ElementBasedWidget {
 			String rodReelTimer = FishingHookDisplayHelper.fishingHookArmorStand.getName().getString();
 			addSimpleIcoText(Ico.CLOCK, "Reel Timer: ", rodReelTimer.equals("!!!") ? ChatFormatting.RED : ChatFormatting.YELLOW, rodReelTimer);
 		}
-
 	}
 
 	@Override
@@ -136,6 +136,9 @@ public class FishingHudWidget extends ElementBasedWidget {
 						(_, value) -> SkyblockerConfigManager.updateOnly(config -> config.helpers.fishing.fishingHookDisplay = value)
 				)
 		);
+		if (collector.editingFor() == Location.HUB) {
+			collector.yesNoButton(Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn"), b -> onlyShowHudInBarn = b, onlyShowHudInBarn, Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip"));
+		}
 	}
 
 	@Override
@@ -143,6 +146,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 		super.load(input);
 		showCreatureCounter = input.readBooleanOr("creature_counter", true);
 		showFishingTimer = input.readBooleanOr("fishing_timer", true);
+		onlyShowHudInBarn = input.readBooleanOr("only_barn", true);
 	}
 
 	@Override
@@ -150,6 +154,7 @@ public class FishingHudWidget extends ElementBasedWidget {
 		super.save(output);
 		output.writeBool("creature_counter", showCreatureCounter);
 		output.writeBool("fishing_timer", showFishingTimer);
+		output.writeBool("only_barn", onlyShowHudInBarn);
 	}
 
 	private static boolean isBarnFishing() {

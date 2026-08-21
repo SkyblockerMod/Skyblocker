@@ -805,7 +805,7 @@
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "Enable sea creature tracker",
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip": "Tracks how many sea creatures you have and how long until they will despawn. This relies on Hypixel Settings → Fishing Settings → Sea Creature Chat being enabled.",
   "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "Only Show When Barn Fishing",
-  "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "For the Hub, only show the \"Sea Creature Tracker\" when barn fishing",
+  "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "Only show the \"Sea Creature Tracker\" when barn fishing",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
