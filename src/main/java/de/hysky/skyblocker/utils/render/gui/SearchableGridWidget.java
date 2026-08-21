@@ -83,6 +83,10 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		searchField.setValue(search);
 	}
 
+	public void refreshSearch() {
+		searchField.setValue(searchField.getValue());
+	}
+
 	public void setScrollAmount(double amount) {
 		widgetsContainer.setScrollAmount(amount);
 	}

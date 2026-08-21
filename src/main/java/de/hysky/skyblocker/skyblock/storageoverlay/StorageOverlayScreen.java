@@ -136,6 +136,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
 	}
 
+	public void refreshSearch() {
+		if (grid == null) return;
+		grid.refreshSearch();
+	}
+
 	private static String getCommandForIndex(int index) {
 		if (index <= 8) {
 			return "/echest " + (index + 1);
