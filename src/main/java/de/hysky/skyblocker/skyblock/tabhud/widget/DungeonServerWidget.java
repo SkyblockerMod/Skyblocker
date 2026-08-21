@@ -43,7 +43,7 @@ public class DungeonServerWidget extends TabHudWidget {
 					Ico.CHEST,
 					Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
-					TextColor.DARK_PURPLE.getValue()
+					TextColor.GOLD.getValue()
 			));
 		}
 
