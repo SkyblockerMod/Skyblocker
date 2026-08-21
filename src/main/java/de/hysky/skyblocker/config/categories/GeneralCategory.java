@@ -207,6 +207,14 @@ public class GeneralCategory {
 										newValue -> config.general.itemList.enableCollapsibleEntries = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemList.enableLoadOnGameLaunch"))
+								.description(Component.translatable("skyblocker.config.general.itemList.enableLoadOnGameLaunch.@Tooltip"))
+								.binding(defaults.general.itemList.enableLoadOnGameLaunch,
+										() -> config.general.itemList.enableLoadOnGameLaunch,
+										newValue -> config.general.itemList.enableLoadOnGameLaunch = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Item Tooltip
