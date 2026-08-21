@@ -1,6 +1,11 @@
 package de.hysky.skyblocker.config.configs;
 
+import java.util.Locale;
+
+import com.mojang.serialization.Codec;
+
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.StringRepresentable;
 
 public class FarmingConfig {
 	public FarmingHud farmingHud = new FarmingHud();
@@ -69,10 +74,17 @@ public class FarmingConfig {
 		public boolean experience = true;
 	}
 
-	public enum Type {
+	public enum Type implements StringRepresentable {
 		BOTH,
 		NPC,
 		BAZAAR;
+
+		public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
 
 		@Override
 		public String toString() {

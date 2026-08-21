@@ -15,14 +15,19 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 
 @RegisterWidget
 public class PlayerListWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Players").withStyle(ChatFormatting.BOLD);
+
+	private UIAndVisualsConfig.NameSorting nameSorting = UIAndVisualsConfig.NameSorting.DEFAULT;
 
 	public PlayerListWidget() {
 		super("Players", TITLE, TextColor.AQUA.getValue());
@@ -30,7 +35,7 @@ public class PlayerListWidget extends TabHudWidget {
 
 	@Override
 	protected void updateContent(PlayerListManager.Widget widget) {
-		widget.playerListEntries().stream().sorted(SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting.comparator).forEach(playerListEntry -> addElement(new PlayerElement(playerListEntry)));
+		widget.playerListEntries().stream().sorted(nameSorting.comparator).forEach(playerListEntry -> addElement(new PlayerElement(playerListEntry)));
 	}
 
 	@Override
@@ -52,6 +57,25 @@ public class PlayerListWidget extends TabHudWidget {
 				infos.add(info);
 			}
 		}
-		infos.stream().sorted(SkyblockerConfigManager.get().uiAndVisuals.tabHud.nameSorting.comparator).forEach(playerListEntry -> collector.addElement(new PlayerElement(playerListEntry)));
+		infos.stream().sorted(nameSorting.comparator).forEach(playerListEntry -> collector.addElement(new PlayerElement(playerListEntry)));
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.enumButton(UIAndVisualsConfig.NameSorting.class, Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"), v -> nameSorting = v, nameSorting)
+				.tooltip(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"));
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		nameSorting = input.read("name_sorting", UIAndVisualsConfig.NameSorting.CODEC).orElse(UIAndVisualsConfig.NameSorting.DEFAULT);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.write("name_sorting", UIAndVisualsConfig.NameSorting.CODEC, nameSorting);
 	}
 }

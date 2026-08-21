@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -23,8 +21,6 @@ import de.hysky.skyblocker.utils.JsonValueInput;
  * "Builds" the rendered screen, positions widgets properly each frame and updates their configs when needed
  */
 public class LayerBuilder {
-	private static final Logger LOGGER = LogUtils.getLogger();
-
 	protected LayerConfig config = LayerConfig.DUMMY;
 	protected final Set<HudWidget> renderedWidgets = new ObjectOpenHashSet<>();
 	protected final List<PositionedWidget> widgets = new LinkedList<>();
@@ -44,7 +40,7 @@ public class LayerBuilder {
 		for (Map.Entry<String, WidgetConfig> entry : config.widgets().entrySet()) {
 			if (entry.getValue().config().isEmpty()) continue;
 			HudWidget hudWidget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
-			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
 				hudWidget.load(new JsonValueInput(reporter, entry.getValue().config().get()));
 			}
 			if (entry.getValue().position().isEmpty()) continue;
