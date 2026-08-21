@@ -503,7 +503,7 @@
     "skyblocker.config.helpers.fishing.enableFishingTimer": "启用计时器",
     "skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip": "将浮标时间添加到HUD中。",
     "skyblocker.config.helpers.fishing.changeTimerColor": "在20秒时改变计时器",
-    "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "当20秒过去后将计时器变为绿色",
+    "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "当20秒过去后将计时器变为绿色。",
     "skyblocker.config.helpers.fishing.fishingTimerScale": "钓鱼计时器缩放",
     "skyblocker.updateRepository.start": "正在更新本地存储库……",
     "skyblocker.updateRepository.deleted": "已成功删除本地存储库，正在下载新文件……这将需要一分钟！",
