@@ -11,6 +11,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.SkyBlockColors;
 
 /**
  * Element that consists of an icon, some text and a progress bar.
@@ -46,7 +47,7 @@ class ProgressElement extends Element {
 			this.desc = description;
 			this.bar = bar;
 			this.pcnt = Math.clamp(percent, 0f, 100f);
-			this.color = 0xFF000000 | color;
+			this.color = 0xFF000000 | SkyBlockColors.fromVanilla(color);
 		}
 
 		this.barW = BAR_WIDTH;
