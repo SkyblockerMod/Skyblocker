@@ -45,6 +45,10 @@ public class HuntingConfig {
 		public boolean highlightCoralot = true;
 
 		public Color coralotGlowColor = new Color(DyeColor.BLUE.getTextColor(), false);
+
+		public boolean highlightInvisibug = true;
+
+		public Color invisibugGlowColor = new Color(DyeColor.CYAN.getTextColor(), false);
 	}
 
 	public static class TorrhusMobs {
