@@ -101,16 +101,16 @@ public final class GreenhouseCrops {
 		String armorStandName,
 		int id,
 		boolean isHead,
-		@Nullable Block cropBlock,
+		Block cropBlock,
 		@Nullable String headSkin,
-		@Nullable FlexibleItemStack displayStack
+		FlexibleItemStack displayStack
 	) {
 		public Crop(String name, String armorStandName, int id, String headSkin) {
-			this(name, armorStandName, id, true, null, headSkin, ItemUtils.createSkull(headSkin));
+			this(name, armorStandName, id, true, Blocks.AIR, headSkin, ItemUtils.createSkull(headSkin));
 		}
 
 		public Crop(String name, String armorStandName, int id, Block cropBlock) {
-			this(name, armorStandName, id, false, cropBlock, null, null);
+			this(name, armorStandName, id, false, cropBlock, null, FlexibleItemStack.EMPTY);
 		}
 	}
 }
