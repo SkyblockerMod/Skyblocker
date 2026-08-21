@@ -22,13 +22,16 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.SeparatorElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.NEURepoManager;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
@@ -42,6 +45,9 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	private static @Nullable ItemPickupWidget instance;
 
 	private boolean changingLobby;
+
+	private boolean sackNotifications;
+	private boolean splitNotifications;
 
 	private final Object2ObjectOpenHashMap<String, ChangeData> addedCount = new Object2ObjectOpenHashMap<>();
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedCount = new Object2ObjectOpenHashMap<>();
@@ -83,11 +89,11 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	@SuppressWarnings("SameReturnValue")
 	private boolean onChatMessage(Component message, boolean overlay) {
 		if (!ChatFormatting.stripFormatting(message.getString()).startsWith(SACKS_MESSAGE_START)) return true;
-		if (!SkyblockerConfigManager.get().uiAndVisuals.itemPickup.sackNotifications) return true;
+		if (!sackNotifications) return true;
 		HoverEvent hoverEvent = message.getSiblings().getFirst().getStyle().getHoverEvent();
 		if (hoverEvent == null || hoverEvent.action() != HoverEvent.Action.SHOW_TEXT) return true;
 		String hoverMessage = ((HoverEvent.ShowText) hoverEvent).value().getString();
-		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
+		boolean split = splitNotifications;
 
 		Matcher matcher = CHANGE_REGEX.matcher(ChatFormatting.stripFormatting(hoverMessage));
 		while (matcher.find()) {
@@ -110,10 +116,6 @@ public class ItemPickupWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
-			return;
-		}
 		//add each diff item to the widget
 		//add positive changes
 		for (String item : addedCount.keySet()) {
@@ -137,8 +139,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 			if (entry.item.isEmpty()) continue;
 			addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 		}
-		boolean split = SkyblockerConfigManager.get().uiAndVisuals.itemPickup.splitNotifications;
-		if (split && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
+		if (splitNotifications && !(this.addedSackCount.isEmpty() && this.removedSackCount.isEmpty())) {
 			this.addElement(new SeparatorElement(Component.nullToEmpty("Sacks")));
 			for (String item : addedSackCount.keySet()) {
 				ChangeData entry = addedSackCount.get(item);
@@ -159,6 +160,38 @@ public class ItemPickupWidget extends ElementBasedWidget {
 				addSimpleIcoText(new FlexibleItemStack(entry.item), itemName, ChatFormatting.RED, Formatters.DIFF_NUMBERS.format(entry.amount));
 			}
 		}
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addSimpleIcoText(Ico.BONE, "Bone ", ChatFormatting.GREEN, "+64");
+		if (sackNotifications) {
+			if (splitNotifications) {
+				collector.addElement(new SeparatorElement(Component.nullToEmpty("Sacks")));
+			}
+			collector.addSimpleIcoText(Ico.BONE, "Enchanted Bone ", ChatFormatting.GREEN, "+1");
+		}
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"), b -> sackNotifications = b, sackNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip"));
+		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"), b -> splitNotifications = b, splitNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"));
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		sackNotifications = input.readBooleanOr("sack_notifications", false);
+		splitNotifications = input.readBooleanOr("split_sack", false);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("sack_notifications", sackNotifications);
+		output.writeBool("split_sack", splitNotifications);
 	}
 
 	/**

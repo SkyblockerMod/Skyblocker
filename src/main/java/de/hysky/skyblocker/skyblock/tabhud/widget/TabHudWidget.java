@@ -10,9 +10,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 
 /**
@@ -22,6 +26,8 @@ import de.hysky.skyblocker.utils.Location;
  */
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;
+	protected boolean hideIfHypixelWidgetMissing;
+	protected boolean hide;
 
 
 	public TabHudWidget(String hypixelWidgetName, MutableComponent title, @Nullable Integer colorValue, Information information) {
@@ -51,7 +57,7 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 
 	@Override
 	public boolean shouldRender() {
-		return PlayerListManager.isPlayerListLoaded() && super.shouldRender();
+		return PlayerListManager.isPlayerListLoaded() && !hide && super.shouldRender();
 	}
 
 	public String getHypixelWidgetName() {
@@ -61,12 +67,57 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		PlayerListManager.Widget widget = PlayerListManager.getListWidget(hypixelWidgetName);
-		if (widget != null) updateContent(widget);
-		else updateContentMissing();
+		if (widget != null) {
+			hide = false;
+			updateContent(widget);
+		}
+		else {
+			hide = hideIfHypixelWidgetMissing;
+			if (!hide) updateContentMissing();
+		}
 	}
 
+	/**
+	 * Called when the hypixel widget is missing from the player list
+	 */
 	protected void updateContentMissing() {
 		for (Component component : createErrorMessage()) addElement(new PlainTextElement(component));
+	}
+
+	@Override
+	protected final void updateConfigContent(ElementCollector collector) {
+		PlayerListManager.Widget widget = PlayerListManager.getListWidget(hypixelWidgetName);
+		// if the widget is visible just use it, placeholder might cause confusion
+		if (widget != null) super.updateConfigContent(collector);
+		else updateConfigContentTab(collector);
+	}
+
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(new PlainTextElement(getInformation().displayName()));
+	}
+
+	@Override
+	public void updateConfigPreview() {
+		PlayerListManager.updateListNow();
+		super.updateConfigPreview();
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.literal("Hide if Tab Widget Missing"), b -> hideIfHypixelWidgetMissing = b, hideIfHypixelWidgetMissing);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		hideIfHypixelWidgetMissing = input.readBooleanOr("hide_if_missing", false);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("hide_if_missing", hideIfHypixelWidgetMissing);
 	}
 
 	/**

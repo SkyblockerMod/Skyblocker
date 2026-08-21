@@ -13,11 +13,15 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.SkyBlockColors;
 
 /**
@@ -41,14 +45,16 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 	public static final int BORDER_SZE_S = 4;
 	public static final int BORDER_SZE_W = 4;
 	public static final int BORDER_SZE_E = 4;
-	public static final int DEFAULT_COL_BG_BOX = 0xC00C0C0C;
-	// More transparent background for minimal style
-	public static final int MINIMAL_COL_BG_BOX = 0x64000000;
 
 	private final int color;
 	private final Component title;
 
 	private boolean lastRenderedConfig = false;
+
+	protected boolean drawBorder = true;
+	protected boolean drawTitle = true;
+	protected float backgroundOpacity = 0.75f;
+	protected boolean roundedCorners = true;
 
 	/**
 	 * Most often than not this should be instantiated only once.
@@ -136,12 +142,17 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 	}
 
 	private void extractInternal(GuiGraphicsExtractor context, Collection<Element> elements, boolean config) {
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground) {
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.enableHudBackground && backgroundOpacity > 0) {
 			Options options = Minecraft.getInstance().options;
-			int textBackgroundColor = options.getBackgroundColor(SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? MINIMAL_COL_BG_BOX : DEFAULT_COL_BG_BOX);
-			context.fill(1, 0, w - 1, h, textBackgroundColor);
-			context.fill(0, 1, 1, h - 1, textBackgroundColor);
-			context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
+			float opacity = SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() ? backgroundOpacity / 2 : backgroundOpacity;
+			int textBackgroundColor = options.getBackgroundColor(ARGB.black(opacity));
+			if (roundedCorners) {
+				context.fill(1, 0, w - 1, h, textBackgroundColor);
+				context.fill(0, 1, 1, h - 1, textBackgroundColor);
+				context.fill(w - 1, 1, w, h - 1, textBackgroundColor);
+			} else {
+				context.fill(0, 0, w, h, textBackgroundColor);
+			}
 		}
 
 		// Display Hypixel or Skyblocker widget in config mode.
@@ -165,27 +176,72 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		}
 		 */
 
-		int strHeightHalf = txtRend.lineHeight / 2;
-		int strAreaWidth = txtRend.width(title) + 4;
+		int strHeightHalf = drawTitle ? txtRend.lineHeight / 2 : 0;
+		int strWidth = txtRend.width(title);
+		int strAreaWidth = strWidth + 4;
 
-		context.text(txtRend, title, 8, 2, this.color, false);
+		if (drawTitle) {
+			if (drawBorder) {
+				context.text(txtRend, title, 8, 2, this.color, false);
+			} else {
+				context.text(txtRend, title, (w - strWidth) / 2, 2, this.color, false);
+			}
+		}
 
 		// Only draw borders if not in minimal mode
-		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal()) {
-			this.extractHorizontalLine(context, 2, 1 + strHeightHalf, 4);
-			this.extractHorizontalLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.style.isMinimal() && drawBorder) {
+			if (drawTitle) {
+				this.extractHorizontalLine(context, 2, 1 + strHeightHalf, 4);
+				this.extractHorizontalLine(context, 2 + strAreaWidth + 4, 1 + strHeightHalf, w - 4 - 4 - strAreaWidth);
+			} else {
+				this.extractHorizontalLine(context, 2, 1 + strHeightHalf, w - 4);
+			}
 			this.extractHorizontalLine(context, 2, h - 2, w - 4);
 
-			this.extractVerticalLine(context, 1, 2 + strHeightHalf, h - 4 - strHeightHalf);
-			this.extractVerticalLine(context, w - 2, 2 + strHeightHalf, h - 4 - strHeightHalf);
+			int ypos = 2 + strHeightHalf + (roundedCorners ? 0 : -1);
+			int height = h - 4 - strHeightHalf + (roundedCorners ? 0 : 2);
+			this.extractVerticalLine(context, 1, ypos, height);
+			this.extractVerticalLine(context, w - 2, ypos, height);
 		}
 
-		int yOffs = BORDER_SZE_N;
+		int yOffs = getBorderSizeNorth();
 
+		int xOff = drawBorder ? BORDER_SZE_W : 1;
 		for (Element c : elements) {
-			c.extractRenderState(context, BORDER_SZE_W, yOffs);
+			c.extractRenderState(context, xOff, yOffs);
 			yOffs += c.getHeight() + Element.PAD_L;
 		}
+	}
+
+	private int getBorderSizeNorth() {
+		return drawTitle ? BORDER_SZE_N : 2;
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.literal("Draw Border"), b -> drawBorder = b, drawBorder);
+		collector.yesNoButton(Component.literal("Show Title"), b -> drawTitle = b, drawTitle);
+		collector.yesNoButton(Component.literal("Rounded Corners"), b -> roundedCorners = b, roundedCorners);
+		collector.slider(Component.literal("Background Opacity"), d -> backgroundOpacity = (float) d, backgroundOpacity, 0.1, 0, 1);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		drawBorder = input.readBooleanOr("draw_border", true);
+		drawTitle = input.readBooleanOr("draw_title", true);
+		roundedCorners = input.readBooleanOr("rounded_corners", true);
+		backgroundOpacity = input.readFloatOr("background_opacity", 0.75f);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("draw_border", drawBorder);
+		output.writeBool("draw_title", drawTitle);
+		output.writeBool("rounded_corners", roundedCorners);
+		output.writeNumber("background_opacity", backgroundOpacity);
 	}
 
 	/**
@@ -201,12 +257,12 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 			w = Math.max(w, c.getWidth() + Element.PAD_S);
 		}
 
-		h -= Element.PAD_L / 2; // less padding after lowest/last element
-		h += BORDER_SZE_N + BORDER_SZE_S - 2;
-		w += BORDER_SZE_E + BORDER_SZE_W;
+		if (drawBorder) h -= Element.PAD_L / 2; // less padding after lowest/last component
+		h += getBorderSizeNorth() + BORDER_SZE_S - 2 + (drawBorder ? 0 : -4);
+		w += BORDER_SZE_E + BORDER_SZE_W + (drawBorder ? 0 : -6);
 
 		// min width is dependent on title
-		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + txtRend.width(title) + 4 + 4 + 1);
+		w = Math.max(w, BORDER_SZE_W + BORDER_SZE_E + (drawBorder ? 0 : -6) + txtRend.width(title) + 4 + 4 + 1);
 	}
 
 	private void extractHorizontalLine(GuiGraphicsExtractor graphics, int xpos, int ypos, int width) {

@@ -63,10 +63,11 @@ class CustomDropdownWidget<T> extends DropdownWidget<T> {
 		}
 
 		@Override
-		protected void extractListBackground(GuiGraphicsExtractor context) {
-			context.enableScissor(this.getX(), this.getY() - 1, this.getRight(), this.getBottom() + 2);
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY() - 3, this.getWidth(), this.getHeight() + 5);
-			context.disableScissor();
+		protected void extractListBackground(GuiGraphicsExtractor graphics) {
+			graphics.enableScissor(this.getX(), this.getY() - 1, this.getRight(), this.getBottom() + 2);
+			graphics.fill(getX(), getY() - 3, getRight(), getBottom() + 2, ARGB.black(0.4f));
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY() - 3, this.getWidth(), this.getHeight() + 5);
+			graphics.disableScissor();
 		}
 	}
 

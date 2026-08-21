@@ -60,7 +60,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class WidgetManager {
 	@SuppressWarnings("deprecation")
 	public static final Set<Location> ALLOWED_LOCATIONS = Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.BLAZING_FORTRESS)));
-	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 

@@ -7,18 +7,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.google.gson.JsonObject;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
-import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
 public abstract class HudWidget implements LayoutElement {
 	protected int w = 0, h = 0;
@@ -63,18 +60,12 @@ public abstract class HudWidget implements LayoutElement {
 		scale = input.readFloatOr("scale", 1);
 	}
 
-	public void save(JsonObject output) {
-		output.addProperty("scale", scale);
+	public void save(JsonValueOutput output) {
+		output.writeNumber("scale", scale);
 	}
 
 	public void getOptionWidgets(OptionWidgetCollector collector) {
-		collector.addWidget(RangedSliderWidget.builder()
-				.defaultValue(scale)
-				.optionFormatter(Component.literal("Scale"), Formatters.FLOAT_NUMBERS)
-				.minMax(0.1, 5)
-				.step(0.1)
-				.callback(d -> scale = (float) d)
-				.build());
+		collector.slider(Component.literal("Scale"), d -> scale = (float) d, scale, 0.1, 0.1, 5);
 	}
 
 	/**

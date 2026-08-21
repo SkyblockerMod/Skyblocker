@@ -4,14 +4,17 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.StringRepresentable;
 
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
@@ -261,10 +264,12 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	public enum NameSorting {
+	public enum NameSorting implements StringRepresentable {
 		DEFAULT((_, _) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+
+		public static final Codec<NameSorting> CODEC = StringRepresentable.fromEnum(NameSorting::values);
 
 		public final Comparator<PlayerInfo> comparator;
 
@@ -284,6 +289,11 @@ public class UIAndVisualsConfig {
 				case ALPHABETICAL -> "Alphabetical";
 				case SKYBLOCK_LEVEL -> "Skyblock Level";
 			};
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}
 
