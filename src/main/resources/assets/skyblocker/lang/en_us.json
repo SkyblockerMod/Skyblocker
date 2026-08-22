@@ -161,6 +161,8 @@
   "skyblocker.config.chat.filter.hideAds": "Hide Ads From Public Chat",
   "skyblocker.config.chat.filter.hideAutopet": "Hide Autopet Messages",
   "skyblocker.config.chat.filter.hideCombo": "Hide Combo Messages",
+  "skyblocker.config.chat.filter.hideCritterCapture": "Hide Critter Capture Messages",
+  "skyblocker.config.chat.filter.hideCritterCapture.@Tooltip": "Hides critter capture and loot share message spam.",
   "skyblocker.config.chat.filter.hideDeath": "Hide Player Death Messages",
   "skyblocker.config.chat.filter.hideDeath.@Tooltip": "Filters the player death messages from chat.",
   "skyblocker.config.chat.filter.hideDungeonBreaker": "Hide Dungeonbreaker Messages",
