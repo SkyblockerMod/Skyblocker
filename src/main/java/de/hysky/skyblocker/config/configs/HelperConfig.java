@@ -134,6 +134,8 @@ public class HelperConfig {
 
 		public boolean highlightFoundSouls = true;
 
+		public boolean highlightOnBingo = true;
+
 		public boolean highlightOnlyNearbySouls = false;
 	}
 

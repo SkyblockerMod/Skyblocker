@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
@@ -10,7 +11,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
@@ -18,11 +18,11 @@ import de.hysky.skyblocker.utils.Location;
 @RegisterWidget
 public class PickobulusHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("Pickobulus").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
+	private static final Set<Location> AVAILABLE_LOCATIONS = EnumSet.of(Location.GOLD_MINE, Location.DEEP_CAVERNS, Location.DWARVEN_MINES, Location.CRYSTAL_HOLLOWS, Location.GLACITE_MINESHAFTS);
 	private static @Nullable PickobulusHudWidget instance;
 
 	public PickobulusHudWidget() {
-		super(TITLE, TextColor.BLUE.getValue(), "hud_pickobulus");
+		super(TITLE, TextColor.BLUE.getValue(), new Information("hud_pickobulus", Component.literal("Pickobulus HUD"), AVAILABLE_LOCATIONS));
 		instance = this;
 		update();
 	}
@@ -42,44 +42,23 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 	public void updateContent() {
 		Component errorMessage = PickobulusHelper.getErrorMessage();
 		if (errorMessage != null) {
-			addComponent(new PlainTextElement(errorMessage));
+			addElement(new PlainTextElement(errorMessage));
 			return;
 		}
 
-		addComponent(new PlainTextElement(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
+		addElement(new PlainTextElement(Component.literal("Total Blocks: " + PickobulusHelper.getTotalBlocks())));
 
 		int[] drops = PickobulusHelper.getDrops();
 		for (PickobulusHelper.MiningDrop drop : PickobulusHelper.MiningDrop.values()) {
 			int count = drops[drop.ordinal()];
 			if (count > 0) {
-				addComponent(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
+				addElement(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
 			}
 		}
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public boolean shouldRender(Location location) {
-		return super.shouldRender(location) && PickobulusHelper.shouldRender();
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return AVAILABLE_LOCATIONS.contains(location) && SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud;
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.translatable("skyblocker.config.mining.pickobulusHelper");
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!AVAILABLE_LOCATIONS.contains(location)) return;
-		SkyblockerConfigManager.update(config -> config.mining.pickobulusHelper.enablePickobulusHud = enabled);
+	public boolean shouldRender() {
+		return PickobulusHelper.shouldRender();
 	}
 }

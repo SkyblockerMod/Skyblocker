@@ -14,7 +14,6 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4fStack;
-import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -35,27 +34,22 @@ public class Renderer {
 	private static final List<Draw> DRAWS = new ArrayList<>();
 	private static @Nullable RenderPipeline previousPipeline = null;
 	private static @Nullable TextureSetup previousTextureSetup = null;
-	private static float previousAlphaMultiplier = 1f;
 	private static int previousInstanceCount = 1;
 	private static @Nullable UniformBinding previousUniform = null;
 	private static StagedVertexBuffer.@Nullable Draw previousDraw = null;
 
 	public static VertexConsumer getBuffer(RenderPipeline pipeline) {
-		return getBuffer(pipeline, TextureSetup.noTexture(), 1f, 1, null);
+		return getBuffer(pipeline, TextureSetup.noTexture(), 1, null);
 	}
 
 	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup) {
-		return getBuffer(pipeline, textureSetup, 1f, 1, null);
+		return getBuffer(pipeline, textureSetup, 1, null);
 	}
 
-	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier) {
-		return getBuffer(pipeline, textureSetup, alphaMultiplier, 1, null);
-	}
-
-	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {
-		if (previousDraw == null || pipeline != previousPipeline || !textureSetup.equals(previousTextureSetup) || alphaMultiplier != previousAlphaMultiplier || instanceCount != previousInstanceCount || !uniform.equals(previousUniform)) {
+	public static VertexConsumer getBuffer(RenderPipeline pipeline, TextureSetup textureSetup, int instanceCount, @Nullable UniformBinding uniform) {
+		if (previousDraw == null || pipeline != previousPipeline || !textureSetup.equals(previousTextureSetup) || instanceCount != previousInstanceCount || !uniform.equals(previousUniform)) {
 			previousDraw = VERTEX_BUFFER.appendDraw(pipeline.getVertexFormatBinding(0), pipeline.getPrimitiveTopology());
-			DRAWS.add(new Draw(previousDraw, pipeline, textureSetup, alphaMultiplier, instanceCount, uniform));
+			DRAWS.add(new Draw(previousDraw, pipeline, textureSetup, instanceCount, uniform));
 		}
 
 		return VERTEX_BUFFER.getVertexBuilder(Objects.requireNonNull(previousDraw));
@@ -65,7 +59,6 @@ public class Renderer {
 		previousDraw = null;
 		previousPipeline = null;
 		previousTextureSetup = null;
-		previousAlphaMultiplier = 1f;
 		previousInstanceCount = 1;
 		previousUniform = null;
 	}
@@ -104,6 +97,7 @@ public class Renderer {
 						OptionalDouble.empty()
 						)) {
 			RenderSystem.bindDefaultUniforms(renderPass);
+			renderPass.setUniform("DynamicTransforms", setupDynamicTransforms());
 
 			for (Draw draw : DRAWS) {
 				draw(draw, renderPass);
@@ -121,7 +115,6 @@ public class Renderer {
 		}
 
 		renderPass.setPipeline(draw.pipeline);
-		renderPass.setUniform("DynamicTransforms", setupDynamicTransforms(draw.alphaMultiplier));
 
 		if (draw.uniform != null) {
 			renderPass.setUniform(draw.uniform.name, draw.uniform.buffer);
@@ -148,9 +141,8 @@ public class Renderer {
 		renderPass.drawIndexed(executeInfo.indexCount(), draw.instanceCount, executeInfo.firstIndex(), executeInfo.baseVertex(), 0);
 	}
 
-	private static GpuBufferSlice setupDynamicTransforms(float alphaMultiplier) {
-		return RenderSystem.getDynamicUniforms()
-				.writeTransform(RenderSystem.getModelViewMatrixCopy(), new Vector4f(1f, 1f, 1f, alphaMultiplier));
+	private static GpuBufferSlice setupDynamicTransforms() {
+		return RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy());
 	}
 
 	private static void applyViewOffsetZLayering() {
@@ -167,7 +159,7 @@ public class Renderer {
 		VERTEX_BUFFER.close();
 	}
 
-	private record Draw(StagedVertexBuffer.Draw draw, RenderPipeline pipeline, TextureSetup textureSetup, float alphaMultiplier, int instanceCount, @Nullable UniformBinding uniform) {}
+	private record Draw(StagedVertexBuffer.Draw draw, RenderPipeline pipeline, TextureSetup textureSetup, int instanceCount, @Nullable UniformBinding uniform) {}
 
 	public record UniformBinding(String name, GpuBuffer buffer) {}
 }

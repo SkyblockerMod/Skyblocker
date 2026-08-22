@@ -1,11 +1,13 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
@@ -53,23 +55,23 @@ public class PlayerData {
 	public Map<String, Double> experience = Map.of();
 
 	/// @param tier one indexed minion tier
-	public boolean hasCraftedMinionTier(String minionType, int tier) {
-		return this.craftedMinions.contains(String.format("%s_%d", minionType, tier));
+	public static boolean hasCraftedMinionTier(List<String> craftedMinions, String minionType, int tier) {
+		return craftedMinions.contains(String.format(Locale.ENGLISH, "%s_%d", minionType, tier));
 	}
 
 	public double getSkillExperience(Skill skill) {
 		return this.experience.getOrDefault("SKILL_" + skill.name(), 0.0d);
 	}
 
-	public LevelInfo getSkillLevel(Skill skill, ProfileMember member) {
-		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, member);
+	public LevelInfo getSkillLevel(Skill skill, LoadingInformation info) {
+		return LevelCalculator.getSkillLevel((long) getSkillExperience(skill), skill, info);
 	}
 
-	public float getSkillAverage(ProfileMember member) {
+	public float getSkillAverage(LoadingInformation info) {
 		float average = 0;
 
 		for (Skill skill : Skill.CONVENTIONAL_SKILLS) {
-			average += this.getSkillLevel(skill, member).level();
+			average += this.getSkillLevel(skill, info).level();
 		}
 
 		average /= Skill.CONVENTIONAL_SKILLS.size();
@@ -80,10 +82,10 @@ public class PlayerData {
 	/// Gets the highest contiguously unlocked minion tier. It is still possible to craft a higher tier minion by trading with other players.
 	///
 	/// @return the one indexed highest crafted minion tier contiguously from tier 1.
-	public int getMinionTier(String resource) { // TODO: are minion crafts shared between players in a profile
+	public static int getMinionTier(List<String> craftedMinions, String resource) { // TODO: are minion crafts shared between players in a profile
 		int i = 1;
 		for (; i < 15; i++) { // Let's go for 15 for future proofing!
-			if (!hasCraftedMinionTier(resource, i))
+			if (!hasCraftedMinionTier(craftedMinions, resource, i))
 				break;
 		}
 		return i - 1;

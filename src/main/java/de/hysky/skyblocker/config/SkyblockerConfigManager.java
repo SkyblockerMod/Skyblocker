@@ -62,7 +62,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class SkyblockerConfigManager {
-	public static final int CONFIG_VERSION = 11;
+	public static final int CONFIG_VERSION = 12;
 	static final Logger LOGGER = LogUtils.getLogger();
 	private static final String CONFIGS_PACKAGE = "de.hysky.skyblocker.config.configs";
 	private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();

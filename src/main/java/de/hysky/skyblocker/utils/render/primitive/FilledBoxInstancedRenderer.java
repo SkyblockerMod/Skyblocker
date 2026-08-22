@@ -38,13 +38,13 @@ public final class FilledBoxInstancedRenderer implements AutoCloseable {
 
 		if (!normalStates.isEmpty()) {
 			Renderer.UniformBinding normalUniform = new Renderer.UniformBinding("BoxData", this.normalBoxData.update(normalStates, cameraState));
-			VertexConsumer normalBuffer = Renderer.getBuffer(SkyblockerRenderPipelines.FILLED_INSTANCED, TextureSetup.noTexture(), 1f, normalStates.size(), normalUniform);
+			VertexConsumer normalBuffer = Renderer.getBuffer(SkyblockerRenderPipelines.FILLED_INSTANCED, TextureSetup.noTexture(), normalStates.size(), normalUniform);
 			buildUnitBox((float) UNIT_BOX.minX, (float) UNIT_BOX.minY, (float) UNIT_BOX.minZ, (float) UNIT_BOX.maxX, (float) UNIT_BOX.maxY, (float) UNIT_BOX.maxZ, normalBuffer);
 		}
 
 		if (!throughWallsStates.isEmpty()) {
 			Renderer.UniformBinding throughWallsUniform = new Renderer.UniformBinding("BoxData", this.throughWallsBoxData.update(throughWallsStates, cameraState));
-			VertexConsumer throughWallsBuffer = Renderer.getBuffer(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED, TextureSetup.noTexture(), 1f, throughWallsStates.size(), throughWallsUniform);
+			VertexConsumer throughWallsBuffer = Renderer.getBuffer(SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED, TextureSetup.noTexture(), throughWallsStates.size(), throughWallsUniform);
 			buildUnitBox((float) UNIT_BOX.minX, (float) UNIT_BOX.minY, (float) UNIT_BOX.minZ, (float) UNIT_BOX.maxX, (float) UNIT_BOX.maxY, (float) UNIT_BOX.maxZ, throughWallsBuffer);
 		}
 	}

@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
@@ -30,7 +31,7 @@ public class Dungeons {
 	}
 
 	@SerializedName("dungeon_types")
-	public PerDungeonType dungeonInfo;
+	public PerDungeonType dungeonTypes = new PerDungeonType();
 
 	public static class PerDungeonType {
 		@SerializedName("master_catacombs")
@@ -41,8 +42,8 @@ public class Dungeons {
 	public static class ClassStats {
 		public double experience;
 
-		public LevelInfo getLevelInfo(ProfileMember member) {
-			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS, member);
+		public LevelInfo getLevelInfo(LoadingInformation info) {
+			return LevelCalculator.getSkillLevel((long) this.experience, Skill.CATACOMBS, info);
 		}
 	}
 

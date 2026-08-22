@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.utils.render.MatrixHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -40,8 +42,11 @@ public final class BlockHologramRenderer implements PrimitiveRenderer<BlockHolog
 		@SuppressWarnings("deprecation")
 		GpuTextureView blocksAtlasTexture = MINECRAFT.getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).getTextureView();
 		GpuSampler sampler = RenderSystem.getSamplerCache().getSampler(AddressMode.CLAMP_TO_EDGE, AddressMode.CLAMP_TO_EDGE, FilterMode.LINEAR, FilterMode.NEAREST, true);
-		VertexConsumer buffer = de.hysky.skyblocker.utils.render.Renderer.getBuffer(RenderPipelines.TRANSLUCENT_BLOCK, TextureSetup.singleTextureWithLightmap(blocksAtlasTexture, sampler), state.alpha());
+		VertexConsumer buffer = de.hysky.skyblocker.utils.render.Renderer.getBuffer(RenderPipelines.TRANSLUCENT_BLOCK, TextureSetup.singleTextureWithLightmap(blocksAtlasTexture, sampler));
 		QuadEmitter quadEmitter = Renderer.get().quadEmitter(quad -> {
+			int colour = ARGB.color(state.alpha(), CommonColors.WHITE);
+
+			quad.color(colour, colour, colour, colour);
 			quad.buffer(OverlayTexture.NO_OVERLAY, pose.last(), buffer);
 		});
 		BlockStateModel model = MINECRAFT.getModelManager().getBlockStateModelSet().get(state.state());

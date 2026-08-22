@@ -6,23 +6,30 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -32,10 +39,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.PlayerTabOverlayAccessor;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TabHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Utils;
@@ -46,6 +53,10 @@ import de.hysky.skyblocker.utils.Utils;
  * is holding periodically. The list is sorted like in the vanilla game.
  */
 public class PlayerListManager {
+	public static boolean shouldUpdateNextTick = false;
+	private static boolean playerListLoaded = false;
+	private static int loadingTicks = 0;
+
 	public static final Logger LOGGER = LoggerFactory.getLogger("Skyblocker Regex");
 	private static final Pattern PLAYERS_COLUMN_PATTERN = Pattern.compile("\\s*(Players \\(\\d+\\)|Island|Coop \\(\\d+\\))\\s*");
 	private static final Pattern INFO_COLUMN_PATTERN = Pattern.compile("\\s*Info\\s*");
@@ -54,53 +65,101 @@ public class PlayerListManager {
 	/**
 	 * The player list in tab.
 	 */
-	private static @Nullable List<PlayerInfo> playerList = new ArrayList<>(); // Initialize to prevent npe.
+	private static List<PlayerInfo> playerList = new ArrayList<>(); // Initialize to prevent npe.
 
 	/**
 	 * The player list in tab, but a list of strings instead of {@link PlayerInfo}s.
 	 *
-	 * @implNote All leading and trailing whitespace is removed from the strings.
+	 * @implNote All leading and trailing whitespace are removed from the strings.
 	 */
 	private static List<String> playerStringList = new ArrayList<>();
 	private static @Nullable String footer;
-	public static final Map<String, TabHudWidget> tabWidgetInstances = new Object2ObjectOpenHashMap<>();
-	public static final List<TabHudWidget> tabWidgetsToShow = new ObjectArrayList<>(5);
+	static final Map<String, Widget> WIDGET_MAP = new Object2ObjectLinkedOpenHashMap<>(); // linked so iterating gives the same order as the vanilla tab
 
-	private static void reset() {
-		if (!tabWidgetsToShow.isEmpty()) {
-			tabWidgetsToShow.clear();
+	private static final Set<Runnable> TAB_LISTENERS = new ObjectOpenHashSet<>(); // this might not actually be a set due to how lambdas work
+	private static final Multimap<String, Consumer<Widget>> TAB_WIDGET_LISTENERS = MultimapBuilder.hashKeys().arrayListValues().build();
+	private static final Set<Runnable> FOOTER_LISTENERS = new ObjectOpenHashSet<>();
+	static final Map<String, HudWidget> HANDLED_TAB_WIDGETS = new Object2ObjectOpenHashMap<>();
+
+	public static PlayerListManager.@Nullable Widget getListWidget(String name) {
+		return WIDGET_MAP.get(name);
+	}
+
+	public static @Nullable HudWidget getTabWidget(String name) {
+		return HANDLED_TAB_WIDGETS.get(name);
+	}
+
+	public static Set<String> getCurrentWidgets() {
+		return WIDGET_MAP.keySet();
+	}
+
+	public static void addHandledTabWidget(String name, HudWidget widget) {
+		HANDLED_TAB_WIDGETS.put(name, widget);
+	}
+
+	public static void registerTabListener(Runnable listener) {
+		TAB_LISTENERS.add(listener);
+	}
+
+	public static void registerFooterListener(Runnable listener) {
+		FOOTER_LISTENERS.add(listener);
+	}
+
+	public static void registerTabWidgetListener(String widgetName, Consumer<Widget> listener) {
+		TAB_WIDGET_LISTENERS.put(widgetName, listener);
+	}
+
+	/**
+	 * @return whether the player list is loaded (all 80 lines are present)
+	 */
+	public static boolean isPlayerListLoaded() {
+		return playerListLoaded;
+	}
+
+	@Init
+	public static void init() {
+		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> {
+			playerListLoaded = false;
+			loadingTicks = 0;
+		});
+	}
+
+	public static void tryUpdateList() {
+		if (!playerListLoaded) {
+			// in the unlikely case someone has "Player List Info" disabled in Hypixel's settings
+			if (loadingTicks > 40) {
+				playerListLoaded = true;
+			} else {
+				loadingTicks++;
+			}
+		}
+		if (shouldUpdateNextTick) {
+			updateList();
+			shouldUpdateNextTick = false;
 		}
 	}
 
-	// TODO: check for changes instead of updating every second
 	public static void updateList() {
-		if (!Utils.isOnSkyblock()) {
-			reset();
-			return;
-		}
-
+		if (!Utils.isOnSkyblock()) return;
 		ClientPacketListener networkHandler = Minecraft.getInstance().getConnection();
 
 		// check is needed, else game crashes on server leave
 		if (networkHandler != null) {
 			playerList = networkHandler.getOnlinePlayers()
-									.stream()
-									.sorted(PlayerTabOverlayAccessor.getOrdering())
-									.toList();
+					.stream()
+					.sorted(PlayerTabOverlayAccessor.getOrdering())
+					.toList();
 			playerStringList = playerList.stream()
-										.map(PlayerInfo::getTabListDisplayName)
-										.filter(Objects::nonNull)
-										.map(Component::getString)
-										.map(String::strip)
-										.toList();
+					.map(PlayerInfo::getTabListDisplayName)
+					.filter(Objects::nonNull)
+					.map(Component::getString)
+					.map(String::strip)
+					.toList();
 		}
 
-		if (!SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
-			reset();
-			return;
+		if (playerList.size() >= 80) {
+			playerListLoaded = true;
 		}
-
-		if (Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen widgetsConfigurationScreen && widgetsConfigurationScreen.isPreviewVisible()) return;
 
 		if (Utils.isInDungeons()) updateDungeons(null);
 		else updateWidgetsFrom(playerList);
@@ -122,17 +181,19 @@ public class PlayerListManager {
 			}
 		}
 
-		tabWidgetsToShow.clear();
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Buffs", List.of()));
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Deaths", List.of()));
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Downed", List.of()));
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Puzzles", List.of()));
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Discoveries", List.of()));
-		tabWidgetsToShow.add(getTabHudWidget("Dungeon Info", List.of()));
+		WIDGET_MAP.clear();
+		WIDGET_MAP.put("Dungeon Buffs", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Deaths", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Downed", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Puzzles", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Discoveries", Widget.EMPTY);
+		WIDGET_MAP.put("Dungeon Info", Widget.EMPTY);
 		for (int i = 1; i < 6; i++) {
-			tabWidgetsToShow.add(getTabHudWidget("Dungeon Player " + i, List.of()));
+			WIDGET_MAP.put("Dungeon Player " + i, Widget.EMPTY);
 		}
 
+		TAB_LISTENERS.forEach(Runnable::run);
+		WIDGET_MAP.forEach((key, value) -> TAB_WIDGET_LISTENERS.get(key).forEach(c -> c.accept(value)));
 	}
 
 	/**
@@ -144,15 +205,15 @@ public class PlayerListManager {
 		final Predicate<String> playersColumnPredicate = PLAYERS_COLUMN_PATTERN.asMatchPredicate();
 		final Predicate<String> infoColumnPredicate = INFO_COLUMN_PATTERN.asMatchPredicate();
 
-		tabWidgetsToShow.clear();
-		boolean doingPlayers = false;
-		boolean playersDone = false;
-		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
-		// These two lists should match each other.
-		// playerListEntries is only used for the player list widget
+		Component sideThing = Component.empty();
 		List<Component> contents = new ArrayList<>();
 		List<PlayerInfo> playerListEntries = new ArrayList<>();
 
+		boolean doingPlayers = false;
+		boolean playersDone = false;
+		IntObjectPair<String> hypixelWidgetName = IntObjectPair.of(0xFFFF00, "");
+
+		WIDGET_MAP.clear();
 		for (PlayerInfo playerListEntry : lines) {
 			Component displayName = playerListEntry.getTabListDisplayName();
 			if (displayName == null) continue;
@@ -164,7 +225,6 @@ public class PlayerListManager {
 				if (playersColumnPredicate.test(string)) {
 					if (!doingPlayers) {
 						doingPlayers = true;
-						// noinspection DataFlowIssue
 						hypixelWidgetName = IntObjectPair.of(TextColor.AQUA.getValue(), "Players");
 					}
 					continue;
@@ -172,7 +232,7 @@ public class PlayerListManager {
 				// Check if info, if it is, dip out
 				if (infoColumnPredicate.test(string)) {
 					playersDone = true;
-					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
+					WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(Component.empty(), contents, playerListEntries));
 					contents.clear();
 					playerListEntries.clear();
 					continue;
@@ -183,13 +243,19 @@ public class PlayerListManager {
 				// Now check for : because of the farming contest ACTIVE
 				// Check for mining event minutes CUZ THEY FUCKING FORGOT THE SPACE iefzeoifzeoifomezhif
 				if (!string.startsWith(" ") && string.contains(":") && (!hypixelWidgetName.right().startsWith("Mining Event") || !string.toLowerCase(Locale.ENGLISH).startsWith("ends in"))) {
-					if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
+					if (!contents.isEmpty() || !sideThing.getString().isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
+
+					sideThing = Component.empty();
 					contents.clear();
 					playerListEntries.clear();
+
 					Pair<IntObjectPair<String>, ? extends Component> nameAndInfo = getNameAndInfo(displayName);
 					hypixelWidgetName = nameAndInfo.left();
+					if (!HANDLED_TAB_WIDGETS.containsKey(hypixelWidgetName.right())) {
+						WidgetManager.addWidgetInstance(new DefaultTabHudWidget(hypixelWidgetName.right(), Component.literal(hypixelWidgetName.right()).withStyle(ChatFormatting.BOLD), hypixelWidgetName.firstInt()));
+					}
 					if (!nameAndInfo.right().getString().isBlank()) {
-						contents.add(trim(nameAndInfo.right()));
+						sideThing = trim(nameAndInfo.right());
 						playerListEntries.add(playerListEntry);
 					}
 					continue;
@@ -199,10 +265,11 @@ public class PlayerListManager {
 			contents.add(trim(displayName));
 			playerListEntries.add(playerListEntry);
 		}
-		if (!contents.isEmpty()) tabWidgetsToShow.add(getTabHudWidget(hypixelWidgetName, contents, playerListEntries));
-		if (!tabWidgetsToShow.contains(tabWidgetInstances.get("Active Effects")) && SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) {
-			tabWidgetsToShow.add(getTabHudWidget("Active Effects", List.of()));
-		}
+
+		if (!contents.isEmpty() || !sideThing.getString().isEmpty()) WIDGET_MAP.put(hypixelWidgetName.right(), new Widget(sideThing, contents, playerListEntries));
+
+		TAB_LISTENERS.forEach(Runnable::run);
+		WIDGET_MAP.forEach((key, value) -> TAB_WIDGET_LISTENERS.get(key).forEach(c -> c.accept(value)));
 	}
 
 	private static Component trim(Component text) {
@@ -235,23 +302,6 @@ public class PlayerListManager {
 		trimmedParts.forEach(out::append);
 
 		return out;
-	}
-
-	private static TabHudWidget getTabHudWidget(IntObjectPair<String> hypixelWidgetName, List<Component> lines, @Nullable List<PlayerInfo> playerListEntries) {
-		TabHudWidget tabHudWidget;
-		if (tabWidgetInstances.containsKey(hypixelWidgetName.right())) {
-			tabHudWidget = tabWidgetInstances.get(hypixelWidgetName.right());
-		} else {
-			tabHudWidget = new DefaultTabHudWidget(hypixelWidgetName.right(), Component.literal(hypixelWidgetName.right()).withStyle(ChatFormatting.BOLD), hypixelWidgetName.firstInt());
-			WidgetManager.addWidgetInstance(tabHudWidget);
-		}
-		tabHudWidget.updateFromTab(lines, playerListEntries);
-		tabHudWidget.update();
-		return tabHudWidget;
-	}
-
-	private static TabHudWidget getTabHudWidget(String hypixelWidgetName, List<Component> lines) {
-		return getTabHudWidget(IntObjectPair.of(0xFFFF0000, hypixelWidgetName), lines, null);
 	}
 
 	/**
@@ -289,7 +339,7 @@ public class PlayerListManager {
 	/**
 	 * @return the cached player list
 	 */
-	public static @Nullable List<PlayerInfo> getPlayerList() {
+	public static List<PlayerInfo> getPlayerList() {
 		return playerList;
 	}
 
@@ -308,6 +358,7 @@ public class PlayerListManager {
 			if (footer.isEmpty()) {
 				footer = null;
 			}
+			FOOTER_LISTENERS.forEach(Runnable::run);
 		}
 	}
 
@@ -345,11 +396,6 @@ public class PlayerListManager {
 	 * only
 	 */
 	public static @Nullable String strAt(int idx) {
-
-		if (playerList == null) {
-			return null;
-		}
-
 		if (playerList.size() <= idx) {
 			return null;
 		}
@@ -374,11 +420,6 @@ public class PlayerListManager {
 	 * modification for other stuff. you've been warned!
 	 */
 	public static @Nullable Component textAt(int idx) {
-
-		if (playerList == null) {
-			return null;
-		}
-
 		if (playerList.size() <= idx) {
 			return null;
 		}
@@ -388,7 +429,7 @@ public class PlayerListManager {
 			return null;
 		}
 
-		// Rebuild the text object to remove leading space thats in all faction quest
+		// Rebuild the text object to remove leading space that's in all faction quest
 		// stuff (also removes trailing space just in case)
 		MutableComponent newText = Component.empty();
 		int size = txt.getSiblings().size();
@@ -430,14 +471,31 @@ public class PlayerListManager {
 	}
 
 	private static final class DefaultTabHudWidget extends TabHudWidget {
+
 		private DefaultTabHudWidget(String hypixelWidgetName, MutableComponent title, int color) {
-			super(hypixelWidgetName, title, color);
+			super(hypixelWidgetName, title, color, new Information(nameToId(hypixelWidgetName), title.plainCopy().append(Component.literal(" (auto)").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC))));
 		}
 
 		@Override
-		protected void updateContent(List<Component> lines) {
-			lines.forEach(text -> addComponent(new PlainTextElement(text)));
+		protected void updateContent(Widget widget) {
+			if (!widget.detail().getString().isEmpty()) addElement(new PlainTextElement(widget.detail()));
+			for (Component line : widget.lines()) {
+				addElement(new PlainTextElement(line));
+			}
 		}
 	}
 
+	/**
+	 * @param detail            The text after the : on the widget's name. {@link Component#empty()} if there is none.
+	 * @param lines             The different lines, trimmed.
+	 * @param playerListEntries The player list entries, unprocessed. If detail is present, the whole line is included as the first line in the list.
+	 */
+	public record Widget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
+		public static final Widget EMPTY = new Widget(Component.empty(), List.of(), List.of());
+		public Widget(Component detail, List<Component> lines, List<PlayerInfo> playerListEntries) {
+			this.detail = detail.copy();
+			this.lines = lines.stream().map(Component::copy).collect(Collectors.toList());
+			this.playerListEntries = List.copyOf(playerListEntries);
+		}
+	}
 }

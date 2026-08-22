@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.GlowRenderer;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.render.Renderer;
 import de.hysky.skyblocker.utils.render.primitive.FilledBoxInstancedRenderer;
@@ -25,7 +24,6 @@ public class GameRendererMixin {
 		FilledBoxInstancedRenderer.INSTANCE.close();
 		OutlinedBoxInstancedRenderer.INSTANCE.close();
 		Renderer.close();
-		GlowRenderer.INSTANCE.close();
 		GuiHelper.close();
 		DungeonMapTexture.close();
 	}
