@@ -899,9 +899,15 @@
   "skyblocker.config.hud.topBar.options": "Options",
   "skyblocker.config.hud.topBar.options.@Tooltip": "More Options",
 
+  "skyblocker.config.hud.widget.base.scale": "Scale",
   "skyblocker.config.hud.widget.copy": "Create Copy",
+  "skyblocker.config.hud.widget.element.backgroundOpacity": "Background Opacity",
+  "skyblocker.config.hud.widget.element.drawBorder": "Draw Border",
+  "skyblocker.config.hud.widget.element.roundedCorners": "Rounded Corners",
+  "skyblocker.config.hud.widget.element.showTitle": "Show Title",
   "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",
   "skyblocker.config.hud.widget.remove": "Remove",
+  "skyblocker.config.hud.widget.tab.hideIfMissing": "Hide If Tab Widget Missing",
 
   "skyblocker.config.hud.widgetsList.applyToAllLocations": "Apply to all locations",
   "skyblocker.config.hud.widgetsList.info.overflowWarning": "It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!",

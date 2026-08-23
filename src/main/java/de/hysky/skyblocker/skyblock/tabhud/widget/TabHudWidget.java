@@ -105,7 +105,7 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	@Override
 	public void getOptionWidgets(OptionWidgetCollector collector) {
 		super.getOptionWidgets(collector);
-		collector.yesNoButton(Component.literal("Hide if Tab Widget Missing"), b -> hideIfHypixelWidgetMissing = b, hideIfHypixelWidgetMissing);
+		collector.yesNoButton(Component.translatable("skyblocker.config.hud.widget.tab.hideIfMissing"), b -> hideIfHypixelWidgetMissing = b, hideIfHypixelWidgetMissing);
 	}
 
 	@Override

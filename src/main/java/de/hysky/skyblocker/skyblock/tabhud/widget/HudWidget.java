@@ -65,7 +65,7 @@ public abstract class HudWidget implements LayoutElement {
 	}
 
 	public void getOptionWidgets(OptionWidgetCollector collector) {
-		collector.slider(Component.literal("Scale"), d -> scale = (float) d, scale, 0.1, 0.1, 5);
+		collector.slider(Component.translatable("skyblocker.config.hud.widget.base.scale"), d -> scale = (float) d, scale, 0.1, 0.1, 5);
 	}
 
 	/**
