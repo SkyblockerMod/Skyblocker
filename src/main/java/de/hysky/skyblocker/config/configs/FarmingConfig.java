@@ -8,7 +8,8 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.StringRepresentable;
 
 public class FarmingConfig {
-	public FarmingHud farmingHud = new FarmingHud();
+	@Deprecated
+	public transient FarmingHud farmingHud = new FarmingHud();
 
 	public PestHighlighter pestHighlighter = new PestHighlighter();
 
@@ -61,17 +62,23 @@ public class FarmingConfig {
 	}
 
 	public static class FarmingHud {
-		public boolean enabled = true;
+		@Deprecated
+		public transient boolean enabled = true;
 
-		public boolean counter = true;
+		@Deprecated
+		public transient boolean counter = true;
 
-		public boolean coins = true;
+		@Deprecated
+		public transient boolean coins = true;
 
-		public Type type = Type.BOTH;
+		@Deprecated
+		public transient Type type = Type.BOTH;
 
-		public boolean includeSeedsPrice = true;
+		@Deprecated
+		public transient boolean includeSeedsPrice = true;
 
-		public boolean experience = true;
+		@Deprecated
+		public transient boolean experience = true;
 	}
 
 	public enum Type implements StringRepresentable {

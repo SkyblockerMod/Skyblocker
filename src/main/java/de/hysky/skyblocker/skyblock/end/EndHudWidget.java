@@ -33,7 +33,7 @@ public class EndHudWidget extends ElementBasedWidget {
 	private static final FlexibleItemStack ENDERMAN_HEAD = Util.make(new FlexibleItemStack(Items.PLAYER_HEAD), stack -> stack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("MHF_Enderman")));
 	private static final FlexibleItemStack POPPY = Util.make(new FlexibleItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
-	private boolean showZealotKills = true;
+	public boolean showZealotKills = true;
 	private boolean showProtectorLocation = true;
 
 	public EndHudWidget() {

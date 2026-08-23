@@ -94,7 +94,8 @@ public class UIAndVisualsConfig {
 
 	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
-	public ItemPickup itemPickup = new ItemPickup();
+	@Deprecated
+	public transient ItemPickup itemPickup = new ItemPickup();
 
 	public static class SkyBlockInventoryScreen {
 		// TODO: Move showEquipmentInInventory to here.
@@ -228,7 +229,8 @@ public class UIAndVisualsConfig {
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		public NameSorting nameSorting = NameSorting.DEFAULT;
+		@Deprecated
+		public transient NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
 	/**
@@ -513,14 +515,19 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class ItemPickup {
-		public boolean enabled = false;
+		@Deprecated
+		public transient boolean enabled = false;
 
-		public boolean sackNotifications = false;
+		@Deprecated
+		public transient boolean sackNotifications = false;
 
-		public boolean showItemName = true;
+		@Deprecated
+		public transient boolean showItemName = true;
 
-		public int lifeTime = 3;
+		@Deprecated
+		public transient int lifeTime = 3;
 
-		public boolean splitNotifications = false;
+		@Deprecated
+		public transient boolean splitNotifications = false;
 	}
 }
