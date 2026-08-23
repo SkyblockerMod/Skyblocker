@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
@@ -48,6 +47,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 
 	private boolean sackNotifications;
 	private boolean splitNotifications;
+	private boolean showItemName = true;
+	private float lifetime = 3;
 
 	private final Object2ObjectOpenHashMap<String, ChangeData> addedCount = new Object2ObjectOpenHashMap<>();
 	private final Object2ObjectOpenHashMap<String, ChangeData> removedCount = new Object2ObjectOpenHashMap<>();
@@ -178,6 +179,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		super.getOptionWidgets(collector);
 		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"), b -> sackNotifications = b, sackNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip"));
 		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"), b -> splitNotifications = b, splitNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"));
+		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"), b -> showItemName = b, showItemName, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip"));
+		collector.slider(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"), d -> lifetime = (float) d, lifetime, 0.1, 0.3, 10); // TODO tooltip
 	}
 
 	@Override
@@ -185,6 +188,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		super.load(input);
 		sackNotifications = input.readBooleanOr("sack_notifications", false);
 		splitNotifications = input.readBooleanOr("split_sack", false);
+		showItemName = input.readBooleanOr("show_item_name", true);
+		lifetime = input.readFloatOr("lifetime", 3);
 	}
 
 	@Override
@@ -192,6 +197,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		super.save(output);
 		output.writeBool("sack_notifications", sackNotifications);
 		output.writeBool("split_sack", splitNotifications);
+		output.writeBool("show_item_name", showItemName);
+		output.writeNumber("lifetime", lifetime);
 	}
 
 	/**
@@ -202,11 +209,11 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	 */
 	private @Nullable String checkNextItem(ChangeData entry) {
 		//check the item has not expired
-		if (entry.lastChange + SkyblockerConfigManager.get().uiAndVisuals.itemPickup.lifeTime * 1000L < System.currentTimeMillis()) {
+		if (entry.lastChange + lifetime * 1000L < System.currentTimeMillis()) {
 			return null;
 		}
 		//return the formatted name for the item based on user settings
-		return SkyblockerConfigManager.get().uiAndVisuals.itemPickup.showItemName ? entry.item.getHoverName().getString() + " " : " ";
+		return showItemName ? entry.item.getHoverName().getString() + " " : " ";
 	}
 
 	@Override
