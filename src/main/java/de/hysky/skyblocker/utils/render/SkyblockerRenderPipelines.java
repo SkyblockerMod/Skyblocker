@@ -100,15 +100,6 @@ public class SkyblockerRenderPipelines {
 			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
 			.withPrimitiveTopology(PrimitiveTopology.QUADS)
 			.build());
-	public static final RenderPipeline OUTLINE_DEPTH_CULL = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.OUTLINE_SNIPPET)
-			.withLocation(SkyblockerMod.id("outline_depth_cull"))
-			.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, true))
-			.build());
-	public static final RenderPipeline OUTLINE_DEPTH_NO_CULL = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.OUTLINE_SNIPPET)
-			.withLocation(SkyblockerMod.id("outline_depth_no_cull"))
-			.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, true))
-			.withCull(false)
-			.build());
 
 	/**
 	 * Ensures that pipelines are pre-compiled instead of compiled on demand. Also used for excluding some pipelines from batching.
