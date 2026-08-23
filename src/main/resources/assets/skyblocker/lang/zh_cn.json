@@ -1883,5 +1883,9 @@
     "skyblocker.config.hunting.hauntedBiome.ignoreSlotLockingForShiningCoins": "忽略Shining Coins的快捷栏锁定",
     "skyblocker.config.uiAndVisuals.storageOverlay.storagesPerRow": "每行的背包数",
     "skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag": "GUI",
-    "skyblocker.config.hud.fancyTab.positioner": "位置：%s"
+    "skyblocker.config.hud.fancyTab.positioner": "位置：%s",
+    "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde": "为估算数值显示波浪号",
+    "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "在 Skyblocker 因动作栏未显示精确数值而估算的计量条数值前，显示波浪号（~）",
+    "skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened.@Tooltip": "执行 /storage 将再次开启上次打开的背包或末影箱页面",
+    "skyblocker.fancyAuctionHouse.canBuyIn": "%s 后可购买"
 }
