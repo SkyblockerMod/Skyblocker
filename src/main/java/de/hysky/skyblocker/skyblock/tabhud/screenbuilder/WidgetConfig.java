@@ -22,14 +22,14 @@ public record WidgetConfig(Optional<JsonObject> config, Optional<PositionRule> p
 	}
 
 	public WidgetConfig withPosition(@Nullable PositionRule position) {
-		return new WidgetConfig(config, Optional.ofNullable(position));
+		return new WidgetConfig(config.map(JsonObject::deepCopy), Optional.ofNullable(position));
 	}
 
 	/**
 	 * Does not change if {@link WidgetConfig#position()} is empty.
 	 */
 	public WidgetConfig withPosition(Function<PositionRule, @Nullable PositionRule> transformer) {
-		return new WidgetConfig(config, position.map(transformer));
+		return new WidgetConfig(config.map(JsonObject::deepCopy), position.map(transformer));
 	}
 
 	public static WidgetConfig disabled() {
