@@ -222,7 +222,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableHudBackground = true;
 
-		public boolean effectsFromFooter = false;
+		@Deprecated
+		public transient boolean effectsFromFooter = false;
 
 		public Positioner defaultPositioning = Positioner.CENTERED;
 

@@ -35,6 +35,10 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 			"players", new SubFixer(
 					dynamic -> dynamic.get("uiAndVisuals").result().flatMap(uiAndVisuals -> uiAndVisuals.get("tabHud").result()),
 					this::fixPlayerList
+			),
+			"active_effects", new SubFixer(
+					dynamic -> dynamic.get("uiAndVisuals").result().flatMap(uiAndVisuals -> uiAndVisuals.get("tabHud").result()),
+					this::fixEffects
 			)
 	);
 
@@ -120,6 +124,10 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 				.setFieldIfPresent("split_sack", previous.get("splitNotifications").result())
 				.setFieldIfPresent("show_item_name", previous.get("showItemName").result())
 				.setFieldIfPresent("lifetime", previous.get("lifetime").result());
+	}
+
+	private Dynamic<?> fixEffects(Dynamic<?> widgetData, Dynamic<?> previous) {
+		return widgetData.setFieldIfPresent("effects_from_footer", previous.get("effectsFromFooter").result());
 	}
 
 	private Dynamic<?> fixPlayerList(Dynamic<?> widgetData, Dynamic<?> previous) {

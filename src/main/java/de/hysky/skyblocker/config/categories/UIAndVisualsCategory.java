@@ -454,14 +454,6 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"))
-								.controller(ConfigUtils.createBooleanController())
-								.binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
-										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
-										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
-								.build())
 						.option(Option.<Positioner>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
 								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
