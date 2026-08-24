@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.profiling.Profiler;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.JsonValueInput;
 
@@ -103,7 +104,13 @@ public class LayerBuilder {
 					widget,
 					screenWidth,
 					screenHeight,
-					s -> widgets.stream().filter(w -> w.widget.getInternalID().equals(s)).findFirst().orElseThrow()
+					s -> widgets.stream().filter(w -> w.widget.getInternalID().equals(s)).findFirst().orElseGet(() -> {
+						WidgetManager.LOGGER.warn("Tried to get parent '{}' but it doesn't exist in the layer. Please report this to the Skyblocker discord or github along with the hud_widgets.json config file.", s);
+						PositionedWidget positionedWidget = new PositionedWidget(WidgetManager.getWidgetOrPlaceholder(s), PositionRule.DEFAULT);
+						positionedWidget.visible = false;
+						positionedWidget.positioned = true;
+						return positionedWidget;
+					})
 			);
 		}
 		Profiler.get().pop();
