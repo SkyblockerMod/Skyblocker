@@ -1932,7 +1932,8 @@
   "skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
   "skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
   "skyblocker.hud.missingTabWidget[2]": "Make sure it is visible in the vanilla tab,",
-  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding either %s or (%s and %s).",
+  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding",
+  "skyblocker.hud.missingTabWidget[4]": "either %s or (%s and %s).",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",

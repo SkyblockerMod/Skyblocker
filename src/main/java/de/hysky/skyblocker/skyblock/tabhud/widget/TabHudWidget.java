@@ -126,12 +126,13 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	protected abstract void updateContent(PlayerListManager.Widget widget);
 
 	public List<Component> createErrorMessage() {
-		Component tabKey = Minecraft.getInstance().options.keyPlayerList.getTranslatedKeyMessage();
+		Component tabKey = Minecraft.getInstance().options.keyPlayerList.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.YELLOW);
 		return List.of(
 				Component.translatable("skyblocker.hud.missingTabWidget[0]", Component.literal(hypixelWidgetName).withStyle(ChatFormatting.YELLOW)),
 				Component.translatable("skyblocker.hud.missingTabWidget[1]"),
 				Component.translatable("skyblocker.hud.missingTabWidget[2]"),
-				Component.translatable("skyblocker.hud.missingTabWidget[3]", tabKey, tabKey, TabHud.defaultTgl.getTranslatedKeyMessage())
+				Component.translatable("skyblocker.hud.missingTabWidget[3]"),
+				Component.translatable("skyblocker.hud.missingTabWidget[4]", tabKey, tabKey, TabHud.defaultTgl.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.YELLOW))
 		);
 	}
 
