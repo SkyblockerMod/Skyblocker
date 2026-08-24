@@ -54,6 +54,7 @@ public class JacobsContestWidget extends TabHudWidget {
 
 	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
+		if (widget.lines().isEmpty()) this.addElement(new PlainTextElement(widget.detail()));
 		if (widget.detail().getString().contains("left")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, widget.detail()));
 		for (Component line : widget.lines()) {
 			String string = line.getString();
