@@ -9,10 +9,11 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TreeFelledNotification {
-	private static final String PETALFALL_MESSAGE = "PETALFALL! You felled the entire Tree!";
-	private static final String WOODPECKER_MESSAGE = "WOODPECKER! You felled the entire Tree!";
-	private static final String TIMBER_MESSAGE = "TIMBER! You felled the entire Tree!";
+	private static final Pattern TIMBER_PATTERN = Pattern.compile("TIMBER! You felled the entire \\w+ Tree!");
 	private static final Title TITLE = new Title("skyblocker.foraging.treeFelled", ChatFormatting.AQUA);
 
 	@Init
@@ -24,7 +25,8 @@ public class TreeFelledNotification {
 		if (Utils.isOnSkyblock() && Utils.isInForagingIsland() && SkyblockerConfigManager.get().foraging.enableTreeFelledNotification) {
 			String stringified = message.getString();
 
-			if (stringified.equals(PETALFALL_MESSAGE) || stringified.equals(WOODPECKER_MESSAGE) || stringified.equals(TIMBER_MESSAGE)) {
+			Matcher matcher = TIMBER_PATTERN.matcher(stringified);
+			if (matcher.matches()) {
 				// Show title for 3 seconds (same as mining ability chat rule preset)
 				TitleContainer.addTitle(TITLE, 3 * 20);
 			}
