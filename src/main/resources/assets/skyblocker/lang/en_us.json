@@ -872,7 +872,7 @@
 
   "skyblocker.config.hud.help": "Help",
 
-  "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nWidgets are per island. Widget options apply per island, use the 'Copy to...' button.\n\nFor Hypixel widgets, only the ones currently shown in the vanilla tab will automatically appear in the Fancy Tab preview.\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
+  "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nLike Hypixel's TAB Widgets, all widgets are per island as well as their options. Use the 'Copy to...' button to copy them to other islands.\n\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
 
   "skyblocker.config.hud.location.everywhere": "Everywhere",
 
