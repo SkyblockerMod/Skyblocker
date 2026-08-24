@@ -65,7 +65,7 @@ public class LayerBuilder {
 		int hash = Integer.hashCode(screenWidth);
 		hash = hash * 31 + Integer.hashCode(screenHeight);
 		for (PositionedWidget widget : getRendered()) {
-			boolean shouldRender = widget.widget.shouldRender() || config;
+			boolean shouldRender = config || widget.widget.shouldRender();
 			widget.visible = shouldRender;
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
 			hash = hash * 31 + Integer.hashCode(widget.widget.getWidth());
