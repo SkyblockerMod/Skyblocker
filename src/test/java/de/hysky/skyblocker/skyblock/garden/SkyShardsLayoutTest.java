@@ -93,14 +93,14 @@ public class SkyShardsLayoutTest {
 	}
 
 	private static String deflateRaw(String contents) {
-		Deflater deflater = new Deflater(9, true);
-		deflater.setInput(contents.getBytes(StandardCharsets.UTF_8));
-		deflater.finish();
+		try (Deflater deflater = new Deflater(9, true)) {
+			deflater.setInput(contents.getBytes(StandardCharsets.UTF_8));
+			deflater.finish();
 
-		byte[] buffer = new byte[1024];
-		int length = deflater.deflate(buffer);
-		deflater.end();
+			byte[] buffer = new byte[1024];
+			int length = deflater.deflate(buffer);
 
-		return Base64.getUrlEncoder().withoutPadding().encodeToString(Arrays.copyOf(buffer, length));
+			return Base64.getUrlEncoder().withoutPadding().encodeToString(Arrays.copyOf(buffer, length));
+		}
 	}
 }
