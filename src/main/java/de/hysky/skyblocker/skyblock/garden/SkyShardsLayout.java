@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Locale;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -147,7 +148,7 @@ public final class SkyShardsLayout {
 				int paletteIndex = paletteIndexOf(chars);
 				if (paletteIndex < 0) continue;
 
-				boolean target = chars.equals(chars.toUpperCase());
+				boolean target = chars.equals(chars.toUpperCase(Locale.ENGLISH));
 				int[] palette = target ? targetPalette : inputPalette;
 				if (paletteIndex >= palette.length) continue;
 
@@ -215,7 +216,7 @@ public final class SkyShardsLayout {
 			index = index * LETTERS + (c - 'a');
 		}
 		// Mixed case is neither an input nor a target
-		if (!chars.equals(chars.toUpperCase()) && !chars.equals(chars.toLowerCase())) return -1;
+		if (!chars.equals(chars.toUpperCase(Locale.ENGLISH)) && !chars.equals(chars.toLowerCase(Locale.ENGLISH))) return -1;
 		return index;
 	}
 
