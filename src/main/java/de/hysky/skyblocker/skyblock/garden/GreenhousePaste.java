@@ -179,13 +179,18 @@ public class GreenhousePaste {
 	public static void loadFromLink() {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		String clipboard = CLIENT.keyboardHandler.getClipboard();
-		String[] parts = clipboard.split("\\?layout=");
-		String encoded = parts.length > 1 ? parts[1] : clipboard;
+		String encoded = SkyShardsLayout.extractLayoutCode(CLIENT.keyboardHandler.getClipboard());
 
-		if (encoded == null || encoded.isEmpty()) return;
+		if (encoded.isEmpty()) return;
 
-		boolean success = importGreenhouse(encoded);
+		// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
+		int[][] skyShardsLayout = SkyShardsLayout.decode(encoded);
+		boolean success = true;
+		if (skyShardsLayout != null) {
+			targetGreenhouse = skyShardsLayout;
+		} else {
+			success = importGreenhouse(encoded);
+		}
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()

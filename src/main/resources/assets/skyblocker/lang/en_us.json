@@ -500,8 +500,8 @@
   "skyblocker.config.farming.farmingHud.type.NPC": "NPC",
 
   "skyblocker.config.farming.greenhouse": "Greenhouse",
-  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "Paste SkyMutations Plot",
-  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Click the \"link\" button on the website, then run /skyblocker garden greenhouse paste to paste the plot layout into your greenhouse!",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "Paste Greenhouse Plot",
+  "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Copy a layout link from SkyMutations or SkyShards Greenhouse, then run /skyblocker garden greenhouse paste to paste the plot layout into your greenhouse!",
   "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Failed to load greenhouse layout from clipboard. Extracted content: ",
   "skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess": "Greenhouse loaded successfully!",
   "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "You are not in a greenhouse.",
