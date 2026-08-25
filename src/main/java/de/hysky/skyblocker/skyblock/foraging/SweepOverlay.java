@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static float[] colorComponents;
-	private static final int MAX_WOOD_CAP = 35;
+	private static final int MAX_BASIC_WOOD_CUT = 36;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
 	private static final Set<String> VALID_AXES = Set.of(
@@ -79,6 +80,12 @@ public class SweepOverlay {
 			Blocks.STRIPPED_MANGROVE_LOG, 150f,
 			Blocks.STRIPPED_MANGROVE_WOOD, 150f
 	);
+	@VisibleForTesting
+	protected static final Map<String, List<Integer>> REQUIRED_SWEEP_VALUES = Map.ofEntries(
+			Map.entry("FIG", List.of(7, 9, 11, 16, 21, 26, 34, 42, 50, 62, 74, 86, 102, 118, 134, 154, 174, 194, 214, 234)),
+			Map.entry("MANGROVE", List.of(50, 55, 60, 75, 90, 105, 130, 155, 180, 230, 280, 330, 405, 480, 555, 655, 755, 855, 955, 1055)),
+			Map.entry("HELIX", List.of(150, 160, 170, 200, 230, 260, 320, 380, 440, 540, 640, 740, 890, 1040, 1190, 1390, 1590, 1790, 1990, 2190))
+			);
 
 	@Init
 	public static void init() {
@@ -177,20 +184,26 @@ public class SweepOverlay {
 	 */
 	private static boolean isLog(BlockState state) {
 		if (Utils.isInGalatea()) {
-			return state.is(Blocks.STRIPPED_SPRUCE_LOG)
-					|| state.is(Blocks.STRIPPED_SPRUCE_WOOD)
-					|| state.is(Blocks.MANGROVE_LOG)
-					|| state.is(Blocks.MANGROVE_WOOD);
+			return isFigLog(state) || isMangroveLog(state);
 		} else if (Utils.isInTorrhusCanyon()) {
-			return state.is(Blocks.STRIPPED_BIRCH_LOG)
-					|| state.is(Blocks.STRIPPED_BIRCH_WOOD)
-					|| state.is(Blocks.STRIPPED_MANGROVE_LOG)
-					|| state.is(Blocks.STRIPPED_MANGROVE_WOOD);
+			return isHelixLog(state);
 		} else if (Utils.isInHub()) {
 			return state.is(Blocks.OAK_LOG) || state.is(Blocks.OAK_WOOD);
 		}
 
 		return state.is(BlockTags.LOGS);
+	}
+
+	private static boolean isFigLog(BlockState state) {
+		return state.is(Blocks.STRIPPED_SPRUCE_LOG) || state.is(Blocks.STRIPPED_SPRUCE_WOOD);
+	}
+
+	private static boolean isMangroveLog(BlockState state) {
+		return state.is(Blocks.MANGROVE_LOG) || state.is(Blocks.MANGROVE_WOOD);
+	}
+
+	private static boolean isHelixLog(BlockState state) {
+		return state.is(Blocks.STRIPPED_BIRCH_LOG) || state.is(Blocks.STRIPPED_BIRCH_WOOD) || state.is(Blocks.STRIPPED_MANGROVE_LOG) || state.is(Blocks.STRIPPED_MANGROVE_WOOD);
 	}
 
 	/// Checks if the {@code destination} block should be chopped based on the {@code source} block.
@@ -255,15 +268,41 @@ public class SweepOverlay {
 	 * @param toughness the toughness of the log
 	 * @return the maximum number of logs that can be broken
 	 */
-	private static int calculateMaxWood(float sweepStat, float toughness) {
-		double logs;
-		if (toughness <= 1) {
-			logs = Math.min(MAX_WOOD_CAP, (int) sweepStat);
-		} else {
-			double x = (sweepStat + Math.sqrt(sweepStat) - toughness) / Math.pow(toughness, 0.511);
-			logs = Math.log10(1 + Math.pow(x, 1.9)) * 4;
+	private static int calculateMaxWood(float sweepStat, float toughness, BlockState state) {
+		if (Utils.isInPark() || Utils.isInHub()) {
+			return (int) Math.min(1 + sweepStat, MAX_BASIC_WOOD_CUT);
 		}
-		return (int) Math.ceil(Math.min(MAX_WOOD_CAP, logs));
+
+		List<Integer> sweepValues = List.of();
+
+		if (Utils.isInGalatea()) {
+			if (isFigLog(state)) {
+				sweepValues = REQUIRED_SWEEP_VALUES.get("FIG");
+			} else if (isMangroveLog(state)) {
+				sweepValues = REQUIRED_SWEEP_VALUES.get("MANGROVE");
+			}
+		} else if (Utils.isInTorrhusCanyon() && isHelixLog(state)) {
+			sweepValues = REQUIRED_SWEEP_VALUES.get("HELIX");
+		}
+
+		return calculateMaxWood(sweepStat, sweepValues);
+	}
+
+	@VisibleForTesting
+	protected static int calculateMaxWood(float sweepStat, List<Integer> sweepValues) {
+		final int maxLogs = sweepValues.size();
+		int logs = maxLogs;
+
+		for (int i = 0; i < maxLogs; i++) {
+			int requiredSweep = sweepValues.get(i);
+
+			if (sweepStat < requiredSweep) {
+				logs -= maxLogs - i;
+				break;
+			}
+		}
+
+		return logs;
 	}
 
 	/**
@@ -308,7 +347,7 @@ public class SweepOverlay {
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
 		int woodCount = 0;
 		float toughness = getToughness(state);
-		int maxWood = calculateMaxWood(sweepStat, toughness);
+		int maxWood = calculateMaxWood(sweepStat, toughness, state);
 		if (isThrown) {
 			maxWood /= 2;
 		}
