@@ -245,7 +245,6 @@
 - **Stereo Harmony Helper**
     - Highlights the vinyl for the current Jacob's contest
 - **Greenhouse Paste Preview**
-    - Pastes a layout copied from SkyMutations or SkyShards Greenhouse
 
 ### Visual Enhancements:
 - **Smooth AOTE**

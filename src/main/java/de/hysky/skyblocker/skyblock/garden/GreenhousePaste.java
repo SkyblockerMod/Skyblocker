@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -179,18 +180,17 @@ public class GreenhousePaste {
 	public static void loadFromLink() {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		String encoded = SkyShardsLayout.extractLayoutCode(CLIENT.keyboardHandler.getClipboard());
+		String clipboard = CLIENT.keyboardHandler.getClipboard();
+		String encoded = SkyShardsLayout.extractLayoutCode(clipboard);
 
 		if (encoded.isEmpty()) return;
 
-		// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
-		int[][] skyShardsLayout = SkyShardsLayout.decode(encoded);
-		boolean success = true;
-		if (skyShardsLayout != null) {
-			targetGreenhouse = skyShardsLayout;
-		} else {
-			success = importGreenhouse(encoded);
-		}
+		boolean success = switch (siteOf(clipboard)) {
+			case SKY_SHARDS -> importSkyShardsGreenhouse(encoded);
+			case SKY_MUTATIONS -> importGreenhouse(encoded);
+			// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
+			case UNKNOWN -> importSkyShardsGreenhouse(encoded) || importGreenhouse(encoded);
+		};
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
@@ -208,6 +208,39 @@ public class GreenhousePaste {
 								.withStyle(ChatFormatting.GREEN)));
 
 		locateGreenhouse();
+	}
+
+	private enum LayoutSite {
+		SKY_SHARDS,
+		SKY_MUTATIONS,
+		UNKNOWN
+	}
+
+	private static LayoutSite siteOf(String clipboard) {
+		String host = clipboard.strip().toLowerCase(Locale.ENGLISH);
+
+		int schemeEnd = host.indexOf("://");
+		if (schemeEnd >= 0) host = host.substring(schemeEnd + "://".length());
+
+		for (int i = 0; i < host.length(); i++) {
+			char c = host.charAt(i);
+			if (c == '/' || c == '?' || c == '#') {
+				host = host.substring(0, i);
+				break;
+			}
+		}
+
+		if (host.contains("skyshards")) return LayoutSite.SKY_SHARDS;
+		if (host.contains("skymutations")) return LayoutSite.SKY_MUTATIONS;
+		return LayoutSite.UNKNOWN;
+	}
+
+	private static boolean importSkyShardsGreenhouse(String encoded) {
+		int[][] layout = SkyShardsLayout.decode(encoded);
+		if (layout == null) return false;
+
+		targetGreenhouse = layout;
+		return true;
 	}
 
 	public static boolean isInGreenhouse() {
