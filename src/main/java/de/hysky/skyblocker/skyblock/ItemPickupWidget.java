@@ -180,7 +180,7 @@ public class ItemPickupWidget extends ElementBasedWidget {
 		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"), b -> sackNotifications = b, sackNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip"));
 		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"), b -> splitNotifications = b, splitNotifications, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"));
 		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"), b -> showItemName = b, showItemName, Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip"));
-		collector.slider(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"), d -> lifetime = (float) d, lifetime, 0.1, 0.3, 10); // TODO tooltip
+		collector.slider(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"), d -> lifetime = (float) d, lifetime, 0.3, 10).tooltip(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip"));
 	}
 
 	@Override

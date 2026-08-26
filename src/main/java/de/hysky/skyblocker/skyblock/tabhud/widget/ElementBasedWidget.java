@@ -223,7 +223,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		collector.yesNoButton(Component.translatable("skyblocker.config.hud.widget.element.drawBorder"), b -> drawBorder = b, drawBorder);
 		collector.yesNoButton(Component.translatable("skyblocker.config.hud.widget.element.showTitle"), b -> drawTitle = b, drawTitle);
 		collector.yesNoButton(Component.translatable("skyblocker.config.hud.widget.element.roundedCorners"), b -> roundedCorners = b, roundedCorners);
-		collector.slider(Component.translatable("skyblocker.config.hud.widget.element.backgroundOpacity"), d -> backgroundOpacity = (float) d, backgroundOpacity, 0.1, 0, 1);
+		collector.slider(Component.translatable("skyblocker.config.hud.widget.element.backgroundOpacity"), d -> backgroundOpacity = (float) d, backgroundOpacity, 0, 1);
 	}
 
 	@Override

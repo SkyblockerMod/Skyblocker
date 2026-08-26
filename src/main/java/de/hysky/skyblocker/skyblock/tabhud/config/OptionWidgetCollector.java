@@ -52,20 +52,57 @@ public record OptionWidgetCollector(List<AbstractWidget> collectorList, Runnable
 		return builder;
 	}
 
-	public void slider(Component label, DoubleConsumer callback, double initialValue, double step, double min, double max, NumberFormat format) {
-		DoubleConsumer consumer = callback.andThen(_ -> onOptionChange.run());
-		addWidget(RangedSliderWidget.builder()
-				.minMax(min, max)
-				.step(step)
-				.optionFormatter(label, format)
-				.defaultValue(initialValue)
-				.callback(consumer)
-				.build()
-		);
+	/**
+	 * Creates a slider button, returns a builder with optional parameters. The builder will be automatically built.
+	 */
+	public SliderBuilder slider(Component label, DoubleConsumer callback, double initialValue, double min, double max) {
+		SliderBuilder builder = new SliderBuilder(label, callback, initialValue, min, max);
+		addWidget(new DeferredWidget(builder::build));
+		return builder;
 	}
 
-	public void slider(Component label, DoubleConsumer callback, double initialValue, double step, double min, double max) {
-		slider(label, callback, initialValue, step, min, max, Formatters.FLOAT_NUMBERS);
+	public static class SliderBuilder {
+		private final Component label;
+		private final DoubleConsumer callback;
+		private final double initialValue, min, max;
+		private double step = 0.1;
+		private NumberFormat format = Formatters.FLOAT_NUMBERS;
+		private @Nullable Component tooltip;
+
+		private SliderBuilder(Component label, DoubleConsumer callback, double initialValue, double min, double max) {
+			this.label = label;
+			this.callback = callback;
+			this.initialValue = initialValue;
+			this.min = min;
+			this.max = max;
+		}
+
+		public SliderBuilder step(double step) {
+			this.step = step;
+			return this;
+		}
+
+		public SliderBuilder format(NumberFormat format) {
+			this.format = format;
+			return this;
+		}
+
+		public SliderBuilder tooltip(Component tooltip) {
+			this.tooltip = tooltip;
+			return this;
+		}
+
+		private RangedSliderWidget build() {
+			RangedSliderWidget sliderWidget = RangedSliderWidget.builder()
+					.minMax(min, max)
+					.step(step)
+					.optionFormatter(label, format)
+					.defaultValue(initialValue)
+					.callback(callback)
+					.build();
+			if (tooltip != null) sliderWidget.setTooltip(Tooltip.create(tooltip));
+			return sliderWidget;
+		}
 	}
 
 	public static class EnumButtonBuilder<E extends Enum<E>> {
@@ -95,7 +132,8 @@ public record OptionWidgetCollector(List<AbstractWidget> collectorList, Runnable
 
 		private CycleButton<E> build() {
 			CycleButton.Builder<E> builder = CycleButton.builder(display, initialValue);
-			if (tooltip != null) builder.withTooltip(_ -> Tooltip.create(tooltip));
+			final Component tooltip1 = tooltip;
+			if (tooltip1 != null) builder.withTooltip(_ -> Tooltip.create(tooltip1));
 			return builder
 					.withValues(enumClass.getEnumConstants())
 					.create(label, (_, value) -> callback.accept(value));
