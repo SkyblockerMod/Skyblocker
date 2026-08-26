@@ -8,6 +8,7 @@ import java.util.List;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -43,7 +44,7 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 		for (int i = 0; i < last; i++) {
 			int slotNum = orderedSlots[currentNum + i];
 			if (slotNum == -1) continue;
-			highlights.add(new ColorHighlight(slotNum, (224 - 64 * i) << 24 | 64 << 16 | 96 << 8 | 255));
+			highlights.add(new ColorHighlight(slotNum, ARGB.color(224 - 64 * i, 0x4060FF)));
 		}
 		return highlights;
 	}
