@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -49,9 +50,16 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	}
 
 	SecretWaypoint(int secretIndex, Category category, Component name, BlockPos pos) {
-		super(pos, name, TYPE_SUPPLIER, category.colorComponents);
+		super(pos, name, TYPE_SUPPLIER, getColorFor(category));
 		this.secretIndex = secretIndex;
 		this.category = category;
+	}
+
+	private static float[] getColorFor(Category category) {
+		if (!DungeonManager.WAYPOINT_COLOR_DATA.isLoaded()) return category.colorComponents;
+		Color color = DungeonManager.WAYPOINT_COLOR_DATA.getData().get(category);
+		if (color == null) return category.colorComponents;
+		return color.getColorComponents(null);
 	}
 
 	static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
@@ -147,6 +155,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 			for (int i = 0; i < intColorComponents.length; i++) {
 				colorComponents[i] = intColorComponents[i] / 255f;
 			}
+		}
+
+		public float[] getColorComponents() {
+			return colorComponents;
 		}
 
 		static Category get(JsonObject waypointJson) {
