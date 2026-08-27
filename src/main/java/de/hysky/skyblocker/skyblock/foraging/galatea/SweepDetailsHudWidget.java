@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
@@ -12,9 +11,9 @@ import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Area;
@@ -25,7 +24,6 @@ import de.hysky.skyblocker.utils.Utils;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ElementBasedWidget {
-	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Map<String, FlexibleItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new FlexibleItemStack(Items.MANGROVE_LOG),
@@ -38,9 +36,11 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 			"Oak", new FlexibleItemStack(Items.OAK_LOG)
 	);
 	public static final Set<Location> LOCATIONS = EnumSet.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN, Location.TORRHUS_CANYON);
+	public static SweepDetailsHudWidget INSTANCE;
 
 	public SweepDetailsHudWidget() {
 		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, new Information("sweep_details", Component.literal("Sweep Details"), LOCATIONS));
+		INSTANCE = this;
 		update();
 	}
 
@@ -53,13 +53,14 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
+	}
+
+	@Override
 	public void updateContent() {
-		if (CLIENT.player == null || CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
-			addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
-			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
-			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
-			return;
-		}
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {

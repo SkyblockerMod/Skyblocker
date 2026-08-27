@@ -94,14 +94,6 @@ public class ForagingCategory {
 										newValue -> config.foraging.moongladeMarsh.enableTunerSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget"))
-								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip"))
-								.binding(defaults.foraging.moongladeMarsh.enableSweepDetailsWidget,
-										() -> config.foraging.moongladeMarsh.enableSweepDetailsWidget,
-										newValue -> config.foraging.moongladeMarsh.enableSweepDetailsWidget = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.build())
 
 				// Torrhus Canyon

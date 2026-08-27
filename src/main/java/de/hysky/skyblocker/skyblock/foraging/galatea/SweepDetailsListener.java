@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 
 import net.minecraft.network.chat.Component;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -30,13 +30,13 @@ public class SweepDetailsListener implements ChatMessageListener {
 	public static float maxSweep = -1;
 	public static float lastSweep = -1;
 	public static String lastTreeType = "Unknown";
-	public static String toughness;
-	public static String logs;
+	public static String toughness = "";
+	public static String logs = "";
 	public static boolean axePenalty;
 	public static float axePenaltyAmount;
 	public static boolean stylePenalty;
 	public static float stylePenaltyAmount;
-	public static String correctStyle;
+	public static String correctStyle = "";
 
 	private static void resetStats() {
 		active = false;
@@ -72,7 +72,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 	@Override
 	public ChatFilterResult onMessage(Component message, String asString) {
 		if (!SweepDetailsHudWidget.LOCATIONS.contains(Utils.getLocation())) return ChatFilterResult.PASS;
-		if (!SkyblockerConfigManager.get().foraging.moongladeMarsh.enableSweepDetailsWidget) return ChatFilterResult.PASS;
+		if (!WidgetManager.isWidgetInCurrentScreen(SweepDetailsHudWidget.INSTANCE)) return ChatFilterResult.PASS;
 		String msg = message.getString();
 
 		Matcher sweepDetails = SWEEP_DETAILS.matcher(msg);
