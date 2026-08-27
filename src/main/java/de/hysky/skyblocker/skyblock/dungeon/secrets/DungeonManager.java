@@ -765,7 +765,7 @@ public class DungeonManager {
 	}
 
 	protected static boolean checkIfSegmentsExist(List<Vector2ic> segments) {
-		return segments.stream().anyMatch(rooms::containsKey);
+		return segments.stream().map(rooms::get).anyMatch(room -> room != null && room.isMatched());
 	}
 
 	/**

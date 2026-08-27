@@ -97,6 +97,10 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 		return Objects.hash(secretIndex, category, name, pos);
 	}
 
+	public int getSyncHash() {
+		return Objects.hash(secretIndex, category.getSerializedName(), pos.getX(), pos.getY(), pos.getZ());
+	}
+
 	@Override
 	protected boolean shouldRenderName() {
 		return super.shouldRenderName() && CONFIG.get().showSecretText;

@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -36,12 +39,16 @@ public class SecretSync {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Supplier<DungeonsConfig.SecretSync> CONFIG = () -> SkyblockerConfigManager.get().dungeons.secretSync;
+	private static final Map<String, Set<DungeonRoomHideWaypointMessage>> pendingWaypointMessages = new HashMap<>();
 
 	@Init
 	public static void init() {
 		DungeonEvents.ROOM_MATCHED.register(SecretSync::syncRoomMatch);
+		DungeonEvents.ROOM_MATCHED.register(SecretSync::applyPendingWaypoints);
 		DungeonEvents.SECRET_COUNT_UPDATED.register(SecretSync::syncSecretCount);
 		DungeonEvents.SECRET_FOUND.register(SecretSync::syncSecretFound);
+		DungeonEvents.DUNGEON_LOADED.register(SecretSync::clearPendingWaypoints);
+		DungeonEvents.DUNGEON_ENDED.register(SecretSync::clearPendingWaypoints);
 	}
 
 	public static boolean checkSender(UUID uuid) {
@@ -107,17 +114,41 @@ public class SecretSync {
 	public static void syncSecretFound(Room room, SecretWaypoint waypoint) {
 		if (CLIENT.player == null || RoomPreviewServer.isActive) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.hashCode()));
+				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.getSyncHash()));
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
-		if (!checkSender(msg.sender()) || !CONFIG.get().hideReceivedWaypoints) return;
+		if (!checkSender(msg.sender())) return;
+		if (!CONFIG.get().hideReceivedWaypoints) {
+			return;
+		}
 		Room room = getRoomByName(msg.roomName());
-		if (room == null) return;
+		if (room == null) {
+			pendingWaypointMessages.computeIfAbsent(msg.roomName(), _ -> new HashSet<>()).add(msg);
+			return;
+		}
+		if (!hideWaypoint(room, msg)) {
+			pendingWaypointMessages.computeIfAbsent(msg.roomName(), _ -> new HashSet<>()).add(msg);
+		}
+	}
+
+	private static boolean hideWaypoint(Room room, DungeonRoomHideWaypointMessage msg) {
 		int secretIndex = room.getIndexByWaypointHash(msg.waypointHash());
-		if (secretIndex == -1) return;
-		room.markSecrets(secretIndex, true);
-		LOGGER.info("[Skyblocker Dungeon Secret Sync] Hiding waypoints for secret #{} in room {}", secretIndex, msg.roomName());
+		if (secretIndex == -1) return false;
+		if (!room.markSecrets(secretIndex, true)) return false;
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Hiding waypoints for secret #{} in room {}", secretIndex, room.getName());
+		return true;
+	}
+
+	private static void applyPendingWaypoints(Room room) {
+		String roomName = room.getName();
+		Set<DungeonRoomHideWaypointMessage> waypointMessages = pendingWaypointMessages.remove(roomName);
+		if (waypointMessages == null) return;
+		waypointMessages.forEach(message -> hideWaypoint(room, message));
+	}
+
+	private static void clearPendingWaypoints() {
+		pendingWaypointMessages.clear();
 	}
 
 	public static void syncBatKilled() {
