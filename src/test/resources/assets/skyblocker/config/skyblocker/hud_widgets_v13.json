@@ -1125,17 +1125,6 @@
         "widgets": {}
       }
     },
-    "unknown": {
-      "hud": {
-        "widgets": {}
-      },
-      "tab": {
-        "widgets": {}
-      },
-      "secondary_tab": {
-        "widgets": {}
-      }
-    },
     "crystal_hollows": {
       "hud": {
         "widgets": {
@@ -1760,11 +1749,7 @@
           },
           "hud_farming": {
             "config": {
-              "counter": true,
-              "coins": true,
-              "price_type": "both",
-              "experience": true,
-              "include_seeds_price": true
+              "price_type": "both"
             },
             "position": {
               "parent_anchor": {

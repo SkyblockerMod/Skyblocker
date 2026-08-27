@@ -10,6 +10,7 @@ public class HudDataFixerTest {
 
 	@Test
 	void testDataFixerWidgetOptions() {
+		ConfigDataFixerTest.testDataFix(9, 13);
 		ConfigDataFixerTest.testDataFix(12, 13, ConfigDataFixer.HUD_WIDGETS_TYPE, "/assets/skyblocker/config/skyblocker/hud_widgets_v");
 	}
 }

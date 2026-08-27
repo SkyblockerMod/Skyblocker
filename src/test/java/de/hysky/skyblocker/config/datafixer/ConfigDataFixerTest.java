@@ -31,7 +31,7 @@ public class ConfigDataFixerTest {
 		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(type, oldConfig, newVersion));
 	}
 
-	void testDataFix(int previousVersion, int newVersion) {
+	protected static void testDataFix(int previousVersion, int newVersion) {
 		testDataFix(previousVersion, newVersion, ConfigDataFixer.CONFIG_TYPE, "/assets/skyblocker/config/skyblocker-v");
 	}
 
