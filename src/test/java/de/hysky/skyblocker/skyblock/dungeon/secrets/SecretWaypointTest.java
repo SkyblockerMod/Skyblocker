@@ -81,14 +81,14 @@ public class SecretWaypointTest {
 	}
 
 	@Test
-	void syncHashUsesOnlyStableWaypointData() {
+	void hashCodeUsesSerializedCategoryAndName() {
 		SecretWaypoint first = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 30));
 		SecretWaypoint sameWaypointWithDifferentName = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "Second message", new BlockPos(10, 20, 30));
 		SecretWaypoint waypointAtDifferentPosition = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 31));
 		SecretWaypoint waypointWithDifferentCategory = new SecretWaypoint(2, SecretWaypoint.Category.ITEM, "First message", new BlockPos(10, 20, 30));
 
-		Assertions.assertEquals(first.getSyncHash(), sameWaypointWithDifferentName.getSyncHash());
-		Assertions.assertNotEquals(first.getSyncHash(), waypointAtDifferentPosition.getSyncHash());
-		Assertions.assertNotEquals(first.getSyncHash(), waypointWithDifferentCategory.getSyncHash());
+		Assertions.assertNotEquals(first.hashCode(), sameWaypointWithDifferentName.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointAtDifferentPosition.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointWithDifferentCategory.hashCode());
 	}
 }

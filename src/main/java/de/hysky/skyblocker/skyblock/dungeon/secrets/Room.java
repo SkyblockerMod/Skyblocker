@@ -728,7 +728,7 @@ public class Room implements Tickable, Renderable {
 			if (!secretWaypoints.containsRow(i)) continue;
 			for (SecretWaypoint waypoint : secretWaypoints.row(i).values()) {
 				if (!waypoint.isEnabled()) continue;
-				if (waypoint.getSyncHash() == waypointHash) return i;
+				if (waypoint.hashCode() == waypointHash) return i;
 			}
 		}
 		return -1;

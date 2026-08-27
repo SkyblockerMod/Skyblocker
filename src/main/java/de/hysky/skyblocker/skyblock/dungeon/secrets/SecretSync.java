@@ -114,7 +114,7 @@ public class SecretSync {
 	public static void syncSecretFound(Room room, SecretWaypoint waypoint) {
 		if (CLIENT.player == null || RoomPreviewServer.isActive) return;
 		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
-				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.getSyncHash()));
+				new DungeonRoomHideWaypointMessage(CLIENT.player.getUUID(), room.getName(), waypoint.hashCode()));
 	}
 
 	public static void handleHideWaypoint(DungeonRoomHideWaypointMessage msg) {
