@@ -34,6 +34,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -80,6 +95,21 @@
               "relative_y": -30
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "hud_fishing": {
             "config": {
               "creature_counter": true,
@@ -161,6 +191,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -223,6 +268,21 @@
               "relative_y": -20
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "daily_quests": {
             "config": {},
             "position": {
@@ -332,6 +392,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -599,6 +674,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "hud_slayer": {
             "config": {},
             "position": {
@@ -676,6 +766,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "hud_slayer": {
             "config": {},
             "position": {
@@ -802,6 +907,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -833,6 +953,21 @@
     "safari": {
       "hud": {
         "widgets": {
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -895,6 +1030,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -957,6 +1107,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "party": {
             "config": {},
             "position": {
@@ -1035,6 +1200,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -1097,6 +1277,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -1159,6 +1354,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -1473,6 +1683,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -1826,6 +2051,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -1904,6 +2144,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "daily_quests": {
             "config": {},
             "position": {
@@ -2047,6 +2302,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "item_pickup": {
             "config": {
               "sack_notifications": false,
@@ -2125,6 +2395,21 @@
               "relative_y": 0
             }
           },
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 31,
+							"relative_y": 30
+						}
+					},
           "daily_quests": {
             "config": {},
             "position": {
