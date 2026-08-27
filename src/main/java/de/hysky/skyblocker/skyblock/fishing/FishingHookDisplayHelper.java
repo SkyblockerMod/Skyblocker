@@ -3,6 +3,8 @@ package de.hysky.skyblocker.skyblock.fishing;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -20,7 +22,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
 
 public class FishingHookDisplayHelper {
-	protected static ArmorStand fishingHookArmorStand;
+	protected static @Nullable ArmorStand fishingHookArmorStand;
 	private static final Identifier FISHING_HOOK_DISPLAY = SkyblockerMod.id("fishing_hook_display");
 	static Pattern pattern = Pattern.compile("\\d.\\d");
 
