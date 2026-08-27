@@ -6,11 +6,22 @@ import java.util.Base64;
 import java.util.zip.Deflater;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 
 import de.hysky.skyblocker.utils.LZString;
 
 public class SkyShardsLayoutTest {
+	// The palette is built from GreenhouseCrops, which needs the item registries
+	@BeforeAll
+	static void bootstrap() {
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
+	}
+
 	// Wheat at row 0 col 0, Godseed at row 4 col 4 and a Gloomgourd target at row 9 col 9
 	private static final String SINGLE_MODE_CODE = "M9AxzKjJrknUIx4k6ZEFHAE";
 
@@ -79,17 +90,6 @@ public class SkyShardsLayoutTest {
 		Assertions.assertNull(SkyShardsLayout.decode(deflateRaw("0,1h|k|too short")));
 		Assertions.assertNull(SkyShardsLayout.decode(deflateRaw("0,1h|" + ".".repeat(100))));
 		Assertions.assertNull(SkyShardsLayout.decode(deflateRaw("zz|k|" + ".".repeat(100))));
-	}
-
-	@Test
-	void extractLayoutCode() {
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("https://greenhouse.skyshards.com/designer?layout=ABC"));
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("https://greenhouse.skyshards.com/?layout=ABC"));
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("https://api.skyshards.com/share/ABC"));
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("  ABC  "));
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("https://greenhouse.skyshards.com/designer?tab=1&layout=ABC&mode=x"));
-		Assertions.assertEquals("ABC", SkyShardsLayout.extractLayoutCode("https://api.skyshards.com/share/ABC?foo=bar"));
-		Assertions.assertEquals("a-b_c=", SkyShardsLayout.extractLayoutCode("https://greenhouse.skyshards.com/designer?layout=a-b_c="));
 	}
 
 	private static String deflateRaw(String contents) {

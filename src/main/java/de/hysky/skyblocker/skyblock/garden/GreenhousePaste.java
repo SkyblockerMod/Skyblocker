@@ -181,7 +181,7 @@ public class GreenhousePaste {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
 		String clipboard = CLIENT.keyboardHandler.getClipboard();
-		String encoded = SkyShardsLayout.extractLayoutCode(clipboard);
+		String encoded = extractLayoutCode(clipboard);
 
 		if (encoded.isEmpty()) return;
 
@@ -208,6 +208,33 @@ public class GreenhousePaste {
 								.withStyle(ChatFormatting.GREEN)));
 
 		locateGreenhouse();
+	}
+
+	/**
+	 * Pulls the layout code out of a designer link, a share link, or a bare code.
+	 * Both sites put the code in a {@code layout} query parameter.
+	 */
+	static String extractLayoutCode(String clipboard) {
+		String trimmed = clipboard.strip();
+
+		int layoutIndex = trimmed.indexOf("?layout=");
+		if (layoutIndex < 0) layoutIndex = trimmed.indexOf("&layout=");
+		if (layoutIndex >= 0) return endOfCode(trimmed.substring(layoutIndex + "?layout=".length()));
+
+		int shareIndex = trimmed.indexOf("/share/");
+		if (shareIndex >= 0) return endOfCode(trimmed.substring(shareIndex + "/share/".length()));
+
+		return trimmed;
+	}
+
+	// Cuts off trailing query parameters and path segments
+	private static String endOfCode(String code) {
+		for (int i = 0; i < code.length(); i++) {
+			char c = code.charAt(i);
+			boolean valid = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_' || c == '=';
+			if (!valid) return code.substring(0, i);
+		}
+		return code;
 	}
 
 	private enum LayoutSite {

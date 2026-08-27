@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -24,97 +25,46 @@ public final class SkyShardsLayout {
 	private static final int LETTERS = 26;
 	private static final int MAX_DECOMPRESSED_BYTES = 4096;
 
-	// Palette index to crop id. Mutations happen to line up with crop ids 1-40.
-	private static final int[] INDEX_TO_CROP_ID = {
-			// Crops
-			50, // wheat
-			52, // potato
-			51, // carrot
-			47, // pumpkin
-			46, // melon
-			41, // cocoa_beans
-			54, // sugar_cane
-			45, // cactus
-			53, // nether_wart
-			49, // red_mushroom
-			48, // brown_mushroom
-			43, // moonflower
-			44, // sunflower
-			42, // wild_rose
-			56, // fire
-			55, // dead_plant
-			58, // fermento
-
-			// Mutations
-			1,  // ashwreath
-			2,  // choconut
-			3,  // dustgrain
-			4,  // gloomgourd
-			5,  // lonelily
-			6,  // scourroot
-			7,  // shadevine
-			8,  // veilshroom
-			9,  // witherbloom
-			10, // chocoberry
-			11, // cindershade
-			12, // coalroot
-			13, // creambloom
-			14, // duskbloom
-			15, // thornshade
-			16, // blastberry
-			17, // cheesebite
-			18, // chloronite
-			19, // do_not_eat_shroom
-			20, // fleshtrap
-			21, // magic_jellybean
-			22, // noctilume
-			23, // snoozling
-			24, // soggybud
-			25, // chorus_fruit
-			26, // plantboy_advance
-			27, // puffercloud
-			28, // shellfruit
-			29, // startlevine
-			30, // stoplight_petal
-			31, // thunderling
-			32, // turtlellini
-			33, // zombud
-			34, // all_in_aloe
-			35, // devourer
-			36, // glasscorn
-			37, // godseed
-			38, // jerryflower
-			39, // phantomleaf
-			40, // timestalk
+	// SkyShards lists the plantable crops first, in its own order, before every mutation
+	private static final String[] PALETTE_CROP_NAMES = {
+			"Wheat Seeds",
+			"Potato",
+			"Carrot",
+			"Pumpkin Seeds",
+			"Melon Seeds",
+			"Cocoa Beans",
+			"Sugar Cane",
+			"Cactus",
+			"Nether Wart",
+			"Red Mushroom",
+			"Brown Mushroom",
+			"Moonflower",
+			"Sunflower",
+			"Wild Rose",
+			"Fire",
+			"Dead Plants",
+			"Fermento",
 	};
+	private static final int MUTATION_COUNT = 40;
+
+	// Palette index to crop id. Mutations happen to line up with crop ids 1-40.
+	private static final int[] INDEX_TO_CROP_ID = buildPalette();
 
 	private SkyShardsLayout() {
 	}
 
-	/**
-	 * Pulls the layout code out of a designer link, a share link, or a bare code.
-	 */
-	public static String extractLayoutCode(String clipboard) {
-		String trimmed = clipboard.strip();
+	private static int[] buildPalette() {
+		int[] palette = new int[PALETTE_CROP_NAMES.length + MUTATION_COUNT];
 
-		int layoutIndex = trimmed.indexOf("?layout=");
-		if (layoutIndex < 0) layoutIndex = trimmed.indexOf("&layout=");
-		if (layoutIndex >= 0) return endOfCode(trimmed.substring(layoutIndex + "?layout=".length()));
-
-		int shareIndex = trimmed.indexOf("/share/");
-		if (shareIndex >= 0) return endOfCode(trimmed.substring(shareIndex + "/share/".length()));
-
-		return trimmed;
-	}
-
-	// Cuts off trailing query parameters and path segments
-	private static String endOfCode(String code) {
-		for (int i = 0; i < code.length(); i++) {
-			char c = code.charAt(i);
-			boolean valid = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_' || c == '=';
-			if (!valid) return code.substring(0, i);
+		for (int i = 0; i < PALETTE_CROP_NAMES.length; i++) {
+			String name = PALETTE_CROP_NAMES[i];
+			palette[i] = Objects.requireNonNull(GreenhouseCrops.CROP_ID_MAP.get(name), name).id();
 		}
-		return code;
+		for (int i = 0; i < MUTATION_COUNT; i++) {
+			palette[PALETTE_CROP_NAMES.length + i] = i + 1;
+		}
+
+		return palette;
 	}
 
 	/**
