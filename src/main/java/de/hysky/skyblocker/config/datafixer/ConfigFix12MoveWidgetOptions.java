@@ -15,29 +15,29 @@ import org.jspecify.annotations.Nullable;
 
 // I doubt this is how it's meant to be done, but I really don't see another way.
 public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
-	private final Map<String, SubFixer> widgetToSubfixer = Map.of(
-			"hud_end", new SubFixer(
-					dynamic -> dynamic.get("otherLocations").result().flatMap(otherLocations -> otherLocations.get("end").result()),
+	private final Map<String, SubFixer<?, ?>> widgetToSubFixer = Map.of(
+			"hud_end", new SubFixer<>(
+					dynamic -> dynamic.get("otherLocations").get("end").result(),
 					this::fixEnd
 			),
-			"hud_farming", new SubFixer(
-					dynamic -> dynamic.get("farming").result().flatMap(otherLocations -> otherLocations.get("farmingHud").result()),
+			"hud_farming", new SubFixer<>(
+					dynamic -> dynamic.get("farming").get("farmingHud").result(),
 					this::fixFarming
 			),
-			"hud_fishing", new SubFixer(
-					dynamic -> dynamic.get("helpers").result().flatMap(otherLocations -> otherLocations.get("fishing").result()),
+			"hud_fishing", new SubFixer<>(
+					dynamic -> dynamic.get("helpers").get("fishing").result(),
 					this::fixFishing
 			),
-			"item_pickup", new SubFixer(
-					dynamic -> dynamic.get("uiAndVisuals").result().flatMap(otherLocations -> otherLocations.get("itemPickup").result()),
+			"item_pickup", new SubFixer<>(
+					dynamic -> dynamic.get("uiAndVisuals").get("itemPickup").result(),
 					this::fixItemPickup
 			),
-			"players", new SubFixer(
-					dynamic -> dynamic.get("uiAndVisuals").result().flatMap(uiAndVisuals -> uiAndVisuals.get("tabHud").result()),
+			"players", new SubFixer<>(
+					dynamic -> dynamic.get("uiAndVisuals").get("tabHud").result(),
 					this::fixPlayerList
 			),
-			"active_effects", new SubFixer(
-					dynamic -> dynamic.get("uiAndVisuals").result().flatMap(uiAndVisuals -> uiAndVisuals.get("tabHud").result()),
+			"active_effects", new SubFixer<>(
+					dynamic -> dynamic.get("uiAndVisuals").get("tabHud").result(),
 					this::fixEffects
 			)
 	);
@@ -52,10 +52,7 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 				fixTypeEverywhereTyped(
 						getClass().getSimpleName(),
 						getInputSchema().getType(ConfigDataFixer.CONFIG_TYPE),
-						typed -> typed.update(DSL.remainderFinder(), dynamic -> {
-							collect(dynamic);
-							return dynamic;
-						})
+						typed -> typed.update(DSL.remainderFinder(), this::collect)
 				),
 				fixTypeEverywhereTyped(
 						getClass().getSimpleName(),
@@ -65,44 +62,46 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 		);
 	}
 
-	private void collect(Dynamic<?> dynamic) {
-		System.out.println("Fetching DATA");
-		for (SubFixer fixer : widgetToSubfixer.values()) {
+	private <T> Dynamic<T> collect(Dynamic<T> dynamic) {
+		for (SubFixer<?, ?> fixer : widgetToSubFixer.values()) {
 			fixer.fetchData(dynamic);
 		}
+		return dynamic;
 	}
 
-	private Dynamic<?> fix(Dynamic<?> dynamic) {
-		Dynamic<?> updated = fixVersion(dynamic).update(
+	private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
+		Dynamic<T> updated = fixVersion(dynamic).update(
 				"configs",
 				configs -> configs.updateMapValues(location -> Pair.of(
 						location.getFirst(),
 						location.getSecond().updateMapValues(layer -> Pair.of(
 								layer.getFirst(),
 								layer.getSecond().update("widgets", widgets -> widgets.updateMapValues(this::fixWidget)))))));
-		for (SubFixer fixer : widgetToSubfixer.values()) fixer.data = null;
+		for (SubFixer<?, ?> fixer : widgetToSubFixer.values()) fixer.data = null;
 		return updated;
 	}
 
-	private static Dynamic<?> lowercase(Dynamic<?> dynamic) {
-		Optional<Dynamic<?>> lowercase = dynamic.asString().result().map(s -> s.toLowerCase(Locale.ENGLISH)).map(dynamic::createString);
-		return lowercase.orElse(dynamic);
+	private static <T> Dynamic<T> lowercase(Dynamic<T> dynamic) {
+		return dynamic.asString().result()
+				.map(s -> s.toLowerCase(Locale.ENGLISH))
+				.map(dynamic::createString)
+				.orElse(dynamic);
 	}
 
 	private Pair<Dynamic<?>, Dynamic<?>> fixWidget(Pair<Dynamic<?>, Dynamic<?>> widget) {
 		String widgetId = widget.getFirst().asString("");
-		SubFixer fixer = widgetToSubfixer.get(widgetId);
+		SubFixer<?, ?> fixer = widgetToSubFixer.get(widgetId);
 		if (fixer == null) return widget;
 		return Pair.of(widget.getFirst(), widget.getSecond().update("config", fixer::tryFix));
 	}
 
-	private Dynamic<?> fixEnd(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixEnd(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData
 				.setFieldIfPresent("zealot_kills", previous.get("zealotKillsEnabled").result())
 				.setFieldIfPresent("protector_location", previous.get("protectorLocationEnabled").result());
 	}
 
-	private Dynamic<?> fixFarming(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixFarming(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData
 				.setFieldIfPresent("counter", previous.get("counter").result())
 				.setFieldIfPresent("coins", previous.get("coins").result())
@@ -111,14 +110,14 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 				.setFieldIfPresent("include_seeds_price", previous.get("includeSeedsPrice").result());
 	}
 
-	private Dynamic<?> fixFishing(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixFishing(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData
 				.setFieldIfPresent("creature_counter", previous.get("enableSeaCreatureCounter").result())
 				.setFieldIfPresent("fishing_timer", previous.get("enableFishingTimer").result())
 				.setFieldIfPresent("only_barn", previous.get("onlyShowHudInBarn").result());
 	}
 
-	private Dynamic<?> fixItemPickup(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixItemPickup(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData
 				.setFieldIfPresent("sack_notifications", previous.get("sackNotifications").result())
 				.setFieldIfPresent("split_sack", previous.get("splitNotifications").result())
@@ -126,27 +125,28 @@ public class ConfigFix12MoveWidgetOptions extends ConfigDataFix {
 				.setFieldIfPresent("lifetime", previous.get("lifetime").result());
 	}
 
-	private Dynamic<?> fixEffects(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixEffects(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData.setFieldIfPresent("effects_from_footer", previous.get("effectsFromFooter").result());
 	}
 
-	private Dynamic<?> fixPlayerList(Dynamic<?> widgetData, Dynamic<?> previous) {
+	private <W, D> Dynamic<W> fixPlayerList(Dynamic<W> widgetData, Dynamic<D> previous) {
 		return widgetData.setFieldIfPresent("name_sorting", previous.get("nameSorting").map(ConfigFix12MoveWidgetOptions::lowercase).result());
 	}
 
-	private static class SubFixer {
-		private final Function<Dynamic<?>, Optional<Dynamic<?>>> previousDataSupplier;
-		private final BiFunction<Dynamic<?>, Dynamic<?>, Dynamic<?>> fixer;
-		private @Nullable Dynamic<?> data;
+	private static class SubFixer<W, D> {
+		private final Function<Dynamic<?>, Optional<Dynamic<D>>> previousDataSupplier;
+		private final BiFunction<Dynamic<W>, Dynamic<D>, Dynamic<W>> fixer;
+		private @Nullable Dynamic<D> data;
 
-		private SubFixer(Function<Dynamic<?>, Optional<Dynamic<?>>> previousDataSupplier, BiFunction<Dynamic<?>, Dynamic<?>, Dynamic<?>> fixer) {
+		private SubFixer(Function<Dynamic<?>, Optional<Dynamic<D>>> previousDataSupplier, BiFunction<Dynamic<W>, Dynamic<D>, Dynamic<W>> fixer) {
 			this.previousDataSupplier = previousDataSupplier;
 			this.fixer = fixer;
 		}
 
+		@SuppressWarnings("unchecked")
 		private Dynamic<?> tryFix(Dynamic<?> widget) {
 			if (data == null) return widget;
-			return fixer.apply(widget, data);
+			return fixer.apply((Dynamic<W>) widget, data);
 		}
 
 		private void fetchData(Dynamic<?> dynamic) {
