@@ -209,7 +209,8 @@ public class ItemPickupWidget extends ElementBasedWidget {
 	 */
 	private @Nullable String checkNextItem(ChangeData entry) {
 		//check the item has not expired
-		if (entry.lastChange + lifetime * 1000L < System.currentTimeMillis()) {
+		long expirationTime = entry.lastChange + (long) (lifetime * 1000L);
+		if (expirationTime < System.currentTimeMillis()) {
 			return null;
 		}
 		//return the formatted name for the item based on user settings
