@@ -30,7 +30,7 @@ public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry
 
 	@Override
 	protected void extractListBackground(GuiGraphicsExtractor context) {
-		context.fill(getX(), getY(), getRight(), getBottom(), ARGB.color(100, 0));
+		context.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(0.6f));
 		if (scrollAmount() > 0) {
 			for (int x = 0; x < this.getWidth(); x++) {
 				if (x % 2 == 0) {

@@ -11,7 +11,6 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.config.screens.greenhouse.GreenhousePresetsScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
@@ -32,46 +31,6 @@ public class FarmingCategory {
 								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, screen)))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.counter"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.counter,
-										() -> config.farming.farmingHud.counter,
-										newValue -> config.farming.farmingHud.counter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.coins"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.coins,
-										() -> config.farming.farmingHud.coins,
-										newValue -> config.farming.farmingHud.coins = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<FarmingConfig.Type>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.type"))
-								.description(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip"))
-								.binding(defaults.farming.farmingHud.type,
-										() -> config.farming.farmingHud.type,
-										newValue -> config.farming.farmingHud.type = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"))
-								.tags(CommonTags.ADDED_IN_6_5_0)
-								.binding(defaults.farming.farmingHud.includeSeedsPrice,
-										() -> config.farming.farmingHud.includeSeedsPrice,
-										newValue -> config.farming.farmingHud.includeSeedsPrice = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.experience,
-										() -> config.farming.farmingHud.experience,
-										newValue -> config.farming.farmingHud.experience = newValue)
-								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
 				// Pest Highlighter

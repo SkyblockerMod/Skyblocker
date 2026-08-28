@@ -14,6 +14,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
@@ -99,6 +100,14 @@ public class PowderWidget extends TabHudWidget {
 		}
 		if ((updated & 0b1000) == 0b1000) lastUpdate = Util.getMillis();
 		updated = 0b0000; // Reset the bitfield for the next tick
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		MutableComponent literal = Component.literal("???");
+		collector.addElement(Elements.iconTextComponent(ItemRepository.getItemStack("MITHRIL_ORE", Ico.MITHRIL), literal));
+		collector.addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GEMSTONE_COLLECTION", Ico.GEMSTONE), literal));
+		collector.addElement(Elements.iconTextComponent(ItemRepository.getItemStack("GLACITE", Ico.PACKED_ICE), literal));
 	}
 
 	private int parseAmount(Matcher matcher) {

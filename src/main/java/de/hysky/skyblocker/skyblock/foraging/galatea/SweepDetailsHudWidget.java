@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
@@ -12,9 +11,9 @@ import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Area;
@@ -25,7 +24,6 @@ import de.hysky.skyblocker.utils.Utils;
 
 @RegisterWidget
 public class SweepDetailsHudWidget extends ElementBasedWidget {
-	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Map<String, FlexibleItemStack> LOG_TO_ITEM = Map.of(
 			"Fig", new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG),
 			"Mangrove", new FlexibleItemStack(Items.MANGROVE_LOG),
@@ -54,12 +52,6 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.player == null || CLIENT.screen instanceof WidgetsConfigurationScreen) {
-			addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
-			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
-			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
-			return;
-		}
 		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
 			SweepDetailsListener.active = false;
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {
@@ -97,6 +89,13 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 			addElement(Elements.iconTextComponent(Ico.BARRIER, Component.translatable("skyblocker.galatea.hud.sweepDetails.stylePenalty", SweepDetailsListener.stylePenaltyAmount + "%")));
 			addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.correctStyle", SweepDetailsListener.correctStyle)));
 		}
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
 	}
 
 	@Override

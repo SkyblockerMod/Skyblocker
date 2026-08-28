@@ -60,7 +60,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class WidgetManager {
 	@SuppressWarnings("deprecation")
 	public static final Set<Location> ALLOWED_LOCATIONS = Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(Location.UNKNOWN, Location.BLAZING_FORTRESS)));
-	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogUtils.getLogger();
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
@@ -206,6 +206,16 @@ public class WidgetManager {
 			for (Map.Entry<Location, ScreenConfig> entry : CONFIG.screenConfigs.entrySet()) {
 				entry.getValue().allLayers().forEach(layer -> layer.widgets().keySet().removeIf(id -> WIDGET_INSTANCES.containsKey(id) && !WIDGET_INSTANCES.get(id).getInformation().available().test(entry.getKey())));
 			}
+			// clean up widgets that are parented to a widget that isn't the layer
+			CONFIG.screenConfigs.values().stream().flatMap(ScreenConfig::allLayers).map(LayerConfig::widgets).forEach(map -> {
+				for (Map.Entry<String, WidgetConfig> entry : map.entrySet()) {
+					Optional<PositionRule> position = entry.getValue().position();
+					if (position.isEmpty()) continue;
+					if (position.get().parent().isPresent() && !map.containsKey(position.get().parent().get())) {
+						entry.setValue(entry.getValue().withPosition(rule -> rule.withParent(null)));
+					}
+				}
+			});
 		} catch (NoSuchFileException _) {
 			// Fill default config
 			fillDefaultConfig(0);

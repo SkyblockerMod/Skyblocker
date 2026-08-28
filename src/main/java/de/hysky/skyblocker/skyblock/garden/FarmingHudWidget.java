@@ -7,6 +7,8 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -14,16 +16,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 
 @RegisterWidget
@@ -81,6 +85,14 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 	private final Minecraft client = Minecraft.getInstance();
 
+	private boolean showCounter = true;
+	private boolean showCoins = true;
+	private boolean showBlocks = true;
+	private boolean showExperience = true;
+	private boolean showAngle = true;
+	private boolean includeSeedsPrice = true;
+	private FarmingConfig.Type priceType = FarmingConfig.Type.BOTH;
+
 	public FarmingHudWidget() {
 		super(TITLE, ChatFormatting.YELLOW.getColor(), new Information("hud_farming", Component.literal("Farming HUD"), Location.GARDEN));
 		instance = this;
@@ -98,7 +110,6 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			addElement(new PlainTextElement(Component.literal("Nothing to show :p")));
 			return;
 		}
-		FarmingConfig.FarmingHud config = SkyblockerConfigManager.get().farming.farmingHud;
 		ItemStack farmingToolStack = client.player.getMainHandItem();
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
@@ -108,7 +119,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		FlexibleItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
 
-		if (config.counter) {
+		if (showCounter) {
 			FarmingHud.CounterType counterType = FarmingHud.counterType();
 			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
 			if (counterType == FarmingHud.CounterType.NONE) counterNumber = "";
@@ -116,26 +127,70 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
 		double blockBreaks = FarmingHud.blockBreaks();
-		if (config.coins) {
+		if (showCoins) {
 			boolean hasCounter = FarmingHud.counterType() != FarmingHud.CounterType.NONE;
 			boolean hasReplenish = hasCounter && ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
 			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish, blockBreaks));
 		}
-		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
-		if (config.experience) {
+		if (showBlocks) {
+			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
+		}
+		if (showExperience) {
 			//noinspection DataFlowIssue
 			addElement(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
 			addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.farming.farmingHud.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 		}
 
-		Entity cameraEntity = client.getCameraEntity();
-		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
-		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		if (showAngle) {
+			Entity cameraEntity = client.getCameraEntity();
+			Component yaw = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
+			Component pitch = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
+		}
 		if (LowerSensitivity.isSensitivityLowered()) {
 			addElement(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
 		}
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.counter"), b -> showCounter = b, showCounter);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.coins"), b -> showCoins = b, showCoins);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.blocks"), b -> showBlocks = b, showBlocks);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.experience"), b -> showExperience = b, showExperience);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.angle"), b -> showAngle = b, showAngle);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"), b -> includeSeedsPrice = b, includeSeedsPrice);
+		collector.addWidget(CycleButton.builder(d -> Component.literal(d.toString()), priceType)
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip")))
+				.withValues(FarmingConfig.Type.values())
+				.create(Component.translatable("skyblocker.config.farming.farmingHud.type"), (_, value) -> priceType = value)
+		);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		showCounter = input.readBooleanOr("counter", true);
+		showCoins = input.readBooleanOr("coins", true);
+		showBlocks = input.readBooleanOr("blocks", true);
+		showExperience = input.readBooleanOr("experience", true);
+		showAngle = input.readBooleanOr("angle", true);
+		includeSeedsPrice = input.readBooleanOr("include_seeds_price", true);
+		priceType = input.read("price_type", FarmingConfig.Type.CODEC).orElse(FarmingConfig.Type.BOTH);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("counter", showCounter);
+		output.writeBool("coins", showCoins);
+		output.writeBool("blocks", showBlocks);
+		output.writeBool("experience", showExperience);
+		output.writeBool("angle", showAngle);
+		output.writeBool("include_seeds_price", includeSeedsPrice);
+		output.write("price_type", FarmingConfig.Type.CODEC, priceType);
 	}
 
 	/**
@@ -160,7 +215,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 			OptionalDouble seedsBazaarPrice;
 			OptionalDouble seedsNpcPrice;
-			if (SkyblockerConfigManager.get().farming.farmingHud.includeSeedsPrice) {
+			if (includeSeedsPrice) {
 				seedsBazaarPrice = ItemUtils.getItemPrice("SEEDS");
 				seedsNpcPrice = TooltipInfoType.NPC.hasOrNullWarning("SEEDS") ?
 						OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble("SEEDS")) :
@@ -182,7 +237,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		Component sourceLabel = null;
 		boolean hasValidPrice = false;
 
-		switch (SkyblockerConfigManager.get().farming.farmingHud.type) {
+		switch (priceType) {
 			case NPC -> {
 				// Use NPC price if it's available.
 				if (npc.isPresent()) {

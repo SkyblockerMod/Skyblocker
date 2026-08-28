@@ -14,6 +14,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.utils.Location;
 
@@ -65,5 +66,13 @@ public class CommsWidget extends TabHudWidget {
 				this.addElement(element);
 			}
 		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		for (int i = 0; i < 2; i++) {
+			collector.addElement(Elements.progressComponent(Ico.BOOK, Component.literal("Commission " + (i + 1)), i * 50));
+		}
+		collector.addElement(Elements.progressComponent(Ico.BOOK, Component.literal("Commission 3"), Component.literal("DONE"), 100));
 	}
 }

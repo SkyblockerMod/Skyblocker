@@ -133,9 +133,13 @@ public class PlayerListManager {
 			}
 		}
 		if (shouldUpdateNextTick) {
-			updateList();
-			shouldUpdateNextTick = false;
+			updateListNow();
 		}
+	}
+
+	public static void updateListNow() {
+		updateList();
+		shouldUpdateNextTick = false;
 	}
 
 	public static void updateList() {

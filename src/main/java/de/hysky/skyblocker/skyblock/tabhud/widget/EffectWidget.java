@@ -8,13 +8,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 
 // this widgte shows, how many active effects you have.
 // it also shows one of those in detail.
@@ -26,10 +28,12 @@ public class EffectWidget extends TabHudWidget {
 			ChatFormatting.BOLD);
 	private static final Pattern COOKIE_PATTERN = Pattern.compile(".*\\nCookie Buff\\n(?<buff>.*)\\n");
 
+	private boolean effectsFromFooter = true;
+
 	public EffectWidget() {
 		super("Active Effects", TITLE, ChatFormatting.DARK_PURPLE.getColor());
 		PlayerListManager.registerFooterListener(() -> {
-			if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter && WidgetManager.isWidgetInCurrentScreen(this)) update();
+			if (effectsFromFooter && WidgetManager.isWidgetInCurrentScreen(this)) update();
 		});
 	}
 
@@ -44,7 +48,25 @@ public class EffectWidget extends TabHudWidget {
 
 	@Override
 	protected void updateContentMissing() {
-		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.effectsFromFooter) fetchFromFooter();
+		if (effectsFromFooter) fetchFromFooter();
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"), b -> effectsFromFooter = b, effectsFromFooter, Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"));
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		effectsFromFooter = input.readBooleanOr("effects_from_footer", false);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("effects_from_footer", effectsFromFooter);
 	}
 
 	private void fetchFromFooter() {

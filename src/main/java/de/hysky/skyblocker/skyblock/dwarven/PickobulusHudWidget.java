@@ -11,6 +11,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
 
@@ -54,6 +55,13 @@ public class PickobulusHudWidget extends ElementBasedWidget {
 				addElement(new PlainTextElement(Component.literal(drop.friendlyName() + ": " + count)));
 			}
 		}
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(new PlainTextElement(Component.literal("Total Blocks: ???")));
+		collector.addElement(new PlainTextElement(Component.literal("Drop 1: ???")));
+		collector.addElement(new PlainTextElement(Component.literal("Drop 2: ???")));
 	}
 
 	@Override

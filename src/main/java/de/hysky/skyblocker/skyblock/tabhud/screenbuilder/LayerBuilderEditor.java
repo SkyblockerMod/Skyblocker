@@ -4,8 +4,11 @@ import java.util.Optional;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.util.ProblemReporter;
+
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 
 /**
  * A class that allows adding and removing widgets from a {@link LayerBuilder} and serializing its config
@@ -50,13 +53,17 @@ public class LayerBuilderEditor {
 				return widgetConfig;
 			}
 			JsonObject conf = new JsonObject();
-			widget.widget.save(conf);
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
+				widget.widget.save(new JsonValueOutput(reporter, conf));
+			}
 			return new WidgetConfig(Optional.of(conf), widget.fromTab ? Optional.empty() : Optional.of(widget.rule));
 		});
 		for (PositionedWidget widget : layer.getRendered()) {
 			if (!widget.fromTab || layer.config.widgets().containsKey(widget.widget.getInternalID())) continue;
 			JsonObject conf = new JsonObject();
-			widget.widget.save(conf);
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
+				widget.widget.save(new JsonValueOutput(reporter, conf));
+			}
 			layer.config.widgets().put(widget.widget.getInternalID(), new WidgetConfig(Optional.of(conf), Optional.empty()));
 		}
 	}

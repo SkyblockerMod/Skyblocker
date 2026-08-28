@@ -488,10 +488,12 @@
   "skyblocker.config.farming": "Farming",
 
   "skyblocker.config.farming.farmingHud": "Farming HUD",
-  "skyblocker.config.farming.farmingHud.coins": "Show Calculated Hourly Profits",
+  "skyblocker.config.farming.farmingHud.angle": "Angle",
+  "skyblocker.config.farming.farmingHud.blocks": "Blocks Per Second",
+  "skyblocker.config.farming.farmingHud.coins": "Calculated Hourly Profits",
   "skyblocker.config.farming.farmingHud.config": "Farming HUD Config...",
-  "skyblocker.config.farming.farmingHud.counter": "Show Counter & Crops per Minute",
-  "skyblocker.config.farming.farmingHud.experience": "Show Farming Skill Progress",
+  "skyblocker.config.farming.farmingHud.counter": "Counter & Crops per Minute",
+  "skyblocker.config.farming.farmingHud.experience": "Farming Skill Progress",
   "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Include Seeds in Wheat Hoe's Coins per Hour",
   "skyblocker.config.farming.farmingHud.type": "Use Price Value From",
   "skyblocker.config.farming.farmingHud.type.@Tooltip": "The source to use when calculating profit in the Farming HUD.\n'Both' uses the highest price.",
@@ -812,7 +814,7 @@
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter": "Enable sea creature tracker",
   "skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip": "Tracks how many sea creatures you have and how long until they will despawn. This relies on Hypixel Settings → Fishing Settings → Sea Creature Chat being enabled.",
   "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn": "Only Show When Barn Fishing",
-  "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "For the Hub, only show the \"Sea Creature Tracker\" when barn fishing",
+  "skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip": "Only show the \"Sea Creature Tracker\" when barn fishing",
   "skyblocker.config.helpers.fishing.hud.screen": "Fishing HUD Config...",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity": "Sea Creature Rarity Notification",
   "skyblocker.config.helpers.fishing.minimumNotificationRarity.@Tooltip": "Minimum rarity for a notification about rare sea creatures. (UNKNOWN = disabled)",
@@ -865,6 +867,7 @@
   "skyblocker.config.hud.copy.copyPosition.@Tooltip": "If unchecked will not copy the position and only affect locations where the widget is already present.",
   "skyblocker.config.hud.copy.copyTo": "Copy to...",
   "skyblocker.config.hud.copy.copyTo.@Tooltip": "Copy this widget to other locations",
+  "skyblocker.config.hud.copy.copyTo.disabled.@Tooltip": "Nowhere to copy this to!",
   "skyblocker.config.hud.copy.delete": "Delete Copies",
   "skyblocker.config.hud.copy.delete.description": "Do you want to delete copies of this widget in other locations?",
   "skyblocker.config.hud.copy.selectAll": "Select All",
@@ -878,7 +881,7 @@
 
   "skyblocker.config.hud.help": "Help",
 
-  "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nWidgets are per island. Widget options apply per island, use the 'Copy to...' button.\n\nFor Hypixel widgets, only the ones currently shown in the vanilla tab will automatically appear in the Fancy Tab preview.\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
+  "skyblocker.config.hud.helpText": "Right click to add widgets and edit their options.\nYou can delete a widget by pressing the delete key.\nYou can hold SHIFT to snap to other widgets.\n\nLike Hypixel's TAB Widgets, all widgets are per island as well as their options. Use the 'Copy to...' button to copy them to other islands.\n\nEven if you are configuring other islands, only the Hypixel widgets on your current island will automatically appear in the Fancy Tab preview.",
 
   "skyblocker.config.hud.location.everywhere": "Everywhere",
 
@@ -905,9 +908,15 @@
   "skyblocker.config.hud.topBar.options": "Options",
   "skyblocker.config.hud.topBar.options.@Tooltip": "More Options",
 
+  "skyblocker.config.hud.widget.base.scale": "Scale",
   "skyblocker.config.hud.widget.copy": "Create Copy",
+  "skyblocker.config.hud.widget.element.backgroundOpacity": "Background Opacity",
+  "skyblocker.config.hud.widget.element.drawBorder": "Draw Border",
+  "skyblocker.config.hud.widget.element.roundedCorners": "Rounded Corners",
+  "skyblocker.config.hud.widget.element.showTitle": "Show Title",
   "skyblocker.config.hud.widget.inherited": "This widget is inherited from the \"Everything\" screen, edit there for the change to take place everywhere or create a copy to have it only affect here.",
   "skyblocker.config.hud.widget.remove": "Remove",
+  "skyblocker.config.hud.widget.tab.hideIfMissing": "Hide If Tab Widget Missing",
 
   "skyblocker.config.hud.widgetsList.applyToAllLocations": "Apply to all locations",
   "skyblocker.config.hud.widgetsList.info.overflowWarning": "It would seem you've run out of widget space in the player list! Some widgets are not being displayed correctly!",
@@ -1163,12 +1172,12 @@
   "skyblocker.config.otherLocations.end.enableEnderNodeHelper": "Enable Ender Node Helper",
   "skyblocker.config.otherLocations.end.enderNodeWaypointType": "Ender Node Waypoint Type",
   "skyblocker.config.otherLocations.end.muteEndermanSounds": "Mute Enderman Sounds",
-  "skyblocker.config.otherLocations.end.protectorLocationEnable": "Show Protector Location",
+  "skyblocker.config.otherLocations.end.protectorLocationEnable": "Protector Location",
   "skyblocker.config.otherLocations.end.resetName": "Reset stored End stats",
   "skyblocker.config.otherLocations.end.resetText": "Reset",
   "skyblocker.config.otherLocations.end.screen": "End HUD Config...",
   "skyblocker.config.otherLocations.end.waypoint": "End Protector Waypoint",
-  "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Show Zealot Kills Information",
+  "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Zealot Kills Information",
   "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "Only counts melee kills!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
@@ -1932,7 +1941,8 @@
   "skyblocker.hud.missingTabWidget[0]": "Missing data for %s TAB widget!",
   "skyblocker.hud.missingTabWidget[1]": "Add it to the tab using /widgets!",
   "skyblocker.hud.missingTabWidget[2]": "Make sure it is visible in the vanilla tab,",
-  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding either %s or (%s and %s).",
+  "skyblocker.hud.missingTabWidget[3]": "which is accessible via holding",
+  "skyblocker.hud.missingTabWidget[4]": "either %s or (%s and %s).",
 
   "skyblocker.inventorySearch.clickHereToSearch": "Click here to search.",
   "skyblocker.inventorySearch.searchInventory": "Search Inventory",
