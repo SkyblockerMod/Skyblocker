@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.garden;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -9,11 +10,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -21,6 +27,7 @@ import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -40,18 +47,24 @@ import net.minecraft.world.phys.AABB;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.screens.greenhouse.GreenhousePresetsScreen;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.LZString;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
+@SuppressWarnings("SameReturnValue")
 public class GreenhousePaste {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float PREVIEW_ALPHA = 0.6f;
@@ -67,6 +80,8 @@ public class GreenhousePaste {
 
 	private static long lastBlockChangeTimeMs;
 
+	public static final JsonData<Object2ObjectMap<String, String>> PRESETS_DATA = new JsonData<>(SkyblockerMod.CONFIG_DIR.resolve("greenhouse_presets.json"), CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING), new Object2ObjectOpenHashMap<>());
+
 	// Special ignores
 	private static final Set<String> IGNORE_NAMES = Set.of(
 			"PlantboyRoots",
@@ -75,10 +90,16 @@ public class GreenhousePaste {
 
 	@Init
 	public static void init() {
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> PRESETS_DATA.init());
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> {
 			LiteralArgumentBuilder<FabricClientCommandSource> greenhouseCommands = literal("greenhouse")
-					.then(literal("paste").executes(_ -> runGreenhousePaste()))
+					.then(literal("paste").executes(_ -> runGreenhousePaste()).then(
+							argument("preset", StringArgumentType.greedyString())
+									.suggests((_, builder) -> SharedSuggestionProvider.suggest(PRESETS_DATA.getData().keySet(), builder))
+									.executes(context -> runGreenhousePaste(StringArgumentType.getString(context, "preset")))
+					))
 					.then(literal("endPaste").executes(_ -> runGreenhousePasteRemove()))
+					.then(literal("presets").executes(Scheduler.queueOpenScreenCommand(GreenhousePresetsScreen::new)))
 					.then(literal("rotate")
 							.then(literal("right").executes(_ -> runRotateRight()))
 							.then(literal("left").executes(_ -> runRotateLeft())))
@@ -141,7 +162,13 @@ public class GreenhousePaste {
 
 	private static int runGreenhousePaste() {
 		if (CLIENT.player == null) return Command.SINGLE_SUCCESS;
-		loadFromLink();
+		loadFromClipboard();
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int runGreenhousePaste(String preset) {
+		if (CLIENT.player == null) return Command.SINGLE_SUCCESS;
+		loadFromLink(PRESETS_DATA.getData().getOrDefault(preset, ""));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -177,10 +204,15 @@ public class GreenhousePaste {
 		}
 	}
 
-	public static void loadFromLink() {
+	public static void loadFromClipboard() {
+		String clipboard = CLIENT.keyboardHandler.getClipboard();
+		loadFromLink(clipboard);
+	}
+
+	private static void loadFromLink(String clipboard) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		String clipboard = CLIENT.keyboardHandler.getClipboard();
+		Objects.requireNonNull(CLIENT.player);
 		String encoded = extractLayoutCode(clipboard);
 
 		if (encoded.isEmpty()) return;
@@ -271,6 +303,7 @@ public class GreenhousePaste {
 	}
 
 	public static boolean isInGreenhouse() {
+		if (CLIENT.player == null || CLIENT.level == null) return false;
 		BlockPos playerPos = CLIENT.player.blockPosition();
 		BlockPos plotPos = playerPos.offset(240, 0, 240);
 
@@ -304,6 +337,8 @@ public class GreenhousePaste {
 
 	// Get info of current greenhouse
 	public static void locateGreenhouse() {
+		Objects.requireNonNull(CLIENT.player);
+		Objects.requireNonNull(CLIENT.level);
 		BlockPos playerPos = CLIENT.player.blockPosition();
 		/*
 			Math:
@@ -394,6 +429,8 @@ public class GreenhousePaste {
 	}
 
 	private static void adjustForPlantBoy(int x, int z) {
+		Objects.requireNonNull(greenhouseCorner);
+		Objects.requireNonNull(CLIENT.level);
 		if (greenhouse[x][z] != 26) return;
 
 		BlockPos pos = greenhouseCorner.offset(x, 0, z);
@@ -507,7 +544,7 @@ public class GreenhousePaste {
 
 	public static void renderPreview(PrimitiveCollector collector) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
-		if (greenhouseCorner == null) return;
+		if (greenhouseCorner == null || CLIENT.player == null) return;
 		// Only render if player is within greenhouse plot
 		if (CLIENT.player.getX() < greenhouseCorner.getX() - 43 || CLIENT.player.getX() > greenhouseCorner.getX() + 53 ||
 				CLIENT.player.getZ() < greenhouseCorner.getZ() - 43 || CLIENT.player.getZ() > greenhouseCorner.getZ() + 53) {
@@ -562,7 +599,7 @@ public class GreenhousePaste {
 				if (currentCropId != 0) { // Undesired spot that is not empty
 					collector.submitOutlinedBox(new AABB(pos), new float[]{1f, 0f, 0f}, 0.5f, 4f, true);
 				} else if (targetCrop.isHead()) {
-					ItemStack stack = targetCrop.displayStack().getStack();
+					ItemStack stack = targetCrop.displayStack().getStackOrEmpty();
 					ResolvableProfile profile = stack.get(DataComponents.PROFILE);
 					if (profile == null) continue;
 
@@ -576,6 +613,7 @@ public class GreenhousePaste {
 							.getOrDefault(profile)
 							.renderType();
 
+					//noinspection DataFlowIssue
 					collector.submitVanilla(
 							null,
 							(_, worldState, submitNodeCollector) -> {
@@ -665,6 +703,7 @@ public class GreenhousePaste {
 	}
 
 	private static void printGrid(int[][] grid) {
+		Objects.requireNonNull(CLIENT.player);
 		StringBuilder all = new StringBuilder();
 		for (int z = 0; z < 10; z++) {
 			StringBuilder row = new StringBuilder();
