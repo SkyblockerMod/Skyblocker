@@ -22,12 +22,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.ProblemReporter;
 
 import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
@@ -115,7 +117,9 @@ class CopyToPopup extends AbstractPopupScreen {
 
 	private void apply() {
 		JsonObject widgetConfig = new JsonObject();
-		copiedWidget.widget.save(widgetConfig);
+		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
+			copiedWidget.widget.save(new JsonValueOutput(reporter, widgetConfig));
+		}
 		selectedLocations.retainAll(availableLocations);
 		for (Location loc : selectedLocations) {
 			LayerConfig config = WidgetManager.getScreenConfig(loc).get(layer);
