@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
 
 public record PositionRule(Optional<String> parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY) {
 	public static final PositionRule DEFAULT = new PositionRule(Optional.empty(), Point.DEFAULT, Point.DEFAULT, 5, 5);
@@ -15,8 +16,12 @@ public record PositionRule(Optional<String> parent, Point parentPoint, Point thi
 			Codec.INT.fieldOf("relative_y").forGetter(PositionRule::relativeY)
 	).apply(instance, PositionRule::new));
 
-	public PositionRule(String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY) {
-		this(parent.equals("screen") ? Optional.empty() : Optional.of(parent), parentPoint, thisPoint, relativeX, relativeY);
+	public PositionRule(@Nullable String parent, Point parentPoint, Point thisPoint, int relativeX, int relativeY) {
+		this(parent == null || parent.equals("screen") ? Optional.empty() : Optional.of(parent), parentPoint, thisPoint, relativeX, relativeY);
+	}
+
+	public PositionRule withParent(@Nullable String parent) {
+		return new PositionRule(parent, parentPoint, thisPoint, relativeX, relativeY);
 	}
 
 

@@ -4,15 +4,21 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
+import de.hysky.skyblocker.skyblock.dungeon.DungeonClass;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.Dungeons;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.EliteLeaderboards;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.Formatters;
 
 public final class DungeonLevelBarWidget extends LevelBarWidget {
 
@@ -29,6 +35,40 @@ public final class DungeonLevelBarWidget extends LevelBarWidget {
 		double barFillPercentage = getBarFillPercentage(levelInfo);
 		int barFillColour = getBarFillColour(levelInfo);
 		List<Component> tooltip = buildTooltip(label, levelInfo, info.getLeaderboardPosition("catacombs"));
+		Identifier tooltipStyle = getTooltipStyle(levelInfo, 10);
+
+		return new DungeonLevelBarWidget(width, icon, label, barFillPercentage, barFillColour, tooltip, tooltipStyle);
+	}
+
+	public static DungeonLevelBarWidget createClass(int width, LoadingInformation info, DungeonClass clazz) {
+		Dungeons dungeons = info.member().dungeons;
+		LevelInfo levelInfo = dungeons.getClassData(clazz).getLevelInfo(info);
+
+		Component label;
+
+		if (dungeons.selectedDungeonClass.equals(clazz.apiName())) {
+			label = Component.literal(clazz.displayName() + " " + levelInfo.level() + " ★").withStyle(ChatFormatting.GREEN);
+		} else {
+			label = Component.literal(clazz.displayName() + " " + levelInfo.level());
+		}
+
+		ItemStack icon = clazz.icon().getStackOrThrow();
+		double barFillPercentage = getBarFillPercentage(levelInfo);
+		int barFillColour = getBarFillColour(levelInfo);
+		List<Component> tooltip = buildTooltip(label, levelInfo, info.getLeaderboardPosition(clazz.apiName() + "-xp"));
+		Identifier tooltipStyle = getTooltipStyle(levelInfo, 10);
+
+		return new DungeonLevelBarWidget(width, icon, label, barFillPercentage, barFillColour, tooltip, tooltipStyle);
+	}
+
+	public static DungeonLevelBarWidget createClassAverage(int width, LoadingInformation info) {
+		LevelInfo levelInfo = info.member().dungeons.getClassAverage(info);
+
+		Component label = Component.literal("Class Avg " + Formatters.FLOAT_NUMBERS.format(levelInfo.levelWithProgress()));
+		ItemStack icon = ItemRepository.getItemStack("SPIRIT_WING", Ico.BARRIER).getStackOrThrow();
+		double barFillPercentage = getBarFillPercentage(levelInfo);
+		int barFillColour = getBarFillColour(levelInfo);
+		List<Component> tooltip = buildTooltip(label, levelInfo, EliteLeaderboards.NO_POSITION);
 		Identifier tooltipStyle = getTooltipStyle(levelInfo, 10);
 
 		return new DungeonLevelBarWidget(width, icon, label, barFillPercentage, barFillColour, tooltip, tooltipStyle);

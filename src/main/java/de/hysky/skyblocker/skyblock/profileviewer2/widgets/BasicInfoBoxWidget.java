@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 
 import de.hysky.skyblocker.SkyblockerMod;
 
-public sealed class BasicInfoBoxWidget extends AbstractWidget permits SkillsInfoBoxWidget {
+public sealed class BasicInfoBoxWidget extends AbstractWidget permits CroesusWidget, DailyRunsWidget, DungeonRunsWidget, DungeonSecretsWidget, FloorRunsWidget, SkillsInfoBoxWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");
 
 	public BasicInfoBoxWidget(int width, int height) {

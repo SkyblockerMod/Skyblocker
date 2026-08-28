@@ -6,16 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.joml.Matrix3x2fStack;
-import org.slf4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.profiling.Profiler;
 
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.utils.JsonValueInput;
 
@@ -23,8 +22,6 @@ import de.hysky.skyblocker.utils.JsonValueInput;
  * "Builds" the rendered screen, positions widgets properly each frame and updates their configs when needed
  */
 public class LayerBuilder {
-	private static final Logger LOGGER = LogUtils.getLogger();
-
 	protected LayerConfig config = LayerConfig.DUMMY;
 	protected final Set<HudWidget> renderedWidgets = new ObjectOpenHashSet<>();
 	protected final List<PositionedWidget> widgets = new LinkedList<>();
@@ -44,7 +41,7 @@ public class LayerBuilder {
 		for (Map.Entry<String, WidgetConfig> entry : config.widgets().entrySet()) {
 			if (entry.getValue().config().isEmpty()) continue;
 			HudWidget hudWidget = WidgetManager.getWidgetOrPlaceholder(entry.getKey());
-			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
 				hudWidget.load(new JsonValueInput(reporter, entry.getValue().config().get()));
 			}
 			if (entry.getValue().position().isEmpty()) continue;
@@ -68,7 +65,7 @@ public class LayerBuilder {
 		int hash = Integer.hashCode(screenWidth);
 		hash = hash * 31 + Integer.hashCode(screenHeight);
 		for (PositionedWidget widget : getRendered()) {
-			boolean shouldRender = widget.widget.shouldRender() || config;
+			boolean shouldRender = config || widget.widget.shouldRender();
 			widget.visible = shouldRender;
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
 			hash = hash * 31 + Integer.hashCode(widget.widget.getWidth());
@@ -107,7 +104,13 @@ public class LayerBuilder {
 					widget,
 					screenWidth,
 					screenHeight,
-					s -> widgets.stream().filter(w -> w.widget.getInternalID().equals(s)).findFirst().orElseThrow()
+					s -> widgets.stream().filter(w -> w.widget.getInternalID().equals(s)).findFirst().orElseGet(() -> {
+						WidgetManager.LOGGER.warn("Tried to get parent '{}' but it doesn't exist in the layer. Please report this to the Skyblocker discord or github along with the hud_widgets.json config file.", s);
+						PositionedWidget positionedWidget = new PositionedWidget(WidgetManager.getWidgetOrPlaceholder(s), PositionRule.DEFAULT);
+						positionedWidget.visible = false;
+						positionedWidget.positioned = true;
+						return positionedWidget;
+					})
 			);
 		}
 		Profiler.get().pop();

@@ -79,4 +79,16 @@ public class SecretWaypointTest {
 		SecretWaypoint.Category category = SecretWaypoint.Category.get(waypointJson);
 		Assertions.assertEquals(SecretWaypoint.Category.DEFAULT, category);
 	}
+
+	@Test
+	void hashCodeUsesSerializedCategoryAndName() {
+		SecretWaypoint first = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 30));
+		SecretWaypoint sameWaypointWithDifferentName = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "Second message", new BlockPos(10, 20, 30));
+		SecretWaypoint waypointAtDifferentPosition = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 31));
+		SecretWaypoint waypointWithDifferentCategory = new SecretWaypoint(2, SecretWaypoint.Category.ITEM, "First message", new BlockPos(10, 20, 30));
+
+		Assertions.assertNotEquals(first.hashCode(), sameWaypointWithDifferentName.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointAtDifferentPosition.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointWithDifferentCategory.hashCode());
+	}
 }
