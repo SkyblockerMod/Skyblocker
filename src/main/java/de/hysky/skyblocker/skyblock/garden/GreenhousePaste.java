@@ -371,7 +371,7 @@ public class GreenhousePaste {
 	}
 
 	private static void adjustForPlantBoy(int x, int z, int[][] before) {
-    Objects.requireNonNull(greenhouseCorner);
+		Objects.requireNonNull(greenhouseCorner);
 		Objects.requireNonNull(CLIENT.level);
 		if (before[x][z] != 26) return;
 
