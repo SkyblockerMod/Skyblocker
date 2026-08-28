@@ -161,7 +161,7 @@ public class FarmingCategory {
 								.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets"))
 								.prompt(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.@Prompt"))
 								.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.@Tooltip"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new GreenhousePresetsScreen(screen)))
+								.action(screen -> Minecraft.getInstance().setScreen(new GreenhousePresetsScreen(screen)))
 								.build()
 						)
 						.option(Option.<Boolean>createBuilder()

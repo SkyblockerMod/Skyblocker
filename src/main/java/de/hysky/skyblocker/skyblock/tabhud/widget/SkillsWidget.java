@@ -59,7 +59,7 @@ public class SkillsWidget extends TabHudWidget {
 	@Override
 	protected void updateConfigContentTab(ElementCollector collector) {
 		for (int i = 0; i < 3; i++) {
-			collector.addElement(Elements.progressComponent(Ico.LANTERN, Component.literal("Skill " + (i + 1)), i * 30, TextColor.GOLD.getValue()));
+			collector.addElement(Elements.progressComponent(Ico.LANTERN, Component.literal("Skill " + (i + 1)), i * 30, ChatFormatting.GOLD.getColor()));
 		}
 	}
 }

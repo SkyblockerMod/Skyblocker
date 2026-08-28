@@ -42,9 +42,9 @@ public class PlayerListWidget extends TabHudWidget {
 		Random random = new Random(1234);
 		List<PlayerInfo> infos = new ArrayList<>(15);
 
-		TextColor[] colors = {TextColor.AQUA, TextColor.GREEN, TextColor.GRAY};
+		ChatFormatting[] colors = {ChatFormatting.AQUA, ChatFormatting.GREEN, ChatFormatting.GRAY};
 		for (int i = 0; i < 3; i++) {
-			TextColor color = colors[i];
+			ChatFormatting color = colors[i];
 			int[] array = random.ints(5, 0, 500).sorted().toArray();
 			ArrayUtils.reverse(array);
 			for (int j = 0; j < 5; j++) {
@@ -52,7 +52,7 @@ public class PlayerListWidget extends TabHudWidget {
 				PlayerInfo info = new PlayerInfo(profile, false);
 				StringBuilder builder = new StringBuilder("Player ");
 				random.ints(3, 'A', 'D').forEach(builder::appendCodePoint);
-				info.setTabListDisplayName(Component.literal("[" + array[j] + "] ").append(Component.literal(builder.toString()).withColor(color)));
+				info.setTabListDisplayName(Component.literal("[" + array[j] + "] ").append(Component.literal(builder.toString()).withStyle(color)));
 				infos.add(info);
 			}
 		}

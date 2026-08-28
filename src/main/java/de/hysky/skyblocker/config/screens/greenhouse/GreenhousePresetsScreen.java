@@ -64,7 +64,7 @@ public class GreenhousePresetsScreen extends Screen {
 			GreenhousePaste.PRESETS_DATA.getData().put(name.trim(), link.trim());
 		});
 		GreenhousePaste.PRESETS_DATA.save();
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 
 	private static class PresetsList extends ContainerObjectSelectionList<PresetEntry> {
@@ -95,12 +95,12 @@ public class GreenhousePresetsScreen extends Screen {
 		private final LinearLayout layout = LinearLayout.horizontal().spacing(8);
 
 		private PresetEntry(String name, String link) {
-			nameBox = layout.addChild(new EditBox(font, Component.empty()));
+			nameBox = layout.addChild(new EditBox(font, 150, 20, Component.empty()));
 			nameBox.setWidth(100);
 			nameBox.setValue(name);
 			nameBox.setMaxLength(64);
 			nameBox.setHint(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.name"));
-			linkBox = layout.addChild(new EditBox(font, Component.empty()));
+			linkBox = layout.addChild(new EditBox(font, 150, 20, Component.empty()));
 			linkBox.setWidth(180);
 			linkBox.setMaxLength(2048);
 			linkBox.setValue(link);
