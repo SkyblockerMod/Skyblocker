@@ -22,6 +22,7 @@ import net.minecraft.util.CommonColors;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CatacombsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.CombatPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
@@ -40,9 +41,9 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ProfileMember member;
 	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new InventoryPage(), new CollectionsPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new CatacombsPage(), new InventoryPage(), new CollectionsPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2), createPageTab(3));
+	private final List<PageTabWidget> tabWidgets = this.createPageTabs();
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
@@ -57,8 +58,14 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 		this.setSelectedPage(0);
 	}
 
-	private PageTabWidget createPageTab(int index) {
-		return new PageTabWidget(this.pages.get(index).getIcon(), index, this::setSelectedPage);
+	private List<PageTabWidget> createPageTabs() {
+		List<PageTabWidget> tabs = new ArrayList<>();
+
+		for (int i = 0; i < this.pages.size(); i++) {
+			tabs.add(new PageTabWidget(this.pages.get(i).getIcon(), i, this::setSelectedPage));
+		}
+
+		return List.copyOf(tabs);
 	}
 
 	private LoadingInformation createLoadingInformation() {
@@ -70,7 +77,12 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 		for (ProfileViewerPage<?> page : this.pages) {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
-				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				if (page.centred()) {
+					this.contentLayout.addChild(layoutElement);
+				} else {
+					this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				}
+
 				this.contentLayout.arrangeElements();
 				this.repositionElements();
 				this.loadedPages.add(page);
