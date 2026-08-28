@@ -187,6 +187,14 @@ public class ChatCategory {
 										newValue -> config.chat.hideDungeonBreaker = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideCritterCapture"))
+								.description(Component.translatable("skyblocker.config.chat.filter.hideCritterCapture.@Tooltip"))
+								.binding(defaults.chat.hideCritterCapture,
+										() -> config.chat.hideCritterCapture,
+										newValue -> config.chat.hideCritterCapture = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.build())
 
 				//chat rules options

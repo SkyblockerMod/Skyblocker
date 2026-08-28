@@ -26,7 +26,7 @@ public record LevelInfo(long xp, int level, Cap cap, Optional<Progress> progress
 
 	/// {@return whether the level is at the highest value it can possibly go without a cap being imposed}
 	public boolean isLevelAbsolutelyMaxed() {
-		return this.level == this.cap.absoluteMaxLevel();
+		return this.level >= this.cap.absoluteMaxLevel();
 	}
 
 	/// Holds information about the applicable level cap.

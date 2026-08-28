@@ -16,17 +16,18 @@ import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-public final class SlayersPage implements ProfileViewerPage<LoadingInformation> {
+public final class CombatPage implements ProfileViewerPage<LoadingInformation> {
 	private final List<AbstractWidget> widgets = new ArrayList<>();
 
 	@Override
 	public FlexibleItemStack getIcon() {
+		// Using a stone sword would be weird considering the skills page's icon
 		return Ico.MADDOX_BATPHONE;
 	}
 
 	@Override
 	public Component getName() {
-		return Component.literal("Slayers");
+		return Component.literal("Combat");
 	}
 
 	@Override
@@ -38,8 +39,11 @@ public final class SlayersPage implements ProfileViewerPage<LoadingInformation> 
 	@Override
 	public LayoutElement buildWidgets(LoadingInformation data) {
 		LinearLayout vertical = LinearLayout.vertical();
-		this.widgets.add(vertical.addChild(new RulerWidget()));
-		this.widgets.add(vertical.addChild(new StringWidget(this.getName(), Minecraft.getInstance().font), l -> l.paddingLeft(18).paddingTop(18)));
+		vertical.addChild(new RulerWidget());
+		vertical.addChild(new StringWidget(this.getName(), Minecraft.getInstance().font), l -> l.paddingLeft(18).paddingTop(18));
+
+		vertical.visitWidgets(this.widgets::add);
+
 		return vertical;
 	}
 
