@@ -17,6 +17,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 
 // this widget shows info about minions placed on the home island
 @RegisterWidget
@@ -108,6 +109,11 @@ public class MinionWidget extends TabHudWidget {
 			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addElement(new PlainTextElement(line.copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
+	}
+
+	@Override
+	public boolean shouldRender() {
+		return super.shouldRender() && !Utils.isGuest();
 	}
 
 	public void addMinionComponent(String line) {

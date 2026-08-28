@@ -94,7 +94,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(secretIndex, category, name, pos);
+		return Objects.hash(secretIndex, category.getSerializedName(), name, pos);
 	}
 
 	@Override

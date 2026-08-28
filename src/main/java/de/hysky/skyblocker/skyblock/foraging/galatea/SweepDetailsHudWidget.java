@@ -101,6 +101,13 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(new FlexibleItemStack(Items.STRIPPED_SPRUCE_LOG), Component.translatable("skyblocker.galatea.hud.sweepDetails.treeType", "Fig")));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.toughness", 3.5)));
+		collector.addElement(new PlainTextElement(Component.translatable("skyblocker.galatea.hud.sweepDetails.sweep", 314.15)));
+	}
+
+	@Override
 	public boolean shouldUpdateBeforeRendering() {
 		return true;
 	}
