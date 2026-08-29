@@ -101,6 +101,7 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		if (!collector.getElements().isEmpty()) {
 			configElements = collector.getElements();
 		}
+		configElements.forEach(element -> element.setParent(this));
 		this.pack(configElements);
 	}
 
