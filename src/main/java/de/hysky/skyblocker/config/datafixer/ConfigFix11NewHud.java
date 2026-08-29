@@ -22,10 +22,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 		return TypeRewriteRule.seq(fixTypeEverywhereTyped(
 						getClass().getSimpleName(),
 						getInputSchema().getType(ConfigDataFixer.CONFIG_TYPE),
-						typed -> typed.update(DSL.remainderFinder(), dynamic -> {
-							collect(dynamic);
-							return dynamic;
-						})),
+						typed -> typed.update(DSL.remainderFinder(), this::collect)),
 				fixTypeEverywhereTyped(
 						getClass().getSimpleName(),
 						getInputSchema().getType(ConfigDataFixer.HUD_WIDGETS_TYPE),
@@ -35,8 +32,9 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 
 	private @Nullable Dynamic<?> mainConfig;
 
-	private void collect(Dynamic<?> dynamic) {
+	private <T> Dynamic<T> collect(Dynamic<T> dynamic) {
 		mainConfig = dynamic;
+		return dynamic;
 	}
 
 	private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
@@ -56,8 +54,68 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	/**
 	 * Fixes the map of skyblock locations to widgets.
 	 */
-	private UnaryOperator<Dynamic<?>> fixWidgets() {
+	private <T> UnaryOperator<Dynamic<? extends T>> fixWidgets() {
 		return locations -> locations.updateMapValues(this::fixWidgetsForLocation);
+	}
+
+	/**
+	 * Fixes widgets in this skyblock location and returns a map of layers to widgets.
+	 */
+	private Pair<Dynamic<?>, Dynamic<?>> fixWidgetsForLocation(Pair<Dynamic<?>, Dynamic<?>> location) {
+		Dynamic<?> locationId = location.getFirst();
+		Map<Dynamic<?>, Dynamic<?>> layers = new HashMap<>(Map.of(
+				locationId.createString("hud"), locationId.emptyMap(),
+				locationId.createString("tab"), locationId.emptyMap(),
+				locationId.createString("secondary_tab"), locationId.emptyMap()
+		));
+		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> fixWidgetAndLayer(fixWidgetId(widgetId).asString(""), widget, layers));
+		layers.replaceAll((_, widgets) -> locationId.emptyMap().set("widgets", widgets));
+		return Pair.of(locationId, locationId.createMap(layers));
+	}
+
+	private <T> void fixWidgetAndLayer(String widgetIdNew, Dynamic<T> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
+		if (!isEnabled(widgetIdNew)) return;
+		layers.computeIfPresent(
+				fixWidgetLayer(widget, widgetIdNew),
+				(_, widgets) -> widgets.set(widgetIdNew, fixWidget(widget))
+		);
+	}
+
+	private static <T> Dynamic<T> fixWidgetId(Dynamic<T> widgetId) {
+		return switch (widgetId.asString("")) {
+			case "sweepDetails" -> widgetId.createString("sweep_details");
+			case "Lasso HUD" -> widgetId.createString("hud_lasso");
+			case "Dungeon Splits" -> widgetId.createString("dungeon_splits");
+			case "Item Pickup" -> widgetId.createString("item_pickup");
+			default -> widgetId;
+		};
+	}
+
+	/**
+	 * Returns the layer the widget should be on.
+	 */
+	private static <T> Dynamic<T> fixWidgetLayer(Dynamic<T> widget, String widgetId) {
+		String layer = switch (widget.get("layer").asString("DEFAULT")) {
+			case "HUD" -> "hud";
+			case "MAIN_TAB" -> "tab";
+			case "SECONDARY_TAB" -> "secondary_tab";
+			default -> widgetId.contains("hud") || widgetId.equals("sweep_details") || widgetId.equals("powder_mining_tracker") || widgetId.equals("dungeon_splits") || widgetId.equals("item_pickup") ? "hud" : "tab";
+		};
+		return widget.createString(layer);
+	}
+
+	private static <T> Dynamic<T> fixWidget(Dynamic<T> widget) {
+		return widget.emptyMap().set("config", widget.emptyMap()).set("position", widget
+				.remove("layer")
+				.replaceField("parent", "parent", fixWidgetParent(widget))
+		);
+	}
+
+	/**
+	 * Returns the parent of the widget or empty if the parent is the screen.
+	 */
+	private static <T> Optional<? extends Dynamic<T>> fixWidgetParent(Dynamic<T> widget) {
+		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
 	}
 
 	private boolean isEnabled(String widgetId) {
@@ -74,68 +132,5 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 			case "dungeon_splits" -> mainConfig.get("dungeons").get("dungeonSplits").asBoolean(true);
 			default -> true;
 		};
-	}
-
-	/**
-	 * Fixes widgets in this skyblock location and returns a map of layers to widgets.
-	 */
-	private Pair<Dynamic<?>, Dynamic<?>> fixWidgetsForLocation(Pair<Dynamic<?>, Dynamic<?>> location) {
-		Dynamic<?> locationId = location.getFirst();
-		Map<Dynamic<?>, Dynamic<?>> layers = new HashMap<>(Map.of(
-				locationId.createString("hud"), locationId.emptyMap(),
-				locationId.createString("tab"), locationId.emptyMap(),
-				locationId.createString("secondary_tab"), locationId.emptyMap()
-		));
-		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> {
-			Dynamic<?> widgetIdNew = fixWidgetId(widgetId);
-			if (!isEnabled(widgetIdNew.asString(""))) return;
-			fixWidgetAndLayer(widgetIdNew, widget, layers);
-		});
-		layers.replaceAll((_, widgets) -> locationId.emptyMap().set("widgets", widgets));
-		return Pair.of(locationId, locationId.createMap(layers));
-	}
-
-	private static void fixWidgetAndLayer(Dynamic<?> widgetIdNew, Dynamic<?> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
-		layers.computeIfPresent(
-				fixWidgetLayer(widget, widgetIdNew.asString("")),
-				(_, widgets) -> widgets.set(widgetIdNew.asString(""), fixWidget(widget))
-		);
-	}
-
-	private static Dynamic<?> fixWidgetId(Dynamic<?> widgetId) {
-		return switch (widgetId.asString("")) {
-			case "sweepDetails" -> widgetId.createString("sweep_details");
-			case "Lasso HUD" -> widgetId.createString("hud_lasso");
-			case "Dungeon Splits" -> widgetId.createString("dungeon_splits");
-			case "Item Pickup" -> widgetId.createString("item_pickup");
-			default -> widgetId;
-		};
-	}
-
-	/**
-	 * Returns the layer the widget should be on.
-	 */
-	private static Dynamic<?> fixWidgetLayer(Dynamic<?> widget, String widgetId) {
-		String layer = switch (widget.get("layer").asString("DEFAULT")) {
-			case "HUD" -> "hud";
-			case "MAIN_TAB" -> "tab";
-			case "SECONDARY_TAB" -> "secondary_tab";
-			default -> widgetId.contains("hud") || widgetId.equals("sweep_details") || widgetId.equals("powder_mining_tracker") || widgetId.equals("dungeon_splits") || widgetId.equals("item_pickup") ? "hud" : "tab";
-		};
-		return widget.createString(layer);
-	}
-
-	private static Dynamic<?> fixWidget(Dynamic<?> widget) {
-		return widget.emptyMap().set("config", widget.emptyMap()).set("position", widget
-				.remove("layer")
-				.replaceField("parent", "parent", fixWidgetParent(widget))
-		);
-	}
-
-	/**
-	 * Returns the parent of the widget or empty if the parent is the screen.
-	 */
-	private static Optional<? extends Dynamic<?>> fixWidgetParent(Dynamic<?> widget) {
-		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
 	}
 }

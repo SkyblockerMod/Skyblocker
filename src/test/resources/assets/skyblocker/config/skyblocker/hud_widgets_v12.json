@@ -1606,21 +1606,6 @@
 							"parent": "item_pickup"
 						}
 					},
-					"dungeon_splits": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "CENTER",
-								"h": "LEFT"
-							},
-							"this_anchor": {
-								"v": "CENTER",
-								"h": "LEFT"
-							},
-							"relative_x": 20,
-							"relative_y": 0
-						}
-					},
 					"dungeon_discoveries": {
 						"config": {},
 						"position": {
