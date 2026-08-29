@@ -454,21 +454,6 @@
               "relative_y": 0
             }
           },
-          "dungeon_splits": {
-            "config": {},
-            "position": {
-              "parent_anchor": {
-                "v": "CENTER",
-                "h": "LEFT"
-              },
-              "this_anchor": {
-                "v": "CENTER",
-                "h": "LEFT"
-              },
-              "relative_x": 20,
-              "relative_y": 0
-            }
-          },
           "item_pickup": {
             "config": {
               "sack_notifications": false,
