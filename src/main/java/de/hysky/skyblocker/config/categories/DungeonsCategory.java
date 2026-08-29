@@ -130,7 +130,7 @@ public class DungeonsCategory {
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.dungeonSplits"))
 						.description(Component.translatable("skyblocker.config.hud.movedMessage"), Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
-						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, screen)))
+						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, screen)))
 						.prompt(Component.translatable("text.skyblocker.open"))
 						.build())
 				.option(Option.<Boolean>createBuilder()
