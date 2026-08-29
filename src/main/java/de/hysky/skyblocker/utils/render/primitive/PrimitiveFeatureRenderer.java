@@ -162,7 +162,7 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 			int existingIndex = this.canReorder && canConsolidateConsecutiveGeometry(pipeline) ? this.drawPrimitives.indexOf(preparedPrimitiveDraw) : -1;
 
 			if (existingIndex != -1) {
-				return (StagedVertexBuffer.Draw) this.draws.get(existingIndex);
+				return this.draws.get(existingIndex);
 			}
 
 			StagedVertexBuffer.Draw draw = this.stagedBuffer.appendDraw(pipeline.getVertexFormatBinding(0), pipeline.getPrimitiveTopology());

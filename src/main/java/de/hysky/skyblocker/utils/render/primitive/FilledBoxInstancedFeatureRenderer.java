@@ -23,7 +23,7 @@ import de.hysky.skyblocker.utils.render.SkyblockerRenderPipelines;
 import de.hysky.skyblocker.utils.render.state.FilledBoxRenderState;
 
 public class FilledBoxInstancedFeatureRenderer extends PrimitiveFeatureRenderer<FilledBoxInstancedFeatureRenderer.Submit> {
-	public static final FeatureRendererType<Submit> TYPE = FeatureRendererType.create("Skyblockr Filled Box Instanced");
+	public static final FeatureRendererType<Submit> TYPE = FeatureRendererType.create("Skyblocker Filled Box Instanced");
 	private static final AABB UNIT_BOX = new AABB(BlockPos.ZERO);
 	private final BoxDataUniform boxData = new BoxDataUniform();
 
