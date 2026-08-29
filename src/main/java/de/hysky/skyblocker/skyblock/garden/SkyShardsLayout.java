@@ -26,7 +26,7 @@ public final class SkyShardsLayout {
 	private static final int MAX_DECOMPRESSED_BYTES = 4096;
 
 	// SkyShards lists the plantable crops first, in its own order, before every mutation
-	private static final String[] PALETTE_CROP_NAMES = {
+	private static final String[] PALETTE_CROPS = {
 			"Wheat Seeds",
 			"Potato",
 			"Carrot",
@@ -47,24 +47,7 @@ public final class SkyShardsLayout {
 	};
 	private static final int MUTATION_COUNT = 40;
 
-	// Palette index to crop id. Mutations happen to line up with crop ids 1-40.
-	private static final int[] INDEX_TO_CROP_ID = buildPalette();
-
 	private SkyShardsLayout() {
-	}
-
-	private static int[] buildPalette() {
-		int[] palette = new int[PALETTE_CROP_NAMES.length + MUTATION_COUNT];
-
-		for (int i = 0; i < PALETTE_CROP_NAMES.length; i++) {
-			String name = PALETTE_CROP_NAMES[i];
-			palette[i] = Objects.requireNonNull(GreenhouseCrops.CROP_ID_MAP.get(name), name).id();
-		}
-		for (int i = 0; i < MUTATION_COUNT; i++) {
-			palette[PALETTE_CROP_NAMES.length + i] = i + 1;
-		}
-
-		return palette;
 	}
 
 	/**
@@ -151,8 +134,14 @@ public final class SkyShardsLayout {
 			} catch (NumberFormatException _) {
 				return null;
 			}
-			if (index < 0 || index >= INDEX_TO_CROP_ID.length) return null;
-			cropIds[i] = INDEX_TO_CROP_ID[index];
+			if (index < 0 || index >= PALETTE_CROPS.length + MUTATION_COUNT) return null;
+
+			if (index < PALETTE_CROPS.length) {
+				String name = PALETTE_CROPS[index];
+				cropIds[i] = Objects.requireNonNull(GreenhouseCrops.CROP_ID_MAP.get(name), name).id();
+			} else {
+				cropIds[i] = index - PALETTE_CROPS.length + 1;
+			}
 		}
 		return cropIds;
 	}
