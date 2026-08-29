@@ -23,9 +23,10 @@ public class SweepDetailsListener implements ChatMessageListener {
 	protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
 	protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
 	protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep ([\\d.]+) Logs ([a-zA-Z ]*)!!");
+	protected static final long TIMEOUT_MS = 5_000;
 
 	public static boolean active = false;
-	public static float lastMatch = -1;
+	public static long lastMatch = -1;
 
 	public static float maxSweep = -1;
 	public static float lastSweep = -1;
@@ -38,7 +39,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 	public static float stylePenaltyAmount;
 	public static String correctStyle = "";
 
-	private static void resetStats() {
+	protected static void resetStats() {
 		active = false;
 		lastMatch = -1;
 		maxSweep = -1;
@@ -93,7 +94,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			return ChatFilterResult.FILTER;
 		}
 
-		if (active && System.currentTimeMillis() > lastMatch + 1_000) active = false;
+		if (active && System.currentTimeMillis() > lastMatch + TIMEOUT_MS) resetStats();
 		if (!active) return ChatFilterResult.PASS;
 
 		Matcher treeToughness = TREE_TOUGHNESS.matcher(msg);

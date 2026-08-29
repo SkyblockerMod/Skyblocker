@@ -54,8 +54,8 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
-			SweepDetailsListener.active = false;
+		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + SweepDetailsListener.TIMEOUT_MS) {
+			SweepDetailsListener.resetStats();
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {
 				case HUB -> ItemRepository.getItemStack("SWEET_AXE", Ico.IRON_AXE);
 				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", Ico.GOLDEN_AXE);
