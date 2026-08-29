@@ -1205,6 +1205,8 @@
   "skyblocker.config.quickNav.button.chooseSkyblockItem.@Tooltip": "Select a SkyBlock icon or item to fill this button with.",
   "skyblocker.config.quickNav.button.clickEvent": "Click Event",
   "skyblocker.config.quickNav.button.doubleClick": "Require Double Click",
+  "skyblocker.config.quickNav.button.doubleClick.@Tooltip": "Useful to avoid miss-clicks with warp buttons.",
+  "skyblocker.config.quickNav.button.icon": "Icon",
   "skyblocker.config.quickNav.button.item.components": "Item Components",
   "skyblocker.config.quickNav.button.item.components.@Tooltip": "A string of item components enclosed in square brackets, which is the same format as the /give command.\n\nExample: [minecraft:enchantment_glint_override=true]",
   "skyblocker.config.quickNav.button.item.count": "Item Count",
@@ -1215,6 +1217,9 @@
   "skyblocker.config.quickNav.button.uiTitle": "UI Title",
   "skyblocker.config.quickNav.enableQuickNav": "Enable Quick Navigation",
   "skyblocker.config.quickNav.enableQuickNav.@Tooltip": "Adds 14 customizable inventory buttons that can be styled and run a command when clicked.",
+  "skyblocker.config.quickNav.quickNavConfigScreen": "Open Configuration Screen",
+  "skyblocker.config.quickNav.screen.count": "Count",
+  "skyblocker.config.quickNav.screen.title": "Editing Button %s",
 
   "skyblocker.config.shortcutToKeybindsSettings": "Edit Keybind",
   "skyblocker.config.shortcutToKeybindsSettings.@Text": "Keybinds Menu",
