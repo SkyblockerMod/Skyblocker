@@ -136,6 +136,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
 	}
 
+	public void refreshSearch() {
+		if (grid == null) return;
+		grid.refreshSearch();
+	}
+
 	private static String getCommandForIndex(int index) {
 		if (index <= 8) {
 			return "/echest " + (index + 1);
@@ -362,20 +367,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Nullable
 		private final Button reloadButton;
 
-		private BackpackGridWidget(int x, int y, int width, int height, int storagesPerRow, int internalCols, boolean packed) {
+		private BackpackGridWidget(int x, int y, int width, int height, int maxStoragesPerRow, int internalCols, boolean packed) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - AbstractScrollArea.SCROLLBAR_WIDTH) {
 				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			}
 
-			if (packed) {
-				storagesPerRow = Math.min((width - AbstractScrollArea.SCROLLBAR_WIDTH) / expectedWidth, storagesPerRow);
-				width = storagesPerRow * expectedWidth + AbstractScrollArea.SCROLLBAR_WIDTH;
-				x = (StorageOverlayScreen.this.width - width) / 2;
-			}
-
-			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
+			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, maxStoragesPerRow, packed, true);
 
 			//add backpacks
 			boolean storageLoaded = false;

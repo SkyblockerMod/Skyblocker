@@ -556,6 +556,8 @@
   "skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter.@Tooltip": "Highlights Lushlilacs in magenta to assist in locating them.",
   "skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter": "Enable Sea Lumies Highlighter",
   "skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter.@Tooltip": "Highlights Sea Lumies in cyan to assist in locating them.",
+  "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget": "Sweep Details Widget",
+  "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip": "Displays Sweep Detail information on the HUD.\nSweep Details are removed from the chat but are still saved to the logs.\n\nRequires enabling Sweep Details at Swoop in the Moonglade Marsh!",
   "skyblocker.config.foraging.moongladeMarsh.enableTreeBreakHud": "Tree Break Progress HUD",
   "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver": "Enable Tuner Solver",
   "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver.@Tooltip": "Shows the required clicks for the Tune Frequency puzzle in the Moonglade Beacon.",
