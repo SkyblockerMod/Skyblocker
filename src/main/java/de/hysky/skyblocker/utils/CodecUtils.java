@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -31,7 +32,10 @@ import org.joml.Vector2ic;
 import net.minecraft.util.ExtraCodecs;
 
 public final class CodecUtils {
-	public static final Codec<Color> COLOR_CODEC = Codec.INT.xmap(argb -> new Color(argb, true), Color::getRGB);
+	public static final Codec<Color> COLOR_CODEC = Codec.withAlternative(
+			Codec.STRING.xmap(s -> Integer.parseUnsignedInt(s, 16), i -> Integer.toHexString(i).toUpperCase(Locale.ENGLISH)),
+			Codec.INT
+	).xmap(argb -> new Color(argb, true), Color::getRGB);
 	public static final Codec<JsonObject> JSON_OBJECT_CODEC = ExtraCodecs.JSON.flatXmap(
 			element -> element.isJsonObject() ? DataResult.success(element.getAsJsonObject()) : DataResult.error(() -> "Not a json object."),
 			DataResult::success
