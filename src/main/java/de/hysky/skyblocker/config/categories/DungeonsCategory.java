@@ -1030,6 +1030,14 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.factorInFraggedPrices"))
+								.description(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.factorInFraggedPrices.@Tooltip"))
+								.binding(defaults.dungeons.dungeonChestProfit.factorInFraggedPrices,
+										() -> config.dungeons.dungeonChestProfit.factorInFraggedPrices,
+										newValue -> config.dungeons.dungeonChestProfit.factorInFraggedPrices = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.includeKismet"))
 								.description(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip"))
 								.binding(defaults.dungeons.dungeonChestProfit.includeKismet,

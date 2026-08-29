@@ -342,6 +342,8 @@ public class DungeonsConfig {
 
 		public boolean croesusProfit = true;
 
+		public boolean factorInFraggedPrices = true;
+
 		public int neutralThreshold = 1000;
 
 		public ChatFormatting neutralColor = ChatFormatting.DARK_GRAY;
