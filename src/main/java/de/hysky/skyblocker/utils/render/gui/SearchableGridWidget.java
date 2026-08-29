@@ -29,16 +29,26 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 	private final WidgetsContainer widgetsContainer;
 
 	private final int expectedWidgetWidth;
+	private final int maxPerRow;
+	private final boolean packed;
 	private final boolean spaceElementsOut;
 
 	/// A grid of searchable widgets
 	/// @param expectedWidgetWidth The expected width of each widget in the grid. This class may place multiple grid widgets in the same row.
-	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, boolean spaceElementsOut) {
+	/// @param maxPerRow The maximum number of widgets to place in a single row. This class may place fewer widgets in a row if the width of this grid is too small.
+	/// @param packed If true, the width of this grid will be reduced to fit as many widgets as possible in a row tightly.
+	/// If false, the width of this grid will be the same as the width passed to the constructor, and there may be space between widgets in the grid.
+	/// @param spaceElementsOut If true, the widgets in the grid will be spaced out to fill the entire width of the grid.
+	/// If false, the widgets will be placed next to each other with no space between them.
+	/// This parameter is essentially ignored if packed is true.
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, int maxPerRow, boolean packed, boolean spaceElementsOut) {
 		super(x, y, width, height, message, AbstractScrollArea.defaultSettings(8));
 		searchField = new EditBox(Minecraft.getInstance().font, width, TEXT_FIELD_HEIGHT, Component.translatable("gui.recipebook.search_hint"));
 		searchField.setHint(Component.translatable("gui.recipebook.search_hint").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
 		searchField.setResponder(this::filterInternal);
 		this.expectedWidgetWidth = expectedWidgetWidth;
+		this.maxPerRow = maxPerRow;
+		this.packed = packed;
 		this.spaceElementsOut = spaceElementsOut;
 
 		widgetsContainer = new WidgetsContainer();
@@ -46,8 +56,22 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 		layoutWidget.addChild(widgetsContainer);
 		layoutWidget.arrangeElements();
 		layoutWidget.setPosition(x, y);
+
+		setWidth(getWidth()); // Trigger width calculation for packed grids
 	}
 
+	/// @see SearchableGridWidget#SearchableGridWidget(int, int, int, int, Component, int, int, boolean, boolean)
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, int maxPerRow, boolean packed) {
+		this(x, y, width, height, message, expectedWidgetWidth, maxPerRow, packed, false);
+	}
+
+	/// @see SearchableGridWidget#SearchableGridWidget(int, int, int, int, Component, int, int, boolean, boolean)
+	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth, boolean packed) {
+		this(x, y, width, height, message, expectedWidgetWidth, Integer.MAX_VALUE, packed);
+	}
+
+	/// You probably want packed to be true.
+	/// @see SearchableGridWidget#SearchableGridWidget(int, int, int, int, Component, int, int, boolean, boolean)
 	public SearchableGridWidget(int x, int y, int width, int height, Component message, int expectedWidgetWidth) {
 		this(x, y, width, height, message, expectedWidgetWidth, false);
 	}
@@ -66,6 +90,12 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 
 	@Override
 	public void setWidth(int width) {
+		if (packed) {
+			int perRow = Math.min((width - AbstractScrollArea.SCROLLBAR_WIDTH) / expectedWidgetWidth, maxPerRow);
+			int newWidth = perRow * expectedWidgetWidth + AbstractScrollArea.SCROLLBAR_WIDTH;
+			setX(getX() + (width - newWidth) / 2);
+			width = newWidth;
+		}
 		super.setWidth(width);
 		searchField.setWidth(width);
 		widgetsContainer.setWidth(width);
@@ -85,6 +115,10 @@ public abstract class SearchableGridWidget extends AbstractContainerWidget {
 
 	public boolean isSearchFocused() {
 		return searchField.isFocused();
+	}
+
+	public void refreshSearch() {
+		searchField.setValue(searchField.getValue());
 	}
 
 	public void setScrollAmount(double amount) {

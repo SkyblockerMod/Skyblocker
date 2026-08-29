@@ -83,6 +83,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 		// minus 9 because 3 pixels of left padding, right padding, and gap
 		int buttonsPerRow = (width - 9) / 20;
 		// Try to allocate more buttons to patterns since there are more patterns than materials
+		// TODO: Clamping these alone does not fix crash at small screen widths
 		int patternButtonsPerRow = Math.min(Math.ceilDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_PATTERN);
 		int materialButtonsPerRow = Math.min(Math.floorDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_MATERIAL);
 
