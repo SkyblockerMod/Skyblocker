@@ -910,6 +910,18 @@ public class UIAndVisualsCategory {
 								.controller(IntegerController.createBuilder().range(1, 71680).build())
 								.build())
 						.build())
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.uiAndVisuals.bazaarMax"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bazaarMax.enabled"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bazaarMax.enabled.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bazaarMax.enabled,
+										() -> config.uiAndVisuals.bazaarMax.enabled,
+										newValue -> config.uiAndVisuals.bazaarMax.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
 
 				//Input Calculator
 				.group(OptionGroup.createBuilder()

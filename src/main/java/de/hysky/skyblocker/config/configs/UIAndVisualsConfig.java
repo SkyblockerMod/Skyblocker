@@ -84,6 +84,8 @@ public class UIAndVisualsConfig {
 
 	public BazaarQuickQuantities bazaarQuickQuantities = new BazaarQuickQuantities();
 
+	public BazaarMax bazaarMax = new BazaarMax();
+
 	public InputCalculator inputCalculator = new InputCalculator();
 
 	public FlameOverlay flameOverlay = new FlameOverlay();
@@ -458,6 +460,10 @@ public class UIAndVisualsConfig {
 		public int slot2Quantity = 2240;
 
 		public int slot3Quantity = 256;
+	}
+
+	public static class BazaarMax {
+		public boolean enabled = false;
 	}
 
 	public static class InputCalculator {

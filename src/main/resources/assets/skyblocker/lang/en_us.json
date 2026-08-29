@@ -1340,6 +1340,10 @@
   "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "Displays a tilde (~) before a bar's value when it is estimated by Skyblocker because it is not visible in the action bar.",
   "skyblocker.config.uiAndVisuals.bars.useHungerBarSprites": "Use Vanilla Hunger Bar Sprites",
 
+  "skyblocker.config.uiAndVisuals.bazaarMax": "Bazaar Max",
+  "skyblocker.config.uiAndVisuals.bazaarMax.enabled": "Enabled",
+  "skyblocker.config.uiAndVisuals.bazaarMax.enabled.@Tooltip": "Type 'max ' in a Bazaar quantity input sign to use the maximum order amount shown in the Bazaar menu.",
+
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities": "Bazaar Quick Quantities",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.closeSignOnUse": "Close Sign on Use",
   "skyblocker.config.uiAndVisuals.bazaarQuickQuantities.enabled": "Enabled",

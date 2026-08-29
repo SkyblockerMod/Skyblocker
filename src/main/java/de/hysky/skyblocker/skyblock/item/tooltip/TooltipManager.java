@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarMax;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarOrderTracker;
 import de.hysky.skyblocker.skyblock.bazaar.ReorderHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -61,6 +62,7 @@ public class TooltipManager {
 			new FossilSolver(),
 			new ReorderHelper(),
 			BazaarOrderTracker.INSTANCE,
+			BazaarMax.INSTANCE,
 			new StackingEnchantProgressTooltip(0), //Would be best to have after the lore but the tech doesn't exist for that
 			new EvolvingItemProgressTooltip(0),
 			new NpcPriceTooltip(1),
