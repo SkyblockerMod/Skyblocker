@@ -1642,6 +1642,11 @@
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableTeleportOverlays": "Enable Teleport Overlays",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission": "Enable Weird Transmission Overlay",
   "skyblocker.config.uiAndVisuals.teleportOverlay.enableWitherImpact": "Enable Wither Impact Overlay",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType": "Overlay Highlight Type",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.@Tooltip": "Highlight: Only displays a highlight.\n\nOutlined Highlight: Displays both a highlight and an outline.\n\nOutline: Only displays an outline.",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.HIGHLIGHT": "Highlight",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINE": "Outline",
+  "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINED_HIGHLIGHT": "Outlined Highlight",
   "skyblocker.config.uiAndVisuals.teleportOverlay.showWhenInAir": "Show Overlay Mid Air",
   "skyblocker.config.uiAndVisuals.teleportOverlay.teleportOverlayColor": "Teleport Overlay Color",
 
