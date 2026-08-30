@@ -249,9 +249,8 @@ public class GreenhousePaste {
 	static String extractLayoutCode(String clipboard) {
 		String trimmed = clipboard.strip();
 
-		int layoutIndex = trimmed.indexOf("?layout=");
-		if (layoutIndex < 0) layoutIndex = trimmed.indexOf("&layout=");
-		if (layoutIndex >= 0) return endOfCode(trimmed.substring(layoutIndex + "?layout=".length()));
+		int layoutIndex = trimmed.indexOf("layout=");
+		if (layoutIndex >= 0) return trimmed.substring(layoutIndex + "layout=".length());
 
 		int shareIndex = trimmed.indexOf("/share/");
 		if (shareIndex >= 0) return endOfCode(trimmed.substring(shareIndex + "/share/".length()));
