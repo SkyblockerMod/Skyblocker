@@ -7,9 +7,10 @@
   * Each widget's options are now found in the HUD editor directly.
 * Add SkyShards support to Greenhouse mutation importing.
 * Add Greenhouse plot preset system
-  * Allows for importing & loading of custom mutation layout presets.
+  * Allows for the saving & quick loading of custom mutation layout presets.
   * The menu can be accessed with `/skyblocker garden greenhouse presets`.
-* Add chat filter for Safari critter capture messages
+  * After saving, use `/skyblocker garden greenhouse paste <presetName>`.
+* Add chat filter for Safari Critter capture messages
 * Add Chest Value support for the Hunting Box
 * Add Search Overlay support for Ironman Cosmetics AH
 * Add option to disable the Fairy Soul Helper on Bingo profiles
@@ -19,21 +20,19 @@
 * Improve rarity backgrounds to work in many more places
 * Improve Visitor Helper to show in Bazaar sign inputs
 * Improve dungeons HUD widget colours
-* Improve fancy bars stat caching
+* Improve Fancy Bars stat caching
 * Improve tooltip compatibility
 * Change to using Render Chest library for custom glow
+* Update Sweep Overlay to use the new sweep formula
 * Fix Storage Overlay search not highlighting items inside opened storages
-* Fix synced secret waypoints not hiding themselves
+* Fix synced Secret Waypoints not hiding themselves
 * Fix Tree Felled Notification not working
-* Fix Sweep Overlay not using the new sweep formula
 * Fix Sweep Details HUD not detecting sweep values above 1000
-* Fix removing sweep details messages when the HUD is not shown
-* Fix beacon solver not working in the Torrhus Canyon
-* Fix fire sale runes not price tooltips
+* Fix Beacon Solver not working in the Torrhus Canyon
+* Fix Fire Sale runes not having price tooltips
 * Fix HUD progress bars not using SkyBlock's new colours
-* Fix Item Pickup HUD bugs
 * Fix some issues with custom glow
-* Fix status bar tracker stripping formatting
+* Fix Status Bar Tracker stripping formatting
 
 ## What's Changed
 * Ignore empty action bar messages and cache messages by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2634
