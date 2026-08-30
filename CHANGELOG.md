@@ -7,19 +7,19 @@
   * Each widget's options are now found in the HUD editor directly.
 * Add SkyShards support to Greenhouse mutation importing.
 * Add Greenhouse plot preset system
-  * Allows for the saving & quick loading of custom mutation layout presets.
+  * Allows for the saving & quick loading of custom mutation layouts.
   * The menu can be accessed with `/skyblocker garden greenhouse presets`.
   * After saving, use `/skyblocker garden greenhouse paste <presetName>`.
 * Add chat filter for Safari Critter capture messages
 * Add Chest Value support for the Hunting Box
 * Add Search Overlay support for Ironman Cosmetics AH
 * Add option to disable the Fairy Soul Helper on Bingo profiles
-* Add file-only config for secret waypoint colours
+* Add file-only config for Secret Waypoint colours
 * Improve Sweep Overlay axe throwing accuracy to include gravity
 * Improve Boulder solver accuracy
-* Improve rarity backgrounds to work in many more places
+* Improve Rarity Backgrounds to work in many more places
 * Improve Visitor Helper to show in Bazaar sign inputs
-* Improve dungeons HUD widget colours
+* Improve Dungeons HUD widget colours
 * Improve Fancy Bars stat caching
 * Improve tooltip compatibility
 * Change to using Render Chest library for custom glow
