@@ -142,21 +142,6 @@
 							"relative_x": 0,
 							"relative_y": -100
 						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -294,21 +279,6 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"hud_fishing": {
 						"config": {},
 						"position": {
@@ -397,6 +367,21 @@
 							"relative_y": 30
 						}
 					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
 					"hud_crystals": {
 						"config": {},
 						"position": {
@@ -426,21 +411,6 @@
 							"relative_x": 0,
 							"relative_y": 0,
 							"parent": "pickaxe_ability"
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					}
 				}
@@ -498,21 +468,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -606,21 +561,6 @@
 							"parent": "item_pickup"
 						}
 					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"hud_fishing": {
 						"config": {},
 						"position": {
@@ -709,6 +649,21 @@
 							"relative_y": 0
 						}
 					},
+					"hud_treeprogress": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
 					"pickaxe_ability": {
 						"config": {},
 						"position": {
@@ -737,21 +692,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					},
@@ -809,21 +749,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					},
@@ -899,21 +824,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -972,21 +882,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -1013,6 +908,21 @@
 							},
 							"relative_x": -35,
 							"relative_y": -35
+						}
+					},
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
 						}
 					},
 					"pickaxe_ability": {
@@ -1043,21 +953,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1116,21 +1011,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1223,21 +1103,6 @@
 							"relative_y": 98
 						}
 					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"commissions": {
 						"config": {},
 						"position": {
@@ -1327,21 +1192,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -1367,21 +1217,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1459,21 +1294,6 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"hud_fishing": {
 						"config": {},
 						"position": {
@@ -1546,21 +1366,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -1619,21 +1424,6 @@
 							},
 							"relative_x": -20,
 							"relative_y": -20
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					}
 				}
@@ -1710,21 +1500,6 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"commissions": {
 						"config": {},
 						"position": {
@@ -1782,6 +1557,21 @@
 							"relative_y": 70
 						}
 					},
+					"hud_treeprogress": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
 					"sweep_details": {
 						"config": {},
 						"position": {
@@ -1810,21 +1600,6 @@
 							},
 							"relative_x": 30,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					}
 				}
@@ -1882,21 +1657,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1973,19 +1733,19 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
+					"hud_fishing": {
 						"config": {},
 						"position": {
 							"parent_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
 							"this_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
-							"relative_x": -30,
-							"relative_y": 30
+							"relative_x": 5,
+							"relative_y": 5
 						}
 					}
 				}
@@ -2061,19 +1821,19 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
+					"hud_fishing": {
 						"config": {},
 						"position": {
 							"parent_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
 							"this_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
-							"relative_x": -30,
-							"relative_y": 30
+							"relative_x": 5,
+							"relative_y": 5
 						}
 					},
 					"hud_end": {
@@ -2164,19 +1924,19 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
+					"hud_fishing": {
 						"config": {},
 						"position": {
 							"parent_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
 							"this_anchor": {
 								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT"
 							},
-							"relative_x": -30,
-							"relative_y": 30
+							"relative_x": 5,
+							"relative_y": 5
 						}
 					}
 				}
@@ -2234,21 +1994,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					},
@@ -2322,21 +2067,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					},

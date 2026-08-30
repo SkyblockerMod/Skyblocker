@@ -1,5 +1,5 @@
 {
-	"version": 11,
+	"version": 12,
 	"general": {
 		"enableTips": true,
 		"acceptReparty": true,
@@ -605,8 +605,8 @@
 		"commissionHighlight": true,
 		"callMismyla": true,
 		"redialOnBadSignal": true,
-		"enablePickobulusHelper": true,
 		"pickobulusHelper": {
+			"enablePickobulusHelper": true,
 			"enablePickobulusHud": true,
 			"hideHudOnCooldown": false
 		},
