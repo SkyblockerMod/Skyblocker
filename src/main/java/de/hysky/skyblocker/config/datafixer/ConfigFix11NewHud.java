@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 
 public class ConfigFix11NewHud extends ConfigDataFix {
 	// contains the old ids because it is done before the main fix.
-	private final Map<String, String[]> locationToWidgets = Map.ofEntries(
+	private static final Map<String, String[]> LOCATION_WIDGETS = Map.ofEntries(
 			Map.entry("garden", new String[]{"hud_farming", "sweepDetails"}),
 			Map.entry("hub", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
 			Map.entry("foraging_1", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
@@ -71,17 +71,21 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	 */
 	private <T> Dynamic<T> fixWidgets(Dynamic<T> locations) {
 		// it was possible for widgets to be enabled but to not have a position, add them if they
-		for (Map.Entry<String, String[]> entry : locationToWidgets.entrySet()) {
+		for (Map.Entry<String, String[]> entry : LOCATION_WIDGETS.entrySet()) {
 			if (locations.get(entry.getKey()).result().isEmpty())
 				locations = locations.set(entry.getKey(), locations.emptyMap());
-			locations = locations.update(entry.getKey(), location -> addWidgetsIfEnabled(entry.getValue(), location));
+			locations = locations.update(entry.getKey(), location -> fixMissingWidgetsForLocation(entry.getValue(), location));
 		}
 		return locations.updateMapValues(this::fixWidgetsForLocation);
 	}
 
-	private Dynamic<?> addWidgetsIfEnabled(String[] widgets, Dynamic<?> location) {
+	/**
+	 * Fixes widgets that are enabled but don't have a position configured for this location.
+	 * It would default to the top left in the old system.
+	 */
+	private <T> Dynamic<T> fixMissingWidgetsForLocation(String[] missingWidgets, Dynamic<T> location) {
 		String lastAdded = null;
-		for (String widget : widgets) {
+		for (String widget : missingWidgets) {
 			if (isEnabled(widget) && location.get(widget).result().isEmpty()) {
 				location = location.set(widget, createDefaultWidget(location, lastAdded));
 				lastAdded = widget;
@@ -146,11 +150,11 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	/**
 	 * Returns the parent of the widget or empty if the parent is the screen.
 	 */
-	private static <T> Optional<? extends Dynamic<T>> fixWidgetParent(Dynamic<T> widget) {
+	private static <T> Optional<Dynamic<T>> fixWidgetParent(Dynamic<T> widget) {
 		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
 	}
 
-	private <T> Dynamic<T> createDefaultWidget(Dynamic<T> base, @Nullable String parent) {
+	private static <T> Dynamic<T> createDefaultWidget(Dynamic<T> base, @Nullable String parent) {
 		return base.emptyMap()
 				.setFieldIfPresent("parent", Optional.ofNullable(parent).map(base::createString))
 				.set("parent_anchor", base.emptyMap().set("v", base.createString(parent == null ? "TOP" : "BOTTOM")).set("h", base.createString("LEFT")))
@@ -162,16 +166,18 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	private boolean isEnabled(String widgetId) {
 		if (mainConfig == null) return true;
 		return switch (widgetId) {
+			case "dungeon_splits", "Dungeon Splits" -> mainConfig.get("dungeons").get("dungeonSplits").asBoolean(true);
 			case "hud_farming" -> mainConfig.get("farming").get("farmingHud").get("enabled").asBoolean(true);
 			case "hud_treeprogress" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableTreeBreakProgress").asBoolean(true);
 			case "sweep_details", "sweepDetails" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableSweepDetailsWidget").asBoolean(true);
 			case "hud_fishing" -> mainConfig.get("helpers").get("fishing").get("enableFishingHud").asBoolean(true);
 			case "hud_lasso", "Lasso HUD" -> mainConfig.get("hunting").get("lassoHud").get("enabled").asBoolean(true);
+			case "powder_mining_tracker" -> mainConfig.get("mining").get("crystalHollows").get("enablePowderTracker").asBoolean(true);
 			case "hud_crystals" -> mainConfig.get("mining").get("crystalsHud").get("enabled").asBoolean(true);
+			// TODO pickobulus helper hud
 			case "hud_end" -> mainConfig.get("otherLocations").get("end").get("hudEnabled").asBoolean(true);
 			case "hud_slayer" -> mainConfig.get("slayers").get("enableHud").asBoolean(true);
-			case "dungeon_splits" -> mainConfig.get("dungeons").get("dungeonSplits").asBoolean(true);
-			case "powder_mining_tracker" -> mainConfig.get("mining").get("crystalHollows").get("enablePowderTracker").asBoolean(true);
+			case "item_pickup", "Item Pickup" -> mainConfig.get("uiAndVisuals").get("itemPickup").get("enabled").asBoolean(true);
 			default -> true;
 		};
 	}
