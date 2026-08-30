@@ -1875,7 +1875,7 @@
     "skyblocker.config.hud.fancyTab.positioner": "Pozícionáló: %s",
     "skyblocker.config.hud.globalScale": "Globális Méretarány",
     "skyblocker.config.hud.help": "Segítség",
-    "skyblocker.config.hud.helpText": "Jobbkattintással lehet widgeteket hozzáadni és az opciókat módosítani.\nWidgetek törlése a delete gombbal.\nTartsd nyomva a shiftet, hogy a widgetet a többihez illeszd.\n\nA widgetek szigetenként módosulnak, opcióik csak az adott szigeten érvényesek. Használd a 'Másolás...' gombot.\n\nA Hypixel widgetekből csak azok jelennek meg a Szép Tab előnézeten, amik a vanilla tabon is látszanak.\nCsak a jelenlegi szigeten látható Hypixel widgetek jelennek meg a Szép Tab előnézetben, még akkor is, ha más szigetekre is beállítottad.",
+    "skyblocker.config.hud.helpText": "Jobbkattintással lehet widgeteket hozzáadni és az opciókat módosítani.\nWidgetek törlése a delete gombbal.\nTartsd nyomva a shiftet, hogy a widgetet a többihez illeszd.\n\nMint a Hypixel TAB widgetek, minden widget és azok opciói szigetenként módosulnak. Használd a 'Másolás...' gombot a widget más szigetre másolásához.\n\nCsak a jelenlegi szigeten látható Hypixel widgetek jelennek meg a Szép Tab előnézetben, még akkor is, ha más szigetekre is beállítottad.",
     "skyblocker.config.hud.location.everywhere": "Mindenhol",
     "skyblocker.config.hud.movedMessage": "Hogy be-, vagy kikapcsold ezt a widgetet, kattints a gombra, majd jobbkattints bárhova a hozzáadáshoz, vagy kattints rá jobb gombbal és nyomj az 'eltávolítás' gombra a törléshez.",
     "skyblocker.config.hud.otherOptions.globalOptions": "Globális Beállítások",
@@ -1916,5 +1916,17 @@
     "skyblocker.hud.missingTabWidget[0]": "Hiányzó adat ehhez a TAB widgethez: %s!",
     "skyblocker.hud.missingTabWidget[1]": "Add hozzá a tabhoz a /widgets paranccsal!",
     "skyblocker.hud.missingTabWidget[2]": "Győződj meg, hogy a vanilla tabon látszódik,",
-    "skyblocker.hud.missingTabWidget[3]": "ami a %s billentyű, vagy a (%s és %s) billentyűk nyomva tartásával látható."
+    "skyblocker.hud.missingTabWidget[3]": "ami a %s billentyű, vagy a (%s és %s) billentyűk nyomva tartásával látható.",
+    "skyblocker.config.chat.filter.hideCritterCapture": "Critter Elkapás Üzenetek Elrejtése",
+    "skyblocker.config.chat.filter.hideCritterCapture.@Tooltip": "Elrejti a critter elkapás és loot share spamelő üzeneteit.",
+    "skyblocker.config.farming.farmingHud.angle": "Szög",
+    "skyblocker.config.farming.farmingHud.blocks": "Blokk / Mp",
+    "skyblocker.config.farming.greenhouse.greenhousePresets": "Greenhouse Plot Sablonok",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.@Prompt": "Sablonok Szerkesztése",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.@Tooltip": "Mentsd el a SkyMutations vagy SkyShards Greenhouse linkeket sablonkén (preset). Sablonokat a '/skyblocker garden greenhouse paste <preset>' paranccsal illesztheted be.",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.addPreset": "Sablon Hozzáadása",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.link": "SkyMutations/SkyShards Link",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.name": "Név",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.title": "Greenhouse Plot Sablonok Szerkesztése",
+    "skyblocker.config.foraging.enableTreeFelledNotification": "Fa Kivágva Értesítés Engedélyezése"
 }
