@@ -390,7 +390,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								.tags(ArrayUtils.add(WidgetManager.WIDGET_INSTANCES.values().stream().map(w -> w.getInformation().displayName()).toArray(Component[]::new), Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag")))
+								.tags(ArrayUtils.add(ArrayUtils.add(WidgetManager.WIDGET_INSTANCES.values().stream().map(w -> w.getInformation().displayName()).toArray(Component[]::new), Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag")), CommonTags.ADDED_IN_6_10_0))
 								.prompt(Component.translatable("text.skyblocker.open"))
 								.action(_ -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen()))
 								.build())
