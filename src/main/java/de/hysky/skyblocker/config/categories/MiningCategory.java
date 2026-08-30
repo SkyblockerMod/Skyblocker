@@ -81,19 +81,16 @@ public class MiningCategory {
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable.@Tooltip"))
 								.tags(CommonTags.ADDED_IN_5_10_0)
-								.binding(defaults.mining.enablePickobulusHelper,
-										() -> config.mining.enablePickobulusHelper,
-										newValue -> config.mining.enablePickobulusHelper = newValue)
+								.binding(defaults.mining.pickobulusHelper.enablePickobulusHelper,
+										() -> config.mining.pickobulusHelper.enablePickobulusHelper,
+										newValue -> config.mining.pickobulusHelper.enablePickobulusHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
+						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud"))
-								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_5_11_0)
-								.binding(defaults.mining.pickobulusHelper.enablePickobulusHud,
-										() -> config.mining.pickobulusHelper.enablePickobulusHud,
-										newValue -> config.mining.pickobulusHelper.enablePickobulusHud = newValue)
-								.controller(ConfigUtils.createBooleanController())
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
+								.prompt(Component.translatable("text.skyblocker.open"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown"))

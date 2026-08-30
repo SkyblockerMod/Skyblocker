@@ -48,6 +48,13 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	private @Nullable Dynamic<?> mainConfig;
 
 	private <T> Dynamic<T> collect(Dynamic<T> dynamic) {
+		// Fix enable pickobulus helper
+		dynamic = fixVersion(dynamic).update("mining",
+				mining -> mining.update("pickobulusHelper",
+						pickobulusHelper -> pickobulusHelper.setFieldIfPresent("enablePickobulusHelper", mining.get("enablePickobulusHelper").result())
+				).remove("enablePickobulusHelper")
+		);
+
 		mainConfig = dynamic;
 		return dynamic;
 	}
@@ -174,7 +181,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 			case "hud_lasso", "Lasso HUD" -> mainConfig.get("hunting").get("lassoHud").get("enabled").asBoolean(true);
 			case "powder_mining_tracker" -> mainConfig.get("mining").get("crystalHollows").get("enablePowderTracker").asBoolean(true);
 			case "hud_crystals" -> mainConfig.get("mining").get("crystalsHud").get("enabled").asBoolean(true);
-			// TODO pickobulus helper hud
+			case "hud_pickobulus" -> mainConfig.get("mining").get("pickobulusHelper").get("enablePickobulusHud").asBoolean(true);
 			case "hud_end" -> mainConfig.get("otherLocations").get("end").get("hudEnabled").asBoolean(true);
 			case "hud_slayer" -> mainConfig.get("slayers").get("enableHud").asBoolean(true);
 			case "item_pickup", "Item Pickup" -> mainConfig.get("uiAndVisuals").get("itemPickup").get("enabled").asBoolean(true);

@@ -99,7 +99,7 @@ public class PickobulusHelper {
 	}
 
 	private static void update() {
-		if (!(SkyblockerConfigManager.get().mining.enablePickobulusHelper || SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud)) return;
+		if (!SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHelper) return;
 
 		shouldRender = true;
 		errorMessage = null;
@@ -273,7 +273,7 @@ public class PickobulusHelper {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
+		if (!SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHelper) return;
 		for (BlockPos breakPos : breakBlocks) {
 			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, false);
 		}
