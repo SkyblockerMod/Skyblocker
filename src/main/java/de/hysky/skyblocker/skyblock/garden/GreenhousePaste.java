@@ -250,7 +250,7 @@ public class GreenhousePaste {
 		String trimmed = clipboard.strip();
 
 		int layoutIndex = trimmed.indexOf("layout=");
-		if (layoutIndex >= 0) return trimmed.substring(layoutIndex + "layout=".length());
+		if (layoutIndex >= 0) return endOfCode(trimmed.substring(layoutIndex + "layout=".length()));
 
 		int shareIndex = trimmed.indexOf("/share/");
 		if (shareIndex >= 0) return endOfCode(trimmed.substring(shareIndex + "/share/".length()));
@@ -262,7 +262,7 @@ public class GreenhousePaste {
 	private static String endOfCode(String code) {
 		for (int i = 0; i < code.length(); i++) {
 			char c = code.charAt(i);
-			boolean valid = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_' || c == '=';
+			boolean valid = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_' || c == '=' || c == '+';
 			if (!valid) return code.substring(0, i);
 		}
 		return code;
