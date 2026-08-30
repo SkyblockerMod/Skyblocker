@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -212,12 +213,16 @@ public class GreenhousePaste {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
 		Objects.requireNonNull(CLIENT.player);
-		String[] parts = clipboard.split("\\?layout=");
-		String encoded = parts.length > 1 ? parts[1] : clipboard;
+		String encoded = extractLayoutCode(clipboard);
 
 		if (encoded.isEmpty()) return;
 
-		boolean success = importGreenhouse(encoded);
+		boolean success = switch (siteOf(clipboard)) {
+			case SKY_SHARDS -> importSkyShardsGreenhouse(encoded);
+			case SKY_MUTATIONS -> importGreenhouse(encoded);
+			// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
+			case UNKNOWN -> importSkyShardsGreenhouse(encoded) || importGreenhouse(encoded);
+		};
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
@@ -235,6 +240,66 @@ public class GreenhousePaste {
 								.withStyle(ChatFormatting.GREEN)));
 
 		locateGreenhouse();
+	}
+
+	/**
+	 * Pulls the layout code out of a designer link, a share link, or a bare code.
+	 * Both sites put the code in a {@code layout} query parameter.
+	 */
+	static String extractLayoutCode(String clipboard) {
+		String trimmed = clipboard.strip();
+
+		int layoutIndex = trimmed.indexOf("?layout=");
+		if (layoutIndex < 0) layoutIndex = trimmed.indexOf("&layout=");
+		if (layoutIndex >= 0) return endOfCode(trimmed.substring(layoutIndex + "?layout=".length()));
+
+		int shareIndex = trimmed.indexOf("/share/");
+		if (shareIndex >= 0) return endOfCode(trimmed.substring(shareIndex + "/share/".length()));
+
+		return trimmed;
+	}
+
+	// Cuts off trailing query parameters and path segments
+	private static String endOfCode(String code) {
+		for (int i = 0; i < code.length(); i++) {
+			char c = code.charAt(i);
+			boolean valid = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-' || c == '_' || c == '=';
+			if (!valid) return code.substring(0, i);
+		}
+		return code;
+	}
+
+	private enum LayoutSite {
+		SKY_SHARDS,
+		SKY_MUTATIONS,
+		UNKNOWN
+	}
+
+	private static LayoutSite siteOf(String clipboard) {
+		String host = clipboard.strip().toLowerCase(Locale.ENGLISH);
+
+		int schemeEnd = host.indexOf("://");
+		if (schemeEnd >= 0) host = host.substring(schemeEnd + "://".length());
+
+		for (int i = 0; i < host.length(); i++) {
+			char c = host.charAt(i);
+			if (c == '/' || c == '?' || c == '#') {
+				host = host.substring(0, i);
+				break;
+			}
+		}
+
+		if (host.contains("skyshards")) return LayoutSite.SKY_SHARDS;
+		if (host.contains("skymutations")) return LayoutSite.SKY_MUTATIONS;
+		return LayoutSite.UNKNOWN;
+	}
+
+	private static boolean importSkyShardsGreenhouse(String encoded) {
+		int[][] layout = SkyShardsLayout.decode(encoded);
+		if (layout == null) return false;
+
+		targetGreenhouse = layout;
+		return true;
 	}
 
 	public static boolean isInGreenhouse() {
