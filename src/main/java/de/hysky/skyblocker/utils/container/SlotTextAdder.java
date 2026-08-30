@@ -35,6 +35,11 @@ public interface SlotTextAdder extends ContainerMatcher {
 		return SlotTextManager.isEnabled(getConfigInformation().id());
 	}
 
+	/// @return true if this solver should only work in Skyblock.
+	default boolean skyblockOnly() {
+		return true;
+	}
+
 	default @Nullable ConfigInformation getConfigInformation() {
 		return null;
 	}

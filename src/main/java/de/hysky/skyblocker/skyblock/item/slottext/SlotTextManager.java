@@ -118,7 +118,7 @@ public class SlotTextManager {
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
+			if (screen instanceof AbstractContainerScreen<?> || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(_ -> currentScreenAdders.clear());
 			}
@@ -138,7 +138,7 @@ public class SlotTextManager {
 
 	private static void onScreenChange(Screen screen) {
 		for (SlotTextAdder adder : adders) {
-			if (adder.isEnabled() && adder.test(screen)) {
+			if ((Utils.isOnSkyblock() || !adder.skyblockOnly()) && adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
