@@ -476,6 +476,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax"))
+								.description(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableBazaarMax,
+										() -> config.helpers.bazaar.enableBazaarMax,
+										newValue -> config.helpers.bazaar.enableBazaarMax = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,

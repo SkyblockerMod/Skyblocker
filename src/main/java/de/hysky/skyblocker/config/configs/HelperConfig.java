@@ -173,6 +173,8 @@ public class HelperConfig {
 		public boolean enableReorderHelper = true;
 
 		public boolean enableOrderTracker = true;
+
+		public boolean enableBazaarMax = true;
 	}
 
 	public static class ItemPrice {

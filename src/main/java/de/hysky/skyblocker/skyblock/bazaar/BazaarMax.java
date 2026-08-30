@@ -74,6 +74,6 @@ public final class BazaarMax extends SimpleTooltipAdder {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.bazaarMax.enabled;
+		return SkyblockerConfigManager.get().helpers.bazaar.enableBazaarMax;
 	}
 }

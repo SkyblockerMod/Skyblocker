@@ -62,7 +62,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	@Inject(method = "charTyped", at = @At("TAIL"))
 	private void skyblocker$charTyped(CharacterEvent event, CallbackInfoReturnable<Boolean> cir) {
 		if (event.codepoint() == ' ' && Utils.isOnSkyblock()
-				&& SkyblockerConfigManager.get().uiAndVisuals.bazaarMax.enabled
+				&& SkyblockerConfigManager.get().helpers.bazaar.enableBazaarMax
 				&& isInputSign() && messages[3].equals("to order")) {
 			BazaarMax.INSTANCE.expandMax(signField, messages[line]);
 		}
