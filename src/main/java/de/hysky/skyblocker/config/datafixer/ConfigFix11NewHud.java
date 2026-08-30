@@ -3,7 +3,6 @@ package de.hysky.skyblocker.config.datafixer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
@@ -13,6 +12,21 @@ import com.mojang.serialization.Dynamic;
 import org.jspecify.annotations.Nullable;
 
 public class ConfigFix11NewHud extends ConfigDataFix {
+	private final Map<String, String[]> locationToWidgets = Map.ofEntries(
+			Map.entry("garden", new String[]{"hud_farming", "sweep_details"}),
+			Map.entry("hub", new String[]{"sweep_details", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_1", new String[]{"sweep_details", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_2", new String[]{"sweep_details", "lasso_hud", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("foraging_3", new String[]{"sweep_details", "lasso_hud", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("crystal_hollows", new String[]{"hud_crystals", "powder_mining_tracker", "hud_fishing"}),
+			Map.entry("combat_3", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("combat_1", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("rift", new String[]{"hud_slayer"}),
+			Map.entry("crimson_isle", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("lotus_atoll", new String[]{"hud_fishing"}),
+			Map.entry("fishing_1", new String[]{"hud_fishing"})
+	);
+
 	public ConfigFix11NewHud(Schema outputSchema, boolean changesType) {
 		super(outputSchema, changesType);
 	}
@@ -41,7 +55,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 		Dynamic<T> updated = fixVersion(dynamic).renameAndFixField(
 				"positions",
 				"configs",
-				fixWidgets()
+				this::fixWidgets
 		).set("copies", dynamic.createMap(Map.of(
 				dynamic.createString("hud"), dynamic.emptyMap(),
 				dynamic.createString("tab"), dynamic.emptyMap(),
@@ -54,8 +68,22 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	/**
 	 * Fixes the map of skyblock locations to widgets.
 	 */
-	private <T> UnaryOperator<Dynamic<? extends T>> fixWidgets() {
-		return locations -> locations.updateMapValues(this::fixWidgetsForLocation);
+	private <T> Dynamic<T> fixWidgets(Dynamic<T> locations) {
+		// it was possible for widgets to be enabled but to not have a position, add them if they
+		for (Map.Entry<String, String[]> entry : locationToWidgets.entrySet()) {
+			if (locations.get(entry.getKey()).result().isEmpty())
+				locations = locations.set(entry.getKey(), locations.emptyMap());
+			locations = locations.update(entry.getKey(), location -> addWidgetsIfEnabled(entry.getValue(), location));
+		}
+		return locations.updateMapValues(this::fixWidgetsForLocation);
+	}
+
+	private Dynamic<?> addWidgetsIfEnabled(String[] widgets, Dynamic<?> location) {
+		for (int i = 0; i < widgets.length; i++) {
+			String widget = widgets[i];
+			if (isEnabled(widget) && location.get(widget).result().isEmpty()) location = location.set(widget, createDefaultWidget(location, i > 0 ? widgets[i - 1] : null));
+		}
+		return location;
 	}
 
 	/**
@@ -118,6 +146,15 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
 	}
 
+	private <T> Dynamic<T> createDefaultWidget(Dynamic<T> base, @Nullable String parent) {
+		return base.emptyMap()
+				.setFieldIfPresent("parent", Optional.ofNullable(parent).map(base::createString))
+				.set("parent_anchor", base.emptyMap().set("v", base.createString(parent == null ? "TOP" : "BOTTOM")).set("h", base.createString("LEFT")))
+				.set("this_anchor", base.emptyMap().set("v", base.createString("TOP")).set("h", base.createString("LEFT")))
+				.set("relative_x", base.createInt(parent == null ? 5 : 0))
+				.set("relative_y", base.createInt(parent == null ? 5 : 2));
+	}
+
 	private boolean isEnabled(String widgetId) {
 		if (mainConfig == null) return true;
 		return switch (widgetId) {
@@ -130,6 +167,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 			case "hud_end" -> mainConfig.get("otherLocations").get("end").get("hudEnabled").asBoolean(true);
 			case "hud_slayer" -> mainConfig.get("slayers").get("enableHud").asBoolean(true);
 			case "dungeon_splits" -> mainConfig.get("dungeons").get("dungeonSplits").asBoolean(true);
+			case "powder_mining_tracker" -> mainConfig.get("mining").get("crystalHollows").get("enablePowderTracker").asBoolean(true);
 			default -> true;
 		};
 	}

@@ -90,7 +90,8 @@ public class MiningConfig {
 
 		public Color chestHighlightColor = new Color(0, 0, 255, 128);
 
-		public boolean enablePowderTracker = true;
+		@Deprecated
+		public transient boolean enablePowderTracker = true;
 
 		public boolean countNaturalChestsInTracker = true;
 

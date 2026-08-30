@@ -179,16 +179,11 @@ public class MiningCategory {
 										newValue -> config.mining.crystalHollows.chestHighlightColor = newValue)
 								.controller(ConfigUtils.createColourController(true))
 								.build())
-						.option(Option.<Boolean>createBuilder()
+						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker"))
-								.description(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip"))
-								.binding(defaults.mining.crystalHollows.enablePowderTracker,
-										() -> config.mining.crystalHollows.enablePowderTracker,
-										newValue -> {
-									config.mining.crystalHollows.enablePowderTracker = newValue;
-									if (newValue) PowderMiningTracker.INSTANCE.recalculateAll();
-								})
-								.controller(ConfigUtils.createBooleanController())
+								.description(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip"), Component.translatable("skyblocker.config.hud.movedMessage"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, screen)))
+								.prompt(Component.translatable("text.skyblocker.open"))
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))

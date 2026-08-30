@@ -1039,7 +1039,7 @@
   "skyblocker.config.mining.crystalHollows.chestHighlighter.@Tooltip": "Highlight found treasure chests and lock pick locations when powder mining.",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color": "Chest Highlight Color",
   "skyblocker.config.mining.crystalHollows.chestHighlighter.color.@Tooltip": "What color the treasure chests / lock pick should be highlighted.",
-  "skyblocker.config.mining.crystalHollows.enablePowderTracker": "Enable Powder Mining Tracker",
+  "skyblocker.config.mining.crystalHollows.enablePowderTracker": "Powder Mining Tracker",
   "skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip": "Tracks the treasure chest rewards you get from powder mining in the Crystal Hollows.",
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper": "Metal Detector Helper",
   "skyblocker.config.mining.crystalHollows.metalDetectorHelper.@Tooltip": "Helper for the metal detector puzzle in the Mines of Divan.",
