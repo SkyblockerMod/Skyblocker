@@ -45,7 +45,11 @@ public class Http {
 				.version(Version.HTTP_2)
 				.uri(URI.create(url));
 
-		if (token != null) requestBuilder.header("Authorization", "Bearer " + token);
+		if (token != null) {
+			String headerName = url.startsWith(HYPIXEL_PROXY) ? "Hysky-Authorization" : "Authorization";
+
+			requestBuilder.header(headerName, "Bearer " + token);
+		}
 
 		HttpRequest request = requestBuilder.build();
 		HttpResponse<InputStream> response = HTTP_CLIENT.send(request, BodyHandlers.ofInputStream());
