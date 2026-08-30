@@ -36,9 +36,11 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 			"Oak", new FlexibleItemStack(Items.OAK_LOG)
 	);
 	public static final Set<Location> LOCATIONS = EnumSet.of(Location.GALATEA, Location.HUB, Location.THE_PARK, Location.GARDEN, Location.TORRHUS_CANYON);
+	public static SweepDetailsHudWidget INSTANCE;
 
 	public SweepDetailsHudWidget() {
 		super(Component.translatable("skyblocker.galatea.hud.sweepDetails"), 0xFF6E37CC, new Information("sweep_details", Component.literal("Sweep Details"), LOCATIONS));
+		INSTANCE = this;
 		update();
 	}
 
@@ -52,8 +54,8 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + 1_000) {
-			SweepDetailsListener.active = false;
+		if (!SweepDetailsListener.active || System.currentTimeMillis() > SweepDetailsListener.lastMatch + SweepDetailsListener.TIMEOUT_MS) {
+			SweepDetailsListener.resetStats();
 			FlexibleItemStack axeIcon = switch (Utils.getLocation()) {
 				case HUB -> ItemRepository.getItemStack("SWEET_AXE", Ico.IRON_AXE);
 				case THE_PARK -> ItemRepository.getItemStack("TREECAPITATOR_AXE", Ico.GOLDEN_AXE);

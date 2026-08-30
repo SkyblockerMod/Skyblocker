@@ -28,7 +28,8 @@ public class ForagingConfig {
 
 		public boolean enableTunerSolver = true;
 
-		public boolean enableSweepDetailsWidget = true;
+		@Deprecated
+		public transient boolean enableSweepDetailsWidget;
 	}
 
 	public static class TorrhusCanyon {

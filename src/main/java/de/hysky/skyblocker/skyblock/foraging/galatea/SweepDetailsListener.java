@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 
 import net.minecraft.network.chat.Component;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -23,22 +23,23 @@ public class SweepDetailsListener implements ChatMessageListener {
 	protected static final Pattern TREE_TOUGHNESS = Pattern.compile("  (.+?) Tree Toughness: ([\\d.]+) ([\\d.]+) Logs");
 	protected static final Pattern AXE_THROW_PENALTY = Pattern.compile("  Axe throw: (-\\d+)% Sweep ([\\d.]+) Logs");
 	protected static final Pattern WRONG_STYLE_PENALTY = Pattern.compile("  Wrong Style: (-\\d+)% Sweep ([\\d.]+) Logs ([a-zA-Z ]*)!!");
+	protected static final long TIMEOUT_MS = 5_000;
 
 	public static boolean active = false;
-	public static float lastMatch = -1;
+	public static long lastMatch = -1;
 
 	public static float maxSweep = -1;
 	public static float lastSweep = -1;
 	public static String lastTreeType = "Unknown";
-	public static String toughness;
-	public static String logs;
+	public static String toughness = "";
+	public static String logs = "";
 	public static boolean axePenalty;
 	public static float axePenaltyAmount;
 	public static boolean stylePenalty;
 	public static float stylePenaltyAmount;
-	public static String correctStyle;
+	public static String correctStyle = "";
 
-	private static void resetStats() {
+	protected static void resetStats() {
 		active = false;
 		lastMatch = -1;
 		maxSweep = -1;
@@ -72,7 +73,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 	@Override
 	public ChatFilterResult onMessage(Component message, String asString) {
 		if (!SweepDetailsHudWidget.LOCATIONS.contains(Utils.getLocation())) return ChatFilterResult.PASS;
-		if (!SkyblockerConfigManager.get().foraging.moongladeMarsh.enableSweepDetailsWidget) return ChatFilterResult.PASS;
+		if (!WidgetManager.isWidgetInCurrentScreen(SweepDetailsHudWidget.INSTANCE)) return ChatFilterResult.PASS;
 		String msg = message.getString();
 
 		Matcher sweepDetails = SWEEP_DETAILS.matcher(msg);
@@ -93,7 +94,7 @@ public class SweepDetailsListener implements ChatMessageListener {
 			return ChatFilterResult.FILTER;
 		}
 
-		if (active && System.currentTimeMillis() > lastMatch + 1_000) active = false;
+		if (active && System.currentTimeMillis() > lastMatch + TIMEOUT_MS) resetStats();
 		if (!active) return ChatFilterResult.PASS;
 
 		Matcher treeToughness = TREE_TOUGHNESS.matcher(msg);
