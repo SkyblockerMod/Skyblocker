@@ -58,7 +58,7 @@ public final class CaxtonCompatibility {
 		}
 	}
 
-	private static final MethodHandle HANDLE = createHandle();
+	private static final @Nullable MethodHandle HANDLE = createHandle();
 	private static boolean errored = false;
 
 	public static boolean drawOutlinedText(GuiGraphicsExtractor graphics, FormattedCharSequence text, float x, float y, int color, int outlineColor) {
@@ -74,7 +74,7 @@ public final class CaxtonCompatibility {
 	}
 
 	public static Optional<RenderPipeline> getSeeThroughTextPipeline() {
-		return getCaxtonPipeline("TEXT_SEE_THROUGH");
+		return getCaxtonPipeline("TEXT_SEETHROUGH");
 	}
 
 	public static Optional<RenderPipeline> getTextPipeline() {
