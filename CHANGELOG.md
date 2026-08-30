@@ -69,6 +69,11 @@
 * Improve Slot Text API by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2702
 * Fix removing Sweep Details from chat when HUD is not shown by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2692
 * Support SkyShards Greenhouse layouts for /skyblocker garden greenhouse paste by @Campionnn in https://github.com/SkyblockerMod/Skyblocker/pull/2689
+* Fix DungeonScore Network Protocol Error by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2707
+* Fix Pasting from SkyMutations by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2706
+* Fix Dungeon Splits Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2711
+* fix Caxton compat on 26.2 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2710
+* fix widgets that are enabled but have no position by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2704
 
 ## New Contributors
 * @PanTruskawka045 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2693
