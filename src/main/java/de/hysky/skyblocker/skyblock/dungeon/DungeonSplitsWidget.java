@@ -322,6 +322,9 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	@Override
 	public void updateContent() {
+		updateFloor();
+		loadFloorSplits();
+
 		addElement(new PlainTextElement(Component.literal("Floor: " + floor)));
 
 		super.updateContent();
