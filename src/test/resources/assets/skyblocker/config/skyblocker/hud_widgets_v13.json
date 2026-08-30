@@ -549,15 +549,15 @@
 						},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"hud_slayer": {
@@ -641,15 +641,15 @@
 						},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"hud_slayer": {
@@ -961,19 +961,18 @@
 						}
 					},
 					"hud_slayer": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"pickaxe_ability": {
@@ -1131,15 +1130,15 @@
 						},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"powder_mining_tracker": {
@@ -1269,15 +1268,15 @@
 						},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					}
 				}
@@ -1308,19 +1307,18 @@
 						}
 					},
 					"hud_treeprogress": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"pet": {
@@ -1477,19 +1475,18 @@
 						}
 					},
 					"hud_treeprogress": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"pet": {

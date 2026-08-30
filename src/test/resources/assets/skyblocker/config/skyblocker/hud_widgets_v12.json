@@ -368,19 +368,18 @@
 						}
 					},
 					"hud_fishing": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"hud_crystals": {
@@ -651,19 +650,18 @@
 						}
 					},
 					"hud_treeprogress": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"pickaxe_ability": {
@@ -913,19 +911,18 @@
 						}
 					},
 					"hud_slayer": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"pickaxe_ability": {
@@ -1561,19 +1558,18 @@
 						}
 					},
 					"hud_treeprogress": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"sweep_details": {
@@ -1738,19 +1734,18 @@
 						}
 					},
 					"hud_fishing": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					}
 				}
@@ -1827,19 +1822,18 @@
 						}
 					},
 					"hud_fishing": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					},
 					"hud_end": {
@@ -1931,19 +1925,18 @@
 						}
 					},
 					"hud_fishing": {
-						"config": {
-						},
+						"config": {},
 						"position": {
 							"parent_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
 							},
 							"relative_x": 5,
-							"relative_y": 5,
-							"this_anchor": {
-								"h": "LEFT",
-								"v": "TOP"
-							}
+							"relative_y": 5
 						}
 					}
 				}
