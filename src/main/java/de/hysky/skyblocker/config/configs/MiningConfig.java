@@ -39,6 +39,8 @@ public class MiningConfig {
 
 	public Glacite glacite = new Glacite();
 
+	public LanternDeployable lanternDeployable = new LanternDeployable();
+
 	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
 
 	public static class PickobulusHelper {
@@ -173,6 +175,10 @@ public class MiningConfig {
 		public boolean playSound = false;
 
 
+	}
+
+	public static class LanternDeployable {
+		public boolean showDeployableRange = true;
 	}
 
 	/**

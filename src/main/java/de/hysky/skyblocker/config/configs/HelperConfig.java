@@ -25,6 +25,8 @@ public class HelperConfig {
 
 	public boolean enableAccessoriesHelperWidget = true;
 
+	public boolean showPowerOrbRange = true;
+
 	public BuildersWand buildersWand = new BuildersWand();
 
 	public MythologicalRitual mythologicalRitual = new MythologicalRitual();
@@ -48,6 +50,8 @@ public class HelperConfig {
 	public GreatSpookEvent greatSpookEvent = new GreatSpookEvent();
 
 	public CenturyRaffle centuryRaffle = new CenturyRaffle();
+
+	public PowerOrbRange powerOrbRange = new PowerOrbRange();
 
 	public static class BuildersWand {
 		public boolean enableBuildersWandPreview = true;
@@ -190,5 +194,9 @@ public class HelperConfig {
 		public boolean enableRaffleTaskHighlight = true;
 
 		public boolean enableRaffleRewardHighlight = true;
+	}
+
+	public static class PowerOrbRange {
+		public boolean showPowerOrbRange = true;
 	}
 }

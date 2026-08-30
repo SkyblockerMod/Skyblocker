@@ -526,6 +526,15 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
+				//Power Orb Range
+				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.showPowerOrbRange"))
+						.description(Component.translatable("skyblocker.config.helpers.showPowerOrbRange.@Tooltip"))
+						.binding(defaults.helpers.showPowerOrbRange,
+								() -> config.helpers.showPowerOrbRange,
+								newValue -> config.helpers.showPowerOrbRange = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
 
 				.build();
 	}
