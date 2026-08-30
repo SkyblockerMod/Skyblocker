@@ -12,12 +12,13 @@ import com.mojang.serialization.Dynamic;
 import org.jspecify.annotations.Nullable;
 
 public class ConfigFix11NewHud extends ConfigDataFix {
+	// contains the old ids because it is done before the main fix.
 	private final Map<String, String[]> locationToWidgets = Map.ofEntries(
-			Map.entry("garden", new String[]{"hud_farming", "sweep_details"}),
-			Map.entry("hub", new String[]{"sweep_details", "hud_slayer", "hud_fishing"}),
-			Map.entry("foraging_1", new String[]{"sweep_details", "hud_slayer", "hud_fishing"}),
-			Map.entry("foraging_2", new String[]{"sweep_details", "lasso_hud", "hud_treeprogress", "hud_fishing"}),
-			Map.entry("foraging_3", new String[]{"sweep_details", "lasso_hud", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("garden", new String[]{"hud_farming", "sweepDetails"}),
+			Map.entry("hub", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_1", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_2", new String[]{"sweepDetails", "Lasso HUD", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("foraging_3", new String[]{"sweepDetails", "Lasso HUD", "hud_treeprogress", "hud_fishing"}),
 			Map.entry("crystal_hollows", new String[]{"hud_crystals", "powder_mining_tracker", "hud_fishing"}),
 			Map.entry("combat_3", new String[]{"hud_slayer", "hud_fishing"}),
 			Map.entry("combat_1", new String[]{"hud_slayer", "hud_fishing"}),
@@ -79,9 +80,12 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	}
 
 	private Dynamic<?> addWidgetsIfEnabled(String[] widgets, Dynamic<?> location) {
-		for (int i = 0; i < widgets.length; i++) {
-			String widget = widgets[i];
-			if (isEnabled(widget) && location.get(widget).result().isEmpty()) location = location.set(widget, createDefaultWidget(location, i > 0 ? widgets[i - 1] : null));
+		String lastAdded = null;
+		for (String widget : widgets) {
+			if (isEnabled(widget) && location.get(widget).result().isEmpty()) {
+				location = location.set(widget, createDefaultWidget(location, lastAdded));
+				lastAdded = widget;
+			}
 		}
 		return location;
 	}
@@ -160,9 +164,9 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 		return switch (widgetId) {
 			case "hud_farming" -> mainConfig.get("farming").get("farmingHud").get("enabled").asBoolean(true);
 			case "hud_treeprogress" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableTreeBreakProgress").asBoolean(true);
-			case "sweep_details" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableSweepDetailsWidget").asBoolean(true);
+			case "sweep_details", "sweepDetails" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableSweepDetailsWidget").asBoolean(true);
 			case "hud_fishing" -> mainConfig.get("helpers").get("fishing").get("enableFishingHud").asBoolean(true);
-			case "hud_lasso" -> mainConfig.get("hunting").get("lassoHud").get("enabled").asBoolean(true);
+			case "hud_lasso", "Lasso HUD" -> mainConfig.get("hunting").get("lassoHud").get("enabled").asBoolean(true);
 			case "hud_crystals" -> mainConfig.get("mining").get("crystalsHud").get("enabled").asBoolean(true);
 			case "hud_end" -> mainConfig.get("otherLocations").get("end").get("hudEnabled").asBoolean(true);
 			case "hud_slayer" -> mainConfig.get("slayers").get("enableHud").asBoolean(true);
