@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -21,7 +22,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
-public record OptionWidgetCollector(List<AbstractWidget> collectorList, Runnable onOptionChange, Location editingFor) {
+public record OptionWidgetCollector(List<AbstractWidget> collectorList, Runnable onOptionChange, Screen configScreen, Location editingFor) {
 
 	public <T extends AbstractWidget> T addWidget(T widget) {
 		collectorList.add(widget);

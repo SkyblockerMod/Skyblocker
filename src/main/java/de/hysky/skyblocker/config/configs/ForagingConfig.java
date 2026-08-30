@@ -24,7 +24,8 @@ public class ForagingConfig {
 
 		public int seaLumiesMinimumCount = 3;
 
-		public boolean enableTreeBreakProgress = true;
+		@Deprecated
+		public transient boolean enableTreeBreakProgress = true;
 
 		public boolean enableTunerSolver = true;
 

@@ -139,7 +139,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 		}
 
 		List<AbstractWidget> collector = new ArrayList<>();
-		OptionWidgetCollector widgetCollector = new OptionWidgetCollector(collector, hudWidget::updateConfigPreview, configScreen.getCurrentLocation());
+		OptionWidgetCollector widgetCollector = new OptionWidgetCollector(collector, hudWidget::updateConfigPreview, configScreen, configScreen.getCurrentLocation());
 		hudWidget.getOptionWidgets(widgetCollector);
 		widgetCollector.buildDeferred();
 		collector.forEach(this::add);

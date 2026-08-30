@@ -23,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.BlockPosSet;
@@ -99,7 +100,7 @@ public class PickobulusHelper {
 	}
 
 	private static void update() {
-		if (!(SkyblockerConfigManager.get().mining.enablePickobulusHelper || SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHud)) return;
+		if (!SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHelper && !WidgetManager.isWidgetInCurrentScreen(PickobulusHudWidget.getInstance())) return;
 
 		shouldRender = true;
 		errorMessage = null;
@@ -273,7 +274,7 @@ public class PickobulusHelper {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (!SkyblockerConfigManager.get().mining.enablePickobulusHelper) return;
+		if (!SkyblockerConfigManager.get().mining.pickobulusHelper.enablePickobulusHelper) return;
 		for (BlockPos breakPos : breakBlocks) {
 			collector.submitOutlinedBox(breakPos, LIGHT_BLUE, 2f, false);
 		}

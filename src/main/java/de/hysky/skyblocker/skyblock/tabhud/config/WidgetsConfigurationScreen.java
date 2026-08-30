@@ -233,7 +233,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				parentPoint = oldRule.parentPoint();
 				thisPoint = oldRule.thisPoint();
 			}
-			String newParent = null;
+			String newParent = oldRule.parent().orElse(null);
 			OptionalInt relativeX = OptionalInt.empty();
 			OptionalInt relativeY = OptionalInt.empty();
 			if (minecraft.hasShiftDown()) {

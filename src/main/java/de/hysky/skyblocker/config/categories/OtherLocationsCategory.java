@@ -142,6 +142,7 @@ public class OtherLocationsCategory {
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
 								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.THE_END, screen)))
 								.build())
