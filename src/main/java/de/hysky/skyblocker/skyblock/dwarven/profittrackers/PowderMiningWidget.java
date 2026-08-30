@@ -21,9 +21,11 @@ import de.hysky.skyblocker.utils.Location;
 @RegisterWidget
 public class PowderMiningWidget extends HudWidget {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
+	public static PowderMiningWidget INSTANCE;
 
 	public PowderMiningWidget() {
 		super(new Information("powder_mining_tracker", Component.translatable("skyblocker.powderTracker"), Location.CRYSTAL_HOLLOWS));
+		INSTANCE = this;
 	}
 
 	@Override

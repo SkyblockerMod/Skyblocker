@@ -90,6 +90,7 @@ public class MiningCategory {
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud"))
 								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
+								.tags(CommonTags.ADDED_IN_5_11_0)
 								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
