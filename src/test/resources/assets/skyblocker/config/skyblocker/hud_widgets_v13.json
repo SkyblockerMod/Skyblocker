@@ -48,25 +48,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -128,25 +109,6 @@
 							"relative_x": 70,
 							"relative_y": 0
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -203,25 +165,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -297,25 +240,6 @@
 							},
 							"relative_x": 0,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"hud_pickobulus": {
@@ -406,25 +330,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -452,25 +357,6 @@
 							},
 							"relative_x": 0,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"dungeon_discoveries": {
@@ -582,25 +468,6 @@
 							"relative_y": 0
 						}
 					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"sweep_details": {
 						"config": {},
 						"position": {
@@ -674,6 +541,25 @@
 							"relative_y": 30
 						}
 					},
+					"hud_fishing": {
+						"config": {
+							"creature_counter": true,
+							"fishing_timer": false,
+							"only_barn": true
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
+						}
+					},
 					"hud_slayer": {
 						"config": {},
 						"position": {
@@ -687,25 +573,6 @@
 							},
 							"relative_x": 35,
 							"relative_y": 20
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					}
 				}
@@ -766,6 +633,25 @@
 							"relative_y": 30
 						}
 					},
+					"hud_fishing": {
+						"config": {
+							"creature_counter": true,
+							"fishing_timer": false,
+							"only_barn": true
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
+						}
+					},
 					"hud_slayer": {
 						"config": {},
 						"position": {
@@ -779,25 +665,6 @@
 							},
 							"relative_x": 25,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"hud_end": {
@@ -906,25 +773,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -950,25 +798,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1027,25 +856,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1122,25 +932,6 @@
 							"relative_x": 0,
 							"relative_y": 0
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -1167,6 +958,22 @@
 							},
 							"relative_x": -35,
 							"relative_y": -35
+						}
+					},
+					"hud_slayer": {
+						"config": {
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
 						}
 					},
 					"pickaxe_ability": {
@@ -1197,25 +1004,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1274,25 +1062,6 @@
 								"h": "LEFT"
 							},
 							"relative_x": 31,
-							"relative_y": 30
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
 							"relative_y": 30
 						}
 					}
@@ -1354,23 +1123,23 @@
 							"relative_y": 30
 						}
 					},
-					"item_pickup": {
+					"hud_fishing": {
 						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
+							"creature_counter": true,
+							"fishing_timer": false,
+							"only_barn": true
 						},
 						"position": {
 							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
+								"h": "LEFT",
+								"v": "TOP"
 							},
+							"relative_x": 5,
+							"relative_y": 5,
 							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
+								"h": "LEFT",
+								"v": "TOP"
+							}
 						}
 					},
 					"powder_mining_tracker": {
@@ -1477,25 +1246,6 @@
 							"relative_y": 88
 						}
 					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
-					},
 					"sweep_details": {
 						"config": {},
 						"position": {
@@ -1509,6 +1259,25 @@
 							},
 							"relative_x": 31,
 							"relative_y": 30
+						}
+					},
+					"hud_fishing": {
+						"config": {
+							"creature_counter": true,
+							"fishing_timer": false,
+							"only_barn": true
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
 						}
 					}
 				}
@@ -1536,6 +1305,22 @@
 							},
 							"relative_x": 68,
 							"relative_y": 70
+						}
+					},
+					"hud_treeprogress": {
+						"config": {
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
 						}
 					},
 					"pet": {
@@ -1570,25 +1355,6 @@
 							},
 							"relative_x": 30,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"sweep_details": {
@@ -1682,25 +1448,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -1727,6 +1474,22 @@
 							},
 							"relative_x": 0,
 							"relative_y": 0
+						}
+					},
+					"hud_treeprogress": {
+						"config": {
+						},
+						"position": {
+							"parent_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							},
+							"relative_x": 5,
+							"relative_y": 5,
+							"this_anchor": {
+								"h": "LEFT",
+								"v": "TOP"
+							}
 						}
 					},
 					"pet": {
@@ -1777,25 +1540,6 @@
 							},
 							"relative_x": 0,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"sweep_details": {
@@ -1854,25 +1598,6 @@
 							},
 							"relative_x": 0,
 							"relative_y": 0
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"jacobs_contest": {
@@ -2050,25 +1775,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -2157,25 +1863,6 @@
 							},
 							"relative_x": -30,
 							"relative_y": -80
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"mage_reputation": {
@@ -2301,25 +1988,6 @@
 							"relative_x": 31,
 							"relative_y": 30
 						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
-						}
 					}
 				}
 			},
@@ -2408,25 +2076,6 @@
 							},
 							"relative_x": 25,
 							"relative_y": -175
-						}
-					},
-					"item_pickup": {
-						"config": {
-							"sack_notifications": false,
-							"split_sack": false,
-							"show_item_name": true
-						},
-						"position": {
-							"parent_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"this_anchor": {
-								"v": "TOP",
-								"h": "RIGHT"
-							},
-							"relative_x": -30,
-							"relative_y": 30
 						}
 					},
 					"skills": {
