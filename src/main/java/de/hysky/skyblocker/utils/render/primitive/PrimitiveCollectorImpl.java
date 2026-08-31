@@ -275,7 +275,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	public void submitBlockHologram(BlockPos pos, BlockState state, float alpha) {
 		ensureNotFrozen();
 
-		if (!FrustumUtils.isVisible(this.frustum, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
+		if (!FrustumUtils.isVisible(this.frustum, pos)) {
 			return;
 		}
 
