@@ -1887,7 +1887,7 @@
     "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde": "为估算数值显示波浪号",
     "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "当Skyblocker因动作栏未显示精确数值而估算时，在估算的计量条数值前显示波浪号（~）。",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened.@Tooltip": "执行 /storage 将再次开启上次打开的背包或末影箱页面。",
-    "skyblocker.fancyAuctionHouse.canBuyIn": "%s 后可购买",
+    "skyblocker.fancyAuctionHouse.canBuyIn": "%s后可购买",
     "skyblocker.config.chat.filter.hideCritterCapture": "隐藏Critter Capture消息",
     "skyblocker.config.chat.filter.hideCritterCapture.@Tooltip": "隐藏Critter Capture和loot share的消息轰炸。",
     "skyblocker.config.farming.farmingHud.angle": "角度",
@@ -1897,5 +1897,6 @@
     "skyblocker.config.farming.greenhouse.greenhousePresets.name": "名称",
     "skyblocker.config.farming.greenhouse.greenhousePresets.title": "编辑温室地块预设",
     "skyblocker.config.hud.widget.base.scale": "缩放",
-    "skyblocker.config.hud.widget.element.showTitle": "显示标题"
+    "skyblocker.config.hud.widget.element.showTitle": "显示标题",
+    "skyblocker.config.farming.greenhouse.greenhousePresets.link": "SkyMutations/SkyShards链接"
 }
