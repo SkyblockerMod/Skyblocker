@@ -12,6 +12,6 @@ import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 public class WindowMixin {
 	@Inject(method = "setGuiScale", at = @At("TAIL"))
 	public void skyblocker$onScaleFactorChange(CallbackInfo ci) {
-		FancyStatusBars.updatePositions(false);
+		FancyStatusBars.INSTANCE.updatePositions(false);
 	}
 }

@@ -32,6 +32,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.ValueBreakdownPopup;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -540,7 +541,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(_ -> Minecraft.getInstance().gui.setScreen(new StatusBarsConfigScreen()))
+								.action(_ -> Minecraft.getInstance().gui.setScreen(new StatusBarsConfigScreen(FancyStatusBars.INSTANCE)))
 								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
