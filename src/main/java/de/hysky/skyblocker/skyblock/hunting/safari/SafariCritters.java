@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.hunting.safari;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -21,21 +20,27 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HuntingConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -52,9 +57,8 @@ public class SafariCritters {
 	private static final Map<SafariUtils.Critters, Integer> caughtCritters = new EnumMap<>(SafariUtils.Critters.class);
 	private static final Map<SafariUtils.Critters, Integer> nearbyCritters = new EnumMap<>(SafariUtils.Critters.class);
 	private static final Map<SafariUtils.Critters, Integer> sparklingCritters = new EnumMap<>(SafariUtils.Critters.class);
-	private static final List<Boolean> snoozleWalls = Arrays.asList(false, false, false, false, false);
-	private static int totalHoneybugs = 0;
-	private static @Nullable List<BlockPos> honeybugNests = null;
+	private static final List<SafariUtils.BlockLocation> snoozleWalls = new ArrayList<>();
+	private static final List<SafariUtils.BlockLocation> honeybugNests = new ArrayList<>();
 	private static boolean started = false;
 
 	@Init
@@ -62,11 +66,17 @@ public class SafariCritters {
 		for (var critter : SafariUtils.Critters.values()) {
 			caughtCritters.put(critter, 0);
 		}
-		Scheduler.INSTANCE.scheduleCyclic(SafariCritters::update, 20);
+		for (int i = 0; i < SafariUtils.getSnoozleWalls().size(); i++) {
+			snoozleWalls.add(SafariUtils.BlockLocation.UNKNOWN);
+		}
+		for (int i = 0; i < SafariUtils.HONEYBUG_HIVES.size(); i++) {
+			honeybugNests.add(SafariUtils.BlockLocation.UNKNOWN);
+		}
+		Scheduler.INSTANCE.scheduleCyclic(SafariCritters::tick, 20);
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SafariCritters::onChatMessage);
 		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> attackOrUseBlock(pos));
 		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> attackOrUseBlock(hitResult.getBlockPos()));
-		// are both of these needed?
+		// TODO: Question for reviewers, are both DISCONNECT and JOIN needed?
 		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> reset());
 		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 		LevelRenderExtractionCallback.EVENT.register(SafariCritters::extractRendering);
@@ -82,17 +92,17 @@ public class SafariCritters {
 			caughtCritters.replaceAll((_, _) -> 0);
 			nearbyCritters.clear();
 			sparklingCritters.clear();
-			snoozleWalls.replaceAll(_ -> false);
-			honeybugNests = null;
-			totalHoneybugs = 0;
+			snoozleWalls.replaceAll(_ -> SafariUtils.BlockLocation.UNKNOWN);
+			honeybugNests.replaceAll(_ -> SafariUtils.BlockLocation.UNKNOWN);
 		}
 	}
 
-	private static void update() {
-		if (MINECRAFT.level == null || !Utils.isInSafari()) return;
+	private static void tick() {
+		if (MINECRAFT.level == null || MINECRAFT.player == null || !Utils.isInSafari()) return;
 
 		// Check for nearby nametags
 		nearbyCritters.clear();
+		// TODO: Make sparkling critters persist until caught
 		sparklingCritters.clear();
 
 		for (Entity entity : MINECRAFT.level.entitiesForRendering()) {
@@ -112,22 +122,36 @@ public class SafariCritters {
 			}
 		}
 
+		Frustum frustum = RenderHelper.getCamera().getCullFrustum();
+
 		// Check if snoozle walls are broken or not
 		if (SafariUtils.isInCavernBiome()) {
-			for (int i = 0; i < SafariUtils.SNOOZLE_WALL_CORES.size(); i++) {
-				BlockState block = MINECRAFT.level.getBlockState(SafariUtils.SNOOZLE_WALL_CORES.get(i));
-				snoozleWalls.set(i, block.isAir());
+			for (int i = 0; i < snoozleWalls.size(); i++) {
+				SafariUtils.BlockLocation location = snoozleWalls.get(i);
+				BlockPos pos = SafariUtils.SNOOZLE_WALL_CORES.get(i);
+				if (location == SafariUtils.BlockLocation.CLEAR || cantSeeBlock(frustum, pos)) continue;
+				// check block to see if it's solid or air
+				BlockState block = MINECRAFT.level.getBlockState(pos);
+				if (block.isAir()) snoozleWalls.set(i, SafariUtils.BlockLocation.CLEAR);
+				else if (location == SafariUtils.BlockLocation.UNKNOWN) snoozleWalls.set(i, SafariUtils.BlockLocation.FOUND);
 			}
 		}
 
-		// Check for honeybug nests on initial forest entry
-		if (SafariUtils.isInForestBiome() && honeybugNests == null) {
-			honeybugNests = new ArrayList<>();
-			for (BlockPos nest : SafariUtils.HONEYBUG_HIVES) {
-				BlockState block = MINECRAFT.level.getBlockState(nest);
-				if (block.is(Blocks.BEE_NEST)) honeybugNests.add(nest);
+		// Check for newly spotted honeybug nests
+		if (SafariUtils.isInForestBiome()) {
+			for (int i = 0; i < honeybugNests.size(); i++) {
+				BlockPos pos = SafariUtils.HONEYBUG_HIVES.get(i);
+				if (honeybugNests.get(i) != SafariUtils.BlockLocation.UNKNOWN || cantSeeBlock(frustum, pos)) continue;
+				// check block to see if it's a nest or hive
+				BlockState block = MINECRAFT.level.getBlockState(pos);
+				if (block.is(Blocks.BEE_NEST)) {
+					LOGGER.info("[Skyblocker] Honeybug Nest spotted at {}", pos);
+					honeybugNests.set(i, SafariUtils.BlockLocation.FOUND);
+				} else {
+					LOGGER.info("[Skyblocker] Honeybug Hive spotted at {}", pos);
+					honeybugNests.set(i, SafariUtils.BlockLocation.OTHER);
+				}
 			}
-			totalHoneybugs = honeybugNests.size();
 		}
 
 		// Tell critter hud that information may have changed
@@ -135,11 +159,15 @@ public class SafariCritters {
 	}
 
 	private static InteractionResult attackOrUseBlock(BlockPos pos) {
-		// we only care about bee nests in the safari forest biome
-		if (MINECRAFT.level == null || honeybugNests == null || honeybugNests.isEmpty() || !Utils.isInSafari()) return InteractionResult.PASS;
+		// We only care about bee nests in the safari
+		if (MINECRAFT.level == null || !Utils.isInSafari()) return InteractionResult.PASS;
 		BlockState block = MINECRAFT.level.getBlockState(pos);
 		if (block.is(Blocks.BEE_NEST)) {
-			honeybugNests.remove(pos);
+			for (int i = 0; i < honeybugNests.size(); i++) {
+				if (SafariUtils.HONEYBUG_HIVES.get(i).equals(pos) && honeybugNests.get(i) == SafariUtils.BlockLocation.FOUND) {
+					honeybugNests.set(i, SafariUtils.BlockLocation.CLEAR);
+				}
+			}
 		}
 		return InteractionResult.PASS;
 	}
@@ -153,9 +181,9 @@ public class SafariCritters {
 		if (critter != null) {
 			caughtCritters.merge(critter, 1, Integer::sum);
 
-			// clear all highlighted bee nests if someone catches the final honeybug
-			if (honeybugNests != null && critter == SafariUtils.Critters.HONEYBUG && caughtCritters.get(critter) == totalHoneybugs) {
-				honeybugNests.clear();
+			// Stop highlighting honeybug nests if someone catches the final honeybug
+			if (critter == SafariUtils.Critters.HONEYBUG && getCaught(critter) == getTotalHoneybugs(false)) {
+				honeybugNests.replaceAll(loc -> loc == SafariUtils.BlockLocation.FOUND ? SafariUtils.BlockLocation.CLEAR : loc);
 			}
 		}
 
@@ -163,37 +191,51 @@ public class SafariCritters {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (MINECRAFT.level == null || MINECRAFT.player == null || !Utils.isInSafari() || honeybugNests == null) return;
+		if (MINECRAFT.level == null || MINECRAFT.player == null || !Utils.isInSafari()) return;
 
-		// highlight snoozle walls while in the cave section of the cavern biome
-		if (SkyblockerConfigManager.get().hunting.safari.highlightSnoozleWalls && SafariUtils.isInCavernBiome() && MINECRAFT.player.getY() < 55) {
+		// Highlight snoozle walls while in the cave section of the cavern biome
+		if (SkyblockerConfigManager.get().hunting.safari.highlightSnoozleWalls && SafariUtils.isInCavernBiome() && !SafariUtils.isInSpawn(MINECRAFT.player) && MINECRAFT.player.getY() < 54) {
 			var snoozleWallBlocks = SafariUtils.getSnoozleWalls();
-			for (int i = 0; i < snoozleWallBlocks.size(); i++) {
-				if (!snoozleWalls.get(i)) {
-					var SNOOZLE_WALL = SafariUtils.getSnoozleWalls().get(i);
-					HuntingConfig.Safari.WallHighlightType highlightType = SkyblockerConfigManager.get().hunting.safari.wallHighlightType;
-					if (highlightType != HuntingConfig.Safari.WallHighlightType.HIGHLIGHT) {
-						collector.submitOutlinedConnected(SNOOZLE_WALL, SNOOZLE_WALL_COLOR, 5f, false);
-					}
-					if (highlightType != HuntingConfig.Safari.WallHighlightType.OUTLINE) {
-						for (BlockPos pos : SNOOZLE_WALL) {
-							collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
-						}
+			for (int i = 0; i < snoozleWalls.size(); i++) {
+				if (snoozleWalls.get(i) == SafariUtils.BlockLocation.CLEAR) continue;
+				var wallBlocks = snoozleWallBlocks.get(i);
+				HuntingConfig.Safari.WallHighlightType highlightType = SkyblockerConfigManager.get().hunting.safari.wallHighlightType;
+				if (highlightType != HuntingConfig.Safari.WallHighlightType.HIGHLIGHT) {
+					collector.submitOutlinedConnected(wallBlocks, SNOOZLE_WALL_COLOR, 5f, false);
+				}
+				if (highlightType != HuntingConfig.Safari.WallHighlightType.OUTLINE) {
+					// should have collector.submitFilledConnected() as this is very ugly on air blocks?
+					for (BlockPos pos : wallBlocks) {
+						collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
 					}
 				}
 			}
 		}
 
-		// highlight honeybug nests until right-clicked or all honeybugs are caught
-		if (SkyblockerConfigManager.get().hunting.safari.highlightHoneybugNests && SafariUtils.isInForestBiome()) {
-			for (BlockPos nest : honeybugNests) {
-				AABB outline = RenderHelper.getBlockBoundingBox(MINECRAFT.level, nest);
+		// Highlight unconfirmed or uncollected honeybug nests
+		if (SkyblockerConfigManager.get().hunting.safari.highlightHoneybugNests && SafariUtils.isInForestBiome() && !SafariUtils.isInSpawn(MINECRAFT.player)) {
+			for (int i = 0; i < honeybugNests.size(); i++) {
+				var location = honeybugNests.get(i);
+				if (location != SafariUtils.BlockLocation.UNKNOWN && location != SafariUtils.BlockLocation.FOUND) continue;
+				BlockPos pos = SafariUtils.HONEYBUG_HIVES.get(i);
+				AABB outline = RenderHelper.getBlockBoundingBox(MINECRAFT.level, pos);
 
 				if (outline != null) {
-					collector.submitFilledBox(outline, HONEYBUG_NEST_COLOR, 0.4f, false);
+					collector.submitFilledBox(outline, HONEYBUG_NEST_COLOR, 0.4f, true);
 				}
 			}
 		}
+	}
+
+	private static boolean cantSeeBlock(Frustum frustum, BlockPos pos) {
+		assert MINECRAFT.level != null && MINECRAFT.player != null;
+
+		// Confirm block is within player's camera angle
+		if (!FrustumUtils.isVisible(frustum, pos)) return true;
+
+		// Raycast to confirm if block is visible to player
+		BlockHitResult blockHitResult = MINECRAFT.level.clip(new ClipContext(MINECRAFT.player.getEyePosition(), Vec3.atCenterOf(pos), ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, MINECRAFT.player));
+		return blockHitResult.getType() != HitResult.Type.MISS && !blockHitResult.getBlockPos().equals(pos);
 	}
 
 	private static SafariUtils.@Nullable Critters getCritter(String name, boolean warn) {
@@ -217,11 +259,11 @@ public class SafariCritters {
 	}
 
 	public static boolean hasUnique(SafariUtils.Critters critter) {
+		// TODO: Check for leftover bird seeds in player inventory
 		return switch (critter) {
-			// snoozles are a 50% chance per wall, so 0 snoozles possible
-			case SafariUtils.Critters.SNOOZLE -> caughtCritters.get(critter) > 0 || (!snoozleWalls.contains(false) && !nearbyCritters.containsKey(SafariUtils.Critters.SNOOZLE));
-			// TODO: check for leftover bird items in inventory
-			// once all birds have spawned any missing uniques are no longer possible
+			// Snoozles are a 50% chance per wall, so 0 snoozles is possible
+			case SafariUtils.Critters.SNOOZLE -> caughtCritters.get(critter) > 0 || (getMinimum(critter) == 0 && !nearbyCritters.containsKey(SafariUtils.Critters.SNOOZLE));
+			// Once all birds have been caught any missing uniques are no longer possible
 			case SafariUtils.Critters.BLUEBIRD, SafariUtils.Critters.PARAKEET, SafariUtils.Critters.MACAW -> caughtCritters.get(critter) > 0 || caughtCritters.get(SafariUtils.Critters.BLUEBIRD) + caughtCritters.get(SafariUtils.Critters.PARAKEET) + (caughtCritters.get(SafariUtils.Critters.MACAW) / 2) >= 9;
 			default -> caughtCritters.get(critter) > 0;
 		};
@@ -231,16 +273,38 @@ public class SafariCritters {
 		return caughtCritters.get(critter);
 	}
 
+	private static int getTotalHoneybugs(boolean minimum) {
+		int found = 0;
+		for (SafariUtils.BlockLocation location : honeybugNests) {
+			if (location == SafariUtils.BlockLocation.UNKNOWN) {
+				return minimum ? SafariUtils.CRITTER_DETAILS.get(SafariUtils.Critters.HONEYBUG).min() : -1;
+			} else if (location == SafariUtils.BlockLocation.FOUND) {
+				++found;
+			}
+		}
+
+		return found;
+	}
+
+	public static int getUnknownSnoozles() {
+		return Collections.frequency(snoozleWalls, SafariUtils.BlockLocation.UNKNOWN);
+	}
+
+	public static int getUnknownHoneybugs() {
+		return Collections.frequency(honeybugNests, SafariUtils.BlockLocation.UNKNOWN);
+	}
+
 	public static int getMinimum(SafariUtils.Critters critter) {
-		// TODO: check for leftover coins in inventory for gimmiegold
+		// TODO: Check for leftover shining coins in player inventory
 		return switch (critter) {
-			case SafariUtils.Critters.HONEYBUG -> totalHoneybugs;
-			// check number of remaining snoozle walls
-			case SafariUtils.Critters.SNOOZLE -> Collections.frequency(snoozleWalls, false);
+			case SafariUtils.Critters.HONEYBUG -> getTotalHoneybugs(true);
+			// Check number of remaining snoozle walls
+			case SafariUtils.Critters.SNOOZLE -> (int) snoozleWalls.stream().filter(loc -> loc != SafariUtils.BlockLocation.CLEAR).count();
 			default -> SafariUtils.CRITTER_DETAILS.get(critter).min();
 		};
 	}
 
+	// TODO: Make this filter by biome
 	public static @Nullable Map<SafariUtils.Critters, Integer> getSparklings() {
 		return sparklingCritters.isEmpty() ? null : sparklingCritters;
 	}
