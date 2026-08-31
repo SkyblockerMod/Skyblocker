@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -113,7 +114,7 @@ public class SafariUtils {
 			entry(Critters.GEMZIE, CritterDetails.ofFixed(HeadTextures.GEMZIE_CRITTER, SkyblockItemRarity.EPIC, 3)),
 			// Forest
 			entry(Critters.FOXTROT, CritterDetails.ofRange(HeadTextures.FOXTROT_CRITTER, SkyblockItemRarity.COMMON, 6, 8)),
-			entry(Critters.BLUEBIRD, CritterDetails.ofRandom(HeadTextures.BLUEBIRD_CRITTER, SkyblockItemRarity.COMMON)),
+			entry(Critters.BLUEBIRD, CritterDetails.ofRandom(HeadTextures.BLUEBIRD_CRITTER, SkyblockItemRarity.UNCOMMON)),
 			entry(Critters.HONEYBUG, CritterDetails.ofRange(HeadTextures.HONEYBUG_CRITTER, SkyblockItemRarity.UNCOMMON, 3, 6)),
 			entry(Critters.TREEFROG, CritterDetails.ofRange(HeadTextures.TREEFROG_CRITTER, SkyblockItemRarity.UNCOMMON, 3, 6)),
 			entry(Critters.WOODCHUCKER, CritterDetails.ofRange(HeadTextures.WOODCHUCKER_CRITTER, SkyblockItemRarity.UNCOMMON, 3, 6)),
@@ -144,6 +145,18 @@ public class SafariUtils {
 			entry(Critters.TROODON, CritterDetails.ofFixed(HeadTextures.TROODON_CRITTER, SkyblockItemRarity.RARE, 3)),
 			entry(Critters.WUMPA, CritterDetails.ofFixed(HeadTextures.WUMPA_CRITTER, SkyblockItemRarity.LEGENDARY, 1))
 	));
+
+	// Status of each possible snoozle wall or honeybug nest location
+	public enum BlockLocation {
+		// not seen by player yet
+		UNKNOWN,
+		// honeybug hive
+		OTHER,
+		// snoozle wall block or honeybug nest
+		FOUND,
+		// broken snoozle wall or empty honeybug nest
+		CLEAR
+	}
 
 	// Center blocks of every snoozle wall
 	public static final ArrayList<BlockPos> SNOOZLE_WALL_CORES = new ArrayList<>(Arrays.asList(
@@ -358,5 +371,13 @@ public class SafariUtils {
 
 	public static boolean isInIcyBiome() {
 		return Utils.isInSafari() && (Utils.isInBiome(SkyBlockBiomes.ICY) || Utils.isInBiome(SkyBlockBiomes.ICY_CAVES));
+	}
+
+	// avoid flagging biome as forest or cavern while still in the spawn area
+	public static boolean isInSpawn(Player player) {
+		int x = player.getBlockX();
+		int y = player.getBlockY();
+		int z = player.getBlockZ();
+		return x <= -41 && x >= -58 && y <= 75 && y >= 67 && z <= 27 && z >= 19;
 	}
 }
