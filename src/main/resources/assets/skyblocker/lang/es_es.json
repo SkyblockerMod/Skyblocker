@@ -2,7 +2,7 @@
     "key.skyblocker.hotbarSlotLock": "Bloquear Slot (Barra de objetos)",
     "skyblocker.config.title": "%s de Skyblocker",
     "skyblocker.config.general": "General",
-    "skyblocker.config.uiAndVisuals.bars": "Barras de Salud, Mana, Defensa, Velocidad & XP",
+    "skyblocker.config.uiAndVisuals.bars": "Barras elegantes",
     "skyblocker.config.uiAndVisuals.bars.enableBars": "Habilitar Barras",
     "skyblocker.config.uiAndVisuals.backpackPreviewWithoutShift": "Ver la previsualización de la mochila sin sostener Shift",
     "skyblocker.config.general.itemTooltip.enableNPCPrice": "Habilitar Precios de NPC",
@@ -458,5 +458,6 @@
     "skyblocker.config.dungeons.salvageHelper.onlyDonated": "Ayudante de salvamento - solo resalta los artículos donados",
     "skyblocker.config.dungeons.secretSync": "Sincronización secreta",
     "skyblocker.config.dungeons.secretSync.hideReceivedWaypoints": "Ocultar los puntos de ruta secretos recibidos",
-    "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "Añadir salas sincronizadas"
+    "skyblocker.config.dungeons.secretSync.receiveMatchedRooms": "Añadir salas sincronizadas",
+    "skyblocker.config.dungeons.secretSync.receiveRoomSecretCount": "Usar el recuento de secretos de salas sincronizadas"
 }
