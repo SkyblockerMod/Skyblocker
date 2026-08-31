@@ -13,6 +13,7 @@ import net.minecraft.network.chat.TextColor;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -76,6 +77,15 @@ public class ElectionWidget extends TabHudWidget {
 					this.addElement(Elements.progressComponent(MAYOR_DATA.get(mayorname), candidate, pcnt, TextColor.fromLegacyFormat(COLS[i]).getValue()));
 				} else this.addElement(new PlainTextElement(lines.get(i)));
 			}
+		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addSimpleIcoText(Ico.CLOCK, "Ends in: ", ChatFormatting.GOLD, "???");
+		float[] progresses = {60, 30, 1};
+		for (int i = 0; i < 3; i++) {
+			collector.addElement(Elements.progressComponent(Ico.VILLAGER, Component.literal("Mayor " + (i + 1)), progresses[i]));
 		}
 	}
 }

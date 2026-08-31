@@ -51,6 +51,7 @@
 	"dandelion": ">=1.0.0-alpha.22+26.2",
 	"yet_another_config_lib_v3": ">=3.9.4+26.2",
 	"fabric-language-kotlin": "*",
+	"render-chest": ">=1.0.2+26.2",
     "hm-api": ">=1.0.4+26.2",
     "minecraft": "~26.2",
     "java": ">=25"

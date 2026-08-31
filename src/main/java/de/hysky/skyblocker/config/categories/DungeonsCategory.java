@@ -20,6 +20,8 @@ import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 
 public class DungeonsCategory {
@@ -125,13 +127,11 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.hideSoulweaverSkulls = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				.option(Option.<Boolean>createBuilder()
+				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.dungeonSplits"))
-						.description(Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
-						.binding(defaults.dungeons.dungeonSplits,
-								() -> config.dungeons.dungeonSplits,
-								newValue -> config.dungeons.dungeonSplits = newValue)
-						.controller(ConfigUtils.createBooleanController())
+						.description(Component.translatable("skyblocker.config.hud.movedMessage"), Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, screen)))
+						.prompt(Component.translatable("text.skyblocker.open"))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.bloodCampHelper"))

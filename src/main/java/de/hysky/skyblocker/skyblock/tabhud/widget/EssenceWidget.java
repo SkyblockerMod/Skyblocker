@@ -10,6 +10,7 @@ import net.minecraft.network.chat.TextColor;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.Location;
@@ -42,5 +43,11 @@ public class EssenceWidget extends TabHudWidget {
 				default -> this.addElement(new PlainTextElement(line));
 			}
 		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(Ico.WITHER, Component.literal("Essence 1: ???")));
+		collector.addElement(Elements.iconTextComponent(Ico.GOLD, Component.literal("Essence 2: ???")));
 	}
 }

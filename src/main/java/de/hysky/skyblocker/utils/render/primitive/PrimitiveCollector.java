@@ -76,15 +76,6 @@ public interface PrimitiveCollector {
 	void submitCylinder(Vec3 centre, float radius, float height, int segments, int colour);
 
 	/**
-	 * Submits a circle filled in using the triangle fan draw mode.
-	 *
-	 * @param centre   The position that the circle will be centred around.
-	 * @param radius   The radius of the circle.
-	 * @param segments The number of triangles used to approximate the circle.
-	 */
-	void submitFilledCircle(Vec3 centre, float radius, int segments, int colour);
-
-	/**
 	 * Submits a circle sphere in using triangle strips.
 	 *
 	 * @param centre   The position that the circle will be centred around.
@@ -93,6 +84,15 @@ public interface PrimitiveCollector {
 	 * @param segments The number of triangles used to approximate the circle.
 	 */
 	void submitSphere(Vec3 centre, float radius, int segments, int rings, int colour);
+
+	/**
+	 * Submits a circle filled in using the triangle fan draw mode.
+	 *
+	 * @param centre   The position that the circle will be centred around.
+	 * @param radius   The radius of the circle.
+	 * @param segments The number of triangles used to approximate the circle.
+	 */
+	void submitFilledCircle(Vec3 centre, float radius, int segments, int colour);
 
 	/**
 	 * Submits a circle outline in using quads

@@ -36,6 +36,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -80,7 +81,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker;
+		return WidgetManager.isWidgetInCurrentScreen(PowderMiningWidget.INSTANCE);
 	}
 
 	@Init

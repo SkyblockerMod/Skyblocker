@@ -3,70 +3,128 @@ package de.hysky.skyblocker.config.datafixer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
+import org.jspecify.annotations.Nullable;
 
 public class ConfigFix11NewHud extends ConfigDataFix {
+	// contains the old ids because it is done before the main fix.
+	private static final Map<String, String[]> LOCATION_WIDGETS = Map.ofEntries(
+			Map.entry("garden", new String[]{"hud_farming", "sweepDetails"}),
+			Map.entry("hub", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_1", new String[]{"sweepDetails", "hud_slayer", "hud_fishing"}),
+			Map.entry("foraging_2", new String[]{"sweepDetails", "Lasso HUD", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("foraging_3", new String[]{"sweepDetails", "Lasso HUD", "hud_treeprogress", "hud_fishing"}),
+			Map.entry("crystal_hollows", new String[]{"hud_crystals", "powder_mining_tracker", "hud_fishing"}),
+			Map.entry("combat_3", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("combat_1", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("rift", new String[]{"hud_slayer"}),
+			Map.entry("crimson_isle", new String[]{"hud_slayer", "hud_fishing"}),
+			Map.entry("lotus_atoll", new String[]{"hud_fishing"}),
+			Map.entry("fishing_1", new String[]{"hud_fishing"})
+	);
+
 	public ConfigFix11NewHud(Schema outputSchema, boolean changesType) {
 		super(outputSchema, changesType);
 	}
 
 	@Override
 	protected TypeRewriteRule makeRule() {
-		return fixTypeEverywhereTyped(
-				getClass().getSimpleName(),
-				getInputSchema().getType(ConfigDataFixer.HUD_WIDGETS_TYPE),
-				typed -> typed.update(DSL.remainderFinder(), this::fix)
+		return TypeRewriteRule.seq(fixTypeEverywhereTyped(
+						getClass().getSimpleName(),
+						getInputSchema().getType(ConfigDataFixer.CONFIG_TYPE),
+						typed -> typed.update(DSL.remainderFinder(), this::collect)),
+				fixTypeEverywhereTyped(
+						getClass().getSimpleName(),
+						getInputSchema().getType(ConfigDataFixer.HUD_WIDGETS_TYPE),
+						typed -> typed.update(DSL.remainderFinder(), this::fix))
 		);
 	}
 
+	private @Nullable Dynamic<?> mainConfig;
+
+	private <T> Dynamic<T> collect(Dynamic<T> dynamic) {
+		// Fix enable pickobulus helper
+		dynamic = fixVersion(dynamic).update("mining",
+				mining -> mining.update("pickobulusHelper",
+						pickobulusHelper -> pickobulusHelper.setFieldIfPresent("enablePickobulusHelper", mining.get("enablePickobulusHelper").result())
+				).remove("enablePickobulusHelper")
+		);
+
+		mainConfig = dynamic;
+		return dynamic;
+	}
+
 	private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
-		return fixVersion(dynamic).renameAndFixField(
+		Dynamic<T> updated = fixVersion(dynamic).renameAndFixField(
 				"positions",
 				"configs",
-				fixWidgets()
+				this::fixWidgets
 		).set("copies", dynamic.createMap(Map.of(
 				dynamic.createString("hud"), dynamic.emptyMap(),
 				dynamic.createString("tab"), dynamic.emptyMap(),
 				dynamic.createString("secondary_tab"), dynamic.emptyMap()
 		)));
+		mainConfig = null;
+		return updated;
 	}
 
 	/**
 	 * Fixes the map of skyblock locations to widgets.
 	 */
-	private static UnaryOperator<Dynamic<?>> fixWidgets() {
-		return locations -> locations.updateMapValues(ConfigFix11NewHud::fixWidgetsForLocation);
+	private <T> Dynamic<T> fixWidgets(Dynamic<T> locations) {
+		// it was possible for widgets to be enabled but to not have a position, add them if they
+		for (Map.Entry<String, String[]> entry : LOCATION_WIDGETS.entrySet()) {
+			if (locations.get(entry.getKey()).result().isEmpty())
+				locations = locations.set(entry.getKey(), locations.emptyMap());
+			locations = locations.update(entry.getKey(), location -> fixMissingWidgetsForLocation(entry.getValue(), location));
+		}
+		return locations.updateMapValues(this::fixWidgetsForLocation);
+	}
+
+	/**
+	 * Fixes widgets that are enabled but don't have a position configured for this location.
+	 * It would default to the top left in the old system.
+	 */
+	private <T> Dynamic<T> fixMissingWidgetsForLocation(String[] missingWidgets, Dynamic<T> location) {
+		String lastAdded = null;
+		for (String widget : missingWidgets) {
+			if (isEnabled(widget) && location.get(widget).result().isEmpty()) {
+				location = location.set(widget, createDefaultWidget(location, lastAdded));
+				lastAdded = widget;
+			}
+		}
+		return location;
 	}
 
 	/**
 	 * Fixes widgets in this skyblock location and returns a map of layers to widgets.
 	 */
-	private static Pair<Dynamic<?>, Dynamic<?>> fixWidgetsForLocation(Pair<Dynamic<?>, Dynamic<?>> location) {
+	private Pair<Dynamic<?>, Dynamic<?>> fixWidgetsForLocation(Pair<Dynamic<?>, Dynamic<?>> location) {
 		Dynamic<?> locationId = location.getFirst();
 		Map<Dynamic<?>, Dynamic<?>> layers = new HashMap<>(Map.of(
 				locationId.createString("hud"), locationId.emptyMap(),
 				locationId.createString("tab"), locationId.emptyMap(),
 				locationId.createString("secondary_tab"), locationId.emptyMap()
 		));
-		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> fixWidgetAndLayer(fixWidgetId(widgetId), widget, layers));
+		location.getSecond().getMapValues().getOrThrow().forEach((widgetId, widget) -> fixWidgetAndLayer(fixWidgetId(widgetId).asString(""), widget, layers));
 		layers.replaceAll((_, widgets) -> locationId.emptyMap().set("widgets", widgets));
 		return Pair.of(locationId, locationId.createMap(layers));
 	}
 
-	private static void fixWidgetAndLayer(Dynamic<?> widgetIdNew, Dynamic<?> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
+	private <T> void fixWidgetAndLayer(String widgetIdNew, Dynamic<T> widget, Map<Dynamic<?>, Dynamic<?>> layers) {
+		if (!isEnabled(widgetIdNew)) return;
 		layers.computeIfPresent(
-				fixWidgetLayer(widget, widgetIdNew.asString("")),
-				(_, widgets) -> widgets.set(widgetIdNew.asString(""), fixWidget(widget))
+				fixWidgetLayer(widget, widgetIdNew),
+				(_, widgets) -> widgets.set(widgetIdNew, fixWidget(widget))
 		);
 	}
 
-	private static Dynamic<?> fixWidgetId(Dynamic<?> widgetId) {
+	private static <T> Dynamic<T> fixWidgetId(Dynamic<T> widgetId) {
 		return switch (widgetId.asString("")) {
 			case "sweepDetails" -> widgetId.createString("sweep_details");
 			case "Lasso HUD" -> widgetId.createString("hud_lasso");
@@ -79,7 +137,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	/**
 	 * Returns the layer the widget should be on.
 	 */
-	private static Dynamic<?> fixWidgetLayer(Dynamic<?> widget, String widgetId) {
+	private static <T> Dynamic<T> fixWidgetLayer(Dynamic<T> widget, String widgetId) {
 		String layer = switch (widget.get("layer").asString("DEFAULT")) {
 			case "HUD" -> "hud";
 			case "MAIN_TAB" -> "tab";
@@ -89,7 +147,7 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 		return widget.createString(layer);
 	}
 
-	private static Dynamic<?> fixWidget(Dynamic<?> widget) {
+	private static <T> Dynamic<T> fixWidget(Dynamic<T> widget) {
 		return widget.emptyMap().set("config", widget.emptyMap()).set("position", widget
 				.remove("layer")
 				.replaceField("parent", "parent", fixWidgetParent(widget))
@@ -99,7 +157,35 @@ public class ConfigFix11NewHud extends ConfigDataFix {
 	/**
 	 * Returns the parent of the widget or empty if the parent is the screen.
 	 */
-	private static Optional<? extends Dynamic<?>> fixWidgetParent(Dynamic<?> widget) {
+	private static <T> Optional<Dynamic<T>> fixWidgetParent(Dynamic<T> widget) {
 		return widget.get("parent").asString("screen").equals("screen") ? Optional.empty() : widget.get("parent").map(ConfigFix11NewHud::fixWidgetId).result();
+	}
+
+	private static <T> Dynamic<T> createDefaultWidget(Dynamic<T> base, @Nullable String parent) {
+		return base.emptyMap()
+				.setFieldIfPresent("parent", Optional.ofNullable(parent).map(base::createString))
+				.set("parent_anchor", base.emptyMap().set("v", base.createString(parent == null ? "TOP" : "BOTTOM")).set("h", base.createString("LEFT")))
+				.set("this_anchor", base.emptyMap().set("v", base.createString("TOP")).set("h", base.createString("LEFT")))
+				.set("relative_x", base.createInt(parent == null ? 5 : 0))
+				.set("relative_y", base.createInt(parent == null ? 5 : 2));
+	}
+
+	private boolean isEnabled(String widgetId) {
+		if (mainConfig == null) return true;
+		return switch (widgetId) {
+			case "dungeon_splits", "Dungeon Splits" -> mainConfig.get("dungeons").get("dungeonSplits").asBoolean(true);
+			case "hud_farming" -> mainConfig.get("farming").get("farmingHud").get("enabled").asBoolean(true);
+			case "hud_treeprogress" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableTreeBreakProgress").asBoolean(true);
+			case "sweep_details", "sweepDetails" -> mainConfig.get("foraging").get("moongladeMarsh").get("enableSweepDetailsWidget").asBoolean(true);
+			case "hud_fishing" -> mainConfig.get("helpers").get("fishing").get("enableFishingHud").asBoolean(true);
+			case "hud_lasso", "Lasso HUD" -> mainConfig.get("hunting").get("lassoHud").get("enabled").asBoolean(true);
+			case "powder_mining_tracker" -> mainConfig.get("mining").get("crystalHollows").get("enablePowderTracker").asBoolean(true);
+			case "hud_crystals" -> mainConfig.get("mining").get("crystalsHud").get("enabled").asBoolean(true);
+			case "hud_pickobulus" -> mainConfig.get("mining").get("pickobulusHelper").get("enablePickobulusHud").asBoolean(true);
+			case "hud_end" -> mainConfig.get("otherLocations").get("end").get("hudEnabled").asBoolean(true);
+			case "hud_slayer" -> mainConfig.get("slayers").get("enableHud").asBoolean(true);
+			case "item_pickup", "Item Pickup" -> mainConfig.get("uiAndVisuals").get("itemPickup").get("enabled").asBoolean(true);
+			default -> true;
+		};
 	}
 }

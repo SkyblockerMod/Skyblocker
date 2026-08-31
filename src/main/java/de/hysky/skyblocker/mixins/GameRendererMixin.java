@@ -12,18 +12,12 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMapTexture;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.render.Renderer;
-import de.hysky.skyblocker.utils.render.primitive.FilledBoxInstancedRenderer;
-import de.hysky.skyblocker.utils.render.primitive.OutlinedBoxInstancedRenderer;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
 	@Inject(method = "close", at = @At("TAIL"))
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
-		FilledBoxInstancedRenderer.INSTANCE.close();
-		OutlinedBoxInstancedRenderer.INSTANCE.close();
-		Renderer.close();
 		GuiHelper.close();
 		DungeonMapTexture.close();
 	}

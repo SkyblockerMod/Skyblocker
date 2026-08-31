@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -23,6 +24,7 @@ import net.minecraft.resources.Identifier;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 
 class SidePanelWidget extends AbstractContainerWidget {
@@ -62,7 +64,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 	}
 
 	private boolean isNotVisible(int top, int bottom) {
-		return !(bottom - this.scrollAmount() >= this.getY()) || !(top - this.scrollAmount() <= this.getY() + this.getHeight());
+		return !(bottom >= this.getY() && top <= this.getBottom());
 	}
 
 	@Override
@@ -112,13 +114,20 @@ class SidePanelWidget extends AbstractContainerWidget {
 			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(positionedWidget)).build());
 		}
 
-		add(Button.builder(Component.translatable("skyblocker.config.hud.copy.copyTo"), _ -> configScreen.openPopup(screen -> new CopyToPopup(
-						screen,
-						positionedWidget,
-						screen.getCurrentLocation(),
-						screen.getCurrentScreenLayer()
-				)))
+		Button copyButton = add(Button.builder(
+						Component.translatable("skyblocker.config.hud.copy.copyTo"),
+						_ -> configScreen.openPopup(screen -> new CopyToPopup(
+								screen,
+								positionedWidget,
+								screen.getCurrentLocation(),
+								screen.getCurrentScreenLayer()
+						)))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyTo.@Tooltip"))).build());
+
+		if (WidgetManager.ALLOWED_LOCATIONS.stream().noneMatch(l -> hudWidget.getInformation().available().test(l) && l != configScreen.getCurrentLocation())) {
+			copyButton.active = false;
+			copyButton.setTooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.copy.copyTo.disabled.@Tooltip")));
+		}
 
 		layout.addChild(SpacerElement.height(10));
 
@@ -130,7 +139,9 @@ class SidePanelWidget extends AbstractContainerWidget {
 		}
 
 		List<AbstractWidget> collector = new ArrayList<>();
-		hudWidget.getOptionWidgets(new OptionWidgetCollector(collector));
+		OptionWidgetCollector widgetCollector = new OptionWidgetCollector(collector, hudWidget::updateConfigPreview, configScreen, configScreen.getCurrentLocation());
+		hudWidget.getOptionWidgets(widgetCollector);
+		widgetCollector.buildDeferred();
 		collector.forEach(this::add);
 
 		layout.addChild(SpacerElement.height(10));
@@ -181,7 +192,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-		if (this.getChildAt(mouseX, mouseY).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
+		if (this.getChildAt(mouseX, mouseY).filter(child -> !(child instanceof CycleButton<?>)).filter(element -> element.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)).isPresent()) return true;
 		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
@@ -214,6 +225,6 @@ class SidePanelWidget extends AbstractContainerWidget {
 
 	@Override
 	protected int scrollBarX() {
-		return rightSide ? super.scrollBarX() : 0;
+		return rightSide ? super.scrollBarX() : getX();
 	}
 }

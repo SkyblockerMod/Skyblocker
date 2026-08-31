@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-public sealed interface ProfileViewerPage<T> permits CollectionsPage, InventoryPage, SkillsPage, SlayersPage {
+public sealed interface ProfileViewerPage<T> permits CatacombsPage, CollectionsPage, InventoryPage, SkillsPage, CombatPage {
 	/// {@return the icon of the page}
 	FlexibleItemStack getIcon();
 
@@ -27,4 +27,9 @@ public sealed interface ProfileViewerPage<T> permits CollectionsPage, InventoryP
 
 	/// {@return the widgets this page is composed of}
 	List<AbstractWidget> getWidgets();
+
+	/// {@return whether the page should be centred in the middle of the profile viewer screen}
+	default boolean centred() {
+		return false;
+	}
 }

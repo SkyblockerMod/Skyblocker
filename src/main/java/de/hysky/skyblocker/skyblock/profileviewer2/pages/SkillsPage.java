@@ -14,16 +14,18 @@ import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.LevelBarWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.DungeonLevelBarWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PlayerWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.RulerWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.SkillLevelBarWidget;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.SkillsInfoBoxWidget;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.SkyBlockLevelBarWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private static final int SPACING = 2;
-	private static final int LEVEL_BAR_WIDTH = 105;
+	protected static final int LEVEL_BAR_WIDTH = 105;
 	private final List<AbstractWidget> widgets = new ArrayList<>();
 
 	@Override
@@ -46,33 +48,39 @@ public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	public LayoutElement buildWidgets(LoadingInformation info) {
 		LinearLayout pageLayout = LinearLayout.horizontal();
 
-		this.widgets.add(pageLayout.addChild(new RulerWidget()));
+		pageLayout.addChild(new RulerWidget());
 
 		// Player & Basic Info side
 		LinearLayout leftSectionLayout = LinearLayout.vertical().spacing(SPACING);
-		this.widgets.add(leftSectionLayout.addChild(new PlayerWidget(info.mainMember())));
-		this.widgets.add(leftSectionLayout.addChild(new SkillsInfoBoxWidget(PlayerWidget.WIDTH, 71, info)));
+		leftSectionLayout.addChild(new PlayerWidget(info.mainMember()));
+		leftSectionLayout.addChild(new SkillsInfoBoxWidget(PlayerWidget.WIDTH, 71, info));
 		pageLayout.addChild(leftSectionLayout);
 
 		// Spacing between left and right section
 		pageLayout.addChild(SpacerElement.width(3));
 
-		// Skills Area
+		// Skills area
 		GridLayout skillsAreaLayout = new GridLayout().rowSpacing(SPACING * 2).columnSpacing(SPACING * 4);
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.COMBAT, info), 1, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.MINING, info), 2, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.FARMING, info), 3, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.FORAGING, info), 4, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.FISHING, info), 5, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.ENCHANTING, info), 6, 1));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.ALCHEMY, info), 1, 2));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.TAMING, info), 2, 2));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.HUNTING, info), 3, 2));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.CARPENTRY, info), 4, 2));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.RUNECRAFTING, info), 5, 2));
-		this.widgets.add(skillsAreaLayout.addChild(LevelBarWidget.forSkill(LEVEL_BAR_WIDTH, Skill.SOCIAL, info), 6, 2));
-		this.widgets.add(skillsAreaLayout.addChild(new LevelBarWidget(LEVEL_BAR_WIDTH), 7, 1));
-		pageLayout.addChild(skillsAreaLayout, pageLayout.newCellSettings().alignVerticallyMiddle().paddingTop(-4));
+		GridLayout.RowHelper skillsAreaRowHelper = skillsAreaLayout.createRowHelper(2);
+
+		// Add level bars
+		skillsAreaRowHelper.addChild(SkyBlockLevelBarWidget.create(LEVEL_BAR_WIDTH, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.COMBAT, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.ALCHEMY, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.MINING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.TAMING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.FARMING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.HUNTING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.FORAGING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.CARPENTRY, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.FISHING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.RUNECRAFTING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.ENCHANTING, info));
+		skillsAreaRowHelper.addChild(SkillLevelBarWidget.create(LEVEL_BAR_WIDTH, Skill.SOCIAL, info));
+		skillsAreaRowHelper.addChild(DungeonLevelBarWidget.createCatacombs(LEVEL_BAR_WIDTH, info));
+
+		pageLayout.addChild(skillsAreaLayout, pageLayout.newCellSettings().alignVerticallyMiddle());
+		pageLayout.visitWidgets(this.widgets::add);
 
 		return pageLayout;
 	}

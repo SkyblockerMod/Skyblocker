@@ -191,7 +191,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		}
 
 		Matrix3x2f scaleMatrix = new Matrix3x2f().scale(scale);
-		if (hoveredWidget != null) {
+		if (hoveredWidget != null && getChildAt(mouseX, mouseY).isEmpty()) {
 			ScreenRectangle rect = hoveredWidget.widget.getRectangle().transformAxisAligned(scaleMatrix);
 			GuiHelper.border(context, rect.left() - 1, rect.top() - 1, rect.width() + 2, rect.height() + 2, CommonColors.YELLOW);
 		}
@@ -233,7 +233,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				parentPoint = oldRule.parentPoint();
 				thisPoint = oldRule.thisPoint();
 			}
-			String newParent = null;
+			String newParent = oldRule.parent().orElse(null);
 			OptionalInt relativeX = OptionalInt.empty();
 			OptionalInt relativeY = OptionalInt.empty();
 			if (minecraft.hasShiftDown()) {

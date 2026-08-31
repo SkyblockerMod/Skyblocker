@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vulkan.VulkanDevice;
-import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.SubmitRenderPhases;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -52,19 +50,25 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private final boolean isVulkan;
 	private final LevelRenderState worldState;
 	private final Frustum frustum;
-	private @Nullable List<VanillaSubmittable<?>> vanillaSubmittables = null;
-	private @Nullable List<FilledBoxRenderState> filledBoxStates = null;
-	private @Nullable List<OutlinedBoxRenderState> outlinedBoxStates = null;
-	private @Nullable List<LinesRenderState> linesStates = null;
-	private @Nullable List<CursorLineRenderState> cursorLineStates = null;
-	private @Nullable List<QuadRenderState> quadStates = null;
-	private @Nullable List<TexturedQuadRenderState> texturedQuadStates = null;
-	private @Nullable List<BlockHologramRenderState> blockHologramStates = null;
-	private @Nullable List<TextRenderState> textStates = null;
-	private @Nullable List<CylinderRenderState> cylinderStates = null;
-	private @Nullable List<FilledCircleRenderState> filledCircleStates = null;
-	private @Nullable List<SphereRenderState> sphereStates = null;
-	private @Nullable List<OutlinedCircleRenderState> outlinedCircleStates = null;
+	private final List<VanillaSubmittable<?>> vanillaSubmittables = new ArrayList<>();
+	private final List<FilledBoxRenderState> filledBoxStates = new ArrayList<>();
+	private final List<FilledBoxRenderState> filledBoxThroughWallsStates = new ArrayList<>();
+	private final List<OutlinedBoxRenderState> outlinedBoxStates = new ArrayList<>();
+	private final List<OutlinedBoxRenderState> outlinedBoxThroughWallsStates = new ArrayList<>();
+	private final List<LinesRenderState> linesStates = new ArrayList<>();
+	private final List<LinesRenderState> linesThroughWallsStates = new ArrayList<>();
+	private final List<CursorLineRenderState> cursorLineStates = new ArrayList<>();
+	private final List<QuadRenderState> quadStates = new ArrayList<>();
+	private final List<QuadRenderState> quadThroughWallsStates = new ArrayList<>();
+	private final List<TexturedQuadRenderState> texturedQuadStates = new ArrayList<>();
+	private final List<TexturedQuadRenderState> texturedQuadThroughWallsStates = new ArrayList<>();
+	private final List<BlockHologramRenderState> blockHologramStates = new ArrayList<>();
+	private final List<TextRenderState> textStates = new ArrayList<>();
+	private final List<TextRenderState> textThroughWallsStates = new ArrayList<>();
+	private final List<CylinderRenderState> cylinderStates = new ArrayList<>();
+	private final List<SphereRenderState> sphereStates = new ArrayList<>();
+	private final List<FilledCircleRenderState> filledCircleStates = new ArrayList<>();
+	private final List<OutlinedCircleRenderState> outlinedCircleStates = new ArrayList<>();
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
@@ -76,10 +80,6 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	@Override
 	public <S> void submitVanilla(S state, VanillaRenderer<S> renderer) {
 		ensureNotFrozen();
-
-		if (this.vanillaSubmittables == null) {
-			this.vanillaSubmittables = new ArrayList<>();
-		}
 
 		this.vanillaSubmittables.add(new VanillaSubmittable<>(state, renderer));
 	}
@@ -119,12 +119,13 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			return;
 		}
 
-		if (this.filledBoxStates == null) {
-			this.filledBoxStates = new ArrayList<>();
-		}
+		FilledBoxRenderState state = new FilledBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha);
 
-		FilledBoxRenderState state = new FilledBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, throughWalls);
-		this.filledBoxStates.add(state);
+		if (throughWalls) {
+			this.filledBoxThroughWallsStates.add(state);
+		} else {
+			this.filledBoxStates.add(state);
+		}
 	}
 
 	private void submitBeaconBeam(BlockPos pos, float[] colourComponents) {
@@ -173,33 +174,31 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 			return;
 		}
 
-		if (this.outlinedBoxStates == null) {
-			this.outlinedBoxStates = new ArrayList<>();
-		}
+		OutlinedBoxRenderState state = new OutlinedBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, lineWidth);
 
-		OutlinedBoxRenderState state = new OutlinedBoxRenderState(minX, minY, minZ, maxX, maxY, maxZ, colourComponents, alpha, lineWidth, throughWalls);
-		this.outlinedBoxStates.add(state);
+		if (throughWalls) {
+			this.outlinedBoxThroughWallsStates.add(state);
+		} else {
+			this.outlinedBoxStates.add(state);
+		}
 	}
 
 	@Override
 	public void submitLinesFromPoints(Vec3[] points, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
 		ensureNotFrozen();
 
-		if (this.linesStates == null) {
-			this.linesStates = new ArrayList<>();
-		}
+		LinesRenderState state = new LinesRenderState(points, colourComponents, alpha, lineWidth);
 
-		LinesRenderState state = new LinesRenderState(points, colourComponents, alpha, lineWidth, throughWalls);
-		this.linesStates.add(state);
+		if (throughWalls) {
+			this.linesThroughWallsStates.add(state);
+		} else {
+			this.linesStates.add(state);
+		}
 	}
 
 	@Override
 	public void submitLineFromCursor(Vec3 point, float[] colourComponents, float alpha, float lineWidth) {
 		ensureNotFrozen();
-
-		if (this.cursorLineStates == null) {
-			this.cursorLineStates = new ArrayList<>();
-		}
 
 		CursorLineRenderState state = new CursorLineRenderState(point, colourComponents, alpha, lineWidth);
 		this.cursorLineStates.add(state);
@@ -209,24 +208,26 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	public void submitQuad(Vec3[] points, float[] colourComponents, float alpha, boolean throughWalls) {
 		ensureNotFrozen();
 
-		if (this.quadStates == null) {
-			this.quadStates = new ArrayList<>();
-		}
+		QuadRenderState state = new QuadRenderState(points, colourComponents, alpha);
 
-		QuadRenderState state = new QuadRenderState(points, colourComponents, alpha, throughWalls);
-		this.quadStates.add(state);
+		if (throughWalls) {
+			this.quadThroughWallsStates.add(state);
+		} else {
+			this.quadStates.add(state);
+		}
 	}
 
 	@Override
 	public void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls) {
 		ensureNotFrozen();
 
-		if (this.texturedQuadStates == null) {
-			this.texturedQuadStates = new ArrayList<>();
-		}
+		TexturedQuadRenderState state = new TexturedQuadRenderState(pos, width, height, textureWidth, textureHeight, renderOffset, texture, shaderColour, alpha);
 
-		TexturedQuadRenderState state = new TexturedQuadRenderState(pos, width, height, textureWidth, textureHeight, renderOffset, texture, shaderColour, alpha, throughWalls);
-		this.texturedQuadStates.add(state);
+		if (throughWalls) {
+			this.texturedQuadThroughWallsStates.add(state);
+		} else {
+			this.texturedQuadStates.add(state);
+		}
 	}
 
 	@Override
@@ -235,10 +236,6 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 		if (!FrustumUtils.isVisible(this.frustum, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)) {
 			return;
-		}
-
-		if (this.blockHologramStates == null) {
-			this.blockHologramStates = new ArrayList<>();
 		}
 
 		BlockHologramRenderState renderState = new BlockHologramRenderState(pos, state, alpha);
@@ -263,61 +260,46 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private void submitText(FormattedCharSequence text, Vec3 pos, float scale, float yOffset, boolean throughWalls) {
 		ensureNotFrozen();
 
-		if (this.textStates == null) {
-			this.textStates = new ArrayList<>();
-		}
-
 		Font textRenderer = MINECRAFT.font;
 		float xOffset = -textRenderer.width(text) / 2f;
 		Font.PreparedText glyphs = textRenderer.prepareText(text, xOffset, yOffset, CommonColors.WHITE, false, false, 0);
 
-		TextRenderState state = new TextRenderState(glyphs, pos, scale * 0.025f, yOffset, throughWalls);
-		this.textStates.add(state);
+		TextRenderState state = new TextRenderState(glyphs, pos, scale * 0.025f, yOffset);
+
+		if (throughWalls) {
+			this.textThroughWallsStates.add(state);
+		} else {
+			this.textStates.add(state);
+		}
 	}
 
 	@Override
 	public void submitCylinder(Vec3 centre, float radius, float height, int segments, int colour) {
 		ensureNotFrozen();
 
-		if (this.cylinderStates == null) {
-			this.cylinderStates = new ArrayList<>();
-		}
-
 		CylinderRenderState state = new CylinderRenderState(centre, radius, height, segments, colour);
 		this.cylinderStates.add(state);
-	}
-
-	@Override
-	public void submitFilledCircle(Vec3 centre, float radius, int segments, int colour) {
-		ensureNotFrozen();
-
-		if (this.filledCircleStates == null) {
-			this.filledCircleStates = new ArrayList<>();
-		}
-
-		FilledCircleRenderState state = new FilledCircleRenderState(centre, radius, segments, colour);
-		this.filledCircleStates.add(state);
 	}
 
 	@Override
 	public void submitSphere(Vec3 centre, float radius, int segments, int rings, int colour) {
 		ensureNotFrozen();
 
-		if (this.sphereStates == null) {
-			this.sphereStates = new ArrayList<>();
-		}
-
 		SphereRenderState state = new SphereRenderState(centre, radius, segments, rings, colour);
 		this.sphereStates.add(state);
 	}
 
 	@Override
-	public void submitOutlinedCircle(Vec3 centre, float radius, float thickness, int segments, int colour) {
+	public void submitFilledCircle(Vec3 centre, float radius, int segments, int colour) {
 		ensureNotFrozen();
 
-		if (this.outlinedCircleStates == null) {
-			this.outlinedCircleStates = new ArrayList<>();
-		}
+		FilledCircleRenderState state = new FilledCircleRenderState(centre, radius, segments, colour);
+		this.filledCircleStates.add(state);
+	}
+
+	@Override
+	public void submitOutlinedCircle(Vec3 centre, float radius, float thickness, int segments, int colour) {
+		ensureNotFrozen();
 
 		OutlinedCircleRenderState state = new OutlinedCircleRenderState(centre, radius, thickness, segments, colour);
 		this.outlinedCircleStates.add(state);
@@ -337,104 +319,105 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void dispatchVanillaSubmittables(LevelRenderState worldState, SubmitNodeCollector commandQueue) {
+	public void dispatchSubmits(LevelRenderState levelState, SubmitNodeCollector submitNodeCollector) {
 		if (!this.frozen) {
-			throw new IllegalStateException("Cannot dispatch vanilla submittables until the collection phase has ended!");
+			throw new IllegalStateException("Cannot dispatch submits until the collection phase has ended!");
 		}
 
-		if (this.vanillaSubmittables != null) {
+		CameraRenderState camera = levelState.cameraRenderState;
+
+		if (!this.vanillaSubmittables.isEmpty()) {
 			for (VanillaSubmittable<?> submittable : this.vanillaSubmittables) {
-				((VanillaRenderer<Object>) submittable.renderer).submitVanilla(submittable.state(), worldState, commandQueue);
+				((VanillaRenderer<Object>) submittable.renderer).submitVanilla(submittable.state(), levelState, submitNodeCollector);
 			}
 		}
-	}
 
-	public void dispatchPrimitivesToRenderers(CameraRenderState cameraState) {
-		if (!this.frozen) {
-			throw new IllegalStateException("Cannot dispatch primitives until the collection phase has ended!");
-		}
-
-		if (this.filledBoxStates != null) {
+		if (!this.filledBoxStates.isEmpty()) {
 			if (this.isVulkan) {
-				FilledBoxInstancedRenderer.INSTANCE.submitPrimitives(this.filledBoxStates, cameraState);
+				submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new FilledBoxInstancedFeatureRenderer.Submit(this.filledBoxStates, camera, false));
 			} else {
-				for (FilledBoxRenderState state : this.filledBoxStates) {
-					FilledBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
-				}
+				submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new FilledBoxFeatureRenderer.Submit(this.filledBoxStates, camera, false));
 			}
 		}
 
-		if (this.outlinedBoxStates != null) {
+		if (!this.filledBoxThroughWallsStates.isEmpty()) {
 			if (this.isVulkan) {
-				OutlinedBoxInstancedRenderer.INSTANCE.submitPrimitives(this.outlinedBoxStates, cameraState);
+				submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new FilledBoxInstancedFeatureRenderer.Submit(this.filledBoxThroughWallsStates, camera, true));
 			} else {
-				for (OutlinedBoxRenderState state : this.outlinedBoxStates) {
-					OutlinedBoxRenderer.INSTANCE.submitPrimitives(state, cameraState);
-				}
+				submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new FilledBoxFeatureRenderer.Submit(this.filledBoxThroughWallsStates, camera, true));
 			}
 		}
 
-		if (this.linesStates != null) {
-			for (LinesRenderState state : this.linesStates) {
-				LinesRenderer.INSTANCE.submitPrimitives(state, cameraState);
+		if (!this.outlinedBoxStates.isEmpty()) {
+			if (this.isVulkan) {
+				submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new OutlinedBoxInstancedFeatureRenderer.Submit(this.outlinedBoxStates, camera, false));
+			} else {
+				submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new OutlinedBoxFeatureRenderer.Submit(this.outlinedBoxStates, camera, false));
 			}
 		}
 
-		if (this.cursorLineStates != null) {
-			for (CursorLineRenderState state : this.cursorLineStates) {
-				CursorLineRenderer.INSTANCE.submitPrimitives(state, cameraState);
+		if (!this.outlinedBoxThroughWallsStates.isEmpty()) {
+			if (this.isVulkan) {
+				submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new OutlinedBoxInstancedFeatureRenderer.Submit(this.outlinedBoxThroughWallsStates, camera, true));
+			} else {
+				submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new OutlinedBoxFeatureRenderer.Submit(this.outlinedBoxThroughWallsStates, camera, true));
 			}
 		}
 
-		if (this.quadStates != null) {
-			for (QuadRenderState state : this.quadStates) {
-				QuadRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.linesStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new LinesFeatureRenderer.Submit(this.linesStates, camera, false));
 		}
 
-		if (this.texturedQuadStates != null) {
-			for (TexturedQuadRenderState state : this.texturedQuadStates) {
-				TexturedQuadRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.linesThroughWallsStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new LinesFeatureRenderer.Submit(this.linesThroughWallsStates, camera, true));
 		}
 
-		if (this.blockHologramStates != null) {
-			AltModelBlockRenderer altModelBlockRenderer = Renderer.get().altModelBlockRenderer(MINECRAFT.gameRenderer.gameRenderState().optionsRenderState.ambientOcclusion, false, MINECRAFT.getBlockColors());
-			BlockHologramRenderer hologramRenderer = new BlockHologramRenderer(altModelBlockRenderer);
-
-			for (BlockHologramRenderState state : this.blockHologramStates) {
-				hologramRenderer.submitPrimitives(state, cameraState);
-			}
+		if (!this.cursorLineStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new CursorLineFeatureRenderer.Submit(this.cursorLineStates, camera));
 		}
 
-		if (this.textStates != null) {
-			for (TextRenderState state : this.textStates) {
-				TextPrimitiveRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.quadStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new QuadFeatureRenderer.Submit(this.quadStates, camera, false));
 		}
 
-		if (this.cylinderStates != null) {
-			for (CylinderRenderState state : this.cylinderStates) {
-				CylinderRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.quadThroughWallsStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new QuadFeatureRenderer.Submit(this.quadThroughWallsStates, camera, true));
 		}
 
-		if (this.filledCircleStates != null) {
-			for (FilledCircleRenderState state : this.filledCircleStates) {
-				FilledCircleRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.texturedQuadStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new TexturedQuadFeatureRenderer.Submit(this.texturedQuadStates, camera, false));
 		}
 
-		if (this.sphereStates != null) {
-			for (SphereRenderState state : this.sphereStates) {
-				SphereRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.texturedQuadThroughWallsStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new TexturedQuadFeatureRenderer.Submit(this.texturedQuadThroughWallsStates, camera, true));
 		}
 
-		if (this.outlinedCircleStates != null) {
-			for (OutlinedCircleRenderState state : this.outlinedCircleStates) {
-				OutlinedCircleRenderer.INSTANCE.submitPrimitives(state, cameraState);
-			}
+		if (!this.blockHologramStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new BlockHologramFeatureRenderer.Submit(this.blockHologramStates, camera));
+		}
+
+		if (!this.textStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.TEXTS, new TextFeatureRenderer.Submit(this.textStates, camera, false));
+		}
+
+		if (!this.textThroughWallsStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new TextFeatureRenderer.Submit(this.textThroughWallsStates, camera, true));
+		}
+
+		if (!this.cylinderStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new CylinderFeatureRenderer.Submit(this.cylinderStates, camera));
+		}
+
+		if (!this.sphereStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new SphereFeatureRenderer.Submit(this.sphereStates, camera));
+		}
+
+		if (!this.filledCircleStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new FilledCircleFeatureRenderer.Submit(this.filledCircleStates, camera));
+		}
+
+		if (!this.outlinedCircleStates.isEmpty()) {
+			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new OutlinedCircleFeatureRenderer.Submit(this.outlinedCircleStates, camera));
 		}
 	}
 
