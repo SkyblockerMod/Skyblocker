@@ -198,8 +198,9 @@ public class WidgetManager {
 
 			CONFIG = Config.DATA_FIXING_CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
-				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new Exception(error.get()));
+				LOGGER.error("[Skyblocker] Failed to load part of the HUD config", new RuntimeException(error.get()));
 				showErrorToast();
+				ConfigBackupManager.backupConfig(ConfigBackupManager.ConfigType.HUD_WIDGETS);
 			}
 			// Backup if version is different
 			if (CONFIG.version != prevVersion) {
