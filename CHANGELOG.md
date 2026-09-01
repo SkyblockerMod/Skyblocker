@@ -1,10 +1,12 @@
-# Release 6.10.0 Beta 1
+# Release 6.10.0
 
 ## Highlight
 * Add new HUD editor
   * The HUD editor has a new look and should much easier to use.
   * Run `/skyblocker hud` and click the "Help" button to learn about the new system.
   * Each widget's options are now found in the HUD editor directly.
+  * Add backup support for HUD configs.
+* Fix Starts With Terminal Solver & Terminal Click Blocking
 * Add SkyShards support to Greenhouse mutation importing.
 * Add Greenhouse plot preset system
   * Allows for the saving & quick loading of custom mutation layouts.
@@ -23,7 +25,10 @@
 * Improve Fancy Bars stat caching
 * Improve tooltip compatibility
 * Change to using Render Chest library for custom glow
+* Change to mark Better Block Entities as incompatible due to crashes
 * Update Sweep Overlay to use the new sweep formula
+* Fix Chocolate Factory features
+* Fix Absorb stacking enchantment tooltip
 * Fix Storage Overlay search not highlighting items inside opened storages
 * Fix synced Secret Waypoints not hiding themselves
 * Fix Tree Felled Notification not working
@@ -74,13 +79,16 @@
 * Fix Dungeon Splits Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2711
 * fix Caxton compat on 26.2 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2710
 * fix widgets that are enabled but have no position by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2704
+* Update Chocolate Factory Solver Slot Numbers by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2717
+* Fix Terminal Solvers for Pingless Terms + Minister Perks by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2690
+* Make fancy status bars instanced by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2714
+* Adjust Absorb Enchant Progress for latest SB update by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/2718
+* Hud widgets backup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2713
+* Add back client game test by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2715
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2653
 
-## New Contributors
-* @PanTruskawka045 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2693
-* @Campionnn made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2689
 
-
-**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.9.1+26.2...v6.10.0-beta.1+26.2
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.9.1+26.2...v6.10.0+26.2
 
 ___
 
