@@ -42,6 +42,8 @@ public class SimonSays {
 	private static final float[] GREEN = ColorUtils.getFloatComponents(DyeColor.LIME);
 	private static final float[] YELLOW = ColorUtils.getFloatComponents(DyeColor.YELLOW);
 	private static final BlockPosSet CLICKED_BUTTONS = new BlockPosSet();
+	// This MUST be an array list since this is meant to track the order in which the buttons must be clicked by the player.
+	// Do not change this to use another class (especially one that does not maintain exact insertion order).
 	private static final ObjectList<BlockPos> SIMON_PATTERN = new ObjectArrayList<>();
 
 	@Init
