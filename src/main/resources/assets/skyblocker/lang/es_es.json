@@ -248,7 +248,7 @@
     "skyblocker.config.mining.commissionWaypoints.mode.OFF": "Apagado",
     "skyblocker.config.uiAndVisuals.titleContainer.alignment.RIGHT": "Derecha",
     "skyblocker.config.dungeons.sellableItemsHighlighter.@Tooltip": "Resalta los elementos recogidos en mazmorras que pueden ser vendidos a NPC.",
-    "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Resalta los items recogidos en Dungeons que pueden ser intercambiados por esencia.",
+    "skyblocker.config.dungeons.salvageHelper.@Tooltip": "Resalta los objetos recogidos en las mazmorras que se pueden salvaguardar.",
     "skyblocker.config.helpers.fishing.fishingHookDisplay.OFF": "Apagado",
     "skyblocker.config.dungeons.sellableItemsHighlighter": "Resaltador de Items vendibles",
     "skyblocker.config.chat.chatRules.screen.modify": "Modificar",
