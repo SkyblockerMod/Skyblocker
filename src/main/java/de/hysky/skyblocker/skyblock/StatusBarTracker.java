@@ -141,7 +141,7 @@ public class StatusBarTracker {
 			// Always update values for other parts of the mod to use
 			String returned = update(stringified, SkyblockerConfigManager.get().chat.hideMana);
 
-			if (FancyStatusBars.isEnabled() && !stringified.equals(returned)) {
+			if (FancyStatusBars.INSTANCE.isEnabled() && !stringified.equals(returned)) {
 				// TODO This may still strip formatting from partially consumed message
 				return lastReturn = Component.literal(returned);
 			}
@@ -165,7 +165,7 @@ public class StatusBarTracker {
 				status = RIFT_TIME_STATUS.matcher(ChatFormatting.stripFormatting(statuses.group("status")));
 
 				// Rift time
-				if (FancyStatusBars.isExperienceFancyBarEnabled() && status.find())
+				if (FancyStatusBars.INSTANCE.isExperienceFancyBarEnabled() && status.find())
 					statuses.appendReplacement(output, "");
 			} else {
 				status = HEALTH_STATUS.matcher(ChatFormatting.stripFormatting(statuses.group("status")));
@@ -174,7 +174,7 @@ public class StatusBarTracker {
 				if (status.find()) {
 					updateHealth(status);
 
-					if (FancyStatusBars.isHealthFancyBarEnabled()) {
+					if (FancyStatusBars.INSTANCE.isHealthFancyBarEnabled()) {
 						if (status.group("healing") == null) {
 							statuses.appendReplacement(output, "");
 						// Parse healing again to add back formatting
@@ -194,14 +194,14 @@ public class StatusBarTracker {
 				} else if (status.usePattern(DEFENSE_STATUS).find()) {
 					defense = RegexUtils.parseIntFromMatcher(status, "defense");
 
-					if (FancyStatusBars.isHealthFancyBarEnabled())
+					if (FancyStatusBars.INSTANCE.isHealthFancyBarEnabled())
 						statuses.appendReplacement(output, "");
 					else
 						statuses.appendReplacement(output, "$0");
 				// Vitality
 				} else if (status.usePattern(VITALITY_STATUS).find()) {
 					updateVitality(status);
-					if (FancyStatusBars.isBarEnabled(StatusBarType.VITALITY))
+					if (FancyStatusBars.INSTANCE.isBarEnabled(StatusBarType.VITALITY))
 						statuses.appendReplacement(output, "");
 					else
 						statuses.appendReplacement(output, "$0");
@@ -215,7 +215,7 @@ public class StatusBarTracker {
 			} else if (status.usePattern(MANA_STATUS).find()) {
 				updateMana(status);
 
-				if (FancyStatusBars.isBarEnabled(StatusBarType.INTELLIGENCE))
+				if (FancyStatusBars.INSTANCE.isBarEnabled(StatusBarType.INTELLIGENCE))
 					statuses.appendReplacement(output, "");
 				else
 					statuses.appendReplacement(output, "$0");
@@ -251,7 +251,7 @@ public class StatusBarTracker {
 	private static void updateVitality(Matcher m) {
 		if (!SkyblockerConfigManager.get().uiAndVisuals.bars.hasSeenVitalityAtLeastOnce) {
 			SkyblockerConfigManager.updateOnly(config -> config.uiAndVisuals.bars.hasSeenVitalityAtLeastOnce = true);
-			FancyStatusBars.makeVitalityVisible();
+			FancyStatusBars.INSTANCE.makeVitalityVisible();
 		}
 		vitality.update(new Resource(RegexUtils.parseIntFromMatcher(m, "vitality"), RegexUtils.parseIntFromMatcher(m, "max"), 0));
 	}

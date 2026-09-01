@@ -73,7 +73,7 @@ public class VanillaStyleManaBar {
 	}
 
 	private static boolean isEnabled() {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.isEnabled();
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.bars.enableVanillaStyleManaBar  && !FancyStatusBars.INSTANCE.isEnabled();
 	}
 
 	private static void extractNotch(GuiGraphicsExtractor graphics, int column, int row, NotchType notchtype, boolean isHalf, boolean isBlinking) {
