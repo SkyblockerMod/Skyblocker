@@ -65,7 +65,7 @@ public class PowderMiningWidget extends HudWidget {
 		super.getOptionWidgets(collector);
 		collector.addWidget(Button.builder(
 						Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"),
-						_ -> Minecraft.getInstance().gui.setScreen(new PowderFilterConfigScreen(collector.configScreen(), new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
+						_ -> Minecraft.getInstance().setScreen(new PowderFilterConfigScreen(collector.configScreen(), new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
 				.tooltip(Tooltip.create(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip")))
 				.build());
 	}
