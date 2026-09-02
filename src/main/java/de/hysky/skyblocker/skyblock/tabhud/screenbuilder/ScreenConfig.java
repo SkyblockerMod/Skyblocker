@@ -14,7 +14,8 @@ public record ScreenConfig(LayerConfig hud, LayerConfig tab, LayerConfig seconda
 			LayerConfig.CODEC.fieldOf("hud").forGetter(ScreenConfig::hud),
 			LayerConfig.CODEC.fieldOf("tab").forGetter(ScreenConfig::tab),
 			LayerConfig.CODEC.fieldOf("secondary_tab").forGetter(ScreenConfig::secondaryTab),
-			Codec.STRING.listOf().fieldOf("hidden_tab_widgets").<Set<String>>xmap(ObjectOpenHashSet::new, List::copyOf).forGetter(ScreenConfig::hiddenTabWidgets)
+			// Must be optional for backwards compatibility with configs that did not have this
+			Codec.STRING.listOf().optionalFieldOf("hidden_tab_widgets", List.of()).<Set<String>>xmap(ObjectOpenHashSet::new, List::copyOf).forGetter(ScreenConfig::hiddenTabWidgets)
 	).apply(instance, ScreenConfig::new));
 
 	public ScreenConfig() {
