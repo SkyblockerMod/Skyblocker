@@ -82,7 +82,7 @@ class OtherOptionsScreen extends Screen {
 
 		body.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.otherOptions.locationOptions", parent.getCurrentLocation()), font));
 		GridLayout.RowHelper screenOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
-		screenOptions.addChild(Button.builder(Component.translatable("skyblocker.config.hud.otherOptions.visibleTabWidgets"), _ -> minecraft.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).width(largeWidth).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
+		screenOptions.addChild(Button.builder(Component.translatable("skyblocker.config.hud.otherOptions.hiddenTabWidgets"), _ -> minecraft.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).width(largeWidth).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
 
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();

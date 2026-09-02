@@ -888,9 +888,9 @@
   "skyblocker.config.hud.movedMessage": "To enable/disable this widget, click the button and either right click anywhere to add it, or right click on it and click 'remove' to delete.",
 
   "skyblocker.config.hud.otherOptions.globalOptions": "Global Options",
+  "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "Edit hidden Fancy TAB widgets",
   "skyblocker.config.hud.otherOptions.locationOptions": "%s's options",
   "skyblocker.config.hud.otherOptions.title": "Skyblock HUD and TAB options",
-  "skyblocker.config.hud.otherOptions.visibleTabWidgets": "Edit visible Fancy TAB widgets",
 
   "skyblocker.config.hud.position.parent": "Parent: %s",
   "skyblocker.config.hud.position.parent.@Tooltip": "Click to select a parent for this widget.",
