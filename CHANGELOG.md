@@ -3,6 +3,7 @@
 ## Highlight
 * Fix Fancy HUD bugs
   * Fix bugs with removing copied widgets
+  * Fix confusing label for edit hidden tab widgets button
   * Fix hidden TAB widgets not saving
 * Fix a crash with Vulkan on certain GPUs
 
