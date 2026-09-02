@@ -339,6 +339,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo"))
 								.description(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_10_0)
 								.binding(defaults.helpers.fairySouls.highlightOnBingo,
 										() -> config.helpers.fairySouls.highlightOnBingo,
 										newValue -> config.helpers.fairySouls.highlightOnBingo = newValue)

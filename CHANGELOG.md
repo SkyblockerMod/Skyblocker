@@ -1,3 +1,97 @@
+# Release 6.10.0
+
+## Highlight
+* Add new HUD editor
+  * The HUD editor has a new look and should much easier to use.
+  * Run `/skyblocker hud` and click the "Help" button to learn about the new system.
+  * Each widget's options are now found in the HUD editor directly.
+  * Add backup support for HUD configs.
+* Fix Starts With Terminal Solver & Terminal Click Blocking
+* Add SkyShards support to Greenhouse mutation importing.
+* Add Greenhouse plot preset system
+  * Allows for the saving & quick loading of custom mutation layouts.
+  * The menu can be accessed with `/skyblocker garden greenhouse presets`.
+  * After saving, use `/skyblocker garden greenhouse paste <presetName>`.
+* Add chat filter for Safari Critter capture messages
+* Add Chest Value support for the Hunting Box
+* Add Search Overlay support for Ironman Cosmetics AH
+* Add option to disable the Fairy Soul Helper on Bingo profiles
+* Add file-only config for Secret Waypoint colours
+* Improve Sweep Overlay axe throwing accuracy to include gravity
+* Improve Boulder solver accuracy
+* Improve Rarity Backgrounds to work in many more places
+* Improve Visitor Helper to show in Bazaar sign inputs
+* Improve Dungeons HUD widget colours
+* Improve Fancy Bars stat caching
+* Improve tooltip compatibility
+* Change to using Render Chest library for custom glow
+* Change to mark Better Block Entities as incompatible due to crashes
+* Update Sweep Overlay to use the new sweep formula
+* Fix Chocolate Factory features
+* Fix Absorb stacking enchantment tooltip
+* Fix Storage Overlay search not highlighting items inside opened storages
+* Fix synced Secret Waypoints not hiding themselves
+* Fix Tree Felled Notification not working
+* Fix Sweep Details HUD not detecting sweep values above 1000
+* Fix Beacon Solver not working in the Torrhus Canyon
+* Fix Fire Sale runes not having price tooltips
+* Fix HUD progress bars not using SkyBlock's new colours
+* Fix some issues with custom glow
+* Fix Status Bar Tracker stripping formatting
+
+## What's Changed
+* Ignore empty action bar messages and cache messages by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2634
+* Show visitor helper on all screens by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2647
+* Container solver improvements by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2652
+* Remove the redundant word 'show' from showTerminalStatus tooltip by @thqnhz in https://github.com/SkyblockerMod/Skyblocker/pull/2654
+* Correctly detect high sweep values by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2658
+* Fix beacon solver in torrhus canyon by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2659
+* Import Order (fake, not real, a figment of your imagination) by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2663
+* Imports part two by @AzureAaron in https://github.com/SkyblockerMod/Skyblocker/pull/2664
+* Custom cleanup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2605
+* Improve boulder solver by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2666
+* Fix status bar tracker stripping formatting by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2667
+* Improve Compatibility with Iconographic by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2643
+* Add Search Overlay for Cosmetics Auction House by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2644
+* Ability to disable fairy soul highlighter on Ⓑ Bingo profiles by @IllagerCaptain in https://github.com/SkyblockerMod/Skyblocker/pull/2635
+* Better hud by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2377
+* some hud fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2675
+* Use BlockPosSet over Set<BlockPos> by @InspectorBoat in https://github.com/SkyblockerMod/Skyblocker/pull/2172
+* fix(huntingbox): Show huntingbox container value by @jadencodes in https://github.com/SkyblockerMod/Skyblocker/pull/2656
+* fix "missing data" on lobby swap by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2679
+* InventorySearch refactor by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2680
+* Axe throwing gravity by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2655
+* Update en_us.json by @AC19970 in https://github.com/SkyblockerMod/Skyblocker/pull/2684
+* Add chat filter for safari critter capture messages by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2677
+* feat: update Timber message by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/2688
+* Greenhouse plot preset by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2678
+* More hud stuff by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2686
+* Fix Secret Sync Waypoint Hiding by @PanTruskawka045 in https://github.com/SkyblockerMod/Skyblocker/pull/2693
+* Fix Item Pickup Widget Lifetime Not Working Properly by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2696
+* Storage overlay fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2685
+* simple file-only secret color config by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2691
+* more more hud stuff by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2697
+* Improve Slot Text API by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2702
+* Fix removing Sweep Details from chat when HUD is not shown by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2692
+* Support SkyShards Greenhouse layouts for /skyblocker garden greenhouse paste by @Campionnn in https://github.com/SkyblockerMod/Skyblocker/pull/2689
+* Fix DungeonScore Network Protocol Error by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2707
+* Fix Pasting from SkyMutations by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2706
+* Fix Dungeon Splits Widget by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2711
+* fix Caxton compat on 26.2 by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2710
+* fix widgets that are enabled but have no position by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2704
+* Update Chocolate Factory Solver Slot Numbers by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2717
+* Fix Terminal Solvers for Pingless Terms + Minister Perks by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2690
+* Make fancy status bars instanced by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2714
+* Adjust Absorb Enchant Progress for latest SB update by @Bedrock-Armor in https://github.com/SkyblockerMod/Skyblocker/pull/2718
+* Hud widgets backup by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2713
+* Add back client game test by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2715
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2653
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.9.1+26.2...v6.10.0+26.2
+
+___
+
 # Release 6.9.1
 
 ## Highlight
