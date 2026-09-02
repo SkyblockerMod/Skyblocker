@@ -66,6 +66,8 @@ public record CopyTracker(Layer hud, Layer tab, Layer secondaryTab) {
 		// Codec that accepts either a list of locations, or a string (contents doesn't matter) to represent "all locations"
 		private static final Codec<Set<Location>> LOCATION_SET_CODEC =  Codec.either(Location.CODEC.listOf(), Codec.STRING)
 				.xmap(
+						// There was a bug where the Set<Location> could be empty which needs handling so the config can load (EnumSet#copyOf does not work with empty collections).
+						// Versions after 6.10.1 should not have this issue anymore and won't serialize an empty set.
 						e -> e.map(l -> l.isEmpty() ? EnumSet.noneOf(Location.class) : EnumSet.copyOf(l), _ -> EnumSet.copyOf(WidgetManager.ALLOWED_LOCATIONS)),
 						s -> s.equals(WidgetManager.ALLOWED_LOCATIONS) ? Either.right("everywhere") : Either.left(List.copyOf(s)));
 		public static final Codec<LocationSets> CODEC = LOCATION_SET_CODEC.listOf()
