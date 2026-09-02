@@ -1853,7 +1853,6 @@
     "skyblocker.config.hud.otherOptions.globalOptions": "全局選項",
     "skyblocker.config.hud.otherOptions.locationOptions": "%s的選項",
     "skyblocker.config.hud.otherOptions.title": "Skyblock HUD和TAB選項",
-    "skyblocker.config.hud.otherOptions.visibleTabWidgets": "編輯可見的花哨的TAB小部件",
     "skyblocker.config.hud.position.parent.screen": "螢幕",
     "skyblocker.config.hud.screen.locationWarning[0]": "你現在正在為其它島嶼配置小部件。",
     "skyblocker.config.hud.screen.locationWarning[1]": "此預覽中的Hypixel小部件未必準確！",
