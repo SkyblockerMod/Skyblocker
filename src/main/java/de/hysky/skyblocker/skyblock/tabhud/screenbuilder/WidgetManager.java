@@ -230,6 +230,7 @@ public class WidgetManager {
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker] Failed to HUD load config: {}", error.get(), e);
 			showErrorToast();
+			ConfigBackupManager.backupConfig(ConfigBackupManager.ConfigType.HUD_WIDGETS);
 		}
 	}
 

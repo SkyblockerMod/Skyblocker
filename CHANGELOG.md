@@ -1,3 +1,13 @@
+# Release 6.10.1
+
+## Highlight
+* Fix Fancy HUD config being wiped when updating
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.10.0+26.2...v6.10.1+26.2
+
+___
+
 # Release 6.10.0
 
 ## Highlight
