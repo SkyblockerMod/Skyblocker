@@ -1881,7 +1881,6 @@
     "skyblocker.config.hud.otherOptions.globalOptions": "Globális Beállítások",
     "skyblocker.config.hud.otherOptions.locationOptions": "%s opciói",
     "skyblocker.config.hud.otherOptions.title": "Skyblock HUD és TAB opciók",
-    "skyblocker.config.hud.otherOptions.visibleTabWidgets": "A látható szép TAB widgetek módosítása",
     "skyblocker.config.hud.position.parent": "Szülő: %s",
     "skyblocker.config.hud.position.parent.@Tooltip": "Kattints, hogy szülőt válassz ki ehhez a widgethez.",
     "skyblocker.config.hud.position.parent.screen": "Képernyő",

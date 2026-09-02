@@ -1852,7 +1852,6 @@
     "skyblocker.config.hud.location.everywhere": "全局",
     "skyblocker.config.hud.otherOptions.globalOptions": "全局选项",
     "skyblocker.config.hud.otherOptions.title": "Skyblock HUD和TAB选项",
-    "skyblocker.config.hud.otherOptions.visibleTabWidgets": "编辑可见的花哨的TAB小部件",
     "skyblocker.config.hud.position.parent.screen": "屏幕",
     "skyblocker.config.hud.topBar.options": "选项",
     "skyblocker.config.hud.topBar.options.@Tooltip": "更多选项",
