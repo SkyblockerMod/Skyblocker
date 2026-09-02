@@ -1,0 +1,48 @@
+{
+  "configs": {
+    "unknown": {
+      "hud": {
+        "widgets": {}
+      },
+      "tab": {
+        "widgets": {}
+      },
+      "secondary_tab": {
+        "widgets": {}
+      }
+    },
+    "hub": {
+      "hud": {
+        "widgets": {}
+      },
+      "tab": {
+        "widgets": {}
+      },
+      "secondary_tab": {
+        "widgets": {}
+      }
+    },
+    "dynamic": {
+      "hud": {
+        "widgets": {}
+      },
+      "tab": {
+        "widgets": {}
+      },
+      "secondary_tab": {
+        "widgets": {}
+      }
+    }
+  },
+  "copies": {
+    "hud": {
+      "event": [
+        []
+      ]
+    },
+    "tab": {},
+    "secondary_tab": {}
+  },
+  "version": 13,
+  "_defaults_version": 1
+}
