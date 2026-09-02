@@ -1,3 +1,20 @@
+# Release 6.10.2
+
+## Highlight
+* Fix Fancy HUD bugs
+  * Fix bugs with removing copied widgets
+  * Fix confusing label for "Edit hidden Fancy TAB widgets" button
+  * Fix hidden TAB widgets not saving
+* Fix a crash with Vulkan on certain GPUs
+
+## What's Changed
+* Fix numerous fancy hud bugs by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2720
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.10.1+26.2...v6.10.2+26.2
+
+___
+
 # Release 6.10.1
 
 ## Highlight
