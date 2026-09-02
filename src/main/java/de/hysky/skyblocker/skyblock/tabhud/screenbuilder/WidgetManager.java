@@ -194,7 +194,7 @@ public class WidgetManager {
 		AtomicReference<@Nullable String> error = new AtomicReference<>();
 		try (BufferedReader reader = Files.newBufferedReader(FILE)) {
 			JsonElement input = JsonParser.parseReader(reader);
-			int prevVersion = input.getAsJsonObject().get("version").getAsInt();
+			int prevVersion = input.getAsJsonObject().has("version") ? input.getAsJsonObject().get("version").getAsInt() : 1;
 
 			CONFIG = Config.DATA_FIXING_CODEC.decode(JsonOps.INSTANCE, input).resultOrPartial(error::set).orElseThrow().getFirst();
 			if (error.get() != null) { // separate it to not run when the config fully cannot load
