@@ -7,6 +7,7 @@ import java.util.List;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -35,9 +36,10 @@ public class OutlinedBoxInstancedFeatureRenderer extends PrimitiveFeatureRendere
 				MemorySegment uniformSegment = arena.allocate(this.outlinedBoxData.calculateRequiredSize(boxes));
 				this.outlinedBoxData.writeToBuffer(submit.states(), submit.camera(), uniformSegment);
 
-				GpuBufferSlice tbo = RenderSystem.getDevice().createCommandEncoder()
+				GpuDevice device = RenderSystem.getDevice();
+				GpuBufferSlice tbo = device.createCommandEncoder()
 						.transientMemory()
-						.uploadGpu(uniformSegment.asByteBuffer(), 1L, GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER);
+						.uploadGpu(uniformSegment.asByteBuffer(), device.getDeviceInfo().limits().minUniformOffsetAlignment(), GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER);
 
 				RenderPipeline pipeline = submit.throughWalls() ? SkyblockerRenderPipelines.OUTLINED_BOX_THROUGH_WALLS_INSTANCED : SkyblockerRenderPipelines.OUTLINED_BOX_INSTANCED;
 				VertexConsumer builder = this.getVertexBuilder(pipeline, new InstancingParameters(boxes, "OutlinedBoxData", tbo));

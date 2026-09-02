@@ -7,6 +7,7 @@ import java.util.List;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -35,9 +36,10 @@ public class FilledBoxInstancedFeatureRenderer extends PrimitiveFeatureRenderer<
 				MemorySegment uniformSegment = arena.allocate(this.boxData.calculateRequiredSize(boxes));
 				this.boxData.writeToBuffer(submit.states(), submit.camera(), uniformSegment);
 
-				GpuBufferSlice tbo = RenderSystem.getDevice().createCommandEncoder()
+				GpuDevice device = RenderSystem.getDevice();
+				GpuBufferSlice tbo = device.createCommandEncoder()
 						.transientMemory()
-						.uploadGpu(uniformSegment.asByteBuffer(), 1L, GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER);
+						.uploadGpu(uniformSegment.asByteBuffer(), device.getDeviceInfo().limits().minUniformOffsetAlignment(), GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER);
 
 				RenderPipeline pipeline = submit.throughWalls() ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS_INSTANCED : SkyblockerRenderPipelines.FILLED_INSTANCED;
 				VertexConsumer builder = this.getVertexBuilder(pipeline, new InstancingParameters(boxes, "BoxData", tbo));
