@@ -1,0 +1,617 @@
+{
+	"version": 12,
+	"configs": {
+		"foraging_3": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_lasso": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "sweep_details"
+						}
+					},
+					"hud_treeprogress": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_lasso"
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_treeprogress"
+						}
+					}
+				}
+			}
+		},
+		"foraging_1": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "sweep_details"
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_slayer"
+						}
+					}
+				}
+			}
+		},
+		"foraging_2": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_lasso": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "sweep_details"
+						}
+					},
+					"hud_treeprogress": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_lasso"
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_treeprogress"
+						}
+					}
+				}
+			}
+		},
+		"garden": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_farming": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_farming"
+						}
+					}
+				}
+			}
+		},
+		"rift": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					}
+				}
+			}
+		},
+		"dynamic": {
+			"tab": {
+				"widgets": {
+					"election": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 238,
+							"relative_y": 34
+						}
+					}
+				}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {}
+			}
+		},
+		"hub": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"sweep_details": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "sweep_details"
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_slayer"
+						}
+					}
+				}
+			}
+		},
+		"lotus_atoll": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					}
+				}
+			}
+		},
+		"fishing_1": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					}
+				}
+			}
+		},
+		"combat_1": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_slayer"
+						}
+					}
+				}
+			}
+		},
+		"combat_3": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_slayer"
+						}
+					}
+				}
+			}
+		},
+		"crystal_hollows": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_crystals": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"powder_mining_tracker": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_crystals"
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "powder_mining_tracker"
+						}
+					}
+				}
+			}
+		},
+		"crimson_isle": {
+			"tab": {
+				"widgets": {}
+			},
+			"secondary_tab": {
+				"widgets": {}
+			},
+			"hud": {
+				"widgets": {
+					"hud_slayer": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 5,
+							"relative_y": 5
+						}
+					},
+					"hud_fishing": {
+						"config": {},
+						"position": {
+							"parent_anchor": {
+								"v": "BOTTOM",
+								"h": "LEFT"
+							},
+							"this_anchor": {
+								"v": "TOP",
+								"h": "LEFT"
+							},
+							"relative_x": 0,
+							"relative_y": 2,
+							"parent": "hud_slayer"
+						}
+					}
+				}
+			}
+		}
+	},
+	"copies": {
+		"secondary_tab": {},
+		"tab": {},
+		"hud": {}
+	}
+}

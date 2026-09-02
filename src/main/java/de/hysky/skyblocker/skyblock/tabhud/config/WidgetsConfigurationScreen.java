@@ -462,24 +462,23 @@ public class WidgetsConfigurationScreen extends Screen {
 			}
 		}
 		Location location = getCurrentLocation();
-		Optional<Set<Location>> locationsWithCopies = WidgetManager.getCopyTracker()
+		WidgetManager.getCopyTracker()
 				.get(currentScreenLayer)
 				.get(widget.widget.getInternalID())
-				.flatMap(sets -> sets.whereHas(location));
-		locationsWithCopies.ifPresent(set -> openPopup(screen ->
-				new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
-						.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
-						.addButton(CommonComponents.GUI_YES, popup -> {
-							set.clear();
-							removeCopies(set, widget.widget.getInternalID());
-							popup.onClose();
-						})
-						.addButton(CommonComponents.GUI_NO, popup -> {
-							set.remove(location);
-							popup.onClose();
-						})
-						.build()
-		));
+				.ifPresent(copyTracker -> copyTracker.whereHas(location).ifPresent(set -> openPopup(screen ->
+						new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
+								.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
+								.addButton(CommonComponents.GUI_YES, popup -> {
+									removeCopies(set, widget.widget.getInternalID());
+									copyTracker.removeAll(set);
+									popup.onClose();
+								})
+								.addButton(CommonComponents.GUI_NO, popup -> {
+									copyTracker.remove(location);
+									popup.onClose();
+								})
+								.build()
+				)));
 		if (selectedWidget == widget) {
 			sidePanelWidget.close();
 			selectedWidget = null;

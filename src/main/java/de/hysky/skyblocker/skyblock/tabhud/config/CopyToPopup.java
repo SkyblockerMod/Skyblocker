@@ -44,12 +44,11 @@ class CopyToPopup extends AbstractPopupScreen {
 	private ScrollableLayout scrollable;
 
 	CopyToPopup(Screen backgroundScreen, PositionedWidget copiedWidget, Location location, WidgetManager.ScreenLayer layer) {
-		super(Component.literal("Edit hidden widgets"), backgroundScreen);
+		super(Component.literal("Copy to other locations"), backgroundScreen);
 		this.copiedWidget = copiedWidget;
 		this.selectedLocations = WidgetManager.getCopyTracker().get(layer)
 				.get(copiedWidget.widget.getInternalID())
 				.flatMap(s -> s.whereHas(location))
-				.map(EnumSet::copyOf)
 				.orElseGet(() -> EnumSet.noneOf(Location.class));
 		this.availableLocations = WidgetManager.ALLOWED_LOCATIONS.stream().filter(l -> copiedWidget.widget.getInformation().available().test(l)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Location.class)));
 		this.location = location;
