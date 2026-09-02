@@ -14,7 +14,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 
 public class BazaarPriceTooltip extends SimpleTooltipAdder {
 	public BazaarPriceTooltip(int priority) {
@@ -29,12 +29,12 @@ public class BazaarPriceTooltip extends SimpleTooltipAdder {
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(ItemUtils.getItemCountInSuperpairs(stack).orElse(ItemUtils.getCompostCountInComposter(stack.skyblocker$getLoreStrings()).orElse(stack.getCount())))), 1);
 
 			BazaarProduct product = TooltipInfoType.BAZAAR.getData().get(skyblockApiId);
-			lines.add(GridComponent.of(
+			lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 					Component.literal("Bazaar Buy Price:").withStyle(ChatFormatting.GOLD),
 					product.buyPrice().isEmpty()
 							? Component.literal("No data").withStyle(ChatFormatting.RED)
 							: ItemTooltip.getCoinsMessage(product.buyPrice().getAsDouble(), count)));
-			lines.add(GridComponent.of(
+			lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 					Component.literal("Bazaar Sell Price:").withStyle(ChatFormatting.GOLD),
 					product.sellPrice().isEmpty()
 							? Component.literal("No data").withStyle(ChatFormatting.RED)

@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 
 public class LBinTooltip extends SimpleTooltipAdder {
 	public LBinTooltip(int priority) {
@@ -30,7 +30,7 @@ public class LBinTooltip extends SimpleTooltipAdder {
 
 		// Check for whether the item exist in bazaar price data, because Skytils keeps some bazaar item data in lbin api
 		if (TooltipInfoType.LOWEST_BINS.hasOrNullWarning(skyblockApiId) && !TooltipInfoType.BAZAAR.hasOrNullWarning(skyblockApiId)) {
-			lines.add(GridComponent.of(
+			lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 					Component.literal("Lowest BIN Price:").withStyle(ChatFormatting.GOLD),
 					ItemTooltip.getCoinsMessage(TooltipInfoType.LOWEST_BINS.getData().getDouble(skyblockApiId), stack.getCount())));
 		}
