@@ -46,7 +46,7 @@ public class OutlinedConnectedInstancedFeatureRenderer  extends PrimitiveFeature
 		}
 	}
 	private static void buildUnitBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, VertexConsumer builder) {
-		// TODO
+		// TODO: Iterate over the list of block sides and add vertexes for each one to build the overall shape's outline
 	}
 
 	public record Submit(List<OutlinedConnectedRenderState> states, CameraRenderState camera, boolean throughWalls) implements SubmitNode {
