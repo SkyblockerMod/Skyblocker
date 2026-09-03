@@ -196,9 +196,10 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 	@Override
 	public void submitOutlinedConnected(BlockPosSet blocks, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
-		/* TODO, iterate over blocks to find block sides with no neighbor (including
-			diagonal neighbors, so 6 neighbor blocks to check for each side) and store
-			in a List<BlockSide> (or any better format) to then submit to the feature render */
+		/* TODO: Iterate over BlockPosSet to find block sides with no neighbor (including
+		 * diagonal neighbors, so 9 neighbor blocks to check for each side) and store
+		 * in a List<BlockSide> (or any better format) to then submit to the feature render
+		 */
 	}
 
 	private void submitOutlinedConnected(List<BlockSide> sides, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls) {
