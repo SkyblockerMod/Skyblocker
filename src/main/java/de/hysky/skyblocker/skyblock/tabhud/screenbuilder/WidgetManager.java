@@ -250,8 +250,8 @@ public class WidgetManager {
 			HudWidget commissions = getWidgetOrPlaceholder("commissions");
 			HudWidget powders = getWidgetOrPlaceholder("powders");
 			EnumSet<Location> miningLocations = EnumSet.of(Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS);
-			getCopyTracker().hud().getOrCreate(commissions.getInternalID()).track(miningLocations);
-			getCopyTracker().hud().getOrCreate(powders.getInternalID()).track(miningLocations);
+			getCopyTracker().hud().getOrCreate(commissions.getInternalID()).group(miningLocations);
+			getCopyTracker().hud().getOrCreate(powders.getInternalID()).group(miningLocations);
 
 			PositionRule commsRule = new PositionRule(
 					Optional.empty(),
@@ -297,7 +297,7 @@ public class WidgetManager {
 				hud.add(sweepDetails);
 				hud.serializeConfig();
 			}
-			getCopyTracker().hud().getOrCreate(sweepDetails.getInternalID()).track(SweepDetailsHudWidget.LOCATIONS);
+			getCopyTracker().hud().getOrCreate(sweepDetails.getInternalID()).group(SweepDetailsHudWidget.LOCATIONS);
 
 			// Galatea
 			editableScreenBuilder.setConfig(getScreenConfig(Location.GALATEA));
