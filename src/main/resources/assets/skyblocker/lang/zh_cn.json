@@ -1690,7 +1690,7 @@
     "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "你现在不在温室里。",
     "skyblocker.config.farming.greenhouse.greenhousePaste.unload": "温室预览已移除。",
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled": "显示突变植物位置",
-    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "点击网站上的“链接”按钮，然后运行 /skyblocker garden greenhouse paste 命令，将地块布局粘贴到你的温室中！",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "点击SkyMutations或SkyShards Greenhouse网站上的布局链接按钮，然后运行 /skyblocker garden greenhouse paste 命令，将地块布局粘贴到你的温室中！",
     "skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip": "当粘贴布局时，高亮突变植物的位置。",
     "skyblocker.config.general.specialEffects.trophyDropEffects": "Diamond Trophy掉落效果",
     "skyblocker.config.general.specialEffects.trophyDropEffects.@Tooltip": "当首次钓上钻石级别的奖杯鱼/青蛙时，显示特殊的视觉效果！",
@@ -1897,5 +1897,10 @@
     "skyblocker.config.farming.greenhouse.greenhousePresets.title": "编辑温室地块预设",
     "skyblocker.config.hud.widget.base.scale": "缩放",
     "skyblocker.config.hud.widget.element.showTitle": "显示标题",
-    "skyblocker.config.farming.greenhouse.greenhousePresets.link": "SkyMutations/SkyShards链接"
+    "skyblocker.config.farming.greenhouse.greenhousePresets.link": "SkyMutations/SkyShards链接",
+    "skyblocker.config.hud.widget.element.roundedCorners": "圆角",
+    "skyblocker.config.hud.widget.element.drawBorder": "绘制边框",
+    "skyblocker.config.hud.widget.element.backgroundOpacity": "背景不透明度",
+    "skyblocker.config.hud.widget.tab.hideIfMissing": "如果TAB小部件缺失则隐藏",
+    "skyblocker.config.farming.farmingHud.blocks": "每秒破坏方块数"
 }
