@@ -26,7 +26,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
-class OtherOptionsScreen extends Screen {
+public class OtherOptionsScreen extends Screen {
 	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")

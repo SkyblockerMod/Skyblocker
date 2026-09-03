@@ -35,6 +35,7 @@ import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.EditableScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
@@ -102,7 +103,9 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		layer = screenBuilder.getLayer(currentScreenLayer);
 		layer.update();
-		screenBuilder.updateFancyTab();
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			screenBuilder.updateFancyTab();
+		}
 	}
 
 	public void setCurrentLocation(Location newLocation) {
@@ -112,7 +115,9 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		layer = screenBuilder.getLayer(currentScreenLayer);
 		layer.update();
-		screenBuilder.updateFancyTab();
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			screenBuilder.updateFancyTab();
+		}
 	}
 
 	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
@@ -334,7 +339,8 @@ public class WidgetsConfigurationScreen extends Screen {
 			selectedWidget = null;
 			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
-				availableWidgets.removeAll(layer.builder().getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
+				// remove already present widgets except those from the tab hud
+				availableWidgets.removeAll(layer.builder().getRendered().stream().filter(w -> !w.fromTab).map(w -> w.widget).toList());
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
@@ -415,12 +421,6 @@ public class WidgetsConfigurationScreen extends Screen {
 		}
 	}
 
-	@Override
-	public void removed() {
-		layer.editor().serializeConfig();
-		WidgetManager.SCREEN_BUILDER.hud().update();
-	}
-
 	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
 		int extraX = rect.width() / 2;
 		int extraY = rect.height() / 2;
@@ -442,6 +442,8 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public void onClose() {
+		layer.editor().serializeConfig();
+		WidgetManager.SCREEN_BUILDER.hud().update();
 		this.minecraft.gui.setScreen(previousScreen);
 	}
 
