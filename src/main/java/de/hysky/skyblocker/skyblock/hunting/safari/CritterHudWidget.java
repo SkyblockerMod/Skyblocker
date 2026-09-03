@@ -77,7 +77,7 @@ public class CritterHudWidget extends ElementBasedWidget {
 		addElement(new PlainTextElement(Component.literal("Biome: ").append(name)));
 
 		// Show only sparkling critters if any are found
-		var sparkling = SafariCritters.getSparklings();
+		var sparkling = SafariCritters.getSparklings(critters);
 		if (sparkling != null) {
 			addElement(new PlainTextElement(Component.literal("SPARKLING" + (sparkling.size() == 1 ? "" : "S")).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD).append(Component.literal(" found:").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))));
 			for (SafariUtils.Critters critter : sparkling.keySet()) {
