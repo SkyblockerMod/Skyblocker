@@ -109,7 +109,7 @@ public class OtherOptionsScreen extends Screen {
 		private final LinearLayout layout = LinearLayout.vertical().spacing(10);
 
 		private HiddenWidgetsPopup(Screen backgroundScreen, ScreenConfig screenConfig) {
-			super(Component.literal("Edit hidden widgets"), backgroundScreen);
+			super(Component.literal("Edit hidden Fancy TAB widgets"), backgroundScreen);
 			this.screenConfig = screenConfig;
 		}
 
@@ -129,6 +129,10 @@ public class OtherOptionsScreen extends Screen {
 										screenConfig.hiddenTabWidgets().add(widget.getInternalID());
 									} else {
 										screenConfig.hiddenTabWidgets().remove(widget.getInternalID());
+									}
+									// Update the fancy tab after hidden widgets changes
+									if (backgroundScreen instanceof OtherOptionsScreen screen) {
+										screen.parent.screenBuilder.updateFancyTab();
 									}
 								})
 								.build()

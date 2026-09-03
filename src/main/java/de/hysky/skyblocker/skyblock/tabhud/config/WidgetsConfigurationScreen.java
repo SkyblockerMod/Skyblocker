@@ -71,7 +71,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	private Location currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
-	private final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
+	protected final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
 	private ScreenConfig screenConfig;
 	private EditableScreenBuilder.EditableLayer layer;
 
