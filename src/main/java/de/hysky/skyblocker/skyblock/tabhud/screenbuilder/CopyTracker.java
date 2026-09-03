@@ -25,14 +25,6 @@ public record CopyTracker(Layer hud, Layer tab, Layer secondaryTab) {
 			Layer.CODEC.fieldOf("tab").forGetter(CopyTracker::tab),
 			Layer.CODEC.fieldOf("secondary_tab").forGetter(CopyTracker::secondaryTab)
 	).apply(instance, CopyTracker::new));
-	// Codec that accepts either a list of locations, or a string (contents doesn't matter) to represent "all locations"
-	private static final Codec<Set<Location>> LOCATION_SET_CODEC = Codec.either(Location.CODEC.listOf(), Codec.STRING).xmap(
-			// There was a bug where the Set<Location> could be empty which needs handling so the config can load (EnumSet#copyOf does not work with empty collections).
-			// Versions after 6.10.1 should not have this issue anymore and won't serialize an empty set.
-			e -> e.map(l -> l.isEmpty() ? EnumSet.noneOf(Location.class) : EnumSet.copyOf(l), _ -> EnumSet.copyOf(WidgetManager.ALLOWED_LOCATIONS)),
-			s -> s.equals(WidgetManager.ALLOWED_LOCATIONS) ? Either.right("everywhere") : Either.left(List.copyOf(s))
-	);
-	private static final Codec<ExclusiveGroupingSet<Location>> LOCATION_SETS_CODEC = ExclusiveGroupingSet.getCodec(LOCATION_SET_CODEC);
 
 	public CopyTracker() {
 		this(new Layer(), new Layer(), new Layer());
@@ -47,6 +39,14 @@ public record CopyTracker(Layer hud, Layer tab, Layer secondaryTab) {
 	}
 
 	public record Layer(Map<String, ExclusiveGroupingSet<Location>> map) {
+		// Codec that accepts either a list of locations, or a string (contents doesn't matter) to represent "all locations"
+		private static final Codec<Set<Location>> LOCATION_SET_CODEC = Codec.either(Location.CODEC.listOf(), Codec.STRING).xmap(
+				// There was a bug where the Set<Location> could be empty which needs handling so the config can load (EnumSet#copyOf does not work with empty collections).
+				// Versions after 6.10.1 should not have this issue anymore and won't serialize an empty set.
+				e -> e.map(l -> l.isEmpty() ? EnumSet.noneOf(Location.class) : EnumSet.copyOf(l), _ -> EnumSet.copyOf(WidgetManager.ALLOWED_LOCATIONS)),
+				s -> s.equals(WidgetManager.ALLOWED_LOCATIONS) ? Either.right("everywhere") : Either.left(List.copyOf(s))
+		);
+		private static final Codec<ExclusiveGroupingSet<Location>> LOCATION_SETS_CODEC = ExclusiveGroupingSet.getCodec(LOCATION_SET_CODEC);
 		public static final Codec<Layer> CODEC = Codec.unboundedMap(Codec.STRING, LOCATION_SETS_CODEC)
 				.<Map<String, ExclusiveGroupingSet<Location>>>xmap(Object2ObjectOpenHashMap::new, Function.identity())
 				.xmap(Layer::new, Layer::map);
