@@ -31,7 +31,7 @@ public class OutlinedConnectedFeatureRenderer extends PrimitiveFeatureRenderer<O
 				float blue = state.colourComponents()[2];
 				float alpha = state.alpha();
 				for (BlockSide side : state.sides()) {
-					// TODO!
+					// TODO: Iterate over the list of block sides and add vertexes for each one to build the overall shape's outline
 				}
 			}
 		}

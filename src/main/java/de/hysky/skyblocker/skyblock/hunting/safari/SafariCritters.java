@@ -128,7 +128,7 @@ public class SafariCritters {
 
 		Frustum frustum = RenderHelper.getCamera().getCullFrustum();
 		// Check if snoozle walls are broken or not
-		if (SafariUtils.isInCavernBiome()) {
+		if (isInCavernCaveSection()) {
 			for (int i = 0; i < snoozleWalls.size(); i++) {
 				SafariUtils.BlockLocation location = snoozleWalls.get(i);
 				BlockPos pos = SafariUtils.SNOOZLE_WALL_CORES.get(i);
@@ -209,7 +209,7 @@ public class SafariCritters {
 		if (MINECRAFT.level == null || MINECRAFT.player == null || !Utils.isInSafari()) return;
 
 		// Highlight snoozle walls while in the cave section of the cavern biome
-		if (SkyblockerConfigManager.get().hunting.safari.highlightSnoozleWalls && SafariUtils.isInCavernBiome() && MINECRAFT.player.getY() <= 55) {
+		if (SkyblockerConfigManager.get().hunting.safari.highlightSnoozleWalls && isInCavernCaveSection()) {
 			var snoozleWallBlocks = SafariUtils.getSnoozleWalls();
 			for (int i = 0; i < snoozleWalls.size(); i++) {
 				if (snoozleWalls.get(i) == SafariUtils.BlockLocation.CLEAR) continue;
@@ -219,7 +219,9 @@ public class SafariCritters {
 					collector.submitOutlinedConnected(wallBlocks, SNOOZLE_WALL_COLOR, 5f, false);
 				}
 				if (highlightType != HuntingConfig.Safari.WallHighlightType.OUTLINE) {
-					// should have collector.submitFilledConnected() as this is very ugly on air blocks?
+					/* TODO: This is very ugly on air blocks, technically works but a collector.submitFilledConnected()
+					 * method would look much nicer during snoozle wall interactions
+					 */
 					for (BlockPos pos : wallBlocks) {
 						collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
 					}
@@ -240,6 +242,11 @@ public class SafariCritters {
 				}
 			}
 		}
+	}
+
+	private static boolean isInCavernCaveSection() {
+		assert MINECRAFT.player != null;
+		return SafariUtils.isInCavernBiome() && MINECRAFT.player.getBlockY() <= CAVERN_CAVE_Y_LEVEL;
 	}
 
 	private static boolean cantSeeBlock(Frustum frustum, BlockPos pos) {
