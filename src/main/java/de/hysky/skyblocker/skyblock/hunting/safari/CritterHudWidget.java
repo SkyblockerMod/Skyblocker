@@ -27,10 +27,10 @@ import de.hysky.skyblocker.utils.Utils;
 public class CritterHudWidget extends ElementBasedWidget {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
 	private static final MutableComponent TITLE = Component.literal("Critters").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
-	private static final Component CAVERN_NAME = Component.literal("Cavern").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
-	private static final Component FOREST_NAME = Component.literal("Forest").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD);
-	private static final Component HAUNTED_NAME = Component.literal("Haunted").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
-	private static final Component ICY_NAME = Component.literal("Icy").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
+	private static final Component CAVERN_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.cavern").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+	private static final Component FOREST_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.forest").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD);
+	private static final Component HAUNTED_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.haunted").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD);
+	private static final Component ICY_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.icy").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD);
 	private static final FlexibleItemStack SNOOZLE_WALL_ITEM = new FlexibleItemStack(Items.COBBLED_DEEPSLATE);
 	private static final FlexibleItemStack HONEYBUG_NEST_ITEM = new FlexibleItemStack(Items.BEE_NEST);
 
@@ -58,10 +58,11 @@ public class CritterHudWidget extends ElementBasedWidget {
 	}
 
 	private void addDefaultElements() {
-		addElement(new PlainTextElement(Component.literal("Enter a biome!")));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.none")));
 	}
 
 	private void addListCritter(SafariUtils.Critters critter, int count, boolean showLocation) {
+		// TODO: Figure out how to read translatable text so I can parse multi-component ones!
 		if (critter == SafariUtils.Critters.SNOOZLE && showLocation) {
 			addElement(Elements.iconTextComponent(SNOOZLE_WALL_ITEM, Component.literal(count + "x ").withStyle(ChatFormatting.GRAY).append(getDisplayName(critter)).append(Component.literal(" wall"))));
 		} else if (critter == SafariUtils.Critters.HONEYBUG && showLocation) {
@@ -74,12 +75,12 @@ public class CritterHudWidget extends ElementBasedWidget {
 	}
 
 	private void addBiomeElements(Component name, EnumSet<SafariUtils.Critters> critters) {
-		addElement(new PlainTextElement(Component.literal("Biome: ").append(name)));
+		addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.biome").append(name)));
 
 		// Show only sparkling critters if any are found
 		var sparkling = SafariCritters.getSparklings(critters);
 		if (sparkling != null) {
-			addElement(new PlainTextElement(Component.literal("SPARKLING" + (sparkling.size() == 1 ? "" : "S")).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD).append(Component.literal(" found:").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))));
+			addElement(new PlainTextElement(Component.literal("SPARKLING").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD).append(Component.literal(" found:").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))));
 			for (SafariUtils.Critters critter : sparkling.keySet()) {
 				addListCritter(critter, sparkling.get(critter), false);
 			}
@@ -111,54 +112,54 @@ public class CritterHudWidget extends ElementBasedWidget {
 				+ nearby.size()) <= 6;
 
 		if (uniques.isEmpty()) {
-			addElement(new PlainTextElement(Component.literal("Unique: ").append(Component.literal("Done!").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unique").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.done").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
 		} else if (showFullDisplay) {
-			addElement(new PlainTextElement(Component.literal("Unique:")));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unique")));
 			for (SafariUtils.Critters critter : uniques) {
 				addListCritter(critter, critter == SafariUtils.Critters.SNOOZLE ? SafariCritters.getMinimum(critter) : 0, true);
 			}
 		} else {
-			addElement(new PlainTextElement(Component.literal("Unique: ").append(Component.literal((critters.size() - uniques.size()) + "/" + critters.size() + " critters").withStyle(ChatFormatting.GRAY))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unique").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.critters", critters.size() - uniques.size(), critters.size()).withStyle(ChatFormatting.GRAY))));
 		}
 
 		// Show unknown snoozle walls
 		if (SafariUtils.isInCavernBiome()) {
 			int unknown = SafariCritters.getUnknownSnoozles();
 			if (unknown != 0) {
-				addElement(new PlainTextElement(Component.literal("Unknown:")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unknown")));
 				addListCritter(SafariUtils.Critters.SNOOZLE, unknown, true);
 			}
 		// Show unknown honeybug nests
 		} else if (SafariUtils.isInForestBiome()) {
 			int unknown = SafariCritters.getUnknownHoneybugs();
 			if (unknown != 0) {
-				addElement(new PlainTextElement(Component.literal("Unknown:")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unknown")));
 				addListCritter(SafariUtils.Critters.HONEYBUG, unknown, true);
 			}
 		}
 
 		long minimum = uniques.size() + remaining.size();
 		if (minimum == 0) {
-			addElement(new PlainTextElement(Component.literal("Minimum: ").append(Component.literal("Done!").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.done").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
 		} else if (remaining.isEmpty() || !showFullDisplay) {
-			addElement(new PlainTextElement(Component.literal("Minimum: ").append(Component.literal((critters.size() - minimum) + "/" + critters.size() + " critters").withStyle(ChatFormatting.GRAY))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.critters", critters.size() - minimum, critters.size()).withStyle(ChatFormatting.GRAY))));
 		} else {
-			addElement(new PlainTextElement(Component.literal("Minimum:")));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum")));
 			for (SafariUtils.Critters critter : remaining.keySet()) {
 				addListCritter(critter, remaining.get(critter), true);
 			}
 		}
 
 		if (nearby.isEmpty()) {
-			addElement(new PlainTextElement(Component.literal("Nearby: ").append(Component.literal("None!").withStyle(ChatFormatting.GRAY))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.nearby").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.none").withStyle(ChatFormatting.GRAY))));
 		} else if (showFullDisplay) {
-			addElement(new PlainTextElement(Component.literal("Nearby: ")));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.nearby")));
 			for (SafariUtils.Critters critter : nearby.keySet()) {
 				addListCritter(critter, nearby.get(critter), false);
 			}
 		} else {
 			int total = nearby.values().stream().reduce(0, Integer::sum);
-			addElement(new PlainTextElement(Component.literal("Nearby: ").append(Component.literal(total + " critter" + (total == 1 ? "" : "s")).withStyle(ChatFormatting.GRAY))));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.nearby").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.critters." + (total == 1 ? "singular" : "plural"), total).withStyle(ChatFormatting.GRAY))));
 		}
 	}
 
