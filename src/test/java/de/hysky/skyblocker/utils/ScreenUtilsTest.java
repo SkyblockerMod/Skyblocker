@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.utils;
 
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
