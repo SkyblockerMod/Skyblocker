@@ -193,11 +193,11 @@ public class AccessoriesHelper {
 		).apply(instance, Accessory::new));
 		public static final Codec<Map<String, Accessory>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
 
-		private boolean hasFamily() {
+		public boolean hasFamily() {
 			return family.isPresent();
 		}
 
-		private boolean hasSameFamily(Accessory other) {
+		public boolean hasSameFamily(Accessory other) {
 			return other.family().equals(this.family);
 		}
 	}
