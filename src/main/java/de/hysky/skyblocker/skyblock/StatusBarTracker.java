@@ -122,7 +122,7 @@ public class StatusBarTracker {
 
 	@VisibleForTesting
 	protected static boolean allowOverlayMessage(Component text, boolean overlay) {
-		return !overlay || !onOverlayMessage(text, true).getString().isEmpty();
+		return !overlay || !onOverlayMessage(text, overlay).getString().isEmpty();
 	}
 
 	private static Component onOverlayMessage(Component text, boolean overlay) {
