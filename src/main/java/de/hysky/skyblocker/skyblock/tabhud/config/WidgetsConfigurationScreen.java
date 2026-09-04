@@ -83,6 +83,7 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	/// A widget that covers the entire screen, used for snapping.
 	/// Be very careful when using this widget, as it contains invalid nullability.
+	@SuppressWarnings("DataFlowIssue")
 	private final PositionedWidget screenWidget = new PositionedWidget(new HudWidget(new HudWidget.Information(null, null)) {
 		@Override
 		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, float delta) {
