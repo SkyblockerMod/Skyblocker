@@ -230,73 +230,23 @@ public class WidgetsConfigurationScreen extends Screen {
 			mouseX /= TabHud.getScaleFactor();
 			mouseY /= TabHud.getScaleFactor();
 
-			PositionRule.Point parentPoint;
-			PositionRule.Point thisPoint;
+			SnapResult pos;
 			if (autoAnchor && oldRule.parent().isEmpty()) {
-				parentPoint = thisPoint = getPoint(selectedWidget.widget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
+				PositionRule.Point point = getPoint(selectedWidget.widget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
+				pos = new SnapResult(null, point, point, OptionalInt.empty(), OptionalInt.empty());
 			} else {
-				parentPoint = oldRule.parentPoint();
-				thisPoint = oldRule.thisPoint();
+				pos = new SnapResult(oldRule.parent().orElse(null), oldRule.parentPoint(), oldRule.thisPoint(), OptionalInt.empty(), OptionalInt.empty());
 			}
-			String newParent = oldRule.parent().orElse(null);
-			OptionalInt relativeX = OptionalInt.empty();
-			OptionalInt relativeY = OptionalInt.empty();
 			if (minecraft.hasShiftDown()) {
-				final ScreenDirection[] directions = ScreenDirection.values();
-
-				ScreenRectangle selectedRect = new ScreenRectangle((int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
-				ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
-
-				int distanceToCursor = Integer.MAX_VALUE;
-				for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
-					if (positionedWidget == selectedWidget) continue;
-					if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
-					ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
-					for (ScreenDirection direction : directions) {
-						ScreenRectangle otherSnapBox = getBorder(otherRect, direction);
-						ScreenRectangle selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
-
-						int dist = direction.getAxis() == ScreenAxis.HORIZONTAL ? Math.abs((int) mouseX - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.HORIZONTAL)) : Math.abs((int) mouseY - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.VERTICAL));
-						if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
-						PositionRule.Point point = getPoint(positionedWidget.widget);
-						switch (direction) {
-							case LEFT -> {
-								relativeX = OptionalInt.of(-2);
-								relativeY = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
-								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
-							}
-							case RIGHT -> {
-								relativeX = OptionalInt.of(1);
-								relativeY = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
-								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
-							}
-							case UP -> {
-								relativeY = OptionalInt.of(-2);
-								relativeX = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
-								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
-							}
-							case DOWN -> {
-								relativeY = OptionalInt.of(1);
-								relativeX = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
-								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
-							}
-						}
-						newParent = positionedWidget.widget.getInternalID();
-						distanceToCursor = dist;
-					}
-				}
+				pos = snapSelectedWidget((int) mouseX, (int) mouseY).orElse(pos);
 			}
-			ScreenPosition startPosition = WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
+			ScreenPosition startPosition = WidgetPositioner.getStartPosition(pos.parent, getScreenWidth(), getScreenHeight(), pos.parentPoint);
 			selectedWidget.rule = new PositionRule(
-					Optional.ofNullable(newParent),
-					parentPoint,
-					thisPoint,
-					relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.widget.getWidth() * thisPoint.horizontalPoint().getPercentage())),
-					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.widget.getHeight() * thisPoint.verticalPoint().getPercentage()))
+					Optional.ofNullable(pos.parent),
+					pos.parentPoint,
+					pos.thisPoint,
+					pos.relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.widget.getWidth() * pos.thisPoint.horizontalPoint().getPercentage())),
+					pos.relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.widget.getHeight() * pos.thisPoint.verticalPoint().getPercentage()))
 			);
 			updateBuilderPositions();
 			ScreenRectangle sidePanel = new ScreenRectangle(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight());
@@ -308,6 +258,65 @@ public class WidgetsConfigurationScreen extends Screen {
 			return true;
 		}
 		return false;
+	}
+
+	private Optional<SnapResult> snapSelectedWidget(int mouseX, int mouseY) {
+		if (selectedWidget == null || dragRelative == null) {
+			return Optional.empty();
+		}
+
+		SnapResult result = null;
+		final ScreenDirection[] directions = ScreenDirection.values();
+
+		ScreenRectangle selectedRect = new ScreenRectangle(mouseX - dragRelative.x(), mouseY - dragRelative.y(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
+		ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
+
+		int distanceToCursor = Integer.MAX_VALUE;
+		for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
+			if (positionedWidget == selectedWidget) continue;
+			if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
+			ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
+			for (ScreenDirection direction : directions) {
+				ScreenRectangle otherSnapBox = getBorder(otherRect, direction);
+				ScreenRectangle selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
+
+				int dist = direction.getAxis() == ScreenAxis.HORIZONTAL ? Math.abs(mouseX - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.HORIZONTAL)) : Math.abs(mouseY - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.VERTICAL));
+				if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
+				PositionRule.Point point = getPoint(positionedWidget.widget);
+				result = switch (direction) {
+					case LEFT -> new SnapResult(
+							positionedWidget.widget.getInternalID(),
+							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT),
+							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT),
+							OptionalInt.of(-2),
+							OptionalInt.empty()
+					);
+					case RIGHT -> new SnapResult(
+							positionedWidget.widget.getInternalID(),
+							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT),
+							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT),
+							OptionalInt.of(1),
+							OptionalInt.empty()
+					);
+					case UP -> new SnapResult(
+							positionedWidget.widget.getInternalID(),
+							new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint()),
+							new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint()),
+							OptionalInt.empty(),
+							OptionalInt.of(-2)
+					);
+					case DOWN -> new SnapResult(
+							positionedWidget.widget.getInternalID(),
+							new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint()),
+							new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint()),
+							OptionalInt.empty(),
+							OptionalInt.of(1)
+					);
+				};
+				distanceToCursor = dist;
+			}
+		}
+		return Optional.ofNullable(result);
 	}
 
 	private PositionRule.Point getPoint(HudWidget widget) {
@@ -554,4 +563,6 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {}
+
+	private record SnapResult(@Nullable String parent, PositionRule.Point parentPoint, PositionRule.Point thisPoint, OptionalInt relativeX, OptionalInt relativeY) {}
 }
