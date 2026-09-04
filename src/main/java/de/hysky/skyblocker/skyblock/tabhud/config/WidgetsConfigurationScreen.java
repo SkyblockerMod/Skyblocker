@@ -48,6 +48,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.ScreenUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -269,52 +270,94 @@ public class WidgetsConfigurationScreen extends Screen {
 		final ScreenDirection[] directions = ScreenDirection.values();
 
 		ScreenRectangle selectedRect = new ScreenRectangle(mouseX - dragRelative.x(), mouseY - dragRelative.y(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
-		ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
+		ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> ScreenUtils.getSnapBox(selectedRect, dir)).toArray(ScreenRectangle[]::new);
 
-		int distanceToCursor = Integer.MAX_VALUE;
-		for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
-			if (positionedWidget == selectedWidget) continue;
-			if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
-			ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
-			for (ScreenDirection direction : directions) {
-				ScreenRectangle otherSnapBox = getBorder(otherRect, direction);
-				ScreenRectangle selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
+		// Manhattan distance based score, used to find the best snap candidate.
+		int distSnapScore = Integer.MAX_VALUE;
+		// Check if the selected widget should snap to this widget. Closer widgets take priority based on distSnapScore.
+		for (PositionedWidget otherWidget : layer.builder().getRendered()) {
+			if (otherWidget == selectedWidget) continue;
+			if (selectedWidget.widget.getInternalID().equals(otherWidget.rule.parent().orElse(null))) continue;
 
-				int dist = direction.getAxis() == ScreenAxis.HORIZONTAL ? Math.abs(mouseX - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.HORIZONTAL)) : Math.abs(mouseY - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.VERTICAL));
-				if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
-				PositionRule.Point point = getPoint(positionedWidget.widget);
-				result = switch (direction) {
-					case LEFT -> new SnapResult(
-							positionedWidget.widget.getInternalID(),
-							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT),
-							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT),
-							OptionalInt.of(-2),
-							OptionalInt.empty()
-					);
-					case RIGHT -> new SnapResult(
-							positionedWidget.widget.getInternalID(),
-							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT),
-							new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT),
-							OptionalInt.of(1),
-							OptionalInt.empty()
-					);
-					case UP -> new SnapResult(
-							positionedWidget.widget.getInternalID(),
-							new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint()),
-							new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint()),
-							OptionalInt.empty(),
-							OptionalInt.of(-2)
-					);
-					case DOWN -> new SnapResult(
-							positionedWidget.widget.getInternalID(),
-							new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint()),
-							new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint()),
-							OptionalInt.empty(),
-							OptionalInt.of(1)
-					);
-				};
-				distanceToCursor = dist;
+			ScreenRectangle otherRect = otherWidget.widget.getRectangle();
+			PositionRule.Point point = getPoint(otherWidget.widget);
+
+			int distX = 10;
+			int distY = 10;
+
+			PositionRule.HorizontalPoint parentPointH = null, thisPointH = null;
+			PositionRule.VerticalPoint parentPointV = null, thisPointV = null;
+			OptionalInt relativeX = OptionalInt.empty();
+			OptionalInt relativeY = OptionalInt.empty();
+
+			// Docking
+			for (ScreenDirection otherEdge : directions) {
+				// When docking, we snap opposite edges together.
+				ScreenDirection selectEdge = otherEdge.getOpposite();
+				ScreenRectangle otherSnapBox = ScreenUtils.getSnapBox(otherRect, otherEdge);
+				ScreenRectangle selectedSnapBox = selectedSnapBoxes[selectEdge.ordinal()];
+
+				if (!selectedSnapBox.overlaps(otherSnapBox)) continue;
+
+				// Distance between the edges being snapped, in the axis orthogonal to the direction of the edge.
+				int dist = Math.abs(selectedRect.getBoundInDirection(selectEdge) - otherRect.getBoundInDirection(otherEdge));
+
+				if (otherEdge.getAxis() == ScreenAxis.HORIZONTAL && dist < distX) {
+					// Dock the selectedWidget's selectEdge to otherWidget's otherEdge.
+					distX = dist;
+					relativeX = OptionalInt.of(otherEdge.isPositive() ? 1 : -2);
+					parentPointH = otherEdge.isPositive() ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.LEFT;
+					thisPointH = otherEdge.isPositive() ? PositionRule.HorizontalPoint.LEFT : PositionRule.HorizontalPoint.RIGHT;
+				} else if (otherEdge.getAxis() == ScreenAxis.VERTICAL && dist < distY) {
+					// Dock the selectedWidget's selectEdge to otherWidget's otherEdge.
+					distY = dist;
+					relativeY = OptionalInt.of(otherEdge.isPositive() ? 1 : -2);
+					parentPointV = otherEdge.isPositive() ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.TOP;
+					thisPointV = otherEdge.isPositive() ? PositionRule.VerticalPoint.TOP : PositionRule.VerticalPoint.BOTTOM;
+				}
 			}
+
+			// Alignment
+			for (ScreenDirection edge : directions) {
+				// When aligning, we snap the same edges together.
+				ScreenRectangle otherSnapBox = ScreenUtils.getSnapBox(otherRect, edge);
+				ScreenRectangle selectedSnapBox = selectedSnapBoxes[edge.ordinal()];
+
+				if (!selectedSnapBox.overlaps(otherSnapBox)) continue;
+
+				// Distance between the edges being aligned, in the axis orthogonal to the direction of the edge.
+				int dist = Math.abs(selectedRect.getBoundInDirection(edge) - otherRect.getBoundInDirection(edge));
+
+				if (edge.getAxis() == ScreenAxis.HORIZONTAL && dist < distX) {
+					// Align the selectedWidget's edge to otherWidget's edge.
+					distX = dist;
+					relativeX = OptionalInt.of(0);
+					parentPointH = thisPointH = edge.isPositive() ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.LEFT;
+				} else if (edge.getAxis() == ScreenAxis.VERTICAL && dist < distY) {
+					// Align the selectedWidget's edge to otherWidget's edge.
+					distY = dist;
+					relativeY = OptionalInt.of(0);
+					parentPointV = thisPointV = edge.isPositive() ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.TOP;
+				}
+			}
+
+			// If no docking or alignment was found, skip this widget.
+			if (parentPointH == null && parentPointV == null) continue;
+
+			// If this widget has a worse snap score than the best one found so far, skip it.
+			int dist = distX + distY;
+			if (dist >= distSnapScore) continue;
+			distSnapScore = dist;
+
+			PositionRule.Point parentPoint = new PositionRule.Point(
+					parentPointV != null ? parentPointV : point.verticalPoint(),
+					parentPointH != null ? parentPointH : point.horizontalPoint()
+			);
+			PositionRule.Point thisPoint = new PositionRule.Point(
+					thisPointV != null ? thisPointV : point.verticalPoint(),
+					thisPointH != null ? thisPointH : point.horizontalPoint()
+			);
+			result = new SnapResult(otherWidget.widget.getInternalID(), parentPoint, thisPoint, relativeX, relativeY);
 		}
 		return Optional.ofNullable(result);
 	}
@@ -428,20 +471,6 @@ public class WidgetsConfigurationScreen extends Screen {
 			widget.rule = PositionRule.DEFAULT;
 			updateBuilderPositions();
 		}
-	}
-
-	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
-		int extraX = rect.width() / 2;
-		int extraY = rect.height() / 2;
-		final int thickness = 5 + (side.getAxis() == ScreenAxis.HORIZONTAL ? extraX : extraY);
-		int i = rect.getBoundInDirection(side);
-		ScreenAxis otherAxis = side.getAxis().orthogonal();
-		int j = rect.getBoundInDirection(otherAxis.getNegative());
-		int k = rect.getLength(otherAxis);
-		ScreenRectangle screenRect = ScreenRectangle.of(side.getAxis(), i, j, thickness, k);
-		int offsetX = side.getAxis() == ScreenAxis.HORIZONTAL ? (side.isPositive() ? -extraX : -5) : 0;
-		int offsetY = side.getAxis() == ScreenAxis.VERTICAL ? (side.isPositive() ? -extraY : -5) : 0;
-		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
 	}
 
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {

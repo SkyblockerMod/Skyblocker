@@ -6,6 +6,9 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.navigation.ScreenAxis;
+import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -26,6 +29,24 @@ public final class ScreenUtils {
 			case AbstractPopupScreen popupScreen -> getUnderlyingScreen(popupScreen.backgroundScreen);
 			case null, default -> screen;
 		};
+	}
+
+	/// Returns a rectangle that can be used as a collision box for snapping.
+	///
+	/// The rectangle is the border along the given side, extended by 5 pixels in the outward direction and by half the widget's width/height in the inward direction.
+	public static ScreenRectangle getSnapBox(ScreenRectangle rect, ScreenDirection side) {
+		int extraX = rect.width() / 2;
+		int extraY = rect.height() / 2;
+		int primaryPos = rect.getBoundInDirection(side);
+		final int primarySize = 5 + (side.getAxis() == ScreenAxis.HORIZONTAL ? extraX : extraY);
+		ScreenAxis otherAxis = side.getAxis().orthogonal();
+		int secondaryPos = rect.getBoundInDirection(otherAxis.getNegative());
+		int secondarySize = rect.getLength(otherAxis);
+		ScreenRectangle screenRect = ScreenRectangle.of(side.getAxis(), primaryPos, secondaryPos, primarySize, secondarySize);
+		// Plus 1 because getBoundInDirection returns the last pixel when side is positive, but we want the first pixel outside the widget.
+		int offsetX = side.getAxis() == ScreenAxis.HORIZONTAL ? (side.isPositive() ? -extraX + 1 : -5) : 0;
+		int offsetY = side.getAxis() == ScreenAxis.VERTICAL ? (side.isPositive() ? -extraY + 1 : -5) : 0;
+		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
 	}
 
 	/**
