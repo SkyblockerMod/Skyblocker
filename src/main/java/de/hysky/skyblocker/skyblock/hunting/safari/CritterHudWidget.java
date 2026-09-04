@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
@@ -26,6 +28,7 @@ import de.hysky.skyblocker.utils.Utils;
 @RegisterWidget
 public class CritterHudWidget extends ElementBasedWidget {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
+	private static final Pattern COMPONENT_FORMAT_REGEX = Pattern.compile("(?<prefix>.*)\\[component](?<suffix>.*)");
 	private static final MutableComponent TITLE = Component.literal("Critters").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static final Component CAVERN_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.cavern").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 	private static final Component FOREST_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.forest").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD);
@@ -49,6 +52,15 @@ public class CritterHudWidget extends ElementBasedWidget {
 		update();
 	}
 
+	// TODO: This works but is very ugly and unideal, surely there's a better way?
+	private static Component formatComponent(Component template, Component child) {
+		Matcher matcher = COMPONENT_FORMAT_REGEX.matcher(template.getString());
+		assert matcher.matches();
+		String prefix = matcher.group("prefix") == null ? "" : matcher.group("prefix");
+		String suffix = matcher.group("suffix") == null ? "" : matcher.group("suffix");
+		return Component.literal(prefix).withStyle(template.getStyle()).append(child).append(Component.literal(suffix));
+	}
+
 	private Component getDisplayName(SafariUtils.Critters critter) {
 		return Component.literal(
 				Arrays.stream(critter.name().split("_"))
@@ -62,15 +74,23 @@ public class CritterHudWidget extends ElementBasedWidget {
 	}
 
 	private void addListCritter(SafariUtils.Critters critter, int count, boolean showLocation) {
-		// TODO: Figure out how to read translatable text so I can parse multi-component ones!
 		if (critter == SafariUtils.Critters.SNOOZLE && showLocation) {
-			addElement(Elements.iconTextComponent(SNOOZLE_WALL_ITEM, Component.literal(count + "x ").withStyle(ChatFormatting.GRAY).append(getDisplayName(critter)).append(Component.literal(" wall"))));
+			addElement(Elements.iconTextComponent(SNOOZLE_WALL_ITEM, formatComponent(
+					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.wall", count).withStyle(ChatFormatting.GRAY),
+					getDisplayName(critter)
+			)));
 		} else if (critter == SafariUtils.Critters.HONEYBUG && showLocation) {
-			addElement(Elements.iconTextComponent(HONEYBUG_NEST_ITEM, Component.literal(count + "x ").withStyle(ChatFormatting.GRAY).append(getDisplayName(critter)).append(Component.literal(" nest"))));
+			addElement(Elements.iconTextComponent(HONEYBUG_NEST_ITEM, formatComponent(
+					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.nest", count).withStyle(ChatFormatting.GRAY),
+					getDisplayName(critter)
+			)));
 		} else if (count == 0) {
 			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), getDisplayName(critter)));
 		} else {
-			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), Component.literal(count + "x ").withStyle(ChatFormatting.GRAY).append(getDisplayName(critter))));
+			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), formatComponent(
+					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list", count).withStyle(ChatFormatting.GRAY),
+					getDisplayName(critter)
+			)));
 		}
 	}
 
@@ -80,7 +100,10 @@ public class CritterHudWidget extends ElementBasedWidget {
 		// Show only sparkling critters if any are found
 		var sparkling = SafariCritters.getSparklings(critters);
 		if (sparkling != null) {
-			addElement(new PlainTextElement(Component.literal("SPARKLING").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD).append(Component.literal(" found:").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))));
+			addElement(new PlainTextElement(formatComponent(
+					Component.translatable("skyblocker.config.hunting.safari.critterHud.header.sparkling").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
+					Component.translatable("skyblocker.config.hunting.safari.critterHud.header.sparkling.name").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
+			)));
 			for (SafariUtils.Critters critter : sparkling.keySet()) {
 				addListCritter(critter, sparkling.get(critter), false);
 			}
