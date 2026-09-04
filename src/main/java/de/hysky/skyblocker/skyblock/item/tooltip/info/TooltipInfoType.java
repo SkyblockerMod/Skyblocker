@@ -17,6 +17,7 @@ import de.hysky.skyblocker.config.configs.GeneralConfig.Craft;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper;
 import de.hysky.skyblocker.skyblock.accessories.AccessoriesHelper.Accessory;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.EssenceShopPrice;
+import de.hysky.skyblocker.skyblock.profileviewer2.ProfileViewer;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -31,7 +32,7 @@ public interface TooltipInfoType {
 	TooltipInfoType OBTAINED = ofSimple(itemTooltip -> itemTooltip.enableObtainedDate);
 	DataTooltipInfoType<Map<String, String>> MUSEUM = ofData("https://hysky.de/api/museum", Codec.unboundedMap(Codec.STRING, Codec.STRING), true, Map::containsKey, itemTooltip -> itemTooltip.enableMuseumInfo);
 	DataTooltipInfoType<Map<String, String>> COLOR = ofData("https://hysky.de/api/color", Codec.unboundedMap(Codec.STRING, Codec.STRING), true, Map::containsKey, itemTooltip -> itemTooltip.enableExoticTooltip);
-	DataTooltipInfoType<Map<String, Accessory>> ACCESSORIES = ofData("https://hysky.de/api/accessories", Accessory.MAP_CODEC, true, Map::containsKey, itemTooltip -> itemTooltip.enableAccessoriesHelper, AccessoriesHelper::refreshData);
+	DataTooltipInfoType<Map<String, Accessory>> ACCESSORIES = ofData("https://hysky.de/api/accessories", Accessory.MAP_CODEC, true, Map::containsKey, itemTooltip -> itemTooltip.enableAccessoriesHelper || getConfig().helpers.enableAccessoriesHelperWidget || ProfileViewer.ENABLED, AccessoriesHelper::refreshData);
 	DataTooltipInfoType<Object2DoubleMap<String>> GEORGE = ofData("https://hysky.de/api/georgeprices", CodecUtils.object2DoubleMapCodec(Codec.STRING), true, Object2DoubleMap::containsKey, itemTooltip -> itemTooltip.enableGeorgePrice);
 	TooltipInfoType ESTIMATED_ITEM_VALUE = ofSimple(itemTooltip -> itemTooltip.enableEstimatedItemValue);
 
