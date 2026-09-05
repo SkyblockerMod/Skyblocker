@@ -27,6 +27,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.LoadoutKeybinds;
+import de.hysky.skyblocker.skyblock.NineFTMSolver;
 import de.hysky.skyblocker.skyblock.WardrobeKeybinds;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
 import de.hysky.skyblocker.skyblock.chocolatefactory.ChocolateFactorySolver;
@@ -101,6 +102,7 @@ public class SlotTextManager {
 			new BestiaryLevelAdder(),
 			new HuntingToolkitIndicatorAdder(),
 			new ChipLevelAdder(),
+			NineFTMSolver.INSTANCE,
 			new CropMilestonesAdder(),
 			new GardenUpgradesAdder()
 	));
