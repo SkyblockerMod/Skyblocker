@@ -188,8 +188,11 @@ public class SafariCritters {
 			// When a sparkling critter is caught remove it from the spotted list
 			if (match.matches()) {
 				SafariUtils.Critters sparkling = getCritter(match.group("sparkling"), true);
+				if (sparkling == null) return true;
 				int count = sparklingCritters.getOrDefault(sparkling, 0);
-				if (sparkling != null && count != 0) {
+				if (count == 1) {
+					sparklingCritters.remove(sparkling);
+				}else if (count != 0) {
 					sparklingCritters.put(sparkling, count - 1);
 				}
 			}
