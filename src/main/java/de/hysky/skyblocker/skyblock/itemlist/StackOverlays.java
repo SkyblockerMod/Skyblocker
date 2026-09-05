@@ -9,7 +9,6 @@ import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
 import org.slf4j.Logger;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
@@ -27,7 +26,7 @@ import de.hysky.skyblocker.utils.RegistryUtils;
  */
 public class StackOverlays {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().dataVersion().version();
+	private static final int DATA_VERSION = 4903; // Allow using 26.2 overlays
 
 	private static Map<@NEUId String, ItemOverlayFile> overlays = Map.of();
 
