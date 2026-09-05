@@ -6,32 +6,38 @@ import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 
-public final class BazaarMax extends SimpleTooltipAdder {
+public final class BazaarMax {
 	private static final String BUY_ORDER_QUANTITY = "Buy Order Quantity";
 	private static final String CLICK_TO_SPECIFY = "Click to specify!";
 	private static final Pattern MAX_QUANTITY_PATTERN = Pattern.compile("Buy up to ([0-9,]+)x\\.");
+	private static final String PAGE_TITLE = "How many do you want\\?";
 	public static final BazaarMax INSTANCE = new BazaarMax();
+	private static final Minecraft client = Minecraft.getInstance();
 	private int lastSeenMax = -1;
 
+	private BazaarMax() {}
 
-
-	private BazaarMax() {
-		super("How many do you want\\?", 0);
-	}
-
-	@Override
-	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+	public void checkMaxValue(@Nullable Slot focusedSlot) {
 		boolean hasBuyOrderQuantity = false;
 		boolean hasClickToSpecify = false;
 		Matcher maxQuantityMatcher = null;
+		ItemStack stack = focusedSlot.getItem();
+
+		List<Component> lines = stack.getTooltipLines(
+				Item.TooltipContext.of(client.level),
+				client.player,
+				TooltipFlag.NORMAL
+		);
 
 		for (Component line : lines) {
 			String text = line.getString();
@@ -72,7 +78,6 @@ public final class BazaarMax extends SimpleTooltipAdder {
 		signField.insertText(Integer.toString(lastSeenMax));
 	}
 
-	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().helpers.bazaar.enableBazaarMax;
 	}
