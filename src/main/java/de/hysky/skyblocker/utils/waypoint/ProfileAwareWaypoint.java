@@ -26,7 +26,7 @@ public class ProfileAwareWaypoint extends Waypoint {
 
 	@Override
 	public void setFound() {
-		foundProfiles.add(Utils.getProfile());
+		setFound(Utils.getProfile());
 	}
 
 	public void setFound(String profile) {
@@ -35,7 +35,11 @@ public class ProfileAwareWaypoint extends Waypoint {
 
 	@Override
 	public void setMissing() {
-		foundProfiles.remove(Utils.getProfile());
+		setMissing(Utils.getProfile());
+	}
+
+	public void setMissing(String profile) {
+		foundProfiles.remove(profile);
 	}
 
 	@Override
