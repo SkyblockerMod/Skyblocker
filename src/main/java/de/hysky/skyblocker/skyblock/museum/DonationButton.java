@@ -58,7 +58,8 @@ public class DonationButton extends AbstractWidget {
 		FlexibleItemStack flexible = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
 				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
-		this.itemStack = flexible == null ? null : flexible.getStackOrThrow();
+		if (flexible == null) flexible = ItemUtils.getItemIdPlaceholder(donation.getId());
+		this.itemStack = flexible.getStackOrEmpty();
 		buildTooltip();
 	}
 
