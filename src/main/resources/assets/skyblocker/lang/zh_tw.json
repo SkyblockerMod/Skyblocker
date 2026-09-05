@@ -1682,7 +1682,7 @@
     "skyblocker.config.farming.farmingHud.includeSeedsPrice": "計算每小時金幣時包含小麥種子的價值",
     "skyblocker.config.farming.greenhouse": "溫室",
     "skyblocker.config.farming.greenhouse.greenhousePaste.enabled": "粘貼溫室規劃",
-    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "點擊網站上的「連結」按鈕，然後執行 /skyblocker garden greenhouse paste 指令，將地塊佈局貼到你的溫室中！",
+    "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "點擊SkyMutations或SkyShards Greenhouse網站上的佈局連結按鈕，然後執行 /skyblocker garden greenhouse paste 指令，將地塊佈局貼到你的溫室中！",
     "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "無法從剪貼簿載入溫室佈局圖。 解析的內容： ",
     "skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess": "溫室佈局加載成功！",
     "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "你現在不在溫室裡。",
@@ -1853,7 +1853,6 @@
     "skyblocker.config.hud.otherOptions.globalOptions": "全局選項",
     "skyblocker.config.hud.otherOptions.locationOptions": "%s的選項",
     "skyblocker.config.hud.otherOptions.title": "Skyblock HUD和TAB選項",
-    "skyblocker.config.hud.otherOptions.visibleTabWidgets": "編輯可見的花哨的TAB小部件",
     "skyblocker.config.hud.position.parent.screen": "螢幕",
     "skyblocker.config.hud.screen.locationWarning[0]": "你現在正在為其它島嶼配置小部件。",
     "skyblocker.config.hud.screen.locationWarning[1]": "此預覽中的Hypixel小部件未必準確！",
@@ -1897,5 +1896,10 @@
     "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde": "為估算數值顯示波浪號",
     "skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip": "當Skyblocker因動作列未顯示精確數值而估算時，在估算的計量條數值前顯示波浪號（~）。",
     "skyblocker.config.uiAndVisuals.storageOverlay.rememberOpened.@Tooltip": "執行 /storage 將再次開啟上次開啟的背包或終界箱頁面。",
-    "skyblocker.fancyAuctionHouse.canBuyIn": "%s後可購買"
+    "skyblocker.fancyAuctionHouse.canBuyIn": "%s後可購買",
+    "skyblocker.config.farming.farmingHud.blocks": "每秒破壞方塊數",
+    "skyblocker.config.hud.widget.element.drawBorder": "繪製邊框",
+    "skyblocker.config.hud.widget.element.roundedCorners": "圓角",
+    "skyblocker.config.hud.widget.tab.hideIfMissing": "如果TAB小部件缺失則隱藏",
+    "skyblocker.config.hud.widget.element.backgroundOpacity": "背景不透明度"
 }
