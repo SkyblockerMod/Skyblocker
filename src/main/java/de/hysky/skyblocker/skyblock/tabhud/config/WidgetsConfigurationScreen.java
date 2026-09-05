@@ -419,6 +419,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	public void removed() {
 		layer.editor().serializeConfig();
 		WidgetManager.SCREEN_BUILDER.hud().update();
+		WidgetManager.saveConfig();
 	}
 
 	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
