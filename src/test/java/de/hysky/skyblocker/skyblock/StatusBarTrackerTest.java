@@ -2,6 +2,8 @@ package de.hysky.skyblocker.skyblock;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
@@ -9,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StatusBarTrackerTest {
+	@Test
+	void emptyChatMessage() {
+		assertTrue(StatusBarTracker.allowOverlayMessage(Component.empty(), false));
+	}
 
 	void assertStats(int hp, int maxHp, int def, int mana, int maxMana, int overflowMana) {
 		int absorption = 0;

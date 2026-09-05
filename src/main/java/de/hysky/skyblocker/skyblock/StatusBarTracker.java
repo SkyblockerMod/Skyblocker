@@ -120,8 +120,9 @@ public class StatusBarTracker {
 		return InteractionResult.PASS;
 	}
 
-	private static boolean allowOverlayMessage(Component text, boolean overlay) {
-		return !onOverlayMessage(text, overlay).getString().isEmpty();
+	@VisibleForTesting
+	protected static boolean allowOverlayMessage(Component text, boolean overlay) {
+		return !overlay || !onOverlayMessage(text, overlay).getString().isEmpty();
 	}
 
 	private static Component onOverlayMessage(Component text, boolean overlay) {
