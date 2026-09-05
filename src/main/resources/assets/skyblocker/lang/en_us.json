@@ -269,6 +269,8 @@
   "skyblocker.config.dungeons.dungeonChestProfit.croesusProfit.@Tooltip": "Highlights chests with the best profit at the Croesus NPC.\n\n\nThe best chest will be highlighted green.\nIf there is a chest worth using dungeon key on, it will be highlighted yellow.",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator": "Enable Profit Calculator",
   "skyblocker.config.dungeons.dungeonChestProfit.enableProfitCalculator.@Tooltip": "Displays the profit of a dungeon chest in the chest screen's title.\nGreen if there's profit.\nRed if there isn't profit.\nGray if you don't gain or lose anything.\nBlue if calculations were based on incomplete data.",
+  "skyblocker.config.dungeons.dungeonChestProfit.factorInFraggedPrices": "Factor In Fragging",
+  "skyblocker.config.dungeons.dungeonChestProfit.factorInFraggedPrices.@Tooltip": "Factor in potential profits from fragging an item (using bazaar insta-buy price) for Croesus profit calculation.",
   "skyblocker.config.dungeons.dungeonChestProfit.includeEssence": "Include Essence",
   "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Disabling is **not recommended** if you're a forgetful person.",
   "skyblocker.config.dungeons.dungeonChestProfit.includeKismet": "Include Kismet Price",
@@ -1791,6 +1793,8 @@
 
   "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.croesusHelper.incompletePriceData": "(Incomplete Price Data)",
+  "skyblocker.dungeons.croesusHelper.soldAsFragged": "if sold as",
+  "skyblocker.dungeons.croesusHelper.totalFragged": "(All Fragged)",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
   "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
