@@ -18,6 +18,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HuntingConfig;
 import de.hysky.skyblocker.skyblock.entity.MobGlow;
 import de.hysky.skyblocker.skyblock.entity.MobGlowAdder;
+import de.hysky.skyblocker.skyblock.foraging.torrhus.CritterCapsuleHelper;
 import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.utils.ItemUtils;
@@ -35,6 +36,8 @@ public class SafariGlowAdder extends MobGlowAdder {
 		HuntingConfig huntingConfig = SkyblockerConfigManager.get().hunting;
 
 		return switch (entity) {
+			//Critter Capsule
+			case Entity target when CritterCapsuleHelper.highlighted != null && CritterCapsuleHelper.highlighted.equals(target) -> huntingConfig.safari.CritterCapsuleHelperColor.getRGB();
 			// Cavern Biome
 			case ItemDisplay display when huntingConfig.cavernBiome.highlightRockmiteMounds && SafariUtils.isInCavernBiome() && ItemUtils.getHeadTexture(display.getItemStack()).equals(HeadTextures.ROCKMITE_MOUND) && display.getPosRotInterpolationDuration() == 0 -> huntingConfig.cavernBiome.rockmiteMoundHighlightColor.getRGB();
 
