@@ -192,7 +192,7 @@ public class SafariCritters {
 				int count = sparklingCritters.getOrDefault(sparkling, 0);
 				if (count == 1) {
 					sparklingCritters.remove(sparkling);
-				}else if (count != 0) {
+				} else if (count != 0) {
 					sparklingCritters.put(sparkling, count - 1);
 				}
 			}
