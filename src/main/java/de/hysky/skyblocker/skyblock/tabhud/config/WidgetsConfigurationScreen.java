@@ -465,7 +465,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		WidgetManager.getCopyTracker()
 				.get(currentScreenLayer)
 				.get(widget.widget.getInternalID())
-				.ifPresent(copyTracker -> copyTracker.whereHas(location).ifPresent(set -> openPopup(screen ->
+				.ifPresent(copyTracker -> copyTracker.getGroup(location).ifPresent(set -> openPopup(screen ->
 						new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
 								.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
 								.addButton(CommonComponents.GUI_YES, popup -> {

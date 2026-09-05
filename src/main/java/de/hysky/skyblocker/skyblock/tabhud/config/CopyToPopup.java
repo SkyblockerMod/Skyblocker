@@ -48,7 +48,7 @@ class CopyToPopup extends AbstractPopupScreen {
 		this.copiedWidget = copiedWidget;
 		this.selectedLocations = WidgetManager.getCopyTracker().get(layer)
 				.get(copiedWidget.widget.getInternalID())
-				.flatMap(s -> s.whereHas(location))
+				.flatMap(s -> s.getGroup(location))
 				.orElseGet(() -> EnumSet.noneOf(Location.class));
 		this.availableLocations = WidgetManager.ALLOWED_LOCATIONS.stream().filter(l -> copiedWidget.widget.getInformation().available().test(l)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Location.class)));
 		this.location = location;
@@ -129,7 +129,7 @@ class CopyToPopup extends AbstractPopupScreen {
 			}
 		}
 		selectedLocations.add(location);
-		WidgetManager.getCopyTracker().get(layer).getOrCreate(copiedWidget.widget.getInternalID()).track(selectedLocations);
+		WidgetManager.getCopyTracker().get(layer).getOrCreate(copiedWidget.widget.getInternalID()).group(selectedLocations);
 	}
 
 	@Override
