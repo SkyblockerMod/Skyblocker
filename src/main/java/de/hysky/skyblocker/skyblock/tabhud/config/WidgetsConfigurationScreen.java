@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.jspecify.annotations.Nullable;
@@ -35,6 +36,7 @@ import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.EditableScreenBuilder;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
@@ -47,6 +49,7 @@ import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.ScreenUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -70,7 +73,7 @@ public class WidgetsConfigurationScreen extends Screen {
 	private Location currentLocation;
 	private WidgetManager.ScreenLayer currentScreenLayer;
 
-	private final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
+	protected final EditableScreenBuilder screenBuilder = new EditableScreenBuilder();
 	private ScreenConfig screenConfig;
 	private EditableScreenBuilder.EditableLayer layer;
 
@@ -78,6 +81,22 @@ public class WidgetsConfigurationScreen extends Screen {
 	private AddWidgetWidget addWidgetWidget;
 	private TopBarWidget topBarWidget;
 
+	/// A widget that covers the entire screen, used for snapping.
+	/// Be very careful when using this widget, as it contains invalid nullability.
+	@SuppressWarnings("DataFlowIssue")
+	private final PositionedWidget screenWidget = new PositionedWidget(new HudWidget(new HudWidget.Information(null, null)) {
+		@Override
+		protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, float delta) {
+			w = getScreenWidth();
+			h = getScreenHeight();
+		}
+
+		@Override
+		protected void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+			w = getScreenWidth();
+			h = getScreenHeight();
+		}
+	}, PositionRule.DEFAULT);
 	private @Nullable PositionedWidget hoveredWidget;
 	private @Nullable PositionedWidget selectedWidget;
 	/**
@@ -102,7 +121,9 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		layer = screenBuilder.getLayer(currentScreenLayer);
 		layer.update();
-		screenBuilder.updateFancyTab();
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			screenBuilder.updateFancyTab();
+		}
 	}
 
 	public void setCurrentLocation(Location newLocation) {
@@ -112,7 +133,9 @@ public class WidgetsConfigurationScreen extends Screen {
 		screenBuilder.setConfig(screenConfig);
 		layer = screenBuilder.getLayer(currentScreenLayer);
 		layer.update();
-		screenBuilder.updateFancyTab();
+		if (SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled) {
+			screenBuilder.updateFancyTab();
+		}
 	}
 
 	public void setCurrentScreenLayer(WidgetManager.ScreenLayer newScreenLayer) {
@@ -213,6 +236,10 @@ public class WidgetsConfigurationScreen extends Screen {
 		if (selectWidgetPrompt != null) {
 			context.setTooltipForNextFrame(selectWidgetPrompt.tooltip(), mouseX, mouseY);
 		}
+
+		// Hack to make the screen widget cover the entire screen.
+		screenWidget.widget.setPosition(0, 0);
+		screenWidget.widget.extractRenderState(context, deltaTicks);
 	}
 
 	@Override
@@ -225,84 +252,141 @@ public class WidgetsConfigurationScreen extends Screen {
 			mouseX /= TabHud.getScaleFactor();
 			mouseY /= TabHud.getScaleFactor();
 
-			PositionRule.Point parentPoint;
-			PositionRule.Point thisPoint;
+			SnapResult pos;
 			if (autoAnchor && oldRule.parent().isEmpty()) {
-				parentPoint = thisPoint = getPoint(selectedWidget.widget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
+				PositionRule.Point point = getPoint(selectedWidget.widget, (int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y());
+				pos = new SnapResult(null, point, point, OptionalInt.empty(), OptionalInt.empty());
 			} else {
-				parentPoint = oldRule.parentPoint();
-				thisPoint = oldRule.thisPoint();
+				pos = new SnapResult(oldRule.parent().orElse(null), oldRule.parentPoint(), oldRule.thisPoint(), OptionalInt.empty(), OptionalInt.empty());
 			}
-			String newParent = oldRule.parent().orElse(null);
-			OptionalInt relativeX = OptionalInt.empty();
-			OptionalInt relativeY = OptionalInt.empty();
 			if (minecraft.hasShiftDown()) {
-				final ScreenDirection[] directions = ScreenDirection.values();
-
-				ScreenRectangle selectedRect = new ScreenRectangle((int) mouseX - dragRelative.x(), (int) mouseY - dragRelative.y(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
-				ScreenRectangle[] selectedSnapBoxes = Arrays.stream(directions).map(dir -> getBorder(selectedRect, dir)).toArray(ScreenRectangle[]::new);
-
-				int distanceToCursor = Integer.MAX_VALUE;
-				for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
-					if (positionedWidget == selectedWidget) continue;
-					if (selectedWidget.widget.getInternalID().equals(positionedWidget.rule.parent().orElse(null))) continue;
-					ScreenRectangle otherRect = positionedWidget.widget.getRectangle();
-					for (ScreenDirection direction : directions) {
-						ScreenRectangle otherSnapBox = getBorder(otherRect, direction);
-						ScreenRectangle selectedSnapBox = selectedSnapBoxes[direction.getOpposite().ordinal()];
-
-						int dist = direction.getAxis() == ScreenAxis.HORIZONTAL ? Math.abs((int) mouseX - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.HORIZONTAL)) : Math.abs((int) mouseY - otherSnapBox.getBorder(direction).getCenterInAxis(ScreenAxis.VERTICAL));
-						if (!selectedSnapBox.overlaps(otherSnapBox) || dist > distanceToCursor) continue;
-						PositionRule.Point point = getPoint(positionedWidget.widget);
-						switch (direction) {
-							case LEFT -> {
-								relativeX = OptionalInt.of(-2);
-								relativeY = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
-								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
-							}
-							case RIGHT -> {
-								relativeX = OptionalInt.of(1);
-								relativeY = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.RIGHT);
-								thisPoint = new PositionRule.Point(point.verticalPoint(), PositionRule.HorizontalPoint.LEFT);
-							}
-							case UP -> {
-								relativeY = OptionalInt.of(-2);
-								relativeX = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
-								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
-							}
-							case DOWN -> {
-								relativeY = OptionalInt.of(1);
-								relativeX = OptionalInt.empty();
-								parentPoint = new PositionRule.Point(PositionRule.VerticalPoint.BOTTOM, point.horizontalPoint());
-								thisPoint = new PositionRule.Point(PositionRule.VerticalPoint.TOP, point.horizontalPoint());
-							}
-						}
-						newParent = positionedWidget.widget.getInternalID();
-						distanceToCursor = dist;
-					}
-				}
+				pos = snapSelectedWidget((int) mouseX, (int) mouseY).orElse(pos);
 			}
-			ScreenPosition startPosition = WidgetPositioner.getStartPosition(newParent, getScreenWidth(), getScreenHeight(), parentPoint);
+			ScreenPosition startPosition = WidgetPositioner.getStartPosition(pos.parent, getScreenWidth(), getScreenHeight(), pos.parentPoint);
 			selectedWidget.rule = new PositionRule(
-					Optional.ofNullable(newParent),
-					parentPoint,
-					thisPoint,
-					relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.widget.getWidth() * thisPoint.horizontalPoint().getPercentage())),
-					relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.widget.getHeight() * thisPoint.verticalPoint().getPercentage()))
+					Optional.ofNullable(pos.parent),
+					pos.parentPoint,
+					pos.thisPoint,
+					pos.relativeX.orElse((int) mouseX - dragRelative.x() - startPosition.x() + (int) (selectedWidget.widget.getWidth() * pos.thisPoint.horizontalPoint().getPercentage())),
+					pos.relativeY.orElse((int) mouseY - dragRelative.y() - startPosition.y() + (int) (selectedWidget.widget.getHeight() * pos.thisPoint.verticalPoint().getPercentage()))
 			);
 			updateBuilderPositions();
 			ScreenRectangle sidePanel = new ScreenRectangle(sidePanelWidget.getX(), sidePanelWidget.getY(), sidePanelWidget.getWidth(), sidePanelWidget.getHeight());
 			ScreenRectangle selected = new ScreenRectangle(selectedWidget.widget.getX(), selectedWidget.widget.getY(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
 			if (sidePanelWidget.isOpen() && sidePanel.overlaps(selected)) {
 				sidePanelWidget.close();
+				openSidePanel();
 				openPanelAfterDragging = true;
 			}
 			return true;
 		}
 		return false;
+	}
+
+	private Optional<SnapResult> snapSelectedWidget(int mouseX, int mouseY) {
+		if (selectedWidget == null || dragRelative == null) {
+			return Optional.empty();
+		}
+
+		// The integer is a Manhattan distance based "snap score", used to find the best snap candidate.
+		ObjectIntPair<@Nullable SnapResult> result = ObjectIntPair.of(null, Integer.MAX_VALUE);
+
+		ScreenRectangle selectedRect = new ScreenRectangle(mouseX - dragRelative.x(), mouseY - dragRelative.y(), selectedWidget.widget.getWidth(), selectedWidget.widget.getHeight());
+		ScreenRectangle[] selectedSnapBoxes = Arrays.stream(ScreenDirection.values()).map(dir -> ScreenUtils.getSnapBox(selectedRect, dir)).toArray(ScreenRectangle[]::new);
+
+		// Check if the selected widget should snap to the edge of the screen.
+		// See screenWidget and the hack in extractRenderState.
+		result = snapSelectedToWidget(selectedWidget, screenWidget, selectedSnapBoxes, selectedRect, result.rightInt()).orElse(result);
+		// Check if the selected widget should snap to this widget. Closer widgets take priority based on snapScore.
+		for (PositionedWidget otherWidget : layer.builder().getRendered()) {
+			result = snapSelectedToWidget(selectedWidget, otherWidget, selectedSnapBoxes, selectedRect, result.rightInt()).orElse(result);
+		}
+		return Optional.ofNullable(result.left());
+	}
+
+	/// Returns a [SnapResult] and a snap score if the selected widget should snap to the other widget, or empty if it shouldn't snap.
+	private Optional<ObjectIntPair<@Nullable SnapResult>> snapSelectedToWidget(PositionedWidget selectedWidget, PositionedWidget otherWidget, ScreenRectangle[] selectedSnapBoxes, ScreenRectangle selectedRect, int snapScore) {
+		if (otherWidget == selectedWidget) return Optional.empty();
+		if (selectedWidget.widget.getInternalID().equals(otherWidget.rule.parent().orElse(null))) return Optional.empty();
+
+		ScreenRectangle otherRect = otherWidget.widget.getRectangle();
+		PositionRule.Point point = getPoint(otherWidget.widget);
+
+		int distX = 10;
+		int distY = 10;
+
+		PositionRule.HorizontalPoint parentPointH = null, thisPointH = null;
+		PositionRule.VerticalPoint parentPointV = null, thisPointV = null;
+		OptionalInt relativeX = OptionalInt.empty();
+		OptionalInt relativeY = OptionalInt.empty();
+
+		// Docking
+		for (ScreenDirection otherEdge : ScreenDirection.values()) {
+			// When docking, we snap opposite edges together.
+			ScreenDirection selectEdge = otherEdge.getOpposite();
+			ScreenRectangle otherSnapBox = ScreenUtils.getSnapBox(otherRect, otherEdge);
+			ScreenRectangle selectedSnapBox = selectedSnapBoxes[selectEdge.ordinal()];
+
+			if (!selectedSnapBox.overlaps(otherSnapBox)) continue;
+
+			// Distance between the edges being snapped, in the axis orthogonal to the direction of the edge.
+			int dist = Math.abs(selectedRect.getBoundInDirection(selectEdge) - otherRect.getBoundInDirection(otherEdge));
+
+			if (otherEdge.getAxis() == ScreenAxis.HORIZONTAL && dist < distX) {
+				// Dock the selectedWidget's selectEdge to otherWidget's otherEdge.
+				distX = dist;
+				relativeX = OptionalInt.of(otherEdge.isPositive() ? 1 : -2);
+				parentPointH = otherEdge.isPositive() ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.LEFT;
+				thisPointH = otherEdge.isPositive() ? PositionRule.HorizontalPoint.LEFT : PositionRule.HorizontalPoint.RIGHT;
+			} else if (otherEdge.getAxis() == ScreenAxis.VERTICAL && dist < distY) {
+				// Dock the selectedWidget's selectEdge to otherWidget's otherEdge.
+				distY = dist;
+				relativeY = OptionalInt.of(otherEdge.isPositive() ? 1 : -2);
+				parentPointV = otherEdge.isPositive() ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.TOP;
+				thisPointV = otherEdge.isPositive() ? PositionRule.VerticalPoint.TOP : PositionRule.VerticalPoint.BOTTOM;
+			}
+		}
+
+		// Alignment
+		for (ScreenDirection edge : ScreenDirection.values()) {
+			// When aligning, we snap the same edges together.
+			ScreenRectangle otherSnapBox = ScreenUtils.getSnapBox(otherRect, edge);
+			ScreenRectangle selectedSnapBox = selectedSnapBoxes[edge.ordinal()];
+
+			if (!selectedSnapBox.overlaps(otherSnapBox)) continue;
+
+			// Distance between the edges being aligned, in the axis orthogonal to the direction of the edge.
+			int dist = Math.abs(selectedRect.getBoundInDirection(edge) - otherRect.getBoundInDirection(edge));
+
+			if (edge.getAxis() == ScreenAxis.HORIZONTAL && dist < distX) {
+				// Align the selectedWidget's edge to otherWidget's edge.
+				distX = dist;
+				relativeX = OptionalInt.of(0);
+				parentPointH = thisPointH = edge.isPositive() ? PositionRule.HorizontalPoint.RIGHT : PositionRule.HorizontalPoint.LEFT;
+			} else if (edge.getAxis() == ScreenAxis.VERTICAL && dist < distY) {
+				// Align the selectedWidget's edge to otherWidget's edge.
+				distY = dist;
+				relativeY = OptionalInt.of(0);
+				parentPointV = thisPointV = edge.isPositive() ? PositionRule.VerticalPoint.BOTTOM : PositionRule.VerticalPoint.TOP;
+			}
+		}
+
+		// If no docking or alignment was found, skip this widget.
+		if (parentPointH == null && parentPointV == null) return Optional.empty();
+
+		// If this widget has a worse snap score than the best one found so far, skip it.
+		int dist = distX + distY;
+		if (dist >= snapScore) return Optional.empty();
+
+		PositionRule.Point parentPoint = new PositionRule.Point(
+				parentPointV != null ? parentPointV : point.verticalPoint(),
+				parentPointH != null ? parentPointH : point.horizontalPoint()
+		);
+		PositionRule.Point thisPoint = new PositionRule.Point(
+				thisPointV != null ? thisPointV : point.verticalPoint(),
+				thisPointH != null ? thisPointH : point.horizontalPoint()
+		);
+		return Optional.of(ObjectIntPair.of(new SnapResult(otherWidget.widget.getInternalID(), parentPoint, thisPoint, relativeX, relativeY), dist));
 	}
 
 	private PositionRule.Point getPoint(HudWidget widget) {
@@ -334,7 +418,8 @@ public class WidgetsConfigurationScreen extends Screen {
 			selectedWidget = null;
 			if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 				List<HudWidget> availableWidgets = new ArrayList<>(WidgetManager.getWidgetsAvailableIn(currentLocation));
-				availableWidgets.removeAll(layer.builder().getRendered().stream().map(w -> w.widget).toList()); // remove already present widgets
+				// remove already present widgets except those from the tab hud
+				availableWidgets.removeAll(layer.builder().getRendered().stream().filter(w -> !w.fromTab).map(w -> w.widget).toList());
 				addWidgetWidget.openWith(availableWidgets);
 				addWidgetWidget.setX(Math.clamp((int) mouseX, 5, width - addWidgetWidget.getWidth() - 5));
 				addWidgetWidget.setY(Math.clamp((int) mouseY, 5, height - addWidgetWidget.getHeight() - 5));
@@ -415,26 +500,6 @@ public class WidgetsConfigurationScreen extends Screen {
 		}
 	}
 
-	@Override
-	public void removed() {
-		layer.editor().serializeConfig();
-		WidgetManager.SCREEN_BUILDER.hud().update();
-	}
-
-	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
-		int extraX = rect.width() / 2;
-		int extraY = rect.height() / 2;
-		final int thickness = 5 + (side.getAxis() == ScreenAxis.HORIZONTAL ? extraX : extraY);
-		int i = rect.getBoundInDirection(side);
-		ScreenAxis otherAxis = side.getAxis().orthogonal();
-		int j = rect.getBoundInDirection(otherAxis.getNegative());
-		int k = rect.getLength(otherAxis);
-		ScreenRectangle screenRect = ScreenRectangle.of(side.getAxis(), i, j, thickness, k);
-		int offsetX = side.getAxis() == ScreenAxis.HORIZONTAL ? (side.isPositive() ? -extraX : -5) : 0;
-		int offsetY = side.getAxis() == ScreenAxis.VERTICAL ? (side.isPositive() ? -extraY : -5) : 0;
-		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
-	}
-
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself, tooltip);
 		sidePanelWidget.close();
@@ -442,6 +507,8 @@ public class WidgetsConfigurationScreen extends Screen {
 
 	@Override
 	public void onClose() {
+		layer.editor().serializeConfig();
+		WidgetManager.SCREEN_BUILDER.hud().update();
 		this.minecraft.gui.setScreen(previousScreen);
 	}
 
@@ -552,4 +619,6 @@ public class WidgetsConfigurationScreen extends Screen {
 	}
 
 	private record SelectWidgetPrompt(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {}
+
+	private record SnapResult(@Nullable String parent, PositionRule.Point parentPoint, PositionRule.Point thisPoint, OptionalInt relativeX, OptionalInt relativeY) {}
 }

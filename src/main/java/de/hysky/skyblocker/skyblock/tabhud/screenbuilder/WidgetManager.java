@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
@@ -45,6 +46,7 @@ import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 import de.hysky.skyblocker.config.datafixer.ConfigDataFixer;
 import de.hysky.skyblocker.skyblock.foraging.galatea.SweepDetailsHudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
+import de.hysky.skyblocker.skyblock.tabhud.config.OtherOptionsScreen;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
@@ -53,6 +55,7 @@ import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.PlaceholderWidget;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.ScreenUtils;
 import de.hysky.skyblocker.utils.Utils;
 
 /**
@@ -135,7 +138,8 @@ public class WidgetManager {
 		if (!Utils.isOnSkyblock()) return;
 		Minecraft client = Minecraft.getInstance();
 
-		if (client.gui.screen() instanceof WidgetsConfigurationScreen) return;
+		Screen screen = ScreenUtils.getUnderlyingScreen(client.gui.screen());
+		if (screen instanceof WidgetsConfigurationScreen || screen instanceof OtherOptionsScreen) return;
 		Window window = client.getWindow();
 		float scale = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudScale / 100f;
 		Matrix3x2fStack matrices = context.pose();
