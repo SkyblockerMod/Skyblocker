@@ -40,7 +40,14 @@
         []
       ]
     },
-    "tab": {},
+    "tab": {
+      "profile": [
+        [
+          "dynamic",
+          "hub"
+        ]
+      ]
+    },
     "secondary_tab": {}
   },
   "version": 13,
