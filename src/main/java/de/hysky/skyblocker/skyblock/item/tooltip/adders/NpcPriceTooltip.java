@@ -13,7 +13,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 
 public class NpcPriceTooltip extends SimpleTooltipAdder {
 
@@ -39,7 +39,7 @@ public class NpcPriceTooltip extends SimpleTooltipAdder {
 
 		int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(ItemUtils.getCompostCountInComposter(stack.skyblocker$getLoreStrings()).orElse(stack.getCount()))), 1);
 
-		lines.add(GridComponent.of(
+		lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 				Component.literal("NPC Sell Price:").withStyle(ChatFormatting.YELLOW),
 				ItemTooltip.getCoinsMessage(price, count)));
 	}

@@ -673,6 +673,8 @@
   "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Price data is loaded via API. If the network fails to load data, please try manually refreshing the data using /skyblocker refreshPrices, or check if the network can access https://hysky.de/ and https://api.azureaaron.net/.",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
+  "skyblocker.config.general.itemTooltip.oldNeuItemValueStyle": "Old NEU Item Value Style",
+  "skyblocker.config.general.itemTooltip.oldNeuItemValueStyle.@Tooltip": "Reverts to using old NEU item value tooltip styles.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",

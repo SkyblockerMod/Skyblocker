@@ -32,7 +32,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.BazaarProduct;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
+import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 
 public class CraftPriceTooltip extends SimpleTooltipAdder {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(CraftPriceTooltip.class.getName());
@@ -55,7 +55,7 @@ public class CraftPriceTooltip extends SimpleTooltipAdder {
 			double craftPrice = cachedCraftCosts.computeIfAbsent(itemId, CraftPriceTooltip::getItemCost);
 			if (craftPrice <= 0) return;
 			int count = Math.max(ItemUtils.getItemCountInSack(stack, stack.skyblocker$getLoreStrings()).orElse(ItemUtils.getItemCountInStash(lines.getFirst()).orElse(stack.getCount())), 1);
-			lines.add(GridComponent.of(
+			lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 					Component.literal("Crafting Price:").withStyle(ChatFormatting.GOLD),
 					ItemTooltip.getCoinsMessage(craftPrice, count)));
 		} catch (Exception e) {
