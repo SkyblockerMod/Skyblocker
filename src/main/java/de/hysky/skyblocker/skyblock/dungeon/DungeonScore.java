@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.zombie.Zombie;
@@ -125,7 +127,7 @@ public class DungeonScore {
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
 				client.gui.hud.resetTitleTimes();
-				client.gui.hud.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")));
+				client.gui.hud.setTitle(Component.literal(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -147,10 +149,10 @@ public class DungeonScore {
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
 				client.gui.hud.resetTitleTimes();
-				client.gui.hud.setTitle(Component.nullToEmpty(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")));
+				client.gui.hud.setTitle(Component.literal(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")).setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
-				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
+				client.player.playSound(SoundEvents.PLAYER_LEVELUP, 100f, 0.1f);
 			}
 			sent300 = true;
 		}
