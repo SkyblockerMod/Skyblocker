@@ -33,7 +33,7 @@ public class RareCropFilter extends ChatPatternListener {
 			entry("Overclocker 3000", "OVERCLOCKER_3000"),
 			entry("Ethereal Vine", "ETHEREAL_VINE"),
 			entry("Rarefinder Chip", "RAREFINDER_GARDEN_CHIP"),
-			// Seasoning has no item to display, so it's excluded here
+			// Seasoning has no item so it's displayed without an icon
 			entry("Cornucopia", "CORNUCOPIA"),
 			entry("Carrot Zest", "CARROT_ZEST"),
 			entry("Deepfries", "DEEPFRIES"),
@@ -65,7 +65,10 @@ public class RareCropFilter extends ChatPatternListener {
 	@Override
 	public boolean onMatch(Component message, Matcher matcher) {
 		if (SkyblockerConfigManager.get().chat.hideRareCrops == ChatFilterResult.TOAST) {
-			Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), getCropIcon(matcher)));
+			ItemStack cropIcon = getCropIcon(matcher);
+			if (cropIcon != null || matcher.group("crop").equals("Seasoning")) {
+				Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), cropIcon));
+			}
 		}
 		return true;
 	}
