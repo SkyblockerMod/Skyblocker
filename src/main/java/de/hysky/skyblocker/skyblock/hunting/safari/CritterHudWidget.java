@@ -28,7 +28,7 @@ import de.hysky.skyblocker.utils.Utils;
 @RegisterWidget
 public class CritterHudWidget extends ElementBasedWidget {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
-	private static final Pattern COMPONENT_FORMAT_REGEX = Pattern.compile("(?<prefix>.*)\\[component](?<suffix>.*)");
+	private static final Pattern COMPONENT_FORMAT_REGEX = Pattern.compile("^(?<prefix>.*)\\[component](?<suffix>.*)$");
 	private static final MutableComponent TITLE = Component.literal("Critters").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static final Component CAVERN_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.cavern").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 	private static final Component FOREST_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.forest").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD);
@@ -52,10 +52,11 @@ public class CritterHudWidget extends ElementBasedWidget {
 		update();
 	}
 
-	// TODO: This works but is very ugly and unideal, surely there's a better way?
+	// TODO: This works but is probably not the best, is there a better way?
 	private static Component formatComponent(Component template, Component child) {
 		Matcher matcher = COMPONENT_FORMAT_REGEX.matcher(template.getString());
-		assert matcher.matches();
+		boolean matches = matcher.matches();
+		assert matches;
 		String prefix = matcher.group("prefix") == null ? "" : matcher.group("prefix");
 		String suffix = matcher.group("suffix") == null ? "" : matcher.group("suffix");
 		return Component.literal(prefix).withStyle(template.getStyle()).append(child).append(Component.literal(suffix));
