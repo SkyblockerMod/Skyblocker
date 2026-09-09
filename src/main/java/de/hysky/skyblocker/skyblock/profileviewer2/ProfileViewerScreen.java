@@ -26,6 +26,7 @@ import de.hysky.skyblocker.skyblock.profileviewer2.pages.CatacombsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.CombatPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.MiningPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
@@ -41,7 +42,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ProfileMember member;
 	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new CatacombsPage(), new InventoryPage(), new CollectionsPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new CatacombsPage(), new InventoryPage(), new CollectionsPage(), new MiningPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
 	private final List<PageTabWidget> tabWidgets = this.createPageTabs();
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);

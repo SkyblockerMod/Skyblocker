@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 
-public sealed interface ProfileViewerPage<T> permits CatacombsPage, CollectionsPage, InventoryPage, SkillsPage, CombatPage {
+public sealed interface ProfileViewerPage<T> permits CatacombsPage, CollectionsPage, InventoryPage, MiningPage, SkillsPage, CombatPage {
 	/// {@return the icon of the page}
 	FlexibleItemStack getIcon();
 
