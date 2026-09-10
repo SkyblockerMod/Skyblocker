@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.skyblock.item.HeadTextures;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
@@ -129,7 +130,7 @@ public class SafariUtils {
 			entry(Critters.GAZER, CritterDetails.ofFixed(HeadTextures.GAZER_CRITTER, SkyblockItemRarity.UNCOMMON, 4)),
 			entry(Critters.LITTERBUG, CritterDetails.ofRange(HeadTextures.LITTERBUG_CRITTER, SkyblockItemRarity.UNCOMMON, 4, 8)),
 			entry(Critters.SOLSNATCHER, CritterDetails.ofRange(HeadTextures.SOLSNATCHER_CRITTER, SkyblockItemRarity.UNCOMMON, 4, 8)),
-			// NOT correct but works for now, real min and max likely depends on floor drop logic
+			// NOT correct but works since floor drop logic is unknown
 			entry(Critters.GIMMIEGOLD, CritterDetails.ofRandom(HeadTextures.GIMMIEGOLD_CRITTER, SkyblockItemRarity.RARE)),
 			entry(Critters.HIDEONWALL, CritterDetails.ofRange(HeadTextures.HIDEONWALL_CRITTER, SkyblockItemRarity.RARE, 2, 4)),
 			entry(Critters.HIDEYHO, CritterDetails.ofFixed(HeadTextures.HIDEYHO_CRITTER, SkyblockItemRarity.RARE, 1)),
@@ -158,13 +159,20 @@ public class SafariUtils {
 		CLEAR
 	}
 
-	// Center blocks of every snoozle wall
+	// Used when raycasting to snoozle walls, instead of raycasting to every individual block
 	public static final ArrayList<BlockPos> SNOOZLE_WALL_CORES = new ArrayList<>(Arrays.asList(
 			new BlockPos(-96, 43, 17),
 			new BlockPos(-95, 43, 42),
 			new BlockPos(-70, 42, 68),
 			new BlockPos(-114, 42, 87),
 			new BlockPos(-126, 42, 74)
+	));
+	public static final ArrayList<Vec3> SNOOZLE_WALL_FACES = new ArrayList<>(Arrays.asList(
+			new Vec3(0.5, 0.5, 1.0),
+			new Vec3(0.0, 0.5, 0.0),
+			new Vec3(0.0, 0.5, 0.0),
+			new Vec3(0.5, 0.5, 0.0),
+			new Vec3(1.0, 0.5, 0.0)
 	));
 
 	private static final ArrayList<BlockPosSet> SNOOZLE_WALLS = new ArrayList<>();
