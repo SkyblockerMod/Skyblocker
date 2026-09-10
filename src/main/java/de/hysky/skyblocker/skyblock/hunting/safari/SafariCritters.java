@@ -132,7 +132,9 @@ public class SafariCritters {
 			for (int i = 0; i < snoozleWalls.size(); i++) {
 				SafariUtils.BlockLocation location = snoozleWalls.get(i);
 				BlockPos pos = SafariUtils.SNOOZLE_WALL_CORES.get(i);
-				if (location == SafariUtils.BlockLocation.CLEAR || cantSeeBlock(frustum, pos)) continue;
+				Vec3 face = SafariUtils.SNOOZLE_WALL_FACES.get(i);
+				// Raycast to player-facing side of block instead of the center for significantly increased accuracy
+				if (location == SafariUtils.BlockLocation.CLEAR || cantSeeBlock(frustum, pos, Vec3.atLowerCornerWithOffset(pos, face.x, face.y, face.z))) continue;
 				// check block to see if it's solid or air
 				BlockState block = MINECRAFT.level.getBlockState(pos);
 				if (block.isAir()) snoozleWalls.set(i, SafariUtils.BlockLocation.CLEAR);
@@ -143,7 +145,7 @@ public class SafariCritters {
 		if (SafariUtils.isInForestBiome()) {
 			for (int i = 0; i < honeybugNests.size(); i++) {
 				BlockPos pos = SafariUtils.HONEYBUG_HIVES.get(i);
-				if (honeybugNests.get(i) != SafariUtils.BlockLocation.UNKNOWN || cantSeeBlock(frustum, pos)) continue;
+				if (honeybugNests.get(i) != SafariUtils.BlockLocation.UNKNOWN || cantSeeBlock(frustum, pos, Vec3.atCenterOf(pos))) continue;
 				// check block to see if it's a nest or hive
 				BlockState block = MINECRAFT.level.getBlockState(pos);
 				if (block.is(Blocks.BEE_NEST)) {
@@ -252,14 +254,14 @@ public class SafariCritters {
 		return SafariUtils.isInCavernBiome() && MINECRAFT.player.getBlockY() <= CAVERN_CAVE_Y_LEVEL;
 	}
 
-	private static boolean cantSeeBlock(Frustum frustum, BlockPos pos) {
+	private static boolean cantSeeBlock(Frustum frustum, BlockPos pos, Vec3 side) {
 		assert MINECRAFT.level != null && MINECRAFT.player != null;
 
 		// Confirm block is within player's camera angle
 		if (!FrustumUtils.isVisible(frustum, pos)) return true;
 
 		// Raycast to confirm if block is visible to player
-		BlockHitResult blockHitResult = MINECRAFT.level.clip(new ClipContext(MINECRAFT.player.getEyePosition(), Vec3.atCenterOf(pos), ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, MINECRAFT.player));
+		BlockHitResult blockHitResult = MINECRAFT.level.clip(new ClipContext(MINECRAFT.player.getEyePosition(), side, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, MINECRAFT.player));
 		return blockHitResult.getType() != HitResult.Type.MISS && !blockHitResult.getBlockPos().equals(pos);
 	}
 
