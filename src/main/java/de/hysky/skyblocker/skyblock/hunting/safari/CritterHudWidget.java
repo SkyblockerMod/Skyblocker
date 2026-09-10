@@ -57,9 +57,10 @@ public class CritterHudWidget extends ElementBasedWidget {
 		Matcher matcher = COMPONENT_FORMAT_REGEX.matcher(template.getString());
 		boolean matches = matcher.matches();
 		assert matches;
-		String prefix = matcher.group("prefix") == null ? "" : matcher.group("prefix");
-		String suffix = matcher.group("suffix") == null ? "" : matcher.group("suffix");
-		return Component.literal(prefix).withStyle(template.getStyle()).append(child).append(Component.literal(suffix));
+		return Component.literal(matcher.group("prefix"))
+				.withStyle(template.getStyle())
+				.append(child)
+				.append(Component.literal(matcher.group("suffix")));
 	}
 
 	private Component getDisplayName(SafariUtils.Critters critter) {
