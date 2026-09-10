@@ -95,16 +95,6 @@ public abstract sealed class SkillTreeBuilder permits HotmTreeBuilder {
 				.orElseGet(() -> ItemUtils.getNamedPlaceholder(idPath).getStackOrThrow());
 	}
 
-	/// Attempts to convert the given {@code object} into an integer, defaulting to 0.
-	protected static int coerceInt(Object object) {
-		return object instanceof Number number ? number.intValue() : 0;
-	}
-
-	/// Attempts to convert the given {@code object} into a boolean, defaulting to false.
-	protected static boolean coerceBoolean(Object object) {
-		return object instanceof Boolean bool ? bool : false;
-	}
-
 	/// Compiles all the applicable LISP program strings in the {@code extraData} into programs.
 	protected static Map<String, LispAst.Program> precompilePrograms(Dynamic<?> extraData) {
 		Map<String, LispAst.Program> cache = new HashMap<>();

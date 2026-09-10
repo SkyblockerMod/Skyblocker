@@ -30,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.PrimitiveTypeUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -103,12 +104,12 @@ public final class HotmTreeBuilder extends SkillTreeBuilder {
 	private Node buildNode(String id, Perk perk, ProfileMember member, int slot) {
 		Map<String, Object> tree = this.getTreeNodes(member, slot);
 
-		int level = coerceInt(tree.getOrDefault(id, 0));
-		boolean enabled = coerceBoolean(tree.getOrDefault("toggle_" + id, true));
+		int level = PrimitiveTypeUtils.coerceInt(tree.getOrDefault(id, 0));
+		boolean enabled = PrimitiveTypeUtils.coerceBoolean(tree.getOrDefault("toggle_" + id, true));
 		boolean isMaxLevel = level == perk.maxLevel();
 
 		int hotm = this.getHeartOfTheXLevel(member);
-		int cotm = coerceInt(tree.getOrDefault(this.getCoreOfTheXId(), 0));
+		int cotm = PrimitiveTypeUtils.coerceInt(tree.getOrDefault(this.getCoreOfTheXId(), 0));
 
 		Pair<Map<String, LispData>, StackFrame> valuesAndBindings = this.calculatePerkValues(perk, level, hotm, cotm);
 
@@ -152,6 +153,7 @@ public final class HotmTreeBuilder extends SkillTreeBuilder {
 		return "core_of_the_mountain";
 	}
 
+	@Override
 	protected ItemStack getDisabledPerkIcon() {
 		return Ico.REDSTONE_BLOCK.getStackOrThrow();
 	}

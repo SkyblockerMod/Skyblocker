@@ -76,6 +76,14 @@ public class LevelCalculator {
 					increase++;
 				}
 
+				// Assume the player has Agatha's cap increases
+				increase += 2;
+
+				// Assume the player has Miria's cap increases if they've unlocked access to the Torrhus Canyon
+				if (currentMember.skillTree.experience.getHotfLevel().level() >= 4) {
+					increase += 2;
+				}
+
 				yield increase;
 			}
 			case TAMING -> currentMember.petsData.petCare.petTypesSacrificed.size();

@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import net.minecraft.util.CommonColors;
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.PrimitiveTypeUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.data.constants.ConstantData;
@@ -100,16 +102,27 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 		y += textYStep;
 		Component purseText = Component.empty()
 				.append(Component.literal("Purse: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(member.currencies.coinsInPurse));
+				.append(Formatters.SHORT_DOUBLE_NUMBERS.format(member.currencies.coinsInPurse));
 		graphics.text(font, purseText, x, y, CommonColors.WHITE);
 
 		// Bank
 		y += textYStep;
-		// TODO check that banking can't be null
+		// Sum both the profile bank and the personal bank
+		double bank = profile.banking.balance + PrimitiveTypeUtils.coerceDouble(member.profile.personalBankAccount);
 		Component bankText = Component.empty()
 				.append(Component.literal("Bank: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(profile.banking.balance));
+				.append(Formatters.SHORT_DOUBLE_NUMBERS.format(bank));
 		graphics.text(font, bankText, x, y, CommonColors.WHITE);
+
+		// Show bank breakdown when the player has a personal bank
+		if (GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + font.width(bankText), y + font.lineHeight) && member.profile.personalBankAccount != null) {
+			List<Component> bankTooltip = new ArrayList<>();
+			bankTooltip.add(Component.literal("Personal: " + Formatters.INTEGER_NUMBERS.format(PrimitiveTypeUtils.coerceDouble(member.profile.personalBankAccount))).withStyle(ChatFormatting.RED));
+			bankTooltip.add(Component.literal("Co-op: " + Formatters.INTEGER_NUMBERS.format(profile.banking.balance)).withStyle(ChatFormatting.GOLD));
+			bankTooltip.add(Component.literal("Total: " + Formatters.INTEGER_NUMBERS.format(bank)).withStyle(ChatFormatting.YELLOW));
+
+			tooltip = bankTooltip;
+		}
 
 		if (tooltip != null) {
 			graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
