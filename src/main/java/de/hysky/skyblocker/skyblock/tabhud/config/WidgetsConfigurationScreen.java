@@ -464,6 +464,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				);
 			}
 		}
+		updateBuilderPositions();
 		Location location = getCurrentLocation();
 		WidgetManager.getCopyTracker()
 				.get(currentScreenLayer)
