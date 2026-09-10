@@ -147,6 +147,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				(int) (minecraft.mouseHandler.getScaledXPos(minecraft.getWindow()) / TabHud.getScaleFactor()),
 				(int) (minecraft.mouseHandler.getScaledYPos(minecraft.getWindow()) / TabHud.getScaleFactor())
 		);
+		updateBuilderPositions();
 	}
 
 	@Override

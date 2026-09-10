@@ -68,7 +68,6 @@ public class LayerBuilder {
 			boolean shouldRender = config || widget.widget.shouldRender();
 			widget.visible = shouldRender;
 			hash = hash * 31 + Boolean.hashCode(shouldRender);
-			hash = hash * 31 + Boolean.hashCode(widget.fromTab);
 			hash = hash * 31 + Integer.hashCode(widget.widget.getWidth());
 			hash = hash * 31 + Integer.hashCode(widget.widget.getHeight());
 		}
