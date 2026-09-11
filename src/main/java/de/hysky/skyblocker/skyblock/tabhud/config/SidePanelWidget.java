@@ -151,7 +151,7 @@ class SidePanelWidget extends AbstractContainerWidget {
 			widget.setWidth(availableWidth);
 		}
 
-		layout.setPosition(getX(), getY() - (int) scrollAmount());
+		layout.setPosition(rightSide ? getX() : getX() + SCROLLBAR_AREA, getY() - (int) scrollAmount());
 		layout.arrangeElements();
 		int openX = rightSide ? configScreen.width - getWidth() : 0;
 		if (isOpen() && (openX != targetX || rightSide != this.rightSide)) {

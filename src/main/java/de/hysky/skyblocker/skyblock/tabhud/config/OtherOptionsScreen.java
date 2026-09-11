@@ -26,7 +26,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
-class OtherOptionsScreen extends Screen {
+public class OtherOptionsScreen extends Screen {
 	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")
@@ -109,7 +109,7 @@ class OtherOptionsScreen extends Screen {
 		private final LinearLayout layout = LinearLayout.vertical().spacing(10);
 
 		private HiddenWidgetsPopup(Screen backgroundScreen, ScreenConfig screenConfig) {
-			super(Component.literal("Edit hidden widgets"), backgroundScreen);
+			super(Component.literal("Edit hidden Fancy TAB widgets"), backgroundScreen);
 			this.screenConfig = screenConfig;
 		}
 
@@ -129,6 +129,10 @@ class OtherOptionsScreen extends Screen {
 										screenConfig.hiddenTabWidgets().add(widget.getInternalID());
 									} else {
 										screenConfig.hiddenTabWidgets().remove(widget.getInternalID());
+									}
+									// Update the fancy tab after hidden widgets changes
+									if (backgroundScreen instanceof OtherOptionsScreen screen) {
+										screen.parent.screenBuilder.updateFancyTab();
 									}
 								})
 								.build()

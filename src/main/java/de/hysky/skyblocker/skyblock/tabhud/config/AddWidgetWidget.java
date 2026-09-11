@@ -67,14 +67,11 @@ public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry
 
 	public void openWith(List<HudWidget> widgets) {
 		visible = true;
-		replaceEntries(widgets.stream().sorted(Comparator.comparing(w -> w.getInformation().displayName().getString())).map(de.hysky.skyblocker.skyblock.tabhud.config.AddWidgetWidget.Entry::new).toList());
-		setHeight(Math.min(widgets.size(), MAX_ENTRIES) * defaultEntryHeight);
-		setWidth(widgets.stream().mapToInt(entry -> minecraft.font.width(entry.getInformation().displayName())).max().orElse(100) + 3);
-	}
-
-	@Override
-	public void setX(int x) {
-		super.setX(x);
+		replaceEntries(widgets.stream().sorted(Comparator.comparing(w -> w.getInformation().displayName().getString())).map(Entry::new).toList());
+		// 2 pixels padding below and above the entries
+		setHeight(Math.min(widgets.size(), MAX_ENTRIES) * defaultEntryHeight + 4);
+		// 2 pixels padding on each side + 2 pixels for the scrollbar
+		setWidth(widgets.stream().mapToInt(entry -> minecraft.font.width(entry.getInformation().displayName())).max().orElse(100) + (scrollable() ? 6 : 4));
 	}
 
 	@Override
@@ -84,7 +81,7 @@ public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry
 
 	@Override
 	public int getRowWidth() {
-		return width - 2;
+		return scrollable() ? width - 2 : width;
 	}
 
 	@Override
@@ -115,7 +112,7 @@ public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry
 			if (hovered) {
 				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), ARGB.white(0.1f));
 			}
-			context.textRenderer().accept(getX(), getY() + 1, hudWidget.getInformation().displayName());
+			context.textRenderer().accept(getX() + 2, getY() + 2, hudWidget.getInformation().displayName());
 			//ClickableWidget.drawScrollableText(context, client.textRenderer, hudWidget.getInformation().displayName(), x, y, x + entryWidth, y + entryHeight, Colors.WHITE);
 		}
 
