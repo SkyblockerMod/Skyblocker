@@ -202,7 +202,6 @@ public class CritterHudWidget extends ElementBasedWidget {
 		return false;
 	}
 
-	// TODO: Use translatable components?
 	@Override
 	public void updateContent() {
 		if (MINECRAFT.player == null || MINECRAFT.level == null || !Utils.isInSafari() || SafariUtils.isInSpawn(MINECRAFT.player)) {

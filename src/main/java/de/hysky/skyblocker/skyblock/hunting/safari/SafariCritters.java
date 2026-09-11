@@ -40,11 +40,13 @@ import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HuntingConfig;
 import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class SafariCritters {
@@ -53,6 +55,10 @@ public class SafariCritters {
 	private static final float[] HONEYBUG_NEST_COLOR = ColorUtils.getFloatComponents(DyeColor.BLUE.getTextColor());
 	private static final float[] SNOOZLE_WALL_COLOR = ColorUtils.getFloatComponents(DyeColor.ORANGE.getTextColor());
 	private static final int CAVERN_CAVE_Y_LEVEL = 55;
+	private static final String CAVERN_NAME = "Cavern";
+	private static final String FOREST_NAME = "Forest";
+	private static final String HAUNTED_NAME = "Haunted";
+	private static final String ICY_NAME = "Icy";
 	private static final Pattern CAUGHT_REGEX = Pattern.compile("^CAPTURE! You (?:caught an?|found the) (?:SPARKLING )?(?<capture>[\\w\\s]+?),? and|^LOOT SHARE! You received.+(?:catching an?|finding the) (?:SPARKLING )?(?<share>[\\w\\s]+)!$");
 	private static final Pattern SPARKLING_REGEX = Pattern.compile("^SPARKLING! \\S+ (?:caught an?|found the) SPARKLING (?<sparkling>[^!]+)!$");
 	private static final Pattern NAMETAG_REGEX = Pattern.compile(" (?<sparkling>SPARKLING )?(?<critter>[\\w ]+)$");
@@ -63,6 +69,10 @@ public class SafariCritters {
 	private static final List<SafariUtils.BlockLocation> snoozleWalls = new ArrayList<>();
 	private static final List<SafariUtils.BlockLocation> honeybugNests = new ArrayList<>();
 	private static boolean started = false;
+	private static boolean cavernDone = false;
+	private static boolean forestDone = false;
+	private static boolean hauntedDone = false;
+	private static boolean icyDone = false;
 
 	@Init
 	public static void init() {
@@ -80,8 +90,6 @@ public class SafariCritters {
 		ClientReceiveMessageEvents.ALLOW_GAME.register(SafariCritters::onChatMessage);
 		AttackBlockCallback.EVENT.register((_, _, _, pos, _) -> attackOrUseBlock(pos));
 		UseBlockCallback.EVENT.register((_, _, _, hitResult) -> attackOrUseBlock(hitResult.getBlockPos()));
-		// TODO: Question for reviewers, are both DISCONNECT and JOIN needed?
-		ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> reset());
 		ClientPlayConnectionEvents.JOIN.register(((_, _, _) -> reset()));
 		LevelRenderExtractionCallback.EVENT.register(SafariCritters::extractRendering);
 	}
@@ -93,6 +101,10 @@ public class SafariCritters {
 	private static void reset() {
 		if (started) {
 			started = false;
+			cavernDone = false;
+			forestDone = false;
+			hauntedDone = false;
+			icyDone = false;
 			caughtCritters.replaceAll((_, _) -> 0);
 			nearbyCritters.clear();
 			sparklingCritters.clear();
@@ -203,11 +215,7 @@ public class SafariCritters {
 			}
 		} else {
 			caughtCritters.merge(critter, 1, Integer::sum);
-
-			// Stop highlighting honeybug nests if someone else catches the final honeybug
-			if (critter == SafariUtils.Critters.HONEYBUG && getCaught(critter) == getTotalHoneybugs(false)) {
-				honeybugNests.replaceAll(loc -> loc == SafariUtils.BlockLocation.FOUND ? SafariUtils.BlockLocation.CLEAR : loc);
-			}
+			checkForBiomeDone();
 		}
 
 		return true;
@@ -249,6 +257,54 @@ public class SafariCritters {
 					collector.submitFilledBox(outline, HONEYBUG_NEST_COLOR, 0.4f, true);
 				}
 			}
+		}
+	}
+
+	private static void checkForBiomeDone() {
+		if (!SkyblockerConfigManager.get().hunting.safari.enableBiomeDoneMessage) return;
+
+		// Check current biome and ensure biome isn't already done
+		String name;
+		EnumSet<SafariUtils.Critters> critters;
+		if (SafariUtils.isInCavernBiome() && !cavernDone) {
+			name = CAVERN_NAME;
+			critters = SafariUtils.CAVERN_CRITTERS;
+		} else if (SafariUtils.isInForestBiome() && !forestDone) {
+			name = FOREST_NAME;
+			critters = SafariUtils.FOREST_CRITTERS;
+		} else if (SafariUtils.isInHauntedBiome() && !hauntedDone) {
+			name = HAUNTED_NAME;
+			critters = SafariUtils.HAUNTED_CRITTERS;
+		} else if (SafariUtils.isInIcyBiome() && !icyDone) {
+			name = ICY_NAME;
+			critters = SafariUtils.ICY_CRITTERS;
+		} else {
+			return;
+		}
+
+		// Check criteria to determine if biome is now done or not
+		HuntingConfig.Safari.BiomeDoneCriteria criteria = SkyblockerConfigManager.get().hunting.safari.biomeDoneCriteria;
+		if (criteria == HuntingConfig.Safari.BiomeDoneCriteria.UNIQUE) {
+			for (SafariUtils.Critters critter : critters) {
+				if (!hasUnique(critter)) return;
+			}
+		} else {
+			for (SafariUtils.Critters critter : critters) {
+				int remaining = critter == SafariUtils.Critters.SNOOZLE ? getMinimum(critter) : getMinimum(critter) - getCaught(critter);
+				if (remaining > 0) return;
+			}
+		}
+
+		// Send message and update done boolean
+		MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SkyblockerConfigManager.get().hunting.safari.biomeDoneMessage.replaceAll("\\[biome]", name), true);
+		if (SafariUtils.isInCavernBiome()) {
+			cavernDone = true;
+		} else if (SafariUtils.isInForestBiome()) {
+			forestDone = true;
+		} else if (SafariUtils.isInHauntedBiome()) {
+			hauntedDone = true;
+		} else if (SafariUtils.isInIcyBiome()) {
+			icyDone = true;
 		}
 	}
 
