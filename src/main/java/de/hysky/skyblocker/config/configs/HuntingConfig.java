@@ -77,6 +77,22 @@ public class HuntingConfig {
 
 		public boolean highlightHoneybugNests = true;
 
+		public boolean enableBiomeDoneMessage = true;
+
+		public BiomeDoneCriteria biomeDoneCriteria = BiomeDoneCriteria.MINIMUM;
+
+		public enum BiomeDoneCriteria {
+			UNIQUE,
+			MINIMUM;
+
+			@Override
+			public String toString() {
+				return I18n.get("skyblocker.config.hunting.safari.biomeDoneCriteria.criteria." + name());
+			}
+		}
+
+		public String biomeDoneMessage = "[biome] done!";
+
 		public boolean silencePhantoms = true;
 
 		public boolean highlightSparklingCritters = false;
