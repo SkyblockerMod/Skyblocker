@@ -64,6 +64,28 @@ public class MiningCore {
 	@SerializedName("powder_spent_non_refundable_mithril_5")
 	public long mithrilPowderSpentNonRefundable5;
 
+	public long getSpentMithrilPowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.mithrilPowderSpent1;
+			case 2 -> this.mithrilPowderSpent2;
+			case 3 -> this.mithrilPowderSpent3;
+			case 4 -> this.mithrilPowderSpent4;
+			case 5 -> this.mithrilPowderSpent5;
+			default -> throw new IllegalArgumentException();
+		};
+	}
+
+	public long getSpentNonRefundableMithrilPowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.mithrilPowderSpentNonRefundable1;
+			case 2 -> this.mithrilPowderSpentNonRefundable2;
+			case 3 -> this.mithrilPowderSpentNonRefundable3;
+			case 4 -> this.mithrilPowderSpentNonRefundable4;
+			case 5 -> this.mithrilPowderSpentNonRefundable5;
+			default -> throw new IllegalArgumentException();
+		};
+	}
+
 	@SerializedName("powder_gemstone")
 	public long gemstonePowder;
 	@SerializedName("powder_spent_gemstone")
@@ -87,6 +109,28 @@ public class MiningCore {
 	@SerializedName("powder_spent_non_refundable_gemstone_5")
 	public long gemstonePowderSpentNonRefundable5;
 
+	public long getSpentGemstonePowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.gemstonePowderSpent1;
+			case 2 -> this.gemstonePowderSpent2;
+			case 3 -> this.gemstonePowderSpent3;
+			case 4 -> this.gemstonePowderSpent4;
+			case 5 -> this.gemstonePowderSpent5;
+			default -> throw new IllegalArgumentException("Slot must be between 1-5.");
+		};
+	}
+
+	public long getSpentNonRefundableGemstonePowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.gemstonePowderSpentNonRefundable1;
+			case 2 -> this.gemstonePowderSpentNonRefundable2;
+			case 3 -> this.gemstonePowderSpentNonRefundable3;
+			case 4 -> this.gemstonePowderSpentNonRefundable4;
+			case 5 -> this.gemstonePowderSpentNonRefundable5;
+			default -> throw new IllegalArgumentException("Slot must be between 1-5.");
+		};
+	}
+
 	@SerializedName("powder_glacite")
 	public long glacitePowder;
 	@SerializedName("powder_spent_glacite")
@@ -109,4 +153,26 @@ public class MiningCore {
 	public long glacitePowderSpent5;
 	@SerializedName("powder_spent_non_refundable_glacite_5")
 	public long glacitePowderSpentNonRefundable5;
+
+	public long getSpentGlacitePowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.glacitePowderSpent1;
+			case 2 -> this.glacitePowderSpent2;
+			case 3 -> this.glacitePowderSpent3;
+			case 4 -> this.glacitePowderSpent4;
+			case 5 -> this.glacitePowderSpent5;
+			default -> throw new IllegalArgumentException("Slot must be between 1-5.");
+		};
+	}
+
+	public long getSpentNonRefundableGlacitePowder(int slot) {
+		return switch (slot) {
+			case 1 -> this.glacitePowderSpentNonRefundable1;
+			case 2 -> this.glacitePowderSpentNonRefundable2;
+			case 3 -> this.glacitePowderSpentNonRefundable3;
+			case 4 -> this.glacitePowderSpentNonRefundable4;
+			case 5 -> this.glacitePowderSpentNonRefundable5;
+			default -> throw new IllegalArgumentException("Slot must be between 1-5.");
+		};
+	}
 }

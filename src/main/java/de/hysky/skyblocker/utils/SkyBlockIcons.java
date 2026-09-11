@@ -6,9 +6,13 @@ public final class SkyBlockIcons {
 	public static final char DEFENSE = '\uE008';
 	public static final char TRUE_DEFENSE = '\uE027';
 	public static final char STRENGTH = '\uE00D';
+	public static final char CRIT_CHANCE = '\uE02C';
 	public static final char CRIT_DAMAGE = '\uE007';
+	public static final char ATTACK_SPEED = '\uE001';
+	public static final char FEROCITY = '\uE00B';
 	public static final char INTELLIGENCE = '\uE003';
 	public static final char MANA = INTELLIGENCE;
+	public static final char ABILITY_DAMAGE = '\uE002';
 	public static final char OVERFLOW_MANA = '\uE017';
 	public static final char VITALITY = '\uE028';
 
@@ -28,7 +32,11 @@ public final class SkyBlockIcons {
 	public static final char FISHING_SPEED = '\uE00C';
 
 	// Misc Stats
+	public static final char SPEED = '\uE022';
 	public static final char MAGIC_FIND = '\uE01A';
+
+	// Wisdom Stats
+	public static final char COMBAT_WISDOM = '\u262F';
 
 	// Rift Stats
 	public static final char RIFT_TIME = '\uE020';

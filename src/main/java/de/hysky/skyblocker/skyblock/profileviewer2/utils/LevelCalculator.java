@@ -76,6 +76,14 @@ public class LevelCalculator {
 					increase++;
 				}
 
+				// Assume the player has Agatha's cap increases
+				increase += 2;
+
+				// Assume the player has Miria's cap increases if they've unlocked access to the Torrhus Canyon
+				if (currentMember.skillTree.experience.getHotfLevel().level() >= 4) {
+					increase += 2;
+				}
+
 				yield increase;
 			}
 			case TAMING -> currentMember.petsData.petCare.petTypesSacrificed.size();
@@ -122,5 +130,45 @@ public class LevelCalculator {
 		LevelInfo levelInfo = new LevelInfo(xp, level, cap, progress);
 
 		return levelInfo;
+	}
+
+	public static LevelInfo getHotmLevel(long xp) {
+		return getHotxLevel(xp, "HOTM");
+	}
+
+	public static LevelInfo getHotfLevel(long xp) {
+		return getHotxLevel(xp, "HOTF");
+	}
+
+	private static LevelInfo getHotxLevel(long xp, String id) {
+		Leveling levelling = NEURepoManager.getConstants().getLeveling();
+		boolean hasLevellingConstants = !NEURepoManager.isLoading() && levelling != null;
+
+		// HOTM and HOTF share the same xp chart as it stands and the repo parser does not support the HOTF field.
+		// Once it supprots HOTF this will be changed to reflect that.
+		List<Integer> xpChart = hasLevellingConstants ? levelling.getHotmExperienceRequiredPerLevel() : List.of();
+		int maxLevel = hasLevellingConstants ? levelling.getMaximumLevels().getOrDefault(id, 0) : 0;
+
+		int level = 0;
+		long remainingXp = xp;
+
+		for (int xpRequired : xpChart) {
+			if (remainingXp >= xpRequired) {
+				level++;
+				remainingXp -= xpRequired;
+			} else {
+				break;
+			}
+		}
+
+		LevelInfo.Progress progress = null;
+
+		if (level < maxLevel) {
+			long xpForNextLevel = xpChart.get(level);
+
+			progress = new LevelInfo.Progress(remainingXp, xpForNextLevel);
+		}
+
+		return new LevelInfo(xp, level, new LevelInfo.Cap(maxLevel, maxLevel), progress);
 	}
 }

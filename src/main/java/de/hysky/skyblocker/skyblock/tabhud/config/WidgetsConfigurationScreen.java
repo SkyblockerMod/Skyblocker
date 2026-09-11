@@ -165,6 +165,7 @@ public class WidgetsConfigurationScreen extends Screen {
 				(int) (minecraft.mouseHandler.getScaledXPos(minecraft.getWindow()) / TabHud.getScaleFactor()),
 				(int) (minecraft.mouseHandler.getScaledYPos(minecraft.getWindow()) / TabHud.getScaleFactor())
 		);
+		updateBuilderPositions();
 	}
 
 	@Override
@@ -500,6 +501,20 @@ public class WidgetsConfigurationScreen extends Screen {
 		}
 	}
 
+	private static ScreenRectangle getBorder(ScreenRectangle rect, ScreenDirection side) {
+		int extraX = rect.width() / 2;
+		int extraY = rect.height() / 2;
+		final int thickness = 5 + (side.getAxis() == ScreenAxis.HORIZONTAL ? extraX : extraY);
+		int i = rect.getBoundInDirection(side);
+		ScreenAxis otherAxis = side.getAxis().orthogonal();
+		int j = rect.getBoundInDirection(otherAxis.getNegative());
+		int k = rect.getLength(otherAxis);
+		ScreenRectangle screenRect = ScreenRectangle.of(side.getAxis(), i, j, thickness, k);
+		int offsetX = side.getAxis() == ScreenAxis.HORIZONTAL ? (side.isPositive() ? -extraX : -5) : 0;
+		int offsetY = side.getAxis() == ScreenAxis.VERTICAL ? (side.isPositive() ? -extraY : -5) : 0;
+		return new ScreenRectangle(screenRect.left() + offsetX, screenRect.top() + offsetY, screenRect.width(), screenRect.height());
+	}
+
 	public void promptSelectWidget(Consumer<@Nullable HudWidget> callback, boolean allowItself, Component tooltip) {
 		selectWidgetPrompt = new SelectWidgetPrompt(callback, allowItself, tooltip);
 		sidePanelWidget.close();
@@ -528,11 +543,12 @@ public class WidgetsConfigurationScreen extends Screen {
 				);
 			}
 		}
+		updateBuilderPositions();
 		Location location = getCurrentLocation();
 		WidgetManager.getCopyTracker()
 				.get(currentScreenLayer)
 				.get(widget.widget.getInternalID())
-				.ifPresent(copyTracker -> copyTracker.whereHas(location).ifPresent(set -> openPopup(screen ->
+				.ifPresent(copyTracker -> copyTracker.getGroup(location).ifPresent(set -> openPopup(screen ->
 						new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
 								.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
 								.addButton(CommonComponents.GUI_YES, popup -> {
