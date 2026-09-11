@@ -146,13 +146,16 @@ public class SafariCritters {
 			for (int i = 0; i < honeybugNests.size(); i++) {
 				BlockPos pos = SafariUtils.HONEYBUG_HIVES.get(i);
 				if (honeybugNests.get(i) != SafariUtils.BlockLocation.UNKNOWN || cantSeeBlock(frustum, pos, Vec3.atCenterOf(pos))) continue;
-				// check block to see if it's a nest or hive
+				// Check block to see if it's a nest or hive
 				BlockState block = MINECRAFT.level.getBlockState(pos);
 				if (block.is(Blocks.BEE_NEST)) {
-					LOGGER.info("[Skyblocker] Honeybug Nest spotted at {}", pos);
 					honeybugNests.set(i, SafariUtils.BlockLocation.FOUND);
+
+					// Stop highlighting honeybug nests if someone else already caught the final honeybug
+					if (getCaught(SafariUtils.Critters.HONEYBUG) == getTotalHoneybugs(false)) {
+						honeybugNests.replaceAll(loc -> loc == SafariUtils.BlockLocation.FOUND ? SafariUtils.BlockLocation.CLEAR : loc);
+					}
 				} else {
-					LOGGER.info("[Skyblocker] Honeybug Hive spotted at {}", pos);
 					honeybugNests.set(i, SafariUtils.BlockLocation.OTHER);
 				}
 			}
