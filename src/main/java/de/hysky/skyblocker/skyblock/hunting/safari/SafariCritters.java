@@ -235,9 +235,6 @@ public class SafariCritters {
 					collector.submitOutlinedConnected(wallBlocks, SNOOZLE_WALL_COLOR, 5f, false);
 				}
 				if (highlightType != HuntingConfig.Safari.WallHighlightType.OUTLINE) {
-					/* TODO: This is very ugly on air blocks, technically works but a collector.submitFilledConnected()
-					 * method would look much nicer during snoozle wall interactions
-					 */
 					for (BlockPos pos : wallBlocks) {
 						collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
 					}
