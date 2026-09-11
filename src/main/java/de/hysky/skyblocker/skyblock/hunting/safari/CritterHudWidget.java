@@ -4,30 +4,36 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Locale;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
 
 @RegisterWidget
 public class CritterHudWidget extends ElementBasedWidget {
 	private static final Minecraft MINECRAFT = Minecraft.getInstance();
-	private static final Pattern COMPONENT_FORMAT_REGEX = Pattern.compile("^(?<prefix>.*)\\[component](?<suffix>.*)$");
 	private static final MutableComponent TITLE = Component.literal("Critters").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
 	private static final Component CAVERN_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.cavern").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 	private static final Component FOREST_NAME = Component.translatable("skyblocker.config.hunting.safari.critterHud.biome.forest").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD);
@@ -44,6 +50,7 @@ public class CritterHudWidget extends ElementBasedWidget {
 	}
 
 	private boolean shouldUpdate = false;
+	private CollapseType collapseType = CollapseType.AUTOMATICALLY;
 
 	public CritterHudWidget() {
 		super(TITLE, TextColor.GREEN.getValue(), new Information("hud_critters", Component.literal("Critters"), Location.SAFARI));
@@ -109,11 +116,16 @@ public class CritterHudWidget extends ElementBasedWidget {
 		}
 
 		// Show full itemized list instead of simple counts when reasonably small
-		boolean showFullDisplay = ((!SafariUtils.isInCavernBiome() || unknownSnoozles == 0 ? 0 : 1)
-				+ (!SafariUtils.isInForestBiome() || unknownHoneybugs == 0 ? 0 : 1)
-				+ uniques.size()
-				+ remaining.size()
-				+ nearby.size()) <= 6;
+		boolean showFullDisplay;
+		if (collapseType == CollapseType.AUTOMATICALLY) {
+			showFullDisplay = ((!SafariUtils.isInCavernBiome() || unknownSnoozles == 0 ? 0 : 1)
+					+ (!SafariUtils.isInForestBiome() || unknownHoneybugs == 0 ? 0 : 1)
+					+ uniques.size()
+					+ remaining.size()
+					+ nearby.size()) <= 6;
+		} else {
+			showFullDisplay = collapseType == CollapseType.NEVER;
+		}
 
 		if (uniques.isEmpty()) {
 			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.unique").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.done").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
@@ -198,4 +210,43 @@ public class CritterHudWidget extends ElementBasedWidget {
 		}
 	}
 
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.addWidget(CycleButton.builder(d -> Component.literal(d.toString()), collapseType)
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.hunting.safari.critterHud.collapseType.@Tooltip")))
+				.withValues(CollapseType.values())
+				.create(Component.translatable("skyblocker.config.hunting.safari.critterHud.collapseType"), (_, value) -> collapseType = value)
+		);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		collapseType = input.read("collapse_type", CollapseType.CODEC).orElse(CollapseType.AUTOMATICALLY);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.write("collapse_type", CollapseType.CODEC, collapseType);
+	}
+
+	private enum CollapseType implements StringRepresentable {
+		NEVER,
+		AUTOMATICALLY,
+		ALWAYS;
+
+		public static final Codec<CollapseType> CODEC = StringRepresentable.fromEnum(CollapseType::values);
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
+
+		@Override
+		public String toString() {
+			return I18n.get("skyblocker.config.hunting.safari.critterHud.collapseType." + name());
+		}
+	}
 }
