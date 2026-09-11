@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -52,17 +51,6 @@ public class CritterHudWidget extends ElementBasedWidget {
 		update();
 	}
 
-	// TODO: This works but is probably not the best, is there a better way?
-	private static Component formatComponent(Component template, Component child) {
-		Matcher matcher = COMPONENT_FORMAT_REGEX.matcher(template.getString());
-		boolean matches = matcher.matches();
-		assert matches;
-		return Component.literal(matcher.group("prefix"))
-				.withStyle(template.getStyle())
-				.append(child)
-				.append(Component.literal(matcher.group("suffix")));
-	}
-
 	private Component getDisplayName(SafariUtils.Critters critter) {
 		return Component.literal(
 				Arrays.stream(critter.name().split("_"))
@@ -77,22 +65,13 @@ public class CritterHudWidget extends ElementBasedWidget {
 
 	private void addListCritter(SafariUtils.Critters critter, int count, boolean showLocation) {
 		if (critter == SafariUtils.Critters.SNOOZLE && showLocation) {
-			addElement(Elements.iconTextComponent(SNOOZLE_WALL_ITEM, formatComponent(
-					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.wall", count).withStyle(ChatFormatting.GRAY),
-					getDisplayName(critter)
-			)));
+			addElement(Elements.iconTextComponent(SNOOZLE_WALL_ITEM, Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.wall", count, getDisplayName(critter)).withStyle(ChatFormatting.GRAY)));
 		} else if (critter == SafariUtils.Critters.HONEYBUG && showLocation) {
-			addElement(Elements.iconTextComponent(HONEYBUG_NEST_ITEM, formatComponent(
-					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.nest", count).withStyle(ChatFormatting.GRAY),
-					getDisplayName(critter)
-			)));
+			addElement(Elements.iconTextComponent(HONEYBUG_NEST_ITEM, Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list.nest", count, getDisplayName(critter)).withStyle(ChatFormatting.GRAY)));
 		} else if (count == 0) {
 			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), getDisplayName(critter)));
 		} else {
-			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), formatComponent(
-					Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list", count).withStyle(ChatFormatting.GRAY),
-					getDisplayName(critter)
-			)));
+			addElement(Elements.iconTextComponent(SafariUtils.CRITTER_DETAILS.get(critter).head(), Component.translatable("skyblocker.config.hunting.safari.critterHud.value.list", count, getDisplayName(critter)).withStyle(ChatFormatting.GRAY)));
 		}
 	}
 
@@ -102,10 +81,10 @@ public class CritterHudWidget extends ElementBasedWidget {
 		// Show only sparkling critters if any are found
 		var sparkling = SafariCritters.getSparklings(critters);
 		if (sparkling != null) {
-			addElement(new PlainTextElement(formatComponent(
-					Component.translatable("skyblocker.config.hunting.safari.critterHud.header.sparkling").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
+			addElement(new PlainTextElement(Component.translatable(
+					"skyblocker.config.hunting.safari.critterHud.header.sparkling",
 					Component.translatable("skyblocker.config.hunting.safari.critterHud.header.sparkling.name").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
-			)));
+			).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD)));
 			for (SafariUtils.Critters critter : sparkling.keySet()) {
 				addListCritter(critter, sparkling.get(critter), false);
 			}
