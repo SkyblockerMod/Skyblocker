@@ -68,7 +68,7 @@ public class WidgetManager {
 	private static final Identifier FANCY_TAB_HUD = SkyblockerMod.id("fancy_tab_hud");
 	private static final Identifier FANCY_TAB = SkyblockerMod.id("fancy_tab");
 
-	private static final int DEFAULTS_VERSION = 1;
+	private static final int DEFAULTS_VERSION = 2;
 	private static final String DEFAULTS_VERSION_KEY = "_defaults_version";
 	public static final Path FILE = SkyblockerMod.CONFIG_DIR.resolve("hud_widgets.json");
 
@@ -246,11 +246,10 @@ public class WidgetManager {
 	 * When adding something do not forget to bump {@link WidgetManager#DEFAULTS_VERSION}!
 	 */
 	private static void fillDefaultConfig(int comingFromVersion) {
+		EditableScreenBuilder editableScreenBuilder = new EditableScreenBuilder();
+		LayerBuilderEditor hud = editableScreenBuilder.getEditor(ScreenLayer.HUD);
 		if (comingFromVersion < 1) {
-			EditableScreenBuilder editableScreenBuilder = new EditableScreenBuilder();
-			LayerBuilderEditor hud = editableScreenBuilder.getEditor(ScreenLayer.HUD);
 			// Mining related stuff
-
 			HudWidget commissions = getWidgetOrPlaceholder("commissions");
 			HudWidget powders = getWidgetOrPlaceholder("powders");
 			EnumSet<Location> miningLocations = EnumSet.of(Location.CRYSTAL_HOLLOWS, Location.DWARVEN_MINES, Location.GLACITE_MINESHAFTS);
@@ -314,11 +313,6 @@ public class WidgetManager {
 			));
 			hud.serializeConfig();
 
-			// Safari
-			editableScreenBuilder.setConfig(getScreenConfig(Location.SAFARI));
-			hud.add(getWidgetOrPlaceholder("hud_critters"));
-			hud.serializeConfig();
-
 			// Garden
 			editableScreenBuilder.setConfig(getScreenConfig(Location.GARDEN));
 			hud.add(getWidgetOrPlaceholder("hud_farming"));
@@ -337,6 +331,12 @@ public class WidgetManager {
 					5,
 					0)
 			);
+			hud.serializeConfig();
+		}
+		if (comingFromVersion < 2) {
+			// Safari
+			editableScreenBuilder.setConfig(getScreenConfig(Location.SAFARI));
+			hud.add(getWidgetOrPlaceholder("hud_critters"));
 			hud.serializeConfig();
 		}
 	}
