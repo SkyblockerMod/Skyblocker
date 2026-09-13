@@ -1186,5 +1186,7 @@
     "skyblocker.waypoints.newGroup": "Новая группа меток",
     "skyblocker.waypoints.otherOptions": "Другие опции",
     "skyblocker.waypoints.waypointsOptions": "Настройки меток",
-    "skyblocker.museum.hud.wikiLookup": "Нажми %s чтобы открыть страницу на Вики!"
+    "skyblocker.museum.hud.wikiLookup": "Нажми %s чтобы открыть страницу на Вики!",
+    "skyblocker.config.helpers.fairySouls.highlightOnBingo": "Подсвечивать Fairy Souls на профилях Ⓑинго",
+    "skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip": "Когда выключено, подсветки душ не профилях Ⓑинго не будет."
 }
