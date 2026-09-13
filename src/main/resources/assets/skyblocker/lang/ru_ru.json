@@ -1173,5 +1173,9 @@
     "skyblocker.bars.config.reset": "Это вернет строки состояния в исходное положение.\n Это действие необратимо.",
     "skyblocker.bars.config.resetTitle": "Сбросить индикатор состояния?",
     "skyblocker.bars.config.vitality": "Жизненная сила",
-    "skyblocker.config.chat.filter.hideToggleBeekeeper": "Скрывает послания пчеловода за пределами островов для сбора нектара."
+    "skyblocker.config.chat.filter.hideToggleBeekeeper": "Скрывает послания пчеловода за пределами островов для сбора нектара.",
+    "skyblocker.wikiLookup.noArticleFound.independent": "Не удалось найти статью об этом предмете на Wiki...",
+    "text.skyblocker.curseforge": "CurseForge",
+    "skyblocker.waypoints.throughWalls": "Показывать сквозь стены",
+    "skyblocker.waypoints.importOptions.sortWaypoints.tooltip": "Сортирует импортированные метки по имени."
 }
