@@ -1177,5 +1177,6 @@
     "skyblocker.wikiLookup.noArticleFound.independent": "Не удалось найти статью об этом предмете на Wiki...",
     "text.skyblocker.curseforge": "CurseForge",
     "skyblocker.waypoints.throughWalls": "Показывать сквозь стены",
-    "skyblocker.waypoints.importOptions.sortWaypoints.tooltip": "Сортирует импортированные метки по имени."
+    "skyblocker.waypoints.importOptions.sortWaypoints.tooltip": "Сортирует импортируемые метки по имени.",
+    "skyblocker.utils.locationUpdateError": "Не удалось обновить ваше местоположение! Некоторые функции мода могут не работать :("
 }
