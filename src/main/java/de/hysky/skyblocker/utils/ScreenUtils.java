@@ -16,7 +16,7 @@ public final class ScreenUtils {
 	private ScreenUtils() {}
 
 	public static @Nullable Screen getUnderlyingScreen() {
-		return getUnderlyingScreen(Minecraft.getInstance().gui.screen());
+		return getUnderlyingScreen(Minecraft.getInstance().screen);
 	}
 
 	@Contract("null -> null; !null -> !null")
