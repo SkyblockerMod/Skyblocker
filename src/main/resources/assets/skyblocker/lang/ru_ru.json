@@ -1031,7 +1031,7 @@
     "skyblocker.accessoryHelper.highestTierOnly": "Только высшие уровни",
     "skyblocker.accessoryHelper.openWiki": "Нажмите чтобы открыть на Вики!",
     "skyblocker.config.chat.chatRules.screen.ruleScreen.chatMessage.@Placeholder": "Оставьте пустым для исходного сообщения.",
-    "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.duration": "Продолжительность объявления",
+    "skyblocker.config.chat.chatRules.screen.ruleScreen.announcement.duration": "Продолжительность оповещения",
     "skyblocker.bars.config.speed": "Скорость",
     "skyblocker.bars.config.textPosition.BAR_CENTER": "Центр панели",
     "skyblocker.bars.config.commonPosition.LEFT": "Слева",
