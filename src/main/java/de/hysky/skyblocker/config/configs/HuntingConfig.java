@@ -64,9 +64,9 @@ public class HuntingConfig {
 
 		public Color sparklingCritterHighlightColor = new Color(SkyBlockColors.GOLD.getValue(), false);
 
-		public boolean CritterCapsuleHelper = false;
+		public boolean critterCapsuleHelper = false;
 
-		public Color CritterCapsuleHelperColor = new Color(DyeColor.GREEN.getTextColor(), false);
+		public Color critterCapsuleHelperColor = new Color(DyeColor.GREEN.getTextColor(), false);
 	}
 
 	public static class CavernBiome {

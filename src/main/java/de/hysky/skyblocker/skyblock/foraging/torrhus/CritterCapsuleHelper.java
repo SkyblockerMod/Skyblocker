@@ -25,8 +25,8 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class CritterCapsuleHelper {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	@Nullable
-	public static Entity highlighted = null;
+
+	public static @Nullable Entity highlighted = null;
 
 	@Init
 	public static void init() {
@@ -34,7 +34,7 @@ public class CritterCapsuleHelper {
 	}
 
 	private static void extractRendering(PrimitiveCollector collector) {
-		if (CLIENT.player == null || CLIENT.level == null || !SkyblockerConfigManager.get().hunting.safari.CritterCapsuleHelper || !Utils.isInSafari()) return;
+		if (CLIENT.player == null || CLIENT.level == null || !SkyblockerConfigManager.get().hunting.safari.critterCapsuleHelper || !Utils.isInSafari()) return;
 
 		//check holding
 		ItemStack heldItem = CLIENT.player.getMainHandItem();
@@ -48,7 +48,7 @@ public class CritterCapsuleHelper {
 
 		HitResult hitResult = throwLine(collector, start, look);
 		if (hitResult instanceof BlockHitResult block) {
-			collector.submitFilledBox(block.getBlockPos(), SkyblockerConfigManager.get().hunting.safari.CritterCapsuleHelperColor.getComponents(new float[4]), 0.5f, false);
+			collector.submitFilledBox(block.getBlockPos(), SkyblockerConfigManager.get().hunting.safari.critterCapsuleHelperColor.getComponents(new float[4]), 0.5f, false);
 		}
 		if (hitResult instanceof EntityHitResult entity) {
 			highlighted = entity.getEntity();
@@ -71,7 +71,7 @@ public class CritterCapsuleHelper {
 			//draw line
 			if (i > 1) {
 				Vec3 offset = look.cross(Vec3.Y_AXIS).normalize().scale(0.05);
-				collector.submitLinesFromPoints(new Vec3[]{lastPos.add(offset), pos.add(offset)}, SkyblockerConfigManager.get().hunting.safari.CritterCapsuleHelperColor.getComponents(new float[4]), 0.5f, 1 + 4 * (max_distance - i) / ((float) max_distance), false);
+				collector.submitLinesFromPoints(new Vec3[]{lastPos.add(offset), pos.add(offset)}, SkyblockerConfigManager.get().hunting.safari.critterCapsuleHelperColor.getComponents(new float[4]), 0.5f, 1 + 4 * (max_distance - i) / ((float) max_distance), false);
 			}
 
 			//check for block hit

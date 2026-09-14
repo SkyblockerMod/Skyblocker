@@ -37,7 +37,7 @@ public class SafariGlowAdder extends MobGlowAdder {
 
 		return switch (entity) {
 			//Critter Capsule
-			case Entity target when CritterCapsuleHelper.highlighted != null && CritterCapsuleHelper.highlighted.equals(target) -> huntingConfig.safari.CritterCapsuleHelperColor.getRGB();
+			case Entity target when CritterCapsuleHelper.highlighted != null && CritterCapsuleHelper.highlighted.equals(target) -> huntingConfig.safari.critterCapsuleHelperColor.getRGB();
 			// Cavern Biome
 			case ItemDisplay display when huntingConfig.cavernBiome.highlightRockmiteMounds && SafariUtils.isInCavernBiome() && ItemUtils.getHeadTexture(display.getItemStack()).equals(HeadTextures.ROCKMITE_MOUND) && display.getPosRotInterpolationDuration() == 0 -> huntingConfig.cavernBiome.rockmiteMoundHighlightColor.getRGB();
 

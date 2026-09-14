@@ -169,18 +169,18 @@ public class HuntingCategory {
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelper"))
-								.description(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelper.@Tooltip"))
-								.binding(defaults.hunting.safari.CritterCapsuleHelper,
-										() -> config.hunting.safari.CritterCapsuleHelper,
-										newValue -> config.hunting.safari.CritterCapsuleHelper = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper.@Tooltip"))
+								.binding(defaults.hunting.safari.critterCapsuleHelper,
+										() -> config.hunting.safari.critterCapsuleHelper,
+										newValue -> config.hunting.safari.critterCapsuleHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Color>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.safari.CritterCapsuleHelperColor"))
-								.binding(defaults.hunting.safari.CritterCapsuleHelperColor,
-										() -> config.hunting.safari.CritterCapsuleHelperColor,
-										newValue -> config.hunting.safari.CritterCapsuleHelperColor = newValue)
+								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelperColor"))
+								.binding(defaults.hunting.safari.critterCapsuleHelperColor,
+										() -> config.hunting.safari.critterCapsuleHelperColor,
+										newValue -> config.hunting.safari.critterCapsuleHelperColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.build())
