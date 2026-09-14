@@ -134,8 +134,16 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		if (!isEnabled()) return;
+		// This needs to happen regardless of whether its enabled otherwise if the user logs into
+		// a profile outside of the Crystal Hollows the rewards won't save (since it would put them
+		// into the default map) since isEnabled is only true when the widget shows (which can only
+		// be the case inside the Crystal Hollows)
 		currentProfileRewards = allRewards.computeIfAbsent(Object2IntArrayMap::new);
+
+		if (!isEnabled()) {
+			return;
+		}
+
 		recalculateAll();
 	}
 
