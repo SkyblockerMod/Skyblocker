@@ -1902,5 +1902,7 @@
     "skyblocker.config.hud.widget.element.drawBorder": "绘制边框",
     "skyblocker.config.hud.widget.element.backgroundOpacity": "背景不透明度",
     "skyblocker.config.hud.widget.tab.hideIfMissing": "如果TAB小部件缺失则隐藏",
-    "skyblocker.config.farming.farmingHud.blocks": "每秒破坏方块数"
+    "skyblocker.config.farming.farmingHud.blocks": "每秒破坏方块数",
+    "skyblocker.config.hud.cropMilestones.showIcon": "显示图标",
+    "skyblocker.config.hud.cropMilestones.showProgressBar": "显示进度条"
 }
