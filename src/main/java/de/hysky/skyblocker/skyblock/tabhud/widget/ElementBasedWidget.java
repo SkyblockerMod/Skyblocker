@@ -119,6 +119,11 @@ public abstract class ElementBasedWidget extends HudWidget implements ElementCol
 		elements.forEach(collector::addElement);
 	}
 
+	@Override
+	public boolean shouldRender() {
+		return super.shouldRender() && !elements.isEmpty();
+	}
+
 	public boolean shouldUpdateBeforeRendering() {
 		return false;
 	}

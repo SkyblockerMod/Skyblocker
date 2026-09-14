@@ -27,6 +27,7 @@ import de.hysky.skyblocker.utils.Location;
 public abstract class TabHudWidget extends ElementBasedWidget {
 	private final String hypixelWidgetName;
 	protected boolean hideIfHypixelWidgetMissing;
+	protected boolean hideIfMissingByDefault = false;
 	protected boolean hide;
 
 
@@ -111,7 +112,7 @@ public abstract class TabHudWidget extends ElementBasedWidget {
 	@Override
 	public void load(JsonValueInput input) {
 		super.load(input);
-		hideIfHypixelWidgetMissing = input.readBooleanOr("hide_if_missing", false);
+		hideIfHypixelWidgetMissing = input.readBooleanOr("hide_if_missing", hideIfMissingByDefault);
 	}
 
 	@Override

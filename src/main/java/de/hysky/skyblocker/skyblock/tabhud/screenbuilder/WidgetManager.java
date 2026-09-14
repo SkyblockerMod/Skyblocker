@@ -336,6 +336,13 @@ public class WidgetManager {
 		}
 	}
 
+	public static void removeAll() {
+		CONFIG.screenConfigs().values().stream().flatMap(ScreenConfig::allLayers).map(LayerConfig::widgets).forEach(Map::clear);
+		CONFIG.copyTracker().hud().map().clear();
+		CONFIG.copyTracker().tab().map().clear();
+		CONFIG.copyTracker().secondaryTab().map().clear();
+	}
+
 	public static void saveConfig() {
 		try (BufferedWriter writer = Files.newBufferedWriter(FILE)) {
 			SkyblockerMod.GSON.toJson(Config.DATA_FIXING_CODEC.encodeStart(JsonOps.INSTANCE, CONFIG).getOrThrow(), writer);

@@ -873,6 +873,9 @@
   "skyblocker.config.hud.copy.selectAll": "Select All",
   "skyblocker.config.hud.copy.targetLocations": "Target Locations",
 
+  "skyblocker.config.hud.cropMilestones.showIcon": "Show Icon",
+  "skyblocker.config.hud.cropMilestones.showProgressBar": "Show Progress Bar",
+
   "skyblocker.config.hud.fancyTab.enable": "Enable Fancy Tab",
   "skyblocker.config.hud.fancyTab.hiddenWidgets": "Hidden Widgets",
   "skyblocker.config.hud.fancyTab.positioner": "Positioner: %s",
