@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vulkan.VulkanDevice;
 
 import net.fabricmc.fabric.api.client.rendering.v1.SubmitRenderPhases;
 import net.minecraft.client.Minecraft;
@@ -28,7 +27,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.mixins.accessors.BlockEntityRenderStateAccessor;
-import de.hysky.skyblocker.mixins.accessors.GpuDeviceAccessor;
 import de.hysky.skyblocker.utils.render.FrustumUtils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.state.BlockHologramRenderState;
@@ -72,7 +70,7 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 	private boolean frozen = false;
 
 	public PrimitiveCollectorImpl(LevelRenderState worldState, Frustum frustum) {
-		this.isVulkan = ((GpuDeviceAccessor) RenderSystem.getDevice()).getBackend() instanceof VulkanDevice;
+		this.isVulkan = RenderSystem.getDevice().getDeviceInfo().backendName().equalsIgnoreCase("vulkan");
 		this.worldState = worldState;
 		this.frustum = frustum;
 	}
