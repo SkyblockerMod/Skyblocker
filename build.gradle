@@ -206,6 +206,9 @@ dependencies {
 	// NEU RepoParser
 	include implementation("moe.nea:neurepoparser:${project.repoparser_version}")
 
+	// Nea Lisp
+	include implementation("moe.nea:nealisp:${project.nealisp_version}")
+
 	// Networth Calculator (https://github.com/AzureAaron/networth-calculator)
 	include implementation("net.azureaaron:networth-calculator:${project.networth_calculator_version}")
 

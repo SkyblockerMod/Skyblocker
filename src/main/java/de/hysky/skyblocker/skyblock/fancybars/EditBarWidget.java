@@ -44,7 +44,7 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 	private final int contentsWidth;
 
-	public EditBarWidget(int x, int y, Screen parent) {
+	public EditBarWidget(int x, int y, StatusBarsConfigScreen parent) {
 		super(x, y, BASE_WIDTH, 110, Component.literal("Edit bar"), AbstractScrollArea.defaultSettings(4));
 
 		Font textRenderer = Minecraft.getInstance().font;
@@ -65,9 +65,9 @@ public class EditBarWidget extends AbstractContainerWidget {
 
 		layout.addChild(new RunnableOption(Component.translatable("skyblocker.bars.config.hide"), bar -> bar.enabled, bar -> {
 			if (bar.anchor != null)
-				FancyStatusBars.barPositioner.removeBar(bar.anchor, bar.gridY, bar);
+				parent.bars.barPositioner.removeBar(bar.anchor, bar.gridY, bar);
 			bar.enabled = false;
-			FancyStatusBars.updatePositions(true);
+			parent.bars.updatePositions(true);
 		}));
 
 		ImmutableList.Builder<AbstractOption<?>> builder = ImmutableList.builder();

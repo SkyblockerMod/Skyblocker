@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.screenbuilder;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
 
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.PositionRule;
 import de.hysky.skyblocker.utils.CodecUtils;
@@ -17,6 +19,17 @@ public record WidgetConfig(Optional<JsonObject> config, Optional<PositionRule> p
 
 	public WidgetConfig(JsonObject config, PositionRule position) {
 		this(Optional.of(config), Optional.of(position));
+	}
+
+	public WidgetConfig withPosition(@Nullable PositionRule position) {
+		return new WidgetConfig(config.map(JsonObject::deepCopy), Optional.ofNullable(position));
+	}
+
+	/**
+	 * Does not change if {@link WidgetConfig#position()} is empty.
+	 */
+	public WidgetConfig withPosition(Function<PositionRule, @Nullable PositionRule> transformer) {
+		return new WidgetConfig(config.map(JsonObject::deepCopy), position.map(transformer));
 	}
 
 	public static WidgetConfig disabled() {

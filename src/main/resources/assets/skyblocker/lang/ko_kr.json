@@ -65,7 +65,6 @@
     "key.skyblocker.defaultTgl": "기본 보기로 탭 HUD 변경",
     "key.skyblocker.toggleA": "두 번째 창 보기",
     "skyblocker.config.uiAndVisuals.tabHud": "화려한 HUD와 TAB",
-    "skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled": "향상된 탭 HUD 활성화",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale": "향상된 탭 HUD 배율",
     "skyblocker.config.uiAndVisuals.tabHud.tabHudScale.@Tooltip": "GUI 비율에 대한 백분율",
     "skyblocker.config.helpers.experiments.enableChronomatronSolver": "Chronomatron 해결기 활성화",

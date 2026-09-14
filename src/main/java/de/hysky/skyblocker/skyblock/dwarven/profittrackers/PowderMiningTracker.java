@@ -36,6 +36,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ItemPriceUpdateEvent;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -80,7 +81,7 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().mining.crystalHollows.enablePowderTracker;
+		return WidgetManager.isWidgetInCurrentScreen(PowderMiningWidget.INSTANCE);
 	}
 
 	@Init
@@ -133,8 +134,16 @@ public final class PowderMiningTracker extends AbstractProfitTracker {
 	}
 
 	private void onProfileChange(String prevProfileId, String newProfileId) {
-		if (!isEnabled()) return;
+		// This needs to happen regardless of whether its enabled otherwise if the user logs into
+		// a profile outside of the Crystal Hollows the rewards won't save (since it would put them
+		// into the default map) since isEnabled is only true when the widget shows (which can only
+		// be the case inside the Crystal Hollows)
 		currentProfileRewards = allRewards.computeIfAbsent(Object2IntArrayMap::new);
+
+		if (!isEnabled()) {
+			return;
+		}
+
 		recalculateAll();
 	}
 

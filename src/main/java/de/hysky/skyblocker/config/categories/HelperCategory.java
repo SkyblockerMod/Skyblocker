@@ -208,30 +208,6 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.fishingHookDisplay = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.enableFishingTimer"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip"))
-								.binding(defaults.helpers.fishing.enableFishingTimer,
-										() -> config.helpers.fishing.enableFishingTimer,
-										newValue -> config.helpers.fishing.enableFishingTimer = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip"))
-								.binding(defaults.helpers.fishing.enableSeaCreatureCounter,
-										() -> config.helpers.fishing.enableSeaCreatureCounter,
-										newValue -> config.helpers.fishing.enableSeaCreatureCounter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip"))
-								.binding(defaults.helpers.fishing.onlyShowHudInBarn,
-										() -> config.helpers.fishing.onlyShowHudInBarn,
-										newValue -> config.helpers.fishing.onlyShowHudInBarn = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.timerLength"))
 								.description(Component.translatable("skyblocker.config.helpers.fishing.timerLength.@Tooltip"))
@@ -363,6 +339,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo"))
 								.description(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_10_0)
 								.binding(defaults.helpers.fairySouls.highlightOnBingo,
 										() -> config.helpers.fairySouls.highlightOnBingo,
 										newValue -> config.helpers.fairySouls.highlightOnBingo = newValue)

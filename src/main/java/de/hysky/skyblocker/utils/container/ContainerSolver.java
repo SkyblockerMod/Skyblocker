@@ -59,11 +59,6 @@ public interface ContainerSolver extends ContainerMatcher, Resettable {
 		}
 	}
 
-	/// @return true if this solver should only work in Skyblock.
-	default boolean skyblockOnly() {
-		return true;
-	}
-
 	/// Override and return false to make this solver work in the inventory screen and
 	/// other {@link net.minecraft.client.gui.screens.inventory.AbstractContainerScreen AbstractContainerScreen}s.
 	default boolean chestScreensOnly() {

@@ -94,13 +94,11 @@ public class ForagingCategory {
 										newValue -> config.foraging.moongladeMarsh.enableTunerSolver = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
+						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget"))
-								.description(Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip"))
-								.binding(defaults.foraging.moongladeMarsh.enableSweepDetailsWidget,
-										() -> config.foraging.moongladeMarsh.enableSweepDetailsWidget,
-										newValue -> config.foraging.moongladeMarsh.enableSweepDetailsWidget = newValue)
-								.controller(ConfigUtils.createBooleanController())
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"), Component.translatable("skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GALATEA, screen)))
+								.prompt(Component.translatable("text.skyblocker.open"))
 								.build())
 						.build())
 

@@ -2,20 +2,26 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
 import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.PrimitiveTypeUtils;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.data.constants.ConstantData;
+import de.hysky.skyblocker.utils.data.constants.EmblemConstants;
+import de.hysky.skyblocker.utils.data.constants.EmblemConstants.Emblem;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 
 public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
@@ -39,7 +45,7 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 		int y = this.getY() + INFO_OFFSET;
 		final int textYStep = font.lineHeight + 1;
 
-		Tooltip tooltip = null;
+		List<Component> tooltip = null;
 
 		// Profile name
 		graphics.pose().pushMatrix();
@@ -69,14 +75,21 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 
 		// Add the date as a tooltip when the text is hovered over
 		if (GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + font.width(joinedText), y + font.lineHeight)) {
-			tooltip = Tooltip.create(Component.literal(Formatters.DATE_FORMATTER.format(firstJoin)));
+			tooltip = List.of(Component.literal(Formatters.DATE_FORMATTER.format(firstJoin)));
 		}
 
 		// SkyBlock Emblem
 		y += textYStep;
-		Component levelText = Component.empty()
-				.append(Component.literal("Emblem: X").withStyle(ChatFormatting.GREEN));
-		graphics.text(font, levelText, x, y, CommonColors.WHITE);
+		Optional<Emblem> emblem = ConstantData.getEmblemConstants().fromId(member.levelling.selectedEmblem);
+		Component emblemText = Component.empty()
+				.append(Component.literal("Emblem: ").withStyle(ChatFormatting.GREEN))
+				.append(emblem.map(EmblemConstants.Emblem::display)
+						.orElseGet(() -> Component.literal("None")));
+		graphics.text(font, emblemText, x, y, CommonColors.WHITE);
+
+		if (emblem.isPresent() && GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + font.width(emblemText), y + font.lineHeight)) {
+			tooltip = List.of(Component.literal(emblem.get().name()));
+		}
 
 		// Skill Average
 		y += textYStep;
@@ -89,17 +102,30 @@ public final class SkillsInfoBoxWidget extends BasicInfoBoxWidget {
 		y += textYStep;
 		Component purseText = Component.empty()
 				.append(Component.literal("Purse: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(member.currencies.coinsInPurse));
+				.append(Formatters.SHORT_DOUBLE_NUMBERS.format(member.currencies.coinsInPurse));
 		graphics.text(font, purseText, x, y, CommonColors.WHITE);
 
 		// Bank
 		y += textYStep;
-		// TODO check that banking can't be null
+		// Sum both the profile bank and the personal bank
+		double bank = profile.banking.balance + PrimitiveTypeUtils.coerceDouble(member.profile.personalBankAccount);
 		Component bankText = Component.empty()
 				.append(Component.literal("Bank: ").withStyle(ChatFormatting.GOLD))
-				.append(Formatters.SHORT_FLOAT_NUMBERS.format(profile.banking.balance));
+				.append(Formatters.SHORT_DOUBLE_NUMBERS.format(bank));
 		graphics.text(font, bankText, x, y, CommonColors.WHITE);
 
-		this.setTooltip(tooltip);
+		// Show bank breakdown when the player has a personal bank
+		if (GuiHelper.pointIsInArea(mouseX, mouseY, x, y, x + font.width(bankText), y + font.lineHeight) && member.profile.personalBankAccount != null) {
+			List<Component> bankTooltip = new ArrayList<>();
+			bankTooltip.add(Component.literal("Personal: " + Formatters.INTEGER_NUMBERS.format(PrimitiveTypeUtils.coerceDouble(member.profile.personalBankAccount))).withStyle(ChatFormatting.RED));
+			bankTooltip.add(Component.literal("Co-op: " + Formatters.INTEGER_NUMBERS.format(profile.banking.balance)).withStyle(ChatFormatting.GOLD));
+			bankTooltip.add(Component.literal("Total: " + Formatters.INTEGER_NUMBERS.format(bank)).withStyle(ChatFormatting.YELLOW));
+
+			tooltip = bankTooltip;
+		}
+
+		if (tooltip != null) {
+			graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+		}
 	}
 }

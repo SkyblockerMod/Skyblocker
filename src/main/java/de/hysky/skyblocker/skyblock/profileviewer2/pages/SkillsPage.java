@@ -25,7 +25,7 @@ import de.hysky.skyblocker.utils.FlexibleItemStack;
 
 public final class SkillsPage implements ProfileViewerPage<LoadingInformation> {
 	private static final int SPACING = 2;
-	private static final int LEVEL_BAR_WIDTH = 105;
+	protected static final int LEVEL_BAR_WIDTH = 105;
 	private final List<AbstractWidget> widgets = new ArrayList<>();
 
 	@Override

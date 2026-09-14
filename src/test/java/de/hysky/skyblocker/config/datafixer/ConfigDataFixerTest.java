@@ -22,7 +22,7 @@ public class ConfigDataFixerTest {
 		Bootstrap.bootStrap();
 	}
 
-	void testDataFix(int previousVersion, int newVersion, DSL.TypeReference type, String file) {
+	protected static void testDataFix(int previousVersion, int newVersion, DSL.TypeReference type, String file) {
 		@SuppressWarnings("DataFlowIssue")
 		JsonObject oldConfig = GSON.fromJson(new InputStreamReader(ConfigDataFixerTest.class.getResourceAsStream(file + previousVersion + ".json")), JsonObject.class);
 		@SuppressWarnings("DataFlowIssue")
@@ -31,7 +31,7 @@ public class ConfigDataFixerTest {
 		Assertions.assertEquals(expectedNewConfig, ConfigDataFixer.apply(type, oldConfig, newVersion));
 	}
 
-	void testDataFix(int previousVersion, int newVersion) {
+	protected static void testDataFix(int previousVersion, int newVersion) {
 		testDataFix(previousVersion, newVersion, ConfigDataFixer.CONFIG_TYPE, "/assets/skyblocker/config/skyblocker-v");
 	}
 
@@ -63,10 +63,5 @@ public class ConfigDataFixerTest {
 	@Test
 	void testDataFixer8() {
 		testDataFix(8, 9);
-	}
-
-	@Test
-	void testDataFixerHudWidgets() {
-		testDataFix(1, 12, ConfigDataFixer.HUD_WIDGETS_TYPE, "/assets/skyblocker/config/skyblocker/hud_widgets_v");
 	}
 }

@@ -18,9 +18,9 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Location;
 
@@ -100,11 +100,6 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 		ClientLevel world = CLIENT.level;
 		ArmorStand closest;
 
-		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen) {
-			addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", ChatFormatting.GREEN, "37%");
-			return;
-		}
-
 		if (CLIENT.player == null || world == null)
 			return;
 		closest = getClosestTree();
@@ -116,4 +111,8 @@ public class TreeBreakProgressHud extends ElementBasedWidget {
 		addSimpleIcoText(woodIcon, treeName + " ", ChatFormatting.GREEN, closestName.replaceAll("[^0-9%]", ""));
 	}
 
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addSimpleIcoText(Ico.STRIPPED_SPRUCE_WOOD, "Fig Tree ", ChatFormatting.GREEN, "37%");
+	}
 }

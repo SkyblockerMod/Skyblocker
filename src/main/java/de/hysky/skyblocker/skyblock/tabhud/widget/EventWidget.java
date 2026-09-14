@@ -10,6 +10,7 @@ import net.minecraft.network.chat.TextColor;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 
 // this widget shows info about ongoing events (e.g. election)
@@ -27,5 +28,11 @@ public class EventWidget extends TabHudWidget {
 		List<Component> lines = widget.lines();
 		if (!widget.detail().getString().isEmpty()) this.addElement(Elements.iconTextComponent(Ico.NTAG, widget.detail()));
 		if (!lines.isEmpty()) this.addElement(Elements.iconTextComponent(Ico.CLOCK, lines.getFirst()));
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(Ico.NTAG, Component.literal("???")));
+		collector.addElement(Elements.iconTextComponent(Ico.CLOCK, Component.literal("Starts in: ").append(Component.literal("???").withStyle(ChatFormatting.YELLOW))));
 	}
 }

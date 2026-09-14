@@ -59,6 +59,12 @@ public class Formatters {
 	 */
 	public static final NumberFormat SHORT_FLOAT_NUMBERS = Util.make(NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.SHORT), nf -> nf.setMinimumFractionDigits(1));
 	/**
+	 * Formats double numbers in a short format.
+	 * <p>
+	 * Examples: 17.31B, 1.58M, and 10.84K.
+	 */
+	public static final NumberFormat SHORT_DOUBLE_NUMBERS = Util.make(NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.SHORT), nf -> nf.setMinimumFractionDigits(2));
+	/**
 	 * Formats numbers with a plus sign for positive numbers.
 	 * <p>
 	 * Examples: +100, -100.123

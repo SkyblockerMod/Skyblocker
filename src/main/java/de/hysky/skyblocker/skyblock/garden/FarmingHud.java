@@ -27,8 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -125,7 +125,7 @@ public class FarmingHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().farming.farmingHud.enabled && client.player != null && Utils.getLocation() == Location.GARDEN;
+		return WidgetManager.isWidgetInCurrentScreen(FarmingHudWidget.getInstance()) && client.player != null && Utils.getLocation() == Location.GARDEN;
 	}
 
 	public static CounterType counterType() {

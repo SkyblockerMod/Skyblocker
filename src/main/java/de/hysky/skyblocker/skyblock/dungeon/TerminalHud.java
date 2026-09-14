@@ -16,6 +16,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.Location;
@@ -66,29 +67,6 @@ public class TerminalHud extends ElementBasedWidget {
 
 	@Override
 	public void updateContent() {
-		if (CLIENT.gui.screen() instanceof WidgetsConfigurationScreen && !GoldorWaypointsManager.isActive()) {
-			MutableComponent status = Component.empty();
-			if (CONFIG.get().showTerminalStatus) {
-				status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));
-			}
-			if (CONFIG.get().showTerminals) {
-				for (int i = 0; i < 5; i++) {
-					addElement(new PlainTextElement(Component.literal("Terminal #" + (i + 1)).append(status)));
-				}
-			}
-			if (CONFIG.get().showDevice) {
-				addElement(new PlainTextElement(Component.literal("Device").append(status)));
-			}
-			if (CONFIG.get().showLevers) {
-				addElement(new PlainTextElement(Component.literal("Lever").append(status)));
-				addElement(new PlainTextElement(Component.literal("Lever").append(status)));
-			}
-			if (CONFIG.get().showGate) {
-				addElement(new PlainTextElement(Component.literal("Gate").append(status)));
-			}
-			return;
-		}
-
 		List<GoldorWaypointsManager.GoldorWaypoint> waypoints = GoldorWaypointsManager.getPhaseWaypoints();
 		if (waypoints.isEmpty()) return;
 		for (var waypoint : waypoints) {
@@ -124,6 +102,29 @@ public class TerminalHud extends ElementBasedWidget {
 			}
 
 			addElement(new PlainTextElement(displayText));
+		}
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		MutableComponent status = Component.empty();
+		if (CONFIG.get().showTerminalStatus) {
+			status = Component.literal(" ").append(Component.translatable("skyblocker.dungeons.terminalHud.incompleteStatus").withStyle(ChatFormatting.RED));
+		}
+		if (CONFIG.get().showTerminals) {
+			for (int i = 0; i < 5; i++) {
+				collector.addElement(new PlainTextElement(Component.literal("Terminal #" + (i + 1)).append(status)));
+			}
+		}
+		if (CONFIG.get().showDevice) {
+			collector.addElement(new PlainTextElement(Component.literal("Device").append(status)));
+		}
+		if (CONFIG.get().showLevers) {
+			collector.addElement(new PlainTextElement(Component.literal("Lever").append(status)));
+			collector.addElement(new PlainTextElement(Component.literal("Lever").append(status)));
+		}
+		if (CONFIG.get().showGate) {
+			collector.addElement(new PlainTextElement(Component.literal("Gate").append(status)));
 		}
 	}
 }

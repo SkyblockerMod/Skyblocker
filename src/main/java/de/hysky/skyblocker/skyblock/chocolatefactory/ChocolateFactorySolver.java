@@ -62,10 +62,10 @@ public class ChocolateFactorySolver extends SimpleContainerSolver implements Too
 	private static final byte RABBITS_START = 28;
 	private static final byte RABBITS_END = 34;
 	private static final byte RABBIT_BARN_SLOT = 35;
-	private static final byte HAND_BAKED_CHOCOLATE_SLOT = 38;
-	private static final byte TIME_TOWER_SLOT = 39;
-	private static final byte RABBIT_SHRINE_SLOT = 41;
-	private static final byte COACH_SLOT = 42;
+	private static final byte HAND_BAKED_CHOCOLATE_SLOT = 37;
+	private static final byte TIME_TOWER_SLOT = 38;
+	private static final byte RABBIT_SHRINE_SLOT = 39;
+	private static final byte COACH_SLOT = 41;
 	private static final byte CPS_SLOT = 45;
 	private static final byte RABBIT_HITMAN_SLOT = 51;
 

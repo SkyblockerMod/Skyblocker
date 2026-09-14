@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +19,14 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -90,11 +95,13 @@ import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
 import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
+import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
 import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
@@ -157,6 +164,14 @@ public class DungeonManager {
 	protected static final Map<String, Map<String, Map<String, int[]>>> ROOMS_DATA = new ConcurrentHashMap<>();
 	private static final Map<String, RoomInfo> ROOMS_INFO = new ConcurrentHashMap<>();
 	private static final Map<String, List<RoomWaypoint>> ROOMS_WAYPOINTS = new ConcurrentHashMap<>();
+
+	static final JsonData<Map<SecretWaypoint.Category, Color>> WAYPOINT_COLOR_DATA = new JsonData<>(
+			SkyblockerMod.CONFIG_DIR.resolve("secret_waypoint_color.json"),
+			Codec.unboundedMap(SecretWaypoint.Category.CODEC, CodecUtils.COLOR_CODEC).xmap(EnumMap::new, Function.identity()),
+			Arrays.stream(SecretWaypoint.Category.values()).collect(Maps.<SecretWaypoint.Category, SecretWaypoint.Category, Color>toImmutableEnumMap(Function.identity(), category -> {
+				float[] components = category.getColorComponents();
+				return new Color(components[0], components[1], components[2]);
+			})));
 
 	/**
 	 * Rooms in the current dungeon map.
@@ -268,6 +283,7 @@ public class DungeonManager {
 	 */
 	@Init
 	public static void init() {
+		WAYPOINT_COLOR_DATA.init();
 		// Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
 		CompletableFuture.runAsync(DungeonManager::load, CLIENT).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);

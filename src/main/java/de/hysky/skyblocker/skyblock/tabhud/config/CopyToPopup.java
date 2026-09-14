@@ -22,12 +22,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.ProblemReporter;
 
 import de.hysky.skyblocker.mixins.accessors.CheckboxAccessor;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.LayerConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.PositionedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetConfig;
 import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 
@@ -42,12 +44,11 @@ class CopyToPopup extends AbstractPopupScreen {
 	private ScrollableLayout scrollable;
 
 	CopyToPopup(Screen backgroundScreen, PositionedWidget copiedWidget, Location location, WidgetManager.ScreenLayer layer) {
-		super(Component.literal("Edit hidden widgets"), backgroundScreen);
+		super(Component.literal("Copy to other locations"), backgroundScreen);
 		this.copiedWidget = copiedWidget;
 		this.selectedLocations = WidgetManager.getCopyTracker().get(layer)
 				.get(copiedWidget.widget.getInternalID())
-				.flatMap(s -> s.whereHas(location))
-				.map(EnumSet::copyOf)
+				.flatMap(s -> s.getGroup(location))
 				.orElseGet(() -> EnumSet.noneOf(Location.class));
 		this.availableLocations = WidgetManager.ALLOWED_LOCATIONS.stream().filter(l -> copiedWidget.widget.getInformation().available().test(l)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Location.class)));
 		this.location = location;
@@ -115,7 +116,9 @@ class CopyToPopup extends AbstractPopupScreen {
 
 	private void apply() {
 		JsonObject widgetConfig = new JsonObject();
-		copiedWidget.widget.save(widgetConfig);
+		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(WidgetManager.LOGGER)) {
+			copiedWidget.widget.save(new JsonValueOutput(reporter, widgetConfig));
+		}
 		selectedLocations.retainAll(availableLocations);
 		for (Location loc : selectedLocations) {
 			LayerConfig config = WidgetManager.getScreenConfig(loc).get(layer);
@@ -126,7 +129,7 @@ class CopyToPopup extends AbstractPopupScreen {
 			}
 		}
 		selectedLocations.add(location);
-		WidgetManager.getCopyTracker().get(layer).getOrCreate(copiedWidget.widget.getInternalID()).track(selectedLocations);
+		WidgetManager.getCopyTracker().get(layer).getOrCreate(copiedWidget.widget.getInternalID()).group(selectedLocations);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import de.hysky.skyblocker.annotations.Init;
 
 public final class ConstantData {
 	private static final Logger LOGGER = LogUtils.getLogger();
+	private static EmblemConstants emblemConstants = EmblemConstants.EMPTY;
 	private static MinionConstants minionConstants = MinionConstants.EMPTY;
 
 	private ConstantData() {}
@@ -26,8 +27,13 @@ public final class ConstantData {
 	@Init
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(minecraft -> {
+			loadDataAsync(minecraft, "emblems.json", EmblemConstants.CODEC, data -> emblemConstants = data);
 			loadDataAsync(minecraft, "minions.json", MinionConstants.CODEC, data -> minionConstants = data);
 		});
+	}
+
+	public static EmblemConstants getEmblemConstants() {
+		return emblemConstants;
 	}
 
 	public static MinionConstants getMinionConstants() {

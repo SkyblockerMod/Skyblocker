@@ -49,6 +49,7 @@ public class Ico {
 	public static final FlexibleItemStack LEATHER = new FlexibleItemStack(Items.LEATHER);
 	public static final FlexibleItemStack MITHRIL = new FlexibleItemStack(Items.PRISMARINE_CRYSTALS);
 	public static final FlexibleItemStack REDSTONE = new FlexibleItemStack(Items.REDSTONE);
+	public static final FlexibleItemStack REDSTONE_BLOCK = new FlexibleItemStack(Items.REDSTONE_BLOCK);
 	public static final FlexibleItemStack CAMPFIRE = new FlexibleItemStack(Items.CAMPFIRE);
 	public static final FlexibleItemStack STRING = new FlexibleItemStack(Items.STRING);
 	public static final FlexibleItemStack WITHER = new FlexibleItemStack(Items.WITHER_SKELETON_SKULL);

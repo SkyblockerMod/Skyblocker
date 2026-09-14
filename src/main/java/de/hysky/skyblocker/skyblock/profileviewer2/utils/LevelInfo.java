@@ -14,6 +14,17 @@ public record LevelInfo(long xp, int level, Cap cap, Optional<Progress> progress
 		this(xp, level, cap, Optional.ofNullable(progress));
 	}
 
+	/// {@return the level with the progress added to it}
+	public double levelWithProgress() {
+		if (this.progress.isPresent()) {
+			Progress progress = this.progress.get();
+
+			return this.level + progress.percentageToNextLevel();
+		}
+
+		return this.level;
+	}
+
 	/// {@return whether the level is not at any maximum value, capped or not}
 	public boolean isLevelNotAtAnyMaximum() {
 		return this.level != this.cap.reachableMaxLevel() && this.level != this.cap.absoluteMaxLevel();

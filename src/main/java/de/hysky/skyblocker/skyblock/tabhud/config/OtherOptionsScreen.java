@@ -26,7 +26,7 @@ import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
 import de.hysky.skyblocker.utils.render.gui.RangedSliderWidget;
 
-class OtherOptionsScreen extends Screen {
+public class OtherOptionsScreen extends Screen {
 	private final Tooltip STYLE_TOOLTIP = Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[0]").append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[1]")).append("\n")
 			.append(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.style.@Tooltip[2]")).append("\n")
@@ -82,7 +82,7 @@ class OtherOptionsScreen extends Screen {
 
 		body.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.otherOptions.locationOptions", parent.getCurrentLocation()), font));
 		GridLayout.RowHelper screenOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
-		screenOptions.addChild(Button.builder(Component.translatable("skyblocker.config.hud.otherOptions.visibleTabWidgets"), _ -> minecraft.gui.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).width(largeWidth).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
+		screenOptions.addChild(Button.builder(Component.translatable("skyblocker.config.hud.otherOptions.hiddenTabWidgets"), _ -> minecraft.gui.setScreen(new HiddenWidgetsPopup(this, parent.getScreenConfig()))).width(largeWidth).build(), 2).active = SkyblockerConfigManager.get().uiAndVisuals.tabHud.tabHudEnabled;
 
 		layout.visitWidgets(this::addRenderableWidget);
 		repositionElements();
@@ -109,7 +109,7 @@ class OtherOptionsScreen extends Screen {
 		private final LinearLayout layout = LinearLayout.vertical().spacing(10);
 
 		private HiddenWidgetsPopup(Screen backgroundScreen, ScreenConfig screenConfig) {
-			super(Component.literal("Edit hidden widgets"), backgroundScreen);
+			super(Component.literal("Edit hidden Fancy TAB widgets"), backgroundScreen);
 			this.screenConfig = screenConfig;
 		}
 
@@ -129,6 +129,10 @@ class OtherOptionsScreen extends Screen {
 										screenConfig.hiddenTabWidgets().add(widget.getInternalID());
 									} else {
 										screenConfig.hiddenTabWidgets().remove(widget.getInternalID());
+									}
+									// Update the fancy tab after hidden widgets changes
+									if (backgroundScreen instanceof OtherOptionsScreen screen) {
+										screen.parent.screenBuilder.updateFancyTab();
 									}
 								})
 								.build()
