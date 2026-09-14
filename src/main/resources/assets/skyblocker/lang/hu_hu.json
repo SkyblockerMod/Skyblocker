@@ -1940,5 +1940,8 @@
     "skyblocker.foraging.treeFelled": "Fa Kivágva!",
     "skyblocker.hud.missingTabWidget[4]": "nyomva tartásával látható.",
     "skyblocker.config.hud.topBar.autoAnchor": "Auto Képernyő Kapocs",
-    "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatikusan megváltoztatja a widget kapocsát pozíciója alapján, hogy a képernyő méretezésével ne kerüljön a látható téren kívülre."
+    "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatikusan megváltoztatja a widget kapocsát pozíciója alapján, hogy a képernyő méretezésével ne kerüljön a látható téren kívülre.",
+    "skyblocker.config.hud.cropMilestones.showIcon": "Ikon Mutatása",
+    "skyblocker.config.hud.cropMilestones.showProgressBar": "Haladás Sáv Mutatása",
+    "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "Elrejtett Szép TAB widgetek módosítása"
 }
