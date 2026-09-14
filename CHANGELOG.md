@@ -6,8 +6,8 @@
   * Disable All now works on HUD and TAB widgets.
   * Fix an issue with saving.
 * Add support for Faction Rabbits
-* Fix empty chat messages being filtered sometimes
-* Fix item protection not working with /stats
+* Fix empty chat messages being removed from chat
+* Fix being unable to protect items on /stats
 * Fix Powder Mining Tracker not loading/saving data properly.
 
 ## What's Changed
