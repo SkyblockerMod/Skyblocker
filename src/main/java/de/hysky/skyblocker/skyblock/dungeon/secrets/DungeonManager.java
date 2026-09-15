@@ -58,6 +58,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -806,18 +807,18 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
+	 * Calls {@link Room#onChatMessage(String, boolean)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!shouldProcess()) return true;
-		String message = text.getString();
+		String message = ChatFormatting.stripFormatting(text.getString());
 
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
-			currentRoom.onChatMessage(message);
+			currentRoom.onChatMessage(message, overlay);
 		}
 
 		// Process key found messages for door highlight
@@ -837,7 +838,7 @@ public class DungeonManager {
 
 		// Dungeon Events
 
-		if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
+		if (message.equals("[NPC] Mort: You should find it useful if you get lost.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 		}
 
