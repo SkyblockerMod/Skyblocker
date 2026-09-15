@@ -807,7 +807,7 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
+	 * Calls {@link Room#onChatMessage(String, boolean)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
@@ -818,7 +818,7 @@ public class DungeonManager {
 
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
-			currentRoom.onChatMessage(message);
+			currentRoom.onChatMessage(message, overlay);
 		}
 
 		// Process key found messages for door highlight
