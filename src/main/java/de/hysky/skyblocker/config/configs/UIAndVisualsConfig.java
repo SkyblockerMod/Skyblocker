@@ -393,6 +393,19 @@ public class UIAndVisualsConfig {
 
 		public Color teleportOverlayColor = new Color(0x7F761594, true);
 
+		public HighlightType highlightType = HighlightType.HIGHLIGHT;
+
+		public enum HighlightType {
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
+
+			@Override
+			public String toString() {
+				return I18n.get("skyblocker.config.uiAndVisuals.teleportOverlay.highlightType." + name());
+			}
+		}
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;
