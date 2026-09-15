@@ -732,6 +732,8 @@
   "skyblocker.config.helpers.bazaar": "Bazaar",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper": "Enable Bazaar Helper",
   "skyblocker.config.helpers.bazaar.enableBazaarHelper.@Tooltip": "Draws icons on top of orders to explain the current state of the order.\n\n%s: Order is going to expire soon\n%s: Order has expired\n%s: Order is filled to some degree and there are items/coins to claim\n%s: Order is filled",
+  "skyblocker.config.helpers.bazaar.enableBazaarMax": "Enable Bazaar Max Alias",
+  "skyblocker.config.helpers.bazaar.enableBazaarMax.@Tooltip": "Type 'max' (alternates: 'm', 'x') in a Bazaar quantity input sign and press space to use the maximum order amount shown in the Bazaar menu.",
   "skyblocker.config.helpers.bazaar.enableOrderTracker": "Enable Bazaar Order Tracker",
   "skyblocker.config.helpers.bazaar.enableOrderTracker.@Tooltip": "Tracks your order in the list of orders for an item.",
   "skyblocker.config.helpers.bazaar.enableReorderHelper": "Enable Reorder Helper",
