@@ -1,3 +1,32 @@
+# Release 6.10.3
+
+## Highlight
+* Various HUD improvements and fixes
+  * Snapping should now be more responsive.
+  * Disable All now works on HUD and TAB widgets.
+  * Fix an issue with saving.
+* Add support for Faction Rabbits
+* Fix empty chat messages being removed from chat
+* Fix being unable to protect items on /stats
+* Fix Powder Mining Tracker not loading/saving data properly.
+
+## What's Changed
+* Add support for Faction Rabbits by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2727
+* Fix Museum Button Crash by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2731
+* Fix filtering empty chat messages by @Polygons1 in https://github.com/SkyblockerMod/Skyblocker/pull/2729
+* Add exclusive grouping set by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2728
+* Some more hud bug fixes by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2724
+* fix item protection not work with /stats by @legentpc in https://github.com/SkyblockerMod/Skyblocker/pull/2737
+* Improve hud widget snapping by @kevinthegreat1 in https://github.com/SkyblockerMod/Skyblocker/pull/2730
+* moar hud stuff by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2738
+
+## New Contributors
+* @Polygons1 made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2729
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.10.2+26.2...v6.10.3+26.2
+
+___
+
 # Release 6.10.2
 
 ## Highlight
