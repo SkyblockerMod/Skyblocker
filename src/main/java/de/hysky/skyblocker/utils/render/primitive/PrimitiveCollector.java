@@ -7,8 +7,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import de.hysky.skyblocker.utils.BlockPosSet;
-
 public interface PrimitiveCollector {
 
 	<S> void submitVanilla(S state, VanillaRenderer<S> renderer);
@@ -28,10 +26,6 @@ public interface PrimitiveCollector {
 	void submitOutlinedBox(AABB box, float[] colourComponents, float lineWidth, boolean throughWalls);
 
 	void submitOutlinedBox(AABB box, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
-
-	void submitOutlinedConnected(BlockPosSet block, float[] colourComponents, float lineWidth, boolean throughWalls);
-
-	void submitOutlinedConnected(BlockPosSet blocks, float[] colourComponents, float alpha, float lineWidth, boolean throughWalls);
 
 	/**
 	 * Submits lines to be drawn from point to point.<br><br>

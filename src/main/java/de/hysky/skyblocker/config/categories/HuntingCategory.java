@@ -151,15 +151,6 @@ public class HuntingCategory {
 										newValue -> config.hunting.safari.highlightSnoozleWalls = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<HuntingConfig.Safari.WallHighlightType>createBuilder()
-								.name(Component.translatable("skyblocker.config.hunting.safari.wallHighlightType"))
-								.description(Component.translatable("skyblocker.config.hunting.safari.wallHighlightType.@Tooltip"))
-								.tags(Component.literal("snoozle"))
-								.binding(defaults.hunting.safari.wallHighlightType,
-										() -> config.hunting.safari.wallHighlightType,
-										newValue -> config.hunting.safari.wallHighlightType = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.highlightHoneybugNests"))
 								.description(Component.translatable("skyblocker.config.hunting.safari.highlightHoneybugNests.@Tooltip"))
