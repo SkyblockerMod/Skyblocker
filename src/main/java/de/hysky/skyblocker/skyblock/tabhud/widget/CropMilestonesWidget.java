@@ -3,8 +3,8 @@ package de.hysky.skyblocker.skyblock.tabhud.widget;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
@@ -26,7 +26,7 @@ public class CropMilestonesWidget extends TabHudWidget {
 
 	private static final Pattern PATTERN = Pattern.compile("(?<crop>[a-zA-Z ]+) (?<level>\\d+): (?<percentage>[0-9.]+%|MAX)");
 	public CropMilestonesWidget() {
-		super("Crop Milestones", Component.literal("Crop Milestones"), TextColor.AQUA.getValue(), Location.GARDEN);
+		super("Crop Milestones", Component.literal("Crop Milestones"), ChatFormatting.AQUA.getColor(), Location.GARDEN);
 		hideIfMissingByDefault = true;
 	}
 
@@ -77,11 +77,11 @@ public class CropMilestonesWidget extends TabHudWidget {
 	@Override
 	protected void updateConfigContentTab(ElementCollector collector) {
 		if (!showProgressBar) {
-			Component text = Component.literal("Wheat 32: ").append(Component.literal("33.3%").withColor(TextColor.GREEN));
+			Component text = Component.literal("Wheat 32: ").append(Component.literal("33.3%").withStyle(ChatFormatting.GREEN));
 			if (showIcon) collector.addElement(Elements.iconTextComponent(Ico.WHEAT, text));
 			else collector.addElement(new PlainTextElement(text));
 		} else {
-			collector.addElement(Elements.progressComponent(showIcon ? Ico.WHEAT : null, Component.literal("Wheat 32"), 33.3f, TextColor.DARK_AQUA.getValue()));
+			collector.addElement(Elements.progressComponent(showIcon ? Ico.WHEAT : null, Component.literal("Wheat 32"), 33.3f, ChatFormatting.DARK_AQUA.getColor()));
 		}
 	}
 }
