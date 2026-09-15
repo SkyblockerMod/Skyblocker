@@ -1,3 +1,16 @@
+# Release 6.10.4
+
+## Highlight
+* Fixed various Dungeons features not working due to a Hypixel change.
+
+## What's Changed
+* strip formatting codes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2741
+
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.10.3+26.2...v6.10.4+26.2
+
+___
+
 # Release 6.10.3
 
 ## Highlight
