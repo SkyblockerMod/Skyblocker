@@ -1881,7 +1881,6 @@
     "skyblocker.config.hud.otherOptions.globalOptions": "Globális Beállítások",
     "skyblocker.config.hud.otherOptions.locationOptions": "%s opciói",
     "skyblocker.config.hud.otherOptions.title": "Skyblock HUD és TAB opciók",
-    "skyblocker.config.hud.otherOptions.visibleTabWidgets": "A látható szép TAB widgetek módosítása",
     "skyblocker.config.hud.position.parent": "Szülő: %s",
     "skyblocker.config.hud.position.parent.@Tooltip": "Kattints, hogy szülőt válassz ki ehhez a widgethez.",
     "skyblocker.config.hud.position.parent.screen": "Képernyő",
@@ -1941,5 +1940,8 @@
     "skyblocker.foraging.treeFelled": "Fa Kivágva!",
     "skyblocker.hud.missingTabWidget[4]": "nyomva tartásával látható.",
     "skyblocker.config.hud.topBar.autoAnchor": "Auto Képernyő Kapocs",
-    "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatikusan megváltoztatja a widget kapocsát pozíciója alapján, hogy a képernyő méretezésével ne kerüljön a látható téren kívülre."
+    "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatikusan megváltoztatja a widget kapocsát pozíciója alapján, hogy a képernyő méretezésével ne kerüljön a látható téren kívülre.",
+    "skyblocker.config.hud.cropMilestones.showIcon": "Ikon Mutatása",
+    "skyblocker.config.hud.cropMilestones.showProgressBar": "Haladás Sáv Mutatása",
+    "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "Elrejtett Szép TAB widgetek módosítása"
 }
