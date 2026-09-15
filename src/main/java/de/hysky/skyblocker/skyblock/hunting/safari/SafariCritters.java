@@ -229,15 +229,8 @@ public class SafariCritters {
 			var snoozleWallBlocks = SafariUtils.getSnoozleWalls();
 			for (int i = 0; i < snoozleWalls.size(); i++) {
 				if (snoozleWalls.get(i) == SafariUtils.BlockLocation.CLEAR) continue;
-				var wallBlocks = snoozleWallBlocks.get(i);
-				HuntingConfig.Safari.WallHighlightType highlightType = SkyblockerConfigManager.get().hunting.safari.wallHighlightType;
-				if (highlightType != HuntingConfig.Safari.WallHighlightType.HIGHLIGHT) {
-					collector.submitOutlinedConnected(wallBlocks, SNOOZLE_WALL_COLOR, 5f, false);
-				}
-				if (highlightType != HuntingConfig.Safari.WallHighlightType.OUTLINE) {
-					for (BlockPos pos : wallBlocks) {
-						collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
-					}
+				for (BlockPos pos : snoozleWallBlocks.get(i)) {
+					collector.submitFilledBox(pos, SNOOZLE_WALL_COLOR, 0.4f, false);
 				}
 			}
 		}
