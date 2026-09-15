@@ -30,6 +30,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
@@ -132,9 +133,9 @@ public class SearchOverManager {
 
 		if (!Debug.debugEnabled()) return;
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("debug").then(literal("reloadSearchOverManager").executes(ctx -> {
-			ctx.getSource().sendFeedback(Constants.PREFIX.get().append("§bReloading Search Overlay Manager items data"));
+			ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.literal("Reloading Search Overlay Manager items data").withColor(TextColor.AQUA)));
 			SearchOverManager.loadItems();
-			ctx.getSource().sendFeedback(Constants.PREFIX.get().append("§bReloaded Search Overlay Manager items data"));
+			ctx.getSource().sendFeedback(Constants.PREFIX.get().append(Component.literal("Reloaded Search Overlay Manager items data").withColor(TextColor.AQUA)));
 			return Command.SINGLE_SUCCESS;
 		}))));
 	}
