@@ -14,8 +14,8 @@ import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.SkyBlockTooltipStyles;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 
@@ -34,7 +34,7 @@ public class EstimatedItemValueTooltip extends SimpleTooltipAdder {
 		NetworthResult result = NetworthCalculator.getItemNetworth(stack, count);
 
 		if (result.price() > 0) {
-			lines.add(GridComponent.of(
+			lines.add(SkyBlockTooltipStyles.applyCoinStyle(
 					Component.literal("Est. Item Value:").withStyle(ChatFormatting.GOLD),
 					ItemTooltip.getCoinsMessage(result.price(), count, true)));
 		}
