@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
@@ -76,50 +79,53 @@ public class Boulder extends DungeonPuzzle {
 			}
 		}
 
-		// Generate initial game states for the A* solver
-		List<BoulderSolver.GameState> initialStates = getInitialStates(board);
+		CompletableFuture.supplyAsync(() -> {
+			// Generate initial game states for the A* solver
+			List<BoulderSolver.GameState> initialStates = getInitialStates(board);
 
-		// Solve the puzzle using the A* algorithm
-		List<int[]> solution = BoulderSolver.aStarSolve(initialStates);
+			// Solve the puzzle using the A* algorithm
+			return BoulderSolver.aStarSolve(initialStates);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(solution -> {
+			if (solution != null) {
+				linePoints = new Vec3[solution.size()];
+				int index = 0;
+				// Convert solution coordinates to Vec3d points for rendering
+				for (int[] coord : solution) {
+					int x = coord[0];
+					int y = coord[1];
+					// Convert relative coordinates to actual coordinates
+					linePoints[index++] = Vec3.atCenterOf(room.relativeToActual(board.getObject3DPosition(x, y)));
+				}
 
-		if (solution != null) {
-			linePoints = new Vec3[solution.size()];
-			int index = 0;
-			// Convert solution coordinates to Vec3d points for rendering
-			for (int[] coord : solution) {
-				int x = coord[0];
-				int y = coord[1];
-				// Convert relative coordinates to actual coordinates
-				linePoints[index++] = Vec3.atCenterOf(room.relativeToActual(board.getObject3DPosition(x, y)));
-			}
-
-			BlockPos button = null;
-			if (linePoints != null && linePoints.length > 0) {
-				// Check for buttons along the path of the solution
-				for (int i = 0; i < linePoints.length - 1; i++) {
-					Vec3 point1 = linePoints[i];
-					Vec3 point2 = linePoints[i + 1];
-					button = checkForButtonBlocksOnLine(client.level, point1, point2);
-					if (button != null) {
-						// If a button is found, calculate its bounding box
-						boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
-						break;
+				BlockPos button = null;
+				if (linePoints != null && linePoints.length > 0) {
+					// Check for buttons along the path of the solution
+					for (int i = 0; i < linePoints.length - 1; i++) {
+						Vec3 point1 = linePoints[i];
+						Vec3 point2 = linePoints[i + 1];
+						button = checkForButtonBlocksOnLine(client.level, point1, point2);
+						if (button != null) {
+							// If a button is found, calculate its bounding box
+							boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
+							break;
+						}
+					}
+					if (button == null) {
+						// If no button is found along the path the puzzle is solved; reset the puzzle
+						reset();
 					}
 				}
-				if (button == null) {
-					// If no button is found along the path the puzzle is solved; reset the puzzle
-					reset();
-				}
+			} else {
+				// If no solution is found, display a title message and reset the puzzle
+				Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", ChatFormatting.GREEN);
+				TitleContainer.addTitleAndPlaySound(title, 15);
+				reset();
 			}
-		} else {
-			// If no solution is found, display a title message and reset the puzzle
-			Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", ChatFormatting.GREEN);
-			TitleContainer.addTitleAndPlaySound(title, 15);
-			reset();
-		}
+		}, client);
 	}
 
-	private static List<BoulderSolver.GameState> getInitialStates(BoulderBoard board) {
+	@VisibleForTesting
+	static List<BoulderSolver.GameState> getInitialStates(BoulderBoard board) {
 		char[][] boardArray = board.getBoardCharArray();
 		return List.of(
 				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0, 0),
