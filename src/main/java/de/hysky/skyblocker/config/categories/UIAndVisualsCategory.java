@@ -181,6 +181,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToLoadout"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToLoadout.@Tooltip"))
+								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.openEquipmentToLoadoutPage,
+										() -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToLoadoutPage,
+										newValue -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToLoadoutPage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				//Chest Value FIXME change dropdown to color controller

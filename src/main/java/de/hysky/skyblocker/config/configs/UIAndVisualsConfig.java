@@ -101,6 +101,7 @@ public class UIAndVisualsConfig {
 		// TODO: Move showEquipmentInInventory to here.
 
 		public boolean openEquipmentToStatsPage = false;
+		public boolean openEquipmentToLoadoutPage = false;
 	}
 
 	public static class ChestValue {
