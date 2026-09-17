@@ -1515,8 +1515,6 @@
   "skyblocker.config.uiAndVisuals.skyblockInventoryScreen": "SkyBlock Inventory Screen",
 	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory": "Show Equipment in Inventory",
 	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip": "This display is a cache and is not updated in real time.",
-	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.enableEquipmentCommand": "Enable Inventory Equipment Command",
-	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.enableEquipmentCommand.@Tooltip": "When enabled, clicking on the equipment in the inventory will run a command.",
 	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.inventoryEquipmentCommand": "Inventory Equipment Command",
 	"skyblocker.config.uiAndVisuals.skyblockInventoryScreen.inventoryEquipmentCommand.@Tooltip": "The command to run when clicking on the equipment in the inventory.",
 
