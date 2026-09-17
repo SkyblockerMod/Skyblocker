@@ -10,6 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -34,6 +35,11 @@ public class Boulder extends DungeonPuzzle {
 	private static final float[] RED_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.RED);
 	private static final float[] ORANGE_COLOR_COMPONENTS = ColorUtils.getFloatComponents(DyeColor.ORANGE);
 	protected static final int BASE_Y = 65;
+	@SuppressWarnings("unused")
+	public static final BlockPos CHEST_POS = new BlockPos(15, BASE_Y, 29); // Kept for documentation purposes
+	public static final BlockPos START = new BlockPos(25, BASE_Y, 25);
+	@SuppressWarnings("unused")
+	public static final BlockPos END = new BlockPos(5, BASE_Y, 8); // Kept for documentation purposes
 	static Vec3 @Nullable [] linePoints;
 	static @Nullable AABB boundingBox;
 
@@ -56,26 +62,15 @@ public class Boulder extends DungeonPuzzle {
 			return;
 		}
 
-		@SuppressWarnings("unused") // Kept for documentation purposes
-		BlockPos chestPos = new BlockPos(15, BASE_Y, 29);
-		BlockPos start = new BlockPos(25, BASE_Y, 25);
-		BlockPos end = new BlockPos(5, BASE_Y, 8);
 		// Create a BoulderBoard representing the puzzle's grid
 		BoulderBoard board = new BoulderBoard(7, 7);
 
 		// Populate the BoulderBoard grid with BoulderObjects based on block types in the room
-		int column = 0;
-		for (int z = start.getZ(); z > end.getZ(); z--) {
-			int row = 0;
-			for (int x = start.getX(); x > end.getX(); x--) {
-				if (Math.abs(start.getX() - x) % 3 == 1 && Math.abs(start.getZ() - z) % 3 == 1) {
-					String blockType = getBlockType(client.level, room, x, BASE_Y, z);
-					board.placeObject(column, row, new BoulderObject(x, BASE_Y, z, blockType));
-					row++;
-				}
-			}
-			if (row == board.getWidth()) {
-				column++;
+		for (int row = 0; row < board.getRows(); row++) {
+			for (int col = 0; col < board.getCols(); col++) {
+				board.placeObject(row, col,
+						getBlockType(client.level, room, gridToRelative(row, col))
+				);
 			}
 		}
 
@@ -86,71 +81,73 @@ public class Boulder extends DungeonPuzzle {
 			// Solve the puzzle using the A* algorithm
 			return BoulderSolver.aStarSolve(initialStates);
 		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(solution -> {
-			if (solution != null) {
-				linePoints = new Vec3[solution.size()];
-				int index = 0;
-				// Convert solution coordinates to Vec3d points for rendering
-				for (int[] coord : solution) {
-					int x = coord[0];
-					int y = coord[1];
-					// Convert relative coordinates to actual coordinates
-					linePoints[index++] = Vec3.atCenterOf(room.relativeToActual(board.getObject3DPosition(x, y)));
-				}
-
-				BlockPos button = null;
-				if (linePoints != null && linePoints.length > 0) {
-					// Check for buttons along the path of the solution
-					for (int i = 0; i < linePoints.length - 1; i++) {
-						Vec3 point1 = linePoints[i];
-						Vec3 point2 = linePoints[i + 1];
-						button = checkForButtonBlocksOnLine(client.level, point1, point2);
-						if (button != null) {
-							// If a button is found, calculate its bounding box
-							boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
-							break;
-						}
-					}
-					if (button == null) {
-						// If no button is found along the path the puzzle is solved; reset the puzzle
-						reset();
-					}
-				}
-			} else {
+			if (solution == null) {
 				// If no solution is found, display a title message and reset the puzzle
 				Title title = new Title("skyblocker.dungeons.puzzle.boulder.noSolution", ChatFormatting.GREEN);
 				TitleContainer.addTitleAndPlaySound(title, 15);
 				reset();
+				return;
+			}
+
+			linePoints = new Vec3[solution.size()];
+			int index = 0;
+			// Convert solution coordinates to Vec3d points for rendering
+			for (int[] coord : solution) {
+				int x = coord[0];
+				int y = coord[1];
+				// Convert relative coordinates to actual coordinates
+				linePoints[index++] = Vec3.atCenterOf(room.relativeToActual(gridToRelative(x, y).relative(Direction.Axis.Y, -1)));
+			}
+
+			if (linePoints == null || linePoints.length == 0) return;
+			// Check for buttons along the path of the solution
+			BlockPos button = null;
+			for (int i = 0; i < linePoints.length - 1; i++) {
+				Vec3 point1 = linePoints[i];
+				Vec3 point2 = linePoints[i + 1];
+				button = checkForButtonBlocksOnLine(client.level, point1, point2);
+				if (button != null) {
+					// If a button is found, calculate its bounding box
+					boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
+					break;
+				}
+			}
+			if (button == null) {
+				// If no button is found along the path the puzzle is solved; reset the puzzle
+				reset();
 			}
 		}, client);
+	}
+
+	static BlockPos gridToRelative(int row, int col) {
+		return START.mutable().move(-1, 0, -1).move(-3 * col, 0, -3 * row);
 	}
 
 	@VisibleForTesting
 	static List<BoulderSolver.GameState> getInitialStates(BoulderBoard board) {
 		char[][] boardArray = board.getBoardCharArray();
 		return List.of(
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 0, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 1, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 2, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 3, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 4, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 5, 0),
-				new BoulderSolver.GameState(boardArray, board.getHeight() - 1, 6, 0)
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 0, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 1, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 2, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 3, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 4, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 5, 0),
+				new BoulderSolver.GameState(boardArray, board.getRows() - 1, 6, 0)
 		);
 	}
 
 	/**
 	 * Retrieves the type of block at the specified position in the world.
-	 * If the block is Birch or Jungle plank, it will return "B"; otherwise, it will return ".".
+	 * If the block is Birch or Jungle plank, it will return 'B'; otherwise, it will return '.'.
 	 *
 	 * @param world The client world.
-	 * @param x     The x-coordinate of the block.
-	 * @param y     The y-coordinate of the block.
-	 * @param z     The z-coordinate of the block.
+	 * @param pos   The position of the block.
 	 * @return The type of block at the specified position.
 	 */
-	public static String getBlockType(ClientLevel world, Room room, int x, int y, int z) {
-		Block block = world.getBlockState(room.relativeToActual(new BlockPos(x, y, z))).getBlock();
-		return (block == Blocks.BIRCH_PLANKS || block == Blocks.JUNGLE_PLANKS) ? "B" : ".";
+	public static char getBlockType(ClientLevel world, Room room, BlockPos pos) {
+		Block block = world.getBlockState(room.relativeToActual(pos)).getBlock();
+		return (block == Blocks.BIRCH_PLANKS || block == Blocks.JUNGLE_PLANKS) ? 'B' : '.';
 	}
 
 	/**

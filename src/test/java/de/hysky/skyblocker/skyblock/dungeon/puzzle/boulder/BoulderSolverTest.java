@@ -17,7 +17,7 @@ public class BoulderSolverTest {
 		BoulderBoard board = new BoulderBoard(7, 7);
 		for (int i = 0; i < BOARD_1.length; i++) {
 			for (int j = 0; j < BOARD_1[i].length; j++) {
-				board.placeObject(i, j, new BoulderObject(i, Boulder.BASE_Y, j, String.valueOf(BOARD_1[i][j])));
+				board.placeObject(i, j, BOARD_1[i][j]);
 			}
 		}
 		Assertions.assertNotNull(BoulderSolver.aStarSolve(Boulder.getInitialStates(board)));
