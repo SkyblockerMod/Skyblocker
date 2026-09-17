@@ -22,7 +22,7 @@ public final class SkyBlockTooltipStyles {
 	public static final Identifier ADMIN = Identifier.fromNamespaceAndPath(Utils.HYPIXEL_SKYBLOCK_NAMESPACE, "admin");
 
 	public static Component applyCoinStyle(Component label, Component value) {
-		if (SkyblockerConfigManager.get().general.itemTooltip.oldNeuItemValueStyle) {
+		if (SkyblockerConfigManager.get().general.itemTooltip.alternateItemValueStyle) {
 			MutableComponent legacyLabel = Component.literal(label.getString()).withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 			MutableComponent legacyValue = Component.literal(value.getString()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
 			return Component.empty().append(legacyLabel).append(" ").append(legacyValue);

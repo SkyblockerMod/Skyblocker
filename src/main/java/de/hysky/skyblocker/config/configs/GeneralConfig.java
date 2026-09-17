@@ -102,7 +102,7 @@ public class GeneralConfig {
 	}
 
 	public static class ItemTooltip {
-		public boolean oldNeuItemValueStyle = false;
+		public boolean alternateItemValueStyle = false;
 
 		public boolean enableNPCPrice = true;
 

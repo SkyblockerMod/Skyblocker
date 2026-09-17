@@ -635,6 +635,8 @@
   "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Fancy",
 
   "skyblocker.config.general.itemTooltip": "Item Tooltip",
+  "skyblocker.config.general.itemTooltip.alternateItemValueStyle": "Use Alternate Coin Tooltip Style",
+  "skyblocker.config.general.itemTooltip.alternateItemValueStyle.@Tooltip": "Uses an alternate style for coin value tooltip addons.",
   "skyblocker.config.general.itemTooltip.avg": "Average Type",
   "skyblocker.config.general.itemTooltip.avg.@Tooltip": "You can choose how many days of average price to be",
   "skyblocker.config.general.itemTooltip.avg.BOTH": "Both",
@@ -673,8 +675,6 @@
   "skyblocker.config.general.itemTooltip.enablePrice.@Tooltip": "Price data is loaded via API. If the network fails to load data, please try manually refreshing the data using /skyblocker refreshPrices, or check if the network can access https://hysky.de/ and https://api.azureaaron.net/.",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress": "Enable Stacking Enchant Progress",
   "skyblocker.config.general.itemTooltip.enableStackingEnchantProgress.@Tooltip": "Displays the progress to the next level of a stacking enchantment if it hasn't been maxed.",
-  "skyblocker.config.general.itemTooltip.oldNeuItemValueStyle": "Use Alternate Coin Tooltip Style",
-  "skyblocker.config.general.itemTooltip.oldNeuItemValueStyle.@Tooltip": "Uses an alternate style for coin value tooltip addons.",
   "skyblocker.config.general.itemTooltip.showEssenceCost": "Show Essence Cost",
 
   "skyblocker.config.general.quiverWarning": "Quiver Warning",
