@@ -1,7 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.boulder;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Gatherers;
 
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
@@ -101,21 +104,13 @@ public class Boulder extends DungeonPuzzle {
 
 			if (linePoints == null || linePoints.length == 0) return;
 			// Check for buttons along the path of the solution
-			BlockPos button = null;
-			for (int i = 0; i < linePoints.length - 1; i++) {
-				Vec3 point1 = linePoints[i];
-				Vec3 point2 = linePoints[i + 1];
-				button = checkForButtonBlocksOnLine(client.level, point1, point2);
-				if (button != null) {
-					// If a button is found, calculate its bounding box
-					boundingBox = RenderHelper.getBlockBoundingBox(client.level, button);
-					break;
-				}
-			}
-			if (button == null) {
-				// If no button is found along the path the puzzle is solved; reset the puzzle
-				reset();
-			}
+			Arrays.stream(linePoints)
+					.gather(Gatherers.windowSliding(2))
+					.map(pair -> checkForButtonBlocksOnLine(client.level, pair.getFirst(), pair.getLast()))
+					.filter(Objects::nonNull)
+					.findFirst()
+					.map(button -> RenderHelper.getBlockBoundingBox(client.level, button))
+					.ifPresentOrElse(buttonBox -> boundingBox = buttonBox, this::reset); // If no button is found along the path the puzzle is solved; reset the puzzle
 		}, client);
 	}
 
