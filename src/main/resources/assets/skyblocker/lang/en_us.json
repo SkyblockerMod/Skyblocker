@@ -423,7 +423,7 @@
   "skyblocker.config.dungeons.secretWaypoints.enableSuperboomWaypoints": "Enable Superboom Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.enableWitherWaypoints": "Enable Wither Essence Waypoints",
   "skyblocker.config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak": "Hide Closest Secret on Double Sneak",
-  "skyblocker.config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak.@Tooltip": "Press your sneak key twice within 200ms to mark the nearest visible secret waypoint within 16 blocks as found and hide its associated waypoints.",
+  "skyblocker.config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak.@Tooltip": "Sneak twice within 200ms to hide nearest secret waypoint.",
   "skyblocker.config.dungeons.secretWaypoints.showSecretText": "Show Secret Text",
   "skyblocker.config.dungeons.secretWaypoints.waypointType": "Waypoint Type",
 
