@@ -640,7 +640,7 @@
     "skyblocker.museum.cannotResync": "당신의 박물관 기부 아이템의 재동기화에 실패하였습니다. 이 작업은 한 시간에 한번만 수행할 수 있습니다.",
     "skyblocker.museum.hud.craftIngredient": "다음으로 제작",
     "skyblocker.nightVision.success": "야간 투시의 강도를 %s로 조절합니다.",
-    "skyblocker.partyFinder.deList": "클리하여 목록에서 제거",
+    "skyblocker.partyFinder.deList": "클릭하여 목록에서 제거",
     "skyblocker.partyFinder.error.message": "오류가 발생하여 바닐라 파티 파인더로 이동함",
     "skyblocker.partyFinder.error.name": "파티 파인더 에러!",
     "skyblocker.partyFinder.loadingError": "이 화면이 5초 이상 보인다면, 무엇인가 잘못된 것입니다...",
@@ -678,5 +678,6 @@
     "skyblocker.config.dungeons.playerSecretsTracker": "플레이어 비밀 추적기",
     "skyblocker.config.dungeons.puzzle": "퍼즐 해결",
     "skyblocker.config.dungeons.puzzle.solveTeleportMaze": "순간이동 미로 퍼즐 해결",
-    "skyblocker.config.dungeons.secretSync": "비밀 동기화"
+    "skyblocker.config.dungeons.secretSync": "비밀 동기화",
+    "skyblocker.bars.config.vitality": "활력"
 }
