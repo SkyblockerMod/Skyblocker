@@ -123,11 +123,17 @@ public class DungeonScore {
 		score = calculateScore();
 		if (!sent270 && !sent300 && score >= 270 && score < 300) {
 			if (SCORE_CONFIG.get().enableDungeonScore270Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270"), true);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + ChatFormatting.stripFormatting(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Title) {
 				client.gui.hud.resetTitleTimes();
-				client.gui.hud.setTitle(Component.literal(SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270")).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)));
+
+				String title = SCORE_CONFIG.get().dungeonScore270Message.replaceAll("\\[score]", "270");
+
+				// Prefer color from config option if it has any, otherwise default to yellow
+				Component component = title.contains(String.valueOf(ChatFormatting.PREFIX_CODE)) ? Component.nullToEmpty(title) : Component.literal(title).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
+
+				client.gui.hud.setTitle(component);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore270Sound) {
 				client.player.playSound(SoundEvents.NOTE_BLOCK_PLING.value(), 100f, 0.1f);
@@ -145,11 +151,17 @@ public class DungeonScore {
 
 		if (!sent300 && score >= 300) {
 			if (SCORE_CONFIG.get().enableDungeonScore300Message) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300"), true);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + ChatFormatting.stripFormatting(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")), true);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Title) {
 				client.gui.hud.resetTitleTimes();
-				client.gui.hud.setTitle(Component.literal(SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300")).setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
+
+				String title = SCORE_CONFIG.get().dungeonScore300Message.replaceAll("\\[score]", "300");
+
+				// Prefer color from config option if it has any, otherwise default to green
+				Component component = title.contains(String.valueOf(ChatFormatting.PREFIX_CODE)) ? Component.nullToEmpty(title) : Component.literal(title).setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
+
+				client.gui.hud.setTitle(component);
 			}
 			if (SCORE_CONFIG.get().enableDungeonScore300Sound) {
 				client.player.playSound(SoundEvents.PLAYER_LEVELUP, 100f, 0.1f);
