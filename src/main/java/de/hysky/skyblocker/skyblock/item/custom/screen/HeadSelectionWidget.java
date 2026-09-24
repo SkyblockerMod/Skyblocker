@@ -44,7 +44,7 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 	private HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
-		super(x + 2, y + 2, width - 4, height - 4, Component.nullToEmpty("HeadSelection"), 20);
+		super(x + 2, y + 2, width - 4, height - 4, Component.nullToEmpty("HeadSelection"), 20, true);
 
 		for (CustomHelmetTextures.NamedTexture tex : CustomHelmetTextures.getTextures()) {
 			ItemStack head = ProfileViewerUtils.createSkull(tex.texture()).getStackOrThrow();

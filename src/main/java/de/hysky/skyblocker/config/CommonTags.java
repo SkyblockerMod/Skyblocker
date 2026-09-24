@@ -19,8 +19,9 @@ public final class CommonTags {
 	public static final Component ADDED_IN_6_8_2 = Component.literal("v6.8.2");
 	public static final Component ADDED_IN_6_9_0 = Component.literal("v6.9.0");
 	public static final Component ADDED_IN_6_9_1 = Component.literal("v6.9.1");
+	public static final Component ADDED_IN_6_10_0 = Component.literal("v6.10.0");
 
-	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_9_1;
+	public static final Component LATEST_VERSION_TAG = ADDED_IN_6_10_0;
 
 	/// Common tags for {@link net.minecraft.client.KeyMapping KeyMappings} to make them all easily searchable.
 	public static final Component[] KEY_MAPPING = { Component.translatable("skyblocker.config.tag.keyBind"), Component.translatable("skyblocker.config.tag.keyMapping") };

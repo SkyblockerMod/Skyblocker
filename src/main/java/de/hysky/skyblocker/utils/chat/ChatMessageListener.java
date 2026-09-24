@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.AdFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AoteFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AutopetFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ComboFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.CritterCaptureFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DeathFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DungeonBreakerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.HealFilter;
@@ -78,6 +79,7 @@ public interface ChatMessageListener {
 				new AdFilter(),
 				new AoteFilter(),
 				new ComboFilter(),
+				new CritterCaptureFilter(),
 				new HealFilter(),
 				new ImplosionFilter(),
 				new SpiritSceptreFilter(),

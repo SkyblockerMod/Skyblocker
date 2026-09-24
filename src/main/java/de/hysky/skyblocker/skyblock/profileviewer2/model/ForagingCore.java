@@ -10,7 +10,7 @@ public class ForagingCore {
 		public AbstractWhispersData desert = new AbstractWhispersData();
 
 		public static class AbstractWhispersData {
-			public int total;
+			public long total;
 			@SerializedName("1")
 			public WhispersSlot slot1 = new WhispersSlot();
 			@SerializedName("2")
@@ -22,10 +22,21 @@ public class ForagingCore {
 			@SerializedName("5")
 			public WhispersSlot slot5 = new WhispersSlot();
 
+			public WhispersSlot getSlot(int index) {
+				return switch (index) {
+					case 1 -> this.slot1;
+					case 2 -> this.slot2;
+					case 3 -> this.slot3;
+					case 4 -> this.slot4;
+					case 5 -> this.slot5;
+					default -> throw new IllegalArgumentException("Index must be between 1-5.");
+				};
+			}
+
 			public static class WhispersSlot {
-				public int spent;
+				public long spent;
 				@SerializedName("spent_non_refundable")
-				public int spentNonRefundable;
+				public long spentNonRefundable;
 			}
 		}
 	}

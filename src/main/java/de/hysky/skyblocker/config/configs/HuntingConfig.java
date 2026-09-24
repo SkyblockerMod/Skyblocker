@@ -25,7 +25,8 @@ public class HuntingConfig {
 
 	public FloorDrops floorDrops = new FloorDrops();
 
-	public LassoHud lassoHud = new LassoHud();
+	@Deprecated
+	public transient LassoHud lassoHud = new LassoHud();
 
 	public static class HuntingBox {
 		public boolean enabled = true;

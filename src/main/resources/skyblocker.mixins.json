@@ -71,7 +71,6 @@
 		"accessors.EntityRenderDispatcherAccessor",
 		"accessors.FontAccessor",
 		"accessors.FrustumInvoker",
-		"accessors.GpuDeviceAccessor",
 		"accessors.GuiGraphicsExtractorInvoker",
 		"accessors.HudAccessor",
 		"accessors.InventoryScreenInvoker",

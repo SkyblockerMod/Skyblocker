@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.KeyMappingOption;
@@ -30,7 +32,7 @@ import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.GyroOverlay;
-import de.hysky.skyblocker.skyblock.ItemPickupWidget;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import de.hysky.skyblocker.skyblock.fancybars.StatusBarsConfigScreen;
 import de.hysky.skyblocker.skyblock.item.ValueBreakdownPopup;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
@@ -39,7 +41,8 @@ import de.hysky.skyblocker.skyblock.radialMenu.RadialMenu;
 import de.hysky.skyblocker.skyblock.radialMenu.RadialMenuManager;
 import de.hysky.skyblocker.skyblock.tabhud.TabHud;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.Positioner;
 import de.hysky.skyblocker.skyblock.teleport.TeleportOverlay;
 import de.hysky.skyblocker.skyblock.waypoint.WaypointsScreen;
 import de.hysky.skyblocker.utils.Location;
@@ -378,7 +381,8 @@ public class UIAndVisualsCategory {
 						.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudEnabled"))
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableFancyTab.@Tooltip"))
 								.binding(defaults.uiAndVisuals.tabHud.tabHudEnabled,
 										() -> config.uiAndVisuals.tabHud.tabHudEnabled,
 										newValue -> config.uiAndVisuals.tabHud.tabHudEnabled = newValue)
@@ -387,9 +391,9 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tooltip"))
-								.tags(Component.literal("gui"))
+								.tags(ArrayUtils.addAll(WidgetManager.WIDGET_INSTANCES.values().stream().map(w -> w.getInformation().displayName()).toArray(Component[]::new), Component.translatable("skyblocker.config.uiAndVisuals.tabHud.configScreen.@Tag"), CommonTags.ADDED_IN_6_10_0))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(WidgetsConfigurationScreen::openWidgetsConfigScreen)
+								.action(_ -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen()))
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.tabHudScale"))
@@ -451,28 +455,11 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.tabHud.enableHudBackground = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.effectsFooter.@Tooltip"))
-								.controller(ConfigUtils.createBooleanController())
-								.binding(defaults.uiAndVisuals.tabHud.effectsFromFooter,
-										() -> config.uiAndVisuals.tabHud.effectsFromFooter,
-										newValue -> config.uiAndVisuals.tabHud.effectsFromFooter = newValue)
-								.build())
-						.option(Option.<ScreenBuilder.DefaultPositioner>createBuilder()
+						.option(Option.<Positioner>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.defaultPositioning"))
 								.binding(defaults.uiAndVisuals.tabHud.defaultPositioning,
 										() -> config.uiAndVisuals.tabHud.defaultPositioning,
 										newValue -> config.uiAndVisuals.tabHud.defaultPositioning = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build()
-						)
-						.option(Option.<UIAndVisualsConfig.NameSorting>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.nameSorting.@Tooltip"))
-								.binding(defaults.uiAndVisuals.tabHud.nameSorting,
-										() -> config.uiAndVisuals.tabHud.nameSorting,
-										newValue -> config.uiAndVisuals.tabHud.nameSorting = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.build())
@@ -554,7 +541,7 @@ public class UIAndVisualsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.openScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(_ -> Minecraft.getInstance().gui.setScreen(new StatusBarsConfigScreen()))
+								.action(_ -> Minecraft.getInstance().gui.setScreen(new StatusBarsConfigScreen(FancyStatusBars.INSTANCE)))
 								.build())
 						.option(Option.<UIAndVisualsConfig.IntelligenceDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay"))
@@ -822,6 +809,14 @@ public class UIAndVisualsCategory {
 								.binding(defaults.uiAndVisuals.searchOverlay.enableAuctionHouse,
 										() -> config.uiAndVisuals.searchOverlay.enableAuctionHouse,
 										newValue -> config.uiAndVisuals.searchOverlay.enableAuctionHouse = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse.@Tooltip"))
+								.binding(defaults.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										() -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse,
+										newValue -> config.uiAndVisuals.searchOverlay.enableIronmanAuctionHouse = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -1120,40 +1115,9 @@ public class UIAndVisualsCategory {
 						.collapsed(true)
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.hud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, ItemPickupWidget.getInstance().getInternalID(), screen)))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.sackNotifications.@Tooltip"))
-								.binding(defaults.uiAndVisuals.itemPickup.sackNotifications,
-										() -> config.uiAndVisuals.itemPickup.sackNotifications,
-										newValue -> config.uiAndVisuals.itemPickup.sackNotifications = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.showItemName.@Tooltip"))
-								.binding(defaults.uiAndVisuals.itemPickup.showItemName,
-										() -> config.uiAndVisuals.itemPickup.showItemName,
-										newValue -> config.uiAndVisuals.itemPickup.showItemName = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.lifeTime.@Tooltip"))
-								.binding(defaults.uiAndVisuals.itemPickup.lifeTime,
-										() -> config.uiAndVisuals.itemPickup.lifeTime,
-										newValue -> config.uiAndVisuals.itemPickup.lifeTime = newValue)
-								.controller(IntegerController.createBuilder().range(1, 10).slider(1).build())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.itemPickup.splitSack.@Tooltip"))
-								.binding(defaults.uiAndVisuals.itemPickup.splitNotifications,
-										() -> config.uiAndVisuals.itemPickup.splitNotifications,
-										newValue -> config.uiAndVisuals.itemPickup.splitNotifications = newValue)
-								.controller(ConfigUtils.createBooleanController())
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 								.build())
 						.build()
 				)

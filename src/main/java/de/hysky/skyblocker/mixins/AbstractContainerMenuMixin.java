@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.ItemPickupWidget;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
+import de.hysky.skyblocker.skyblock.storageoverlay.StorageOverlayScreen;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 
 @Mixin(AbstractContainerMenu.class)
@@ -23,18 +24,24 @@ public abstract class AbstractContainerMenuMixin {
 	@Shadow
 	public abstract void broadcastChanges();
 
+	@Inject(method = "setItem", at = @At("HEAD"))
+	private void beforeSetStackInSlot(int slot, int revision, ItemStack stack, CallbackInfo ci) {
+		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
+	}
+
 	@Inject(method = "setItem", at = @At("RETURN"))
 	private void onSetStackInSlot(int slot, int revision, ItemStack stack, CallbackInfo ci) {
 		ContainerSolverManager.markHighlightsDirty();
-		ItemPickupWidget.getInstance().onItemPickup(slot, stack);
 		if (InventorySearch.isSearching()) {
 			InventorySearch.refreshSlot(slot);
 		}
 
 		// instanceof check to prevent changing behavior from old ChestMenuMixin
 		if ((Object) this instanceof ChestMenu) {
-			if (Minecraft.getInstance().gui.screen() instanceof PartyFinderScreen screen) {
-				screen.markDirty();
+			switch (Minecraft.getInstance().gui.screen()) {
+				case PartyFinderScreen screen -> screen.markDirty();
+				case StorageOverlayScreen screen -> screen.refreshSearch();
+				case null, default -> {}
 			}
 			broadcastChanges();
 		}
@@ -46,8 +53,10 @@ public abstract class AbstractContainerMenuMixin {
 
 		// instanceof check to prevent changing behavior from old ChestMenuMixin
 		if ((Object) this instanceof ChestMenu) {
-			if (Minecraft.getInstance().gui.screen() instanceof PartyFinderScreen screen) {
-				screen.markDirty();
+			switch (Minecraft.getInstance().gui.screen()) {
+				case PartyFinderScreen screen -> screen.markDirty();
+				case StorageOverlayScreen screen -> screen.refreshSearch();
+				case null, default -> {}
 			}
 			broadcastChanges();
 		}

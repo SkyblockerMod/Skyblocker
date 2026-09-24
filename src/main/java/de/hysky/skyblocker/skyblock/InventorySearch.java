@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock;
 
+import java.util.BitSet;
 import java.util.Locale;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import it.unimi.dsi.fastutil.ints.Int2BooleanArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -31,7 +30,8 @@ import de.hysky.skyblocker.utils.ItemUtils;
 
 public class InventorySearch {
 	private static @Nullable AbstractContainerScreen<?> openedHandledScreen = null;
-	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
+	private static final BitSet slots = new BitSet(90);
+	private static final BitSet computedSlots = new BitSet(90);
 	private static String search = "";
 
 	@Init
@@ -78,24 +78,33 @@ public class InventorySearch {
 		return openedHandledScreen != null;
 	}
 
+	private static boolean computeSlot(Slot slot) {
+		if (!slot.hasItem()) return false;
+		if (slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search)) return true;
+		return ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null;
+	}
+
 	public static boolean slotMatches(Slot slot) {
-		return slotToMatch.computeIfAbsent(slot.index, _ -> slot.hasItem() &&
-				(slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
+		if (!computedSlots.get(slot.index)) {
+			computedSlots.set(slot.index);
+			slots.set(slot.index, computeSlot(slot));
+		}
+		return slots.get(slot.index);
 	}
 
 	private static void onSearchTyped(String text) {
-		slotToMatch.clear();
+		computedSlots.clear();
 		search = text.toLowerCase(Locale.ENGLISH);
 	}
 
 	private static void onScreenClosed(Screen screen) {
 		openedHandledScreen = null;
-		slotToMatch.clear();
+		computedSlots.clear();
 
 	}
 
 	public static void refreshSlot(int slotId) {
-		slotToMatch.remove(slotId);
+		computedSlots.clear(slotId);
 	}
 
 	/**

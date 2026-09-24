@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.Utils;
@@ -58,7 +58,7 @@ import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class Room implements Tickable, Renderable {
 	public static final Pattern SECRET_INDEX = Pattern.compile("^(\\d+)");
-	private static final Pattern SECRETS = Pattern.compile("§7(\\d{1,2})/(\\d{1,2}) Secrets");
+	private static final Pattern SECRETS = Pattern.compile("(\\d{1,2})/(\\d{1,2}) Secrets");
 	private static final String CHEST_ALREADY_OPENED = "This chest has already been searched!";
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
@@ -93,7 +93,7 @@ public class Room implements Tickable, Renderable {
 	 * Contains all blocks that have been checked to prevent checking the same block multiple times.
 	 * This is null after the room is matched.
 	 */
-	private @Nullable Set<BlockPos> checkedBlocks = new HashSet<>();
+	private @Nullable BlockPosSet checkedBlocks = new BlockPosSet();
 	/**
 	 * The task that is used to check blocks. This is used to ensure only one such task can run at a time.
 	 */
@@ -538,7 +538,7 @@ public class Room implements Tickable, Renderable {
 		IntSortedSet segmentsX = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::x).toArray()));
 		IntSortedSet segmentsY = IntSortedSets.unmodifiable(new IntRBTreeSet(segments.stream().mapToInt(Vector2ic::y).toArray()));
 		possibleRooms = getPossibleRooms(segmentsX, segmentsY);
-		checkedBlocks = new HashSet<>();
+		checkedBlocks = new BlockPosSet();
 		doubleCheckBlocks = 0;
 		secretWaypoints.clear();
 		name = null;
@@ -610,14 +610,14 @@ public class Room implements Tickable, Renderable {
 	/**
 	 * Marks {@link #lastChestSecret} as found if message equals {@link #CHEST_ALREADY_OPENED}.
 	 */
-	protected void onChatMessage(String message) {
+	protected void onChatMessage(String message, boolean overlay) {
 		if (CHEST_ALREADY_OPENED.equals(message) && lastChestSecretTime + 1000 > System.currentTimeMillis() && lastChestSecret != null) {
 			secretWaypoints.column(lastChestSecret).values().stream().filter(SecretWaypoint::needsInteraction).findAny()
 					.ifPresent(secretWaypoint -> {
 						markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected already searched chest interaction, setting secret #{} as found", secretWaypoint.secretIndex);
 					});
 		}
-		if (secretCountOutdated) updateSecretCount(message);
+		if (secretCountOutdated && overlay) updateSecretCount(message);
 	}
 
 	protected void updateSecretCount(String message) {
@@ -630,7 +630,7 @@ public class Room implements Tickable, Renderable {
 
 	/**
 	 * Marks the secret at the interaction position as found when the player interacts with a player head or lever.<br>
-	 * Chest secrets are only marked as found here if the block disappears (Mimic). Otherwise, chests are handled in {@link #onChestOpened(BlockPos)} and {@link #onChatMessage(String)}.
+	 * Chest secrets are only marked as found here if the block disappears (Mimic). Otherwise, chests are handled in {@link #onChestOpened(BlockPos)} and {@link #onChatMessage(String, boolean)}.
 	 *
 	 * @param world the world to get the block from
 	 * @param pos   the position of the block being interacted with

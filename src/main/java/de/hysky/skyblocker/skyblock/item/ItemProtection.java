@@ -157,7 +157,7 @@ public class ItemProtection {
 				|| screenTitle.startsWith("Weapon Rack")
 				|| screenTitle.startsWith("Armor Stand")
 				// Equipment & Stats
-				|| screenTitle.startsWith("Your Equipment and Stats")
+				|| screenTitle.contains("Stats & Equipment")
 				|| screenTitle.contains("Equipment Sets")
 				|| screenTitle.contains("Armor Sets")
 				|| screenTitle.contains("Loadouts")

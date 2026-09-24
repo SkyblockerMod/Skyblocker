@@ -4,18 +4,21 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.StringRepresentable;
 
 import de.hysky.skyblocker.skyblock.GyroOverlay;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.Positioner;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
@@ -91,7 +94,8 @@ public class UIAndVisualsConfig {
 
 	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
-	public ItemPickup itemPickup = new ItemPickup();
+	@Deprecated
+	public transient ItemPickup itemPickup = new ItemPickup();
 
 	public static class SkyBlockInventoryScreen {
 		// TODO: Move showEquipmentInInventory to here.
@@ -218,14 +222,16 @@ public class UIAndVisualsConfig {
 
 		public boolean enableHudBackground = true;
 
-		public boolean effectsFromFooter = false;
+		@Deprecated
+		public transient boolean effectsFromFooter = false;
 
-		public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+		public Positioner defaultPositioning = Positioner.CENTERED;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		public NameSorting nameSorting = NameSorting.DEFAULT;
+		@Deprecated
+		public transient NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
 	/**
@@ -261,10 +267,12 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	public enum NameSorting {
+	public enum NameSorting implements StringRepresentable {
 		DEFAULT((_, _) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+
+		public static final Codec<NameSorting> CODEC = StringRepresentable.fromEnum(NameSorting::values);
 
 		public final Comparator<PlayerInfo> comparator;
 
@@ -284,6 +292,11 @@ public class UIAndVisualsConfig {
 				case ALPHABETICAL -> "Alphabetical";
 				case SKYBLOCK_LEVEL -> "Skyblock Level";
 			};
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
 		}
 	}
 
@@ -414,6 +427,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableAuctionHouse = true;
 
+		public boolean enableIronmanAuctionHouse = false;
+
 		public boolean enableMuseum = true;
 
 		public boolean keepPreviousSearches = false;
@@ -501,14 +516,19 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class ItemPickup {
-		public boolean enabled = false;
+		@Deprecated
+		public transient boolean enabled = false;
 
-		public boolean sackNotifications = false;
+		@Deprecated
+		public transient boolean sackNotifications = false;
 
-		public boolean showItemName = true;
+		@Deprecated
+		public transient boolean showItemName = true;
 
-		public int lifeTime = 3;
+		@Deprecated
+		public transient int lifeTime = 3;
 
-		public boolean splitNotifications = false;
+		@Deprecated
+		public transient boolean splitNotifications = false;
 	}
 }

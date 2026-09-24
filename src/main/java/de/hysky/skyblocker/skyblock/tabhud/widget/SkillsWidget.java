@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +10,9 @@ import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 
@@ -34,8 +35,8 @@ public class SkillsWidget extends TabHudWidget {
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		for (Component line : lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
+		for (Component line : widget.lines()) {
 			Element progress;
 			Matcher m = SKILL_PATTERN.matcher(line.getString());
 			if (m.matches()) {
@@ -52,7 +53,14 @@ public class SkillsWidget extends TabHudWidget {
 			} else {
 				progress = new PlainTextElement(line);
 			}
-			this.addComponent(progress);
+			this.addElement(progress);
+		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		for (int i = 0; i < 3; i++) {
+			collector.addElement(Elements.progressComponent(Ico.LANTERN, Component.literal("Skill " + (i + 1)), i * 30, TextColor.GOLD.getValue()));
 		}
 	}
 }

@@ -3,7 +3,6 @@ package de.hysky.skyblocker.skyblock.profileviewer2.widgets;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.jspecify.annotations.Nullable;
 
@@ -21,15 +20,13 @@ import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.profileviewer2.LoadingInformation;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.EliteLeaderboards;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.Skill;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 
-public final class LevelBarWidget extends AbstractWidget {
+public sealed class LevelBarWidget extends AbstractWidget permits DungeonLevelBarWidget, SkillLevelBarWidget, SkyBlockLevelBarWidget {
 	private static final Identifier BACKGROUND = SkyblockerMod.id("profile_viewer2/basic_background");
 	private static final Identifier BAR_BACKGROUND = SkyblockerMod.id("bars/bar_back");
 	private static final Identifier BAR_FILL = SkyblockerMod.id("bars/bar_fill");
@@ -45,11 +42,7 @@ public final class LevelBarWidget extends AbstractWidget {
 	private final List<Component> tooltip;
 	private final @Nullable Identifier tooltipStyle;
 
-	public LevelBarWidget(int width) {
-		this(width, Ico.BARRIER.getStackOrThrow(), Component.literal("Placeholder"), 0.75d, Color.CYAN.getRGB(), List.of(), null);
-	}
-
-	private LevelBarWidget(int width, ItemStack icon, Component label, double barFillPercentage, int barFillColour, List<Component> tooltip, @Nullable Identifier tooltipStyle) {
+	protected LevelBarWidget(int width, ItemStack icon, Component label, double barFillPercentage, int barFillColour, List<Component> tooltip, @Nullable Identifier tooltipStyle) {
 		super(0, 0, width, HEIGHT, label);
 		this.icon = icon;
 		this.barFillPercentage = barFillPercentage;
@@ -61,10 +54,15 @@ public final class LevelBarWidget extends AbstractWidget {
 		this.active = false;
 	}
 
-	public static LevelBarWidget forSkill(int width, Skill skill, LoadingInformation info) {
-		LevelInfo levelInfo = info.member().playerData.getSkillLevel(skill, info);
-		Component label = Component.literal(skill.getFriendlyName() + " " + levelInfo.level());
-		double barFillPercentage = levelInfo.progress().isPresent() ? levelInfo.progress().get().percentageToNextLevel() : 1f;
+	public static LevelBarWidget placeholder(int width) {
+		return new LevelBarWidget(width, Ico.BARRIER.getStackOrThrow(), Component.literal("Placeholder"), 0.75d, Color.CYAN.getRGB(), List.of(), null);
+	}
+
+	protected static double getBarFillPercentage(LevelInfo levelInfo) {
+		return levelInfo.progress().isPresent() ? levelInfo.progress().get().percentageToNextLevel() : 1f;
+	}
+
+	protected static int getBarFillColour(LevelInfo levelInfo) {
 		Color barFillColour = Color.GREEN;
 
 		// If the level is capped set the bar colour to yellow or if its fully maxed set the colour to magenta
@@ -74,17 +72,13 @@ public final class LevelBarWidget extends AbstractWidget {
 			barFillColour = Color.MAGENTA;
 		}
 
-		String leaderboardId = skill.getFriendlyName().toLowerCase(Locale.ENGLISH);
-		List<Component> tooltip = buildTooltip(label, levelInfo, info.getLeaderboardPosition(leaderboardId));
-		Identifier tooltipStyle = getTooltipStyle(levelInfo, skill == Skill.RUNECRAFTING || skill == Skill.SOCIAL);
-
-		return new LevelBarWidget(width, skill.getIcon().getStackOrThrow(), label, barFillPercentage, barFillColour.getRGB(), tooltip, tooltipStyle);
+		return barFillColour.getRGB();
 	}
 
-	private static List<Component> buildTooltip(Component label, LevelInfo levelInfo, int leaderboardPosition) {
+	protected static List<Component> buildTooltip(Component label, LevelInfo levelInfo, int leaderboardPosition) {
 		List<Component> tooltip = new ArrayList<>();
 
-		tooltip.add(label.plainCopy().withStyle(ChatFormatting.GREEN));
+		tooltip.add(label.copy().withStyle(ChatFormatting.GREEN));
 		tooltip.add(Component.literal("XP: " + Formatters.INTEGER_NUMBERS.format(levelInfo.xp())).withStyle(ChatFormatting.GOLD));
 
 		// Add progress text if not fully maxed
@@ -101,15 +95,10 @@ public final class LevelBarWidget extends AbstractWidget {
 		return List.copyOf(tooltip);
 	}
 
-	private static @Nullable Identifier getTooltipStyle(LevelInfo levelInfo, boolean cosmetic) {
-		SkyblockItemRarity tooltipRarity = null;
-
-		// Cosmetic skills cap out at 25 so they need to use a different scale
-		if (cosmetic) {
-			tooltipRarity = SkyblockItemRarity.values()[levelInfo.level() / 5];
-		} else {
-			tooltipRarity = SkyblockItemRarity.values()[Math.min(levelInfo.level() / 10, 60)];
-		}
+	/// @param divisor how often the tooltip style should "level up"
+	protected static @Nullable Identifier getTooltipStyle(LevelInfo levelInfo, int divisor) {
+		int realDivisor = Math.max(1, divisor);
+		SkyblockItemRarity tooltipRarity = SkyblockItemRarity.values()[Math.min(levelInfo.level() / realDivisor, 6)];
 
 		return tooltipRarity.toTooltipStyle();
 	}

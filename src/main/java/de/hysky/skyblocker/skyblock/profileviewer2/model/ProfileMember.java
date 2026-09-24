@@ -50,6 +50,7 @@ public class ProfileMember {
 	@SerializedName("player_stats")
 	public PlayerStats playerStats = new PlayerStats();
 	public ProfileMemberProfile profile = new ProfileMemberProfile();
+	public Rift rift = new Rift();
 	public Safari safari = new Safari();
 	public Shards shards = new Shards();
 	@SerializedName("skill_tree")

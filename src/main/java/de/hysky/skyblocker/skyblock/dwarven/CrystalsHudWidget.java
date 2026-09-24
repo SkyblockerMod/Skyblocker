@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
 import java.util.List;
-import java.util.Set;
 
 import org.joml.Matrix3x2fStack;
 import org.joml.Vector2i;
@@ -27,7 +26,6 @@ public class CrystalsHudWidget extends HudWidget {
 	protected static final Identifier MAP_TEXTURE = SkyblockerMod.id("textures/gui/crystals_map.png");
 	private static final Identifier MAP_ICON = Identifier.withDefaultNamespace("textures/map/decorations/player.png");
 	private static final List<String> SMALL_LOCATIONS = List.of("Fairy Grotto", "King Yolkar", "Corleone", "Odawa", "Key Guardian", "Xalx", "Unknown");
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.CRYSTAL_HOLLOWS);
 
 	private static @Nullable CrystalsHudWidget instance = null;
 
@@ -38,7 +36,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	public CrystalsHudWidget() {
-		super("hud_crystals");
+		super(new Information("hud_crystals", Component.literal("Crystals HUD"), Location.CRYSTAL_HOLLOWS));
 		instance = this;
 	}
 
@@ -72,22 +70,6 @@ public class CrystalsHudWidget extends HudWidget {
 		return (clipped * 360f) / 16f;
 	}
 
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.CRYSTAL_HOLLOWS) && SkyblockerConfigManager.get().mining.crystalsHud.enabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.CRYSTAL_HOLLOWS)) return;
-		SkyblockerConfigManager.update(config -> config.mining.crystalsHud.enabled = enabled);
-	}
-
 	public void update() {
 		if (CLIENT.player == null || CLIENT.getConnection() == null || !SkyblockerConfigManager.get().mining.crystalsHud.enabled) return;
 
@@ -98,14 +80,13 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, float delta) {
 		float scale = SkyblockerConfigManager.get().mining.crystalsHud.mapScaling;
 
 		//make sure the map renders infront of some stuff - improve this in the future with better layering (1.20.5?)
 		//and set position and scale
 		Matrix3x2fStack matrices = graphics.pose();
 		matrices.pushMatrix();
-		matrices.translate(x, y);
 		matrices.scale(scale, scale);
 		w = h = (int) (62 * scale);
 
@@ -154,7 +135,7 @@ public class CrystalsHudWidget extends HudWidget {
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.nullToEmpty("Crystals HUD");
+	protected void extractWidgetRenderStateForConfig(GuiGraphicsExtractor graphics, float delta) {
+		extractWidgetRenderState(graphics, delta);
 	}
 }

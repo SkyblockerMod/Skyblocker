@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +12,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 /// This widget shows various dungeon info:
 /// deaths, healing, damage taken, and milestones.
@@ -26,14 +26,14 @@ public class DungeonDeathWidget extends TabHudWidget {
 	private static final Pattern DEATH_PATTERN = Pattern.compile("Team Deaths: (?<deathnum>\\d+).*");
 
 	public DungeonDeathWidget() {
-		super("Dungeon Deaths", TITLE, TextColor.RED.getValue());
+		super("Dungeon Deaths", TITLE, TextColor.RED.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		Matcher m = PlayerListManager.regexAt(25, DEATH_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 		} else {
 			ChatFormatting f = m.group("deathnum").equals("0") ? ChatFormatting.GREEN : ChatFormatting.RED;
 			this.addSimpleIcoText(Ico.SKULL, "Deaths: ", f, m.group("deathnum"));

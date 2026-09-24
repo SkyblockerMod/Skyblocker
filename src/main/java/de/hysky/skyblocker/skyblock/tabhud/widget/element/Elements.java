@@ -47,7 +47,7 @@ public class Elements {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Element progressComponent(FlexibleItemStack icon, Component description, @Range(from = 0, to = 100) float percent) {
+	public static Element progressComponent(@Nullable FlexibleItemStack icon, Component description, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case FANCY -> new ProgressElement(icon, description, percent);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(Component.literal(percent + "%").withColor(ColorUtils.percentToColor(percent))));
@@ -59,7 +59,7 @@ public class Elements {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Element progressComponent(FlexibleItemStack icon, Component description, @Range(from = 0, to = 100) float percent, int color) {
+	public static Element progressComponent(@Nullable FlexibleItemStack icon, Component description, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case FANCY -> new ProgressElement(icon, description, percent, color);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(Component.literal(percent + "%").withColor(color)));
@@ -71,7 +71,7 @@ public class Elements {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Element progressComponent(FlexibleItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent) {
+	public static Element progressComponent(@Nullable FlexibleItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case FANCY -> new ProgressElement(icon, description, bar, percent);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(ColorUtils.percentToColor(percent))));
@@ -83,7 +83,7 @@ public class Elements {
 	 *
 	 * @param percent the percentage from 0 to 100
 	 */
-	public static Element progressComponent(FlexibleItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent, int color) {
+	public static Element progressComponent(@Nullable FlexibleItemStack icon, Component description, Component bar, @Range(from = 0, to = 100) float percent, int color) {
 		return switch (SkyblockerConfigManager.get().uiAndVisuals.tabHud.style) {
 			case FANCY -> new ProgressElement(icon, description, bar, percent, color);
 			case null, default -> iconTextComponent(icon, appendColon(description).append(bar.copy().withColor(color)));

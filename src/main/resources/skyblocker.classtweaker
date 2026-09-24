@@ -67,6 +67,6 @@ accessible	class	net/minecraft/client/resources/server/ServerPackManager$ServerP
 accessible	field	net/minecraft/client/resources/server/ServerPackManager$ServerPackData	url	Ljava/net/URL;
 
 # Interface Injections
-inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity
-inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack
-inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/hysky/skyblocker/injected/RecipeBookHolder
+transitive-inject-interface	net/minecraft/world/entity/Entity	de/hysky/skyblocker/injected/SkyblockerEntity
+transitive-inject-interface	net/minecraft/world/item/ItemStack	de/hysky/skyblocker/injected/SkyblockerStack
+transitive-inject-interface	net/minecraft/client/gui/screens/inventory/InventoryScreen	de/hysky/skyblocker/injected/RecipeBookHolder

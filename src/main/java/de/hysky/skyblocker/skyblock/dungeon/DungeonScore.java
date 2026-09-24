@@ -184,7 +184,11 @@ public class DungeonScore {
 		dungeonStarted = true;
 		puzzleCount = getPuzzleCount();
 		startingTime = System.currentTimeMillis();
-		floorRequirement = FloorRequirement.valueOf(currentFloor);
+		try {
+			floorRequirement = FloorRequirement.valueOf(currentFloor);
+		} catch (IllegalArgumentException _) {
+			floorRequirement = FloorRequirement.NONE;
+		}
 		floorHasMimics = MIMIC_FLOORS_PATTERN.matcher(currentFloor).matches();
 		if (currentFloor.equals("E")) isCurrentFloorEntrance = true;
 	}
@@ -412,6 +416,7 @@ public class DungeonScore {
 			return;
 		}
 		LOGGER.error("[Skyblocker] Floor pattern doesn't match!");
+		currentFloor = FloorRequirement.NONE.name();
 	}
 
 	public static int getScore() {

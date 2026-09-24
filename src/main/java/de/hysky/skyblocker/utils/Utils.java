@@ -79,6 +79,7 @@ public class Utils {
 	private static final Pattern PURSE = Pattern.compile("(Purse|Piggy): (?<purse>[0-9,.]+)( \\((?<change>[+\\-][0-9,.]+)\\))?");
 	private static boolean isOnHypixel = false;
 	private static boolean isOnSkyblock = false;
+	private static boolean isGuest = false;
 
 	/**
 	 * The player's rank.
@@ -211,6 +212,10 @@ public class Utils {
 
 	public static boolean isOnBingo() {
 		return profile.endsWith("Ⓑ");
+	}
+
+	public static boolean isGuest() {
+		return isGuest;
 	}
 
 	/**
@@ -385,7 +390,7 @@ public class Utils {
 			if (world == null) return;
 
 			Scoreboard scoreboard = world.getScoreboard();
-			Objective objective = scoreboard.getDisplayObjective(DisplaySlot.BY_ID.apply(1));
+			Objective objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
 			ObjectArrayList<Component> textLines = new ObjectArrayList<>();
 			ObjectArrayList<String> stringLines = new ObjectArrayList<>();
 
@@ -422,6 +427,7 @@ public class Utils {
 				Utils.updatePurse();
 				SlayerManager.checkSlayerQuest();
 				updateArea();
+				isGuest = !STRING_SCOREBOARD.isEmpty() && STRING_SCOREBOARD.getFirst().trim().endsWith("GUEST");
 			}
 		} catch (NullPointerException _) {
 			//Do nothing

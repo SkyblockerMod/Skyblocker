@@ -24,11 +24,13 @@ public class ForagingConfig {
 
 		public int seaLumiesMinimumCount = 3;
 
-		public boolean enableTreeBreakProgress = true;
+		@Deprecated
+		public transient boolean enableTreeBreakProgress = true;
 
 		public boolean enableTunerSolver = true;
 
-		public boolean enableSweepDetailsWidget = true;
+		@Deprecated
+		public transient boolean enableSweepDetailsWidget;
 	}
 
 	public static class TorrhusCanyon {

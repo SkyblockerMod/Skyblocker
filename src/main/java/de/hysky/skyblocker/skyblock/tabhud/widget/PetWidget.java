@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
 import java.time.Duration;
-import java.util.List;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -16,6 +15,8 @@ import net.minecraft.network.chat.TextColor;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
@@ -45,13 +46,13 @@ public class PetWidget extends TabHudWidget {
 	}
 
 	@Override
-	protected void updateContent(List<Component> lines) {
-		for (Component line : lines) {
+	protected void updateContent(PlayerListManager.Widget widget) {
+		for (Component line : widget.lines()) {
 			String string = line.getString();
 			if (string.contains("[") && string.contains("]")) {
 				String[] split = string.split("]", 2);
 				if (split.length < 2) {
-					addComponent(new PlainTextElement(line));
+					addElement(new PlainTextElement(line));
 					continue;
 				}
 
@@ -60,9 +61,9 @@ public class PetWidget extends TabHudWidget {
 					this.icon = PET_ICON_CACHE.getUnchecked(petName);
 					this.prevString = petName;
 				}
-				addComponent(Elements.iconTextComponent(this.icon, line));
+				addElement(Elements.iconTextComponent(this.icon, line));
 
-			} else addComponent(new PlainTextElement(line));
+			} else addElement(new PlainTextElement(line));
 		}
 	}
 
@@ -75,5 +76,12 @@ public class PetWidget extends TabHudWidget {
 			String trim = string1.split("]")[1].trim();
 			return trim.equals(petName);
 		}).findFirst().orElse(Ico.BONE);
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(Ico.BONE, Component.literal("[Lvl ???] ").withStyle(ChatFormatting.GRAY).append(
+				Component.literal("Pet").withStyle(ChatFormatting.GREEN)
+		)));
 	}
 }
