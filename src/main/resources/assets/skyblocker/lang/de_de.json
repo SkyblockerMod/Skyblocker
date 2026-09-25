@@ -115,7 +115,6 @@
     "skyblocker.config.dungeons.livid.lividColorText": "Text für die richtige Livid Farbe",
     "skyblocker.config.dungeons.map": "Karte",
     "skyblocker.config.dungeons.map.mapScaling": "Kartenskalierung",
-    "skyblocker.config.dungeons.mimicMessage": "Mimic Nachricht",
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Fire Freeze Staff Timer (F3/M3)",
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer.@Tooltip": "Zeigt einen Timer an, wann im Bosskampf gegen F3/M3 ein Fire Freeze Staff eingesetzt werden sollte.",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay": "Guardian Gesundheits Anzeige (F3/M3)",
