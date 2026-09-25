@@ -87,7 +87,6 @@
     "skyblocker.museum.hud.filter.armor": "Rustning",
     "skyblocker.config.dungeons.map": "Kart",
     "skyblocker.config.dungeons.map.roomLabelType.ROOM_NAME": "Rom Navn",
-    "skyblocker.config.dungeons.princeMessage": "Prins Melding",
     "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Aktiver Prins Melding",
     "skyblocker.config.dungeons.secretWaypoints.enableBatWaypoints": "Aktiver Flaggermus Veipunkter",
     "skyblocker.config.dungeons.secretWaypoints.enableChestWaypoints": "Aktiver Kiste Veipunkter",

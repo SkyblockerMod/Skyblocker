@@ -176,8 +176,6 @@
     "skyblocker.config.title.settings": "설정",
     "skyblocker.config.dungeons.devices.solveArrowAlign": "Arrow Align 해결",
     "skyblocker.config.dungeons.devices.solveArrowAlign.@Tooltip": "각 화살의 남은 회전 횟수를 보여줍니다.",
-    "skyblocker.config.dungeons.princeMessage": "Prince 메시지",
-    "skyblocker.config.dungeons.mimicMessage": "Mimic 메시지",
     "skyblocker.config.dungeons.map": "지도",
     "skyblocker.config.dungeons.spiritLeapOverlay.leapMessage": "Leap 메시지",
     "skyblocker.bars.config.hide": "숨기기",
