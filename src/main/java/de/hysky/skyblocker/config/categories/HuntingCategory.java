@@ -7,6 +7,7 @@ import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.ColourController;
+import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -14,6 +15,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.HuntingConfig;
 import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.utils.Location;
 
@@ -141,6 +143,46 @@ public class HuntingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.hunting.safari"))
 						.collapsed(false)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.highlightSnoozleWalls"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.highlightSnoozleWalls.@Tooltip"))
+								.binding(defaults.hunting.safari.highlightSnoozleWalls,
+										() -> config.hunting.safari.highlightSnoozleWalls,
+										newValue -> config.hunting.safari.highlightSnoozleWalls = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.highlightHoneybugNests"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.highlightHoneybugNests.@Tooltip"))
+								.binding(defaults.hunting.safari.highlightHoneybugNests,
+										() -> config.hunting.safari.highlightHoneybugNests,
+										newValue -> config.hunting.safari.highlightHoneybugNests = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.enableBiomeDoneMessage"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.enableBiomeDoneMessage.@Tooltip"))
+								.binding(defaults.hunting.safari.enableBiomeDoneMessage,
+										() -> config.hunting.safari.enableBiomeDoneMessage,
+										newValue -> config.hunting.safari.enableBiomeDoneMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<HuntingConfig.Safari.BiomeDoneCriteria>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.biomeDoneCriteria"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.biomeDoneCriteria.@Tooltip"))
+								.binding(defaults.hunting.safari.biomeDoneCriteria,
+										() -> config.hunting.safari.biomeDoneCriteria,
+										newValue -> config.hunting.safari.biomeDoneCriteria = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<String>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.biomeDoneMessage"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.biomeDoneMessage.@Tooltip"))
+								.binding(defaults.hunting.safari.biomeDoneMessage,
+										() -> config.hunting.safari.biomeDoneMessage,
+										newValue -> config.hunting.safari.biomeDoneMessage = newValue)
+								.controller(StringController.createBuilder().build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms"))
 								.description(Component.translatable("skyblocker.config.hunting.safari.silencePhantoms.@Tooltip"))
