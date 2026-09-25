@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.KeyMapping;
 
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.shortcut.Shortcuts;
 
 @Mixin(KeyMapping.class)
@@ -20,5 +21,6 @@ public abstract class KeyMappingMixin {
 	@Inject(method = "set", at = @At("HEAD"))
 	private static void setKeyPressed(InputConstants.Key key, boolean pressed, CallbackInfo ci) {
 		Shortcuts.setKeyPressed(key, pressed);
+		DungeonManager.onKeyStateChanged(key, pressed);
 	}
 }
