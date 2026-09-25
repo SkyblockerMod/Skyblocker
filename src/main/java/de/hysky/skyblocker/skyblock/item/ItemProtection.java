@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -17,6 +18,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -39,6 +41,8 @@ import de.hysky.skyblocker.utils.Utils;
 
 public class ItemProtection {
 	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("item_protection");
+	private static final Component NO_UUID_TEXT = Component.translatable("skyblocker.itemProtection.noItemUuid").withColor(TextColor.RED);
+	private static final Component UNABLE_TO_PROTECT_TEXT = Component.translatable("skyblocker.itemProtection.unableToProtect").withColor(TextColor.RED);
 	public static KeyMapping itemProtection;
 
 	@Init
@@ -77,16 +81,16 @@ public class ItemProtection {
 			if (!itemUuid.isEmpty()) {
 				if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
 					SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
-					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())));
+					source.sendFeedback(Constants.PREFIX.get().append(getAddedMessage(heldItem)));
 				} else {
 					SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
 					source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.removed", heldItem.getHoverName())));
 				}
 			} else {
-				source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
+				source.sendFeedback(Constants.PREFIX.get().append(NO_UUID_TEXT));
 			}
 		} else {
-			source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")));
+			source.sendFeedback(Constants.PREFIX.get().append(UNABLE_TO_PROTECT_TEXT));
 		}
 
 		return Command.SINGLE_SUCCESS;
@@ -100,12 +104,12 @@ public class ItemProtection {
 			return;
 		}
 		if (!Utils.isOnSkyblock()) {
-			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.unableToProtect")));
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(UNABLE_TO_PROTECT_TEXT));
 			return;
 		}
 
 		if (heldItem.isEmpty()) {
-			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(NO_UUID_TEXT));
 			return;
 		}
 
@@ -115,7 +119,7 @@ public class ItemProtection {
 			if (!SkyblockerConfigManager.get().general.protectedItems.contains(itemUuid)) {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.add(itemUuid));
 				if (notifyConfiguration) {
-					playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName())));
+					playerEntity.sendSystemMessage(Constants.PREFIX.get().append(getAddedMessage(heldItem)));
 				}
 			} else {
 				SkyblockerConfigManager.update(config -> config.general.protectedItems.remove(itemUuid));
@@ -124,8 +128,12 @@ public class ItemProtection {
 				}
 			}
 		} else {
-			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.itemProtection.noItemUuid")));
+			playerEntity.sendSystemMessage(Constants.PREFIX.get().append(NO_UUID_TEXT));
 		}
+	}
+
+	private static Component getAddedMessage(ItemStack heldItem) {
+		return Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName()).append(Component.translatable("skyblocker.itemProtection.added.safer").withStyle(ChatFormatting.ITALIC));
 	}
 
 	public static void handleHotbarKeyPressed(LocalPlayer player) {
