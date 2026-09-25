@@ -270,7 +270,6 @@
     "skyblocker.config.crimsonIsle.kuudra.dangerWarning.@Tooltip": "Affiche une alerte lorsque vous êtes en danger à cause d'une attaque de tentacule ou de TNT. La couleur de l'alerte s'adapte au niveau de danger !",
     "skyblocker.config.dungeons.puzzle": "Aide Puzzle",
     "skyblocker.config.dungeons.professor.floor3GuardianHealthDisplay.@Tooltip": "Affiche la vie d'un Gardien en-dessous d'eux lors du combat de boss F3/M3.",
-    "skyblocker.config.dungeons.mimicMessage": "Message de Mimic",
     "skyblocker.config.dungeons.professor.fireFreezeStaffTimer": "Minuteur de sceptre de feu givrant (F3/M3)",
     "skyblocker.config.dungeons.professor": "Le professeur (F3/M3)",
     "skyblocker.config.dungeons.puzzle.solveBoulder": "Résoudre le puzzle des caisses",
@@ -687,7 +686,6 @@
     "skyblocker.config.dungeons.spiritLeapOverlay.showMap": "Afficher la carte du Donjon dans l'interface de la Spirit Leap",
     "skyblocker.config.dungeons.spiritLeapOverlay.scale": "Taille de l'interface de la Spirit Leap",
     "skyblocker.config.dungeons.highlightDoorKeys.@Tooltip": "Marque en cyan les clés pour les Wither Door et pour la Blood Door lorsqu'elles sont sur le sol.",
-    "skyblocker.config.dungeons.princeMessage": "Message du Prince",
     "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Activer message du Prince",
     "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints": "Activer les Marqueurs des tombes du Prince",
     "skyblocker.config.dungeons.bloodCampHelper": "Assistant de Camper dans la Salle de Sang",
@@ -1794,6 +1792,5 @@
     "skyblocker.config.uiAndVisuals.searchOverlay.commandAutocomplete": "Montrer des suggestions d'autocompletion pour les commandes de l'auction house et du bazaar.",
     "skyblocker.config.foraging.moongladeMarsh": "Moonglade Marsh",
     "skyblocker.config.foraging.torrhusCanyon": "Torrhus Canyon",
-    "skyblocker.config.dungeons.batMessage.sendBatMessage": "Activer le message des Chauve-souris",
-    "skyblocker.config.dungeons.batMessage": "Message des Chauve-souris"
+    "skyblocker.config.dungeons.batMessage.sendBatMessage": "Activer le message des Chauve-souris"
 }
