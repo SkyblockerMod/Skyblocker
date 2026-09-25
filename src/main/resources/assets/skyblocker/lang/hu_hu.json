@@ -1940,5 +1940,11 @@
     "skyblocker.config.hud.topBar.autoAnchor.@Tooltip": "Automatikusan megváltoztatja a widget kapocsát pozíciója alapján, hogy a képernyő méretezésével ne kerüljön a látható téren kívülre.",
     "skyblocker.config.hud.cropMilestones.showIcon": "Ikon Mutatása",
     "skyblocker.config.hud.cropMilestones.showProgressBar": "Haladás Sáv Mutatása",
-    "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "Elrejtett Szép TAB widgetek módosítása"
+    "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "Elrejtett Szép TAB widgetek módosítása",
+    "skyblocker.config.dungeons.dungeonMessages": "Dungeon Üzenetek",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType": "Átfedés Kiemelés Típusa",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.@Tooltip": "Kiemelés: Csak kiemelést mutat.\n\nKörvonalas Kiemelés: Körvonalat és kiemelést is mutat.\n\nKörvonalas: Csak körvonalat mutat.",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.HIGHLIGHT": "Kiemelés",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINE": "Körvonalas",
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINED_HIGHLIGHT": "Körvonalas Kiemelés"
 }
