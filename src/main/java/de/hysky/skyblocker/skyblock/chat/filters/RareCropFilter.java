@@ -46,8 +46,9 @@ public class RareCropFilter extends ChatPatternListener {
 			entry("Botroot", "BOTROOT"),
 			entry("Salted Sunflower Seeds", "SALTED_SUNFLOWER_SEEDS"),
 			entry("Crystalized Moonlight", "CRYSTALIZED_MOONLIGHT"),
-			entry("Floral Gelatin", "FLORAL_GELATIN")
-			// Wild Strawberry Dye and Ray of Helios are handled as rare drops instead
+			entry("Floral Gelatin", "FLORAL_GELATIN"),
+			entry("Wild Strawberry Dye", "DYE_WILD_STRAWBERRY"),
+			entry("Ray of Helios", "RAY_OF_HELIOS")
 	);
 	private static final Map<String, FlexibleItemStack> ICONS = new HashMap<>();
 
@@ -65,10 +66,7 @@ public class RareCropFilter extends ChatPatternListener {
 	@Override
 	public boolean onMatch(Component message, Matcher matcher) {
 		if (SkyblockerConfigManager.get().chat.hideRareCrops == ChatFilterResult.TOAST) {
-			ItemStack cropIcon = getCropIcon(matcher);
-			if (cropIcon != null || matcher.group("crop").equals("Seasoning")) {
-				Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), cropIcon));
-			}
+			Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), getCropIcon(matcher)));
 		}
 		return true;
 	}
