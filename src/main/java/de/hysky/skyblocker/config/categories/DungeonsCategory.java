@@ -830,9 +830,9 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
-				// Mimic Message
+				// Dungeon Messages
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.mimicMessage"))
+						.name(Component.translatable("skyblocker.config.dungeons.dungeonMessages"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.mimicMessage.sendMimicMessage"))
@@ -842,12 +842,6 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.mimicMessage.sendMimicMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.build())
-
-				// Prince Message
-				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.princeMessage"))
-						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage"))
 								.description(Component.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip"))
@@ -856,12 +850,6 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.build())
-
-				// Bat Message
-				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.batMessage"))
-						.collapsed(false)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage"))
 								.description(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip"))

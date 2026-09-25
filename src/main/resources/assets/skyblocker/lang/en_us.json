@@ -232,7 +232,6 @@
   "skyblocker.config.dungeons.allowDroppingProtectedItems": "Enabled Dropping Protected Items & on Locked Slots",
   "skyblocker.config.dungeons.allowDroppingProtectedItems.@Tooltip": "Allows the use of class abilities in Dungeons on a locked slot or while holding an item which has been protected using /skyblocker protectItem.",
 
-  "skyblocker.config.dungeons.batMessage": "Bat Message",
   "skyblocker.config.dungeons.batMessage.sendBatMessage": "Enable Bat Message",
   "skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip": "Sends a message in the chat upon killing a bat for other players' score calculation mods.",
 
@@ -280,6 +279,8 @@
   "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold": "Neutral Threshold",
   "skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold.@Tooltip": "The threshold below which the profit is considered neutral.",
   "skyblocker.config.dungeons.dungeonChestProfit.profitColor": "Profit Color",
+
+  "skyblocker.config.dungeons.dungeonMessages": "Dungeon Messages",
 
   "skyblocker.config.dungeons.dungeonScore": "Dungeon Score",
   "skyblocker.config.dungeons.dungeonScore.dungeonCryptsMessage": "Dungeon Crypts Message",
@@ -349,14 +350,12 @@
   "skyblocker.config.dungeons.map.showSelfHead": "Show Self Head",
   "skyblocker.config.dungeons.map.showSelfHead.@Tooltip": "This feature will not work if a user uses /nick, making it hard to determine their identity.",
 
-  "skyblocker.config.dungeons.mimicMessage": "Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
   "skyblocker.config.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
 
-  "skyblocker.config.dungeons.princeMessage": "Prince Message",
   "skyblocker.config.dungeons.princeMessage.sendPrinceMessage": "Enable Prince Message",
   "skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip": "Sends a message in the chat upon killing a Prince for other players' score calculation mods.",
 
