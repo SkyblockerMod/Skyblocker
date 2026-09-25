@@ -41,11 +41,11 @@ public class QuickNavButton extends AbstractWidget {
 	@SuppressWarnings("unchecked")
 	private static final @Nullable FallbackedTexture<Identifier>[] TAB_TEXTURES_SELECTED = new FallbackedTexture[14];
 
-	private final int index;
+	protected final int index;
 	private final boolean toggled;
 	private final String command;
 	private final ItemStack icon;
-	protected final Tooltip tooltip;
+	protected final @Nullable Tooltip tooltip;
 
 	private boolean temporaryToggled = false;
 	private long toggleTime;
@@ -91,7 +91,7 @@ public class QuickNavButton extends AbstractWidget {
 		this.command = command;
 		this.icon = icon;
 		this.toggleTime = 0;
-		if (tooltip == null || tooltip.isEmpty()) {
+		if (tooltip.isEmpty()) {
 			this.tooltip = null;
 			return;
 		}
@@ -105,7 +105,7 @@ public class QuickNavButton extends AbstractWidget {
 		setTooltipDelay(Duration.ofMillis(100));
 	}
 
-	private void updateCoordinates() {
+	protected void updateCoordinates() {
 		if (ScreenUtils.getUnderlyingScreen() instanceof AbstractContainerScreen<?> handledScreen) {
 			var accessibleScreen = (AbstractContainerScreenAccessor) handledScreen;
 			int x = accessibleScreen.getX();
@@ -113,9 +113,13 @@ public class QuickNavButton extends AbstractWidget {
 			int h = accessibleScreen.getImageHeight();
 			if (handledScreen instanceof ContainerScreen) h--; // they messed up the height on these.
 			int w = accessibleScreen.getImageWidth();
-			this.setX(x + this.index % 7 * 25 + w / 2 - 176 / 2);
-			this.setY(this.index < 7 ? y - 28 : y + h - 4);
+			setPositionFrom(x, y, w, h);
 		}
+	}
+
+	protected void setPositionFrom(int backgroundX, int backgroundY, int imageWidth, int imageHeight) {
+		this.setX(backgroundX + this.index % 7 * 25 + imageWidth / 2 - 176 / 2);
+		this.setY(this.index < 7 ? backgroundY - 28 : backgroundY + imageHeight - 4);
 	}
 
 	/**
@@ -127,7 +131,7 @@ public class QuickNavButton extends AbstractWidget {
 		if (!this.temporaryToggled) {
 			this.temporaryToggled = true;
 			this.toggleTime = System.currentTimeMillis();
-			if (command == null || command.isEmpty()) {
+			if (command.isEmpty() && Minecraft.getInstance().player != null) {
 				Minecraft.getInstance().player.sendSystemMessage(Constants.PREFIX.get().append(Component.literal("Quick Nav button index " + (index + 1) + " has no command!").withStyle(ChatFormatting.RED)));
 			} else {
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
