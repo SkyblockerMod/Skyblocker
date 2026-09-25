@@ -214,6 +214,14 @@ public class GeneralCategory {
 						.name(Component.translatable("skyblocker.config.general.itemTooltip"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.general.itemTooltip.alternateItemValueStyle"))
+								.description(Component.translatable("skyblocker.config.general.itemTooltip.alternateItemValueStyle.@Tooltip"))
+								.binding(defaults.general.itemTooltip.alternateItemValueStyle,
+										() -> config.general.itemTooltip.alternateItemValueStyle,
+										newValue -> config.general.itemTooltip.alternateItemValueStyle = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.general.itemTooltip.enableNPCPrice"))
 								.description(Component.translatable("skyblocker.config.general.itemTooltip.enablePrice.@Tooltip"))
 								.binding(defaults.general.itemTooltip.enableNPCPrice,

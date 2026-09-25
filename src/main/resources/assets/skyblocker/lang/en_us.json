@@ -635,6 +635,8 @@
   "skyblocker.config.general.itemProtection.slotLockStyle.style.FANCY": "Fancy",
 
   "skyblocker.config.general.itemTooltip": "Item Tooltip",
+  "skyblocker.config.general.itemTooltip.alternateItemValueStyle": "Use Alternate Coin Tooltip Style",
+  "skyblocker.config.general.itemTooltip.alternateItemValueStyle.@Tooltip": "Uses an alternate style for coin value tooltip addons.",
   "skyblocker.config.general.itemTooltip.avg": "Average Type",
   "skyblocker.config.general.itemTooltip.avg.@Tooltip": "You can choose how many days of average price to be",
   "skyblocker.config.general.itemTooltip.avg.BOTH": "Both",

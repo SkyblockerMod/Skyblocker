@@ -102,6 +102,8 @@ public class GeneralConfig {
 	}
 
 	public static class ItemTooltip {
+		public boolean alternateItemValueStyle = false;
+
 		public boolean enableNPCPrice = true;
 
 		public boolean enableGeorgePrice = true;
