@@ -498,5 +498,10 @@
     "skyblocker.config.dungeons.terminalHud.showDevice": "Mostrar dispositivo",
     "skyblocker.config.dungeons.terminalHud.showGate": "Mostrar puerta",
     "skyblocker.config.dungeons.terminalHud.showLevers": "Mostrar palancas",
-    "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Mostrar estado de la tarea"
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus": "Mostrar estado de la tarea",
+    "skyblocker.config.dungeons.dungeonMessages": "Mensajes de mazmorra",
+    "skyblocker.config.dungeons.terminalHud.showTerminalStatus.@Tooltip": "Si está desactivada, solo se mostrarán las tareas incompletas.",
+    "skyblocker.config.dungeons.terminals.blockIncorrectClicks": "Bloquear clics incorrectos",
+    "skyblocker.config.dungeons.terminals.solveColor": "Resuelve Seleccionar Coloreado",
+    "skyblocker.config.dungeons.terminals.solveOrder": "Resuelve el clic en orden"
 }
