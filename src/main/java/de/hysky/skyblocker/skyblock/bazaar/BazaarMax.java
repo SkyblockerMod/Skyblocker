@@ -8,11 +8,8 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.font.TextFieldHelper;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
@@ -28,29 +25,25 @@ public final class BazaarMax {
 	private BazaarMax() {}
 
 	public void checkMaxValue(@Nullable Slot focusedSlot) {
+		if (focusedSlot == null) return;
 		boolean hasBuyOrderQuantity = false;
 		boolean hasClickToSpecify = false;
 		Matcher maxQuantityMatcher = null;
 		ItemStack stack = focusedSlot.getItem();
 
-		List<Component> lines = stack.getTooltipLines(
-				Item.TooltipContext.of(client.level),
-				client.player,
-				TooltipFlag.NORMAL
-		);
+		List<String> lines = stack.skyblocker$getLoreStrings();
 
-		for (Component line : lines) {
-			String text = line.getString();
-			if (BUY_ORDER_QUANTITY.equals(text)) {
+		for (String line : lines) {
+			if (BUY_ORDER_QUANTITY.equals(line)) {
 				hasBuyOrderQuantity = true;
 				continue;
 			}
-			if (CLICK_TO_SPECIFY.equals(text)) {
+			if (CLICK_TO_SPECIFY.equals(line)) {
 				hasClickToSpecify = true;
 				continue;
 			}
 
-			Matcher matcher = MAX_QUANTITY_PATTERN.matcher(text);
+			Matcher matcher = MAX_QUANTITY_PATTERN.matcher(line);
 			if (matcher.matches()) maxQuantityMatcher = matcher;
 		}
 
@@ -65,14 +58,12 @@ public final class BazaarMax {
 
 	public void expandMax(TextFieldHelper signField, String currentLine) {
 		if (lastSeenMax < 0) return;
-		if (currentLine.endsWith("max ")) {
-			signField.removeCharsFromCursor(-4);
-		} else if (currentLine.endsWith("m ")) {
-			signField.removeCharsFromCursor(-2);
-		} else if (currentLine.endsWith("x ")) {
-			signField.removeCharsFromCursor(-2);
-		} else {
-			return;
+		switch (currentLine) {
+			case "max " -> signField.removeCharsFromCursor(-4);
+			case "m ", "x " -> signField.removeCharsFromCursor(-2);
+			default -> {
+				return;
+			}
 		}
 
 		signField.insertText(Integer.toString(lastSeenMax));
