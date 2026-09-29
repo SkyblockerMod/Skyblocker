@@ -904,5 +904,20 @@
     "key.skyblocker.loadout.11": "ロードアウト11",
     "key.skyblocker.loadout.12": "ロードアウト12",
     "skyblocker.bars.config.direction.LEFT_TO_RIGHT": "左から右へ",
-    "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "右から左へ"
+    "skyblocker.bars.config.direction.RIGHT_TO_LEFT": "右から左へ",
+    "skyblocker.museum.resyncFailure.apiDisabled": "ミュージアムAPIが有効になっていません",
+    "skyblocker.museum.resyncFailure.apiDisabled.@Tooltip": "SkyBlockの設定でミュージアムAPIを有効にして、数分後にもう一度お試しください！",
+    "skyblocker.museum.hud.filter.switch": "クリックしてフィルターを切り替えましょう！",
+    "skyblocker.museum.hud.sorter": "アイテムの並べ替え",
+    "skyblocker.museum.hud.sorter.craftCost": "クラフト費用",
+    "skyblocker.museum.hud.sorter.ratio": "コイン/XP比率",
+    "skyblocker.gardenPlots.spawn": "ガーデンスポーン地点へテレポート",
+    "skyblocker.gardenPlots.tp": "クリックしてテレポート！",
+    "skyblocker.gardenPlots.openDesk": "デスクを開く",
+    "skyblocker.gardenPlots.setSpawn": "ガーデンスポーンを設定",
+    "skyblocker.inventorySearch.clickHereToSearch": "検索するにはこちらをクリックしてください。",
+    "skyblocker.helpers.hoppitysHunt.shareEggPrompt": "クリックして、この卵の場所をチャットで共有しましょう！",
+    "skyblocker.helpers.hoppitysHunt.unableToShareEgg": "この卵は共有できません。",
+    "skyblocker.mayor.perkOverrides.update.failed": "パークのオーバーライドの更新に失敗しました。詳細はログを参照してください。",
+    "skyblocker.museum.hud.filter": "アイテムフィルター"
 }
