@@ -14,16 +14,19 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.AABB;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
@@ -33,7 +36,6 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class Trivia extends DungeonPuzzle {
-	@SuppressWarnings("unused")
 	private static final Trivia INSTANCE = new Trivia();
 
 	//FIXME I think its worth replacing this with something less fragile and is capable of handing multiple lines
@@ -44,6 +46,7 @@ public class Trivia extends DungeonPuzzle {
 	private static final BlockPos CHOICE_A = new BlockPos(20, 70, 6);
 	private static final BlockPos CHOICE_B = new BlockPos(15, 70, 9);
 	private static final BlockPos CHOICE_C = new BlockPos(10, 70, 6);
+	private static final BlockPos[] CHOICES = {CHOICE_A, CHOICE_B, CHOICE_C};
 	private static final float[] ANSWER_COLOR = new float[]{0, 1f, 0};
 	private static final Direction[] DIRECTIONS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 	private static final ArrayList<AABB> BOXES_TO_HIGHLIGHT = new ArrayList<>();
@@ -55,6 +58,14 @@ public class Trivia extends DungeonPuzzle {
 	public Trivia() {
 		super("trivia", "trivia-room");
 		ClientReceiveMessageEvents.ALLOW_GAME.register(this::onMessage);
+		UseBlockCallback.EVENT.register((_, _, _, blockHitResult) -> {
+			if (isWrongButtonClick(blockHitResult.getBlockPos())) {
+				if (Debug.debugEnabled()) LOGGER.info("[Skyblocker Trivia] Blocked a click on the wrong answer button");
+				Utils.sendBlockedClickMessage("skyblocker.dungeons.blockers.wrongAnswer");
+				return InteractionResult.FAIL;
+			}
+			return InteractionResult.PASS;
+		});
 	}
 
 
@@ -130,6 +141,34 @@ public class Trivia extends DungeonPuzzle {
 			case "ⓒ" -> CHOICE_C;
 			default -> null;
 		};
+	}
+
+	private static boolean isWrongButtonClick(BlockPos clickedPos) {
+		if (currentSolution.isEmpty()
+				|| !SkyblockerConfigManager.get().dungeons.puzzleSolvers.blockIncorrectClicks
+				|| !INSTANCE.shouldRun()) {
+			return false;
+		}
+		Room room = DungeonManager.getCurrentRoom();
+		if (room == null || !room.isMatched() || room.getDirection() == null) return false;
+		BlockPos correctPos = updateCorrectBlockPos();
+		if (correctPos == null) return false;
+
+		for (BlockPos choicePos : CHOICES) {
+			BlockPos actualPos = room.relativeToActual(choicePos);
+			//The answer buttons sit in the blocks surrounding the choice reference positions used for highlighting
+			if (clickedPos.equals(actualPos) || isAdjacent(clickedPos, actualPos)) {
+				return !choicePos.equals(correctPos);
+			}
+		}
+		return false;
+	}
+
+	private static boolean isAdjacent(BlockPos pos, BlockPos other) {
+		for (Direction direction : Direction.values()) {
+			if (pos.equals(other.relative(direction))) return true;
+		}
+		return false;
 	}
 
 	@Override

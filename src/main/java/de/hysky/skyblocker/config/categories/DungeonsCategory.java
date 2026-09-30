@@ -304,6 +304,22 @@ public class DungeonsCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.puzzle.creeperOnlyHittingBeams"))
+								.description(Component.translatable("skyblocker.config.dungeons.puzzle.creeperOnlyHittingBeams.@Tooltip"))
+								.binding(defaults.dungeons.puzzleSolvers.creeperOnlyHittingBeams,
+										() -> config.dungeons.puzzleSolvers.creeperOnlyHittingBeams,
+										newValue -> config.dungeons.puzzleSolvers.creeperOnlyHittingBeams = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.puzzle.creeperShowOneBeam"))
+								.description(Component.translatable("skyblocker.config.dungeons.puzzle.creeperShowOneBeam.@Tooltip"))
+								.binding(defaults.dungeons.puzzleSolvers.creeperShowOneBeam,
+										() -> config.dungeons.puzzleSolvers.creeperShowOneBeam,
+										newValue -> config.dungeons.puzzleSolvers.creeperShowOneBeam = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard"))
 								.description(Component.translatable("skyblocker.config.dungeons.puzzle.solveWaterboard.@Tooltip"))
 								.binding(defaults.dungeons.puzzleSolvers.waterboardOneFlow,
@@ -367,6 +383,14 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.puzzleSolvers.solveTeleportMaze,
 										() -> config.dungeons.puzzleSolvers.solveTeleportMaze,
 										newValue -> config.dungeons.puzzleSolvers.solveTeleportMaze = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.puzzle.blockIncorrectClicks"))
+								.description(Component.translatable("skyblocker.config.dungeons.puzzle.blockIncorrectClicks.@Tooltip"))
+								.binding(defaults.dungeons.puzzleSolvers.blockIncorrectClicks,
+										() -> config.dungeons.puzzleSolvers.blockIncorrectClicks,
+										newValue -> config.dungeons.puzzleSolvers.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
@@ -531,6 +555,14 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.devices.solveTargetPractice,
 										() -> config.dungeons.devices.solveTargetPractice,
 										newValue -> config.dungeons.devices.solveTargetPractice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.devices.blockIncorrectClicks"))
+								.description(Component.translatable("skyblocker.config.dungeons.devices.blockIncorrectClicks.@Tooltip"))
+								.binding(defaults.dungeons.devices.blockIncorrectClicks,
+										() -> config.dungeons.devices.blockIncorrectClicks,
+										newValue -> config.dungeons.devices.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

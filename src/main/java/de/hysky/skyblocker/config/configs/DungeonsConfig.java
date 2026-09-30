@@ -119,6 +119,10 @@ public class DungeonsConfig {
 
 		public boolean creeperSolver = true;
 
+		public boolean creeperOnlyHittingBeams = false;
+
+		public boolean creeperShowOneBeam = false;
+
 		@Deprecated
 		public transient boolean solveWaterboard = true;
 
@@ -139,6 +143,8 @@ public class DungeonsConfig {
 		public boolean solveTrivia = true;
 
 		public boolean solveTeleportMaze = true;
+
+		public boolean blockIncorrectClicks = false;
 	}
 
 	public static class TheProfessor {
@@ -183,6 +189,8 @@ public class DungeonsConfig {
 		public boolean solveArrowAlign = true;
 
 		public boolean solveTargetPractice = true;
+
+		public boolean blockIncorrectClicks = false;
 	}
 
 	public static class Goldor {
