@@ -3,24 +3,21 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.joml.Matrix4fStack;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.StagedVertexBuffer;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.FeatureRenderer;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
+import net.minecraft.client.renderer.oit.OitStage;
 
 import de.hysky.skyblocker.utils.render.InstancingParameters;
 
@@ -51,43 +48,37 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 		this.currentGroup = new PrimitiveFeatureRenderer.Group(context.stagedVertexBuffer(), !strictlyOrdered);
 		this.buildGroup(context, submits);
 		this.groups.add(this.currentGroup);
+		for (StagedVertexBuffer.Draw draw : this.currentGroup.draws) {
+			context.stagedVertexBuffer().requestIndexCount(draw);
+		}
 		this.currentGroup = null;
 	}
 
 	@Override
-	public final void executeGroup(FeatureFrameContext context, int groupIndex, List<Submit> submits, boolean strictlyOrdered) {
+	public final void executeGroup(FeatureFrameContext context, @Nullable OitStage oitStage, RenderPass renderPass, int groupIndex, List<Submit> submits, boolean strictlyOrdered) {
 		PrimitiveFeatureRenderer.Group group = this.groups.get(groupIndex);
 
+		// These custom primitives use the AFTER_TERRAIN, TEXTS and ALWAYS_ON_TOP phases.
+		// Render into the caller's active pass instead of opening an overlapping render pass.
 		applyViewOffsetZLayering();
-
-		RenderTarget mainTarget = Minecraft.getInstance().gameRenderer.mainRenderTarget();
-		GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy());
-
-		try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
-				() -> "Skyblocker Primitive Feature Renderer",
-				mainTarget.getColorTextureView(),
-				Optional.empty(),
-				mainTarget.useDepth ? mainTarget.getDepthTextureView() : null,
-						OptionalDouble.empty()
-				)) {
+		try {
+			GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy());
 			RenderSystem.bindDefaultUniforms(renderPass);
 			renderPass.setUniform("DynamicTransforms", dynamicTransforms);
-
 			for (int i = 0; i < group.draws.size(); i++) {
 				PreparedPrimitiveDraw primitiveDraw = group.drawPrimitives.get(i);
 				StagedVertexBuffer.ExecuteInfo info = context.stagedVertexBuffer().getExecuteInfo(group.draws.get(i));
-
-				if (info != null) {
-					executeDraw(renderPass, primitiveDraw, info);
-				}
+				if (info != null) executeDraw(renderPass, primitiveDraw, info);
 			}
+		} finally {
+			unapplyViewOffsetZLayering();
 		}
-
-		unapplyViewOffsetZLayering();
 	}
 
 	private static void executeDraw(RenderPass renderPass, PreparedPrimitiveDraw draw, StagedVertexBuffer.ExecuteInfo info) {
-		renderPass.setPipeline(draw.pipeline());
+		var pipeline = RenderSystem.getCompiledPipelineNullable(draw.pipeline());
+		if (pipeline == null) return; // Matches vanilla while resource-reload pipeline compilation is pending.
+		renderPass.setPipeline(pipeline);
 
 		InstancingParameters instancing = draw.instancing();
 
@@ -97,17 +88,17 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 
 		if (draw.textureSetup.texure0() != null) {
 			// Sampler0 is used for normal texture inputs in shaders
-			renderPass.bindTexture("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
+			renderPass.setUniform("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
 		}
 
 		if (draw.textureSetup.texure1() != null) {
 			// Sampler1 is used for alternate texture inputs in shaders
-			renderPass.bindTexture("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
+			renderPass.setUniform("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
 		}
 
 		if (draw.textureSetup.texure2() != null) {
 			// Sampler2 is used for lightmap texture inputs in shaders
-			renderPass.bindTexture("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
+			renderPass.setUniform("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
 		}
 
 		renderPass.setVertexBuffer(0, info.vertexBuffer().slice());

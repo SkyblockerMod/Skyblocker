@@ -27,6 +27,18 @@ repositories {
 		url = 'https://repo.maven.apache.org/maven2'
 	}
 
+	// Optional repositories for source-built dependencies while upstream 26.3 releases are pending.
+	['renderChestPortRepository', 'portDependencyRepository'].each { propertyName ->
+		def repository = providers.gradleProperty(propertyName)
+		if (repository.isPresent()) {
+			maven {
+				name = propertyName
+				url = uri(repository.get())
+				content { includeGroup 'net.azureaaron' }
+			}
+		}
+	}
+
 	// For ModMenu and EMI
 	exclusiveContent {
 		forRepository {
@@ -251,11 +263,11 @@ loom {
 
 	runs {
 		clientGameTest {
-			programArguments.add("--graphicsBackend=" + System.getenv().getOrDefault("GRAPHICS_BACKEND", "default"))
+			programArg("--graphicsBackend=" + System.getenv().getOrDefault("GRAPHICS_BACKEND", "default"))
 		}
 
 		configureEach {
-			preferGradleTask = true
+			ideConfigGenerated(true)
 		}
 	}
 }

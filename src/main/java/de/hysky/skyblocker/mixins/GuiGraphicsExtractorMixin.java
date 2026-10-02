@@ -30,7 +30,7 @@ public abstract class GuiGraphicsExtractorMixin {
 	}
 
 	@Inject(method = "tooltip", at = @At("HEAD"))
-	private void initializeGrids(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, CallbackInfo ci) {
+	private void initializeGrids(Font font, List<ClientTooltipComponent> lines, int xo, int yo, ClientTooltipPositioner positioner, @Nullable Identifier style, boolean headingGap, CallbackInfo ci) {
 		// null initially to not create instances needlessly, might be premature optimization but oh well
 		GridComponentManager manager = null;
 		for (ClientTooltipComponent line : lines) {

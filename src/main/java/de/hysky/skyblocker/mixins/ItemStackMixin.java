@@ -24,7 +24,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -76,7 +75,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 	}
 
 	@ModifyExpressionValue(method = "addToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
-	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local(name = "component") TooltipProvider component) {
+	private boolean skyblocker$hideVanillaEnchants(boolean shouldDisplay, @Local(name = "component") Object component) {
 		return shouldDisplay && !(Utils.isOnSkyblock() && component instanceof ItemEnchantments);
 	}
 

@@ -3,7 +3,7 @@ package de.hysky.skyblocker.utils.render;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 
-import com.mojang.blaze3d.GpuFormat;
+import com.mojang.renderpearl.api.GpuFormat;
 
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.ARGB;

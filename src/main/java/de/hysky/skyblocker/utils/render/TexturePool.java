@@ -3,10 +3,10 @@ package de.hysky.skyblocker.utils.render;
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
