@@ -66,7 +66,7 @@ public class RareCropFilter extends ChatPatternListener {
 	@Override
 	public boolean onMatch(Component message, Matcher matcher) {
 		if (SkyblockerConfigManager.get().chat.hideRareCrops == ChatFilterResult.TOAST) {
-			Minecraft.getInstance().gui.toastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), getCropIcon(matcher)));
+			Minecraft.getInstance().getToastManager().addToast(new BasicToast(message, (long) (SkyblockerConfigManager.get().chat.toastDisplayDuration * 1000L), getCropIcon(matcher)));
 		}
 		return true;
 	}
