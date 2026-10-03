@@ -133,7 +133,7 @@ public class ItemProtection {
 	}
 
 	private static Component getAddedMessage(ItemStack heldItem) {
-		return Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName()).append(Component.translatable("skyblocker.itemProtection.added.safer").withStyle(ChatFormatting.ITALIC));
+		return Component.translatable("skyblocker.itemProtection.added", heldItem.getHoverName()).append(" ").append(Component.translatable("skyblocker.itemProtection.added.safer").withStyle(ChatFormatting.ITALIC));
 	}
 
 	public static void handleHotbarKeyPressed(LocalPlayer player) {

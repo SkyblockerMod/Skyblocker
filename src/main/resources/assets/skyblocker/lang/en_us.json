@@ -1720,7 +1720,7 @@
 
   "skyblocker.customAnimatedDyes.added": "Set a custom animated dye for your currently held item!",
   "skyblocker.customAnimatedDyes.neverHad": "This item doesn't have a custom animated dye set, but why not add one? ;)",
-  "skyblocker.customAnimatedDyes.noItemUuid": "You must be holding an item that has a uuid to set a custom animated dye.",
+  "skyblocker.customAnimatedDyes.noItemUuid": "You must be holding an item that has a UUID to set a custom animated dye.",
   "skyblocker.customAnimatedDyes.notDyeable": "This item isn't a dyeable armor piece!",
   "skyblocker.customAnimatedDyes.removed": "Removed this item's custom animated dye.",
   "skyblocker.customAnimatedDyes.unableToSetDye": "Unable to set a custom animated dye. Please check if you are in SkyBlock and holding an item.",
@@ -1728,14 +1728,14 @@
   "skyblocker.customArmorTrims.added": "Set a custom armor trim for your currently held item!",
   "skyblocker.customArmorTrims.invalidMaterialOrPattern": "You supplied either an invalid material or an invalid trim pattern!",
   "skyblocker.customArmorTrims.neverHad": "This item doesn't have an armor trim set, but why not add one? ;)",
-  "skyblocker.customArmorTrims.noItemUuid": "You must be holding an item that has a uuid to set a custom armor trim!",
+  "skyblocker.customArmorTrims.noItemUuid": "You must be holding an item that has a UUID to set a custom armor trim!",
   "skyblocker.customArmorTrims.notAnArmorPiece": "This item isn't an armor piece!",
   "skyblocker.customArmorTrims.removed": "Removed this item's custom armor trim.",
   "skyblocker.customArmorTrims.unableToSetTrim": "Unable to set a custom armor trim. Please check if you are in SkyBlock and holding an item.",
 
   "skyblocker.customDyeColors.added": "Set a custom dye color for your currently held item!",
   "skyblocker.customDyeColors.neverHad": "This item doesn't have a custom dye color set, but why not add one? ;)",
-  "skyblocker.customDyeColors.noItemUuid": "You must be holding an item that has a uuid to set a custom dye color!",
+  "skyblocker.customDyeColors.noItemUuid": "You must be holding an item that has a UUID to set a custom dye color!",
   "skyblocker.customDyeColors.notDyeable": "This item isn't a dyeable armor piece!",
   "skyblocker.customDyeColors.removed": "Removed this item's custom dye color.",
   "skyblocker.customDyeColors.unableToSetColor": "Unable to set a custom dye color. Please check if you are in SkyBlock and holding an item.",
@@ -1951,7 +1951,7 @@
 
   "skyblocker.itemProtection.added": "Your %s will now be protected!",
   "skyblocker.itemProtection.added.safer": "*your item now feels a little safer :')*",
-  "skyblocker.itemProtection.noItemUuid": "You must be holding an item that has a uuid to protect it!",
+  "skyblocker.itemProtection.noItemUuid": "You must be holding an item that has a UUID to protect it!",
   "skyblocker.itemProtection.removed": "§fYour %s will §nno longer be protected§f :( - §lBeware of the dangers in doing this!",
   "skyblocker.itemProtection.unableToProtect": "Unable to protect this item. Please check if you are in SkyBlock and holding an item.",
 

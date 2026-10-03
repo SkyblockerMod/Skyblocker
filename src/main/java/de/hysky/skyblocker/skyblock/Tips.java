@@ -139,7 +139,7 @@ public class Tips {
 	}
 
 	public static Component nextTip() {
-		return Component.translatable("skyblocker.tips.tip", nextTipInternal()).withColor(TextColor.GREEN);
+		return Component.translatable("skyblocker.tips.tip", nextTipInternal());
 	}
 
 	private static Component nextTipInternal() {
