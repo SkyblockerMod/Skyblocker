@@ -21,6 +21,8 @@ public class ChatConfig {
 
 	public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
 
+	public ChatFilterResult hideRareCrops = ChatFilterResult.PASS;
+
 	public ChatFilterResult hideAds = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
