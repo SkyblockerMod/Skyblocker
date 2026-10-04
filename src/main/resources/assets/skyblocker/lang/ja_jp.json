@@ -722,7 +722,7 @@
     "emi.category.skyblocker.skyblock_info": "SkyBlock 情報",
     "key.skyblocker.valueBreadownPopup": "価値の内訳ポップアップを開く",
     "key.skyblocker.wikiLookup.independent": "コミュニティWikiで検索",
-    "skyblocker.wikiLookup.noArticleFound.independent": "コミュニティwikiでこのアイテムの記事が見つかりません…",
+    "skyblocker.wikiLookup.noArticleFound.independent": "コミュニティwikiでこのアイテムの記事が見つかりませんでした。",
     "skyblocker.accessoryHelper.openWiki": "クリックしてコミュニティwikiを開く！",
     "skyblocker.accessoryHelper.recombobulate": "%s アクセサリーをRecombobulateする。",
     "skyblocker.bars.config.explanation": "ステータスバーの設定画面へようこそ！\n\nバーをドラッグ＆ドロップして、アンカー（白い四角）や既存のバーにスナップさせたり、任意の場所に配置したりできます。\nバーを右クリックすると、さまざまなプロパティを編集できます。\n2つのバーの間にマウスを合わせると（カーソルの形が変わります）、サイズを変更できます。\n\n画面を閉じると、すべての設定が保存されます。",
