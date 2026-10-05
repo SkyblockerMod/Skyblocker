@@ -1901,5 +1901,7 @@
     "skyblocker.config.hud.widget.tab.hideIfMissing": "如果TAB小部件缺失则隐藏",
     "skyblocker.config.farming.farmingHud.blocks": "每秒破坏方块数",
     "skyblocker.config.hud.cropMilestones.showIcon": "显示图标",
-    "skyblocker.config.hud.cropMilestones.showProgressBar": "显示进度条"
+    "skyblocker.config.hud.cropMilestones.showProgressBar": "显示进度条",
+    "skyblocker.config.chat.filter.hideRareCrops": "隐藏稀有掉落消息",
+    "skyblocker.config.dungeons.dungeonMessages": "地牢消息"
 }
