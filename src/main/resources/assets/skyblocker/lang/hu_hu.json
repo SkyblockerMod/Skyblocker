@@ -1946,5 +1946,9 @@
     "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.@Tooltip": "Kiemelés: Csak kiemelést mutat.\n\nKörvonalas Kiemelés: Körvonalat és kiemelést is mutat.\n\nKörvonalas: Csak körvonalat mutat.",
     "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.HIGHLIGHT": "Kiemelés",
     "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINE": "Körvonalas",
-    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINED_HIGHLIGHT": "Körvonalas Kiemelés"
+    "skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.OUTLINED_HIGHLIGHT": "Körvonalas Kiemelés",
+    "skyblocker.config.chat.filter.hideRareCrops": "Ritka Növény Üzenetek Elrejtése",
+    "skyblocker.config.hunting.safari.critterCapsuleHelper": "Critter Capsule Segítő",
+    "skyblocker.config.hunting.safari.critterCapsuleHelper.@Tooltip": "Megmutatja, hogy a critter capsule hová fog érkezni.",
+    "skyblocker.config.hunting.safari.critterCapsuleHelperColor": "Critter Capsule Segítő Kiemelés Színe"
 }
