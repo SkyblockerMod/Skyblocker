@@ -225,7 +225,7 @@ public class ReforgesDebug {
 	}
 
 	public record ReforgeStone(String internalName, String reforgeName, String reforgeType, String itemTypes, List<String> requiredRarities, Map<String, Integer> reforgeCosts,
-							   Optional<String> reforgeAbility, Map<String, Map<String, Float>> reforgeStats) {
+							Optional<String> reforgeAbility, Map<String, Map<String, Float>> reforgeStats) {
 		public static Codec<ReforgeStone> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("internalName").forGetter(ReforgeStone::internalName),
 				Codec.STRING.fieldOf("reforgeName").forGetter(ReforgeStone::reforgeName),
