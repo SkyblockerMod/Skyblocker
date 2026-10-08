@@ -35,7 +35,6 @@ import net.minecraft.world.item.Items;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.hunting.AttributesDebug;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.TextTransformer;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
@@ -206,7 +205,7 @@ public class ReforgesDebug {
 		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
-	/// Copied from {@link AttributesDebug}
+	/// Copied from {@link de.hysky.skyblocker.skyblock.hunting.AttributesDebug}
 	private static Int2ObjectMap<ItemStack> getSlots(AbstractContainerScreen<?> screen) {
 		@SuppressWarnings("unchecked")
 		Int2ObjectMap<ItemStack> slots = ContainerSolverManager.slotMap(screen.getMenu().slots.subList(0, ((AbstractContainerScreen<ChestMenu>) screen).getMenu().getRowCount() * 9));
