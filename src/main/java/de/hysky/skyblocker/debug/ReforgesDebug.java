@@ -57,6 +57,7 @@ public class ReforgesDebug {
 				if (input.key() == InputConstants.KEY_G) {
 					dumpReforge(containerScreen);
 				} else if (input.key() == InputConstants.KEY_J) {
+					if (!screen.getTitle().getString().equals("Reforge Guide")) return;
 					exportReforges();
 				}
 			});
