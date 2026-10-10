@@ -22,12 +22,15 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.GeneralConfig;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.data.JsonData;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
@@ -48,6 +51,7 @@ public class Shortcuts {
 	 */
 	private static final List<InputConstants.Key> pressedKeys = new ArrayList<>();
 	private static final long KEY_BINDING_COOLDOWN = 200;
+	private static final Component NOT_LOADED_TEXT = Component.translatable("skyblocker.shortcuts.notLoaded").withColor(TextColor.RED).withStyle(ChatFormatting.BOLD);
 	private static long lastKeyBindingCommandTime;
 
 	public static boolean isShortcutsLoaded() {
@@ -133,36 +137,55 @@ public class Shortcuts {
 		return new ShortcutsRecord(commands, commandArgs, new Object2ObjectOpenHashMap<>());
 	}
 
+	private static Component statusMessage(String name, boolean enabled) {
+		return Component.empty().withStyle(ChatFormatting.BOLD)
+				.append(Component.literal("Skyblocker").withColor(TextColor.YELLOW))
+				.append(" ")
+				.append(name)
+				.append(" ")
+				.append(enabled ?  Component.literal("(Enabled)").withColor(TextColor.GREEN) : Component.literal("(Disabled)").withColor(TextColor.RED));
+	}
+
+	private static Component shortcutEntry(String key, String value) {
+		return Component.empty()
+				.append(Component.literal(key).withColor(TextColor.GRAY))
+				.append(" → ")
+				.append(Component.literal(value).withColor(TextColor.GRAY));
+	}
+
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("help").executes(context -> {
 			FabricClientCommandSource source = context.getSource();
-			String status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
-			source.sendFeedback(Component.nullToEmpty("§e§lSkyblocker §fCommand Shortcuts" + status));
+			GeneralConfig.Shortcuts shortcutsConf = SkyblockerConfigManager.get().general.shortcuts;
+			boolean shortcutsEnabled = shortcutsConf.enableShortcuts;
+			source.sendFeedback(statusMessage("Command Shortcuts", shortcutsEnabled && shortcutsConf.enableCommandShortcuts));
 			if (!isShortcutsLoaded()) {
-				source.sendFeedback(Component.translatable("skyblocker.shortcuts.notLoaded"));
+				source.sendFeedback(NOT_LOADED_TEXT);
 			} else for (Map.Entry<String, String> command : shortcuts.getData().commands.entrySet()) {
-				source.sendFeedback(Component.nullToEmpty("§7" + command.getKey() + " §f→ §7" + command.getValue()));
+				source.sendFeedback(shortcutEntry(command.getKey(), command.getValue()));
 			}
 
-			status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableCommandArgShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
-			source.sendFeedback(Component.nullToEmpty("§e§lSkyblocker §fCommand Argument Shortcuts" + status));
+			source.sendFeedback(statusMessage("Command Argument Shortcuts", shortcutsEnabled && shortcutsConf.enableCommandArgShortcuts));
 			if (!isShortcutsLoaded()) {
-				source.sendFeedback(Component.translatable("skyblocker.shortcuts.notLoaded"));
+				source.sendFeedback(NOT_LOADED_TEXT);
 			} else for (Map.Entry<String, String> commandArg : shortcuts.getData().commandArgs.entrySet()) {
-				source.sendFeedback(Component.nullToEmpty("§7" + commandArg.getKey() + " §f→ §7" + commandArg.getValue()));
+				source.sendFeedback(shortcutEntry(commandArg.getKey(), commandArg.getValue()));
 			}
 
-			status = SkyblockerConfigManager.get().general.shortcuts.enableShortcuts && SkyblockerConfigManager.get().general.shortcuts.enableKeyBindingShortcuts ? "§a§l (Enabled)" : "§c§l (Disabled)";
-			source.sendFeedback(Component.nullToEmpty("§e§lSkyblocker §fKey Binding Shortcuts" + status));
+			source.sendFeedback(statusMessage("Key Binding Shortcuts", shortcutsEnabled && shortcutsConf.enableKeyBindingShortcuts));
 			if (!isShortcutsLoaded()) {
-				source.sendFeedback(Component.translatable("skyblocker.shortcuts.notLoaded"));
+				source.sendFeedback(NOT_LOADED_TEXT);
 			} else for (Map.Entry<ShortcutKeyBinding, String> keyBinding : shortcuts.getData().keyBindings.entrySet()) {
-				source.sendFeedback(Component.nullToEmpty("§7" + keyBinding.getKey().getBoundKeysText().getString() + " §f→ §7" + keyBinding.getValue()));
+				source.sendFeedback(shortcutEntry(keyBinding.getKey().getBoundKeysText().getString(), keyBinding.getValue()));
 			}
 
-			source.sendFeedback(Component.nullToEmpty("§e§lSkyblocker §fCommands"));
+			source.sendFeedback(Component.empty().withStyle(ChatFormatting.BOLD)
+					.append(Component.literal("Skyblocker").withColor(TextColor.YELLOW))
+					.append(" ")
+					.append("Commands")
+			);
 			for (String command : dispatcher.getSmartUsage(dispatcher.getRoot().getChild(SkyblockerMod.NAMESPACE), source).values()) {
-				source.sendFeedback(Component.nullToEmpty("§7/" + SkyblockerMod.NAMESPACE + " " + command));
+				source.sendFeedback(Component.literal("/" + SkyblockerMod.NAMESPACE + " " + command).withColor(TextColor.GRAY));
 			}
 			return Command.SINGLE_SUCCESS;
 			// Queue the screen or else the screen will be immediately closed after executing this command

@@ -68,6 +68,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.InteractionResult;
@@ -183,6 +184,7 @@ public class DungeonManager {
 	 * The map of dungeon room names to custom waypoints relative to the room.
 	 */
 	private static final Table<String, BlockPos, SecretWaypoint> customWaypoints = HashBasedTable.create();
+	private static final Component NOT_MATCHED_TEXT = Component.translatable("skyblocker.dungeons.secrets.notMatched").withColor(TextColor.RED);
 	private static @Nullable CompletableFuture<Void> roomsLoaded;
 	/**
 	 * The map position of the top left corner of the entrance room.
@@ -313,9 +315,9 @@ public class DungeonManager {
 						if (currentRoom != null) {
 							currentRoom.tickables.clear();
 							currentRoom.renderables.clear();
-							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCleared sub processes in the current room."));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("Cleared sub processes in the current room."));
 						} else {
-							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+							context.getSource().sendError(error("Current room is null."));
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -331,9 +333,9 @@ public class DungeonManager {
 								default -> "Unknown";
 							};
 
-							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCheckmark colour: " + result));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("Checkmark colour: " + result));
 						} else {
-							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room or map state is null."));
+							context.getSource().sendError(error("Current room or map state is null."));
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -446,7 +448,7 @@ public class DungeonManager {
 			if (markSecrets(secretIndex, found)) {
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex)));
+				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex).withColor(TextColor.RED)));
 			}
 			return Command.SINGLE_SUCCESS;
 		});
@@ -459,7 +461,7 @@ public class DungeonManager {
 				currentRoom.markAllSecrets(false);
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
 			} else {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable").withColor(TextColor.RED)));
 			}
 
 			return Command.SINGLE_SUCCESS;
@@ -474,7 +476,7 @@ public class DungeonManager {
 		if (CLIENT.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
 			return getRelativePos(context.getSource(), blockHitResult.getBlockPos());
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget").withColor(TextColor.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -487,7 +489,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), currentRoom.getDirection().getSerializedName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			source.sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -509,7 +511,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.addCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -519,7 +521,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.addCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -537,7 +539,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.removeCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -547,7 +549,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.removeCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -555,21 +557,21 @@ public class DungeonManager {
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
 		return argument("room", StringArgumentType.string()).suggests((_, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
 			if (!isClearingDungeon()) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
+				context.getSource().sendError(error("You are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
 			}
 			if (CLIENT.player == null || CLIENT.level == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
+				context.getSource().sendError(error("Failed to get player or world."));
 				return Command.SINGLE_SUCCESS;
 			}
 			ItemStack stack = CLIENT.player.getInventory().getNonEquipmentItems().get(8);
 			if (!stack.is(Items.FILLED_MAP)) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
+				context.getSource().sendError(error("Failed to get dungeon map."));
 				return Command.SINGLE_SUCCESS;
 			}
 			MapItemSavedData map = MapItem.getSavedData(stack.get(DataComponents.MAP_ID), CLIENT.level);
 			if (map == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state."));
+				context.getSource().sendError(error("Failed to get dungeon map state."));
 				return Command.SINGLE_SUCCESS;
 			}
 
@@ -578,18 +580,22 @@ public class DungeonManager {
 
 			Room room = newDebugRoom(roomName, direction, CLIENT.player, map);
 			if (room == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to find room with name " + roomName + "."));
+				context.getSource().sendError(error("Failed to find room with name " + roomName + "."));
 				return Command.SINGLE_SUCCESS;
 			}
 			if (currentRoom != null) {
 				currentRoom.addSubProcess(room);
-				context.getSource().sendFeedback(Constants.PREFIX.get().append("§rMatching room " + roomName + " with direction " + direction + " against current room."));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append("Matching room " + roomName + " with direction " + direction + " against current room."));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+				context.getSource().sendError(error("Current room is null."));
 			}
 
 			return Command.SINGLE_SUCCESS;
 		}));
+	}
+
+	private static Component error(String message) {
+		return Constants.PREFIX.get().append(Component.literal(message).withColor(TextColor.RED));
 	}
 
 	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, Player player, MapItemSavedData map) {
