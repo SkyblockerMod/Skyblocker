@@ -33,6 +33,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -265,13 +266,13 @@ public class SearchOverManager {
 		isCommand = false;
 		SearchOverManager.location = location;
 		if (SkyblockerConfigManager.get().uiAndVisuals.searchOverlay.keepPreviousSearches) {
-			Component[] messages = SearchOverManager.sign.getText(signFront).getMessages(CLIENT.isTextFilteringEnabled());
-			search = messages[0].getString();
-			if (!messages[1].getString().isEmpty()) {
+			List<Component> messages = SearchOverManager.sign.getText(signFront ? SignTextSlot.FRONT : SignTextSlot.BACK).getMessages(CLIENT.isTextFilteringEnabled());
+			search = messages.get(0).getString();
+			if (!messages.get(1).getString().isEmpty()) {
 				if (!search.endsWith(" ")) {
 					search += " ";
 				}
-				search += messages[1].getString();
+				search += messages.get(1).getString();
 			}
 		} else {
 			search = "";
@@ -547,13 +548,10 @@ public class SearchOverManager {
 
 		// send packet to update sign
 		if (CLIENT.player != null && sign != null) {
-			Component[] messages = sign.getText(signFront).getMessages(CLIENT.isTextFilteringEnabled());
-			CLIENT.player.connection.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), signFront,
-					split.left(),
-					split.right(),
-					messages[2].getString(),
-					messages[3].getString()
-			));
+			List<Component> messages = sign.getText(signFront ? SignTextSlot.FRONT : SignTextSlot.BACK).getMessages(CLIENT.isTextFilteringEnabled());
+			CLIENT.player.connection.send(new ServerboundSignUpdatePacket(sign.getBlockPos(),
+					List.of(split.left(), split.right(), messages.get(2).getString(), messages.get(3).getString()),
+					signFront ? SignTextSlot.FRONT : SignTextSlot.BACK));
 		}
 	}
 

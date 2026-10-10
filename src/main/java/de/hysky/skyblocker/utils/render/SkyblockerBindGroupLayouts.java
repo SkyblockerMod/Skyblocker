@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils.render;
 
-import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 
 public class SkyblockerBindGroupLayouts {
 	public static final BindGroupLayout BOX_DATA = BindGroupLayout.builder()

@@ -92,10 +92,10 @@ public class MythologicalRitual {
 
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (isActive()) {
-			switch (packet.getParticle().getType()) {
+			switch (packet.particle().getType()) {
 				case ParticleType<?> type when ParticleTypes.CRIT.equals(type) || ParticleTypes.ENCHANT.equals(type) -> handleBurrowParticle(packet);
 				case ParticleType<?> type when ParticleTypes.DUST.equals(type) -> handleNextBurrowParticle(packet);
-				case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.getCount() == 2 -> handleEchoBurrowParticle(packet);
+				case ParticleType<?> type when ParticleTypes.DRIPPING_LAVA.equals(type) && packet.count() == 2 -> handleEchoBurrowParticle(packet);
 				default -> {}
 			}
 		}
@@ -105,13 +105,13 @@ public class MythologicalRitual {
 	 * Updates the crit and enchant particle counts and initializes the burrow if both counts are greater or equal to 5.
 	 */
 	private static void handleBurrowParticle(ClientboundLevelParticlesPacket packet) {
-		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ()).below();
+		BlockPos pos = BlockPos.containing(packet.x(), packet.y(), packet.z()).below();
 		if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.getBlockState(pos).is(Blocks.GRASS_BLOCK)) {
 			return;
 		}
 		GriffinBurrow burrow = griffinBurrows.computeIfAbsent(pos, GriffinBurrow::new);
-		if (ParticleTypes.CRIT.equals(packet.getParticle().getType())) burrow.critParticle++;
-		if (ParticleTypes.ENCHANT.equals(packet.getParticle().getType())) burrow.enchantParticle++;
+		if (ParticleTypes.CRIT.equals(packet.particle().getType())) burrow.critParticle++;
+		if (ParticleTypes.ENCHANT.equals(packet.particle().getType())) burrow.enchantParticle++;
 		if (burrow.critParticle >= 5 && burrow.enchantParticle >= 5 && burrow.confirmed == TriState.FALSE) {
 			griffinBurrows.get(pos).init();
 		}
@@ -121,7 +121,7 @@ public class MythologicalRitual {
 	 * Updates the regression of the burrow (if a burrow exists), tries to {@link #estimateNextBurrow(GriffinBurrow) estimate the next burrow}, and updates the line in the direction of the next burrow.
 	 */
 	private static void handleNextBurrowParticle(ClientboundLevelParticlesPacket packet) {
-		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
+		BlockPos pos = BlockPos.containing(packet.x(), packet.y(), packet.z());
 		BlockPos burrowPos;
 		if (Minecraft.getInstance().level != null) {
 			burrowPos = Minecraft.getInstance().level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, pos);
@@ -132,7 +132,7 @@ public class MythologicalRitual {
 		if (burrow == null) {
 			return;
 		}
-		burrow.regression.addData(packet.getX(), packet.getZ());
+		burrow.regression.addData(packet.x(), packet.z());
 		double slope = burrow.regression.getSlope();
 		if (Double.isNaN(slope)) {
 			return;
@@ -159,13 +159,13 @@ public class MythologicalRitual {
 		if (System.currentTimeMillis() > lastEchoTime + 10_000) {
 			return;
 		}
-		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.getX(), packet.getY() - 0.25, packet.getZ())).isAir()) return;
+		if (Minecraft.getInstance().level != null && !Minecraft.getInstance().level.getBlockState(BlockPos.containing(packet.x(), packet.y() - 0.25, packet.z())).isAir()) return;
 
 		if (previousBurrow.echoBurrowDirection == null) {
 			previousBurrow.echoBurrowDirection = new Vec3[2];
 		}
 		previousBurrow.echoBurrowDirection[0] = previousBurrow.echoBurrowDirection[1];
-		previousBurrow.echoBurrowDirection[1] = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+		previousBurrow.echoBurrowDirection[1] = new Vec3(packet.x(), packet.y(), packet.z());
 		if (previousBurrow.echoBurrowDirection[0] == null || previousBurrow.echoBurrowDirection[1] == null) {
 			return;
 		}

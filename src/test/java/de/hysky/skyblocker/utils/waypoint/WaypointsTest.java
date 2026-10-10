@@ -1,7 +1,13 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
+import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -486,10 +492,27 @@ public class WaypointsTest {
 	}
 
 	@Test
-	void testToSkyblocker() {
+	void testToSkyblocker() throws IOException {
 		String waypointGroupsSkyblocker = Waypoints.toSkyblocker(List.of(SAPPHIRE_WAYPOINTS));
 		String expectedWaypointGroupsSkyblocker = "[Skyblocker-Waypoint-Data-V1]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";
 
-		Assertions.assertEquals(expectedWaypointGroupsSkyblocker, waypointGroupsSkyblocker);
+		// GZIP's DEFLATE output can change between JDK versions without changing the data.
+		byte[] expectedPayload = decodeSkyblockerPayload(expectedWaypointGroupsSkyblocker);
+		byte[] actualPayload = decodeSkyblockerPayload(waypointGroupsSkyblocker);
+		Assertions.assertArrayEquals(expectedPayload, actualPayload);
+		Assertions.assertEquals(
+				JsonParser.parseString(new String(expectedPayload, StandardCharsets.UTF_8)),
+				JsonParser.parseString(new String(actualPayload, StandardCharsets.UTF_8)));
+		Assertions.assertEquals(List.of(SAPPHIRE_WAYPOINTS), Waypoints.fromSkyblocker(expectedWaypointGroupsSkyblocker, Location.CRYSTAL_HOLLOWS));
+		Assertions.assertEquals(List.of(SAPPHIRE_WAYPOINTS), Waypoints.fromSkyblocker(waypointGroupsSkyblocker, Location.CRYSTAL_HOLLOWS));
 	}
+	private static byte[] decodeSkyblockerPayload(String encoded) throws IOException {
+		String prefix = "[Skyblocker-Waypoint-Data-V1]";
+		Assertions.assertTrue(encoded.startsWith(prefix));
+		byte[] compressed = Base64.getDecoder().decode(encoded.substring(prefix.length()));
+		try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(compressed))) {
+			return input.readAllBytes();
+		}
+	}
+
 }

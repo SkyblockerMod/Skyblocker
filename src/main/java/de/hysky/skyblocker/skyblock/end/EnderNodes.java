@@ -46,13 +46,13 @@ public class EnderNodes {
 
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!shouldProcess()) return;
-		ParticleType<?> particleType = packet.getParticle().getType();
+		ParticleType<?> particleType = packet.particle().getType();
 		if (!ParticleTypes.PORTAL.getType().equals(particleType) && !ParticleTypes.WITCH.getType().equals(particleType))
 			return;
 
-		double x = packet.getX();
-		double y = packet.getY();
-		double z = packet.getZ();
+		double x = packet.x();
+		double y = packet.y();
+		double z = packet.z();
 		double xFrac = Mth.positiveModulo(x, 1);
 		double yFrac = Mth.positiveModulo(y, 1);
 		double zFrac = Mth.positiveModulo(z, 1);

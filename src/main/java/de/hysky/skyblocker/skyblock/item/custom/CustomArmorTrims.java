@@ -85,8 +85,8 @@ public class CustomArmorTrims {
 												.executes(context -> customizeTrim(context.getSource(), context.getArgument("material", Identifier.class), context.getArgument("pattern", Identifier.class))))))));
 	}
 
-	private static SuggestionProvider<FabricClientCommandSource> getIdSuggestionProvider(ResourceKey<? extends Registry<?>> registryKey) {
-		return (context, builder) -> context.getSource().suggestRegistryElements(registryKey, SharedSuggestionProvider.ElementSuggestionType.ELEMENTS, builder, context);
+	private static <T> SuggestionProvider<FabricClientCommandSource> getIdSuggestionProvider(ResourceKey<? extends Registry<T>> registryKey) {
+		return (context, builder) -> context.getSource().suggestRegistryElements(registryKey, SharedSuggestionProvider.ElementSuggestionType.ELEMENTS, builder, context, _ -> true);
 	}
 
 	@SuppressWarnings("SameReturnValue")
