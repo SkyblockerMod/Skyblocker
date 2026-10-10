@@ -5,6 +5,8 @@ import java.util.Objects;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -25,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.WorldEvents;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -36,6 +39,7 @@ import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class SimonSays {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SimonSays.class);
 	private static final AABB BOARD_AREA = AABB.encapsulatingFullBlocks(new BlockPos(111, 123, 92), new BlockPos(111, 120, 95));
 	private static final AABB BUTTONS_AREA = AABB.encapsulatingFullBlocks(new BlockPos(110, 123, 92), new BlockPos(110, 120, 95));
 	private static final BlockPos START_BUTTON = new BlockPos(110, 121, 91);
@@ -63,6 +67,11 @@ public class SimonSays {
 
 			if (block.equals(Blocks.STONE_BUTTON)) {
 				if (BUTTONS_AREA.contains(Vec3.atLowerCornerOf(pos))) {
+					if (isWrongButtonClick(pos)) {
+						if (Debug.debugEnabled()) LOGGER.info("[Skyblocker Simon Says] Blocked pressing a button out of order at {}", pos.toShortString());
+						Utils.sendBlockedClickMessage("skyblocker.dungeons.blockers.buttonOutOfOrder");
+						return InteractionResult.FAIL;
+					}
 					CLICKED_BUTTONS.add(new BlockPos(pos)); //Copy just in case it becomes mutable in the future
 				} else if (pos.equals(START_BUTTON)) {
 					reset();
@@ -70,8 +79,17 @@ public class SimonSays {
 			}
 		}
 
-		//This could also be used to cancel incorrect clicks in the future
 		return InteractionResult.PASS;
+	}
+
+	private static boolean isWrongButtonClick(BlockPos clickedPos) {
+		if (!SkyblockerConfigManager.get().dungeons.devices.blockIncorrectClicks) return false;
+
+		for (BlockPos pos : SIMON_PATTERN) {
+				BlockPos expectedPos = pos.west();
+			if (!CLICKED_BUTTONS.contains(expectedPos)) return !expectedPos.equals(clickedPos);
+		}
+		return false;
 	}
 
 	//If the player goes out of the range required to receive block/chunk updates then their solver won't detect stuff but that

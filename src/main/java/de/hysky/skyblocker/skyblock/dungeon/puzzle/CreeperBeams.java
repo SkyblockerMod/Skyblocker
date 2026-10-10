@@ -6,17 +6,24 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
 import org.joml.Intersectiond;
+import org.joml.Vector2d;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -24,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -42,11 +50,15 @@ public class CreeperBeams extends DungeonPuzzle {
 
 	private static final int FLOOR_Y = 68;
 	private static final int BASE_Y = 74;
+	private static final int REQUIRED_HITS = 5;
 	@SuppressWarnings("unused")
 	private static final CreeperBeams INSTANCE = new CreeperBeams();
 
 	private static ArrayList<Beam> beams = new ArrayList<>();
+	private static ArrayList<BlockPos> targets = new ArrayList<>();
 	private static @Nullable BlockPos base = null;
+	private static boolean solvedWithHittingOnly = false;
+	private static int lastActiveCount = -1;
 
 	private CreeperBeams() {
 		super("creeper", "creeper-room");
@@ -54,13 +66,71 @@ public class CreeperBeams extends DungeonPuzzle {
 
 	@Init
 	public static void init() {
+		UseItemCallback.EVENT.register(CreeperBeams::onUseItem);
+	}
+
+	private static boolean shouldBlockWrongShots() {
+		return INSTANCE.shouldSolve()
+				&& SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperSolver
+				&& SkyblockerConfigManager.get().dungeons.puzzleSolvers.blockIncorrectClicks;
+	}
+
+	/**
+	 * Blocks drawing a bow unless the aim is on a target the plan needs shot, so lanterns can't be wasted.
+	 */
+	private static InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
+		if (!shouldBlockWrongShots() || beams.isEmpty() || !(player.getItemInHand(hand).getItem() instanceof ProjectileWeaponItem)) {
+			return InteractionResult.PASS;
+		}
+
+		Vec3 from = player.getEyePosition();
+		Vec3 to = from.add(player.getViewVector(1.0f).scale(64));
+
+		//find the first target block the aim passes through
+		BlockPos aimed = null;
+		double bestT = Double.MAX_VALUE;
+		for (BlockPos target : targets) {
+			AABB box = new AABB(target).inflate(0.25);
+			Vector2d t = new Vector2d();
+			if (Intersectiond.intersectLineSegmentAab(from.x, from.y, from.z, to.x, to.y, to.z,
+					box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, t) == Intersectiond.OUTSIDE) {
+				continue;
+			}
+			if (t.x < bestT) {
+				bestT = t.x;
+				aimed = target;
+			}
+		}
+		//not aiming at any target can't waste one
+		if (aimed == null) return InteractionResult.PASS;
+
+		if (!isNeededTarget(aimed)) {
+			if (Debug.debugEnabled()) LOGGER.info("[Skyblocker Creeper Beams] Blocked a shot at the target at {} that the plan does not need", aimed.toShortString());
+			Utils.sendBlockedClickMessage("skyblocker.dungeons.blockers.wrongTarget");
+			return InteractionResult.FAIL;
+		}
+		return InteractionResult.PASS;
+	}
+
+	//a target is needed when it belongs to a beam the plan still wants shot, with one beam at a time only the shown beam counts
+	private static boolean isNeededTarget(BlockPos target) {
+		boolean oneAtATime = SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperOnlyHittingBeams
+				&& SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperShowOneBeam;
+		for (Beam beam : beams) {
+			if (oneAtATime && !beam.toDo) continue;
+			if (beam.blockOne.equals(target) || beam.blockTwo.equals(target)) return true;
+			if (oneAtATime) return false;
+		}
+		return false;
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
 		beams.clear();
+		targets.clear();
 		base = null;
+		lastActiveCount = -1;
 	}
 
 	@Override
@@ -76,15 +146,29 @@ public class CreeperBeams extends DungeonPuzzle {
 			return;
 		}
 
-		// try to find base if not found and solve
+		// recompute the solution when the toggle changes so it applies without re-entering the room
+		if (base != null && SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperOnlyHittingBeams != solvedWithHittingOnly) {
+			base = null;
+		}
+
+		// try to find base if not found
 		if (base == null) {
 			base = findCreeperBase(client.player, client.level);
 			if (base == null) {
 				return;
 			}
-			Vec3 creeperPos = new Vec3(base.getX() + 0.5, BASE_Y + 1.75, base.getZ() + 0.5);
-			ArrayList<BlockPos> targets = findTargets(client.level, base);
-			beams = findLines(creeperPos, targets);
+			targets = findTargets(client.level, base);
+			lastActiveCount = -1;
+		}
+
+		// resolve whenever the number of activated targets changes, so the plan adapts to beams the player made off-solution
+		int activeCount = 0;
+		for (BlockPos target : targets) {
+			if (client.level.getBlockState(target).getBlock() == Blocks.PRISMARINE) activeCount++;
+		}
+		if (activeCount != lastActiveCount) {
+			lastActiveCount = activeCount;
+			solveBeams(client.level, base);
 		}
 
 		// update the beam states
@@ -138,44 +222,81 @@ public class CreeperBeams extends DungeonPuzzle {
 		return targets;
 	}
 
-	// generate lines between targets and finally find the solution
-	private static ArrayList<Beam> findLines(Vec3 creeperPos, ArrayList<BlockPos> targets) {
+	private static void solveBeams(ClientLevel world, BlockPos base) {
+		Vec3 creeperPos = new Vec3(base.getX() + 0.5, BASE_Y + 1.75, base.getZ() + 0.5);
+		boolean onlyHitting = SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperOnlyHittingBeams;
+		solvedWithHittingOnly = onlyHitting;
 
-		ArrayList<ObjectDoublePair<Beam>> allLines = new ArrayList<>();
+		ArrayList<BlockPos> active = new ArrayList<>();
+		ArrayList<BlockPos> inactive = new ArrayList<>();
+		for (BlockPos target : targets) {
+			if (world.getBlockState(target).getBlock() == Blocks.PRISMARINE) active.add(target);
+			else inactive.add(target);
+		}
+
+			//beams between already active targets count as hits too. yes, even the off-plan ones. players get creative
+		int hits = 0;
+		if (onlyHitting) {
+			for (int i = 0; i < active.size(); i++) {
+				for (int j = i + 1; j < active.size(); j++) {
+					if (goesThroughCreeper(new Beam(active.get(i), active.get(j)), base)) hits++;
+				}
+			}
+		}
+		int needed = REQUIRED_HITS - hits;
+
+		beams = new ArrayList<>();
+		if (needed <= 0) {
+			return;
+		}
+
+		ArrayList<ObjectDoublePair<Beam>> candidates = new ArrayList<>();
 
 		// optimize this a little bit by
 		// only generating lines "one way", i.e. 1 -> 2 but not 2 -> 1
-		for (int i = 0; i < targets.size(); i++) {
-			for (int j = i + 1; j < targets.size(); j++) {
-				Beam beam = new Beam(targets.get(i), targets.get(j));
+		for (int i = 0; i < inactive.size(); i++) {
+			for (int j = i + 1; j < inactive.size(); j++) {
+				Beam beam = new Beam(inactive.get(i), inactive.get(j));
+					if (onlyHitting && !goesThroughCreeper(beam, base)) {
+					continue;
+				}
 				double dist = Intersectiond.distancePointLine(
 						creeperPos.x, creeperPos.y, creeperPos.z,
 						beam.line[0].x, beam.line[0].y, beam.line[0].z,
 						beam.line[1].x, beam.line[1].y, beam.line[1].z);
-				allLines.add(ObjectDoublePair.of(beam, dist));
+				candidates.add(ObjectDoublePair.of(beam, dist));
 			}
 		}
 
 		// this feels a bit heavy-handed, but it works for now.
 
-		ArrayList<Beam> result = new ArrayList<>();
-		allLines.sort(Comparator.comparingDouble(ObjectDoublePair::rightDouble));
-
-		while (result.size() < 5 && !allLines.isEmpty()) {
-			Beam solution = allLines.getFirst().left();
-			result.add(solution);
+		candidates.sort(Comparator.comparingDouble(ObjectDoublePair::rightDouble));
+		int want = onlyHitting ? needed : REQUIRED_HITS;
+		while (beams.size() < want && !candidates.isEmpty()) {
+			Beam solution = candidates.getFirst().left();
+			beams.add(solution);
 
 			// remove the line we just added and other lines that use blocks we're using for
 			// that line
-			allLines.removeFirst();
-			allLines.removeIf(beam -> solution.containsComponentOf(beam.left()));
+			candidates.removeFirst();
+			candidates.removeIf(beam -> solution.containsComponentOf(beam.left()));
 		}
 
-		if (result.size() < 5) {
+		if (beams.size() < want) {
 			LOGGER.error("Not enough solutions found. This is bad...");
 		}
+	}
 
-		return result;
+	//width is strict, a graze just wastes two targets. height is generous, hypixel counts hits anywhere
+	//in the tall column the bobbing creeper occupies (~4 blocks), no matter where it currently floats
+	//does the tower count? im not sure lol (cata 39 btw)
+	private static boolean goesThroughCreeper(Beam beam, BlockPos base) {
+		return Intersectiond.intersectLineSegmentAab(
+				beam.line[0].x, beam.line[0].y, beam.line[0].z,
+				beam.line[1].x, beam.line[1].y, beam.line[1].z,
+				base.getX() + 0.2, BASE_Y + 1, base.getZ() + 0.2,
+				base.getX() + 0.8, BASE_Y + 5, base.getZ() + 0.8,
+				new Vector2d()) != Intersectiond.OUTSIDE;
 	}
 
 	@Override
@@ -186,9 +307,16 @@ public class CreeperBeams extends DungeonPuzzle {
 			return;
 		}
 
+		// only show the next beam to make instead of all of them
+		boolean oneAtATime = SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperOnlyHittingBeams
+				&& SkyblockerConfigManager.get().dungeons.puzzleSolvers.creeperShowOneBeam;
+
 		// lines.size() is always <= 4 so no issues OOB issues with the colors here.
 		for (int i = 0; i < beams.size(); i++) {
-			beams.get(i).extractRendering(collector, COLORS[i]);
+			Beam beam = beams.get(i);
+			if (oneAtATime && !beam.toDo) continue;
+			beam.extractRendering(collector, COLORS[i]);
+			if (oneAtATime) break;
 		}
 	}
 

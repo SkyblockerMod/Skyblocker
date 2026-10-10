@@ -657,6 +657,15 @@ public class Utils {
 		client.getNarrator().saySystemQueued(message);
 	}
 
+	/**
+	 * Sends a prefixed message telling the player that a dungeon solver blocked their click.
+	 */
+	public static void sendBlockedClickMessage(String translationKey) {
+		Minecraft client = Minecraft.getInstance();
+		if (client.player == null) return;
+		client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable(translationKey).withStyle(ChatFormatting.RED)));
+	}
+
 	public static UUID getUuid() {
 		return Minecraft.getInstance().getUser().getProfileId();
 	}
