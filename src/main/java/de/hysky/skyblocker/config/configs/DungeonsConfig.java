@@ -214,6 +214,8 @@ public class DungeonsConfig {
 
 		public boolean enableSecretWaypoints = true;
 
+		public boolean hideClosestSecretOnDoubleSneak = false;
+
 		public Waypoint.Type waypointType = Waypoint.Type.WAYPOINT;
 
 		public boolean adaptiveBoxSize = false;

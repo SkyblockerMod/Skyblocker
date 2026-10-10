@@ -8,8 +8,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +39,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
@@ -680,7 +683,7 @@ public class Room implements Tickable, Renderable {
 	 */
 	protected void onItemPickup(ItemEntity itemEntity) {
 		if (SecretWaypoint.SECRET_ITEMS.stream().noneMatch(itemEntity.getItem().getHoverName().getString()::contains)) return;
-		secretWaypoints.values().stream().filter(SecretWaypoint::needsItemPickup).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(itemEntity))).filter(SecretWaypoint.getRangePredicate(itemEntity))
+		getClosestWaypointSatisfying(SecretWaypoint::needsItemPickup, itemEntity)
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected item {} removed from a {} secret, setting secret #{} as found", itemEntity.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
 	}
 
@@ -691,8 +694,27 @@ public class Room implements Tickable, Renderable {
 	 * @see #markSecretsFoundAndLogInfo(SecretWaypoint, String, Object...)
 	 */
 	protected void onBatRemoved(AmbientCreature bat) {
-		secretWaypoints.values().stream().filter(SecretWaypoint::isBat).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(bat))).filter(SecretWaypoint.getRangePredicate(bat))
+		getClosestWaypointSatisfying(SecretWaypoint::isBat, bat)
 				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected {} killed for a {} secret, setting secret #{} as found", bat.getName().getString(), secretWaypoint.category, secretWaypoint.secretIndex));
+	}
+
+	/**
+	 * Removes the waypoint closest to the player
+	 */
+	protected void onPlayerRemove(Entity playerEntity) {
+		getClosestWaypointSatisfying(waypoint -> waypoint.isEnabled() && waypoint.shouldRender() && !waypoint.category.isPrince(), playerEntity)
+				.ifPresent(secretWaypoint -> markSecretsFoundAndLogInfo(secretWaypoint, "[Skyblocker Dungeon Secrets] Detected player initiated {} waypoint removal, setting secret #{} as found", secretWaypoint.category, secretWaypoint.secretIndex));
+	}
+
+	/**
+	 * Gets the closest waypoint to an entity.
+	 *
+	 * @param filterSupplier the predicate
+	 * @param entity the entity; dist from
+	 * @return an optional SecretWaypoint
+	 */
+	protected Optional<SecretWaypoint> getClosestWaypointSatisfying(Predicate<? super SecretWaypoint> filterSupplier, Entity entity) {
+		return secretWaypoints.values().stream().filter(filterSupplier).min(Comparator.comparingDouble(SecretWaypoint.getSquaredDistanceToFunction(entity))).filter(SecretWaypoint.getRangePredicate(entity));
 	}
 
 	/**

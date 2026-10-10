@@ -31,6 +31,7 @@ import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -55,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -128,6 +130,8 @@ public class DungeonManager {
 
 	protected static final float[] RED_COLOR_COMPONENTS = {1, 0, 0};
 	protected static final float[] GREEN_COLOR_COMPONENTS = {0, 1, 0};
+
+	private static final long DOUBLE_SNEAK_WINDOW_NS = 200_000_000L;
 	/**
 	 * Maps the block identifier string to a custom numeric block id used in dungeon rooms data.
 	 *
@@ -203,6 +207,9 @@ public class DungeonManager {
 	private static boolean bloodOpened;
 	private static boolean hasKey;
 	private static boolean runEnded;
+	private static boolean sneakHeld;
+	private static long lastSneakPress;
+	private static @Nullable Room firstSneakRoom;
 
 	public static boolean isRoomsLoaded() {
 		return roomsLoaded != null && roomsLoaded.isDone();
@@ -904,6 +911,36 @@ public class DungeonManager {
 		}
 	}
 
+	/**
+	 * Handles the manual removal of waypoints via double sneaking.
+	 * @param key relevant key
+	 * @param pressed currently pressed
+	 */
+	public static void handleManualRemoval(InputConstants.Key key, boolean pressed) {
+		if (!key.equals(KeyMappingHelper.getBoundKeyOf(CLIENT.options.keyShift))) {
+			return;
+		}
+		boolean newPress = pressed && !sneakHeld;
+		sneakHeld = pressed;
+		if (CLIENT.player == null || !isCurrentRoomMatched() || !SkyblockerConfigManager.get().dungeons.secretWaypoints.enableSecretWaypoints || !SkyblockerConfigManager.get().dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak) {
+			firstSneakRoom = null;
+			return;
+		}
+		if (!newPress) return;
+		if (currentRoom == null) return;
+
+		long now = System.nanoTime();
+
+		// firstSneakRoom acts also like a boolean here
+		if (firstSneakRoom == currentRoom && now - lastSneakPress <= DOUBLE_SNEAK_WINDOW_NS) {
+			firstSneakRoom = null;
+			currentRoom.onPlayerRemove(CLIENT.player);
+		} else {
+			firstSneakRoom = currentRoom;
+			lastSneakPress = now;
+		}
+	}
+
 	public static boolean markSecrets(int secretIndex, boolean found) {
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
@@ -991,6 +1028,9 @@ public class DungeonManager {
 		physicalEntrancePos = null;
 		rooms.clear();
 		currentRoom = null;
+		sneakHeld = false;
+		lastSneakPress = 0;
+		firstSneakRoom = null;
 		boss = DungeonBoss.NONE;
 		bloodRushDoorBox = null;
 		bloodOpened = false;
@@ -1099,6 +1139,10 @@ public class DungeonManager {
 	public static CompletableFuture<Suggestions> suggestRooms(String roomType, SuggestionsBuilder suggestionsBuilder) {
 		if (ROOMS_DATA.get("catacombs").get(roomType) == null) return Suggestions.empty();
 		return SharedSuggestionProvider.suggest(ROOMS_DATA.get("catacombs").get(roomType).keySet(), suggestionsBuilder);
+	}
+
+	public static void onKeyStateChanged(InputConstants.Key key, boolean pressed) {
+		handleManualRemoval(key, pressed);
 	}
 
 	@VisibleForTesting

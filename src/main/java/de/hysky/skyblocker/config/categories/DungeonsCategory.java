@@ -631,6 +631,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.secretWaypoints.enableSecretWaypoints = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak"))
+								.description(Component.translatable("skyblocker.config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak.@Tooltip"))
+								.binding(defaults.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak,
+										() -> config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak,
+										newValue -> config.dungeons.secretWaypoints.hideClosestSecretOnDoubleSneak = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<Type>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.secretWaypoints.waypointType"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.waypoints.waypointType.@Tooltip"))
