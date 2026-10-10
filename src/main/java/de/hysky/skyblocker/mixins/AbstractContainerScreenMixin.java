@@ -48,6 +48,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.ChestValue;
 import de.hysky.skyblocker.skyblock.InventorySearch;
 import de.hysky.skyblocker.skyblock.PetCache;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarMax;
 import de.hysky.skyblocker.skyblock.experiment.UltrasequencerSolver;
 import de.hysky.skyblocker.skyblock.garden.visitor.VisitorHelper;
 import de.hysky.skyblocker.skyblock.item.ItemPrice;
@@ -323,6 +324,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 			if (disallowed) ci.cancel();
 		}
+
+		// Bazaar Max Tracking
+
+		BazaarMax.INSTANCE.checkMaxValue(slot);
+
 	}
 
 	@Inject(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;item(Lnet/minecraft/world/item/ItemStack;III)V"))
