@@ -473,7 +473,6 @@
     "skyblocker.config.dungeons.secretWaypoints.enablePrinceWaypoints.@Tooltip": "Útil para obtener +1 punto de bonificación en tus partidas con el atributo Reborn.",
     "skyblocker.config.dungeons.secretWaypoints.enableRedstoneKeyWaypoints": "Habilitar puntos de ruta de llaves de Redstone",
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage": "Activar mensaje de Leap",
-    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip": "Envía un mensaje a la party en el chat al hacer leap.\n§cRequiere que Interfaz de Spirit Leap esté activado.",
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapOverlay": "activar Interfaz de Spirit Leap",
     "skyblocker.config.dungeons.terminalHud.determineInProgressStatus.@Tooltip": "Muestra el nombre del jugador más cercano a la tarea.",
     "skyblocker.config.dungeons.terminalHud.showCompletedTerminals": "Mostrar terminales completados",
