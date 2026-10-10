@@ -107,7 +107,7 @@ public class DungeonScore {
 
 			return true;
 		});
-		SkyblockEvents.MAYOR_CHANGE.register(() -> isMayorPaul = MayorUtils.getActivePerks().contains("EZPZ"));
+		SkyblockEvents.MAYOR_CHANGE.register(() -> isMayorPaul = MayorUtils.getActivePerkNames().contains("EZPZ"));
 	}
 
 	public static void tick() {
