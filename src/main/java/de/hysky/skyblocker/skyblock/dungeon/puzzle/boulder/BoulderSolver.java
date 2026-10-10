@@ -34,7 +34,7 @@ public class BoulderSolver {
 			queue.add(Pair.of(initialState, new ArrayList<>()));
 		}
 
-		int maxIterations = 10000;
+		int maxIterations = 50000;
 		int iterations = 0;
 
 		while (!queue.isEmpty() && iterations < maxIterations) {
