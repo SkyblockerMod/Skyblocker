@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
@@ -33,7 +33,7 @@ public class HungryHiker extends ChatPatternListener {
 		if (food == null) return false;
 		String middlePartOfTheMessageToSend = matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
 		Utils.sendMessageToBypassEvents(Component.empty()
-				.append(Component.literal("[NPC] Hungry Hiker").withColor(TextColor.YELLOW))
+				.append(Component.literal("[NPC] Hungry Hiker").withStyle(ChatFormatting.YELLOW))
 				.append(Component.literal(": " + middlePartOfTheMessageToSend + " " + food + ".")));
 		return true;
 	}

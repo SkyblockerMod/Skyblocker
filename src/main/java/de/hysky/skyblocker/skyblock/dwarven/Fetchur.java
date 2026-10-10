@@ -7,9 +7,9 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -37,7 +37,7 @@ public class Fetchur extends ChatPatternListener {
 		String riddle = matcher.group(1);
 		String answer = answers.getOrDefault(riddle, riddle);
 		client.player.sendSystemMessage(Component.empty()
-				.append(Component.literal("[NPC] Fetchur").withColor(TextColor.YELLOW))
+				.append(Component.literal("[NPC] Fetchur").withStyle(ChatFormatting.YELLOW))
 				.append(": " + answer)
 		);
 		return true;

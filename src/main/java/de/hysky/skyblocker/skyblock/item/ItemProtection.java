@@ -18,7 +18,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,8 +40,8 @@ import de.hysky.skyblocker.utils.Utils;
 
 public class ItemProtection {
 	public static final Identifier ITEM_PROTECTION_TEX = SkyblockerMod.id("item_protection");
-	private static final Component NO_UUID_TEXT = Component.translatable("skyblocker.itemProtection.noItemUuid").withColor(TextColor.RED);
-	private static final Component UNABLE_TO_PROTECT_TEXT = Component.translatable("skyblocker.itemProtection.unableToProtect").withColor(TextColor.RED);
+	private static final Component NO_UUID_TEXT = Component.translatable("skyblocker.itemProtection.noItemUuid").withStyle(ChatFormatting.RED);
+	private static final Component UNABLE_TO_PROTECT_TEXT = Component.translatable("skyblocker.itemProtection.unableToProtect").withStyle(ChatFormatting.RED);
 	public static KeyMapping itemProtection;
 
 	@Init

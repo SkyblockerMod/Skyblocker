@@ -25,7 +25,6 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -51,7 +50,7 @@ public class Shortcuts {
 	 */
 	private static final List<InputConstants.Key> pressedKeys = new ArrayList<>();
 	private static final long KEY_BINDING_COOLDOWN = 200;
-	private static final Component NOT_LOADED_TEXT = Component.translatable("skyblocker.shortcuts.notLoaded").withColor(TextColor.RED).withStyle(ChatFormatting.BOLD);
+	private static final Component NOT_LOADED_TEXT = Component.translatable("skyblocker.shortcuts.notLoaded").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD);
 	private static long lastKeyBindingCommandTime;
 
 	public static boolean isShortcutsLoaded() {
@@ -139,18 +138,18 @@ public class Shortcuts {
 
 	private static Component statusMessage(String name, boolean enabled) {
 		return Component.empty().withStyle(ChatFormatting.BOLD)
-				.append(Component.literal("Skyblocker").withColor(TextColor.YELLOW))
+				.append(Component.literal("Skyblocker").withStyle(ChatFormatting.YELLOW))
 				.append(" ")
 				.append(name)
 				.append(" ")
-				.append(enabled ?  Component.literal("(Enabled)").withColor(TextColor.GREEN) : Component.literal("(Disabled)").withColor(TextColor.RED));
+				.append(enabled ?  Component.literal("(Enabled)").withStyle(ChatFormatting.GREEN) : Component.literal("(Disabled)").withStyle(ChatFormatting.RED));
 	}
 
 	private static Component shortcutEntry(String key, String value) {
 		return Component.empty()
-				.append(Component.literal(key).withColor(TextColor.GRAY))
+				.append(Component.literal(key).withStyle(ChatFormatting.GRAY))
 				.append(" → ")
-				.append(Component.literal(value).withColor(TextColor.GRAY));
+				.append(Component.literal(value).withStyle(ChatFormatting.GRAY));
 	}
 
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
@@ -180,12 +179,12 @@ public class Shortcuts {
 			}
 
 			source.sendFeedback(Component.empty().withStyle(ChatFormatting.BOLD)
-					.append(Component.literal("Skyblocker").withColor(TextColor.YELLOW))
+					.append(Component.literal("Skyblocker").withStyle(ChatFormatting.YELLOW))
 					.append(" ")
 					.append("Commands")
 			);
 			for (String command : dispatcher.getSmartUsage(dispatcher.getRoot().getChild(SkyblockerMod.NAMESPACE), source).values()) {
-				source.sendFeedback(Component.literal("/" + SkyblockerMod.NAMESPACE + " " + command).withColor(TextColor.GRAY));
+				source.sendFeedback(Component.literal("/" + SkyblockerMod.NAMESPACE + " " + command).withStyle(ChatFormatting.GRAY));
 			}
 			return Command.SINGLE_SUCCESS;
 			// Queue the screen or else the screen will be immediately closed after executing this command

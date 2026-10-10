@@ -68,7 +68,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.InteractionResult;
@@ -184,7 +183,7 @@ public class DungeonManager {
 	 * The map of dungeon room names to custom waypoints relative to the room.
 	 */
 	private static final Table<String, BlockPos, SecretWaypoint> customWaypoints = HashBasedTable.create();
-	private static final Component NOT_MATCHED_TEXT = Component.translatable("skyblocker.dungeons.secrets.notMatched").withColor(TextColor.RED);
+	private static final Component NOT_MATCHED_TEXT = Component.translatable("skyblocker.dungeons.secrets.notMatched").withStyle(ChatFormatting.RED);
 	private static @Nullable CompletableFuture<Void> roomsLoaded;
 	/**
 	 * The map position of the top left corner of the entrance room.
@@ -448,7 +447,7 @@ public class DungeonManager {
 			if (markSecrets(secretIndex, found)) {
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex).withColor(TextColor.RED)));
+				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex).withStyle(ChatFormatting.RED)));
 			}
 			return Command.SINGLE_SUCCESS;
 		});
@@ -461,7 +460,7 @@ public class DungeonManager {
 				currentRoom.markAllSecrets(false);
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
 			} else {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable").withColor(TextColor.RED)));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable").withStyle(ChatFormatting.RED)));
 			}
 
 			return Command.SINGLE_SUCCESS;
@@ -476,7 +475,7 @@ public class DungeonManager {
 		if (CLIENT.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
 			return getRelativePos(context.getSource(), blockHitResult.getBlockPos());
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget").withColor(TextColor.RED)));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -595,7 +594,7 @@ public class DungeonManager {
 	}
 
 	private static Component error(String message) {
-		return Constants.PREFIX.get().append(Component.literal(message).withColor(TextColor.RED));
+		return Constants.PREFIX.get().append(Component.literal(message).withStyle(ChatFormatting.RED));
 	}
 
 	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, Player player, MapItemSavedData map) {

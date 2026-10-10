@@ -7,9 +7,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,14 +57,14 @@ public class CustomArmorDyeColors {
 						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.noItemUuid").withColor(TextColor.RED)));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.noItemUuid").withStyle(ChatFormatting.RED)));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.notDyeable").withColor(TextColor.RED)));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.notDyeable").withStyle(ChatFormatting.RED)));
 				return Command.SINGLE_SUCCESS;
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.unableToSetColor").withColor(TextColor.RED)));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customDyeColors.unableToSetColor").withStyle(ChatFormatting.RED)));
 		}
 
 		return Command.SINGLE_SUCCESS;

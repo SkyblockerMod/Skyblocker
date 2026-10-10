@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
@@ -37,7 +36,7 @@ public class TreasureHunter extends ChatPatternListener {
 		String location = locations.get(hint);
 		if (location == null) return false;
 		Utils.sendMessageToBypassEvents(Component.empty()
-				.append(Component.literal("[NPC] Treasure Hunter").withColor(TextColor.YELLOW))
+				.append(Component.literal("[NPC] Treasure Hunter").withStyle(ChatFormatting.YELLOW))
 				.append(Component.literal(": Go mine around " + location)));
 		requestWaypoint(location);
 		return true;

@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -36,7 +37,6 @@ import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -287,7 +287,7 @@ public class Room implements Tickable, Renderable {
 		if (waypoint != null) {
 			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.customWaypointRemoved", pos.getX(), pos.getY(), pos.getZ(), name, waypoint.secretIndex, waypoint.category.getSerializedName(), waypoint.getName())));
 		} else {
-			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name).withColor(TextColor.RED)));
+			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.customWaypointNotFound", pos.getX(), pos.getY(), pos.getZ(), name).withStyle(ChatFormatting.RED)));
 		}
 	}
 

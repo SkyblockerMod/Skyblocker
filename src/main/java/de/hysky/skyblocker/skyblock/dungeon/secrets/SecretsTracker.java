@@ -12,10 +12,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.player.Player;
 
 import de.hysky.skyblocker.SkyblockerMod;
@@ -107,13 +107,13 @@ public class SecretsTracker {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
 		DungeonClass dungeonClass = DungeonPlayerManager.getClassFromPlayer(player);
-		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + dungeonClass.displayName() + ")").withColor(dungeonClass != DungeonClass.UNKNOWN ? dungeonClass.color() : 0xF57542), Component.literal(String.valueOf(secretData.secrets())).withColor(TextColor.GRAY), getCacheText(secretData.cached(), secretData.cacheAge()))));
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.feedback", Component.literal(player).append(" (" + dungeonClass.displayName() + ")").withColor(dungeonClass != DungeonClass.UNKNOWN ? dungeonClass.color() : 0xF57542), Component.literal(String.valueOf(secretData.secrets())).withStyle(ChatFormatting.GRAY), getCacheText(secretData.cached(), secretData.cacheAge()))));
 	}
 
 	private static void sendFailureMessage() {
 		Player playerEntity = Minecraft.getInstance().player;
 		if (playerEntity == null) return;
-		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback").withColor(TextColor.RED)));
+		playerEntity.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secretsTracker.failFeedback").withStyle(ChatFormatting.RED)));
 	}
 
 	private static Component getCacheText(boolean cached, int cacheAge) {

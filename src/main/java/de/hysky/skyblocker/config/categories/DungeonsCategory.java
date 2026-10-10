@@ -12,7 +12,6 @@ import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
@@ -263,7 +262,7 @@ public class DungeonsCategory {
 								.name(Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage"))
 								.description(
 										Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[0]"),
-										Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[1]").withColor(TextColor.RED)
+										Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[1]").withStyle(ChatFormatting.RED)
 								)
 								.binding(defaults.dungeons.leapOverlay.enableLeapMessage,
 										() -> config.dungeons.leapOverlay.enableLeapMessage,
