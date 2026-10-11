@@ -1809,5 +1809,21 @@
     "skyblocker.config.farming.greenhouse.greenhousePresets.name": "Nom",
     "skyblocker.config.farming.greenhouse.greenhousePresets.title": "Modifier les pré-réglages des Plots Greenhouse",
     "skyblocker.config.foraging.enableTreeFelledNotification": "Activer la notification Tree Felled",
-    "skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip": "Affiche un message à l'écran pendant 3 secondes lorsque l'enchantement \"Petalfall\", l'attribut \"Woodpecker\" ou la compétence \"Timber\" de l'HOTF se déclenche et abat l'arbre que vous êtes en train de couper."
+    "skyblocker.config.foraging.enableTreeFelledNotification.@Tooltip": "Affiche un message à l'écran pendant 3 secondes lorsque l'enchantement \"Petalfall\", l'attribut \"Woodpecker\" ou la compétence \"Timber\" de l'HOTF se déclenche et abat l'arbre que vous êtes en train de couper.",
+    "skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter": "Activer la Surbrillance des Lushlilac",
+    "skyblocker.config.foraging.moongladeMarsh.enableLushlilacHighlighter.@Tooltip": "Marque les Lushlilacs en magenta pour faciliter leur repérage.",
+    "skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter": "Activer la Surbrillance des Sea Lumies",
+    "skyblocker.config.foraging.moongladeMarsh.enableSeaLumiesHighlighter.@Tooltip": "Marque les Sea Lumies en cyan pour faciliter leur repérage.",
+    "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget": "Widget Détails du Sweep",
+    "skyblocker.config.foraging.moongladeMarsh.enableSweepDetailsWidget.@Tooltip": "Affiche les informations détaillées sur le Sweep sur le HUD.\nLes détails du Sweep sont supprimés du chat mais restent enregistrés dans les journaux.\n\nNécessite d'activer les détails du Sweep auprès de Swoop, dans le Moonglade Marsh !",
+    "skyblocker.config.foraging.moongladeMarsh.enableTreeBreakHud": "HUD Progression de l'Abattage",
+    "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver": "Activer l'Aide du Tuner",
+    "skyblocker.config.foraging.moongladeMarsh.enableTunerSolver.@Tooltip": "Indique le nombre de clics requis pour résoudre le puzzle Tune Frequency du Moonglade Beacon.",
+    "skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount": "Nombre Minimum de Sea Lumies à Marquer",
+    "skyblocker.config.foraging.moongladeMarsh.seaLumieMinCount.@Tooltip": "Le nombre minimum de Sea Lumies qui doivent se trouver dans un bloc pour qu'il soit marqué.",
+    "skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle": "Résoudre l'énigme du Temple de la Forêt",
+    "skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle.@Tooltip": "Affiche le nombre de fois où vous devez faire pivoter les blocs de terre cuite. Clic droit pour les rotations positives et clic gauche pour les négatives.",
+    "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "Activer la Surbrillance des Ruches",
+    "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "Marque toutes les ruches pleines en bleu pour faciliter leur repérage.",
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Activer la Surbrillance des Ruby Veilshroom"
 }
