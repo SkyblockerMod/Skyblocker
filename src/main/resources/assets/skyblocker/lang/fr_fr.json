@@ -1825,5 +1825,6 @@
     "skyblocker.config.foraging.moongladeMarsh.solveForestTemplePuzzle.@Tooltip": "Affiche le nombre de fois où vous devez faire pivoter les blocs de terre cuite. Clic droit pour les rotations positives et clic gauche pour les négatives.",
     "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "Activer la Surbrillance des Ruches",
     "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "Marque toutes les ruches pleines en bleu pour faciliter leur repérage.",
-    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Activer la Surbrillance des Ruby Veilshroom"
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Activer la Surbrillance des Ruby Veilshroom",
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Marque les Ruby Veilshrooms en violet pour faciliter leur repérage."
 }
