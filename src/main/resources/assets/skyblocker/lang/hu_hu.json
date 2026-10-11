@@ -1947,5 +1947,13 @@
     "skyblocker.config.chat.filter.hideRareCrops": "Ritka Növény Üzenetek Elrejtése",
     "skyblocker.config.hunting.safari.critterCapsuleHelper": "Critter Capsule Segítő",
     "skyblocker.config.hunting.safari.critterCapsuleHelper.@Tooltip": "Megmutatja, hogy a critter capsule hová fog érkezni.",
-    "skyblocker.config.hunting.safari.critterCapsuleHelperColor": "Critter Capsule Segítő Kiemelés Színe"
+    "skyblocker.config.hunting.safari.critterCapsuleHelperColor": "Critter Capsule Segítő Kiemelés Színe",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[0]": "Üzenetet küld a partiba leapeléskor.",
+    "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[1]": "Ehhez a Spirit Leap Átfedésnek bekapcsolva kell lennie.",
+    "skyblocker.config.helpers.bazaar.enableBazaarMax": "Bazaar Max Jelző Engedélyezése",
+    "skyblocker.config.helpers.bazaar.enableBazaarMax.@Tooltip": "Írd be: 'max' (vagy: 'm', 'x') egy Bazaar mennyiségmegadó táblába és nyomd meg a szóközt, hogy a maximális rendelési mennyiséget használd ami a menüben látható.",
+    "skyblocker.config.hunting.moongladeMobs.highlightInvisibug": "Invisibug Kiemelése",
+    "skyblocker.config.hunting.moongladeMobs.highlightInvisibug.@Tooltip": "Kiemeli az Invisibugokat alapértelmezetten türkizzel, ezt a színt módosítani lehet.",
+    "skyblocker.config.hunting.moongladeMobs.highlightInvisibugColor": "Invisibug Kemelés Színe",
+    "skyblocker.itemProtection.added.safer": "*tárgyad most már egy picit nagyobb biztonságban érzi magát :')*"
 }
