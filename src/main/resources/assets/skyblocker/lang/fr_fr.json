@@ -1826,5 +1826,7 @@
     "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter": "Activer la Surbrillance des Ruches",
     "skyblocker.config.foraging.torrhusCanyon.enableHoneyhiveHighlighter.@Tooltip": "Marque toutes les ruches pleines en bleu pour faciliter leur repérage.",
     "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter": "Activer la Surbrillance des Ruby Veilshroom",
-    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Marque les Ruby Veilshrooms en violet pour faciliter leur repérage."
+    "skyblocker.config.foraging.torrhusCanyon.enableRubyVeilshroomHighlighter.@Tooltip": "Marque les Ruby Veilshrooms en violet pour faciliter leur repérage.",
+    "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles": "Résoudre les énigmes du Temple du Désert",
+    "skyblocker.config.foraging.torrhusCanyon.solveDesertTemplePuzzles.@Tooltip": "Affiche l'ordre correct des boutons à cliquer en texte blanc pour la première énigme. Pour la seconde, il indique la direction vers laquelle chaque statue doit être orientée."
 }
