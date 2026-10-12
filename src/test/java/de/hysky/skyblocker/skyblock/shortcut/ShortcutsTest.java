@@ -72,6 +72,22 @@ public class ShortcutsTest {
 		Assertions.assertEquals(SkyblockerMod.GSON.fromJson(SHORTCUTS_JSON_KEY_COMBO, JsonObject.class), shortcutsJson); // Convert to json to prevent issues with hash map iteration order
 	}
 
+	@Test
+	void testPressedKeysNoLeakOnKeyRepeat() {
+		InputConstants.Key w = fromKeyCode(InputConstants.KEY_W, -1);
+		InputConstants.Key leftMouse = InputConstants.Type.MOUSE.getOrCreate(InputConstants.MOUSE_BUTTON_LEFT);
+
+		Shortcuts.setKeyPressed(w, true);
+		for (int i = 0; i < 10; i++) {
+			Shortcuts.setKeyPressed(leftMouse, true);
+			Shortcuts.setKeyPressed(w, true); // key repeat
+			Shortcuts.setKeyPressed(leftMouse, false);
+		}
+		Shortcuts.setKeyPressed(w, false);
+
+		Assertions.assertEquals(List.of(), Shortcuts.pressedKeys);
+	}
+
 	private static InputConstants.Key fromKeyCode(int key, int scancode) {
 		return InputConstants.getKey(new KeyEvent(key, scancode, 0));
 	}
