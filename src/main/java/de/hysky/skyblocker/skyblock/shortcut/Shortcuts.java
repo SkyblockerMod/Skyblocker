@@ -49,7 +49,8 @@ public class Shortcuts {
 	 *
 	 * @see net.minecraft.client.KeyMapping#isDown() KeyBinding#isPressed()
 	 */
-	private static final List<InputConstants.Key> pressedKeys = new ArrayList<>();
+	@VisibleForTesting
+	static final List<InputConstants.Key> pressedKeys = new ArrayList<>();
 	private static final long KEY_BINDING_COOLDOWN = 200;
 	private static final Component NOT_LOADED_TEXT = Component.translatable("skyblocker.shortcuts.notLoaded").withColor(TextColor.RED).withStyle(ChatFormatting.BOLD);
 	private static long lastKeyBindingCommandTime;
@@ -251,7 +252,7 @@ public class Shortcuts {
 		// Check for combinations
 		if (command == null) {
 			// This should never happen, but the last pressed key was not added to the list!
-			if (pressedKeys.isEmpty() || !pressedKeys.getLast().equals(key)) {
+			if (!pressedKeys.contains(key)) {
 				setKeyPressed(key, true);
 				LOGGER.warn("[Skyblocker Shortcuts] Key {} was not in the pressed keys list when it should be. Check if `setKeyPressed` is always called before `onKeyPressed`.", key);
 			}
@@ -266,7 +267,8 @@ public class Shortcuts {
 	public static void setKeyPressed(InputConstants.Key key, boolean pressed) {
 		if (!SkyblockerConfigManager.get().general.shortcuts.enableShortcuts || !SkyblockerConfigManager.get().general.shortcuts.enableKeyBindingShortcuts) return;
 		if (pressed) {
-			if (pressedKeys.isEmpty() || !pressedKeys.getLast().equals(key)) pressedKeys.add(key);
+			// Key repeat events re-press held keys, so check the whole list to avoid duplicates that a single release won't remove
+			if (!pressedKeys.contains(key)) pressedKeys.add(key);
 		} else {
 			pressedKeys.remove(key);
 		}
