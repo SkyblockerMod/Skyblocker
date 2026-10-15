@@ -24,7 +24,7 @@ public class TabLayerBuilder extends LayerBuilder {
 
 	public void clearTab() {
 		tabWidgets.clear();
-		merge();
+		updateList();
 	}
 
 	@Override
