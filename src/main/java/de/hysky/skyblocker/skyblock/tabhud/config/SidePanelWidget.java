@@ -110,8 +110,11 @@ class SidePanelWidget extends AbstractContainerWidget {
 				setMaxWidth(width, TextOverflow.SCROLLING);
 			}
 		});
-		if (!positionedWidget.fromTab) {
-			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(positionedWidget)).build());
+		add(Button.builder(positionedWidget.fromTab ? Component.translatable("skyblocker.config.hud.widget.hide") : Component.translatable("skyblocker.config.hud.widget.remove"), _ -> configScreen.removeWidget(positionedWidget)).build());
+		if (positionedWidget.fromTab) {
+			add(Button.builder(Component.translatable("skyblocker.config.hud.widget.unlock"), _ -> configScreen.addWidget(hudWidget, hudWidget.getX() + 5, hudWidget.getY() + 5))
+					.tooltip(Tooltip.create(Component.translatable("skyblocker.config.hud.widget.unlock.@Tooltip")))
+					.build());
 		}
 
 		Button copyButton = add(Button.builder(

@@ -79,6 +79,10 @@ public class OtherOptionsScreen extends Screen {
 				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets.@Tooltip")))
 				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.compactWidgets"), (_, value) -> updateConfig(config -> config.compactWidgets = value))
 		);
+		globalOptions.addChild(CycleButton.booleanBuilder(YES, NO, conf.enableHudBackground)
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground.@Tooltip")))
+				.create(Component.translatable("skyblocker.config.uiAndVisuals.tabHud.enableHudBackground"), (_, value) -> updateConfig(config -> config.enableHudBackground = value))
+		);
 
 		body.addChild(new StringWidget(Component.translatable("skyblocker.config.hud.otherOptions.locationOptions", parent.getCurrentLocation()), font));
 		GridLayout.RowHelper screenOptions = body.addChild(new GridLayout().spacing(2)).createRowHelper(2);
