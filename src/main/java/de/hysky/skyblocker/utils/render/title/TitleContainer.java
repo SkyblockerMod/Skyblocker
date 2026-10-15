@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 
@@ -120,6 +121,17 @@ public class TitleContainer {
 	public static void playNotificationSound() {
 		if (CLIENT.player != null) {
 			CLIENT.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
+		}
+	}
+
+	/**
+	 * Plays the notification sound at a fixed volume on the master channel, ignoring the players volume slider.
+	 *
+	 * @param volume the volume, from 0 to 1
+	 */
+	public static void playNotificationSound(float volume) {
+		if (CLIENT.player != null && CLIENT.level != null && volume > 0f) {
+			CLIENT.level.playLocalSound(CLIENT.player.getX(), CLIENT.player.getY(), CLIENT.player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, volume, 0.1f, false);
 		}
 	}
 
