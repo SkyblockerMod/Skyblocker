@@ -76,9 +76,7 @@ public class FishingHelper {
 				String name = armorStand.getCustomName().getString();
 				if (name.equals("!!!") && player.fishing.getBoundingBox().inflate(4d).contains(armorStand.position())) {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
-						if (TitleContainer.addTitle(title, 10)) {
-							TitleContainer.playNotificationSound(SkyblockerConfigManager.get().helpers.fishing.alertSoundVolume / 100f);
-						}
+						TitleContainer.addTitleAndPlaySound(title, 10, SkyblockerConfigManager.get().helpers.fishing.alertSoundVolume / 100f);
 					}
 				}
 			}

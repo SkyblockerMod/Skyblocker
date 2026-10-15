@@ -118,20 +118,28 @@ public class TitleContainer {
 		return false;
 	}
 
+	/**
+	 * Same as {@link #addTitleAndPlaySound(Title, int)}, but plays the notification sound at the given volume on the master channel instead,
+	 * so it isn't affected by the players volume slider.
+	 *
+	 * @param title  the title
+	 * @param ticks  the number of ticks the title will remain
+	 * @param volume the volume of the sound, from 0 to 1. 0 doesn't play the sound
+	 * @return whether the title is currently shown already
+	 */
+	public static boolean addTitleAndPlaySound(Title title, int ticks, float volume) {
+		if (addTitle(title, ticks)) {
+			if (CLIENT.player != null && CLIENT.level != null && volume > 0f) {
+				CLIENT.level.playLocalSound(CLIENT.player.getX(), CLIENT.player.getY(), CLIENT.player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, volume, 0.1f, false);
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public static void playNotificationSound() {
 		if (CLIENT.player != null) {
 			CLIENT.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 100f, 0.1f);
-		}
-	}
-
-	/**
-	 * Plays the notification sound at a fixed volume on the master channel, ignoring the players volume slider.
-	 *
-	 * @param volume the volume, from 0 to 1
-	 */
-	public static void playNotificationSound(float volume) {
-		if (CLIENT.player != null && CLIENT.level != null && volume > 0f) {
-			CLIENT.level.playLocalSound(CLIENT.player.getX(), CLIENT.player.getY(), CLIENT.player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.MASTER, volume, 0.1f, false);
 		}
 	}
 
