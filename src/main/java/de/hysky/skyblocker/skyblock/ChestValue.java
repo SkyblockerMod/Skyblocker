@@ -400,23 +400,24 @@ public class ChestValue {
 				if (count == 0) continue;
 
 				if (!id.isEmpty()) {
-					OptionalDouble priceData;
 					if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.useNpcPriceOnly) {
-						priceData = findNpcPrice(stack.getSkyblockId());
+						OptionalDouble priceData = findNpcPrice(stack.getSkyblockId());
+						if (priceData.isEmpty()) hasIncompleteData = true;
+						value += priceData.orElse(0) * count;
 					} else {
 						// OptionalDouble doesn't have an Optional#or equivalent. Valhalla, please SAVE ME
 						OptionalDouble itemPrice = ItemUtils.getItemPrice(id);
-						priceData = itemPrice.isPresent() ? itemPrice : findNpcPrice(stack.getSkyblockId());
+						OptionalDouble priceData = itemPrice.isPresent() ? itemPrice : findNpcPrice(stack.getSkyblockId());
+
+						if (priceData.isEmpty()) hasIncompleteData = true;
+
+						// The networth calculator can't price hunting box shards since they're display items, and shards have no modifiers to account for anyway
+						value += screenType == ScreenType.HUNTING_BOX ? priceData.orElse(0) * count : NetworthCalculator.getItemNetworth(stack, count).price();
 					}
-
-					if (priceData.isEmpty()) hasIncompleteData = true;
-
-					// The networth calculator can't price hunting box shards since they're display items, and shards have no modifiers to account for anyway
-					value += screenType == ScreenType.HUNTING_BOX ? priceData.orElse(0) * count : NetworthCalculator.getItemNetworth(stack, count).price();
 				}
 			}
 
-			return getValueText((long) value, hasIncompleteData);
+			return getValueText(Math.round(value), hasIncompleteData);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Value Calculator] Failed to calculate dungeon chest value! ", e);
 		}
