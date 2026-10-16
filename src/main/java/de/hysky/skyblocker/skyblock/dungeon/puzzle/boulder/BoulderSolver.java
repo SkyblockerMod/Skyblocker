@@ -19,14 +19,20 @@ import org.jspecify.annotations.Nullable;
  */
 public class BoulderSolver {
 
+	//How many routes get collected, the fastest first and the alternatives after it
+	private static final int MAX_SOLUTIONS = 3;
+	//A* on a 7x7 board finishes far below this, the cap only stops a pathological board from spinning forever
+	private static final int MAX_EXPANSIONS = 100_000;
+
 	/**
-	 * Finds the shortest path to solve the Boulder puzzle using the A* search algorithm.
+	 * Finds routes to solve the Boulder puzzle using the A* search algorithm, the shortest route first
+	 * followed by up to {@value MAX_SOLUTIONS} - 1 longer alternatives.
 	 *
 	 * @param initialStates The list of initial game states from which to start the search.
-	 * @return A list of coordinates representing the shortest path to solve the puzzle,
-	 *         or null if no solution is found within the maximum number of iterations.
+	 * @return A list of up to {@value MAX_SOLUTIONS} solutions, each a list of coordinates describing
+	 *         the route, or an empty list if no solution is found within the expansion budget.
 	 */
-	public static @Nullable List<int[]> aStarSolve(List<GameState> initialStates) {
+	public static List<List<int[]>> aStarSolve(List<GameState> initialStates) {
 		Set<GameState> visited = new HashSet<>();
 		PriorityQueue<Pair<GameState, List<int[]>>> queue = new PriorityQueue<>(new AStarComparator());
 
@@ -34,23 +40,24 @@ public class BoulderSolver {
 			queue.add(Pair.of(initialState, new ArrayList<>()));
 		}
 
-		int maxIterations = 10000;
-		int iterations = 0;
+		List<List<int[]>> solutions = new ArrayList<>();
+		int expansions = 0;
 
-		while (!queue.isEmpty() && iterations < maxIterations) {
+		while (!queue.isEmpty() && expansions < MAX_EXPANSIONS && solutions.size() < MAX_SOLUTIONS) {
 			Pair<GameState, List<int[]>> pair = queue.poll();
 			GameState state = pair.left();
 			List<int[]> path = pair.right();
 
-			if (visited.contains(state)) {
+			if (!visited.add(state)) {
 				continue;
 			}
-			visited.add(state);
 
 			// Add current before checking for solved
 			path.add(new int[]{state.playerX, state.playerY});
 			if (state.isSolved()) {
-				return path;
+				//The search keeps going past a solved state so the alternatives can be found too
+				solutions.add(path);
+				continue;
 			}
 
 			for (int[] direction : new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}}) {
@@ -59,10 +66,10 @@ public class BoulderSolver {
 					queue.add(Pair.of(newState, new ArrayList<>(path)));
 				}
 			}
-			iterations++;
+			expansions++;
 		}
 
-		return null;
+		return solutions;
 	}
 
 	/**

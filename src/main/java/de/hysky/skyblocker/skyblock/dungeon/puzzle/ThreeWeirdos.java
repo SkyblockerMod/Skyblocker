@@ -5,8 +5,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -20,15 +23,20 @@ import net.minecraft.world.phys.HitResult;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.RenderHelper;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class ThreeWeirdos extends DungeonPuzzle {
 	@SuppressWarnings("unused")
 	private static final ThreeWeirdos INSTANCE = new ThreeWeirdos();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ThreeWeirdos.class);
 	protected static final Pattern PATTERN = Pattern.compile("^\\[NPC] ([A-Z][a-z]+): (?:The reward is(?: not in my chest!|n't in any of our chests\\.)|My chest (?:doesn't have the reward\\. We are all telling the truth\\.|has the reward and I'm telling the truth!)|At least one of them is lying, and the reward is not in [A-Z][a-z]+'s chest!|Both of them are telling the truth\\. Also, [A-Z][a-z]+ has the reward in their chest!)$");
+	//Chest positions in room relative coordinates, the NPC saying each riddle stands one block west of its chest
+	private static final BlockPos[] CHEST_POSITIONS = { new BlockPos(14, 69, 24), new BlockPos(16, 69, 25), new BlockPos(18, 69, 24) };
 	private static final float[] GREEN_COLOR_COMPONENTS = new float[]{0, 1, 0};
 	private static @Nullable BlockPos pos;
 	static @Nullable AABB boundingBox;
@@ -43,19 +51,30 @@ public class ThreeWeirdos extends DungeonPuzzle {
 			if (!matcher.matches()) return true;
 			String name = matcher.group(1);
 			Room room = DungeonManager.getCurrentRoom();
-			if (room == null || !room.isMatched()) return true;
+			if (room == null || !room.isMatched() || room.getDirection() == null) return true;
 
-			checkForNPC(world, room, new BlockPos(13, 69, 24), name);
-			checkForNPC(world, room, new BlockPos(15, 69, 25), name);
-			checkForNPC(world, room, new BlockPos(17, 69, 24), name);
+			for (BlockPos chestPos : CHEST_POSITIONS) {
+				checkForNPC(world, room, chestPos.offset(-1, 0, 0), name);
+			}
 
 			return true;
 		});
 		UseBlockCallback.EVENT.register((_, _, _, blockHitResult) -> {
 			if (blockHitResult.getType() == HitResult.Type.BLOCK && blockHitResult.getBlockPos().equals(pos)) {
 				pos = null;
+			} else if (isWrongChestClick(blockHitResult.getBlockPos())) {
+				if (Debug.debugEnabled()) LOGGER.info("[Skyblocker Three Weirdos] Blocked a click on the wrong chest at {}", blockHitResult.getBlockPos().toShortString());
+				Utils.sendBlockedClickMessage("skyblocker.dungeons.blockers.wrongChest");
+				return InteractionResult.FAIL;
 			}
 			return InteractionResult.PASS;
+		});
+		//breaking any of the chests fails the puzzle, the riddle only decides which one to click
+		AttackBlockCallback.EVENT.register((_, _, _, clickedPos, _) -> {
+			if (!isChestAttack(clickedPos)) return InteractionResult.PASS;
+			if (Debug.debugEnabled()) LOGGER.info("[Skyblocker Three Weirdos] Blocked an attack on a chest at {}", clickedPos.toShortString());
+			Utils.sendBlockedClickMessage("skyblocker.dungeons.blockers.breakBlocked");
+			return InteractionResult.FAIL;
 		});
 	}
 
@@ -75,6 +94,32 @@ public class ThreeWeirdos extends DungeonPuzzle {
 			boundingBox = RenderHelper.getBlockBoundingBox(world, pos);
 			npcs.forEach(entity -> entity.skyblocker$setCustomName(Component.literal(name).withStyle(ChatFormatting.GREEN)));
 		}
+	}
+
+	private static boolean isWrongChestClick(BlockPos clickedPos) {
+		if (pos == null || Utils.isBlockerBypassed() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.blockIncorrectClicks) return false;
+		Room room = DungeonManager.getCurrentRoom();
+		if (room == null || !room.isMatched() || room.getDirection() == null) return false;
+		//pos can outlive the puzzle, never block clicks outside the actual room
+		if (!"three-chests".equals(room.getName())) return false;
+
+		for (BlockPos chestPos : CHEST_POSITIONS) {
+			if (room.relativeToActual(chestPos).equals(clickedPos)) {
+				return !clickedPos.equals(pos);
+			}
+		}
+		return false;
+	}
+
+	private static boolean isChestAttack(BlockPos clickedPos) {
+		if (Utils.isBlockerBypassed() || !SkyblockerConfigManager.get().dungeons.puzzleSolvers.blockIncorrectClicks) return false;
+		Room room = DungeonManager.getCurrentRoom();
+		if (room == null || !room.isMatched() || room.getDirection() == null || !"three-chests".equals(room.getName())) return false;
+
+		for (BlockPos chestPos : CHEST_POSITIONS) {
+			if (room.relativeToActual(chestPos).equals(clickedPos)) return true;
+		}
+		return false;
 	}
 
 	@Override
