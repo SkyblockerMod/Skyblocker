@@ -167,9 +167,9 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip"))
-								.binding(defaults.uiAndVisuals.showEquipmentInInventory,
-										() -> config.uiAndVisuals.showEquipmentInInventory,
-										newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
+								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory,
+										() -> config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory,
+										newValue -> config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<UIAndVisualsConfig.SkyBlockInventoryScreen.EquipmentCommands>createBuilder()

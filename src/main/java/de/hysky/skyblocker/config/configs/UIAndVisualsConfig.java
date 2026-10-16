@@ -40,8 +40,6 @@ public class UIAndVisualsConfig {
 
 	public boolean hideStatusEffectOverlay = true;
 
-	public boolean showEquipmentInInventory = true;
-
 	public boolean cancelComponentUpdateAnimation = true;
 
 	public boolean showCustomizeButton = true;
@@ -94,12 +92,11 @@ public class UIAndVisualsConfig {
 
 	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
-
 	@Deprecated
 	public transient ItemPickup itemPickup = new ItemPickup();
 
 	public static class SkyBlockInventoryScreen {
-		// TODO: Move showEquipmentInInventory to here.
+		public boolean showEquipmentInInventory = true;
 
 		public EquipmentCommands equipmentCommand = EquipmentCommands.EQUIPMENT;
 

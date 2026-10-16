@@ -13,9 +13,6 @@ import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
