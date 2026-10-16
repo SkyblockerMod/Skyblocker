@@ -251,6 +251,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		grid = new BackpackGridWidget(getMinLeftPos() + 8, this.topPos + 8, getMaxWidth() - 16, getHeight() - 16, storagesPerRow, internalCols, true);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
+		grid.scrollToOpenBackpack();
 		this.addRenderableWidget(grid);
 
 		//extra control buttons out the way
@@ -405,6 +406,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		private void reload(Button button) {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
+		}
+
+		/// Scrolls the open backpack into view if its header is not visible (e.g. when opened with a command like `/bp 15`)
+		private void scrollToOpenBackpack() {
+			if (openBackpack == null) return;
+			ScreenRectangle rectangle = getGridRectangle();
+			if (openBackpack.getY() < rectangle.top() || openBackpack.getY() + HEADER_H > rectangle.bottom()) {
+				setScrollAmount(getScrollAmount() + openBackpack.getY() - rectangle.top());
+			}
 		}
 
 
