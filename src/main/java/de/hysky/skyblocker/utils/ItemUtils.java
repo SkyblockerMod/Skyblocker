@@ -76,6 +76,7 @@ import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.CraftPriceTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.ObtainedDateTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.networth.NetworthCalculator;
 
@@ -338,7 +339,12 @@ public final class ItemUtils {
 			case "FACTION_RABBIT" -> id + "_" + customData.getStringOr("faction_rabbit_id", "").toUpperCase(Locale.ENGLISH);
 			case "" -> {
 				Attribute shard = getShardFromName(stack);
-				yield shard != null ? shard.neuId() : id;
+				if (shard != null) yield shard.neuId();
+				// Enchanted Books in Bazaar orders
+				if (stack instanceof ItemStack realStack && realStack.is(Items.ENCHANTED_BOOK)) {
+					yield ItemRepository.getBazaarStocks().getOrDefault(getSkyblockApiId(stack), id);
+				}
+				yield id;
 			}
 			default -> id.replace(":", "-");
 		};
