@@ -278,6 +278,10 @@ public final class ItemUtils {
 					return id;
 				}
 
+				// Shards in Bazaar orders
+				Attribute shard = getShardFromName(stack);
+				if (shard != null) return shard.apiId();
+
 				if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
 					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
 					// Enchanted Books in the Bazaar
@@ -332,8 +336,17 @@ public final class ItemUtils {
 			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			case "FACTION_RABBIT" -> id + "_" + customData.getStringOr("faction_rabbit_id", "").toUpperCase(Locale.ENGLISH);
+			case "" -> {
+				Attribute shard = getShardFromName(stack);
+				yield shard != null ? shard.neuId() : id;
+			}
 			default -> id.replace(":", "-");
 		};
+	}
+
+	private static @Nullable Attribute getShardFromName(DataComponentGetter stack) {
+		String name = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString();
+		return name.contains(" Shard") ? Attributes.getAttributeFromItemName(name) : null;
 	}
 
 	public static @NEUId String getNeuIdFromApiId(String apiId) {

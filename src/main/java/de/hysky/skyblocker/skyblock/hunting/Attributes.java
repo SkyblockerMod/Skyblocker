@@ -44,18 +44,22 @@ public class Attributes {
 	}
 
 	public static @Nullable Attribute getAttributeFromItemName(String name) {
-		// Shards outside the hunting box now have "Shard" in their item name.
-		// Dungeon chests also have x<number> after the "Shard" and this strips that too
-		int index = name.indexOf("Shard");
-		if (index > -1) name = name.substring(0, index - 1);
-
-		name = name.replace("BUY ", "").replace("SELL ", ""); // Bazaar Buy/Sell orders
+		String shardName = toShardName(name);
 
 		for (Attribute attribute : attributes) {
-			if (attribute.shardName().equals(name)) return attribute;
+			if (attribute.shardName().equals(shardName)) return attribute;
 		}
 
 		return null;
+	}
+
+	static String toShardName(String itemName) {
+		// Shards outside the hunting box now have "Shard" in their item name.
+		// Dungeon chests also have x<number> after the "Shard" and this strips that too
+		int index = itemName.indexOf(" Shard");
+		if (index > -1) itemName = itemName.substring(0, index);
+
+		return itemName.replace("BUY ", "").replace("SELL ", ""); // Bazaar Buy/Sell orders
 	}
 
 	public static @Nullable Attribute getAttributeFromAbilityName(String name) {
