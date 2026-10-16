@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils.datafixer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Dynamic;
@@ -11,7 +12,6 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -58,19 +58,22 @@ public class ItemStackComponentizationFixer {
 	public static String componentsAsString(DataComponentPatch components) {
 		RegistryOps<Tag> nbtRegistryOps = RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 
-		return Arrays.toString(components.entrySet().stream().map(entry -> {
-			DataComponentType<?> componentType = entry.getKey();
+		DataComponentPatch.SplitResult split = components.split();
+		Stream<String> added = split.added().stream().map(component -> {
+			DataComponentType<?> componentType = component.type();
 			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
 			if (componentId == null) return null;
 
-			Optional<?> component = entry.getValue();
-			if (component.isEmpty()) return "!" + componentId;
-
-			Optional<Tag> encodedComponent = TypedDataComponent.createUnchecked(componentType, component.get()).encodeValue(nbtRegistryOps).result();
+			Optional<Tag> encodedComponent = component.encodeValue(nbtRegistryOps).result();
 
 			if (encodedComponent.isEmpty()) return null;
 			return componentId + "=" + encodedComponent.orElseThrow();
-		}).filter(Objects::nonNull).toArray());
+		});
+		Stream<String> removed = split.removed().stream().map(componentType -> {
+			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+			return componentId == null ? null : "!" + componentId;
+		});
+		return Arrays.toString(Stream.concat(added, removed).filter(Objects::nonNull).toArray());
 	}
 
 	public static ItemStack fromItemString(String itemString, int count) {

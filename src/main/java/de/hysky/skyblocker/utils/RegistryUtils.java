@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.registries.VanillaRegistries;
 
 public final class RegistryUtils {
-	private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createLookup();
+	private static final HolderLookup.Provider LOOKUP = VanillaRegistries.createWorldLookup();
 
 	/**
 	 * Tries to get the dynamic registry manager instance currently in use or else returns {@link #LOOKUP}

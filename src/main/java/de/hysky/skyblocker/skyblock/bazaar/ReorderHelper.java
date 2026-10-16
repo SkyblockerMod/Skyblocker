@@ -38,7 +38,7 @@ public class ReorderHelper extends SimpleContainerSolver implements TooltipAdder
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
 		//   V This part is so that it short-circuits if not necessary
-		if ((slot == 11 || slot == 13) && stack.is(Items.DYED_TERRACOTTA.green()) && InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), InputConstants.KEY_LCONTROL)) {
+		if ((slot == 11 || slot == 13) && stack.is(Items.DYED_TERRACOTTA.green()) && InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)) {
 			Matcher matcher;
 			// The terracotta is at slot 13 on sell orders and at slot 11 on buy orders
 			if (slot == 13) matcher = ItemUtils.getLoreLineIfContainsMatch(stack, SELL_PATTERN);

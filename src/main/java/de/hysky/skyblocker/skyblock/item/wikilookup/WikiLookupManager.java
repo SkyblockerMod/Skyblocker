@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
+import java.net.URI;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
+import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
@@ -12,7 +14,6 @@ import org.slf4j.Logger;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public final class WikiLookupManager {
 	public static void init() {
 		independentWikiLookup = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.skyblocker.wikiLookup.independent",
-				InputConstants.Type.KEYSYM,
+				InputConstants.Type.KEYBOARD,
 				InputConstants.KEY_F1,
 				SkyblockerMod.KEYBINDING_CATEGORY
 		));
@@ -91,7 +92,7 @@ public final class WikiLookupManager {
 	}
 
 	public static void openWikiLink(String wikiLink, Player player) {
-		CompletableFuture.runAsync(() -> Util.getPlatform().openUri(wikiLink), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
+		CompletableFuture.runAsync(() -> Blaze3D.openUri(URI.create(wikiLink)), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 			WikiLookupManager.LOGGER.error("[Skyblocker] Error while retrieving wiki article: {}", wikiLink, e);
 			player.sendSystemMessage(Constants.PREFIX.get().append("Error while retrieving wiki article, see logs..."));
 			return null;

@@ -17,6 +17,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 public class RangedValueWidget extends AbstractContainerWidget {
 	private final PartyFinderScreen screen;
@@ -170,13 +171,10 @@ public class RangedValueWidget extends AbstractContainerWidget {
 			try { max = Integer.parseInt(inputTrimmed); } catch (NumberFormatException _) {}
 		}
 		if (sign != null) {
-			Component[] messages = sign.getText(screen.isSignFront()).getMessages(screen.getClient().isTextFilteringEnabled());
-			screen.getClient().player.connection.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), screen.isSignFront(),
-					inputTrimmed,
-					messages[1].getString(),
-					messages[2].getString(),
-					messages[3].getString()
-			));
+			List<Component> messages = sign.getText(screen.isSignFront() ? SignTextSlot.FRONT : SignTextSlot.BACK).getMessages(screen.getClient().isTextFilteringEnabled());
+			screen.getClient().player.connection.send(new ServerboundSignUpdatePacket(sign.getBlockPos(),
+					List.of(inputTrimmed, messages.get(1).getString(), messages.get(2).getString(), messages.get(3).getString()),
+					screen.isSignFront() ? SignTextSlot.FRONT : SignTextSlot.BACK));
 		}
 		screen.closedSign();
 	}

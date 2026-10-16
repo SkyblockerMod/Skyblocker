@@ -5,8 +5,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Optional;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 

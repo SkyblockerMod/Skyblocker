@@ -15,8 +15,8 @@ public class SpecialEffects {
 
 	protected static void displaySpecialEffect(ItemStack stack, SimpleParticleType particle) {
 		ITEM = new WeakReference<>(SkyblockerConfigManager.get().general.specialEffects.displayItemName ? stack : ItemStack.EMPTY);
-		CLIENT.gameRenderer.displayItemActivation(stack);
 		if (CLIENT.player != null) {
+			CLIENT.player.displayItemActivation(stack);
 			CLIENT.particleEngine.createTrackingEmitter(CLIENT.player, particle, 30);
 			CLIENT.player.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1, 1f);
 		}
