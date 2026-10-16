@@ -48,6 +48,10 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 		return SkyblockerConfigManager.get().dungeons.dungeonChestProfit.croesusProfit;
 	}
 
+	private boolean shouldFactorInFraggedPrices() {
+		return SkyblockerConfigManager.get().dungeons.dungeonChestProfit.factorInFraggedPrices;
+	}
+
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		List<ColorHighlight> highlights = new ArrayList<>();
@@ -61,7 +65,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			String name = stack.getHoverName().getString();
 
 			if (DUNGEON_CHEST_PATTERN.matcher(name).matches()) {
-				double value = getChestValue(stack).leftDouble();
+				double value = getChestValue(stack).output().leftDouble();
 				if (value <= 0) continue;
 
 				if (value > bestValue) {
@@ -74,7 +78,7 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 					secondBestValue = value;
 				}
 			} else if (KUUDRA_CHEST_PATTERN.matcher(name).matches()) {
-				double value = getChestValue(stack).leftDouble();
+				double value = getChestValue(stack).output().leftDouble();
 				if (value <= 0) continue;
 
 				if (value > bestValue) {
@@ -101,15 +105,32 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
 		if (focusedSlot == null || !focusedSlot.hasItem()) return;
 		if (!focusedSlot.getItem().is(Items.PLAYER_HEAD)) return;
+		ChestProfitInfo chestInfo = getChestValue(focusedSlot.getItem());
+		DoubleBooleanPair valueData = chestInfo.output();
+		MutableComponent valueString = Component.literal(Formatters.INTEGER_NUMBERS.format(chestInfo.normalProfit()));
 
-		DoubleBooleanPair valueData = getChestValue(focusedSlot.getItem());
-		MutableComponent valueString = Component.literal(Formatters.INTEGER_NUMBERS.format(valueData.leftDouble()));
 		if (valueData.rightBoolean()) {
 			valueString = valueString.append(" ").append(Component.translatable("skyblocker.dungeons.croesusHelper.incompletePriceData"));
 		}
 		lines.add(Constants.PREFIX.get().append(
 				Component.translatable("skyblocker.dungeons.croesusHelper.chestValue", valueString)
 		));
+
+		if (!shouldFactorInFraggedPrices()) return;
+
+		for (FraggingOpportunity opportunity : chestInfo.fraggingOpportunities()) {
+			lines.add(Constants.PREFIX.get()
+					.append("+" + Formatters.INTEGER_NUMBERS.format(opportunity.additionalProfit()) + " ")
+					.append(Component.translatable("skyblocker.dungeons.croesusHelper.soldAsFragged"))
+					.append(" ⚚ " + opportunity.itemName()));
+		}
+		if (!chestInfo.fraggingOpportunities().isEmpty()) {
+			lines.add(Constants.PREFIX.get()
+					.append("= " + (chestInfo.fraggedTotalProfit() > 0 ? "+" : ""))
+					.append(Formatters.INTEGER_NUMBERS.format(chestInfo.fraggedTotalProfit()))
+					.append(" ")
+					.append(Component.translatable("skyblocker.dungeons.croesusHelper.totalFragged")));
+		}
 	}
 
 	@Override
@@ -118,10 +139,12 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 	}
 
 	@SuppressWarnings("deprecation")
-	private DoubleBooleanPair getChestValue(ItemStack chest) {
+	private ChestProfitInfo getChestValue(ItemStack chest) {
 		double chestValue = 0;
+		double fragAdditionalProfit = 0;
 		double chestPrice = 0;
 		boolean hasIncompleteData = false;
+		List<FraggingOpportunity> fraggingOpportunities = new ArrayList<>();
 
 		boolean processingContents = false;
 		for (Component line : ItemUtils.getLore(chest)) {
@@ -237,15 +260,29 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 						// in terms of actually selling the item (for both Dungeons and Kuudra) .
 						String adjusted = lineString.replace("✪", "").trim();
 
-						OptionalDouble priceData = getItemPrice(adjusted);
-						if (priceData.isPresent()) chestValue += priceData.getAsDouble();
-						else hasIncompleteData = true;
+						OptionalDouble normalPriceData = getItemPrice(adjusted);
+
+						if (normalPriceData.isPresent()) {
+							double normalPrice = normalPriceData.getAsDouble();
+							chestValue += normalPrice;
+
+							OptionalDouble netFraggedPrice = getNetFraggedPrice(adjusted);
+							if (netFraggedPrice.isPresent() && netFraggedPrice.getAsDouble() > normalPrice) {
+								double additionalProfit = netFraggedPrice.getAsDouble() - normalPrice;
+								fragAdditionalProfit += additionalProfit;
+								fraggingOpportunities.add(new FraggingOpportunity(adjusted, additionalProfit));
+							}
+						} else hasIncompleteData = true;
 					}
 				}
 			}
 		}
 
-		return DoubleBooleanPair.of(chestValue - chestPrice, hasIncompleteData);
+		double normalProfit = chestValue - chestPrice;
+		double fraggedProfit = normalProfit + fragAdditionalProfit;
+		double selectedProfit = shouldFactorInFraggedPrices() ? fraggedProfit : normalProfit;
+
+		return new ChestProfitInfo(DoubleBooleanPair.of(selectedProfit, hasIncompleteData), normalProfit, fraggedProfit, fraggingOpportunities);
 	}
 
 	/**
@@ -261,6 +298,31 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 
 		return ItemUtils.getItemPrice(apiIdToUse);
 	}
+
+	private OptionalDouble getNetFraggedPrice(String itemName) {
+		String dungeonApiId = DUNGEON_DROPS_NAME_TO_API_ID.get(itemName);
+		FraggingRecipe recipe = dungeonApiId != null ? FRAGGING_RECIPES.get(dungeonApiId) : null;
+
+		if (recipe == null) return OptionalDouble.empty();
+
+		OptionalDouble fraggedPrice = ItemUtils.getItemPrice(recipe.fraggedItemApiId());
+		OptionalDouble fragmentPrice = ItemUtils.getItemPrice(recipe.fragmentApiId(), true);
+		if (fraggedPrice.isEmpty() || fragmentPrice.isEmpty()) return OptionalDouble.empty();
+
+		double netFraggedPrice = fraggedPrice.getAsDouble() - fragmentPrice.getAsDouble() * recipe.fragmentCount();
+		return OptionalDouble.of(netFraggedPrice);
+	}
+
+	private record FraggingOpportunity(String itemName, double additionalProfit) {}
+
+	private record ChestProfitInfo(
+			DoubleBooleanPair output,
+			double normalProfit,
+			double fraggedTotalProfit,
+			List<FraggingOpportunity> fraggingOpportunities
+	) {}
+
+	private record FraggingRecipe(String fragmentApiId, String fraggedItemApiId, int fragmentCount) {}
 
 	// I did a thing :(
 	private static final Map<String, String> DUNGEON_DROPS_NAME_TO_API_ID = Map.ofEntries(
@@ -476,5 +538,31 @@ public class CroesusProfit extends SimpleContainerSolver implements TooltipAdder
 			Map.entry("Wheel of Fate", "WHEEL_OF_FATE"),
 			Map.entry("Ananke Feather", "ANANKE_FEATHER"),
 			Map.entry("Tentacle Dye", "TENTACLE_DYE")
-			);
+	);
+
+	private static final Map<String, FraggingRecipe> FRAGGING_RECIPES = Map.ofEntries(
+			Map.entry("BONZO_STAFF", new FraggingRecipe("BONZO_FRAGMENT", "STARRED_BONZO_STAFF", 8)),    // F1
+			Map.entry("BONZO_MASK", new FraggingRecipe("BONZO_FRAGMENT", "STARRED_BONZO_MASK", 8)),
+
+			Map.entry("STONE_BLADE", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_STONE_BLADE", 8)), // F2
+			Map.entry("ADAPTIVE_BELT", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_ADAPTIVE_BELT", 8)),
+
+			Map.entry("ADAPTIVE_HELMET", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_ADAPTIVE_HELMET", 8)), // F3
+			Map.entry("ADAPTIVE_CHESTPLATE", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_ADAPTIVE_CHESTPLATE", 8)),
+			Map.entry("ADAPTIVE_LEGGINGS", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_ADAPTIVE_LEGGINGS", 8)),
+			Map.entry("ADAPTIVE_BOOTS", new FraggingRecipe("SCARF_FRAGMENT", "STARRED_ADAPTIVE_BOOTS", 8)),
+
+			Map.entry("ITEM_SPIRIT_BOW", new FraggingRecipe("THORN_FRAGMENT", "STARRED_ITEM_SPIRIT_BOW", 8)),    // F4 M4
+			Map.entry("THORNS_BOOTS", new FraggingRecipe("THORN_FRAGMENT", "STARRED_THORNS_BOOTS", 8)),
+			Map.entry("SPIRIT_MASK", new FraggingRecipe("THORN_FRAGMENT", "STARRED_SPIRIT_MASK", 8)),
+
+			Map.entry("SHADOW_FURY", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_FURY", 8)),  // F5
+			Map.entry("LAST_BREATH", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_LAST_BREATH", 8)),
+			Map.entry("SHADOW_ASSASSIN_HELMET", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_ASSASSIN_HELMET", 8)),
+			Map.entry("SHADOW_ASSASSIN_CHESTPLATE", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_ASSASSIN_CHESTPLATE", 8)),
+			Map.entry("SHADOW_ASSASSIN_LEGGINGS", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_ASSASSIN_LEGGINGS", 8)),
+			Map.entry("SHADOW_ASSASSIN_BOOTS", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_ASSASSIN_BOOTS", 8)),
+			Map.entry("SHADOW_ASSASSIN_CLOAK", new FraggingRecipe("LIVID_FRAGMENT", "STARRED_SHADOW_ASSASSIN_CLOAK", 8))
+	);
+
 }
