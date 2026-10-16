@@ -106,6 +106,8 @@ public class UIAndVisualsConfig {
 	public static class ChestValue {
 		public boolean enableChestValue = true;
 
+		public boolean useNpcPriceOnly = false;
+
 		public ChatFormatting color = ChatFormatting.DARK_GREEN;
 
 		public ChatFormatting incompleteColor = ChatFormatting.BLUE;
