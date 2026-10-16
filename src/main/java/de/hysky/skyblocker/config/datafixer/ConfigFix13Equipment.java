@@ -20,8 +20,8 @@ public class ConfigFix13Equipment extends ConfigDataFix {
 	}
 
 	private <T> Dynamic<T> fix(Dynamic<T> dynamic) {
-		return fixVersion(dynamic).
-				update("uiAndVisuals", uiAndVisuals -> uiAndVisuals
+		return fixVersion(dynamic)
+				.update("uiAndVisuals", uiAndVisuals -> uiAndVisuals
 						.update("skyblockInventoryScreen", inventoryScreen -> inventoryScreen
 										.setFieldIfPresent("showEquipmentInInventory", uiAndVisuals.get("showEquipmentInInventory").result())
 										.renameAndFixField("openEquipmentToStatsPage", "equipmentCommand", openToStats -> openToStats.createString(openToStats.asBoolean(false) ? "STATS" : "EQUIPMENT")))
