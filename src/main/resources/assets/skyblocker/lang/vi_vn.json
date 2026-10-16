@@ -606,5 +606,7 @@
     "skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip": "Sao chép liên kết bố cục nhà kính từ trang SkyMutations hoặc SkyShards, sau đó dùng lệnh \"/skyblocker garden greenhouse paste\" để dán bố cục lô đất nhà kính!",
     "skyblocker.config.farming.greenhouse.greenhousePaste.loadFail": "Tải bố cục nhà kính từ bộ nhớ tạm thất bại. Nội dung được tách xuất: ",
     "skyblocker.config.farming.greenhouse.greenhousePaste.loadSuccess": "Tải bố cục nhà kính thành công!",
-    "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "Bạn không đang ở trong nhà kính."
+    "skyblocker.config.farming.greenhouse.greenhousePaste.notInGreenhouse": "Bạn không đang ở trong nhà kính.",
+    "skyblocker.config.chat.filter.hideRareCrops": "Tắt thông báo Nông Sản Hiếm",
+    "skyblocker.config.dungeons.dungeonMessages": "Thông báo từ hầm ngục"
 }
