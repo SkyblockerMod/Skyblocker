@@ -47,6 +47,7 @@ import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexListUtils;
@@ -399,7 +400,14 @@ public class ChestValue {
 				if (count == 0) continue;
 
 				if (!id.isEmpty()) {
-					OptionalDouble priceData = ItemUtils.getItemPrice(id);
+					OptionalDouble priceData;
+					if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.useNpcPriceOnly) {
+						priceData = findNpcPrice(stack.getSkyblockId());
+					} else {
+						// OptionalDouble doesn't have an Optional#or equivalent. Valhalla, please SAVE ME
+						OptionalDouble itemPrice = ItemUtils.getItemPrice(id);
+						priceData = itemPrice.isPresent() ? itemPrice : findNpcPrice(stack.getSkyblockId());
+					}
 
 					if (priceData.isEmpty()) hasIncompleteData = true;
 
@@ -414,6 +422,12 @@ public class ChestValue {
 		}
 
 		return null;
+	}
+
+	@SuppressWarnings("DataFlowIssue")
+	private static OptionalDouble findNpcPrice(String id) {
+		if (!TooltipInfoType.NPC.hasOrNullWarning(id)) return OptionalDouble.empty();
+		return OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble(id));
 	}
 
 	private static List<Slot> getMinionSlots(ChestMenu handler) {
