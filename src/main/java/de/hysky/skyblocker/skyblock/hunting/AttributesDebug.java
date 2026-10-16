@@ -42,7 +42,7 @@ import de.hysky.skyblocker.utils.container.ContainerSolverManager;
 
 public class AttributesDebug {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Path ATTRIBUTE_EXPORT_DEST = SkyblockerMod.CONFIG_DIR.resolve("attribute_export.json");
+	private static final Path ATTRIBUTE_EXPORT_DEST = SkyblockerMod.CONFIG_DIR.resolve("debug/attribute_export.json");
 	// Attribute Menu
 	private static final Pattern SOURCE_PATTERN = Pattern.compile("Source: (?<shardName>[A-za-z ]+) Shard \\((?<id>[CUREL]\\d+)\\)");
 	private static final Pattern RARITY_PATTERN = Pattern.compile("Rarity: (?<rarity>\\w+)");
@@ -161,6 +161,7 @@ public class AttributesDebug {
 
 		CompletableFuture.runAsync(() -> {
 			try {
+				Files.createDirectories(ATTRIBUTE_EXPORT_DEST.getParent());
 				Files.writeString(ATTRIBUTE_EXPORT_DEST, Attribute.LIST_CODEC.encodeStart(JsonOps.INSTANCE, copy).getOrThrow().toString());
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Attributes Debug] Failed to export attributes!", e);
