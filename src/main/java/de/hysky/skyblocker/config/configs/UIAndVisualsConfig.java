@@ -40,8 +40,6 @@ public class UIAndVisualsConfig {
 
 	public boolean hideStatusEffectOverlay = true;
 
-	public boolean showEquipmentInInventory = true;
-
 	public boolean cancelComponentUpdateAnimation = true;
 
 	public boolean showCustomizeButton = true;
@@ -98,9 +96,25 @@ public class UIAndVisualsConfig {
 	public transient ItemPickup itemPickup = new ItemPickup();
 
 	public static class SkyBlockInventoryScreen {
-		// TODO: Move showEquipmentInInventory to here.
+		public boolean showEquipmentInInventory = true;
 
-		public boolean openEquipmentToStatsPage = false;
+		public EquipmentCommands equipmentCommand = EquipmentCommands.EQUIPMENT;
+
+		public enum EquipmentCommands {
+			EQUIPMENT("/equipment"),
+			LOADOUT("/loadout"),
+			STATS("/stats");
+
+			private final String command;
+
+			EquipmentCommands(String command) {
+				this.command = command;
+			}
+
+			public String getCommand() {
+				return command;
+			}
+		}
 	}
 
 	public static class ChestValue {
