@@ -31,6 +31,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SpiritSceptreFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.TeleportPadFilter;
+import de.hysky.skyblocker.skyblock.dungeon.PartyQueueCommands;
 import de.hysky.skyblocker.skyblock.dungeon.Reparty;
 import de.hysky.skyblocker.skyblock.dwarven.CallMismyla;
 import de.hysky.skyblocker.skyblock.dwarven.Fetchur;
@@ -69,6 +70,7 @@ public interface ChatMessageListener {
 				new Puzzler(),
 				new FossilMuncher(),
 				new Reparty(),
+				new PartyQueueCommands(),
 				new TreasureHunter(),
 				new HungryHiker(),
 				new SweepDetailsListener(),
