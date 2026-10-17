@@ -94,6 +94,12 @@ public class TextFieldSuggestions extends CommandSuggestions {
 		}
 	}
 
+	@Override
+	public void hide() {
+		super.hide();
+		commandUsage.clear();
+	}
+
 	public <V> Optional<V> getArgument(String argument, Class<V> type) {
 		return Optional.ofNullable(context).map(c -> c.getArgument(argument, type));
 	}

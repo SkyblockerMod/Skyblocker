@@ -119,8 +119,12 @@ public class QuickNavConfigScreen extends Screen {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractRenderState(graphics, mouseX, mouseY, a);
-		graphics.centeredText(font, "Right click to disable/enable buttons.", width / 2, 4, CommonColors.GRAY);
-		graphics.centeredText(font, "Left click to edit button options.", width / 2, 4 + font.lineHeight, CommonColors.GRAY);
+		Component inst1 = Component.translatable("skyblocker.config.quickNav.screen.instructions[0]");
+		Component inst2 = Component.translatable("skyblocker.config.quickNav.screen.instructions[1]");
+		final int backgroundWidth = Math.max(font.width(inst1), font.width(inst2)) + 10;
+		graphics.fill(width / 2 - backgroundWidth / 2, 3, width / 2 + backgroundWidth / 2, 3 + 2 * font.lineHeight + 2, ARGB.color(0.5f, CommonColors.GRAY));
+		graphics.centeredText(font, inst1, width / 2, 4, CommonColors.WHITE);
+		graphics.centeredText(font, inst2, width / 2, 4 + font.lineHeight, CommonColors.WHITE);
 		QuickNavConfigButton dragged = null;
 		for (QuickNavConfigButton button : buttons) {
 			if (button.dragging && dragged == null) {
@@ -129,6 +133,12 @@ public class QuickNavConfigScreen extends Screen {
 			}
 			button.extractRenderState(graphics, mouseX, mouseY, a);
 		}
+
+		// background
+		int backgroundX = (width - INVENTORY_WIDTH) / 2;
+		int backgroundY = (height - INVENTORY_HEIGHT) / 2;
+		graphics.blit(RenderPipelines.GUI_TEXTURED, InventoryScreen.INVENTORY_LOCATION, backgroundX, backgroundY, 0.0f, 0.0f, INVENTORY_WIDTH, INVENTORY_HEIGHT, 256, 256);
+
 		if (highlightedButton != null) {
 			graphics.fill(highlightedButton.getX(), highlightedButton.getY(), highlightedButton.getRight(), highlightedButton.getBottom(), ARGB.color(0.3f, CommonColors.YELLOW));
 		}
@@ -139,14 +149,6 @@ public class QuickNavConfigScreen extends Screen {
 			int yo = (height - INVENTORY_HEIGHT) / 2;
 			InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, xo + 26, yo + 8, xo + 75, yo + 78, 30, 0.0625f, mouseX, mouseY, entityToRender);
 		}
-	}
-
-	@Override
-	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.extractBackground(graphics, mouseX, mouseY, a);
-		int backgroundX = (width - INVENTORY_WIDTH) / 2;
-		int backgroundY = (height - INVENTORY_HEIGHT) / 2;
-		graphics.blit(RenderPipelines.GUI_TEXTURED, InventoryScreen.INVENTORY_LOCATION, backgroundX, backgroundY, 0.0f, 0.0f, INVENTORY_WIDTH, INVENTORY_HEIGHT, 256, 256);
 	}
 
 	@Override
@@ -170,7 +172,7 @@ public class QuickNavConfigScreen extends Screen {
 		private QuickNavConfigButton(boolean enabled, int index, ItemStack icon, String tooltip) {
 			super(index, true, "", icon, tooltip);
 			this.enabled = enabled;
-			setRenderInFront(true);
+			setRenderInFront(false);
 		}
 
 		@Override
@@ -199,6 +201,7 @@ public class QuickNavConfigScreen extends Screen {
 				double diffY = event.y() - dragY;
 				if (diffX * diffX + diffY * diffY > 10 * 10) {
 					dragging = true;
+					setRenderInFront(true);
 					setTooltip(null);
 				}
 			}
@@ -236,6 +239,7 @@ public class QuickNavConfigScreen extends Screen {
 					repositionElements();
 				}
 				dragging = false;
+				setRenderInFront(false);
 			} else {
 				minecraft.gui.setScreen(new QuickNavItemEditPopup(QuickNavConfigScreen.this, () -> refreshButton(index), ITEM_SUPPLIERS[index].apply(SkyblockerConfigManager.get().quickNav), SETTERS[index], index));
 			}
