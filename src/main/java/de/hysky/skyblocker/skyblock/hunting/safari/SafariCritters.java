@@ -120,6 +120,10 @@ public class SafariCritters {
 		nearbyCritters.clear();
 		var sparkling = new EnumMap<SafariUtils.Critters, Integer>(SafariUtils.Critters.class);
 		for (Entity entity : MINECRAFT.level.entitiesForRendering()) {
+			// Ignore nametags too far away from the player.
+			if (Math.abs(MINECRAFT.player.getX() - entity.getX()) > 16 || Math.abs(MINECRAFT.player.getZ() - entity.getZ()) > 16) {
+				continue;
+			}
 			if (entity instanceof ArmorStand) {
 				Component name = entity.getCustomName();
 				if (name != null && entity.isCustomNameVisible()) {
