@@ -157,12 +157,14 @@ public class CritterHudWidget extends ElementBasedWidget {
 		long minimum = uniques.size() + remaining.size();
 		if (minimum == 0) {
 			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.done").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD))));
-		} else if (remaining.isEmpty() || !showFullDisplay) {
-			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.critters", critters.size() - minimum, critters.size()).withStyle(ChatFormatting.GRAY))));
-		} else {
-			addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum")));
-			for (SafariUtils.Critters critter : remaining.keySet()) {
-				addListCritter(critter, remaining.get(critter), true);
+		} else if (!remaining.isEmpty()) {
+			if (showFullDisplay) {
+				addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum")));
+				for (SafariUtils.Critters critter : remaining.keySet()) {
+					addListCritter(critter, remaining.get(critter), true);
+				}
+			} else {
+				addElement(new PlainTextElement(Component.translatable("skyblocker.config.hunting.safari.critterHud.header.minimum").append(Component.translatable("skyblocker.config.hunting.safari.critterHud.value.critters", critters.size() - minimum, critters.size()).withStyle(ChatFormatting.GRAY))));
 			}
 		}
 
