@@ -171,7 +171,8 @@ public class SackMessagePrice {
 		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
 		return ids.stream()
 				.filter(id -> (npcData != null && npcData.getDouble(id) > 0)
-						|| (bazaarData != null && bazaarData.containsKey(id)))
+						|| (bazaarData != null && bazaarData.get(id) instanceof BazaarProduct product
+								&& (product.sellPrice().orElse(0) > 0 || product.buyPrice().orElse(0) > 0)))
 				.findFirst()
 				.orElse(ids.getFirst());
 	}
