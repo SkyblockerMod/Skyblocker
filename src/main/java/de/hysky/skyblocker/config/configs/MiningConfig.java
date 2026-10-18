@@ -9,6 +9,8 @@ import net.minecraft.client.resources.language.I18n;
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 
 public class MiningConfig {
+	public boolean enablePickaxeAbility = false;
+
 	public boolean enableDrillFuel = true;
 
 	public boolean commissionHighlight = true;
