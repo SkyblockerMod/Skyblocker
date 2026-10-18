@@ -148,15 +148,25 @@ public class SackMessagePrice {
 	}
 
 	private static @Nullable String getNeuId(String itemName) {
-		return NEURepoManager.getItemByName(itemName)
+		List<String> ids = NEURepoManager.getItemByName(itemName)
 				.stream()
 				.filter(Objects::nonNull)
-				.findFirst()
 				.map(NEUItem::getSkyblockItemId)
-				.orElseGet(() -> {
-					LOGGER.warn("Failed to find the NEU item ID for item: {}", itemName);
-					return null; // This won't be used to calculate the price
-				});
+				.toList();
+		if (ids.isEmpty()) {
+			LOGGER.warn("Failed to find the NEU item ID for item: {}", itemName);
+			return null; // This won't be used to calculate the price
+		}
+
+		// Several items can share a display name (e.g. "Enchanted Hay Bale" is both ENCHANTED_HAY_BLOCK
+		// and ENCHANTED_HAY_BALE), so prefer one that actually has a price.
+		Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
+		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
+		return ids.stream()
+				.filter(id -> (npcData != null && npcData.getDouble(id) > 0)
+						|| (bazaarData != null && bazaarData.containsKey(id)))
+				.findFirst()
+				.orElse(ids.getFirst());
 	}
 
 	private static ObjectArrayList<List<Component>> getHoverEventSiblings(Component text) {
