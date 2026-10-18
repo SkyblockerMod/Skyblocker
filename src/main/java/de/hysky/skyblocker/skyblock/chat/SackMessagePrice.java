@@ -151,7 +151,8 @@ public class SackMessagePrice {
 	 * Finds the NEU item ID for a display name from the sack message.
 	 * <p>
 	 * Several items can share a display name (e.g. "Enchanted Hay Bale" is both {@code ENCHANTED_HAY_BLOCK}
-	 * and {@code ENCHANTED_HAY_BALE}), so an item that has NPC or bazaar price data is preferred.
+	 * and {@code ENCHANTED_HAY_BALE}), so an item with a bazaar price is preferred, then one with an NPC price.
+	 * Bazaar comes first because some non-bazaar items have NPC prices too (e.g. {@code BUILDER_BROWN_MUSHROOM}).
 	 *
 	 * @param itemName the item's display name, without formatting codes
 	 * @return the item ID, or {@code null} if no item has this name
@@ -171,10 +172,10 @@ public class SackMessagePrice {
 		Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
 		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
 		return ids.stream()
-				.filter(id -> (npcData != null && npcData.getDouble(id) > 0)
-						|| (bazaarData != null && bazaarData.get(id) instanceof BazaarProduct product
-								&& (product.sellPrice().orElse(0) > 0 || product.buyPrice().orElse(0) > 0)))
+				.filter(id -> bazaarData != null && bazaarData.get(id) instanceof BazaarProduct product
+						&& (product.sellPrice().orElse(0) > 0 || product.buyPrice().orElse(0) > 0))
 				.findFirst()
+				.or(() -> ids.stream().filter(id -> npcData != null && npcData.getDouble(id) > 0).findFirst())
 				.orElse(ids.getFirst());
 	}
 
