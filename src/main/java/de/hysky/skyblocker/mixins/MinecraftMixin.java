@@ -42,6 +42,6 @@ public abstract class MinecraftMixin {
 
 	@WrapOperation(method = "handleKeybinds", at = @At(value = "NEW", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;"))
 	private InventoryScreen skyblocker$skyblockInventoryScreen(Player player, Operation<InventoryScreen> original) {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? new SkyblockInventoryScreen(player) : original.call(player);
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory ? new SkyblockInventoryScreen(player) : original.call(player);
 	}
 }

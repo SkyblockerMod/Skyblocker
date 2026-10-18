@@ -37,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
 import de.hysky.skyblocker.mixins.accessors.SlotAccessor;
@@ -160,12 +161,17 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, click.x(), click.y())) {
-				// The Equipment Wardrobe is not available in the Rift or Safari.
-				String command = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage || Utils.isInTheRift() || Utils.isInSafari() ? "/stats" : "/equipment";
+				var config = SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen;
+
+				String command = Utils.isInTheRift() || Utils.isInSafari()
+						? UIAndVisualsConfig.SkyBlockInventoryScreen.EquipmentCommands.STATS.getCommand()
+						: config.equipmentCommand.getCommand();
+
 				MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 				return true;
 			}
 		}
+
 		return super.mouseClicked(click, doubled);
 	}
 
