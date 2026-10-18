@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
-import org.jspecify.annotations.Nullable;
-
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
@@ -171,7 +172,7 @@ public class BarPositioner {
 				SizeRule.freeSize(25, 2, 6)),
 
 		HOTBAR_TOP(true, true,
-				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.isExperienceFancyBarEnabled() ? 23 : 35)),
+				(scaledWidth, scaledHeight) -> new ScreenPosition(scaledWidth / 2 - 91, scaledHeight - (FancyStatusBars.INSTANCE.isExperienceFancyBarEnabled() ? 23 : 35)),
 				SizeRule.targetSize(12, 182, 2),
 				anchorPosition -> new ScreenRectangle(anchorPosition.x(), anchorPosition.y() - 20, 182, 20)),
 

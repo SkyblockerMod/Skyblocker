@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 
 class FetchurTest extends ChatPatternListenerTest<Fetchur> {
 	FetchurTest() {

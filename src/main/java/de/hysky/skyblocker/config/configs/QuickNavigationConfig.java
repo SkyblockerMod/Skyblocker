@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
+import org.intellij.lang.annotations.Language;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.intellij.lang.annotations.Language;
 
 public class QuickNavigationConfig {
 	public boolean enableQuickNav = true;
@@ -15,13 +16,13 @@ public class QuickNavigationConfig {
 	 * "Pets" : simple match on letters
 	 * "(?: \\(\\d+/\\d+\\))?" : optional match on the non-capturing group for the page in the format " ($number/$number)"
 	 */
-	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "Pets(?: \\(\\d+/\\d+\\))?", "/pets", "Pets");
+	public QuickNavItem button3 = new QuickNavItem(false, new ItemData(Items.BONE), "(?:\\(\\d+/\\d+\\) )?Pets", "/pets", "Pets");
 
 	/* REGEX Explanation
 	 * "Wardrobe" : simple match on letters
 	 * " \\(\\d+/\\d+\\)" : match on any page with format ($number/$number), in case it is updated again in the future.
 	 */
-	public QuickNavItem button4 = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "Wardrobe \\(\\d+/\\d+\\)", "/wardrobe", "Wardrobe");
+	public QuickNavItem button4 = new QuickNavItem(false, new ItemData(Items.LEATHER_CHESTPLATE, "[minecraft:dyed_color=8991416]"), "\\(\\d+/\\d+\\) Armor Sets", "/armor", "Armor Sets");
 
 	public QuickNavItem button5 = new QuickNavItem(false, new ItemData(Items.PLAYER_HEAD, "[minecraft:profile={id:[I;-2081424676,-57521078,-2073572414,158072763],name:\"\",properties:[{name:\"textures\",value:\"ewogICJ0aW1lc3RhbXAiIDogMTU5MTMxMDU4NTYwOSwKICAicHJvZmlsZUlkIiA6ICI0MWQzYWJjMmQ3NDk0MDBjOTA5MGQ1NDM0ZDAzODMxYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZWdha2xvb24iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODBhMDc3ZTI0OGQxNDI3NzJlYTgwMDg2NGY4YzU3OGI5ZDM2ODg1YjI5ZGFmODM2YjY0YTcwNjg4MmI2ZWMxMCIKICAgIH0KICB9Cn0=\"}]}]"), "Sack of Sacks", "/sacks", "Sacks");
 

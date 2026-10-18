@@ -1,12 +1,11 @@
 package de.hysky.skyblocker.skyblock.museum;
 
-import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
-import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import org.jspecify.annotations.Nullable;
 
 public class Donation {

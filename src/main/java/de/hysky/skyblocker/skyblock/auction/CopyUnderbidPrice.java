@@ -1,18 +1,22 @@
 package de.hysky.skyblocker.skyblock.auction;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 /**
  * Container solver that copies the lowest BIN price minus one coin
@@ -33,7 +37,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 
 	@Override
-	public void start(ContainerScreen screen) {
+	public void start(AbstractContainerScreen<?> screen) {
 		copied = false;
 		previousItem = ItemStack.EMPTY;
 	}
@@ -41,7 +45,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 	@Override
 	public void markDirty() {
 		Minecraft client = Minecraft.getInstance();
-		if (!(client.screen instanceof ContainerScreen screen)) return;
+		if (!(client.gui.screen() instanceof ContainerScreen screen)) return;
 
 		ItemStack stack = screen.getMenu().getSlot(13).getItem();
 
@@ -58,7 +62,7 @@ public class CopyUnderbidPrice extends SimpleContainerSolver {
 
 		if (copied) return;
 
-		double price = ItemUtils.getItemPrice(stack).leftDouble();
+		double price = ItemUtils.getItemPrice(stack).orElse(0);
 		if (price <= 1) return;
 
 		long underbid = (long) price - 1;

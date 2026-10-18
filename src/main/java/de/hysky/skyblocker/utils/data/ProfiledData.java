@@ -1,20 +1,22 @@
 package de.hysky.skyblocker.utils.data;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.util.StringRepresentable;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.utils.Utils;
 
 /*
 	This implementation doesn't have a default value parameter as there is no sensible default for the data structure.
@@ -165,7 +167,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
-	public @Nullable T computeIfAbsent(Supplier<T> valueSupplier) {
+	public T computeIfAbsent(Supplier<T> valueSupplier) {
 		return computeIfAbsent(Utils.getUuid(), Utils.getProfileId(), valueSupplier);
 	}
 
@@ -177,7 +179,7 @@ public class ProfiledData<T> extends JsonData<Object2ObjectOpenHashMap<UUID, Obj
 	 * @param valueSupplier The supplier to compute the value.
 	 * @return The computed value, or null if not found.
 	 */
-	public @Nullable T computeIfAbsent(UUID uuid, String profileId, Supplier<T> valueSupplier) {
+	public T computeIfAbsent(UUID uuid, String profileId, Supplier<T> valueSupplier) {
 		return getPlayerData(uuid).computeIfAbsent(profileId, _ -> valueSupplier.get());
 	}
 

@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import java.util.List;
 import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,7 +17,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
-import org.joml.Matrix3x2fStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 
 public class RarityWidget extends AbstractWidget {
 
@@ -94,9 +98,9 @@ public class RarityWidget extends AbstractWidget {
 	public void onClick(MouseButtonEvent click, boolean doubled) {
 		if (slotId == -1) return;
 		if (isOnLeftArrow(click.x())) {
-			onClick.click(slotId, 1);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_RIGHT);
 		} else if (isOnRightArrow(click.x())) {
-			onClick.click(slotId, 0);
+			onClick.click(slotId, InputConstants.MOUSE_BUTTON_LEFT);
 		}
 	}
 }

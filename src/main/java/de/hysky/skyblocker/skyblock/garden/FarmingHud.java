@@ -1,31 +1,5 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import it.unimi.dsi.fastutil.floats.FloatLongPair;
-import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
-import it.unimi.dsi.fastutil.longs.LongLongPair;
-import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayDeque;
@@ -35,12 +9,35 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+import it.unimi.dsi.fastutil.floats.FloatLongPair;
+import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
+import it.unimi.dsi.fastutil.longs.LongLongPair;
+import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+
 
 public class FarmingHud {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
-	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?<percent>[\\d,]+(?:\\.\\d+)?%|[\\d,]+/[\\d,]+)\\)");
+	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?:(?<percent>[\\d,]+(?:\\.\\d+)?%)|(?<current>[\\d,]+)/(?<max>[\\d,]+k?))\\)");
 	private static final Minecraft client = Minecraft.getInstance();
 	private static final int STATS_WINDOW = 5_000;
 
@@ -95,7 +92,13 @@ public class FarmingHud {
 				if (matcher.find()) {
 					try {
 						farmingXp.offer(FloatLongPair.of(NUMBER_FORMAT.parse(matcher.group("xp")).floatValue(), System.currentTimeMillis()));
-						farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
+						if (matcher.group("percent") != null) {
+							farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("percent")).floatValue();
+						} else if (matcher.group("current") != null) {
+							float max = NUMBER_FORMAT.parse(matcher.group("max")).floatValue();
+							if (matcher.group("max").endsWith("k")) max *= 1000;
+							farmingXpPercentProgress = NUMBER_FORMAT.parse(matcher.group("current")).floatValue() / max * 100;
+						}
 					} catch (ParseException e) {
 						LOGGER.error("[Skyblocker Farming HUD] Failed to parse farming xp", e);
 					}
@@ -104,8 +107,6 @@ public class FarmingHud {
 
 			return true;
 		});
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, _) -> dispatcher.register(literal(SkyblockerMod.NAMESPACE).then(literal("hud").then(literal("farming")
-				.executes(Scheduler.queueOpenScreenCommand(() -> new WidgetsConfigurationScreen(Location.GARDEN, "hud_garden", null)))))));
 	}
 
 	@SuppressWarnings("SameParameterValue")
@@ -124,11 +125,11 @@ public class FarmingHud {
 	}
 
 	private static boolean shouldRender() {
-		return SkyblockerConfigManager.get().farming.farmingHud.enabled && client.player != null && Utils.getLocation() == Location.GARDEN;
+		return WidgetManager.isWidgetInCurrentScreen(FarmingHudWidget.getInstance()) && client.player != null && Utils.getLocation() == Location.GARDEN;
 	}
 
-	public static String counterText() {
-		return counterType.text;
+	public static CounterType counterType() {
+		return counterType;
 	}
 
 	public static long counter() {
@@ -165,19 +166,15 @@ public class FarmingHud {
 	}
 
 	public enum CounterType {
-		NONE("", "No Cultivating"),
+		NONE("", "Cultivating Needed"),
 		CULTIVATING("farmed_cultivating", "Cultivating: ");
 
 		private final String nbtKey;
-		private final String text;
+		public final String text;
 
 		CounterType(String nbtKey, String text) {
 			this.nbtKey = nbtKey;
 			this.text = text;
-		}
-
-		public boolean matchesText(String textToMatch) {
-			return this.text.equals(textToMatch);
 		}
 	}
 }

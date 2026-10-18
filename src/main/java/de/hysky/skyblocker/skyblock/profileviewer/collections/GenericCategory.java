@@ -1,22 +1,15 @@
 package de.hysky.skyblocker.skyblock.profileviewer.collections;
 
-import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.RomanNumerals;
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -31,6 +24,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.Collection;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.RomanNumerals;
 
 public class GenericCategory implements ProfileViewerPage {
 	private final String category;

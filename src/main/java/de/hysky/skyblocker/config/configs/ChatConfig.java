@@ -21,6 +21,8 @@ public class ChatConfig {
 
 	public ChatFilterResult hideMoltenWave = ChatFilterResult.PASS;
 
+	public ChatFilterResult hideRareCrops = ChatFilterResult.PASS;
+
 	public ChatFilterResult hideAds = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideTeleportPad = ChatFilterResult.PASS;
@@ -35,6 +37,8 @@ public class ChatConfig {
 
 	public ChatFilterResult hideToggleLottery = ChatFilterResult.PASS;
 
+	public ChatFilterResult hideToggleBeekeeper = ChatFilterResult.PASS;
+
 	public ChatFilterResult hideMimicKill = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideDeath = ChatFilterResult.PASS;
@@ -45,6 +49,8 @@ public class ChatConfig {
 	public transient ChatFilterResult hideDicer = ChatFilterResult.PASS;
 
 	public ChatFilterResult hideDungeonBreaker = ChatFilterResult.PASS;
+
+	public ChatFilterResult hideCritterCapture = ChatFilterResult.PASS;
 
 	public ChatRuleConfig chatRuleConfig = new ChatRuleConfig();
 

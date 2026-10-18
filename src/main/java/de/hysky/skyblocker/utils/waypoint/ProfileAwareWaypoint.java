@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.utils.Utils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
+
 import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.utils.Utils;
 
 public class ProfileAwareWaypoint extends Waypoint {
 	public final Set<String> foundProfiles = new HashSet<>();

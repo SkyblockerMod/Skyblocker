@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.utils.ws.message;
 
+import java.util.UUID;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.UUID;
+
 import net.minecraft.core.UUIDUtil;
 
 public record DungeonMimicKilledMessage(String type, UUID sender) implements Message<DungeonMimicKilledMessage> {

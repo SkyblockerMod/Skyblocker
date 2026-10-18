@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.mixins.accessors;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
-
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;

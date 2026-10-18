@@ -1,16 +1,5 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory;
 
-import de.hysky.skyblocker.skyblock.item.PetInfo;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import io.github.moulberry.repo.constants.PetNumbers;
-import io.github.moulberry.repo.data.NEUItem;
-import io.github.moulberry.repo.data.Rarity;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -19,6 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.moulberry.repo.constants.PetNumbers;
+import io.github.moulberry.repo.data.NEUItem;
+import io.github.moulberry.repo.data.Rarity;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -26,6 +20,15 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.skyblock.item.PetInfo;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.profileviewer.utils.LevelFinder;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.NEURepoManager;
 
 import static de.hysky.skyblocker.skyblock.profileviewer.utils.ProfileViewerUtils.numLetterFormat;
 
@@ -150,12 +153,12 @@ public class Pet {
 			petStack.set(DataComponents.PROFILE, skinTexture.get());
 		}
 
-		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD, getRarity().next().formatting));
+		if ((boosted())) formattedLore.set(formattedLore.size() - 1, Component.literal(getRarity().next().toString()).setStyle(style).withStyle(ChatFormatting.BOLD).withColor(getRarity().next().color));
 
 		// Update the lore and name
 		petStack.set(DataComponents.LORE, new ItemLore(formattedLore));
 		String displayName = ChatFormatting.stripFormatting(item.getDisplayName()).replace("[Lvl {LVL}]", "§7[Lvl " + this.level + "]§r");
-		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withStyle((boosted() ? getRarity().next() : getRarity()).formatting));
+		petStack.set(DataComponents.CUSTOM_NAME, Component.literal(displayName).setStyle(style).withColor((boosted() ? getRarity().next() : getRarity()).color));
 		return petStack;
 	}
 

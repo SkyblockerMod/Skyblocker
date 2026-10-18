@@ -3,20 +3,20 @@ package de.hysky.skyblocker.skyblock.itemlist;
 import java.nio.file.Files;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.RegistryUtils;
 import io.github.moulberry.repo.data.ItemOverlays.ItemOverlayFile;
 import io.github.moulberry.repo.data.NEUItem;
 import io.github.moulberry.repo.util.NEUId;
+import org.slf4j.Logger;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
+
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.RegistryUtils;
 
 /**
  * Handles applying "overlays" to modern {@code ItemStack}s from the NEU Repository. Overlays are already in the modern components

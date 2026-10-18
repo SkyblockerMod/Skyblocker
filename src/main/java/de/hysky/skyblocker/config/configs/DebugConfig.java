@@ -12,4 +12,12 @@ public class DebugConfig {
 	public boolean webSocketDebug = false;
 
 	public boolean corpseFinderDebug = false;
+
+	public boolean enableRepoDev = false;
+
+	public SkyBlockResourcePack skyblockResourcePack = new SkyBlockResourcePack();
+
+	public static class SkyBlockResourcePack {
+		public boolean downloadResourcePack = false;
+	}
 }

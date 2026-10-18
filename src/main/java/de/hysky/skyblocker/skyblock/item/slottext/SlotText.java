@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectLists;
+
 import net.minecraft.network.chat.Component;
 
 public record SlotText(Component text, TextPosition position) {

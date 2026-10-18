@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 import java.util.UUID;
+
+import com.google.gson.annotations.SerializedName;
 
 public class ApiProfile {
 	@SerializedName("profile_id")
@@ -14,4 +14,11 @@ public class ApiProfile {
 	@SerializedName("cute_name")
 	public String cuteName = "";
 	public boolean selected = false;
+
+	/// {@return whether the profile has been a co-op before as indicated by there having been more than one member.}
+	///
+	/// @implNote This does not account for invitations that were not accepted.
+	public boolean hasBeenCoop() {
+		return this.members.size() > 1;
+	}
 }

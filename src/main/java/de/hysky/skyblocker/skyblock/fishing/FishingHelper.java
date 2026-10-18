@@ -1,11 +1,5 @@
 package de.hysky.skyblocker.skyblock.fishing;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.title.Title;
-import de.hysky.skyblocker.utils.render.title.TitleContainer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
@@ -13,8 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.title.Title;
+import de.hysky.skyblocker.utils.render.title.TitleContainer;
 
 public class FishingHelper {
 	private static final Title title = new Title("skyblocker.fishing.reelNow", ChatFormatting.GREEN);
@@ -73,7 +74,7 @@ public class FishingHelper {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player != null && player.fishing != null) {
 				String name = armorStand.getCustomName().getString();
-				if (name.equals("!!!") && player.fishing.getBoundingBox().inflate(4D).contains(armorStand.position())) {
+				if (name.equals("!!!") && player.fishing.getBoundingBox().inflate(4d).contains(armorStand.position())) {
 					if (SkyblockerConfigManager.get().helpers.fishing.enableFishingHelper) {
 						TitleContainer.addTitleAndPlaySound(title, 10);
 					}

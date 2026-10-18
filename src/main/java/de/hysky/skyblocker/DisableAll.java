@@ -1,13 +1,17 @@
 package de.hysky.skyblocker;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.annotations.EnumDisabledValue;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Constants;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -15,13 +19,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.slf4j.Logger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
+import de.hysky.skyblocker.utils.Constants;
 
 /**
  * Command helper for disabling every configurable feature.
@@ -54,6 +57,7 @@ public class DisableAll {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
 			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending").withStyle(ChatFormatting.RED)));
@@ -61,19 +65,25 @@ public class DisableAll {
 		}
 		confirmAllowedUntil = 0;
 		try {
-			SkyblockerConfigManager.update(config -> {
-				try {
-					disableEntries(config);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
+			disableAll();
 			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
 			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
+	}
+
+	protected static void disableAll() {
+		SkyblockerConfigManager.update(config -> {
+			try {
+				disableEntries(config);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		WidgetManager.removeAll();
+		WidgetManager.saveConfig();
 	}
 
 	/**

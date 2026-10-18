@@ -5,17 +5,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
@@ -26,6 +22,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -33,8 +30,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimPattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.Utils;
 
 public class CustomArmorTrims {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomArmorTrims.class);
@@ -109,7 +112,7 @@ public class CustomArmorTrims {
 						// Ensure that the material & trim are valid
 						ArmorTrimId trimId = new ArmorTrimId(material, pattern);
 						if (TRIMS_CACHE.get(trimId) == null) {
-							source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern")));
+							source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern").withColor(TextColor.RED)));
 
 							return Command.SINGLE_SUCCESS;
 						}
@@ -118,14 +121,14 @@ public class CustomArmorTrims {
 						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.noItemUuid")));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.noItemUuid").withColor(TextColor.RED)));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.notAnArmorPiece")));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.notAnArmorPiece").withColor(TextColor.RED)));
 				return Command.SINGLE_SUCCESS;
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.unableToSetTrim")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.unableToSetTrim").withColor(TextColor.RED)));
 		}
 
 		return Command.SINGLE_SUCCESS;

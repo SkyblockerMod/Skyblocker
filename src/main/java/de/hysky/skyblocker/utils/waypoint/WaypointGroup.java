@@ -1,7 +1,15 @@
 package de.hysky.skyblocker.utils.waypoint;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 
 import de.hysky.skyblocker.annotations.GenEquals;
 import de.hysky.skyblocker.annotations.GenHashCode;
@@ -10,12 +18,6 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 
 public class WaypointGroup {
 	public static final Waypoint.Type DEFAULT_TYPE = Waypoint.Type.WAYPOINT;
@@ -144,7 +146,7 @@ public class WaypointGroup {
 
 	public NamedWaypoint createWaypoint(BlockPos pos) {
 		String name = "Waypoint " + (waypoints.size() + 1);
-		return ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f});
+		return (ordered ? new OrderedNamedWaypoint(pos, name, new float[]{0f, 1f, 0f}) : new NamedWaypoint(pos, name, new float[]{0f, 1f, 0f})).withThroughWalls(renderThroughWalls).withTypeSupplier(this::waypointType);
 	}
 
 	/**

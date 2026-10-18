@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.tarantula;
 
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 
 public class MuteSpiderSounds {
 	private static final ObjectSet<Identifier> MUTED_SOUNDS = ObjectSet.of(

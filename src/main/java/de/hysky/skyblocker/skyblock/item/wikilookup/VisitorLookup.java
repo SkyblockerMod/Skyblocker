@@ -1,24 +1,28 @@
 package de.hysky.skyblocker.skyblock.item.wikilookup;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
+
+import com.mojang.datafixers.util.Either;
+import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.apache.commons.lang3.StringUtils;
-import org.jspecify.annotations.Nullable;
-
-import com.mojang.datafixers.util.Either;
 
 public class VisitorLookup implements WikiLookup {
 	public static final VisitorLookup INSTANCE = new VisitorLookup();
+	// ^(?:\(\d+\/\d+\) )?Visitor's Logbook$
+	private static final Pattern VISITORS_LOGBOOK_PATTERN = Pattern.compile("^(?:\\(\\d+\\/\\d+\\) )?Visitor's Logbook$");
 
 	private VisitorLookup() {}
 
 	@Override
-	public void open(ItemStack itemStack, Player player, boolean useOfficial) {
+	public void open(ItemStack itemStack, Player player) {
 		String itemName = REPLACING_FUNCTION.apply(itemStack.getHoverName().getString());
-		WikiLookupManager.openWikiLinkName(itemName, player, useOfficial);
+		WikiLookupManager.openWikiLinkName(itemName, player);
 	}
 
 	@Override
@@ -27,7 +31,7 @@ public class VisitorLookup implements WikiLookup {
 		if (optional.isEmpty()) return false;
 		Slot slot = optional.get();
 		if (slot.index <= 9 || slot.index >= 44) return false;
-		if (slot.getItem().is(Items.BLACK_STAINED_GLASS_PANE)) return false;
-		return StringUtils.isNotEmpty(title) && title.matches("^Visitor's Logbook$");
+		if (slot.getItem().is(Items.STAINED_GLASS_PANE.black())) return false;
+		return StringUtils.isNotEmpty(title) && VISITORS_LOGBOOK_PATTERN.matcher(title).matches();
 	}
 }

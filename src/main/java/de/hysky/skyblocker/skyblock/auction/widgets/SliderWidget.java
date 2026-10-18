@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction.widgets;
 
-import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -10,10 +11,12 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
+import de.hysky.skyblocker.skyblock.auction.SlotClickHandler;
+
 // This is kinda excessive, but I thought it was a good idea
 public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends AbstractWidget {
 	private final SlotClickHandler clickSlot;
-	private int button = 0;
+	private int button = InputConstants.MOUSE_BUTTON_LEFT;
 	private int slotId = -1;
 
 	protected E current;
@@ -75,7 +78,7 @@ public class SliderWidget<E extends Enum<E> & SliderWidget.OptionInfo> extends A
 	@Override
 	protected boolean isValidClickButton(MouseButtonInfo input) {
 		this.button = input.button();
-		return super.isValidClickButton(input) || button == 1;
+		return super.isValidClickButton(input) || button == InputConstants.MOUSE_BUTTON_RIGHT;
 	}
 
 	public void setSlotId(int slotId) {

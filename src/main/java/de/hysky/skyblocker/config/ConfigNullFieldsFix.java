@@ -2,11 +2,8 @@ package de.hysky.skyblocker.config;
 
 import java.lang.reflect.Field;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import org.slf4j.Logger;
 
 /**
  * While this sounds like a data fixer it isn't. - It's the only reasonable solution to deal with the mine field
@@ -30,17 +27,15 @@ public class ConfigNullFieldsFix {
 	 */
 	private static void fixNullFields(Object config, Object defaultConfig) throws Exception {
 		for (Field field : config.getClass().getDeclaredFields()) {
-			if (field.isAnnotationPresent(SerialEntry.class)) {
-				field.setAccessible(true);
+			field.setAccessible(true);
 
-				Object configValue = field.get(config);
-				Object defaultValue = field.get(defaultConfig);
+			Object configValue = field.get(config);
+			Object defaultValue = field.get(defaultConfig);
 
-				if (configValue == null && defaultValue != null) {
-					field.set(config, defaultValue);
-				} else if (configValue != null && defaultValue != null && SkyblockerConfigManager.isConfigClass(field.getType())) {
-					fixNullFields(configValue, defaultValue);
-				}
+			if (configValue == null && defaultValue != null) {
+				field.set(config, defaultValue);
+			} else if (configValue != null && defaultValue != null && SkyblockerConfigManager.isConfigClass(field.getType())) {
+				fixNullFields(configValue, defaultValue);
 			}
 		}
 	}

@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.utils.ItemUtils;
+import java.util.List;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class SkyblockLevelAdder extends SimpleSlotTextAdder {
 	private static final ConfigInformation CONFIG_INFORMATION = new ConfigInformation(

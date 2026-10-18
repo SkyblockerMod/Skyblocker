@@ -1,9 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public class CustomArmorAnimatedDyesTest {
 	@Test

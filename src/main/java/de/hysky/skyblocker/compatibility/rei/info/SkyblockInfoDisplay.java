@@ -1,17 +1,19 @@
 package de.hysky.skyblocker.compatibility.rei.info;
 
-import de.hysky.skyblocker.SkyblockerMod;
+import java.util.List;
+import java.util.Optional;
+
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import java.util.List;
-import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class SkyblockInfoDisplay implements Display {
 	private final ItemStack displayItem;

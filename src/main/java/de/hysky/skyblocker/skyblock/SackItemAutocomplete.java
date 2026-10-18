@@ -1,17 +1,10 @@
 package de.hysky.skyblocker.skyblock;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import de.hysky.skyblocker.utils.command.CommandUtils;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -21,18 +14,30 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.logging.LogUtils;
-
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
 import io.github.moulberry.repo.data.NEUItem;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.SharedSuggestionProvider;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.CommandUtils;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+
 public class SackItemAutocomplete {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Pattern BAD_CHARACTERS = Pattern.compile("[☂☘☠✎✧❁❂❈❤⸕]");
+	private static final Pattern BAD_CHARACTERS = Pattern.compile(String.format("[%s%s%s%s%s%s%s%s%s%s%s%s]",
+			SkyBlockIcons.MINING_FORTUNE, SkyBlockIcons.MINING_SPEED, SkyBlockIcons.PRISTINE, SkyBlockIcons.INTELLIGENCE,
+			SkyBlockIcons.DEFENSE, SkyBlockIcons.STRENGTH, SkyBlockIcons.HEALTH, SkyBlockIcons.TRUE_DEFENSE,
+			SkyBlockIcons.CRIT_DAMAGE, SkyBlockIcons.FISHING_SPEED, SkyBlockIcons.FORAGING_FORTUNE, SkyBlockIcons.FARMING_FORTUNE
+			));
 
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommandNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommandNode;

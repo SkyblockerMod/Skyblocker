@@ -7,29 +7,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.Area;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Formatters;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.GuiHelper;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import io.github.moulberry.repo.data.NEUItem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -39,10 +28,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.ScreenPosition;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -51,6 +40,22 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.searchoverlay.OverlayScreen;
+import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.GuiHelper;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -82,10 +87,13 @@ public class VisitorHelper extends AbstractWidget {
 	@Init
 	public static void initialize() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if (!(screen instanceof AbstractContainerScreen<?> handledScreen) || !shouldRender()) return;
+			if (!shouldRender()) return;
+			if (!(screen instanceof AbstractContainerScreen<?> || screen instanceof AbstractSignEditScreen || screen instanceof OverlayScreen)) return;
 
-			processVisitor = true;
-			ScreenEvents.afterTick(screen).register(_ -> updateVisitors(handledScreen.getMenu()));
+			if (screen instanceof AbstractContainerScreen<?> handledScreen) {
+				processVisitor = true;
+				ScreenEvents.afterTick(screen).register(_ -> updateVisitors(handledScreen.getMenu()));
+			}
 			Screens.getWidgets(screen).add(new VisitorHelper(xOffset, yOffset));
 		});
 
@@ -115,13 +123,13 @@ public class VisitorHelper extends AbstractWidget {
 	public static boolean shouldRender() {
 		boolean isHelperEnabled = SkyblockerConfigManager.get().farming.visitorHelper.enabled;
 		boolean isGardenMode = SkyblockerConfigManager.get().farming.visitorHelper.showInGardenOnly;
-		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR);
+		return isHelperEnabled && (!isGardenMode || Utils.isInGarden() || Utils.getArea() == Area.Hub.BAZAAR) && !CatharsisCompatibility.isGuiElementHidden("skyblocker:visitorHelper");
 	}
 
-	public static List<ScreenRectangle> getExclusionZones() {
+	public static List<Rect2i> getExclusionZones() {
 		if (activeVisitors.isEmpty()) return List.of();
 
-		return List.of(new ScreenRectangle(new ScreenPosition(xOffset, yOffset), exclusionZoneWidth, exclusionZoneHeight));
+		return List.of(new Rect2i(xOffset, yOffset, exclusionZoneWidth, exclusionZoneHeight));
 	}
 
 	/**
@@ -154,6 +162,7 @@ public class VisitorHelper extends AbstractWidget {
 
 		acceptButton.skyblocker$getLoreStrings().stream()
 				.map(String::trim)
+				.map(ChatFormatting::stripFormatting)
 				.dropWhile(lore -> !lore.contains("Items Required")) // All lines before Items Required (shouldn't be any, but you never know)
 				.skip(1) // skip the Items Required line
 				.takeWhile(lore -> !lore.isEmpty()) // All lines until the blank line before Rewards
@@ -191,6 +200,7 @@ public class VisitorHelper extends AbstractWidget {
 
 			return NEURepoManager.getItemByName(itemName)
 					.stream()
+					.filter(Objects::nonNull)
 					.findFirst()
 					.map(NEUItem::getSkyblockItemId)
 					.map(ItemRepository::getItemStack)

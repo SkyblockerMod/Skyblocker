@@ -1,25 +1,27 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.ServerTickCallback;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
-import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.objects.ObjectDoublePair;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -43,19 +45,19 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.ServerTickCallback;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.DungeonPuzzle;
+import de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.LeverType;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_X;
 import static de.hysky.skyblocker.skyblock.dungeon.puzzle.waterboard.Waterboard.BOARD_MAX_Y;
@@ -462,7 +464,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				float[] components = ColorUtils.getFloatComponents(mark.reached ? DyeColor.LIME : DyeColor.WHITE);
 				collector.submitFilledBox(mark.pos, components, 0.5f, true);
 				collector.submitText(Component.nullToEmpty(String.format("Mark %d", mark.index)),
-						mark.pos.getCenter().relative(Direction.UP, 0.2), true);
+						Vec3.atCenterOf(mark.pos).relative(Direction.UP, 0.2), true);
 			}
 
 			if (solution != null) {
@@ -477,12 +479,12 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				LeverType nextNextLever = sortedTimes.size() < 2 ? null : sortedTimes.get(1).left();
 
 				if (nextLever != null) {
-					collector.submitLineFromCursor(room.relativeToActual(nextLever.leverPos).getCenter(),
+					collector.submitLineFromCursor(Vec3.atCenterOf(room.relativeToActual(nextLever.leverPos)),
 							ColorUtils.getFloatComponents(DyeColor.LIME), 1f, 4f);
 					if (nextNextLever != null) {
 						collector.submitLinesFromPoints(new Vec3[]{
-								room.relativeToActual(nextLever.leverPos).getCenter(),
-								room.relativeToActual(nextNextLever.leverPos).getCenter()
+								Vec3.atCenterOf(room.relativeToActual(nextLever.leverPos)),
+										Vec3.atCenterOf(room.relativeToActual(nextNextLever.leverPos))
 						}, ColorUtils.getFloatComponents(DyeColor.WHITE), 1f, 2f, true);
 					}
 				}
@@ -513,7 +515,7 @@ public class WaterboardOneFlow extends DungeonPuzzle {
 				}
 
 				collector.submitText(text,
-						room.relativeToActual(lever.leverPos).getCenter()
+						room.relativeToActual(Vec3.atCenterOf(lever.leverPos))
 								.relative(Direction.UP, 0.5 * (i + 1)), true);
 			}
 		}

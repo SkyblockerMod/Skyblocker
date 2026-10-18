@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.utils.Constants;
-import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.utils.Constants;
 
 class CrystalsLocationManagerTest {
 	@BeforeAll

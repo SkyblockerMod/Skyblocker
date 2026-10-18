@@ -1,19 +1,26 @@
 package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.util.ARGB;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public final class OrderTerminal extends SimpleContainerSolver implements TerminalSolver {
+	// TODO: Change to 10 after the Minister Perk updates is released.
 	private static final int PANES_NUM = 14;
-	private int[] orderedSlots;
+	private int @Nullable [] orderedSlots;
 	private int currentNum = Integer.MAX_VALUE;
 
 	public OrderTerminal() {
@@ -31,12 +38,14 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		if (orderedSlots == null && !orderSlots(slots))
 			return Collections.emptyList();
-		while (currentNum < PANES_NUM && slots.containsKey(orderedSlots[currentNum]) && Items.LIME_STAINED_GLASS_PANE.equals(slots.get(orderedSlots[currentNum]).getItem()))
+		while (currentNum < PANES_NUM && slots.containsKey(orderedSlots[currentNum]) && slots.get(orderedSlots[currentNum]).is(Items.STAINED_GLASS_PANE.lime()))
 			currentNum++;
 		List<ColorHighlight> highlights = new ArrayList<>(3);
 		int last = Integer.min(3, PANES_NUM - currentNum);
 		for (int i = 0; i < last; i++) {
-			highlights.add(new ColorHighlight(orderedSlots[currentNum + i], (224 - 64 * i) << 24 | 64 << 16 | 96 << 8 | 255));
+			int slotNum = orderedSlots[currentNum + i];
+			if (slotNum == -1) continue;
+			highlights.add(new ColorHighlight(slotNum, ARGB.color(224 - 64 * i, 0x4060FF)));
 		}
 		return highlights;
 	}
@@ -44,12 +53,15 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 	public boolean orderSlots(Int2ObjectMap<ItemStack> slots) {
 		ContainerSolver.trimEdges(slots, 4);
 		orderedSlots = new int[PANES_NUM];
+		Arrays.fill(orderedSlots, -1);
 		for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
-			if (Items.AIR.equals(slot.getValue().getItem())) {
+			ItemStack stack = slot.getValue();
+			if (stack.is(Items.STAINED_GLASS_PANE.black())) continue;
+			if (stack.isEmpty()) {
 				orderedSlots = null;
 				return false;
 			}
-			else orderedSlots[slot.getValue().getCount() - 1] = slot.getIntKey();
+			orderedSlots[stack.getCount() - 1] = slot.getIntKey();
 		}
 		currentNum = 0;
 		return true;
@@ -57,9 +69,9 @@ public final class OrderTerminal extends SimpleContainerSolver implements Termin
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		if (stack == null || stack.isEmpty()) return false;
+		if (stack.isEmpty()) return false;
 
-		if (!stack.is(Items.RED_STAINED_GLASS_PANE) || stack.getCount() != currentNum + 1) {
+		if (!stack.is(Items.STAINED_GLASS_PANE.red()) || stack.getCount() != currentNum + 1) {
 			return shouldBlockIncorrectClicks();
 		}
 

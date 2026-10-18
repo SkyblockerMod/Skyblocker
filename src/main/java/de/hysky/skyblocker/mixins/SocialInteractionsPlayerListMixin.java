@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.mixins;
 
 import java.util.Map;
-import net.minecraft.client.gui.screens.social.PlayerEntry;
-import net.minecraft.client.gui.screens.social.SocialInteractionsPlayerList;
+
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.minecraft.client.gui.screens.social.PlayerEntry;
+import net.minecraft.client.gui.screens.social.SocialInteractionsPlayerList;
 
 import de.hysky.skyblocker.utils.Utils;
 

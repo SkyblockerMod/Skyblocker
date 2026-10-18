@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
 import java.util.List;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;

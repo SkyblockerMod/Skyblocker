@@ -1,13 +1,15 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.utils.Area;
-import de.hysky.skyblocker.utils.Utils;
 import java.util.Arrays;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+
+import de.hysky.skyblocker.utils.Area;
+import de.hysky.skyblocker.utils.Utils;
 
 public class SkyblockCraftingTableScreenHandler extends ChestMenu {
 

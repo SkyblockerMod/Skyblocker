@@ -322,6 +322,10 @@
 			"credit": "Meteor Development"
 		},
 		{
+			"name": "Elite SkyBlock",
+			"credit": "Kaeso"
+		},
+		{
 			"name": "Fabric API",
 			"credit": "Modmuss and contributors"
 		},
@@ -330,12 +334,20 @@
 			"credit": "AzureAaron and contributors"
 		},
 		{
+			"name": "JGit",
+			"credit": "Eclipse Foundation"
+		},
+		{
 			"name": "Legacy Item DFU",
 			"credit": "AzureAaron"
 		},
 		{
 			"name": "MoulConfig",
 			"credit": "Nea and contributors"
+		},
+		{
+			"name": "Nea Lisp",
+			"credit": "Nea"
 		},
 		{
 			"name": "Networth Calculator",
@@ -350,8 +362,8 @@
 			"credit": "Nea and contributors"
 		},
 		{
-			"name": "JGit",
-			"credit": "Eclipse Foundation"
+			"name": "Render Chest",
+			"credit": "AzureAaron"
 		},
 		{
 			"name": "YetAnotherConfigLib",

@@ -1,10 +1,7 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
 import java.time.Duration;
 
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -20,6 +17,10 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.SkyblockRecipeBookComponent;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
 
 public class SkyblockCraftingTableScreen extends AbstractContainerScreen<SkyblockCraftingTableScreenHandler> {
 	private static final FallbackedTexture<Identifier> TEXTURE = FallbackedTexture.ofTexture(
@@ -95,7 +96,7 @@ public class SkyblockCraftingTableScreen extends AbstractContainerScreen<Skybloc
 	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
 		ItemStack stack = slot.getItem();
 		if (slot.index == 23 && stack.is(Items.BARRIER)) return;
-		if (stack.is(Items.GRAY_STAINED_GLASS_PANE) && stack.getSkyblockId().isEmpty()) return;
+		if (stack.is(Items.STAINED_GLASS_PANE.gray()) && stack.getSkyblockId().isEmpty()) return;
 		super.extractSlot(graphics, slot, mouseX, mouseY);
 	}
 

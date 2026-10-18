@@ -1,18 +1,20 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
-import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.InflaterInputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomStructure;
+import de.hysky.skyblocker.skyblock.dungeon.preview.SkeletonBlock;
 
 /**
  * This is the opposite of {@link StructureToSkeleton}, for more detailed comments see that class instead.

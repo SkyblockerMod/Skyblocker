@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.profileviewer.collections;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonObject;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer.ProfileViewerScreen;
 import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractWidget;
-import org.jspecify.annotations.Nullable;
 
 public class CollectionsPage implements ProfileViewerPage {
 	private static final String[] COLLECTION_CATEGORIES = {"MINING", "FARMING", "COMBAT", "FISHING", "FORAGING", "RIFT"};

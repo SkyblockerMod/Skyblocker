@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.shortcut;
 
 import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.input.InputWithModifiers;

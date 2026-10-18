@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.utils.render.texture;
 
+import java.util.List;
+import java.util.function.Function;
+
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
-
-import java.util.List;
-import java.util.function.Function;
 
 class WidgetSpritesFallback implements FallbackedTexture<WidgetSprites> {
 	private final IdentifierTexture enabled;

@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.radialMenu;
 
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.azureaaron.dandelion.api.Option;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public abstract class RadialMenu {
 

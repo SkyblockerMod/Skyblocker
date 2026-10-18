@@ -1,22 +1,24 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.PosUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -27,22 +29,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.function.Supplier;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.OtherLocationsConfig;
+import de.hysky.skyblocker.utils.BlockPosSet;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.PosUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.ProfileAwareWaypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -93,23 +93,23 @@ public class Relics {
 			} catch (IOException e) {
 				LOGGER.error("[Skyblocker] Failed to load found relics", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void saveFoundRelics(Minecraft client) {
-		Map<String, Set<BlockPos>> foundRelics = new HashMap<>();
+		Map<String, BlockPosSet> foundRelics = new HashMap<>();
 		for (ProfileAwareWaypoint relic : relics.values()) {
 			for (String profile : relic.foundProfiles) {
-				foundRelics.computeIfAbsent(profile, _ -> new HashSet<>());
+				foundRelics.computeIfAbsent(profile, _ -> new BlockPosSet());
 				foundRelics.get(profile).add(relic.pos);
 			}
 		}
 
 		try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_relics.json"))) {
 			JsonObject json = new JsonObject();
-			for (Map.Entry<String, Set<BlockPos>> foundRelicsForProfile : foundRelics.entrySet()) {
+			for (Map.Entry<String, BlockPosSet> foundRelicsForProfile : foundRelics.entrySet()) {
 				JsonArray foundRelicsJson = new JsonArray();
-				for (BlockPos foundRelic : foundRelicsForProfile.getValue()) {
+				for (BlockPos foundRelic : foundRelicsForProfile.getValue().iterateMut()) {
 					foundRelicsJson.add(PosUtils.getPosString(foundRelic));
 				}
 				json.add(foundRelicsForProfile.getKey(), foundRelicsJson);

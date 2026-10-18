@@ -1,11 +1,12 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 public class TextureTextElement extends Element {
 	private final Identifier texture;

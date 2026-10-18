@@ -1,33 +1,39 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.Map;
+import java.util.OptionalDouble;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.FarmingConfig;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
-import java.util.Map;
-import java.util.Set;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 @RegisterWidget
 public class FarmingHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("Farming").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.GARDEN);
 	public static final Map<String, String> FARMING_TOOLS = Map.ofEntries(
 			Map.entry("THEORETICAL_HOE_WHEAT_1", "WHEAT"),
 			Map.entry("THEORETICAL_HOE_WHEAT_2", "WHEAT"),
@@ -67,6 +73,8 @@ public class FarmingHudWidget extends ElementBasedWidget {
 			Map.entry("COCO_CHOPPER_3", "INK_SACK:3"),
 			Map.entry("BASIC_GARDENING_HOE", ""),
 			Map.entry("ADVANCED_GARDENING_HOE", ""),
+			Map.entry("BASIC_GARDENING_AXE", ""),
+			Map.entry("ADVANCED_GARDENING_AXE", ""),
 			Map.entry("BINGHOE", "")
 	);
 	private static @Nullable FarmingHudWidget instance = null;
@@ -78,8 +86,16 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 	private final Minecraft client = Minecraft.getInstance();
 
+	private boolean showCounter = true;
+	private boolean showCoins = true;
+	private boolean showBlocks = true;
+	private boolean showExperience = true;
+	private boolean showAngle = true;
+	private boolean includeSeedsPrice = true;
+	private FarmingConfig.Type priceType = FarmingConfig.Type.BOTH;
+
 	public FarmingHudWidget() {
-		super(TITLE, ChatFormatting.YELLOW.getColor(), "hud_farming");
+		super(TITLE, TextColor.YELLOW.getValue(), new Information("hud_farming", Component.literal("Farming HUD"), Location.GARDEN));
 		instance = this;
 		update();
 	}
@@ -92,10 +108,9 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	@Override
 	public void updateContent() {
 		if (client.player == null || client.level == null) {
-			addComponent(new PlainTextElement(Component.literal("Nothing to show :p")));
+			addElement(new PlainTextElement(Component.literal("Nothing to show :p")));
 			return;
 		}
-		FarmingConfig.FarmingHud config = SkyblockerConfigManager.get().farming.farmingHud;
 		ItemStack farmingToolStack = client.player.getMainHandItem();
 		String itemId = farmingToolStack.getSkyblockId();
 		String cropItemId = FARMING_TOOLS.getOrDefault(itemId, "");
@@ -105,31 +120,78 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		FlexibleItemStack cropStack = ItemRepository.getItemStack(cropItemId.replace(":", "-")); // Hacky conversion to neu id since ItemUtils.getNeuId requires an item stack.
 		float cropsPerMinute = FarmingHud.cropsPerMinute();
 
-		if (config.counter) {
-			String counterText = FarmingHud.counterText();
+		if (showCounter) {
+			FarmingHud.CounterType counterType = FarmingHud.counterType();
 			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
-			if (FarmingHud.CounterType.NONE.matchesText(counterText)) counterNumber = "";
-			addSimpleIcoText(cropStack, counterText, ChatFormatting.YELLOW, counterNumber);
+			if (counterType == FarmingHud.CounterType.NONE) counterNumber = "";
+			addSimpleIcoText(cropStack, counterType.text, ChatFormatting.YELLOW, counterNumber);
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
 		}
-		if (config.coins) {
-			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute));
+		double blockBreaks = FarmingHud.blockBreaks();
+		if (showCoins) {
+			boolean hasCounter = FarmingHud.counterType() != FarmingHud.CounterType.NONE;
+			boolean hasReplenish = hasCounter && ItemUtils.getCustomData(farmingToolStack).getCompoundOrEmpty("enchantments").contains("replenish");
+			addSimpleIconTranslatableText(Ico.GOLD, "skyblocker.farming.farmingHud.coinsPerHour", ChatFormatting.GOLD, getPriceText(cropItemId, cropsPerMinute, hasReplenish, blockBreaks));
 		}
-		addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(FarmingHud.blockBreaks()));
-		if (config.experience) {
+		if (showBlocks) {
+			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.blocksPerSec", ChatFormatting.YELLOW, Double.toString(blockBreaks));
+		}
+		if (showExperience) {
 			//noinspection DataFlowIssue
-			addComponent(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), ChatFormatting.GOLD.getColor()));
+			addElement(Elements.progressComponent(Ico.LANTERN, Component.translatable("skyblocker.farming.farmingHud.farmingLevel"), FarmingHud.farmingXpPercentProgress(), TextColor.GOLD.getValue()));
 			addSimpleIconTranslatableText(Ico.LIME_DYE, "skyblocker.farming.farmingHud.farmingXPPerHour", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format(FarmingHud.farmingXpPerHour()));
 		}
 
-		Entity cameraEntity = client.getCameraEntity();
-		Component yaw = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
-		Component pitch = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
-		addComponent(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
-		if (LowerSensitivity.isSensitivityLowered()) {
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
+		if (showAngle) {
+			Entity cameraEntity = client.getCameraEntity();
+			Component yaw = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getYRot())));
+			Component pitch = cameraEntity == null ? Component.translatable("skyblocker.farming.farmingHud.noCameraEntity") : Component.literal(String.format("%.2f", Mth.wrapDegrees(cameraEntity.getXRot())));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.yaw", yaw).withStyle(ChatFormatting.GOLD)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.farming.farmingHud.pitch", pitch).withStyle(ChatFormatting.GOLD)));
 		}
+		if (LowerSensitivity.isSensitivityLowered()) {
+			addElement(new PlainTextElement(Component.translatable("skyblocker.garden.hud.mouseLocked").withStyle(ChatFormatting.ITALIC)));
+		}
+	}
+
+	@Override
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.counter"), b -> showCounter = b, showCounter);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.coins"), b -> showCoins = b, showCoins);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.blocks"), b -> showBlocks = b, showBlocks);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.experience"), b -> showExperience = b, showExperience);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.angle"), b -> showAngle = b, showAngle);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.includeSeedsPrice"), b -> includeSeedsPrice = b, includeSeedsPrice);
+		collector.addWidget(CycleButton.builder(d -> Component.literal(d.toString()), priceType)
+				.withTooltip(_ -> Tooltip.create(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip")))
+				.withValues(FarmingConfig.Type.values())
+				.create(Component.translatable("skyblocker.config.farming.farmingHud.type"), (_, value) -> priceType = value)
+		);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		showCounter = input.readBooleanOr("counter", true);
+		showCoins = input.readBooleanOr("coins", true);
+		showBlocks = input.readBooleanOr("blocks", true);
+		showExperience = input.readBooleanOr("experience", true);
+		showAngle = input.readBooleanOr("angle", true);
+		includeSeedsPrice = input.readBooleanOr("include_seeds_price", true);
+		priceType = input.read("price_type", FarmingConfig.Type.CODEC).orElse(FarmingConfig.Type.BOTH);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("counter", showCounter);
+		output.writeBool("coins", showCoins);
+		output.writeBool("blocks", showBlocks);
+		output.writeBool("experience", showExperience);
+		output.writeBool("angle", showAngle);
+		output.writeBool("include_seeds_price", includeSeedsPrice);
+		output.write("price_type", FarmingConfig.Type.CODEC, priceType);
 	}
 
 	/**
@@ -139,45 +201,70 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	 * - NPC: only npc price (if available)
 	 * - BOTH: higher of NPC or bazaar price
 	 */
-	private Component getPriceText(String cropItemId, float cropsPerMinute) {
-		DoubleBooleanPair itemBazaarPrice = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.
-		double bazaarPrice = itemBazaarPrice.leftDouble();
-		boolean hasBazaarData = itemBazaarPrice.rightBoolean();
+	private Component getPriceText(String cropItemId, float cropsPerMinute, boolean hasReplenish, double blockBreaks) {
+		OptionalDouble bazaar = ItemUtils.getItemPrice(cropItemId); // Gets the bazaar sell price of the crop.;
+		OptionalDouble npc = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble(cropItemId)) : OptionalDouble.empty();
 
-		// Gets the npc sell price of the crop or set to the min double value if it doesn't exist.
-		double itemNpcPrice = TooltipInfoType.NPC.hasOrNullWarning(cropItemId) ? TooltipInfoType.NPC.getData().getDouble(cropItemId) : Double.MIN_VALUE;
+		double usedByReplenish = 60 * blockBreaks;
+		// Cultivating counter also includes wheat seeds
+		// The wheat to seed ratio is about 2/3
+		// So wheat is about 40% of the counter, while seeds are 60%
+		if (cropItemId.equals("WHEAT")) {
+			// if has "replenish" enchantment, take the theoretic ratio and remove the seeds from it
+			final double seedsRatio = hasReplenish ? Math.max(cropsPerMinute * 0.6 - usedByReplenish, 0) / cropsPerMinute : 0.6;
+			final double wheatRatio = 1 - seedsRatio;
+
+			OptionalDouble seedsBazaarPrice;
+			OptionalDouble seedsNpcPrice;
+			if (includeSeedsPrice) {
+				seedsBazaarPrice = ItemUtils.getItemPrice("SEEDS");
+				seedsNpcPrice = TooltipInfoType.NPC.hasOrNullWarning("SEEDS") ?
+						OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble("SEEDS")) :
+						OptionalDouble.empty();
+			} else {
+				usedByReplenish = 0; // force to 0 since seeds aren't counted, it would just reduce the wheat per minute for no reason
+				seedsBazaarPrice = OptionalDouble.of(0);
+				seedsNpcPrice = OptionalDouble.of(0);
+			}
+			OptionalDouble wheatPrice = ItemUtils.getItemPrice("WHEAT");
+			if (seedsBazaarPrice.isPresent() && wheatPrice.isPresent()) bazaar = OptionalDouble.of(wheatPrice.getAsDouble() * wheatRatio + seedsBazaarPrice.getAsDouble() * seedsRatio);
+			else bazaar = OptionalDouble.empty();
+			npc = TooltipInfoType.NPC.hasOrNullWarning("WHEAT") && seedsNpcPrice.isPresent() ?
+					OptionalDouble.of(seedsNpcPrice.getAsDouble() * seedsRatio + TooltipInfoType.NPC.getData().getDouble("WHEAT") * wheatRatio) :
+					OptionalDouble.empty();
+		}
 
 		double priceToUse = 0;
 		Component sourceLabel = null;
 		boolean hasValidPrice = false;
 
-		switch (SkyblockerConfigManager.get().farming.farmingHud.type) {
+		switch (priceType) {
 			case NPC -> {
 				// Use NPC price if it's available.
-				if (itemNpcPrice > 0 && itemNpcPrice != Double.MIN_VALUE) {
-					priceToUse = itemNpcPrice;
+				if (npc.isPresent()) {
+					priceToUse = npc.getAsDouble();
 					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 			}
 			case BAZAAR -> {
 				// Use Bazaar price if data is available.
-				if (hasBazaarData) {
-					priceToUse = bazaarPrice;
+				if (bazaar.isPresent()) {
+					priceToUse = bazaar.getAsDouble();
 					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
 			}
 			case BOTH -> {
 				// Use the NPC price if it's higher than the Bazaar price and available.
-				if (itemNpcPrice > bazaarPrice && itemNpcPrice != Double.MIN_VALUE) {
-					priceToUse = itemNpcPrice;
+				if (npc.isPresent() && npc.getAsDouble() > bazaar.orElse(0)) {
+					priceToUse = npc.getAsDouble();
 					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.farmingHud.type.NPC")).append(")");
 					hasValidPrice = true;
 				}
 				// Otherwise, use Bazaar price if available.
-				else if (hasBazaarData) {
-					priceToUse = bazaarPrice;
+				else if (bazaar.isPresent()) {
+					priceToUse = bazaar.getAsDouble();
 					sourceLabel = Component.literal(" (").append(Component.translatable("skyblocker.config.farming.farmingHud.type.BAZAAR")).append(")");
 					hasValidPrice = true;
 				}
@@ -185,28 +272,8 @@ public class FarmingHudWidget extends ElementBasedWidget {
 		}
 
 
+		if (hasReplenish) cropsPerMinute -= (float) (usedByReplenish);
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
 		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.farmingHud.enabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.GARDEN)) return;
-		SkyblockerConfigManager.update(config -> config.farming.farmingHud.enabled = enabled);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public Component getDisplayName() {
-		return Component.literal("Farming HUD");
 	}
 }

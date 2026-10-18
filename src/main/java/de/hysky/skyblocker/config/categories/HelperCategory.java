@@ -1,24 +1,29 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
-import de.hysky.skyblocker.skyblock.fishing.FishingHudWidget;
-import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
+import net.azureaaron.dandelion.api.KeyMappingOption;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.skyblock.LoadoutKeybinds;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarHelper;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class HelperCategory {
 	public static ConfigCategory create(SkyblockerConfig defaults, SkyblockerConfig config) {
@@ -43,16 +48,6 @@ public class HelperCategory {
 						.binding(defaults.helpers.enableBitsTooltip,
 								() -> config.helpers.enableBitsTooltip,
 								newValue -> config.helpers.enableBitsTooltip = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-
-				// Wardrobe Helper
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.helpers.enableWardrobeHelper"))
-						.description(Component.translatable("skyblocker.config.helpers.enableWardrobeHelper.@Tooltip"))
-						.binding(defaults.helpers.enableWardrobeHelper,
-								() -> config.helpers.enableWardrobeHelper,
-								newValue -> config.helpers.enableWardrobeHelper = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 
@@ -199,17 +194,11 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.hideOtherPlayersRods = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.enableFishingHud"))
-								.binding(defaults.helpers.fishing.enableFishingHud,
-										() -> config.helpers.fishing.enableFishingHud,
-										newValue -> config.helpers.fishing.enableFishingHud = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.HUB, FishingHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.HUB, screen)))
 								.build())
 						.option(Option.<HelperConfig.Fishing.FishingHookDisplay>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.fishingHookDisplay"))
@@ -218,30 +207,6 @@ public class HelperCategory {
 										() -> config.helpers.fishing.fishingHookDisplay,
 										newValue -> config.helpers.fishing.fishingHookDisplay = newValue)
 								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.enableFishingTimer"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.enableFishingTimer.@Tooltip"))
-								.binding(defaults.helpers.fishing.enableFishingTimer,
-										() -> config.helpers.fishing.enableFishingTimer,
-										newValue -> config.helpers.fishing.enableFishingTimer = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.hud.enableSeaCreatureCounter.@Tooltip"))
-								.binding(defaults.helpers.fishing.enableSeaCreatureCounter,
-										() -> config.helpers.fishing.enableSeaCreatureCounter,
-										newValue -> config.helpers.fishing.enableSeaCreatureCounter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.hud.onlyShowHudInBarn.@Tooltip"))
-								.binding(defaults.helpers.fishing.onlyShowHudInBarn,
-										() -> config.helpers.fishing.onlyShowHudInBarn,
-										newValue -> config.helpers.fishing.onlyShowHudInBarn = newValue)
-								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.timerLength"))
@@ -258,14 +223,6 @@ public class HelperCategory {
 										() -> config.helpers.fishing.seaCreatureTimerNotification,
 										newValue -> config.helpers.fishing.seaCreatureTimerNotification = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Integer>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap"))
-								.description(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCap.@Tooltip"))
-								.binding(defaults.helpers.fishing.seaCreatureCap,
-										() -> config.helpers.fishing.seaCreatureCap,
-										newValue -> config.helpers.fishing.seaCreatureCap = newValue)
-								.controller(IntegerController.createBuilder().range(1, 60).slider(1).build())
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.seaCreatureCapNotification"))
@@ -286,6 +243,81 @@ public class HelperCategory {
 
 						.build())
 
+				// Loadouts Helper
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.loadouts"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper"))
+								.description(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tooltip"))
+								.tags(Component.translatable("skyblocker.config.helpers.loadouts.enableLoadoutsHelper.@Tag"), CommonTags.ADDED_IN_6_7_0)
+								.binding(defaults.helpers.enableWardrobeHelper,
+										() -> config.helpers.enableWardrobeHelper,
+										newValue -> config.helpers.enableWardrobeHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.01"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_1)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.02"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_2)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.03"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_3)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.04"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_4)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.05"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_5)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.06"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_6)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.07"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_7)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.08"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_8)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.09"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_9)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.10"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_10)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.11"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_11)
+								.build())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.loadout.12"))
+								.tags(ArrayUtils.add(CommonTags.KEY_MAPPING, CommonTags.ADDED_IN_6_7_0))
+								.keyMapping(LoadoutKeybinds.LOADOUT_12)
+								.build())
+						.build())
+
 				//Fairy Souls Helper
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.helpers.fairySouls"))
@@ -302,6 +334,15 @@ public class HelperCategory {
 								.binding(defaults.helpers.fairySouls.highlightFoundSouls,
 										() -> config.helpers.fairySouls.highlightFoundSouls,
 										newValue -> config.helpers.fairySouls.highlightFoundSouls = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo"))
+								.description(Component.translatable("skyblocker.config.helpers.fairySouls.highlightOnBingo.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_10_0)
+								.binding(defaults.helpers.fairySouls.highlightOnBingo,
+										() -> config.helpers.fairySouls.highlightOnBingo,
+										newValue -> config.helpers.fairySouls.highlightOnBingo = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -436,6 +477,14 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax"))
+								.description(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax.@Tooltip"))
+								.binding(defaults.helpers.bazaar.enableBazaarMax,
+										() -> config.helpers.bazaar.enableBazaarMax,
+										newValue -> config.helpers.bazaar.enableBazaarMax = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup"))
 								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceLookup.@Tooltip"))
 								.binding(defaults.helpers.itemPrice.enableItemPriceLookup,
@@ -443,15 +492,11 @@ public class HelperCategory {
 										newValue -> config.helpers.itemPrice.enableItemPriceLookup = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh"))
-								.description(Component.translatable("skyblocker.config.helpers.itemPrice.enableItemPriceRefresh.@Tooltip"))
-								.binding(defaults.helpers.itemPrice.enableItemPriceRefresh,
-										() -> config.helpers.itemPrice.enableItemPriceRefresh,
-										newValue -> config.helpers.itemPrice.enableItemPriceRefresh = newValue)
-								.controller(ConfigUtils.createBooleanController())
+						.option(KeyMappingOption.createBuilder()
+								.name(Component.translatable("key.skyblocker.itemPriceLookup"))
+								.tags(CommonTags.KEY_MAPPING)
+								.keyMapping(ItemPrice.ITEM_PRICE_LOOKUP)
 								.build())
-						.option(ConfigUtils.createShortcutToKeybindsScreen())
 						.build())
 				// Great Spook Event
 				.group(OptionGroup.createBuilder()
@@ -466,6 +511,31 @@ public class HelperCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
+
+				// Century Raffle
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.helpers.centuryRaffle"))
+						.collapsed(true)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight"))
+								.description(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleTaskHighlight.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.helpers.centuryRaffle.enableRaffleTaskHighlight,
+										() -> config.helpers.centuryRaffle.enableRaffleTaskHighlight,
+										newValue -> config.helpers.centuryRaffle.enableRaffleTaskHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight"))
+								.description(Component.translatable("skyblocker.config.helpers.centuryRaffle.enableRaffleRewardHighlight.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.helpers.centuryRaffle.enableRaffleRewardHighlight,
+										() -> config.helpers.centuryRaffle.enableRaffleRewardHighlight,
+										newValue -> config.helpers.centuryRaffle.enableRaffleRewardHighlight = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+
 				.build();
 	}
 }

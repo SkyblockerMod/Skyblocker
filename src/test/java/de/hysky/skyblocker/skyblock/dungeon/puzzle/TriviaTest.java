@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 
 class TriviaTest {
 	private static final Pattern PATTERN = Trivia.PATTERN;

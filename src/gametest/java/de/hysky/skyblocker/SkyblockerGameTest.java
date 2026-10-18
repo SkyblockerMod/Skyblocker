@@ -1,8 +1,7 @@
 package de.hysky.skyblocker;
 
-import de.hysky.skyblocker.debug.SnapshotDebug;
-import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 import it.unimi.dsi.fastutil.Pair;
+
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -10,6 +9,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCompa
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+
+import de.hysky.skyblocker.debug.SnapshotDebug;
+import de.hysky.skyblocker.skyblock.fancybars.FancyStatusBars;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SkyblockerGameTest implements FabricClientGameTest {
@@ -32,28 +34,28 @@ public class SkyblockerGameTest implements FabricClientGameTest {
 
 			// Save the current fancy status bars config and reset it to default
 			var config = context.computeOnClient(_ -> {
-				var curConfig = FancyStatusBars.statusBars.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue().toJson())).toList();
+				var curConfig = FancyStatusBars.INSTANCE.statusBars.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue().toJson())).toList();
 
 				int[] counts = new int[7];
-				FancyStatusBars.statusBars.forEach((type, bar) -> {
+				FancyStatusBars.INSTANCE.statusBars.forEach((type, bar) -> {
 					bar.anchor = type.getDefaultAnchor();
 					bar.gridY = type.getDefaultGridY();
 					bar.gridX = counts[type.getDefaultAnchor().ordinal()]++;
 				});
-				FancyStatusBars.placeBarsInPositioner();
-				FancyStatusBars.updatePositions(false);
+				FancyStatusBars.INSTANCE.placeBarsInPositioner();
+				FancyStatusBars.INSTANCE.updatePositions(false);
 				return curConfig;
 			});
 
 			// Take a screenshot and compare it
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("skyblocker_render").saveWithFileName("skyblocker_render"));
 
 			// Restore the fancy status bars config
 			context.runOnClient(_ -> {
-				config.forEach(pair -> FancyStatusBars.statusBars.get(pair.key()).loadFromJson(pair.value()));
-				FancyStatusBars.placeBarsInPositioner();
-				FancyStatusBars.updatePositions(false);
+				config.forEach(pair -> FancyStatusBars.INSTANCE.statusBars.get(pair.key()).loadFromJson(pair.value()));
+				FancyStatusBars.INSTANCE.placeBarsInPositioner();
+				FancyStatusBars.INSTANCE.updatePositions(false);
 			});
 		}
 	}

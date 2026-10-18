@@ -1,9 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
-import de.hysky.skyblocker.utils.RegistryUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +20,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.custom.CustomArmorTrims;
+import de.hysky.skyblocker.utils.RegistryUtils;
 
 public class TrimSelectionWidget extends AbstractContainerWidget {
 	private static final int PADDING = 3;
@@ -82,6 +83,7 @@ public class TrimSelectionWidget extends AbstractContainerWidget {
 		// minus 9 because 3 pixels of left padding, right padding, and gap
 		int buttonsPerRow = (width - 9) / 20;
 		// Try to allocate more buttons to patterns since there are more patterns than materials
+		// TODO: Clamping these alone does not fix crash at small screen widths
 		int patternButtonsPerRow = Math.min(Math.ceilDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_PATTERN);
 		int materialButtonsPerRow = Math.min(Math.floorDiv(buttonsPerRow, 2), MAX_BUTTONS_PER_ROW_MATERIAL);
 

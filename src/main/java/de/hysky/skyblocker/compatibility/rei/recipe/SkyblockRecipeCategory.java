@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.compatibility.rei.recipe;
 
-import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
+import java.util.ArrayList;
+import java.util.List;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -9,14 +11,14 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.joml.Matrix3x2fStack;
+import de.hysky.skyblocker.skyblock.itemlist.recipes.SkyblockRecipe;
 
 /**
  * Skyblock recipe category class for REI
@@ -70,19 +72,19 @@ public class SkyblockRecipeCategory implements DisplayCategory<SkyblockRecipeDis
 			out.add(Widgets.createSlot(new Point(inputSlot.x() + bounds.getX(), inputSlot.y() + bounds.getY()))
 					.markInput()
 					.backgroundEnabled(inputSlot.showBackground())
-					.entry(EntryStacks.of(inputSlot.stack())));
+					.entry(EntryStacks.of(inputSlot.stack().getStackOrThrow())));
 		}
 		for (SkyblockRecipe.RecipeSlot outputSlot : recipe.getOutputSlots(bounds.getWidth(), bounds.getHeight())) {
 			out.add(Widgets.createSlot(new Point(outputSlot.x() + bounds.getX(), outputSlot.y() + bounds.getY()))
 					.markOutput()
 					.backgroundEnabled(outputSlot.showBackground())
-					.entry(EntryStacks.of(outputSlot.stack())));
+					.entry(EntryStacks.of(outputSlot.stack().getStackOrThrow())));
 		}
-		out.add(Widgets.createDrawableWidget((context, mouseX, mouseY, delta) -> {
+		out.add(Widgets.createDrawableWidget((context, mouseX, mouseY, _) -> {
 			Matrix3x2fStack matrices = context.pose();
 			matrices.pushMatrix();
 			matrices.translate(bounds.getX(), bounds.getY());
-			recipe.render(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
+			recipe.extractRenderState(context, bounds.getWidth(), bounds.getHeight(), mouseX - bounds.getX(), mouseY - bounds.getY());
 			matrices.popMatrix();
 		}));
 		ScreenPosition arrowLocation = recipe.getArrowLocation(bounds.getWidth(), bounds.getHeight());

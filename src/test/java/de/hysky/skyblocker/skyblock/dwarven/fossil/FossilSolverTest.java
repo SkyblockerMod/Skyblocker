@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
+import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileState;
 
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.POSSIBLE_STATES;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.flipGrid;

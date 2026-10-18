@@ -41,11 +41,20 @@
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
         <module name="IllegalImport">
+            <property name="illegalClasses" value="javax.annotation.Nullable"/>
             <property name="illegalClasses" value="org.jetbrains.annotations.Nullable"/>
             <property name="illegalClasses" value="org.jetbrains.annotations.NotNull"/>
             <property name="illegalClasses" value="org.jetbrains.annotations.NotNullByDefault"/>
             <!-- Since everything is @NullMarked this should not be used, prefer Objects#requireNonNull -->
             <property name="illegalClasses" value="org.jspecify.annotations.NonNull"/>
+        </module>
+
+        <module name="ImportOrder">
+            <property name="groups" value="java,javax,*,net,de.hysky"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="option" value="bottom"/> <!-- Put static imports below regular imports -->
+            <property name="sortStaticImportsAlphabetically" value="true"/>
         </module>
 
         <module name="SeparatorWrap">
@@ -91,10 +100,12 @@
         <module name="EqualsHashCode"/>
 
         <module name="HexLiteralCase"/>
+        <module name="NumericalPrefixesInfixesSuffixesCharacterCase"/>
         <module name="UpperEll"/>
 
         <module name="UnusedCatchParameterShouldBeUnnamed"/>
         <module name="UnusedLambdaParameterShouldBeUnnamed"/>
+        <module name="UnusedTryResourceShouldBeUnnamed"/>
 
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
@@ -180,7 +191,7 @@
         </module>
 
         <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent localization issues -->
-        <!-- Not specifying a locale is error prone as it can easily lead to silent breakages with some locales! -->
+        <!-- Not specifying a locale is error-prone as it can easily lead to silent breakages with some locales! -->
         <module name="MatchXpath">
             <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
             <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
@@ -188,7 +199,7 @@
 
         <!--  Require package-info files to have NullMarked annotations -->
         <module name="MatchXpath">
-            <!--  Package info files cannot be identified separately so we check if its not a package declaration in another type of class -->
+            <!--  Package info files cannot be identified separately so we check if it's not a package declaration in another type of class -->
             <property name="query" value="/COMPILATION_UNIT[.//PACKAGE_DEF][not(.//CLASS_DEF) and not(.//INTERFACE_DEF) and not(.//ENUM_DEF) and not(.//RECORD_DEF) and not(.//ANNOTATION_DEF)][not(.//ANNOTATIONS/ANNOTATION/IDENT[@text='NullMarked'])]"/>
             <message key="matchxpath.match" value="Package declarations in package-info files must be annotated with @NullMarked"/>
         </module>

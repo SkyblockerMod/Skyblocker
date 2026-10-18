@@ -1,20 +1,22 @@
 package de.hysky.skyblocker.skyblock.bazaar;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
-import de.hysky.skyblocker.utils.ItemUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class BazaarHelper extends SimpleSlotTextAdder {
 	private static final Pattern FILLED_PATTERN = Pattern.compile("Filled: \\S+ \\(?([\\d.]+)%\\)?!?");

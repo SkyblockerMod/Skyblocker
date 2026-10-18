@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.injected;
 
+import java.util.List;
+
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
 import de.hysky.skyblocker.utils.ItemAbility;
-
-import java.util.List;
 
 public interface SkyblockerStack {
 

@@ -42,19 +42,24 @@ public class OtherLocationsConfig {
 
 		public Waypoint.Type enderNodeWaypointType = Waypoint.Type.OUTLINED_HIGHLIGHT;
 
-		public boolean hudEnabled = true;
+		@Deprecated
+		public transient boolean hudEnabled = true;
 
-		public boolean zealotKillsEnabled = true;
+		@Deprecated
+		public transient boolean zealotKillsEnabled = true;
 
-		public boolean protectorLocationEnabled = true;
+		@Deprecated
+		public transient boolean protectorLocationEnabled = true;
 
 		public boolean waypoint = true;
 
 		public boolean muteEndermanSounds = true;
 
-		public int x = 10;
+		@Deprecated
+		public transient int x = 10;
 
-		public int y = 10;
+		@Deprecated
+		public transient int y = 10;
 	}
 
 	public static class SpidersDen {

@@ -1,14 +1,18 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 
 // this widget shows what you're forging right now.
 // for locked slots, the unlock requirement is shown
@@ -18,14 +22,22 @@ public class ForgeWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Forges").withStyle(ChatFormatting.DARK_AQUA,
 			ChatFormatting.BOLD);
 
+	private boolean render;
+
 	public ForgeWidget() {
-		super("Forges", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Forges", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		boolean b = lines.getFirst().getString().trim().startsWith("(");
-		for (int i = b ? 1 : 0, slot = 1; i < lines.size(); i++, slot++) {
+	public boolean shouldRender() {
+		return render && super.shouldRender();
+	}
+
+	@Override
+	public void updateContent(PlayerListManager.Widget widget) {
+		List<Component> lines = widget.lines();
+		render = !lines.isEmpty();
+		for (int i = 0, slot = 1; i < lines.size(); i++, slot++) {
 			String trim = lines.get(i).getString().trim();
 
 			Element c;
@@ -63,7 +75,17 @@ public class ForgeWidget extends TabHudWidget {
 					}
 				}
 			}
-			this.addComponent(c);
+			this.addElement(c);
 		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(Elements.iconFatTextComponent(Ico.CAMPFIRE, Component.literal("Thing 1").withStyle(ChatFormatting.YELLOW), Component.literal("Done!").withStyle(ChatFormatting.GREEN)));
+		collector.addElement(Elements.iconFatTextComponent(Ico.CAMPFIRE, Component.literal("Thing 2").withStyle(ChatFormatting.YELLOW), Component.literal("Done!").withStyle(ChatFormatting.GREEN)));
+		collector.addElement(Elements.iconFatTextComponent(Ico.CAMPFIRE, Component.literal("Thing 3").withStyle(ChatFormatting.YELLOW), Component.literal("Done in: ").withStyle(ChatFormatting.GRAY).append(Component.literal("???").withStyle(ChatFormatting.WHITE))));
+		collector.addElement(Elements.iconFatTextComponent(Ico.CAMPFIRE, Component.literal("LOCKED").withStyle(ChatFormatting.RED), Component.literal("Requires ???").withStyle(ChatFormatting.GRAY)));
+		collector.addElement(Elements.iconFatTextComponent(Ico.CAMPFIRE, Component.literal("LOCKED").withStyle(ChatFormatting.RED), Component.literal("Requires ???").withStyle(ChatFormatting.GRAY)));
+
 	}
 }

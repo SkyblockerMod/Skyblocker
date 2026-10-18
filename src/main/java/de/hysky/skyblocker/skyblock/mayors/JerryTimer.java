@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.skyblock.mayors;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.mayor.MayorUtils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -14,6 +7,14 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.sounds.SoundEvents;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.mayor.MayorUtils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public final class JerryTimer {
 	private static boolean isJerryActive = false;

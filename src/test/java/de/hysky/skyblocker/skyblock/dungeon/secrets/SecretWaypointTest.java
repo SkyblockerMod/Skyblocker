@@ -1,17 +1,18 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.SharedConstants;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.Bootstrap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.Bootstrap;
 
 public class SecretWaypointTest {
 	private final Gson gson = new Gson();
@@ -77,5 +78,17 @@ public class SecretWaypointTest {
 		waypointJson.addProperty("category", "");
 		SecretWaypoint.Category category = SecretWaypoint.Category.get(waypointJson);
 		Assertions.assertEquals(SecretWaypoint.Category.DEFAULT, category);
+	}
+
+	@Test
+	void hashCodeUsesSerializedCategoryAndName() {
+		SecretWaypoint first = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 30));
+		SecretWaypoint sameWaypointWithDifferentName = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "Second message", new BlockPos(10, 20, 30));
+		SecretWaypoint waypointAtDifferentPosition = new SecretWaypoint(2, SecretWaypoint.Category.CHEST, "First message", new BlockPos(10, 20, 31));
+		SecretWaypoint waypointWithDifferentCategory = new SecretWaypoint(2, SecretWaypoint.Category.ITEM, "First message", new BlockPos(10, 20, 30));
+
+		Assertions.assertNotEquals(first.hashCode(), sameWaypointWithDifferentName.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointAtDifferentPosition.hashCode());
+		Assertions.assertNotEquals(first.hashCode(), waypointWithDifferentCategory.hashCode());
 	}
 }

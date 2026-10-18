@@ -1,21 +1,23 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.ItemAbility;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jspecify.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.ItemAbility;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public final class PickaxeAbility {
 	private static final Pattern COOLDOWN = Pattern.compile("Your Pickaxe ability is on cooldown for (\\d+)s");

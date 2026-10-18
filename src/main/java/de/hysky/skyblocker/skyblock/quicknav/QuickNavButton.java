@@ -1,14 +1,11 @@
 package de.hysky.skyblocker.skyblock.quicknav;
 
+import java.time.Duration;
+
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.mixins.accessors.PopupScreenAccessor;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.render.gui.AbstractPopupScreen;
-import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
-import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -16,11 +13,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.PopupScreen;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -30,9 +25,13 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
-import java.time.Duration;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ScreenUtils;
+import de.hysky.skyblocker.utils.render.texture.FallbackedTexture;
+import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 
 @Environment(value = EnvType.CLIENT)
 public class QuickNavButton extends AbstractWidget {
@@ -107,20 +106,7 @@ public class QuickNavButton extends AbstractWidget {
 	}
 
 	private void updateCoordinates() {
-		Screen screen = Minecraft.getInstance().screen;
-		while (screen instanceof PopupScreen || screen instanceof AbstractPopupScreen) {
-			if (screen instanceof PopupScreen) {
-				if (!(screen instanceof PopupScreenAccessor popup)) {
-					throw new IllegalStateException(
-							"Current PopupScreen does not support AccessorPopupBackground"
-					);
-				}
-				screen = popup.getUnderlyingScreen();
-			} else if (screen instanceof AbstractPopupScreen abstractPopupScreen) {
-				screen = abstractPopupScreen.backgroundScreen;
-			}
-		}
-		if (screen instanceof AbstractContainerScreen<?> handledScreen) {
+		if (ScreenUtils.getUnderlyingScreen() instanceof AbstractContainerScreen<?> handledScreen) {
 			var accessibleScreen = (AbstractContainerScreenAccessor) handledScreen;
 			int x = accessibleScreen.getX();
 			int y = accessibleScreen.getY();

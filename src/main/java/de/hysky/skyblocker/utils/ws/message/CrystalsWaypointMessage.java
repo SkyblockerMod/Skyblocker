@@ -2,10 +2,12 @@ package de.hysky.skyblocker.utils.ws.message;
 
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.core.BlockPos;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.core.BlockPos;
 
 import de.hysky.skyblocker.skyblock.dwarven.CrystalsLocationsManager;
 import de.hysky.skyblocker.skyblock.dwarven.MiningLocationLabel.CrystalHollowsLocationsCategory;

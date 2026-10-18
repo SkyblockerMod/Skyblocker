@@ -4,6 +4,7 @@ import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
+
 import net.minecraft.resources.Identifier;
 
 public class ConfigFix2QuickNav extends ConfigDataFix {

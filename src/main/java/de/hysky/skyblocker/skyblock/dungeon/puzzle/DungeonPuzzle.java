@@ -1,6 +1,14 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.Set;
+
 import com.mojang.brigadier.Command;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
@@ -9,10 +17,6 @@ import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Resettable;
 import de.hysky.skyblocker.utils.Tickable;
 import de.hysky.skyblocker.utils.render.Renderable;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-
-import java.util.Set;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
@@ -39,9 +43,9 @@ public abstract class DungeonPuzzle implements Tickable, Renderable, Resettable 
 			if (currentRoom != null) {
 				reset();
 				currentRoom.addSubProcess(this);
-				context.getSource().sendFeedback(Constants.PREFIX.get().append("§aSolving " + puzzleName + " puzzle in the current room."));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.literal("Solving " + puzzleName + " puzzle in the current room.").withColor(TextColor.GREEN)));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+				context.getSource().sendError(Constants.PREFIX.get().append(Component.literal("Current room is null.").withColor(TextColor.RED)));
 			}
 			return Command.SINGLE_SUCCESS;
 		})))))));

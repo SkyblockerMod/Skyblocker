@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.Map;
+import java.util.function.Function;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-
-import java.util.Map;
-import java.util.function.Function;
 
 public class ConfigFix9EventNotifications extends ConfigDataFix {
 	public ConfigFix9EventNotifications(Schema outputSchema, boolean changesType) {

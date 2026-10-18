@@ -3,6 +3,7 @@ package de.hysky.skyblocker.utils;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.BlockPos;
 
 public final class PosUtils {

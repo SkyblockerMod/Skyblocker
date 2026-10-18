@@ -1,12 +1,6 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +8,16 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 
 // this widget shows info about minions placed on the home island
 @RegisterWidget
@@ -48,11 +51,12 @@ public class MinionWidget extends TabHudWidget {
 		MIN_ICOS.put("Potato", new FlexibleItemStack(Items.POTATO));
 		MIN_ICOS.put("Pumpkin", new FlexibleItemStack(Items.PUMPKIN));
 		MIN_ICOS.put("Rabbit", new FlexibleItemStack(Items.RABBIT));
-		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WHITE_WOOL));
+		MIN_ICOS.put("Sheep", new FlexibleItemStack(Items.WOOL.white()));
 		MIN_ICOS.put("Sugar Cane", new FlexibleItemStack(Items.SUGAR_CANE));
 		MIN_ICOS.put("Wheat", new FlexibleItemStack(Items.WHEAT));
 		MIN_ICOS.put("Clay", new FlexibleItemStack(Items.CLAY));
 		MIN_ICOS.put("Fishing", new FlexibleItemStack(Items.FISHING_ROD));
+		MIN_ICOS.put("Lily Pad", new FlexibleItemStack(Items.LILY_PAD));
 		MIN_ICOS.put("Coal", new FlexibleItemStack(Items.COAL));
 		MIN_ICOS.put("Cobblestone", new FlexibleItemStack(Items.COBBLESTONE));
 		MIN_ICOS.put("Diamond", new FlexibleItemStack(Items.DIAMOND));
@@ -94,17 +98,22 @@ public class MinionWidget extends TabHudWidget {
 	public static final Pattern MINION_PATTERN = Pattern.compile("^(?<amount>\\d+)x (?<name>.*) (?<level>[XVI]*) \\[(?<status>.*)]");
 
 	public MinionWidget() {
-		super("Minions", TITLE, ChatFormatting.DARK_AQUA.getColor());
+		super("Minions", TITLE, TextColor.DARK_AQUA.getValue(), Location.PRIVATE_ISLAND);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		addComponent(new PlainTextElement(lines.getFirst().copy().append(Component.literal(" minions"))));
-		for (int i = 1; i < lines.size(); i++) {
-			String string = lines.get(i).getString();
-			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addComponent(new PlainTextElement(lines.get(i).copy().withStyle(ChatFormatting.GRAY)));
+	public void updateContent(PlayerListManager.Widget widget) {
+		addElement(new PlainTextElement(widget.detail().copy().append(Component.literal(" minions"))));
+		for (Component line : widget.lines()) {
+			String string = line.getString();
+			if (string.toLowerCase(Locale.ENGLISH).startsWith("...")) this.addElement(new PlainTextElement(line.copy().withStyle(ChatFormatting.GRAY)));
 			else addMinionComponent(string);
 		}
+	}
+
+	@Override
+	public boolean shouldRender() {
+		return super.shouldRender() && !Utils.isGuest();
 	}
 
 	public void addMinionComponent(String line) {
@@ -127,7 +136,7 @@ public class MinionWidget extends TabHudWidget {
 			// makes "BLOCKED" also red. in reality, it's some kind of crimson
 			mt.append(Component.literal(stat).withStyle(format));
 
-			this.addComponent(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
+			this.addElement(Elements.iconTextComponent(MIN_ICOS.get(min), mt));
 		}
 	}
 }

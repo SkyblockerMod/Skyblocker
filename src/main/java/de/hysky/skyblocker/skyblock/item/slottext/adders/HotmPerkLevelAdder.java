@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class HotmPerkLevelAdder extends HeartOfTheXAdder {
@@ -13,7 +13,7 @@ public class HotmPerkLevelAdder extends HeartOfTheXAdder {
 	}
 
 	@Override
-	protected Item getNonLeveledItem() {
-		return Items.COAL;
+	protected boolean isNonLeveledItem(ItemStack stack) {
+		return stack.is(Items.COAL);
 	}
 }

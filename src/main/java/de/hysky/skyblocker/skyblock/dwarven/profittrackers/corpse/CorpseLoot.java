@@ -1,15 +1,16 @@
 package de.hysky.skyblocker.skyblock.dwarven.profittrackers.corpse;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.OptionalDouble;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.doubles.DoubleBooleanPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
-import java.util.List;
+import de.hysky.skyblocker.skyblock.dwarven.CorpseType;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public final class CorpseLoot {
 	public static final Codec<CorpseLoot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -57,16 +58,16 @@ public final class CorpseLoot {
 		rewards.add(reward);
 		if (CorpseProfitTracker.PRICELESS_ITEMS.contains(itemId)) return;
 
-		DoubleBooleanPair price = ItemUtils.getItemPrice(itemId);
-		if (!price.rightBoolean()) {
+		OptionalDouble price = ItemUtils.getItemPrice(itemId);
+		if (price.isEmpty()) {
 			LOGGER.warn("No price found for item `{}`.", itemId);
 			// Only fired once per corpse
 			if (isPriceDataComplete) LOGGER.warn("Profit calculation will not be accurate due to missing item price, therefore it will not be sent to chat. It will still be added to the corpse history.");
 			markPriceDataIncomplete();
 			return;
 		}
-		profit += price.leftDouble() * amount;
-		reward.pricePerUnit(price.leftDouble());
+		profit += price.getAsDouble() * amount;
+		reward.pricePerUnit(price.getAsDouble());
 	}
 
 	public boolean isPriceDataComplete() { return isPriceDataComplete; }

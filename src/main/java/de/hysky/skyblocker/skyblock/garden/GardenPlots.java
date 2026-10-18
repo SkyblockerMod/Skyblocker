@@ -1,35 +1,5 @@
 package de.hysky.skyblocker.skyblock.garden;
 
-import com.google.gson.JsonArray;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.core.Holder;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -39,13 +9,47 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+
+import com.google.gson.JsonArray;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.core.Holder;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.mixins.accessors.AbstractContainerScreenAccessor;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
 
 public final class GardenPlots {
 	private static final Logger LOGGER = LoggerFactory.getLogger("Garden Plots");
 	private static final Path FOLDER = SkyblockerMod.CONFIG_DIR.resolve("garden_plots");
 
 	public static final @Nullable GardenPlot[] GARDEN_PLOTS = new GardenPlot[25];
+	public static @Nullable GardenPlotsWidget widget;
 
 	@Init
 	public static void init() {
@@ -59,7 +63,7 @@ public final class GardenPlots {
 							if (i == 22) continue; // Barn icon
 							Slot slot = screenHandler.slots.get(i);
 							ItemStack stack = slot.getItem();
-							if (stack.isEmpty() || stack.is(Items.RED_STAINED_GLASS_PANE) || stack.is(Items.OAK_BUTTON) || stack.is(Items.BLACK_STAINED_GLASS_PANE))
+							if (stack.isEmpty() || stack.is(Items.STAINED_GLASS_PANE.red()) || stack.is(Items.OAK_BUTTON) || stack.is(Items.STAINED_GLASS_PANE.black()))
 								continue;
 							// SkyHanni adds formatting codes to the plot names when using their custom plot icons.
 							String name = ChatFormatting.stripFormatting(stack.getHoverName().getString());
@@ -80,29 +84,39 @@ public final class GardenPlots {
 						}
 
 				});
-			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled) {
-				GardenPlotsWidget widget = new GardenPlotsWidget(
-						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((AbstractContainerScreenAccessor) inventoryScreen).getY());
+			} else if (screen instanceof InventoryScreen inventoryScreen && Utils.getLocation().equals(Location.GARDEN) && SkyblockerConfigManager.get().farming.plotsWidget.enabled && !CatharsisCompatibility.isGuiElementHidden("skyblocker:gardenPlots")) {
+				ScreenEvents.remove(screen).register(_ -> widget = null);
+				AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) inventoryScreen;
+				widget = new GardenPlotsWidget(new ScreenRectangle(
+						accessor.getX(),
+						accessor.getY(),
+						accessor.getImageWidth(),
+						accessor.getImageHeight()
+				));
 				Screens.getWidgets(inventoryScreen).add(widget);
 
-				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setPosition(
-						((AbstractContainerScreenAccessor) inventoryScreen).getX() + ((AbstractContainerScreenAccessor) inventoryScreen).getImageWidth() + 4,
-						((AbstractContainerScreenAccessor) inventoryScreen).getY()
-				));
+				inventoryScreen.registerRecipeBookToggleCallback(() -> widget.setInventoryRectangle(new ScreenRectangle(
+								accessor.getX(),
+								accessor.getY(),
+								accessor.getImageWidth(),
+								accessor.getImageHeight()
+						)));
 			}
 		});
 
 		SkyblockEvents.PROFILE_CHANGE.register(((prevProfileId, profileId) -> {
-			if (!prevProfileId.isEmpty())
-				CompletableFuture.runAsync(() -> save(prevProfileId), Executors.newVirtualThreadPerTaskExecutor()).thenRun(() -> load(profileId));
-			else load(profileId);
+			if (!prevProfileId.isEmpty()) {
+				CompletableFuture.runAsync(() -> {
+					save(prevProfileId);
+					load(profileId);
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
+			} else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
 			String profileId = Utils.getProfileId();
 			if (!profileId.isBlank()) {
-				CompletableFuture.runAsync(() -> save(profileId), Executors.newVirtualThreadPerTaskExecutor());
+				CompletableFuture.runAsync(() -> save(profileId), SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 			}
 		});
 	}
@@ -143,7 +157,7 @@ public final class GardenPlots {
 			}
 			return new GardenPlot[25];
 			// Schedule on main thread to avoid any async weirdness
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(newPlots -> Minecraft.getInstance().execute(() -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25))));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(newPlots -> System.arraycopy(newPlots, 0, GARDEN_PLOTS, 0, Math.min(newPlots.length, 25)), Minecraft.getInstance());
 	}
 
 	public record GardenPlot(Either<Item, String> icon, String name, Optional<String> customIcon) {

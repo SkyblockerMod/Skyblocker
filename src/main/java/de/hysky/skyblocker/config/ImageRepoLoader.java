@@ -8,11 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.slf4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,6 +17,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.slf4j.Logger;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.utils.FileUtils;
@@ -86,7 +84,7 @@ public class ImageRepoLoader {
 					update(retries + 1);
 				}
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	/**

@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import org.jspecify.annotations.Nullable;
-
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 /**
  * Adds a George sell price tooltip line to pet items.
@@ -71,8 +73,8 @@ public class GeorgePriceTooltip extends SimpleTooltipAdder {
 		double price = TooltipInfoType.GEORGE.getData().getOrDefault(stack.getNeuName(), -1.0);
 		if (price < 0) return;
 
-		lines.add(Component.literal(String.format("%-21s", "Pet Sell Price:"))
-				.withStyle(ChatFormatting.YELLOW)
-				.append(ItemTooltip.getCoinsMessage(price, 1)));
+		lines.add(GridComponent.of(
+				Component.literal(String.format("%-21s", "Pet Sell Price:")).withStyle(ChatFormatting.YELLOW),
+				ItemTooltip.getCoinsMessage(price, 1)));
 	}
 }

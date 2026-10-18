@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.utils.render.texture;
 
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Optional;
 
 class IdentifierTexture implements FallbackedTexture<Identifier> {
 

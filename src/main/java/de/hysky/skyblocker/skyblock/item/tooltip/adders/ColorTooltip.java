@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.ItemUtils;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +12,11 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class ColorTooltip extends SimpleTooltipAdder {
 	private static final long WITHER_GLITCHED_AFTER_DATE = 1605830400000L;

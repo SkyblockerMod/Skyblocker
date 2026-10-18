@@ -1,16 +1,18 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
-import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
-import de.hysky.skyblocker.utils.SkyblockTime;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,16 +21,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
+import de.hysky.skyblocker.skyblock.waypoint.FairySouls;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.time.SkyblockTime;
 
 public class Trivia extends DungeonPuzzle {
 	@SuppressWarnings("unused")
@@ -167,7 +169,7 @@ public class Trivia extends DungeonPuzzle {
 		answers.put("What is the name of the person that upgrades pets?", List.of("Kat"));
 		answers.put("What is the name of the lady of the Nether?", List.of("Elle"));
 		answers.put("Which villager in the Village gives you a Rogue Sword?", List.of("Jamie"));
-		answers.put("How many unique minions are there?", List.of("60 Minions"));
+		answers.put("How many unique minions are there?", List.of("61 Minions"));
 		answers.put("Which of these enemies does not spawn in the Spider's Den?", List.of("Zombie Spider", "Cave Spider", "Wither Skeleton", "Dashing Spooder", "Broodfather", "Night Spider"));
 		answers.put("Which of these monsters only spawns at night?", List.of("Zombie Villager", "Ghast"));
 		answers.put("Which of these is not a dragon in The End?", List.of("Zoomer Dragon", "Weak Dragon", "Stonk Dragon", "Holy Dragon", "Boomer Dragon", "Booger Dragon", "Older Dragon", "Elder Dragon", "Stable Dragon", "Professor Dragon"));

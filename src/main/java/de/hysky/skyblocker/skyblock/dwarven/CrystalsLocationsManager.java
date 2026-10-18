@@ -1,9 +1,38 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -17,37 +46,11 @@ import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import de.hysky.skyblocker.utils.scheduler.MessageScheduler;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.Service;
+import de.hysky.skyblocker.utils.ws.WsMessageHandler;
 import de.hysky.skyblocker.utils.ws.WsStateManager;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.CrystalsWaypointSubscribeMessage;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
-import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
@@ -74,6 +77,8 @@ public class CrystalsLocationsManager {
 
 	protected static Map<String, MiningLocationLabel> activeWaypoints = new HashMap<>();
 	protected static List<String> verifiedWaypoints = new ArrayList<>();
+	private static boolean updatedTime = false;
+	private static boolean updatedLocation = false;
 	private static final List<MiningLocationLabel.CrystalHollowsLocationsCategory> waypointsSent2Socket = new ArrayList<>();
 
 	@Init
@@ -373,7 +378,7 @@ public class CrystalsLocationsManager {
 		String name = MiningLocationLabel.CrystalHollowsLocationsCategory.UNKNOWN.getName();
 		MiningLocationLabel unknownWaypoint = activeWaypoints.getOrDefault(name, null);
 		if (unknownWaypoint != null) {
-			double distance = unknownWaypoint.centerPos.distanceTo(location.getCenter());
+			double distance = unknownWaypoint.centerPos.distanceTo(Vec3.atCenterOf(location));
 			if (distance < REMOVE_UNKNOWN_DISTANCE) {
 				activeWaypoints.remove(name);
 			}
@@ -390,19 +395,34 @@ public class CrystalsLocationsManager {
 
 	private static void onLocationChange(Location newLocation) {
 		if (newLocation == Location.CRYSTAL_HOLLOWS) {
-			WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.level)));
+			updatedLocation = true;
 		}
+	}
+
+	public static void onTimeUpdate() {
+		updatedTime = true;
 	}
 
 	private static void reset() {
 		activeWaypoints.clear();
 		verifiedWaypoints.clear();
 		waypointsSent2Socket.clear();
+		updatedTime = false;
+		updatedLocation = false;
 	}
 
 	private static void update() {
 		if (CLIENT.player == null || CLIENT.getConnection() == null || !SkyblockerConfigManager.get().mining.crystalsWaypoints.enabled || !Utils.isInCrystalHollows()) {
 			return;
+		}
+
+		// Try connect to socket - this must happen after the location & time are updated since those two updates
+		// can happen in any order.
+		if (updatedTime && updatedLocation) {
+			WsStateManager.subscribeServer(Service.CRYSTAL_WAYPOINTS, Optional.of(CrystalsWaypointSubscribeMessage.create(CLIENT.level)));
+
+			updatedTime = false;
+			updatedLocation = false;
 		}
 
 		//get if the player is in the crystals

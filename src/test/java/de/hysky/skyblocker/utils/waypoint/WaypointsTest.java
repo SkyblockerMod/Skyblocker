@@ -1,15 +1,17 @@
 package de.hysky.skyblocker.utils.waypoint;
 
-import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
-import de.hysky.skyblocker.utils.Location;
-import net.minecraft.SharedConstants;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.Bootstrap;
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.Bootstrap;
+
+import de.hysky.skyblocker.skyblock.waypoint.Waypoints;
+import de.hysky.skyblocker.utils.Location;
 
 public class WaypointsTest {
 	private static final WaypointGroup SAPPHIRE_WAYPOINTS = new WaypointGroup("Coleweight", Location.CRYSTAL_HOLLOWS, List.of(

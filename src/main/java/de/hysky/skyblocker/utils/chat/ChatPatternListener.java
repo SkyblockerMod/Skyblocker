@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.utils.chat;
 
-import org.intellij.lang.annotations.Language;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.intellij.lang.annotations.Language;
+
 import net.minecraft.network.chat.Component;
 
 public abstract class ChatPatternListener implements ChatMessageListener {

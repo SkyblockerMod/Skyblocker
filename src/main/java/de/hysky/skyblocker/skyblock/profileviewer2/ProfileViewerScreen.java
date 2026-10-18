@@ -3,28 +3,34 @@ package de.hysky.skyblocker.skyblock.profileviewer2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
-import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
-import de.hysky.skyblocker.skyblock.profileviewer2.widgets.ProfileViewerWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
+import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CatacombsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CombatPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.MiningPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
+import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 
 // TODO should this support tab navigation?
 public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
@@ -34,29 +40,37 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
+	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new CatacombsPage(), new InventoryPage(), new CollectionsPage(), new MiningPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1));
+	private final List<PageTabWidget> tabWidgets = this.createPageTabs();
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
-	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
+	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member, Map<String, Integer> leaderboards) {
 		super(Component.literal("Skyblocker Profile Viewer"));
 		this.apiProfileResponse = apiProfileResponse;
 		this.profile = profile;
 		this.userProfile = userProfile;
 		this.member = member;
+		this.leaderboards = leaderboards;
 		this.loadPages();
 		this.setSelectedPage(0);
 	}
 
-	private PageTabWidget createPageTab(int index) {
-		return new PageTabWidget(this.pages.get(index).getIcon(), index, this::setSelectedPage);
+	private List<PageTabWidget> createPageTabs() {
+		List<PageTabWidget> tabs = new ArrayList<>();
+
+		for (int i = 0; i < this.pages.size(); i++) {
+			tabs.add(new PageTabWidget(this.pages.get(i).getIcon(), i, this::setSelectedPage));
+		}
+
+		return List.copyOf(tabs);
 	}
 
 	private LoadingInformation createLoadingInformation() {
-		return new LoadingInformation(this.profile, this.userProfile, this.member);
+		return new LoadingInformation(this.profile, this.userProfile, this.member, this.leaderboards, ItemLoader.decodeItems(this.member));
 	}
 
 	private void loadPages() {
@@ -64,9 +78,14 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 		for (ProfileViewerPage<?> page : this.pages) {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
-				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				if (page.centred()) {
+					this.contentLayout.addChild(layoutElement);
+				} else {
+					this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				}
+
 				this.contentLayout.arrangeElements();
-				repositionElements();
+				this.repositionElements();
 				this.loadedPages.add(page);
 			}, this.minecraft).exceptionallyAsync(throwable -> {
 				LOGGER.error("[Skyblocker Profile Viewer] Failed to load {} page!", page.getName().getString(), throwable);
@@ -89,7 +108,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	public List<? extends GuiEventListener> children() {
-		List<ProfileViewerWidget> children = new ArrayList<>();
+		List<AbstractWidget> children = new ArrayList<>();
 		children.addAll(this.getSelectedPage().getWidgets());
 		children.addAll(this.tabWidgets);
 
@@ -98,7 +117,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 	@Override
 	protected void init() {
-		repositionElements();
+		this.repositionElements();
 	}
 
 	@Override
@@ -124,7 +143,7 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 		// Render the loaded page or some generic loading text
 		if (this.loadedPages.contains(selectedPage)) {
-			for (ProfileViewerWidget widget : selectedPage.getWidgets()) {
+			for (AbstractWidget widget : selectedPage.getWidgets()) {
 				widget.extractRenderState(graphics, mouseX, mouseY, a);
 			}
 		} else {

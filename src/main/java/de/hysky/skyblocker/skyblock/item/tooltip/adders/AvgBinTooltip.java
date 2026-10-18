@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
-import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
-import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
-import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
-import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-import java.util.List;
+import de.hysky.skyblocker.config.configs.GeneralConfig.Average;
+import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
+import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
+import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class AvgBinTooltip extends SimpleTooltipAdder {
 	public AvgBinTooltip(int priority) {
@@ -27,14 +30,14 @@ public class AvgBinTooltip extends SimpleTooltipAdder {
 		} else {
 			// "No data" line because of API not keeping old data, it causes NullPointerException
 			if ((type == Average.ONE_DAY || type == Average.BOTH) && TooltipInfoType.ONE_DAY_AVERAGE.hasOrNullWarning(skyblockApiId)) {
-				lines.add(Component.literal(String.format("%-19s", "1 Day Avg. Price:"))
-						.withStyle(ChatFormatting.GOLD)
-						.append(ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(skyblockApiId), stack.getCount())));
+				lines.add(GridComponent.of(
+						Component.literal("1 Day Avg. Price:").withStyle(ChatFormatting.GOLD),
+						ItemTooltip.getCoinsMessage(TooltipInfoType.ONE_DAY_AVERAGE.getData().getDouble(skyblockApiId), stack.getCount())));
 			}
 			if ((type == Average.THREE_DAY || type == Average.BOTH) && TooltipInfoType.THREE_DAY_AVERAGE.hasOrNullWarning(skyblockApiId)) {
-				lines.add(Component.literal(String.format("%-19s", "3 Day Avg. Price:"))
-						.withStyle(ChatFormatting.GOLD)
-						.append(ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(skyblockApiId), stack.getCount())));
+				lines.add(GridComponent.of(
+						Component.literal("3 Day Avg. Price:").withStyle(ChatFormatting.GOLD),
+						ItemTooltip.getCoinsMessage(TooltipInfoType.THREE_DAY_AVERAGE.getData().getDouble(skyblockApiId), stack.getCount())));
 			}
 
 		}

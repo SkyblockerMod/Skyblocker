@@ -1,20 +1,24 @@
 package de.hysky.skyblocker.skyblock.experiment;
 
-import de.hysky.skyblocker.config.configs.HelperConfig;
-import de.hysky.skyblocker.utils.container.ContainerSolverManager;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.world.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.container.ContainerSolverManager;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class UltrasequencerSolver extends ExperimentSolver {
 	public static final UltrasequencerSolver INSTANCE = new UltrasequencerSolver();
@@ -50,13 +54,13 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@SuppressWarnings({"JavadocReference", "incomplete-switch"})
 	@Override
-	protected void tick(ContainerScreen screen) {
+	protected void tick(AbstractContainerScreen<?> screen) {
 		switch (getState()) {
 			case REMEMBER -> {
-				Container inventory = screen.getMenu().getContainer();
-				if (inventory.getItem(49).getHoverName().getString().equals("Remember the pattern!")) {
+				AbstractContainerMenu inventory = screen.getMenu();
+				if (inventory.getSlot(49).getItem().getHoverName().getString().equals("Remember the pattern!")) {
 					for (int index = 9; index < 45; index++) {
-						ItemStack itemStack = inventory.getItem(index);
+						ItemStack itemStack = inventory.getSlot(index).getItem();
 						String name = itemStack.getHoverName().getString();
 						// Remember the item if its name is a number
 						if (name.matches("\\d+")) {
@@ -73,7 +77,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 				}
 			}
 			case WAIT -> {
-				if (screen.getMenu().getContainer().getItem(49).getHoverName().getString().startsWith("Timer: ")) {
+				if (screen.getMenu().getSlot(49).getItem().getHoverName().getString().startsWith("Timer: ")) {
 					setState(State.SHOW);
 					//This doesn't trigger the markDirty method in this class as the pane color is already updated
 					//as the chain goes END -> REMEMBER -> WAIT
@@ -81,7 +85,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 				}
 			}
 			case END -> {
-				String name = screen.getMenu().getContainer().getItem(49).getHoverName().getString();
+				String name = screen.getMenu().getSlot(49).getItem().getHoverName().getString();
 				if (!name.startsWith("Timer: ")) {
 					if (name.equals("Remember the pattern!")) {
 						getSlots().clear();
@@ -122,7 +126,7 @@ public final class UltrasequencerSolver extends ExperimentSolver {
 	 */
 	@Override
 	public void markDirty() {
-		if (Minecraft.getInstance().screen instanceof ContainerScreen genericContainerScreen) {
+		if (Minecraft.getInstance().gui.screen() instanceof ContainerScreen genericContainerScreen) {
 			List<Slot> slots = genericContainerScreen.getMenu().slots.subList(0, genericContainerScreen.getMenu().getRowCount() * 9);
 			Int2ObjectMap<ItemStack> slotMap = ContainerSolverManager.slotMap(slots);
 

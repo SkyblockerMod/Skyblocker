@@ -1,14 +1,17 @@
 package de.hysky.skyblocker.skyblock.barn;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 
 public class HungryHiker extends ChatPatternListener {
 
@@ -29,7 +32,9 @@ public class HungryHiker extends ChatPatternListener {
 		String food = foods.get(foodDescription);
 		if (food == null) return false;
 		String middlePartOfTheMessageToSend = matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
-		Utils.sendMessageToBypassEvents(Component.nullToEmpty("§e[NPC] Hungry Hiker§f: " + middlePartOfTheMessageToSend + " " + food + "."));
+		Utils.sendMessageToBypassEvents(Component.empty()
+				.append(Component.literal("[NPC] Hungry Hiker").withColor(TextColor.YELLOW))
+				.append(Component.literal(": " + middlePartOfTheMessageToSend + " " + food + ".")));
 		return true;
 	}
 

@@ -1,9 +1,11 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget.element;
 
-import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 
 /**
  * Element that draws a line with optional text across a widget box.

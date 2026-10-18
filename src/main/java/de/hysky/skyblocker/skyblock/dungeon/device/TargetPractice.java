@@ -2,6 +2,14 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -12,19 +20,13 @@ import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TargetPractice {
 	private static final BlockPos PRESSURE_PLATE = new BlockPos(63, 127, 35);
 	private static final int ACTIVATION_THRESHOLD = 1;
 	private static final int UNACTIVATED = 0;
 	// In the order you see the grid in the world by row.
-	private static final List<BlockPos> POSSIBLE_TARGETS = List.of(
+	private static final Set<BlockPos> POSSIBLE_TARGETS = Set.of(
 			new BlockPos(68, 130, 50), new BlockPos(66, 130, 50), new BlockPos(64, 130, 50),
 			new BlockPos(68, 128, 50), new BlockPos(66, 128, 50), new BlockPos(64, 128, 50),
 			new BlockPos(68, 126, 50), new BlockPos(66, 126, 50), new BlockPos(64, 126, 50)
@@ -67,7 +69,7 @@ public class TargetPractice {
 		// The blocks on the grid are initially Blue Terracotta, when the blocks turns into Emerald Block it is the one that the
 		// player must shoot, so when that block turns back into Blue Terracotta it has either been successfully shot or the device reset.
 		if (POSSIBLE_TARGETS.contains(pos)) {
-			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.BLUE_TERRACOTTA)) {
+			if (oldState.getBlock().equals(Blocks.EMERALD_BLOCK) && newState.getBlock().equals(Blocks.DYED_TERRACOTTA.blue())) {
 				// Convert position to immutable since it might be mutable and we can't have it changing
 				HIT_TARGETS.add(pos.immutable());
 			}

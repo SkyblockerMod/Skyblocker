@@ -1,16 +1,19 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 
 public class Fetchur extends ChatPatternListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Fetchur.class);
@@ -33,7 +36,10 @@ public class Fetchur extends ChatPatternListener {
 		LOGGER.info("Original Fetchur message: {}", message.getString());
 		String riddle = matcher.group(1);
 		String answer = answers.getOrDefault(riddle, riddle);
-		client.player.sendSystemMessage(Component.nullToEmpty("§e[NPC] Fetchur§f: " + answer));
+		client.player.sendSystemMessage(Component.empty()
+				.append(Component.literal("[NPC] Fetchur").withColor(TextColor.YELLOW))
+				.append(": " + answer)
+		);
 		return true;
 	}
 

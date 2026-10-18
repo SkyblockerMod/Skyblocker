@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 public class GlacitePlayerData {
 	@SerializedName("fossil_dust")

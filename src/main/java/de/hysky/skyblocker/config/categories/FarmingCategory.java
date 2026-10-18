@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.FarmingConfig;
-import de.hysky.skyblocker.skyblock.garden.FarmingHudWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
 import net.azureaaron.dandelion.api.OptionGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.screens.greenhouse.GreenhousePresetsScreen;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 
 public class FarmingCategory {
 
@@ -26,49 +26,11 @@ public class FarmingCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.farming.farmingHud"))
 						.collapsed(true)
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.enabled"))
-								.binding(defaults.farming.farmingHud.enabled,
-										() -> config.farming.farmingHud.enabled,
-										newValue -> config.farming.farmingHud.enabled = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.farming.farmingHud.config"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.GARDEN, FarmingHudWidget.getInstance().getInternalID(), screen)))
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.counter"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.counter,
-										() -> config.farming.farmingHud.counter,
-										newValue -> config.farming.farmingHud.counter = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.coins"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.coins,
-										() -> config.farming.farmingHud.coins,
-										newValue -> config.farming.farmingHud.coins = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<FarmingConfig.Type>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.type"))
-								.description(Component.translatable("skyblocker.config.farming.farmingHud.type.@Tooltip"))
-								.binding(defaults.farming.farmingHud.type,
-										() -> config.farming.farmingHud.type,
-										newValue -> config.farming.farmingHud.type = newValue)
-								.controller(ConfigUtils.createEnumController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.farming.farmingHud.experience"))
-								.tags(CommonTags.ADDED_IN_6_4_0)
-								.binding(defaults.farming.farmingHud.experience,
-										() -> config.farming.farmingHud.experience,
-										newValue -> config.farming.farmingHud.experience = newValue)
-								.controller(ConfigUtils.createBooleanController())
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.GARDEN, screen)))
 								.build())
 						.build())
 				// Pest Highlighter
@@ -81,6 +43,15 @@ public class FarmingCategory {
 								.binding(defaults.farming.pestHighlighter.enabled,
 										() -> config.farming.pestHighlighter.enabled,
 										newValue -> config.farming.pestHighlighter.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter"))
+								.description(Component.translatable("skyblocker.config.farming.pestHighlighter.contestHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_0)
+								.binding(defaults.farming.pestHighlighter.contestHighlighter,
+										() -> config.farming.pestHighlighter.contestHighlighter,
+										newValue -> config.farming.pestHighlighter.contestHighlighter = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()
@@ -171,7 +142,38 @@ public class FarmingCategory {
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
-				.build();
 
+				// Greenhouse
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.farming.greenhouse"))
+						.collapsed(true)
+						.tags(CommonTags.ADDED_IN_6_5_0)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePaste.enabled.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_0)
+								.binding(defaults.farming.greenhouse.enabled,
+										() -> config.farming.greenhouse.enabled,
+										newValue -> config.farming.greenhouse.enabled = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(ButtonOption.createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets"))
+								.prompt(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.@Prompt"))
+								.description(Component.translatable("skyblocker.config.farming.greenhouse.greenhousePresets.@Tooltip"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new GreenhousePresetsScreen(screen)))
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled"))
+								.description(Component.translatable("skyblocker.config.farming.greenhouse.showMutationSlot.enabled.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_5_0)
+								.binding(defaults.farming.greenhouse.showMutationSlot,
+										() -> config.farming.greenhouse.showMutationSlot,
+										newValue -> config.farming.greenhouse.showMutationSlot = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+				.build();
 	}
 }

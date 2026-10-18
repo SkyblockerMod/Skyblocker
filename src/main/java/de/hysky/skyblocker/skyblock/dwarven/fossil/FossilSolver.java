@@ -1,12 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven.fossil;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
-import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.container.TooltipAdder;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +7,10 @@ import java.util.List;
 import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -22,13 +19,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import org.jspecify.annotations.Nullable;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dwarven.fossil.Structures.TileGrid;
+import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.container.TooltipAdder;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.convertItemsToTiles;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.fossilName;
+import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.minimumTiles;
 import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.permutations;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.convertItemsToTiles;
-import static de.hysky.skyblocker.skyblock.dwarven.fossil.FossilCalculations.getFossilChance;
 
 public class FossilSolver extends SimpleContainerSolver implements TooltipAdder {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -136,7 +139,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) { //todo translatable
 		//only add if fossil or dirt
-		if (stack.getItem() != Items.GRAY_STAINED_GLASS_PANE && stack.getItem() != Items.BROWN_STAINED_GLASS_PANE) {
+		if (stack.getItem() != Items.STAINED_GLASS_PANE.gray() && stack.getItem() != Items.STAINED_GLASS_PANE.brown()) {
 			return;
 		}
 		//add spacer
@@ -153,7 +156,7 @@ public class FossilSolver extends SimpleContainerSolver implements TooltipAdder 
 		//add minimum tiles left count
 		lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.minimumTilesLeft").append(Component.literal(String.valueOf(minimumTiles)).withStyle(chiselLeft >= minimumTiles ? ChatFormatting.YELLOW : ChatFormatting.RED)));
 		//add probability if available and not uncovered
-		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getContainerSlot() && stack.getItem() == Items.BROWN_STAINED_GLASS_PANE) {
+		if (focusedSlot != null && probability != null && probability.length > focusedSlot.getContainerSlot() && stack.getItem() == Items.STAINED_GLASS_PANE.brown()) {
 			lines.add(Component.translatable("skyblocker.config.mining.glacite.fossilSolver.toolTip.probability").append(Component.literal(Math.round(probability[focusedSlot.getContainerSlot()] * 100) + "%").withStyle(ChatFormatting.YELLOW)));
 		}
 		//if only 1 type of fossil left and a fossil is partially uncovered add the fossil name

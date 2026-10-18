@@ -1,19 +1,21 @@
 package de.hysky.skyblocker.skyblock.dungeon;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.container.ContainerAndInventorySolver;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.networth.NetworthCalculator;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.azureaaron.networth.NetworthResult;
-import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class SalvageHelper extends SimpleContainerSolver implements ContainerAndInventorySolver {
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import net.azureaaron.networth.NetworthResult;
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.networth.NetworthCalculator;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+
+public class SalvageHelper extends SimpleContainerSolver {
 	/**
 	 * Pattern to match dungeon items that are salvageable, using a negative lookahead to exclude dungeon items.
 	 */
@@ -51,5 +53,10 @@ public class SalvageHelper extends SimpleContainerSolver implements ContainerAnd
 	@Override
 	public boolean isEnabled() {
 		return SkyblockerConfigManager.get().dungeons.salvageHelper;
+	}
+
+	@Override
+	public boolean chestInventoryOnly() {
+		return false;
 	}
 }

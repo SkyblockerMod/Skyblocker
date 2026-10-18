@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
 import net.minecraft.world.phys.Vec3;
 
 public class WishingCompassSolverTest {

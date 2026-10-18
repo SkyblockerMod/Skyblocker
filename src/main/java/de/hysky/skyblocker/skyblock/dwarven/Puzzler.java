@@ -1,14 +1,16 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.chat.ChatFilterResult;
-import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 import java.util.regex.Matcher;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.chat.ChatFilterResult;
+import de.hysky.skyblocker.utils.chat.ChatPatternListener;
 
 public class Puzzler extends ChatPatternListener {
 	public Puzzler() {

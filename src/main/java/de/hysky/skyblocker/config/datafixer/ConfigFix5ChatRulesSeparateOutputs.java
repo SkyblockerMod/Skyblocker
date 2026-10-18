@@ -1,13 +1,14 @@
 package de.hysky.skyblocker.config.datafixer;
 
+import java.util.Map;
+import java.util.Optional;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
-import java.util.Map;
-import java.util.Optional;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 
 /**
  * Separates all outputs and renames a few things.

@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.utils.container;
 
 import java.util.function.Predicate;
+
 import net.minecraft.client.gui.screens.Screen;
 
 public interface ContainerMatcher extends Predicate<Screen> {
@@ -15,4 +16,9 @@ public interface ContainerMatcher extends Predicate<Screen> {
 	 * @return {@code true} if this matcher is enabled, {@code false} otherwise
 	 */
 	boolean isEnabled();
+
+	/// @return true if this solver should only work in Skyblock.
+	default boolean skyblockOnly() {
+		return true;
+	}
 }

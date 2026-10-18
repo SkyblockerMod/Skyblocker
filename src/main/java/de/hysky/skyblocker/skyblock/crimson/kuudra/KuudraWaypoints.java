@@ -4,30 +4,17 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
-import org.slf4j.Logger;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.PosUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -36,6 +23,18 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Giant;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.CrimsonIsleConfig;
+import de.hysky.skyblocker.utils.PosUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 
 public class KuudraWaypoints {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -79,7 +78,7 @@ public class KuudraWaypoints {
 
 				return List.<Waypoint>of();
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(list::addAll);
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(list::addAll, client);
 	}
 
 	private static JsonElement getWaypoints(BufferedReader reader) {

@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import net.minecraft.network.chat.Component;
 
 public class AdFilter extends ChatPatternListener {
 	private static final Pattern[] AD_FILTERS = new Pattern[] {

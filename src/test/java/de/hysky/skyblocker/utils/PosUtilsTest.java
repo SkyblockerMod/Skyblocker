@@ -1,10 +1,12 @@
 package de.hysky.skyblocker.utils;
 
 import com.google.gson.JsonObject;
-import de.hysky.skyblocker.SkyblockerMod;
-import net.minecraft.core.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import net.minecraft.core.BlockPos;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class PosUtilsTest {
 	@Test

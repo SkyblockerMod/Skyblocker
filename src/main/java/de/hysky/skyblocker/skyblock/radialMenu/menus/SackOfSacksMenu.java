@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.radialMenu.menus;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 public class SackOfSacksMenu extends BasicMenu {
 	public SackOfSacksMenu() {
 		super("sack of sacks", "sacks");
@@ -11,6 +13,6 @@ public class SackOfSacksMenu extends BasicMenu {
 		if (slotId == 29 || slotId == 30 || slotId == 31) {
 			return originalButton;
 		}
-		return 1;
+		return InputConstants.MOUSE_BUTTON_RIGHT;
 	}
 }

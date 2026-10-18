@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class RegexUtils {
 	/**

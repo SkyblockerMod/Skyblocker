@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.speedpreset;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
@@ -8,7 +10,6 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class SpeedPresetsScreen extends Screen {
 	protected final Screen parent;
@@ -37,7 +38,7 @@ public class SpeedPresetsScreen extends Screen {
 		footerLayout.addChild(Button.builder(CommonComponents.GUI_DONE,
 						_ -> {
 							this.list.save();
-							this.minecraft.setScreen(parent);
+							this.minecraft.gui.setScreen(parent);
 						})
 				.width(Math.max(font.width(CommonComponents.GUI_DONE) + 8, 100))
 				.build(), s -> s.paddingRight(2));
@@ -56,16 +57,16 @@ public class SpeedPresetsScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (this.list != null && this.list.hasBeenChanged()) {
-			minecraft.setScreen(new ConfirmScreen(confirmedAction -> {
+			minecraft.gui.setScreen(new ConfirmScreen(confirmedAction -> {
 				if (confirmedAction) {
-					this.minecraft.setScreen(parent);
+					this.minecraft.gui.setScreen(parent);
 				} else {
-					this.minecraft.setScreen(this);
+					this.minecraft.gui.setScreen(this);
 				}
 			}, Component.translatable("text.skyblocker.quit_config"), Component.translatable("text.skyblocker.quit_config_sure"), Component.translatable("text.skyblocker.quit_discard")
 					.withStyle(ChatFormatting.RED), CommonComponents.GUI_CANCEL));
 			return;
 		}
-		this.minecraft.setScreen(parent);
+		this.minecraft.gui.setScreen(parent);
 	}
 }

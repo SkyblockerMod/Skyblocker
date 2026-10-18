@@ -1,12 +1,14 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
+import java.util.regex.Matcher;
+
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 import de.hysky.skyblocker.utils.chat.ChatPatternListener;
-import java.util.regex.Matcher;
-import net.minecraft.network.chat.Component;
 
 public class MimicFilter extends ChatPatternListener {
 	public MimicFilter() {

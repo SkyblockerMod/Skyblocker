@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.mixins.jgit;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.eclipse.jgit.lib.Constants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 @Mixin(targets = "org.eclipse.jgit.util.SystemReader$Default")
 public class SystemReaderMixin {

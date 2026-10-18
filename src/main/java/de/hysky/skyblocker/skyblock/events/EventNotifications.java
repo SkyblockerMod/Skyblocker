@@ -1,5 +1,12 @@
 package de.hysky.skyblocker.skyblock.events;
 
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -9,29 +16,25 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
-import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.Http;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import org.slf4j.Logger;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Items;
-import org.slf4j.Logger;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.EventNotificationsConfig;
+import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Http;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class EventNotifications {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -52,6 +55,7 @@ public class EventNotifications {
 			Map.entry("Spooky Festival", new FlexibleItemStack(Items.JACK_O_LANTERN)),
 			Map.entry("Season of Jerry", new FlexibleItemStack(Items.SNOWBALL)),
 			Map.entry("Jerry's Workshop Opens", new FlexibleItemStack(Items.SNOW_BLOCK)),
+			Map.entry("Cult of the Fallen Star", Ico.NETHER_STAR),
 			Map.entry("Traveling Zoo", new FlexibleItemStack(Items.HAY_BLOCK)) // change to the custom head one day
 	);
 	private static final FlexibleItemStack FALLBACK_ICON = new FlexibleItemStack(Items.PAPER);
@@ -71,7 +75,7 @@ public class EventNotifications {
 									long time = System.currentTimeMillis() / 1000 + context.getArgument("time", int.class);
 									int duration = context.getArgument("duration", int.class);
 									if (context.getArgument("jacob", Boolean.class)) {
-										Minecraft.getInstance().getToastManager().addToast(
+										Minecraft.getInstance().gui.toastManager().addToast(
 												new JacobEventToast(
 														time,
 														time + duration,
@@ -80,7 +84,7 @@ public class EventNotifications {
 												)
 										);
 									} else {
-										Minecraft.getInstance().getToastManager().addToast(
+										Minecraft.getInstance().gui.toastManager().addToast(
 												new EventToast(
 														time,
 														time + duration,
@@ -110,7 +114,7 @@ public class EventNotifications {
 				LOGGER.error("[Skyblocker] Failed to download events list", e);
 			}
 			return null;
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenAccept(response -> {
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(response -> {
 			events.clear();
 			if (response == null) {
 				LOGGER.error("[Skyblocker] Failed to get events list");
@@ -133,7 +137,7 @@ public class EventNotifications {
 					config.eventNotifications.events.computeIfAbsent(s, _ -> DEFAULT_REMINDERS);
 				}
 			});
-		}).exceptionally(EventNotifications::itBorked);
+		}, Minecraft.getInstance()).exceptionally(EventNotifications::itBorked);
 	}
 
 	private static Void itBorked(Throwable throwable) {
@@ -166,7 +170,7 @@ public class EventNotifications {
 				if (newTime + reminderTime < skyblockEvent.start() || currentTime + reminderTime >= skyblockEvent.start()) continue;
 				Minecraft instance = Minecraft.getInstance();
 				if (eventName.equals(JACOBS) && skyblockEvent.extras().left().isPresent()) {
-					instance.getToastManager().addToast(
+					instance.gui.toastManager().addToast(
 							new JacobEventToast(
 									skyblockEvent.start(),
 									skyblockEvent.start() + skyblockEvent.duration(),
@@ -175,7 +179,7 @@ public class EventNotifications {
 							)
 					);
 				} else {
-					instance.getToastManager().addToast(
+					instance.gui.toastManager().addToast(
 							new EventToast(
 									skyblockEvent.start(),
 									skyblockEvent.start() + skyblockEvent.duration(),

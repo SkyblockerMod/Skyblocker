@@ -1,10 +1,10 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
+import java.util.List;
+
 import org.joml.Vector2i;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public class IcePathTest {
 	private static final boolean[][] silverfishBoard = new boolean[][]{

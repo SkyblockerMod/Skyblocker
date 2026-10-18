@@ -1,19 +1,20 @@
 package de.hysky.skyblocker.compatibility;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.Optional;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.FormattedCharSequence;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.util.Optional;
 
 public final class CaxtonCompatibility {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -57,7 +58,7 @@ public final class CaxtonCompatibility {
 		}
 	}
 
-	private static final MethodHandle HANDLE = createHandle();
+	private static final @Nullable MethodHandle HANDLE = createHandle();
 	private static boolean errored = false;
 
 	public static boolean drawOutlinedText(GuiGraphicsExtractor graphics, FormattedCharSequence text, float x, float y, int color, int outlineColor) {
@@ -73,7 +74,7 @@ public final class CaxtonCompatibility {
 	}
 
 	public static Optional<RenderPipeline> getSeeThroughTextPipeline() {
-		return getCaxtonPipeline("TEXT_SEE_THROUGH");
+		return getCaxtonPipeline("TEXT_SEETHROUGH");
 	}
 
 	public static Optional<RenderPipeline> getTextPipeline() {

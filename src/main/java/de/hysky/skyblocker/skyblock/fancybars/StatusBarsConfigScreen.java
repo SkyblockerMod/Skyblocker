@@ -1,19 +1,19 @@
 package de.hysky.skyblocker.skyblock.fancybars;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanMutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectBooleanPair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import com.mojang.blaze3d.platform.Window;
-import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.PopupScreen;
@@ -24,8 +24,11 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
+import de.hysky.skyblocker.skyblock.fancybars.BarPositioner.BarLocation;
 
 public class StatusBarsConfigScreen extends Screen {
 	private static final Identifier HOTBAR_TEXTURE = Identifier.withDefaultNamespace("hud/hotbar");
@@ -35,6 +38,7 @@ public class StatusBarsConfigScreen extends Screen {
 	// prioritize left and right cuz they are much smaller than up and down
 	private static final ScreenDirection[] DIRECTION_CHECK_ORDER = new ScreenDirection[]{ScreenDirection.LEFT, ScreenDirection.RIGHT, ScreenDirection.UP, ScreenDirection.DOWN};
 
+	protected final FancyStatusBars bars;
 	private final Map<ScreenRectangle, Pair<StatusBar, BarLocation>> rectToBar = new HashMap<>();
 	/**
 	 * Contains the hovered bar and a boolean that is true if hovering the right side or false otherwise.
@@ -49,8 +53,9 @@ public class StatusBarsConfigScreen extends Screen {
 	private boolean resizing = false;
 	private EditBarWidget editBarWidget;
 
-	public StatusBarsConfigScreen() {
+	public StatusBarsConfigScreen(FancyStatusBars bars) {
 		super(Component.nullToEmpty("Status Bars Config"));
+		this.bars = bars;
 	}
 
 
@@ -84,9 +89,9 @@ public class StatusBarsConfigScreen extends Screen {
 							inserted = true;
 							if (!currentInsertLocation.equals(barSnap.barAnchor(), barSnap.x(), neighborInsertY)) {
 								if (cursorBar.anchor != null)
-									FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-								FancyStatusBars.barPositioner.addRow(barSnap.barAnchor(), neighborInsertY);
-								FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), neighborInsertY, cursorBar);
+									bars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+								bars.barPositioner.addRow(barSnap.barAnchor(), neighborInsertY);
+								bars.barPositioner.addBar(barSnap.barAnchor(), neighborInsertY, cursorBar);
 								currentInsertLocation = BarLocation.of(cursorBar);
 								updatePositions = true;
 							}
@@ -95,8 +100,8 @@ public class StatusBarsConfigScreen extends Screen {
 							inserted = true;
 							if (!currentInsertLocation.equals(barSnap.barAnchor(), neighborInsertX, barSnap.y())) {
 								if (cursorBar.anchor != null)
-									FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-								FancyStatusBars.barPositioner.addBar(barSnap.barAnchor(), barSnap.y(), neighborInsertX, cursorBar);
+									bars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+								bars.barPositioner.addBar(barSnap.barAnchor(), barSnap.y(), neighborInsertX, cursorBar);
 								currentInsertLocation = BarLocation.of(cursorBar);
 								updatePositions = true;
 							}
@@ -106,16 +111,16 @@ public class StatusBarsConfigScreen extends Screen {
 				}
 			}
 			if (updatePositions) {
-				FancyStatusBars.updatePositions(true);
+				bars.updatePositions(true);
 				return;
 			}
 			// check for hovering empty anchors
 			for (BarPositioner.BarAnchor barAnchor : BarPositioner.BarAnchor.allAnchors()) {
 				ScreenRectangle anchorHitbox = barAnchor.getAnchorHitbox(barAnchor.getAnchorPosition(width, height));
-				if (FancyStatusBars.barPositioner.getRowCount(barAnchor) != 0) {
+				if (bars.barPositioner.getRowCount(barAnchor) != 0) {
 					// this fixes flickering
-					if (FancyStatusBars.barPositioner.getRowCount(barAnchor) == 1) {
-						LinkedList<StatusBar> row = FancyStatusBars.barPositioner.getRow(barAnchor, 0);
+					if (bars.barPositioner.getRowCount(barAnchor) == 1) {
+						LinkedList<StatusBar> row = bars.barPositioner.getRow(barAnchor, 0);
 						if (row.size() == 1 && row.getFirst() == cursorBar && anchorHitbox.overlaps(mouseRect)) inserted = true;
 					}
 					continue;
@@ -126,17 +131,17 @@ public class StatusBarsConfigScreen extends Screen {
 					inserted = true;
 					if (currentInsertLocation.barAnchor() == barAnchor) continue;
 					if (cursorBar.anchor != null)
-						FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
-					FancyStatusBars.barPositioner.addRow(barAnchor);
-					FancyStatusBars.barPositioner.addBar(barAnchor, 0, cursorBar);
+						bars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+					bars.barPositioner.addRow(barAnchor);
+					bars.barPositioner.addBar(barAnchor, 0, cursorBar);
 					currentInsertLocation = BarLocation.of(cursorBar);
-					FancyStatusBars.updatePositions(true);
+					bars.updatePositions(true);
 				}
 			}
 			if (!inserted) {
-				if (cursorBar.anchor != null) FancyStatusBars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
+				if (cursorBar.anchor != null) bars.barPositioner.removeBar(cursorBar.anchor, cursorBar.gridY, cursorBar);
 				currentInsertLocation = BarLocation.NULL;
-				FancyStatusBars.updatePositions(true);
+				bars.updatePositions(true);
 				cursorBar.setX(width + 5);
 			}
 		} else { // Not dragging around a bar
@@ -179,7 +184,7 @@ public class StatusBarsConfigScreen extends Screen {
 							if (doResize) {
 								if (hasRight) rightBar.size++;
 								if (hasLeft) leftBar.size--;
-								FancyStatusBars.updatePositions(true);
+								bars.updatePositions(true);
 							}
 						}
 					} else { // towards the right
@@ -194,7 +199,7 @@ public class StatusBarsConfigScreen extends Screen {
 							if (doResize) {
 								if (hasRight) rightBar.size--;
 								if (hasLeft) leftBar.size++;
-								FancyStatusBars.updatePositions(true);
+								bars.updatePositions(true);
 							}
 						}
 					}
@@ -221,7 +226,7 @@ public class StatusBarsConfigScreen extends Screen {
 							if (!bar.enabled) break;
 							boolean right = direction.equals(ScreenDirection.RIGHT);
 							if (barLocation.barAnchor() != null) {
-								if (barLocation.barAnchor().getSizeRule().isTargetSize() && !FancyStatusBars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
+								if (barLocation.barAnchor().getSizeRule().isTargetSize() && !bars.barPositioner.hasNeighbor(barLocation.barAnchor(), barLocation.y(), barLocation.x(), right)) {
 									break;
 								}
 								if (!barLocation.barAnchor().getSizeRule().isTargetSize() && barLocation.x() == 0 && barLocation.barAnchor().isRight() != right)
@@ -265,19 +270,30 @@ public class StatusBarsConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		FancyStatusBars.updatePositions(true);
+		bars.updatePositions(true);
 		editBarWidget = new EditBarWidget(0, 0, this);
 		editBarWidget.visible = false;
 		addWidget(editBarWidget); // rendering separately to have it above hotbar
-		Collection<StatusBar> values = FancyStatusBars.statusBars.values();
+		Collection<StatusBar> values = bars.statusBars.values();
 		values.forEach(this::setup);
 		updateScreenRects();
 		this.addRenderableWidget(Button.builder(Component.literal("?"),
-						_ -> minecraft.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
+						_ -> minecraft.gui.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.explanationTitle"))
 								.addButton(Component.translatable("gui.ok"), PopupScreen::onClose)
 								.addMessage(Component.translatable("skyblocker.bars.config.explanation"))
 								.build()))
-				.bounds(width - 20, (height - 15) / 2, 15, 15)
+				.bounds(width - 20, height / 2 - 17, 15, 15)
+				.build());
+		this.addRenderableWidget(Button.builder(Component.literal("⟲"),
+						_ -> minecraft.gui.setScreen(new PopupScreen.Builder(this, Component.translatable("skyblocker.bars.config.resetTitle"))
+								.addButton(CommonComponents.GUI_NO, PopupScreen::onClose)
+								.addButton(CommonComponents.GUI_YES, popup -> {
+									bars.resetBarPositions();
+									popup.onClose();
+								})
+								.addMessage(Component.translatable("skyblocker.bars.config.reset"))
+								.build()))
+				.bounds(width - 20, height / 2 + 2, 15, 15)
 				.build());
 	}
 
@@ -289,10 +305,10 @@ public class StatusBarsConfigScreen extends Screen {
 	@Override
 	public void removed() {
 		super.removed();
-		FancyStatusBars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
+		bars.statusBars.values().forEach(statusBar -> statusBar.setOnClick(null));
 		if (cursorBar != null) cursorBar.inMouse = false;
-		FancyStatusBars.updatePositions(false);
-		FancyStatusBars.saveBarConfig();
+		bars.updatePositions(false);
+		bars.saveBarConfig();
 	}
 
 	@Override
@@ -301,18 +317,18 @@ public class StatusBarsConfigScreen extends Screen {
 	}
 
 	private void onBarClick(StatusBar statusBar, MouseButtonEvent click) {
-		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+		if (click.button() == InputConstants.MOUSE_BUTTON_LEFT) {
 			cursorOffset = new ScreenPosition((int) (statusBar.getX() - click.x()), (int) (statusBar.getY() - click.y()));
 			cursorBar = statusBar;
 			cursorBar.inMouse = true;
 			cursorBar.enabled = true;
 			currentInsertLocation = BarLocation.of(cursorBar);
 			if (statusBar.anchor != null)
-				FancyStatusBars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
-			FancyStatusBars.updatePositions(true);
+				bars.barPositioner.removeBar(statusBar.anchor, statusBar.gridY, statusBar);
+			bars.updatePositions(true);
 			cursorBar.setX(width + 5); // send it to limbo lol
 			updateScreenRects();
-		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		} else if (click.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			int x = (int) Math.min(click.x() - 1, width - editBarWidget.getWidth());
 			int y = (int) Math.min(click.y() - 1, height - editBarWidget.getHeight());
 			editBarWidget.visible = true;
@@ -324,7 +340,7 @@ public class StatusBarsConfigScreen extends Screen {
 
 	private void updateScreenRects() {
 		rectToBar.clear();
-		FancyStatusBars.statusBars.values().forEach(statusBar1 -> {
+		bars.statusBars.values().forEach(statusBar1 -> {
 			if (!statusBar1.enabled) return;
 			rectToBar.put(
 					new ScreenRectangle(new ScreenPosition(statusBar1.getX(), statusBar1.getY()), statusBar1.getWidth(), statusBar1.getHeight()),
@@ -343,7 +359,7 @@ public class StatusBarsConfigScreen extends Screen {
 			}
 			currentInsertLocation = BarLocation.NULL;
 			cursorBar = null;
-			FancyStatusBars.updatePositions(true);
+			bars.updatePositions(true);
 			updateScreenRects();
 			return true;
 		} else if (resizing) {
@@ -369,20 +385,20 @@ public class StatusBarsConfigScreen extends Screen {
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		StatusBar first = resizeHover.first();
 		// want the right click thing to have priority
-		if (!editBarWidget.isMouseOver(click.x(), click.y()) && click.button() == 0 && first != null) {
+		if (!editBarWidget.isMouseOver(click.x(), click.y()) && click.button() == InputConstants.MOUSE_BUTTON_LEFT && first != null) {
 			BarPositioner.BarAnchor barAnchor = first.anchor;
 			if (barAnchor != null) {
 				if (resizeHover.rightBoolean()) {
 					resizedBars.left(first);
 
-					if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, true)) {
-						resizedBars.right(FancyStatusBars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? 1 : -1)));
+					if (bars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, true)) {
+						resizedBars.right(bars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? 1 : -1)));
 					} else resizedBars.right(null);
 				} else {
 					resizedBars.right(first);
 
-					if (FancyStatusBars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, false)) {
-						resizedBars.left(FancyStatusBars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? -1 : 1)));
+					if (bars.barPositioner.hasNeighbor(barAnchor, first.gridY, first.gridX, false)) {
+						resizedBars.left(bars.barPositioner.getBar(barAnchor, first.gridY, first.gridX + (barAnchor.isRight() ? -1 : 1)));
 					} else resizedBars.left(null);
 				}
 			} else { // if they have no anchor no need to do any checking

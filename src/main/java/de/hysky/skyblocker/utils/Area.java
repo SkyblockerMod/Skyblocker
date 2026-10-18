@@ -110,6 +110,22 @@ public sealed interface Area {
 		}
 	}
 
+	enum TorrhusCanyon implements Area {
+		TORRHUS_SPRINGS("Torrhus Springs"),
+		DESERT_TEMPLE("Desert Temple");
+
+		private final String displayName;
+
+		TorrhusCanyon(String displayName) {
+			this.displayName = displayName;
+		}
+
+		@Override
+		public String displayName() {
+			return this.displayName;
+		}
+	}
+
 	enum TheEnd implements Area {
 		DRAGONS_NEST("Dragon's Nest"),
 		THE_END("The End");

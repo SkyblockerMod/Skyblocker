@@ -1,12 +1,10 @@
 package de.hysky.skyblocker.utils.render.title;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -17,8 +15,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
-import java.util.LinkedHashSet;
-import java.util.Set;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 public class TitleContainer {
 	private static final Identifier TITLE_CONTAINER = SkyblockerMod.id("title_container");
@@ -182,8 +184,8 @@ public class TitleContainer {
 			}
 
 			//Lerp the texts x and y variables
-			title.x = Mth.lerp(tickDelta * 0.5F, title.x, xTextLeft);
-			title.y = Mth.lerp(tickDelta * 0.5F, title.y, y);
+			title.x = Mth.lerp(tickDelta * 0.5f, title.x, xTextLeft);
+			title.y = Mth.lerp(tickDelta * 0.5f, title.y, y);
 
 			//Translate the matrix to the texts position and scale
 			graphics.pose().pushMatrix();

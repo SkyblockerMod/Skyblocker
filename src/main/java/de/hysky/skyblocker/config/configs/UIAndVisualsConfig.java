@@ -1,20 +1,26 @@
 package de.hysky.skyblocker.config.configs;
 
-import de.hysky.skyblocker.skyblock.GyroOverlay;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
-import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.ScreenBuilder;
-import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
+
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.skyblock.GyroOverlay;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextMode;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.pipeline.Positioner;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class UIAndVisualsConfig {
 
@@ -44,6 +50,8 @@ public class UIAndVisualsConfig {
 
 	public boolean trueQuiverCount = true;
 
+	public SkyBlockInventoryScreen skyblockInventoryScreen = new SkyBlockInventoryScreen();
+
 	public ChestValue chestValue = new ChestValue();
 
 	public ItemCooldown itemCooldown = new ItemCooldown();
@@ -51,6 +59,8 @@ public class UIAndVisualsConfig {
 	public boolean museumOverlay = true;
 
 	public SlotText slotText = new SlotText();
+
+	public StorageOverlay storageOverlay = new StorageOverlay();
 
 	public RadialMenu radialMenu = new RadialMenu();
 
@@ -84,7 +94,14 @@ public class UIAndVisualsConfig {
 
 	public GyrokineticWandOverlay gyroOverlay = new GyrokineticWandOverlay();
 
-	public ItemPickup itemPickup = new ItemPickup();
+	@Deprecated
+	public transient ItemPickup itemPickup = new ItemPickup();
+
+	public static class SkyBlockInventoryScreen {
+		// TODO: Move showEquipmentInInventory to here.
+
+		public boolean openEquipmentToStatsPage = false;
+	}
 
 	public static class ChestValue {
 		public boolean enableChestValue = true;
@@ -105,6 +122,21 @@ public class UIAndVisualsConfig {
 
 		public boolean slotTextToggled = true;
 
+	}
+
+	public static class StorageOverlay {
+		public boolean enabled = false;
+
+		public int storagesPerRow = 3;
+
+		public int backpackWidth = 9;
+
+		public boolean rememberSearch = false;
+
+		public boolean rememberOpened = false;
+
+		// present in case we need to patch it out for x or y reason
+		public transient boolean doNotResetCursor = true;
 	}
 
 	public static class RadialMenu {
@@ -190,14 +222,16 @@ public class UIAndVisualsConfig {
 
 		public boolean enableHudBackground = true;
 
-		public boolean effectsFromFooter = false;
+		@Deprecated
+		public transient boolean effectsFromFooter = false;
 
-		public ScreenBuilder.DefaultPositioner defaultPositioning = ScreenBuilder.DefaultPositioner.CENTERED;
+		public Positioner defaultPositioning = Positioner.CENTERED;
 
 		@Deprecated
 		public transient boolean plainPlayerNames = false;
 
-		public NameSorting nameSorting = NameSorting.DEFAULT;
+		@Deprecated
+		public transient NameSorting nameSorting = NameSorting.DEFAULT;
 	}
 
 	/**
@@ -233,10 +267,12 @@ public class UIAndVisualsConfig {
 		}
 	}
 
-	public enum NameSorting {
+	public enum NameSorting implements StringRepresentable {
 		DEFAULT((_, _) -> 0),
 		ALPHABETICAL(Comparator.comparing(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "name").orElse(""), String.CASE_INSENSITIVE_ORDER)),
 		SKYBLOCK_LEVEL(Comparator.<PlayerInfo>comparingInt(ple -> matchPlayerName(ple.getTabListDisplayName().getString(), "level").map(Integer::parseInt).orElse(0)).reversed());
+
+		public static final Codec<NameSorting> CODEC = StringRepresentable.fromEnum(NameSorting::values);
 
 		public final Comparator<PlayerInfo> comparator;
 
@@ -257,6 +293,11 @@ public class UIAndVisualsConfig {
 				case SKYBLOCK_LEVEL -> "Skyblock Level";
 			};
 		}
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ENGLISH);
+		}
 	}
 
 	public static class FancyAuctionHouse {
@@ -274,7 +315,15 @@ public class UIAndVisualsConfig {
 
 		public boolean enableVanillaStyleManaBar = false;
 
+		public boolean enableVanillaStyleManaBarBlinking = true;
+
+		public boolean useHungerBarSprites = false;
+
 		public IntelligenceDisplay intelligenceDisplay = IntelligenceDisplay.ORIGINAL;
+
+		public boolean showEstimatedTilde = true;
+
+		public boolean hasSeenVitalityAtLeastOnce = false;
 
 		// Kept in for backwards compatibility, remove if needed
 		@SuppressWarnings("DeprecatedIsStillUsed")
@@ -344,6 +393,19 @@ public class UIAndVisualsConfig {
 
 		public Color teleportOverlayColor = new Color(0x7F761594, true);
 
+		public HighlightType highlightType = HighlightType.HIGHLIGHT;
+
+		public enum HighlightType {
+			HIGHLIGHT,
+			OUTLINED_HIGHLIGHT,
+			OUTLINE;
+
+			@Override
+			public String toString() {
+				return I18n.get("skyblocker.config.uiAndVisuals.teleportOverlay.highlightType." + name());
+			}
+		}
+
 		public boolean enableWeirdTransmission = false;
 
 		public boolean enableInstantTransmission = false;
@@ -357,6 +419,8 @@ public class UIAndVisualsConfig {
 
 	public static class SmoothAOTE {
 		public boolean predictive = false;
+
+		public boolean thirdPerson = true;
 
 		public boolean enableWeirdTransmission = false;
 
@@ -376,6 +440,8 @@ public class UIAndVisualsConfig {
 
 		public boolean enableAuctionHouse = true;
 
+		public boolean enableIronmanAuctionHouse = false;
+
 		public boolean enableMuseum = true;
 
 		public boolean keepPreviousSearches = false;
@@ -385,6 +451,8 @@ public class UIAndVisualsConfig {
 		public int historyLength = 3;
 
 		public boolean enableCommands = false;
+
+		public boolean commandAutocomplete = true;
 
 		public List<String> bazaarHistory = new ArrayList<>();
 
@@ -461,14 +529,19 @@ public class UIAndVisualsConfig {
 	}
 
 	public static class ItemPickup {
-		public boolean enabled = false;
+		@Deprecated
+		public transient boolean enabled = false;
 
-		public boolean sackNotifications = false;
+		@Deprecated
+		public transient boolean sackNotifications = false;
 
-		public boolean showItemName = true;
+		@Deprecated
+		public transient boolean showItemName = true;
 
-		public int lifeTime = 3;
+		@Deprecated
+		public transient int lifeTime = 3;
 
-		public boolean splitNotifications = false;
+		@Deprecated
+		public transient boolean splitNotifications = false;
 	}
 }

@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
+
+import com.google.gson.annotations.SerializedName;
 
 public class Forge {
 	@SerializedName("forge_processes")

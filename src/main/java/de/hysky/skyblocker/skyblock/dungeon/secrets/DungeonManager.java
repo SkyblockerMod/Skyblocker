@@ -1,11 +1,6 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
-import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,36 +9,28 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.InflaterInputStream;
 
-import com.google.gson.JsonParser;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.VisibleForTesting;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -52,31 +39,26 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.debug.Debug;
-import de.hysky.skyblocker.events.DungeonEvents;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
-import de.hysky.skyblocker.utils.Constants;
-import de.hysky.skyblocker.utils.Tickable;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.scheduler.Scheduler;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -86,6 +68,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.InteractionResult;
@@ -105,6 +88,31 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.events.DungeonEvents;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMap;
+import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.Constants;
+import de.hysky.skyblocker.utils.Tickable;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.data.JsonData;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
+
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getColor;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getMapPosForNWMostRoom;
+import static de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils.getPhysicalPosFromMap;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class DungeonManager {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -159,6 +167,14 @@ public class DungeonManager {
 	private static final Map<String, RoomInfo> ROOMS_INFO = new ConcurrentHashMap<>();
 	private static final Map<String, List<RoomWaypoint>> ROOMS_WAYPOINTS = new ConcurrentHashMap<>();
 
+	static final JsonData<Map<SecretWaypoint.Category, Color>> WAYPOINT_COLOR_DATA = new JsonData<>(
+			SkyblockerMod.CONFIG_DIR.resolve("secret_waypoint_color.json"),
+			Codec.unboundedMap(SecretWaypoint.Category.CODEC, CodecUtils.COLOR_CODEC).xmap(EnumMap::new, Function.identity()),
+			Arrays.stream(SecretWaypoint.Category.values()).collect(Maps.<SecretWaypoint.Category, SecretWaypoint.Category, Color>toImmutableEnumMap(Function.identity(), category -> {
+				float[] components = category.getColorComponents();
+				return new Color(components[0], components[1], components[2]);
+			})));
+
 	/**
 	 * Rooms in the current dungeon map.
 	 */
@@ -168,6 +184,7 @@ public class DungeonManager {
 	 * The map of dungeon room names to custom waypoints relative to the room.
 	 */
 	private static final Table<String, BlockPos, SecretWaypoint> customWaypoints = HashBasedTable.create();
+	private static final Component NOT_MATCHED_TEXT = Component.translatable("skyblocker.dungeons.secrets.notMatched").withColor(TextColor.RED);
 	private static @Nullable CompletableFuture<Void> roomsLoaded;
 	/**
 	 * The map position of the top left corner of the entrance room.
@@ -269,6 +286,7 @@ public class DungeonManager {
 	 */
 	@Init
 	public static void init() {
+		WAYPOINT_COLOR_DATA.init();
 		// Execute with MinecraftClient as executor since we need to wait for MinecraftClient#resourceManager to be set
 		CompletableFuture.runAsync(DungeonManager::load, CLIENT).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
@@ -297,9 +315,9 @@ public class DungeonManager {
 						if (currentRoom != null) {
 							currentRoom.tickables.clear();
 							currentRoom.renderables.clear();
-							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCleared sub processes in the current room."));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("Cleared sub processes in the current room."));
 						} else {
-							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+							context.getSource().sendError(error("Current room is null."));
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -315,9 +333,9 @@ public class DungeonManager {
 								default -> "Unknown";
 							};
 
-							context.getSource().sendFeedback(Constants.PREFIX.get().append("§rCheckmark colour: " + result));
+							context.getSource().sendFeedback(Constants.PREFIX.get().append("Checkmark colour: " + result));
 						} else {
-							context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room or map state is null."));
+							context.getSource().sendError(error("Current room or map state is null."));
 						}
 						return Command.SINGLE_SUCCESS;
 					}))
@@ -347,11 +365,11 @@ public class DungeonManager {
 			String room = path[3].substring(0, path[3].length() - ".skeleton".length());
 			ROOMS_DATA.computeIfAbsent(dungeon, _ -> new ConcurrentHashMap<>());
 			ROOMS_DATA.get(dungeon).computeIfAbsent(roomShape, _ -> new ConcurrentHashMap<>());
-			dungeonFutures.add(CompletableFuture.supplyAsync(() -> readRoom(resourceEntry.getValue()), Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(blocks -> {
+			dungeonFutures.add(CompletableFuture.runAsync(() -> {
 				Map<String, int[]> roomsMap = ROOMS_DATA.get(dungeon).get(roomShape);
-				roomsMap.put(room, blocks);
+				roomsMap.put(room, readRoom(resourceEntry.getValue()));
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon room skeleton - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -373,7 +391,7 @@ public class DungeonManager {
 					throw new RuntimeException(ex);
 				}
 				LOGGER.debug("[Skyblocker Dungeon Secrets] Loaded dungeon room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room);
-			}, Executors.newVirtualThreadPerTaskExecutor()).exceptionally(e -> {
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).exceptionally(e -> {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load room secrets - dungeon={}, shape={}, room={}", dungeon, roomShape, room, e);
 				return null;
 			}));
@@ -389,7 +407,7 @@ public class DungeonManager {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load custom dungeon secret waypoints", e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()));
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR));
 		roomsLoaded = CompletableFuture.allOf(dungeonFutures.toArray(CompletableFuture[]::new)).thenRun(() -> LOGGER.info("[Skyblocker Dungeon Secrets] Loaded dungeon secrets for {} dungeon(s), {} room shapes, {} rooms, and {} custom secret waypoints total in {} ms", ROOMS_DATA.size(), ROOMS_DATA.values().stream().mapToInt(Map::size).sum(), ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum(), customWaypoints.size(), System.currentTimeMillis() - startTime)).exceptionally(e -> {
 			LOGGER.error("[Skyblocker Dungeon Secrets] Failed to load dungeon secrets", e);
 			return null;
@@ -430,7 +448,7 @@ public class DungeonManager {
 			if (markSecrets(secretIndex, found)) {
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFound" : "skyblocker.dungeons.secrets.markSecretMissing", secretIndex)));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex)));
+				context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable(found ? "skyblocker.dungeons.secrets.markSecretFoundUnable" : "skyblocker.dungeons.secrets.markSecretMissingUnable", secretIndex).withColor(TextColor.RED)));
 			}
 			return Command.SINGLE_SUCCESS;
 		});
@@ -443,7 +461,7 @@ public class DungeonManager {
 				currentRoom.markAllSecrets(false);
 				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissing")));
 			} else {
-				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable")));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.markSecretsMissingUnable").withColor(TextColor.RED)));
 			}
 
 			return Command.SINGLE_SUCCESS;
@@ -458,7 +476,7 @@ public class DungeonManager {
 		if (CLIENT.hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() == HitResult.Type.BLOCK) {
 			return getRelativePos(context.getSource(), blockHitResult.getBlockPos());
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget")));
+			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.noTarget").withColor(TextColor.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -471,7 +489,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.posMessage", currentRoom.getName(), currentRoom.getDirection().getSerializedName(), relativePos.getX(), relativePos.getY(), relativePos.getZ())));
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			source.sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -493,7 +511,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.addCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -503,7 +521,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.addCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -521,7 +539,7 @@ public class DungeonManager {
 		if (isRoomMatched(room)) {
 			room.removeCustomWaypoint(context, room.actualToRelative(pos));
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -531,7 +549,7 @@ public class DungeonManager {
 			//noinspection DataFlowIssue - checked above
 			currentRoom.removeCustomWaypoint(context, pos);
 		} else {
-			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.dungeons.secrets.notMatched")));
+			context.getSource().sendError(Constants.PREFIX.get().append(NOT_MATCHED_TEXT));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
@@ -539,21 +557,21 @@ public class DungeonManager {
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> matchAgainstCommand() {
 		return argument("room", StringArgumentType.string()).suggests((_, builder) -> SharedSuggestionProvider.suggest(ROOMS_DATA.values().stream().map(Map::values).flatMap(Collection::stream).map(Map::keySet).flatMap(Collection::stream), builder)).then(argument("direction", Room.Direction.DirectionArgumentType.direction()).executes(context -> {
 			if (!isClearingDungeon()) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cYou are not in a dungeon."));
+				context.getSource().sendError(error("You are not in a dungeon."));
 				return Command.SINGLE_SUCCESS;
 			}
 			if (CLIENT.player == null || CLIENT.level == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get player or world."));
+				context.getSource().sendError(error("Failed to get player or world."));
 				return Command.SINGLE_SUCCESS;
 			}
 			ItemStack stack = CLIENT.player.getInventory().getNonEquipmentItems().get(8);
 			if (!stack.is(Items.FILLED_MAP)) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map."));
+				context.getSource().sendError(error("Failed to get dungeon map."));
 				return Command.SINGLE_SUCCESS;
 			}
 			MapItemSavedData map = MapItem.getSavedData(stack.get(DataComponents.MAP_ID), CLIENT.level);
 			if (map == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to get dungeon map state."));
+				context.getSource().sendError(error("Failed to get dungeon map state."));
 				return Command.SINGLE_SUCCESS;
 			}
 
@@ -562,18 +580,22 @@ public class DungeonManager {
 
 			Room room = newDebugRoom(roomName, direction, CLIENT.player, map);
 			if (room == null) {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cFailed to find room with name " + roomName + "."));
+				context.getSource().sendError(error("Failed to find room with name " + roomName + "."));
 				return Command.SINGLE_SUCCESS;
 			}
 			if (currentRoom != null) {
 				currentRoom.addSubProcess(room);
-				context.getSource().sendFeedback(Constants.PREFIX.get().append("§rMatching room " + roomName + " with direction " + direction + " against current room."));
+				context.getSource().sendFeedback(Constants.PREFIX.get().append("Matching room " + roomName + " with direction " + direction + " against current room."));
 			} else {
-				context.getSource().sendError(Constants.PREFIX.get().append("§cCurrent room is null."));
+				context.getSource().sendError(error("Current room is null."));
 			}
 
 			return Command.SINGLE_SUCCESS;
 		}));
+	}
+
+	private static Component error(String message) {
+		return Constants.PREFIX.get().append(Component.literal(message).withColor(TextColor.RED));
 	}
 
 	private static @Nullable Room newDebugRoom(String roomName, Room.Direction direction, Player player, MapItemSavedData map) {
@@ -791,18 +813,18 @@ public class DungeonManager {
 	}
 
 	/**
-	 * Calls {@link Room#onChatMessage(String)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
+	 * Calls {@link Room#onChatMessage(String, boolean)} on {@link #currentRoom} if the message is an overlay message and {@link #isCurrentRoomMatched()} and processes key obtained messages.
 	 * <p>Used to detect when all secrets in a room are found and detect when a wither or blood door is unlocked.
 	 * To process key obtained messages, this method checks if door highlight is enabled and if the message matches a key obtained message.
 	 */
 	@SuppressWarnings("SameReturnValue")
 	private static boolean onChatMessage(Component text, boolean overlay) {
 		if (!shouldProcess()) return true;
-		String message = text.getString();
+		String message = ChatFormatting.stripFormatting(text.getString());
 
 		if (isCurrentRoomMatched()) {
 			//noinspection DataFlowIssue - checked above
-			currentRoom.onChatMessage(message);
+			currentRoom.onChatMessage(message, overlay);
 		}
 
 		// Process key found messages for door highlight
@@ -822,7 +844,7 @@ public class DungeonManager {
 
 		// Dungeon Events
 
-		if (message.equals("§e[NPC] §bMort§f: You should find it useful if you get lost.")) {
+		if (message.equals("[NPC] Mort: You should find it useful if you get lost.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
 		}
 

@@ -1,16 +1,14 @@
 package de.hysky.skyblocker.skyblock.museum;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.common.collect.Lists;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
-import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 import com.mojang.datafixers.util.Either;
-import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
-import de.hysky.skyblocker.skyblock.item.ItemPrice;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.FlexibleItemStack;
-import de.hysky.skyblocker.utils.ItemUtils;
 import it.unimi.dsi.fastutil.objects.ObjectObjectMutablePair;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -27,15 +25,20 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-import org.jspecify.annotations.Nullable;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.skyblock.item.ItemPrice;
+import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.hoveredItem.HoveredItemStackProvider;
 
 public class MuseumManager extends AbstractWidget implements HoveredItemStackProvider {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -244,7 +247,9 @@ public class MuseumManager extends AbstractWidget implements HoveredItemStackPro
 	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		// Draw the tooltip of the hovered result button if one is hovered over
 		if (this.hoveredDonationButton != null) {
-			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, hoveredDonationButton.getItemTooltip(), x, y, null);
+			List<Component> tooltip = hoveredDonationButton.getItemTooltip();
+			Identifier tooltipStyle = hoveredDonationButton.getItem().get(DataComponents.TOOLTIP_STYLE);
+			graphics.setComponentTooltipForNextFrame(TEXT_RENDERER, tooltip, x, y, tooltipStyle);
 		}
 	}
 

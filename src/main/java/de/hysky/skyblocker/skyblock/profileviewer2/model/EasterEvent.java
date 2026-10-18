@@ -1,16 +1,16 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import de.hysky.skyblocker.SkyblockerMod;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.SkyblockerMod;
 
 public class EasterEvent {
 	@SerializedName("chocolate")
@@ -56,9 +56,7 @@ public class EasterEvent {
 		public int unlockedSlots;
 		@SerializedName("missed_uncollected_eggs")
 		public int uncollectedEggCount;
-		/**
-		 * Is this the last collected egg timestamp?
-		 */
+		/// Is this the last collected egg timestamp?
 		@SerializedName("egg_slot_cooldown_mark")
 		public long eggSlotCooldownTimestamp;
 		@SerializedName("egg_slot_cooldown_sum")
@@ -106,9 +104,7 @@ public class EasterEvent {
 		return this.collectedEggs;
 	}
 
-	/**
-	 * Last collected egg timestamps, can be used calculate when the next egg is available.
-	 */
+	/// Last collected egg timestamps, can be used calculate when the next egg is available.
 	public static class CollectedEggs {
 		public long breakfast;
 		public long dinner;

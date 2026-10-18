@@ -1,14 +1,5 @@
 package de.hysky.skyblocker.skyblock.dungeon.device;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
-import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -17,6 +8,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonBoss;
+import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class LightsOn {
 	private static final Minecraft CLIENT = Minecraft.getInstance();

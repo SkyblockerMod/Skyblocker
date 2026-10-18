@@ -1,18 +1,16 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import com.mojang.brigadier.Command;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.events.ParticleEvents;
-import de.hysky.skyblocker.utils.ColorUtils;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
-import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
-import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -37,15 +35,19 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.math3.geometry.euclidean.twod.Line;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.events.ParticleEvents;
+import de.hysky.skyblocker.utils.ColorUtils;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientBlockPosArgumentType;
+import de.hysky.skyblocker.utils.command.argumenttypes.blockpos.ClientPosArgument;
+import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -223,10 +225,10 @@ public class MythologicalRitual {
 				}
 				if (burrow.confirmed != TriState.FALSE) {
 					if (burrow.nextBurrowLine != null) {
-						collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+						collector.submitLinesFromPoints(burrow.nextBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5f, 5f, false);
 					}
 					if (burrow.echoBurrowLine != null) {
-						collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5F, 5F, false);
+						collector.submitLinesFromPoints(burrow.echoBurrowLine, ORANGE_COLOR_COMPONENTS, 0.5f, 5f, false);
 					}
 					if (burrow.nextBurrowEstimatedPos != null && burrow.confirmed == TriState.DEFAULT) {
 						collector.submitFilledBoxWithBeaconBeam(burrow.nextBurrowEstimatedPos, RED_COLOR_COMPONENTS, 0.5f, true);
@@ -313,7 +315,7 @@ public class MythologicalRitual {
 		private @Nullable Line echoBurrowLineEstimation;
 
 		private GriffinBurrow(BlockPos pos) {
-			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25F);
+			super(pos, Type.WAYPOINT, ORANGE_COLOR_COMPONENTS, 0.25f);
 		}
 
 		private void init() {

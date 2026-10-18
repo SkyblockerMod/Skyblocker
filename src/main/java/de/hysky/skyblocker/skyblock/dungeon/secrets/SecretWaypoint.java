@@ -1,23 +1,19 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
-import com.google.gson.JsonObject;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+
+import com.google.gson.JsonObject;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.StringRepresentableArgument;
@@ -27,6 +23,12 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.waypoint.DistancedNamedWaypoint;
 
 public class SecretWaypoint extends DistancedNamedWaypoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecretWaypoint.class);
@@ -48,9 +50,16 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 	}
 
 	SecretWaypoint(int secretIndex, Category category, Component name, BlockPos pos) {
-		super(pos, name, TYPE_SUPPLIER, category.colorComponents);
+		super(pos, name, TYPE_SUPPLIER, getColorFor(category));
 		this.secretIndex = secretIndex;
 		this.category = category;
+	}
+
+	private static float[] getColorFor(Category category) {
+		if (!DungeonManager.WAYPOINT_COLOR_DATA.isLoaded()) return category.colorComponents;
+		Color color = DungeonManager.WAYPOINT_COLOR_DATA.getData().get(category);
+		if (color == null) return category.colorComponents;
+		return color.getColorComponents(null);
 	}
 
 	static ToDoubleFunction<SecretWaypoint> getSquaredDistanceToFunction(Entity entity) {
@@ -93,7 +102,7 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(secretIndex, category, name, pos);
+		return Objects.hash(secretIndex, category.getSerializedName(), name, pos);
 	}
 
 	@Override
@@ -144,8 +153,12 @@ public class SecretWaypoint extends DistancedNamedWaypoint {
 			this.enabledPredicate = enabledPredicate;
 			colorComponents = new float[intColorComponents.length];
 			for (int i = 0; i < intColorComponents.length; i++) {
-				colorComponents[i] = intColorComponents[i] / 255F;
+				colorComponents[i] = intColorComponents[i] / 255f;
 			}
+		}
+
+		public float[] getColorComponents() {
+			return colorComponents;
 		}
 
 		static Category get(JsonObject waypointJson) {

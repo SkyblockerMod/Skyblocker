@@ -1,0 +1,126 @@
+package de.hysky.skyblocker.skyblock.tabhud.config;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+
+import de.hysky.skyblocker.skyblock.tabhud.widget.HudWidget;
+
+public class AddWidgetWidget extends AbstractSelectionList<AddWidgetWidget.Entry> {
+
+	private final Consumer<HudWidget> widgetConsumer;
+	private static final int MAX_ENTRIES = 10;
+
+	public AddWidgetWidget(Minecraft client, Consumer<HudWidget> widgetConsumer) {
+		super(client, 10, 10, 0, 12);
+		this.widgetConsumer = widgetConsumer;
+		visible = false;
+	}
+
+	@Override
+	protected void updateWidgetNarration(NarrationElementOutput builder) {}
+
+	@Override
+	protected void extractListBackground(GuiGraphicsExtractor context) {
+		context.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(0.6f));
+		if (scrollAmount() > 0) {
+			for (int x = 0; x < this.getWidth(); x++) {
+				if (x % 2 == 0) {
+					context.fill(this.getX() + x, this.getY() - 1, this.getX() + x + 1, this.getY(), -1);
+				}
+			}
+		}
+
+		if (scrollAmount() < maxScrollAmount()) {
+			for (int x = 0; x < this.getWidth(); x++) {
+				if (x % 2 == 0) {
+					context.fill(
+							this.getX() + x, this.getY() + this.getHeight(), this.getX() + x + 1, this.getY() + this.getHeight() + 1, -1
+					);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+		super.extractWidgetRenderState(context, mouseX, mouseY, deltaTicks);
+		if (mouseX < getX() - 20 || mouseY < getY() - 20 || mouseX > getRight() + 20 || mouseY > getBottom() + 20) visible = false;
+	}
+
+	@Override
+	protected void extractListSeparators(GuiGraphicsExtractor context) {}
+
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+		if (!visible) return false;
+		return super.mouseClicked(click, doubled);
+	}
+
+	public void openWith(List<HudWidget> widgets) {
+		visible = true;
+		replaceEntries(widgets.stream().sorted(Comparator.comparing(w -> w.getInformation().displayName().getString())).map(Entry::new).toList());
+		// 2 pixels padding below and above the entries
+		setHeight(Math.min(widgets.size(), MAX_ENTRIES) * defaultEntryHeight + 4);
+		// 2 pixels padding on each side + 2 pixels for the scrollbar
+		setWidth(widgets.stream().mapToInt(entry -> minecraft.font.width(entry.getInformation().displayName())).max().orElse(100) + (scrollable() ? 6 : 4));
+	}
+
+	@Override
+	public int getRowLeft() {
+		return getX();
+	}
+
+	@Override
+	public int getRowWidth() {
+		return scrollable() ? width - 2 : width;
+	}
+
+	@Override
+	protected void extractScrollbar(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		if (this.scrollable()) {
+			int x = this.scrollBarX();
+			int y = this.scrollBarY();
+			int h = this.scrollerHeight();
+			context.fill(x, y, x + 2, y + h, CommonColors.WHITE);
+		}
+	}
+
+	@Override
+	protected int scrollBarX() {
+		return getRight() - 2;
+	}
+
+	protected class Entry extends AbstractSelectionList.Entry<de.hysky.skyblocker.skyblock.tabhud.config.AddWidgetWidget.Entry> {
+
+		private final HudWidget hudWidget;
+
+		private Entry(HudWidget widget) {
+			this.hudWidget = widget;
+		}
+
+		@Override
+		public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickProgress) {
+			if (hovered) {
+				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), ARGB.white(0.1f));
+			}
+			context.textRenderer().accept(getX() + 2, getY() + 2, hudWidget.getInformation().displayName());
+			//ClickableWidget.drawScrollableText(context, client.textRenderer, hudWidget.getInformation().displayName(), x, y, x + entryWidth, y + entryHeight, Colors.WHITE);
+		}
+
+		@Override
+		public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+			widgetConsumer.accept(hudWidget);
+			visible = false;
+			return true;
+		}
+	}
+}

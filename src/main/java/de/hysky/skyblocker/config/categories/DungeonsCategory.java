@@ -1,13 +1,7 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.DungeonsConfig;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
-import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
+import java.awt.Color;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -18,7 +12,18 @@ import net.azureaaron.dandelion.api.controllers.StringController;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import java.awt.Color;
+import net.minecraft.network.chat.TextColor;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapConfigScreen;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonMapLabels;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.Waypoint.Type;
 
 public class DungeonsCategory {
 
@@ -123,13 +128,11 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.hideSoulweaverSkulls = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				.option(Option.<Boolean>createBuilder()
+				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.dungeonSplits"))
-						.description(Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
-						.binding(defaults.dungeons.dungeonSplits,
-								() -> config.dungeons.dungeonSplits,
-								newValue -> config.dungeons.dungeonSplits = newValue)
-						.controller(ConfigUtils.createBooleanController())
+						.description(Component.translatable("skyblocker.config.hud.movedMessage"), Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, screen)))
+						.prompt(Component.translatable("text.skyblocker.open"))
 						.build())
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.bloodCampHelper"))
@@ -160,6 +163,7 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.showSelfHead"))
+								.description(Component.translatable("skyblocker.config.dungeons.map.showSelfHead.@Tooltip"))
 								.binding(defaults.dungeons.dungeonMap.showSelfHead,
 										() -> config.dungeons.dungeonMap.showSelfHead,
 										newValue -> config.dungeons.dungeonMap.showSelfHead = newValue)
@@ -217,7 +221,7 @@ public class DungeonsCategory {
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.map.mapScreen"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new DungeonMapConfigScreen(screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new DungeonMapConfigScreen(screen)))
 								.build())
 						.build())
 
@@ -257,7 +261,10 @@ public class DungeonsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage"))
-								.description(Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip"))
+								.description(
+										Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[0]"),
+										Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[1]").withColor(TextColor.RED)
+								)
 								.binding(defaults.dungeons.leapOverlay.enableLeapMessage,
 										() -> config.dungeons.leapOverlay.enableLeapMessage,
 										newValue -> config.dungeons.leapOverlay.enableLeapMessage = newValue)
@@ -827,9 +834,9 @@ public class DungeonsCategory {
 								.build())
 						.build())
 
-				// Mimic Message
+				// Dungeon Messages
 				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.mimicMessage"))
+						.name(Component.translatable("skyblocker.config.dungeons.dungeonMessages"))
 						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.mimicMessage.sendMimicMessage"))
@@ -839,18 +846,21 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.mimicMessage.sendMimicMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.build())
-
-				// Prince Message
-				.group(OptionGroup.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.princeMessage"))
-						.collapsed(true)
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage"))
 								.description(Component.translatable("skyblocker.config.dungeons.princeMessage.sendPrinceMessage.@Tooltip"))
 								.binding(defaults.dungeons.princeMessage.sendPrinceMessage,
 										() -> config.dungeons.princeMessage.sendPrinceMessage,
 										newValue -> config.dungeons.princeMessage.sendPrinceMessage = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage"))
+								.description(Component.translatable("skyblocker.config.dungeons.batMessage.sendBatMessage.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_9_0)
+								.binding(defaults.dungeons.batMessage.sendBatMessage,
+										() -> config.dungeons.batMessage.sendBatMessage,
+										newValue -> config.dungeons.batMessage.sendBatMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())

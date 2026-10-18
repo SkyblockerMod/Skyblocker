@@ -1,8 +1,8 @@
 package de.hysky.skyblocker.utils.container;
 
-import org.intellij.lang.annotations.Language;
-
 import java.util.regex.Pattern;
+
+import org.intellij.lang.annotations.Language;
 
 /**
  * Simple implementation of a container solver. Extend this class to add a new gui solver,

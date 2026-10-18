@@ -1,15 +1,21 @@
 package de.hysky.skyblocker.skyblock.item.tooltip;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
-import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
-import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
-import de.hysky.skyblocker.utils.ItemUtils;
-import de.hysky.skyblocker.utils.RegistryUtils;
-import de.hysky.skyblocker.utils.Utils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -17,6 +23,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
@@ -25,26 +32,28 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.world.item.Items;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.skyblock.item.background.ItemBackgroundManager;
+import de.hysky.skyblocker.skyblock.item.slottext.SlotTextManager;
+import de.hysky.skyblocker.utils.ItemUtils;
+import de.hysky.skyblocker.utils.RegistryUtils;
+import de.hysky.skyblocker.utils.Utils;
 
 public class BackpackPreview {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackpackPreview.class);
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
-	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)");
-	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)");
+	private static final Pattern ECHEST_PATTERN = Pattern.compile("Ender Chest.*\\((\\d+)/\\d+\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_PATTERN = Pattern.compile("Backpack.*\\(Slot #(\\d+)\\)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern STRORAGE_PATTERN = Pattern.compile("Storage", Pattern.CASE_INSENSITIVE);
+	private static final Pattern BACKPACK_SIZE_PATTERN = Pattern.compile("has (\\d+) slots", Pattern.CASE_INSENSITIVE);
 	private static final int STORAGE_SIZE = 27;
-	private static final Storage[] storages = new Storage[STORAGE_SIZE];
+	private static final @Nullable Storage[] storages = new Storage[STORAGE_SIZE];
 
 	/**
 	 * The profile id of the currently loaded backpack preview.
@@ -78,7 +87,7 @@ public class BackpackPreview {
 					} catch (Exception e) {
 						LOGGER.error("[Skyblocker] Failed to create the backpack preview save directory! Path: {}", saveDir, e);
 					}
-				}, Executors.newVirtualThreadPerTaskExecutor());
+				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 
 				// load storage again because profile id changed
 				loaded = id;
@@ -105,7 +114,7 @@ public class BackpackPreview {
 				}
 
 				return null;
-			}, Executors.newVirtualThreadPerTaskExecutor()).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
+			}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenAcceptAsync(storage -> storages[index2] = storage, Minecraft.getInstance());
 		}
 	}
 
@@ -132,7 +141,7 @@ public class BackpackPreview {
 			} catch (Exception e) {
 				LOGGER.error("[Skyblocker] Failed to save backpack preview file: {}", storageFile.getFileName(), e);
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor()).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR).thenRunAsync(() -> storage.markClean(), Minecraft.getInstance());
 	}
 
 	private static void updateStorage(AbstractContainerScreen<?> handledScreen) {
@@ -141,6 +150,55 @@ public class BackpackPreview {
 		if (index != -1) {
 			storages[index] = new Storage(handledScreen.getMenu().slots.getFirst().container, title, true);
 		}
+
+		if (STRORAGE_PATTERN.matcher(title).matches()) {
+			initializeStorage(handledScreen);
+		}
+	}
+
+	/**
+	 * Creates blank storages from storage overlay when not initialized
+	 * @param handledScreen screen
+	 */
+	private static void initializeStorage(AbstractContainerScreen<?> handledScreen) {
+		NonNullList<Slot> slots = handledScreen.getMenu().slots;
+		//echests
+		for (int i = 9; i < 18; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 9;
+			//ignore non-existent ender chest or if they are already created
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.red()) || storages[index] != null) continue;
+			storages[index] = new Storage(
+					new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+							.limit(18)
+							.toArray(ItemStack[]::new)),
+					"", true
+			);
+		}
+		//backpacks
+		for (int i = 27; i < 45; ++i) {
+			Slot slot = slots.get(i);
+			int index = i - 18;
+			//remove backpacks if they are no longer there
+			if (slot.getItem().is(Items.STAINED_GLASS_PANE.brown())) {
+				storages[index] = null;
+			}
+			//add new backpacks
+			if (storages[index] != null) continue;
+			Matcher size = ItemUtils.getLoreLineIfContainsMatch(slot.getItem(), BACKPACK_SIZE_PATTERN);
+			if (size != null) {
+				storages[index] = new Storage(
+						new SimpleContainer(Stream.generate(() -> ItemStack.EMPTY)
+								.limit(NumberUtils.toInt(size.group(1)) + 9)
+								.toArray(ItemStack[]::new)),
+						"", true
+				);
+			}
+		}
+	}
+
+	public static @Nullable Storage[] getStorages() {
+		return storages;
 	}
 
 	public static boolean extractPreview(GuiGraphicsExtractor graphics, Screen screen, int index, int mouseX, int mouseY) {
@@ -168,7 +226,7 @@ public class BackpackPreview {
 			ItemBackgroundManager.drawBackgrounds(currentStack, graphics, itemX, itemY);
 
 			if (ItemProtection.isItemProtected(currentStack)) {
-				graphics.blit(RenderPipelines.GUI_TEXTURED, ItemProtection.ITEM_PROTECTION_TEX, itemX, itemY, 0, 0, 16, 16, 16, 16);
+				ItemProtection.drawSlotIcon(graphics, itemX, itemY);
 			}
 
 			graphics.item(currentStack, itemX, itemY);
@@ -179,7 +237,7 @@ public class BackpackPreview {
 		return true;
 	}
 
-	private static int getStorageIndexFromTitle(String title) {
+	public static int getStorageIndexFromTitle(String title) {
 		Matcher echest = ECHEST_PATTERN.matcher(title);
 		if (echest.find()) return Integer.parseInt(echest.group(1)) - 1;
 		Matcher backpack = BACKPACK_PATTERN.matcher(title);
@@ -187,11 +245,11 @@ public class BackpackPreview {
 		return -1;
 	}
 
-	private static class Storage {
+	public static class Storage {
 		private static final Codec<Storage> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(Storage::name),
 				ItemUtils.EMPTY_ALLOWING_ITEMSTACK_CODEC.listOf().fieldOf("items").forGetter(Storage::getItemList)
-				).apply(instance, Storage::create));
+		).apply(instance, Storage::create));
 		private final Container inventory;
 		private final String name;
 		private boolean dirty;
@@ -206,11 +264,11 @@ public class BackpackPreview {
 			return name;
 		}
 
-		private int size() {
+		public int size() {
 			return inventory.getContainerSize();
 		}
 
-		private ItemStack getStack(int index) {
+		public ItemStack getStack(int index) {
 			return inventory.getItem(index);
 		}
 

@@ -1,15 +1,5 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.logging.LogUtils;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
-import org.slf4j.Logger;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,9 +7,20 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
+import org.slf4j.Logger;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 /**
  * Caches generated ProfileComponents for custom player head textures.

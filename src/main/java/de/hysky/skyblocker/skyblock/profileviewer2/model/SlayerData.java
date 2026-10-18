@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
-import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
-import de.hysky.skyblocker.skyblock.slayers.SlayerType;
-
 import java.util.Locale;
 import java.util.Map;
+
+import com.google.gson.annotations.SerializedName;
+
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelCalculator;
+import de.hysky.skyblocker.skyblock.profileviewer2.utils.LevelInfo;
+import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 
 public class SlayerData {
 	@SerializedName("slayer_bosses")

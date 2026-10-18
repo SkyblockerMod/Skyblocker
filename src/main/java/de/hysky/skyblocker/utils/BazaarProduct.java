@@ -4,7 +4,6 @@ import java.util.OptionalDouble;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 public record BazaarProduct(String id, String name, OptionalDouble buyPrice, OptionalDouble sellPrice, int buyVolume, int sellVolume) {

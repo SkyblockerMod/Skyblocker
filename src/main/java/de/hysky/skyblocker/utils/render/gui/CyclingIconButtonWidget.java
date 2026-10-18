@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.utils.render.gui;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;

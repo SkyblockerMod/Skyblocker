@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.injected;
 
-import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
 
 public interface SkyblockerEntity {
 	default @Nullable Component skyblocker$getCustomName() {

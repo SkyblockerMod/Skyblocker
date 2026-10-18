@@ -1,17 +1,14 @@
 package de.hysky.skyblocker.skyblock.dungeon.puzzle;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.Utils;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,12 +17,17 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Utils;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
+
 /**
  * This class provides functionality to render outlines around Blaze entities
  */
 public class DungeonBlaze extends DungeonPuzzle {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DungeonBlaze.class.getName());
-	private static final float[] GREEN_COLOR_COMPONENTS = {0.0F, 1.0F, 0.0F};
+	private static final float[] GREEN_COLOR_COMPONENTS = {0.0f, 1.0f, 0.0f};
 	private static final float[] WHITE_COLOR_COMPONENTS = {1.0f, 1.0f, 1.0f};
 	@SuppressWarnings("unused")
 	private static final DungeonBlaze INSTANCE = new DungeonBlaze();
@@ -65,7 +67,7 @@ public class DungeonBlaze extends DungeonPuzzle {
 	 */
 	private static List<ObjectIntPair<ArmorStand>> getBlazesInWorld(ClientLevel world, LocalPlayer player) {
 		List<ObjectIntPair<ArmorStand>> blazes = new ArrayList<>();
-		for (ArmorStand blaze : world.getEntitiesOfClass(ArmorStand.class, player.getBoundingBox().inflate(500D), EntitySelector.ENTITY_NOT_BEING_RIDDEN)) {
+		for (ArmorStand blaze : world.getEntitiesOfClass(ArmorStand.class, player.getBoundingBox().inflate(500d), EntitySelector.ENTITY_NOT_BEING_RIDDEN)) {
 			String blazeName = blaze.getName().getString();
 			if (blazeName.contains("Blaze") && blazeName.contains("/")) {
 				try {

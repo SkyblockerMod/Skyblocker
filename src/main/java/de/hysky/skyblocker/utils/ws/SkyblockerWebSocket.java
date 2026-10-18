@@ -17,17 +17,18 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
+import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.debug.Debug;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.utils.ApiAuthentication;
 import de.hysky.skyblocker.utils.Http;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public class SkyblockerWebSocket {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -35,7 +36,7 @@ public class SkyblockerWebSocket {
 	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
 			.connectTimeout(Duration.ofSeconds(10))
 			.followRedirects(Redirect.NORMAL)
-			.executor(Executors.newVirtualThreadPerTaskExecutor())
+			.executor(SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
 			.version(Version.HTTP_2)
 			.build();
 	private static final ExecutorService MESSAGE_SEND_QUEUE = Executors.newSingleThreadExecutor(Thread.ofVirtual()
@@ -72,7 +73,7 @@ public class SkyblockerWebSocket {
 					LOGGER.error("[Skyblocker WebSocket] Failed to setup WebSocket connection!", e);
 				}
 			}
-		}, Executors.newVirtualThreadPerTaskExecutor());
+		}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 	}
 
 	private static void closeSocket() {

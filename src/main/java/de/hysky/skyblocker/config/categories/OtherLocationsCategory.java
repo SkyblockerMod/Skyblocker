@@ -1,14 +1,5 @@
 package de.hysky.skyblocker.config.categories;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.skyblock.end.EndHudWidget;
-import de.hysky.skyblocker.skyblock.end.TheEnd;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
-import de.hysky.skyblocker.utils.waypoint.Waypoint;
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -16,6 +7,15 @@ import net.azureaaron.dandelion.api.OptionGroup;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.skyblock.end.TheEnd;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.waypoint.Waypoint;
 
 public class OtherLocationsCategory {
 
@@ -59,7 +59,8 @@ public class OtherLocationsCategory {
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter"))
-								.tags(CommonTags.ADDED_IN_6_2_0)
+								.description(Component.translatable("skyblocker.config.otherLocations.barn.enablePeltAnimalHighlighter.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_2_0, Component.literal("pelt animal"))
 								.binding(defaults.otherLocations.barn.enablePeltAnimalHighlighter,
 										() -> config.otherLocations.barn.enablePeltAnimalHighlighter,
 										newValue -> config.otherLocations.barn.enablePeltAnimalHighlighter = newValue)
@@ -139,33 +140,11 @@ public class OtherLocationsCategory {
 										newValue -> config.otherLocations.end.enderNodeWaypointType = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.hudEnabled"))
-								.binding(defaults.otherLocations.end.hudEnabled,
-										() -> config.otherLocations.end.hudEnabled,
-										newValue -> config.otherLocations.end.hudEnabled = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"))
-								.description(Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip"))
-								.binding(defaults.otherLocations.end.zealotKillsEnabled,
-										() -> config.otherLocations.end.zealotKillsEnabled,
-										newValue -> {
-											config.otherLocations.end.zealotKillsEnabled = newValue;
-											EndHudWidget.getInstance().update();
-										})
-								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.protectorLocationEnable"))
-								.binding(defaults.otherLocations.end.protectorLocationEnabled,
-										() -> config.otherLocations.end.protectorLocationEnabled,
-										newValue -> {
-											config.otherLocations.end.protectorLocationEnabled = newValue;
-											EndHudWidget.getInstance().update();
-										})
-								.controller(ConfigUtils.createBooleanController())
+						.option(ButtonOption.createBuilder()
+								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
+								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.THE_END, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.waypoint"))
@@ -173,11 +152,6 @@ public class OtherLocationsCategory {
 										() -> config.otherLocations.end.waypoint,
 										newValue -> config.otherLocations.end.waypoint = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(ButtonOption.createBuilder()
-								.name(Component.translatable("skyblocker.config.otherLocations.end.screen"))
-								.prompt(Component.translatable("text.skyblocker.open")) // Reusing again lol
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.THE_END, EndHudWidget.getInstance().getInternalID(), screen)))
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.otherLocations.end.resetName"))

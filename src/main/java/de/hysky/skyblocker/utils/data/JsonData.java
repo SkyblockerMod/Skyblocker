@@ -1,22 +1,5 @@
 package de.hysky.skyblocker.utils.data;
 
-import com.google.gson.JsonParser;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.backup.ConfigBackupManager;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.toasts.SystemToast;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.StringRepresentable;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,8 +9,26 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+
+import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.backup.ConfigBackupManager;
 
 public class JsonData<T> {
 	public static final SystemToast.SystemToastId ERROR_TOAST_ID = new SystemToast.SystemToastId(10_000L);
@@ -110,7 +111,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> load() {
 		if (loadAsync) {
-			loaded = CompletableFuture.runAsync(this::loadInternal, Executors.newVirtualThreadPerTaskExecutor());
+			loaded = CompletableFuture.runAsync(this::loadInternal, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		} else {
 			loadInternal();
 			loaded = CompletableFuture.completedFuture(null);
@@ -132,13 +133,13 @@ public class JsonData<T> {
 			LOGGER.error("[Skyblocker Json Data] Failed to load data from file: `{}`", file, e);
 		}
 		if (createBackup) {
-			Minecraft.getInstance().getToastManager().addToast(SystemToast.multiline(
-					Minecraft.getInstance(), ERROR_TOAST_ID,
+			SystemToast.add(
+					Minecraft.getInstance().gui.toastManager(), ERROR_TOAST_ID,
 					Component.literal("Skyblocker Config Error"),
 					Component.literal("Failed to load '" + FabricLoader.getInstance().getConfigDir().relativize(file) + "'")
 							.append("\n")
 							.append("See logs for details. A backup of the file has been made.")
-			));
+			);
 			try {
 				// future-proof in case we use other things apart from json
 				String fileName = file.getFileName().toString();
@@ -160,7 +161,7 @@ public class JsonData<T> {
 
 	public CompletableFuture<Void> save() {
 		if (saveAsync && Minecraft.getInstance().isRunning()) { // Do not save async if we are closing the game
-			return CompletableFuture.runAsync(this::saveInternal, Executors.newVirtualThreadPerTaskExecutor());
+			return CompletableFuture.runAsync(this::saveInternal, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
 		} else {
 			saveInternal();
 			return CompletableFuture.completedFuture(null);

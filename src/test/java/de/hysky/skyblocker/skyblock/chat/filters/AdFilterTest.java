@@ -1,9 +1,10 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
+import java.util.regex.Matcher;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Matcher;
+import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,17 +1,20 @@
 package de.hysky.skyblocker.skyblock.crimson.dojo;
 
-import de.hysky.skyblocker.utils.render.RenderHelper;
-import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.awt.Color;
 import java.text.DecimalFormat;
+
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.phys.Vec3;
+
+import de.hysky.skyblocker.utils.render.RenderHelper;
+import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 
 public class ForceTestHelper {
 

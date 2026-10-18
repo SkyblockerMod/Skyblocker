@@ -1,9 +1,23 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
+import java.util.List;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.VisibleForTesting;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ItemStack;
+
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -13,17 +27,6 @@ import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.command.argumenttypes.color.ColorArgumentType;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.Component;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.VisibleForTesting;
-
-import java.util.List;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
@@ -79,13 +82,13 @@ public class CustomArmorAnimatedDyes {
 						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.noItemUuid")));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.noItemUuid").withColor(TextColor.RED)));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.notDyeable")));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.notDyeable").withColor(TextColor.RED)));
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.unableToSetDye")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.unableToSetDye").withColor(TextColor.RED)));
 		}
 
 		return Command.SINGLE_SUCCESS;

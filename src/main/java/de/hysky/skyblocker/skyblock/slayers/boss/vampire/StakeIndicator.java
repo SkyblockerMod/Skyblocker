@@ -1,12 +1,13 @@
 package de.hysky.skyblocker.skyblock.slayers.boss.vampire;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.Entity;
+
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.render.title.Title;
 import de.hysky.skyblocker.utils.render.title.TitleContainer;
-import net.minecraft.ChatFormatting;
-import net.minecraft.world.entity.Entity;
 
 public class StakeIndicator {
 	private static final Title title = new Title("skyblocker.rift.stakeNow", ChatFormatting.RED);

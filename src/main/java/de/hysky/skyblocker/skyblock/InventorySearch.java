@@ -1,11 +1,11 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
-import de.hysky.skyblocker.utils.ItemUtils;
-import it.unimi.dsi.fastutil.ints.Int2BooleanArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
+import java.util.BitSet;
+import java.util.Locale;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -21,27 +21,30 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.inventory.Slot;
-import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.Locale;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.compatibility.CatharsisCompatibility;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
+import de.hysky.skyblocker.utils.ItemUtils;
 
 public class InventorySearch {
 	private static @Nullable AbstractContainerScreen<?> openedHandledScreen = null;
-	private static final Int2BooleanMap slotToMatch = new Int2BooleanArrayMap(64);
+	private static final BitSet slots = new BitSet(90);
+	private static final BitSet computedSlots = new BitSet(90);
 	private static String search = "";
 
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
 			UIAndVisualsConfig.InventorySearchConfig inventorySearchConfig = SkyblockerConfigManager.get().uiAndVisuals.inventorySearch;
-			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen)) return;
+			if (!inventorySearchConfig.enabled.isEnabled() || !(screen instanceof AbstractContainerScreen<?> handledScreen) || CatharsisCompatibility.isGuiElementHidden("skyblocker:inventorySearch")) return;
 			openedHandledScreen = null;
 
 			if (inventorySearchConfig.clickableText) Screens.getWidgets(handledScreen).add(new SearchTextWidget(handledScreen));
 
 			ScreenKeyboardEvents.allowKeyPress(handledScreen).register((_, input) -> {
-				if (input.key() == (inventorySearchConfig.ctrlK ? GLFW.GLFW_KEY_K : GLFW.GLFW_KEY_F) && input.hasControlDownWithQuirk()) {
+				if (input.key() == (inventorySearchConfig.ctrlK ? InputConstants.KEY_K : InputConstants.KEY_F) && input.hasControlDownWithQuirk()) {
 					InventorySearch.showSearchBar(handledScreen);
 					return false;
 				}
@@ -75,24 +78,34 @@ public class InventorySearch {
 		return openedHandledScreen != null;
 	}
 
+	private static boolean computeSlot(Slot slot) {
+		if (!slot.hasItem()) return false;
+		if (slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search)) return true;
+		return ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null;
+	}
+
 	public static boolean slotMatches(Slot slot) {
-		return slotToMatch.computeIfAbsent(slot.index, _ -> slot.hasItem() &&
-				(slot.getItem().getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search) || ItemUtils.getLoreLineIf(slot.getItem(), s -> s.toLowerCase(Locale.ENGLISH).contains(search)) != null));
+		if (slot.index < 0) return true; // Band-Aid fix for mods that add custom slots with a negative index
+		if (!computedSlots.get(slot.index)) {
+			computedSlots.set(slot.index);
+			slots.set(slot.index, computeSlot(slot));
+		}
+		return slots.get(slot.index);
 	}
 
 	private static void onSearchTyped(String text) {
-		slotToMatch.clear();
+		computedSlots.clear();
 		search = text.toLowerCase(Locale.ENGLISH);
 	}
 
 	private static void onScreenClosed(Screen screen) {
 		openedHandledScreen = null;
-		slotToMatch.clear();
+		computedSlots.clear();
 
 	}
 
 	public static void refreshSlot(int slotId) {
-		slotToMatch.remove(slotId);
+		computedSlots.clear(slotId);
 	}
 
 	/**
@@ -150,7 +163,7 @@ public class InventorySearch {
 		public boolean keyPressed(KeyEvent input) {
 			// Makes the widget catch all key presses (except escape) to fix closing the inventory when pressing E
 			// also check that the widget is focused and active
-			return super.keyPressed(input) || (input.key() != GLFW.GLFW_KEY_ESCAPE && this.isFocused());
+			return super.keyPressed(input) || (!input.isEscape() && this.isFocused());
 		}
 
 		// Unfocus when clicking outside

@@ -1,10 +1,13 @@
 package de.hysky.skyblocker.skyblock.profileviewer;
 
-import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import org.jspecify.annotations.Nullable;
+
+import de.hysky.skyblocker.skyblock.profileviewer.utils.SubPageSelectButton;
 
 public interface ProfileViewerPage {
 	void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int rootX, int rootY);

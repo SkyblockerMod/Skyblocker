@@ -1,27 +1,31 @@
 package de.hysky.skyblocker.skyblock.hunting;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
-import de.hysky.skyblocker.utils.container.ContainerSolver;
-import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
-import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.world.item.ItemStack;
+
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.container.ContainerSolver;
+import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
+import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
+
 public class HuntingBoxHelper extends SimpleContainerSolver {
+	// ^(?:\(\d+\/\d+\) )?Hunting Box$
+	public static final Pattern HUNTING_BOX_TITLE_PATTERN = Pattern.compile("^(?:\\(\\d+\\/\\d+\\) )?Hunting Box$");
 	private static final Pattern OWNED_PATTERN = Pattern.compile("Owned: ([\\d,]+) Shards?");
 	private static final Pattern SYPHON_PATTERN = Pattern.compile("Syphon (\\d+) more to level up!");
 	private static final Logger LOGGER = LoggerFactory.getLogger(HuntingBoxHelper.class);
 
 	public HuntingBoxHelper() {
-		super("^Hunting Box$");
+		super(HUNTING_BOX_TITLE_PATTERN);
 	}
 
 	@Override

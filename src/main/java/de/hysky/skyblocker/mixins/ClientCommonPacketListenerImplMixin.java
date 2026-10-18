@@ -5,9 +5,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import de.hysky.skyblocker.utils.ServerTickCounter;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.network.protocol.common.ClientboundPingPacket;
+
+import de.hysky.skyblocker.utils.ServerTickCounter;
 
 @Mixin(ClientCommonPacketListenerImpl.class)
 public class ClientCommonPacketListenerImplMixin {

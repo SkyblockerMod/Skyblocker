@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor;
 
 import java.util.Optional;
+
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 

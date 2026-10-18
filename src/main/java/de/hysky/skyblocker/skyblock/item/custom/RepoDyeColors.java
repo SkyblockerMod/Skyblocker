@@ -1,23 +1,25 @@
 package de.hysky.skyblocker.skyblock.item.custom;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import de.hysky.skyblocker.annotations.Init;
-import de.hysky.skyblocker.utils.CodecUtils;
-import de.hysky.skyblocker.utils.NEURepoManager;
 import io.github.moulberry.repo.NEURepoFile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.util.ExtraCodecs;
 import org.slf4j.Logger;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import net.minecraft.util.ExtraCodecs;
+
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.CodecUtils;
+import de.hysky.skyblocker.utils.NEURepoManager;
 
 public class RepoDyeColors {
 	private static final Logger LOGGER = LogUtils.getLogger();

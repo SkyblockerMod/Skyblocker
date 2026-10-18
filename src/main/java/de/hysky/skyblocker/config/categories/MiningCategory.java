@@ -2,19 +2,8 @@ package de.hysky.skyblocker.config.categories;
 
 import java.awt.Color;
 
-import de.hysky.skyblocker.SkyblockerMod;
-import de.hysky.skyblocker.config.CommonTags;
-import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfig;
-import de.hysky.skyblocker.config.configs.MiningConfig;
-import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
-import de.hysky.skyblocker.skyblock.dwarven.CrystalsHudWidget;
-import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
-import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
-import de.hysky.skyblocker.skyblock.tabhud.widget.CommsWidget;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
-import de.hysky.skyblocker.utils.Location;
 import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
+
 import net.azureaaron.dandelion.api.ButtonOption;
 import net.azureaaron.dandelion.api.ConfigCategory;
 import net.azureaaron.dandelion.api.Option;
@@ -23,6 +12,17 @@ import net.azureaaron.dandelion.api.controllers.FloatController;
 import net.azureaaron.dandelion.api.controllers.IntegerController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+
+import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.config.CommonTags;
+import de.hysky.skyblocker.config.ConfigUtils;
+import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.MiningConfig;
+import de.hysky.skyblocker.config.screens.powdertracker.PowderFilterConfigScreen;
+import de.hysky.skyblocker.skyblock.dwarven.CarpetHighlighter;
+import de.hysky.skyblocker.skyblock.dwarven.profittrackers.PowderMiningTracker;
+import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
+import de.hysky.skyblocker.utils.Location;
 
 public class MiningCategory {
 
@@ -75,11 +75,11 @@ public class MiningCategory {
 								newValue -> config.mining.redialOnBadSignal = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-
 				.option(ButtonOption.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.dwarvenHud.screen"))
+						.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 						.prompt(Component.translatable("text.skyblocker.open"))
-						.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, CommsWidget.ID, screen)))
+						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, screen)))
 						.build())
 
 				//Pickobulus Helper
@@ -90,19 +90,17 @@ public class MiningCategory {
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable"))
 								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enable.@Tooltip"))
 								.tags(CommonTags.ADDED_IN_5_10_0)
-								.binding(defaults.mining.enablePickobulusHelper,
-										() -> config.mining.enablePickobulusHelper,
-										newValue -> config.mining.enablePickobulusHelper = newValue)
+								.binding(defaults.mining.pickobulusHelper.enablePickobulusHelper,
+										() -> config.mining.pickobulusHelper.enablePickobulusHelper,
+										newValue -> config.mining.pickobulusHelper.enablePickobulusHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
+						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud"))
-								.description(Component.translatable("skyblocker.config.mining.pickobulusHelper.enableHud.@Tooltip"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
+								.prompt(Component.translatable("text.skyblocker.open"))
 								.tags(CommonTags.ADDED_IN_5_11_0)
-								.binding(defaults.mining.pickobulusHelper.enablePickobulusHud,
-										() -> config.mining.pickobulusHelper.enablePickobulusHud,
-										newValue -> config.mining.pickobulusHelper.enablePickobulusHud = newValue)
-								.controller(ConfigUtils.createBooleanController())
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DWARVEN_MINES, screen)))
 								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.pickobulusHelper.hideOnCooldown"))
@@ -188,22 +186,17 @@ public class MiningCategory {
 										newValue -> config.mining.crystalHollows.chestHighlightColor = newValue)
 								.controller(ConfigUtils.createColourController(true))
 								.build())
-						.option(Option.<Boolean>createBuilder()
+						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker"))
-								.description(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip"))
-								.binding(defaults.mining.crystalHollows.enablePowderTracker,
-										() -> config.mining.crystalHollows.enablePowderTracker,
-										newValue -> {
-									config.mining.crystalHollows.enablePowderTracker = newValue;
-									if (newValue) PowderMiningTracker.INSTANCE.recalculateAll();
-								})
-								.controller(ConfigUtils.createBooleanController())
+								.description(Component.translatable("skyblocker.config.mining.crystalHollows.enablePowderTracker.@Tooltip"), Component.translatable("skyblocker.config.hud.movedMessage"))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, screen)))
+								.prompt(Component.translatable("text.skyblocker.open"))
 								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter"))
 								.description(Component.translatable("skyblocker.config.mining.crystalHollows.powderTrackerFilter.@Tooltip"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new PowderFilterConfigScreen(screen, new ObjectImmutableList<>(PowderMiningTracker.getName2IdMap().keySet()))))
 								.build())
 						.build())
 
@@ -211,17 +204,11 @@ public class MiningCategory {
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.mining.crystalsHud"))
 						.collapsed(false)
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.mining.crystalsHud.enabled"))
-								.binding(defaults.mining.crystalsHud.enabled,
-										() -> config.mining.crystalsHud.enabled,
-										newValue -> config.mining.crystalsHud.enabled = newValue)
-								.controller(ConfigUtils.createBooleanController())
-								.build())
 						.option(ButtonOption.createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.screen"))
+								.description(Component.translatable("skyblocker.config.hud.movedMessage"))
 								.prompt(Component.translatable("text.skyblocker.open"))
-								.action(screen -> Minecraft.getInstance().setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, CrystalsHudWidget.getInstance().getInternalID(), screen)))
+								.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.CRYSTAL_HOLLOWS, screen)))
 								.build())
 						.option(Option.<Float>createBuilder()
 								.name(Component.translatable("skyblocker.config.mining.crystalsHud.mapScaling"))
@@ -354,6 +341,14 @@ public class MiningCategory {
 								.binding(defaults.mining.glacite.fossilSolver,
 												() -> config.mining.glacite.fossilSolver,
 												newValue -> config.mining.glacite.fossilSolver = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.mining.glacite.solveFossilMuncher"))
+								.tags(CommonTags.ADDED_IN_6_6_0)
+								.binding(defaults.mining.glacite.solveFossilMuncher,
+										() -> config.mining.glacite.solveFossilMuncher,
+										newValue -> config.mining.glacite.solveFossilMuncher = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.option(Option.<Boolean>createBuilder()

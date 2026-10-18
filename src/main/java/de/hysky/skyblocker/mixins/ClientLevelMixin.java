@@ -1,21 +1,24 @@
 package de.hysky.skyblocker.mixins;
 
-import de.hysky.skyblocker.events.PlaySoundEvents;
-import de.hysky.skyblocker.events.WorldEvents;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockState;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+
+import de.hysky.skyblocker.events.PlaySoundEvents;
+import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.skyblock.garden.GreenhousePaste;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin implements BlockGetter {
@@ -46,5 +49,10 @@ public abstract class ClientLevelMixin implements BlockGetter {
 		if (!PlaySoundEvents.ALLOW_SOUND.invoker().allowSound(sound)) {
 			ci.cancel();
 		}
+	}
+
+	@Inject(method = "addEntity", at = @At("TAIL"))
+	private void onAddEntity(Entity entity, CallbackInfo ci) {
+		GreenhousePaste.onEntityChange(entity);
 	}
 }

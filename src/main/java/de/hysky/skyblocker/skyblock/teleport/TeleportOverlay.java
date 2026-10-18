@@ -1,13 +1,16 @@
 package de.hysky.skyblocker.skyblock.teleport;
 
 import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
@@ -100,8 +103,15 @@ public class TeleportOverlay {
 			} else {
 				target = target.below();
 			}
-			if (!SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay.showWhenInAir && client.level.getBlockState(target).isAir()) return;
-			collector.submitFilledBox(target, colorComponents, colorComponents[3], false);
+
+			UIAndVisualsConfig.TeleportOverlay config = SkyblockerConfigManager.get().uiAndVisuals.teleportOverlay;
+			if (!config.showWhenInAir && client.level.getBlockState(target).isAir()) return;
+			if (config.highlightType != UIAndVisualsConfig.TeleportOverlay.HighlightType.OUTLINE) {
+				collector.submitFilledBox(target, colorComponents, colorComponents[3], false);
+			}
+			if (config.highlightType != UIAndVisualsConfig.TeleportOverlay.HighlightType.HIGHLIGHT) {
+				collector.submitOutlinedBox(target, colorComponents, 4f, false);
+			}
 		}
 	}
 

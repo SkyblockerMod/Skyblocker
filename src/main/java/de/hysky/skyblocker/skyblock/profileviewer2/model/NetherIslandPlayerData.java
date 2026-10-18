@@ -1,10 +1,9 @@
 package de.hysky.skyblocker.skyblock.profileviewer2.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
 import org.jspecify.annotations.Nullable;
 
 public class NetherIslandPlayerData {
@@ -193,9 +192,7 @@ public class NetherIslandPlayerData {
 		public boolean weirdSailor;
 		@SerializedName("fished_wet_napkin")
 		public boolean fishedWetNapkin;
-		/**
-		 * The rarity of the Kuudra Teeth Plaque.
-		 */
+		/// The rarity of the Kuudra Teeth Plaque.
 		@SerializedName("cavity_rarity")
 		public String cavityRarity = "";
 	}

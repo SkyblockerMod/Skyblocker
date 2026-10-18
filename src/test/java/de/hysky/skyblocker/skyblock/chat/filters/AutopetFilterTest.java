@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.skyblock.chat.filters;
 
-import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 import org.junit.jupiter.api.Test;
+
+import de.hysky.skyblocker.utils.chat.ChatPatternListenerTest;
 
 class AutopetFilterTest extends ChatPatternListenerTest<AutopetFilter> {
 	AutopetFilterTest() {

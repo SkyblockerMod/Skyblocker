@@ -1,13 +1,13 @@
 package de.hysky.skyblocker.utils;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
+
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 public class FileUtils {
 	private static final Logger LOGGER = LogUtils.getLogger();

@@ -1,6 +1,22 @@
 package de.hysky.skyblocker.skyblock.dungeon.secrets;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import com.mojang.logging.LogUtils;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSets;
+import org.joml.Vector2ic;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+
+import net.minecraft.client.Minecraft;
+
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
@@ -9,25 +25,12 @@ import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.preview.RoomPreviewServer;
 import de.hysky.skyblocker.utils.ws.Service;
 import de.hysky.skyblocker.utils.ws.WsMessageHandler;
+import de.hysky.skyblocker.utils.ws.message.DungeonBatKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonMimicKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonPrinceKilledMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomHideWaypointMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomMatchMessage;
 import de.hysky.skyblocker.utils.ws.message.DungeonRoomSecretCountMessage;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSets;
-import org.joml.Vector2ic;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
 
 public class SecretSync {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
@@ -115,6 +118,18 @@ public class SecretSync {
 		if (secretIndex == -1) return;
 		room.markSecrets(secretIndex, true);
 		LOGGER.info("[Skyblocker Dungeon Secret Sync] Hiding waypoints for secret #{} in room {}", secretIndex, msg.roomName());
+	}
+
+	public static void syncBatKilled() {
+		if (CLIENT.player == null) return;
+		WsMessageHandler.sendServerMessage(Service.DUNGEON_SECRETS,
+				new DungeonBatKilledMessage(CLIENT.player.getUUID()));
+	}
+
+	public static void handleBatKilled(DungeonBatKilledMessage msg) {
+		if (!checkSender(msg.sender())) return;
+		DungeonScore.onBatKill(false);
+		LOGGER.info("[Skyblocker Dungeon Secret Sync] Bat killed!");
 	}
 
 	public static void syncMimicKilled() {

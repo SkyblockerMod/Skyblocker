@@ -1,10 +1,11 @@
 package de.hysky.skyblocker.skyblock;
 
-import de.hysky.skyblocker.utils.Formatters;
+import java.util.regex.Matcher;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Matcher;
+import de.hysky.skyblocker.utils.Formatters;
 
 public class HealthBarsTest {
 

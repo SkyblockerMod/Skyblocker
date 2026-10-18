@@ -1,8 +1,10 @@
 package de.hysky.skyblocker.skyblock.profileviewer.inventory.itemLoaders;
 
-import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
+
 import net.minecraft.world.item.ItemStack;
 
 public class InventoryItemLoader extends ItemLoader {
