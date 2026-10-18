@@ -799,6 +799,8 @@
   "skyblocker.config.helpers.fairySouls.highlightOnlyNearbySouls.@Tooltip": "When enabled, only fairy souls in a radius of 50 blocks are highlighted.",
 
   "skyblocker.config.helpers.fishing": "Fishing Helper",
+  "skyblocker.config.helpers.fishing.alertSoundVolume": "Fishing Alert Sound Volume (%)",
+  "skyblocker.config.helpers.fishing.alertSoundVolume.@Tooltip": "Volume of the ping played with the Fishing Helper title. 0 mutes it. Follows the Master volume, not the Players slider.",
   "skyblocker.config.helpers.fishing.changeTimerColor": "Change Timer At 20s",
   "skyblocker.config.helpers.fishing.changeTimerColor.@Tooltip": "Changes timer to green after 20 seconds has passed.",
   "skyblocker.config.helpers.fishing.enableFishingHelper": "Enable Fishing Helper",
