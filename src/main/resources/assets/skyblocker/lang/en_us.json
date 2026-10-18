@@ -354,6 +354,9 @@
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage": "Enable Mimic Message",
   "skyblocker.config.dungeons.mimicMessage.sendMimicMessage.@Tooltip": "Sends a message in the chat upon killing a Mimic for other players' score calculation mods.",
 
+  "skyblocker.config.dungeons.partyQueueCommands": "Party Queue Commands",
+  "skyblocker.config.dungeons.partyQueueCommands.@Tooltip": "When you're the party leader, typing !f1-!f7, !m1-!m7 or !t1-!t5 in party chat queues the party into that floor or kuudra tier.",
+
   "skyblocker.config.dungeons.playerSecretsTracker": "Player Secrets Tracker",
   "skyblocker.config.dungeons.playerSecretsTracker.@Tooltip": "Tracks the number of secrets people in your dungeon run are doing.",
 
@@ -1807,6 +1810,7 @@
   "skyblocker.dungeons.croesusHelper.chestValue": "Chest Value: %s",
   "skyblocker.dungeons.croesusHelper.incompletePriceData": "(Incomplete Price Data)",
   "skyblocker.dungeons.dungeonScore.scoreText": "Score: %s",
+  "skyblocker.dungeons.partyQueueCommands.queueing": "Queueing for %s...",
   "skyblocker.dungeons.puzzle.boulder.noSolution": "No solution found!",
   "skyblocker.dungeons.puzzle.waterboard.invalidDoors": "Doors are in an unrecognized state. Make sure exactly three doors are closed, then reset the solver.",
   "skyblocker.dungeons.puzzle.waterboard.waterFound": "Water must be toggled off or it will interfere with the solution. Turn the water off and let it drain, then reset the solver.",
