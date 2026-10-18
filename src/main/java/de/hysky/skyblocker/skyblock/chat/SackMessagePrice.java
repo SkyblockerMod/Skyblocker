@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents.LiteralContents;
 
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.skyblock.SackItemAutocomplete;
 import de.hysky.skyblocker.skyblock.item.tooltip.ItemTooltip;
 import de.hysky.skyblocker.skyblock.item.tooltip.adders.LineSmoothener;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
@@ -150,9 +152,10 @@ public class SackMessagePrice {
 	/**
 	 * Finds the NEU item ID for a display name from the sack message.
 	 * <p>
-	 * Several items can share a display name (e.g. "Enchanted Hay Bale" is both {@code ENCHANTED_HAY_BLOCK}
-	 * and {@code ENCHANTED_HAY_BALE}), so an item with a bazaar price is preferred, then one with an NPC price.
-	 * Bazaar comes first because some non-bazaar items have NPC prices too (e.g. {@code BUILDER_BROWN_MUSHROOM}).
+	 * Several items can share a display name (e.g. "Brown Mushroom" is both {@code BROWN_MUSHROOM}
+	 * and {@code BUILDER_BROWN_MUSHROOM}), so an item that NEU lists as sack content is preferred.
+	 * If none is listed (e.g. a new sack item NEU doesn't know about yet), an item with a bazaar price is preferred,
+	 * then one with an NPC price.
 	 *
 	 * @param itemName the item's display name, without formatting codes
 	 * @return the item ID, or {@code null} if no item has this name
@@ -169,12 +172,16 @@ public class SackMessagePrice {
 		}
 		if (ids.size() == 1) return ids.getFirst();
 
+		Set<String> sackItemIds = SackItemAutocomplete.getSackItemIds();
 		Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
 		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
 		return ids.stream()
-				.filter(id -> bazaarData != null && bazaarData.get(id) instanceof BazaarProduct product
-						&& (product.sellPrice().orElse(0) > 0 || product.buyPrice().orElse(0) > 0))
+				.filter(sackItemIds::contains)
 				.findFirst()
+				.or(() -> ids.stream()
+						.filter(id -> bazaarData != null && bazaarData.get(id) instanceof BazaarProduct product
+								&& (product.sellPrice().orElse(0) > 0 || product.buyPrice().orElse(0) > 0))
+						.findFirst())
 				.or(() -> ids.stream().filter(id -> npcData != null && npcData.getDouble(id) > 0).findFirst())
 				.orElse(ids.getFirst());
 	}
