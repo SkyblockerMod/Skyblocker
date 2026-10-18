@@ -97,6 +97,7 @@ public class ChatCategory {
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideRareCrops"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.chat.hideRareCrops,
 										() -> config.chat.hideRareCrops,
 										newValue -> config.chat.hideRareCrops = newValue)
