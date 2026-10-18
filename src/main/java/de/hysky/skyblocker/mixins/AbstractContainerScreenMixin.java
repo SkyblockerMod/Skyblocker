@@ -164,7 +164,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
-	@WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"))
+	@WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;Z)V"))
 	private void skyblocker$extractMouseOverTooltip(
 			GuiGraphicsExtractor graphics,
 			Font textRenderer,
@@ -173,6 +173,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			int x,
 			int y,
 			Identifier texture,
+			boolean headingGap,
 			Operation<Void> original,
 			@Local(name = "item") ItemStack stack
 	) {
@@ -182,7 +183,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 
 		if (!Utils.isOnSkyblock() || text.isEmpty()) {
-			original.call(graphics, textRenderer, text, data, x, y, texture);
+			original.call(graphics, textRenderer, text, data, x, y, texture, headingGap);
 			return;
 		}
 
@@ -207,7 +208,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			}
 		}
 
-		original.call(graphics, textRenderer, text, data, x, y, texture);
+		original.call(graphics, textRenderer, text, data, x, y, texture, headingGap);
 	}
 
 	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"), name = "item")

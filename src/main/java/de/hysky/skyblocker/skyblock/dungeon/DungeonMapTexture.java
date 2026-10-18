@@ -12,8 +12,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MapRenderer;
@@ -59,7 +57,6 @@ public class DungeonMapTexture {
 		});
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearMapImage());
 		DungeonEvents.ROOM_MATCHED.register(_ -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
-		LevelRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
 	}
 
 	public static void onMapItemDataUpdate(MapId mapId, boolean updateMapTexture) {
@@ -182,10 +179,10 @@ public class DungeonMapTexture {
 	}
 
 	/**
-	 * Upload the map texture to the GPU at the start of the game, this is to ensure this runs on the GPU
-	 * for the thread split.
+	 * Upload pending pixels on the render thread before GameRenderer starts any render pass.
+	 * The terrain START_MAIN callback already owns an open pass in 26.3 and cannot upload textures.
 	 */
-	private static void uploadMapTexture(LevelTerrainRenderContext context) {
+	public static void uploadMapTexture() {
 		if (dungeonMapTexture != null && requiresUpload) {
 			dungeonMapTexture.upload();
 			requiresUpload = false;

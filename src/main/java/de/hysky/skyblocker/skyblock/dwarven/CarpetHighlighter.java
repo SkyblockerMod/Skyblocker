@@ -58,7 +58,9 @@ public final class CarpetHighlighter implements Renderable, Resettable {
 
 	public void tick() {
 		if (!isLocationValid || !SkyblockerConfigManager.get().mining.dwarvenMines.enableCarpetHighlighter || Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
-		Iterable<BlockPos> iterable = BlockPos.withinManhattan(Minecraft.getInstance().player.blockPosition(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS);
+		BlockPos center = Minecraft.getInstance().player.blockPosition();
+		// The previous three-axis Manhattan iterator visited the complete search cube.
+		Iterable<BlockPos> iterable = BlockPos.betweenClosed(center.offset(-SEARCH_RADIUS, -SEARCH_RADIUS, -SEARCH_RADIUS), center.offset(SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
 		for (BlockPos blockPos : iterable) {
 			if (checkForCarpet(blockPos)) CARPET_LOCATIONS.add(blockPos);
 		}

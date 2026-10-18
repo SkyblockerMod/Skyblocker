@@ -45,9 +45,9 @@ public class GlowingMushrooms {
 
 	public static void onParticle(ClientboundLevelParticlesPacket packet) {
 		if (!shouldProcess() || client.level == null) return;
-		if (!ParticleTypes.ENTITY_EFFECT.equals(packet.getParticle().getType())) return;
+		if (!ParticleTypes.ENTITY_EFFECT.equals(packet.particle().getType())) return;
 
-		BlockPos pos = BlockPos.containing(packet.getX(), packet.getY(), packet.getZ());
+		BlockPos pos = BlockPos.containing(packet.x(), packet.y(), packet.z());
 
 		Block block = client.level.getBlockState(pos).getBlock();
 		if (block != Blocks.RED_MUSHROOM && block != Blocks.BROWN_MUSHROOM) return;

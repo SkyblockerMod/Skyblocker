@@ -1,13 +1,14 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:projection.glsl>
+#include <minecraft:dynamictransforms.glsl>
+#include <minecraft:projection.glsl>
 
 uniform samplerBuffer BoxData;
 
-in vec3 Position;
+layout(location = 0) in vec3 Position;
 
-out vec4 vertexColor;
+layout(location = 0) out vec4 vertexColor;
 
 // FIXME Switch to unpackUnorm4x8 in the future
 vec4 unpackColour(uint colour) {
@@ -23,7 +24,7 @@ void main() {
 	// Two texels are used per instance
 	// 1: (minX, minY, minZ, maxX)
 	// 2: (maxY, maxZ, colour, unused)
-	int base = gl_InstanceID * 2;
+	int base = gl_InstanceIndex * 2;
 
 	vec4 data1 = texelFetch(BoxData, base);
 	vec4 data2 = texelFetch(BoxData, base + 1);

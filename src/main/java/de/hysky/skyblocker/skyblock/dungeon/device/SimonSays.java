@@ -63,7 +63,7 @@ public class SimonSays {
 
 			if (block.equals(Blocks.STONE_BUTTON)) {
 				if (BUTTONS_AREA.contains(Vec3.atLowerCornerOf(pos))) {
-					CLICKED_BUTTONS.add(new BlockPos(pos)); //Copy just in case it becomes mutable in the future
+					CLICKED_BUTTONS.add(pos.immutable()); //Copy just in case it becomes mutable in the future
 				} else if (pos.equals(START_BUTTON)) {
 					reset();
 				}

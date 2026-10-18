@@ -637,8 +637,7 @@ public class GreenhousePaste {
 										renderType,
 										LightCoordsUtil.FULL_BRIGHT,
 										OverlayTexture.pack(PREVIEW_TINT, false),
-										0,
-										null
+										0
 								);
 							}
 					);

@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.utils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -114,17 +113,15 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 			this.itemStack.set(type, value);
 		}
 
-		((DataComponentPatchAccessor) (Object) this.components).getMap().put(type, Optional.of(value));
+		((DataComponentPatchAccessor) (Object) this.components).getMap().put(type, Objects.requireNonNull(value));
 	}
 
 	/// Applies the {@code patch} components on this instance.
 	@SuppressWarnings("unchecked")
 	public void applyComponents(DataComponentPatch patch) {
-		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
-			if (entry.getValue().isPresent()) {
-				this.set((DataComponentType<Object>) entry.getKey(), (Object) entry.getValue().get());
-			}
-		}
+		// Preserve the original behavior: apply additions while ignoring removals.
+		patch.split().added().stream().forEach(component ->
+				this.set((DataComponentType<Object>) component.type(), component.value()));
 	}
 
 	/// {@return whether this instance represents the {@link #EMPTY} value}

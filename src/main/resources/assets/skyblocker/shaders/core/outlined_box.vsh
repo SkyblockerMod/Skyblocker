@@ -1,18 +1,19 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <minecraft:fog.glsl>
-#moj_import <minecraft:globals.glsl>
-#moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:projection.glsl>
+#include <minecraft:fog.glsl>
+#include <minecraft:globals.glsl>
+#include <minecraft:dynamictransforms.glsl>
+#include <minecraft:projection.glsl>
 
 uniform samplerBuffer OutlinedBoxData;
 
-in vec3 Position;
-in vec3 Normal;
+layout(location = 0) in vec3 Position;
+layout(location = 1) in vec3 Normal;
 
-out float sphericalVertexDistance;
-out float cylindricalVertexDistance;
-out vec4 vertexColor;
+layout(location = 0) out float sphericalVertexDistance;
+layout(location = 1) out float cylindricalVertexDistance;
+layout(location = 2) out vec4 vertexColor;
 
 const float VIEW_SHRINK = 1.0 - (1.0 / 256.0);
 const mat4 VIEW_SCALE = mat4(
@@ -36,7 +37,7 @@ void main() {
 	// Two texels are used per instance
 	// 1: (minX, minY, minZ, maxX)
 	// 2: (maxY, maxZ, colour, lineWidth)
-	int base = gl_InstanceID * 2;
+	int base = gl_InstanceIndex * 2;
 
 	vec4 data1 = texelFetch(OutlinedBoxData, base);
 	vec4 data2 = texelFetch(OutlinedBoxData, base + 1);
@@ -67,7 +68,7 @@ void main() {
 		lineOffset *= -1.0;
 	}
 
-	if (gl_VertexID % 2 == 0) {
+	if (gl_VertexIndex % 2 == 0) {
 		gl_Position = vec4((ndc1 + vec3(lineOffset, 0.0)) * linePosStart.w, linePosStart.w);
 	} else {
 		gl_Position = vec4((ndc1 - vec3(lineOffset, 0.0)) * linePosStart.w, linePosStart.w);
