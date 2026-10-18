@@ -99,6 +99,8 @@ public class GeneralConfig {
 		public boolean enableItemList = true;
 
 		public boolean enableCollapsibleEntries = true;
+
+		public boolean enableLoadOnGameLaunch = false;
 	}
 
 	public static class ItemTooltip {
