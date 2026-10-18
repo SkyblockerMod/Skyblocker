@@ -147,6 +147,15 @@ public class SackMessagePrice {
 		return copy;
 	}
 
+	/**
+	 * Finds the NEU item ID for a display name from the sack message.
+	 * <p>
+	 * Several items can share a display name (e.g. "Enchanted Hay Bale" is both {@code ENCHANTED_HAY_BLOCK}
+	 * and {@code ENCHANTED_HAY_BALE}), so an item that has NPC or bazaar price data is preferred.
+	 *
+	 * @param itemName the item's display name, without formatting codes
+	 * @return the item ID, or {@code null} if no item has this name
+	 */
 	private static @Nullable String getNeuId(String itemName) {
 		List<String> ids = NEURepoManager.getItemByName(itemName)
 				.stream()
@@ -158,8 +167,6 @@ public class SackMessagePrice {
 			return null; // This won't be used to calculate the price
 		}
 
-		// Several items can share a display name (e.g. "Enchanted Hay Bale" is both ENCHANTED_HAY_BLOCK
-		// and ENCHANTED_HAY_BALE), so prefer one that actually has a price.
 		Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
 		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
 		return ids.stream()
