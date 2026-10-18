@@ -70,7 +70,7 @@ public class SackMessagePrice {
 			double bazaarSellPrice = 0;
 			for (var entry : items.object2IntEntrySet()) {
 				String itemName = entry.getKey();
-				int count = entry.getIntValue();
+				int count = Math.abs(entry.getIntValue()); // Removed items have negative counts, but we want to show their positive value
 
 				String neuId = getNeuId(itemName);
 				if (neuId == null) {
@@ -166,6 +166,7 @@ public class SackMessagePrice {
 			LOGGER.warn("Failed to find the NEU item ID for item: {}", itemName);
 			return null; // This won't be used to calculate the price
 		}
+		if (ids.size() == 1) return ids.getFirst();
 
 		Object2DoubleMap<String> npcData = TooltipInfoType.NPC.getData();
 		Object2ObjectMap<String, BazaarProduct> bazaarData = TooltipInfoType.BAZAAR.getData();
