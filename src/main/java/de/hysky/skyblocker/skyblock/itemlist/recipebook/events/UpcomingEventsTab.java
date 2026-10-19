@@ -1,17 +1,22 @@
 package de.hysky.skyblocker.skyblock.itemlist.recipebook.events;
 
 import java.time.Instant;
+import java.util.Optional;
+import java.util.Set;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.events.EventManager;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvents;
@@ -111,6 +116,27 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public boolean mouseReleased(MouseButtonEvent event) {
 		return eventsList.mouseReleased(event);
+	}
+
+	@Override
+	public boolean keyPressed(double mouseX, double mouseY, KeyEvent keyInput) {
+		System.out.println("Hello: " + keyInput);
+		if (keyInput.input() == InputConstants.KEY_F) {
+			Optional<EventEntry.AutoUpdate> update = eventsList.getChildAt(mouseX, mouseY)
+					.filter(EventEntry.AutoUpdate.class::isInstance)
+					.map(EventEntry.AutoUpdate.class::cast);
+			if (update.isPresent()) {
+				EventEntry.AutoUpdate autoUpdate = update.get();
+				SkyblockerConfigManager.update(config -> {
+					Set<String> favoriteEvents = config.eventNotifications.favoriteEvents;
+					if (favoriteEvents.contains(autoUpdate.event.name())) favoriteEvents.remove(autoUpdate.event.name());
+					else favoriteEvents.add(autoUpdate.event.name());
+				});
+				setContentsToAllEvents(); // refresh
+				return true;
+			}
+		}
+		return RecipeTab.super.keyPressed(mouseX, mouseY, keyInput);
 	}
 
 	@Override

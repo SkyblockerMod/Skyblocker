@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.itemlist.recipebook.events;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
@@ -23,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.events.EventInstance;
 import de.hysky.skyblocker.skyblock.events.EventManager;
 import de.hysky.skyblocker.skyblock.events.SkyblockEvent;
@@ -84,7 +86,7 @@ public abstract class EventEntry extends ContainerObjectSelectionList.Entry<Even
 
 	public static class AutoUpdate extends EventEntry implements Comparable<AutoUpdate> {
 		private final Button moreButton;
-		private final SkyblockEvent event;
+		public final SkyblockEvent event;
 		private final List<AbstractWidget> children;
 		private @Nullable EventInstance currentInstance;
 
@@ -148,12 +150,15 @@ public abstract class EventEntry extends ContainerObjectSelectionList.Entry<Even
 
 		@Override
 		public int compareTo(EventEntry.AutoUpdate o) {
+			Set<String> favoriteEvents = SkyblockerConfigManager.get().eventNotifications.favoriteEvents;
+			int compare = Boolean.compare(favoriteEvents.contains(o.event.name()), favoriteEvents.contains(this.event.name()));
+			if (compare != 0) return compare;
 			if (currentInstance == null) {
 				return (o.currentInstance == null) ? 0 : 1;
 			} else if (o.currentInstance == null) {
 				return -1;
 			} else {
-				return currentInstance.start().compareTo(o.currentInstance.start());
+				return this.currentInstance.start().compareTo(o.currentInstance.start());
 			}
 		}
 	}
@@ -167,6 +172,7 @@ public abstract class EventEntry extends ContainerObjectSelectionList.Entry<Even
 		}
 
 		@Override
+		@SuppressWarnings("NullableProblems")
 		public @Nullable EventInstance getInstance() {
 			return instance;
 		}
