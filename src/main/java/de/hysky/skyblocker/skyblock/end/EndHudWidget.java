@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.end;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
@@ -15,26 +14,30 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.config.OptionWidgetCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.Formatters;
+import de.hysky.skyblocker.utils.JsonValueInput;
+import de.hysky.skyblocker.utils.JsonValueOutput;
 import de.hysky.skyblocker.utils.Location;
 
 @RegisterWidget
 public class EndHudWidget extends ElementBasedWidget {
 	private static final MutableComponent TITLE = Component.literal("The End").withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD);
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.THE_END);
 
 	private static @Nullable EndHudWidget instance = null;
 
 	private static final FlexibleItemStack ENDERMAN_HEAD = Util.make(new FlexibleItemStack(Items.PLAYER_HEAD), stack -> stack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("MHF_Enderman")));
 	private static final FlexibleItemStack POPPY = Util.make(new FlexibleItemStack(Items.POPPY), stack -> stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
+	public boolean showZealotKills = true;
+	private boolean showProtectorLocation = true;
+
 	public EndHudWidget() {
-		super(TITLE, TextColor.DARK_PURPLE.getValue(), "hud_end");
+		super(TITLE, TextColor.DARK_PURPLE.getValue(), new Information("hud_end", Component.literal("End Hud"), Location.THE_END));
 		instance = this;
 		this.update();
 	}
@@ -44,51 +47,51 @@ public class EndHudWidget extends ElementBasedWidget {
 	}
 
 	@Override
-	public boolean isEnabledIn(Location location) {
-		return location.equals(Location.THE_END) && SkyblockerConfigManager.get().otherLocations.end.hudEnabled;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (!location.equals(Location.THE_END)) return;
-		SkyblockerConfigManager.update(config -> config.otherLocations.end.hudEnabled = enabled);
-	}
-
-	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
 	public void updateContent() {
 		// Zealots
-		if (SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled) {
+		if (showZealotKills) {
 			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
-			addComponent(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
+			addElement(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
 			String avg = endStats.eyes() == 0 ? "???" : Formatters.DOUBLE_NUMBERS.format((float) endStats.totalZealotKills() / endStats.eyes());
-			addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
+			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.avgKillsPerEye", avg)));
 		}
 
 		// Endstone protector
-		if (SkyblockerConfigManager.get().otherLocations.end.protectorLocationEnabled) {
-			addComponent(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
+		if (showProtectorLocation) {
+			addElement(Elements.iconTextComponent(POPPY, Component.literal("End Stone Protector").withStyle(ChatFormatting.BOLD)));
 			if (TheEnd.stage == 5) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", "IMMINENT")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.stage", String.valueOf(TheEnd.stage))));
 			}
 			if (TheEnd.currentProtectorLocation == null) {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", "?")));
 			} else {
-				addComponent(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
+				addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.location", TheEnd.currentProtectorLocation.name())));
 			}
 		}
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return Component.literal("End Hud");
+	public void getOptionWidgets(OptionWidgetCollector collector) {
+		super.getOptionWidgets(collector);
+		collector.yesNoButton(Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled"), b -> showZealotKills = b, showZealotKills, Component.translatable("skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip"));
+		collector.yesNoButton(Component.translatable("skyblocker.config.otherLocations.end.protectorLocationEnable"), b -> showProtectorLocation = b, showProtectorLocation);
+	}
+
+	@Override
+	public void load(JsonValueInput input) {
+		super.load(input);
+		showZealotKills = input.readBooleanOr("zealot_kills", true);
+		showProtectorLocation = input.readBooleanOr("protector_location", true);
+	}
+
+	@Override
+	public void save(JsonValueOutput output) {
+		super.save(output);
+		output.writeBool("zealot_kills", showZealotKills);
+		output.writeBool("protector_location", showProtectorLocation);
 	}
 }

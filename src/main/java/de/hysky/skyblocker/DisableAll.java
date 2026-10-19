@@ -23,6 +23,7 @@ import net.minecraft.network.chat.MutableComponent;
 import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.tabhud.screenbuilder.WidgetManager;
 import de.hysky.skyblocker.utils.Constants;
 
 /**
@@ -56,6 +57,7 @@ public class DisableAll {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	private static int disableAll(CommandContext<FabricClientCommandSource> context) {
 		if (System.currentTimeMillis() > confirmAllowedUntil) {
 			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.notPending").withStyle(ChatFormatting.RED)));
@@ -63,19 +65,25 @@ public class DisableAll {
 		}
 		confirmAllowedUntil = 0;
 		try {
-			SkyblockerConfigManager.update(config -> {
-				try {
-					disableEntries(config);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			});
+			disableAll();
 			context.getSource().sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED)));
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker DisableAll] Failed to disable all features", e);
 			context.getSource().sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.disableAll.failed").withStyle(ChatFormatting.RED)));
 		}
 		return Command.SINGLE_SUCCESS;
+	}
+
+	protected static void disableAll() {
+		SkyblockerConfigManager.update(config -> {
+			try {
+				disableEntries(config);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		WidgetManager.removeAll();
+		WidgetManager.saveConfig();
 	}
 
 	/**

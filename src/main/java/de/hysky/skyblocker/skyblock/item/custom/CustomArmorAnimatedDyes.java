@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 
@@ -81,13 +82,13 @@ public class CustomArmorAnimatedDyes {
 						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.noItemUuid")));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.noItemUuid").withColor(TextColor.RED)));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.notDyeable")));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.notDyeable").withColor(TextColor.RED)));
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.unableToSetDye")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customAnimatedDyes.unableToSetDye").withColor(TextColor.RED)));
 		}
 
 		return Command.SINGLE_SUCCESS;

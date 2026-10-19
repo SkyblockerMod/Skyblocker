@@ -2,6 +2,7 @@ package de.hysky.skyblocker.skyblock.dungeon.device;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,7 @@ public class TargetPractice {
 	private static final int ACTIVATION_THRESHOLD = 1;
 	private static final int UNACTIVATED = 0;
 	// In the order you see the grid in the world by row.
-	private static final List<BlockPos> POSSIBLE_TARGETS = List.of(
+	private static final Set<BlockPos> POSSIBLE_TARGETS = Set.of(
 			new BlockPos(68, 130, 50), new BlockPos(66, 130, 50), new BlockPos(64, 130, 50),
 			new BlockPos(68, 128, 50), new BlockPos(66, 128, 50), new BlockPos(64, 128, 50),
 			new BlockPos(68, 126, 50), new BlockPos(66, 126, 50), new BlockPos(64, 126, 50)

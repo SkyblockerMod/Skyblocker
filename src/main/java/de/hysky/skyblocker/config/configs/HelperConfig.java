@@ -79,7 +79,8 @@ public class HelperConfig {
 		@Deprecated
 		public transient boolean enableFishingHookDisplay = true;
 
-		public boolean enableFishingTimer = false;
+		@Deprecated
+		public transient boolean enableFishingTimer = false;
 
 		@Deprecated
 		public transient boolean changeTimerColor = true;
@@ -89,16 +90,19 @@ public class HelperConfig {
 
 		public boolean hideOtherPlayersRods = false;
 
-		public boolean enableFishingHud = true;
+		@Deprecated
+		public transient boolean enableFishingHud = true;
 
 		@Deprecated
 		public transient List<Location> fishingHudEnabledLocations = new ArrayList<>(List.of(Location.values()));
 
-		public boolean enableSeaCreatureCounter = true;
+		@Deprecated
+		public transient boolean enableSeaCreatureCounter = true;
 
 		public FishingHookDisplay fishingHookDisplay = FishingHookDisplay.HUD;
 
-		public boolean onlyShowHudInBarn = true;
+		@Deprecated
+		public transient boolean onlyShowHudInBarn = true;
 
 		public int timerLength = 340;
 
@@ -134,6 +138,8 @@ public class HelperConfig {
 
 		public boolean highlightFoundSouls = true;
 
+		public boolean highlightOnBingo = true;
+
 		public boolean highlightOnlyNearbySouls = false;
 	}
 
@@ -167,6 +173,8 @@ public class HelperConfig {
 		public boolean enableReorderHelper = true;
 
 		public boolean enableOrderTracker = true;
+
+		public boolean enableBazaarMax = true;
 	}
 
 	public static class ItemPrice {

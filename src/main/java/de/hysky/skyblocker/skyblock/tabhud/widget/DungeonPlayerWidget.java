@@ -16,8 +16,9 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonPlayerManager;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
-import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlayerElement;
+import de.hysky.skyblocker.utils.Location;
+import de.hysky.skyblocker.utils.RomanNumerals;
 
 /// This widget shows info about a player in the current dungeon group.
 public class DungeonPlayerWidget extends TabHudWidget {
@@ -28,17 +29,17 @@ public class DungeonPlayerWidget extends TabHudWidget {
 
 	// title needs to be changeable here
 	public DungeonPlayerWidget(int player) {
-		super("Dungeon Player " + player, TITLE, TextColor.AQUA.getValue());
+		super("Dungeon Player " + player, TITLE, TextColor.AQUA.getValue(), Location.DUNGEON);
 		this.player = player;
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		int start = 1 + (player - 1) * 4;
 
 		if (PlayerListManager.strAt(start) == null) {
 			int idx = player - 1;
-			this.addComponent(Elements.iconTextComponent(Ico.SIGN, Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
+			this.addElement(Elements.iconTextComponent(Ico.SIGN, Component.literal(MSGS.get(idx)).withStyle(ChatFormatting.GRAY)));
 			return;
 		}
 
@@ -51,23 +52,26 @@ public class DungeonPlayerWidget extends TabHudWidget {
 	private void addPlayerNameAndClass(int index) {
 		Matcher m = PlayerListManager.regexAt(index, DungeonPlayerManager.PLAYER_TAB_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.iconTextComponent());
-			this.addComponent(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
+			this.addElement(Elements.iconTextComponent());
 			return;
 		}
 
 		String clazz = m.group("class");
 		String level = m.group("level");
 		DungeonClass dungeonClass = DungeonClass.from(clazz);
+		if (RomanNumerals.isValidRomanNumeral(level)) {
+			level = String.valueOf(RomanNumerals.romanToDecimal(level));
+		}
 
 		PlayerInfo playerInfo = PlayerListManager.getRaw(index);
-		this.addComponent(new PlayerElement(playerInfo, removeDungeonClass(playerInfo.getTabListDisplayName()), true));
+		this.addElement(new PlayerElement(playerInfo, removeDungeonClass(playerInfo.getTabListDisplayName()), true));
 
 		if (level == null) {
-			this.addComponent(new PlainTextElement(Component.literal("Player is dead").withStyle(ChatFormatting.RED)));
+			this.addElement(Elements.iconTextComponent(Ico.SKULL, Component.literal("Player is dead").withStyle(ChatFormatting.RED)));
 			return;
 		}
-		this.addComponent(Elements.iconTextComponent(
+		this.addElement(Elements.iconTextComponent(
 				dungeonClass.icon(),
 				Component.literal("Class: ").append(Component.literal(clazz + " " + level).withColor(dungeonClass.color()))
 		));

@@ -96,6 +96,9 @@ public class ItemStackBuilder {
 				Rarity.EPIC,
 				Rarity.LEGENDARY,
 				Rarity.MYTHIC,
+				Rarity.DIVINE, // unused
+				Rarity.SPECIAL, // phoenix
+				Rarity.VERY_SPECIAL // phoenix
 		};
 		Rarity rarity = rarities[Integer.parseInt(internalName.split(";")[1])];
 		PetNumbers data = petNums.get(petName).get(rarity);

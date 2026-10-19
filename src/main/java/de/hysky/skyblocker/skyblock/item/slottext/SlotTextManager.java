@@ -1,8 +1,9 @@
 package de.hysky.skyblocker.skyblock.item.slottext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -65,7 +66,7 @@ import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.SlotTextAdder;
 
 public class SlotTextManager {
-	private static final SlotTextAdder[] adders = new SlotTextAdder[]{
+	private static final List<SlotTextAdder> adders = new ArrayList<>(List.of(
 			new EssenceShopAdder(),
 			new EnchantmentAbbreviationAdder(),
 			new EnchantmentLevelAdder(),
@@ -101,19 +102,23 @@ public class SlotTextManager {
 			new HuntingToolkitIndicatorAdder(),
 			new ChipLevelAdder(),
 			new CropMilestonesAdder(),
-			new GardenUpgradesAdder(),
-	};
-	private static final ArrayList<SlotTextAdder> currentScreenAdders = new ArrayList<>();
+			new GardenUpgradesAdder()
+	));
+	private static final Set<SlotTextAdder> currentScreenAdders = new HashSet<>();
 	public static final KeyMapping KEY_MAPPING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.skyblocker.slottext", InputConstants.KEY_LALT, SkyblockerMod.KEYBINDING_CATEGORY));
 	private static boolean keyHeld = false;
 
-	private SlotTextManager() {
+	private SlotTextManager() {}
+
+	@SuppressWarnings("unused")
+	public static void registerAdder(SlotTextAdder adder) {
+		adders.add(adder);
 	}
 
 	@Init
 	public static void init() {
 		ScreenEvents.AFTER_INIT.register((_, screen, _, _) -> {
-			if ((screen instanceof AbstractContainerScreen<?> && Utils.isOnSkyblock()) || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
+			if (screen instanceof AbstractContainerScreen<?> || screen instanceof ProfileViewerScreen || screen instanceof RadialMenuScreen) {
 				onScreenChange(screen);
 				ScreenEvents.remove(screen).register(_ -> currentScreenAdders.clear());
 			}
@@ -133,7 +138,7 @@ public class SlotTextManager {
 
 	private static void onScreenChange(Screen screen) {
 		for (SlotTextAdder adder : adders) {
-			if (adder.isEnabled() && adder.test(screen)) {
+			if ((Utils.isOnSkyblock() || !adder.skyblockOnly()) && adder.isEnabled() && adder.test(screen)) {
 				currentScreenAdders.add(adder);
 			}
 		}
@@ -189,7 +194,7 @@ public class SlotTextManager {
 	}
 
 	public static Stream<SlotTextAdder> getAdderStream() {
-		return Arrays.stream(adders);
+		return adders.stream();
 	}
 
 	public static boolean isEnabled(String adderId) {

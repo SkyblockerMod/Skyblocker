@@ -18,6 +18,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.AdFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AoteFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.AutopetFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ComboFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.CritterCaptureFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DeathFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.DungeonBreakerFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.HealFilter;
@@ -25,6 +26,7 @@ import de.hysky.skyblocker.skyblock.chat.filters.ImplosionFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.LotteryFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MimicFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.MoltenWaveFilter;
+import de.hysky.skyblocker.skyblock.chat.filters.RareCropFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.ShowOffFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SkyMallFilter;
 import de.hysky.skyblocker.skyblock.chat.filters.SpiritSceptreFilter;
@@ -78,10 +80,12 @@ public interface ChatMessageListener {
 				new AdFilter(),
 				new AoteFilter(),
 				new ComboFilter(),
+				new CritterCaptureFilter(),
 				new HealFilter(),
 				new ImplosionFilter(),
 				new SpiritSceptreFilter(),
 				new MoltenWaveFilter(),
+				new RareCropFilter(),
 				new TeleportPadFilter(),
 				new AutopetFilter(),
 				new ShowOffFilter(),

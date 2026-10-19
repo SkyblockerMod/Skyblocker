@@ -1,0 +1,986 @@
+{
+	"skills": [
+		{
+			"id": "MINING_PICKAXE",
+			"name": "Mining Pickaxe",
+			"display": {
+				"text": "⸕",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "MINING_MASTER",
+			"name": "Mining Master",
+			"display": {
+				"text": "⸕",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "FARMING_FLOWER",
+			"name": "Farming Flower",
+			"display": {
+				"text": "✿",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "FARMING_MASTER",
+			"name": "Farming Master",
+			"display": {
+				"text": "✿",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "COMBAT_EXPLOSION",
+			"name": "Combat Explosion",
+			"display": {
+				"text": "❁",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "COMBAT_MASTER",
+			"name": "Combat Master",
+			"display": {
+				"text": "❁",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "FORAGING_LEAF",
+			"name": "Foraging Leaf",
+			"display": {
+				"text": "⸙",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "FISHING_FISH",
+			"name": "Fishing Fish",
+			"display": {
+				"text": "α",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "ENCHANTING_PENCIL",
+			"name": "Enchanting Pencil",
+			"display": {
+				"text": "✎",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "ENCHANTING_MASTER",
+			"name": "Enchanting Master",
+			"display": {
+				"text": "✎",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "ALCHEMY_BREW",
+			"name": "Alchemy Brew",
+			"display": {
+				"text": "☕",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "CARPENTRY_HOUSE",
+			"name": "Carpentry House",
+			"display": {
+				"text": "☖",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "TAMING_CLOVER",
+			"name": "Taming Clover",
+			"display": {
+				"text": "♣",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "TAMING_MASTER",
+			"name": "Taming Master",
+			"display": {
+				"text": "♣",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "SOCIAL_STATEMENT",
+			"name": "Social Statement",
+			"display": {
+				"text": "℻",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "SOCIAL_MASTER",
+			"name": "Social Master",
+			"display": {
+				"text": "℻",
+				"color": "gold",
+				"bold": true
+			}
+		}
+	],
+	"catacombs": [
+		{
+			"id": "CATACOMBS_SWORDS",
+			"name": "Catacombs Swords",
+			"display": {
+				"text": "⚔",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_CATACOMBS_SWORDS",
+			"name": "Golden Catacombs Swords",
+			"display": {
+				"text": "⚔",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "ARCHER_SPADE",
+			"name": "Archer Arrow",
+			"display": {
+				"text": "➶",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "ARCHER_MASTER",
+			"name": "Archer Master",
+			"display": {
+				"text": "➶",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "MAGE_LIGHTNING",
+			"name": "Mage Lightning",
+			"display": {
+				"text": "⚡",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "MAGE_MASTER",
+			"name": "Mage Master",
+			"display": {
+				"text": "⚡",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "BERSERK_EXPLOSION",
+			"name": "Berserk Explosion",
+			"display": {
+				"text": "☄",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "BERSERK_MASTER",
+			"name": "Berserk Master",
+			"display": {
+				"text": "☄",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "HEALER_STAFF",
+			"name": "Healer Staff",
+			"display": {
+				"text": "⚚",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "HEALER_MASTER",
+			"name": "Healer Master",
+			"display": {
+				"text": "⚚",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "TANK_ANCHOR",
+			"name": "Tank Anchor",
+			"display": {
+				"text": "⚓",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "TANK_MASTER",
+			"name": "Tank Master",
+			"display": {
+				"text": "⚓",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "DUNGEON_RUNNER",
+			"name": "Dungeon Runner",
+			"display": {
+				"text": "☠",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "DUNGEON_MASTER",
+			"name": "Dungeon Master",
+			"display": {
+				"text": "☠",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "CLASS_MASTER",
+			"name": "Class Master",
+			"display": {
+				"text": "⚛",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GOLDEN_CLASS_MASTER",
+			"name": "Golden Class Master",
+			"display": {
+				"text": "⚛",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "DIAMOND_CLASS_MASTER",
+			"name": "Diamond Class Grandmaster",
+			"display": {
+				"text": "⚛",
+				"color": "aqua",
+				"bold": true
+			}
+		}
+	],
+	"levelling": [
+		{
+			"id": "DIAMOND",
+			"name": "Diamond",
+			"display": {
+				"text": "♦",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "SPADE",
+			"name": "Spade",
+			"display": {
+				"text": "♠",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "HEART",
+			"name": "Heart",
+			"display": {
+				"text": "❤",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "PRISTINE",
+			"name": "Pristine",
+			"display": {
+				"text": "✧",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "ARC_REACTOR",
+			"name": "Arc Reactor",
+			"display": {
+				"text": "⎊",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "MARKER",
+			"name": "Marker",
+			"display": {
+				"text": "፠",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "BADGE",
+			"name": "Badge",
+			"display": {
+				"text": "☬",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "STAR",
+			"name": "Star",
+			"display": {
+				"text": "⚝",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "BOXES",
+			"name": "Boxes",
+			"display": {
+				"text": "⧉",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "JERRY",
+			"name": "Jerry",
+			"display": {
+				"text": "ꈔ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GLOBE",
+			"name": "Globe",
+			"display": {
+				"text": "㋖",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "SOULFLOW",
+			"name": "Soulflow",
+			"display": {
+				"text": "⸎",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "WARNING",
+			"name": "Warning",
+			"display": {
+				"text": "⚠",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "MUSTACHE",
+			"name": "Mustache",
+			"display": {
+				"text": "ꕁ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "HELMET",
+			"name": "Helmet",
+			"display": {
+				"text": "〠",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "SIDEWAYS_SMILEY",
+			"name": "Sideways Smiley",
+			"display": {
+				"text": "ツ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "SPACESHIP",
+			"name": "Spaceship",
+			"display": {
+				"text": "⥈",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "TOXIC",
+			"name": "Toxic",
+			"display": {
+				"text": "☢",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "BIOHAZARD",
+			"name": "Biohazard",
+			"display": {
+				"text": "☣",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "FLORETTE",
+			"name": "Florette",
+			"display": {
+				"text": "✾",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_FLEUR_DE_LIS",
+			"name": "Golden Fleur De Lis",
+			"display": {
+				"text": "⚜",
+				"color": "gold"
+			}
+		}
+	],
+	"slayer": [
+		{
+			"id": "REVENANT_HORROR_BRAIN",
+			"name": "Revenant Horror Brain",
+			"display": {
+				"text": "ௐ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_REVENANT_HORROR_BRAIN",
+			"name": "Golden Revenant Horror Brain",
+			"display": {
+				"text": "ௐ",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "BROODMOTHER_STRING",
+			"name": "Broodmother String",
+			"display": {
+				"text": "੭",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_BROODMOTHER_STRING",
+			"name": "Golden Broodmother String",
+			"display": {
+				"text": "੭",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "SVEN_SHIELD",
+			"name": "Sven Shield",
+			"display": {
+				"text": "❂",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_SVEN_SHIELD",
+			"name": "Golden Sven Shield",
+			"display": {
+				"text": "❂",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "VOIDGLOOM_RUNE",
+			"name": "Voidgloom Rune",
+			"display": {
+				"text": "ᛃ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_VOIDGLOOM_RUNE",
+			"name": "Golden Voidgloom Rune",
+			"display": {
+				"text": "ᛃ",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "INFERNO_RODS",
+			"name": "Inferno Rods",
+			"display": {
+				"text": "〣",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_INFERNO_RODS",
+			"name": "Golden Inferno Rods",
+			"display": {
+				"text": "〣",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "RIFTSTALKER_STRANGE_TIME",
+			"name": "Riftstalker Strange Time",
+			"display": {
+				"text": "ჶ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_RIFTSTALKER_STRANGE_TIME",
+			"name": "Golden Riftstalker Strange Time",
+			"display": {
+				"text": "ჶ",
+				"color": "gold"
+			}
+		}
+	],
+	"achievement": [
+		{
+			"id": "RIFT_TIME",
+			"name": "Rift Time",
+			"display": {
+				"text": "ф",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "HARP_NOTE",
+			"name": "Harp Note",
+			"display": {
+				"text": "♪",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "HARP_MASTER",
+			"name": "Harp Master",
+			"display": {
+				"text": "♫",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "KUUDRA_SLAYER",
+			"name": "Kuudra Slayer",
+			"display": {
+				"text": "Ӄ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "MASTER_KUUDRA_SLAYER",
+			"name": "Master Kuudra Slayer",
+			"display": {
+				"text": "Ӄ",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "ULTRA_BANKER",
+			"name": "Ultra Banker",
+			"display": {
+				"text": "⛁",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "EXTREME_BANKER",
+			"name": "Extreme Banker",
+			"display": {
+				"text": "⛃",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "MINING_HELIX",
+			"name": "Mining Helix",
+			"display": {
+				"text": "ᛝ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GOLDEN_MINING_HELIX",
+			"name": "Golden Mining Helix",
+			"display": {
+				"text": "ᛝ",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "DIAMOND_MINING_HELIX",
+			"name": "Diamond Mining Helix",
+			"display": {
+				"text": "ᛝ",
+				"color": "aqua",
+				"bold": true
+			}
+		},
+		{
+			"id": "FORAGING_CLOVER",
+			"name": "Foraging Clover",
+			"display": {
+				"text": "☘",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GOLDEN_FORAGING_CLOVER",
+			"name": "Golden Foraging Clover",
+			"display": {
+				"text": "☘",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "AGATHAS_JEWEL",
+			"name": "Agatha's Jewel",
+			"display": {
+				"text": "ꖘ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GARDENER",
+			"name": "Gardener",
+			"display": {
+				"text": "ꀾ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_GARDENER",
+			"name": "Golden Gardener",
+			"display": {
+				"text": "ꀾ",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "COLLECTING_TOP_HAT",
+			"name": "Collecting Top Hat",
+			"display": {
+				"text": "ᱪ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_COLLECTING_TOP_HAT",
+			"name": "Golden Collecting Top Hat",
+			"display": {
+				"text": "ᱪ",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "MAGICAL_SIGMA",
+			"name": "Magical Sigma",
+			"display": {
+				"text": "Σ",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_MAGICAL_SIGMA",
+			"name": "Golden Magical Sigma",
+			"display": {
+				"text": "Σ",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "GOLDEN_CHILI_PEPPER",
+			"name": "Golden Chili Pepper",
+			"display": {
+				"text": "৫",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "SNOWMAN",
+			"name": "Snowman",
+			"display": {
+				"text": "☃",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "TROPHY_KING",
+			"name": "Trophy King",
+			"display": {
+				"text": "♔",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_TROPHY_KING",
+			"name": "Golden Trophy King",
+			"display": {
+				"text": "♔",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "DIAMOND_TROPHY_KING",
+			"name": "Diamond Trophy King",
+			"display": {
+				"text": "♔",
+				"color": "aqua"
+			}
+		},
+		{
+			"id": "TROPHY_FROG_KING",
+			"name": "Trophy Frog King",
+			"display": {
+				"text": "🐸",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_TROPHY_FROG_KING",
+			"name": "Golden Trophy Frog King",
+			"display": {
+				"text": "🐸",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "DIAMOND_TROPHY_FROG_KING",
+			"name": "Diamond Trophy Frog King",
+			"display": {
+				"text": "🐸",
+				"color": "aqua"
+			}
+		},
+		{
+			"id": "CENTURY_CELEBRANT",
+			"name": "Century Celebrant",
+			"display": {
+				"text": "⛂",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "CENTURY_PARTYGOER",
+			"name": "Century Partygoer",
+			"display": {
+				"text": "⛂",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "GREAT_SPOOK",
+			"name": "Great Spook",
+			"display": {
+				"text": "࿇",
+				"color": "dark_purple",
+				"bold": true
+			}
+		},
+		{
+			"id": "GIFT_OF_GIVING",
+			"name": "Gift of Giving",
+			"display": {
+				"text": "ꤥ",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "SPARKLING_CRITTER_CATCHER",
+			"name": "Sparkling Critter Catcher",
+			"display": {
+				"text": "✨",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_SPARKLING_CRITTER_CATCHER",
+			"name": "Sparkling Critter Catcher",
+			"display": {
+				"text": "✨",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "DIAMOND_SPARKLING_CRITTER_CATCHER",
+			"name": "Sparkling Critter Master Catcher",
+			"display": {
+				"text": "✨",
+				"color": "aqua"
+			}
+		},
+		{
+			"id": "JACOB_CONTEST_COMPLETION",
+			"name": "Jacob's Contest Completionist",
+			"display": {
+				"text": "ꕪ",
+				"color": "gray",
+				"bold": true
+			}
+		},
+		{
+			"id": "GOLDEN_JACOB_CONTEST_COMPLETION",
+			"name": "Golden Jacob's Contest Completionist",
+			"display": {
+				"text": "ꕪ",
+				"color": "gold",
+				"bold": true
+			}
+		},
+		{
+			"id": "DIAMOND_JACOB_CONTEST_COMPLETION",
+			"name": "Diamond Jacob's Contest Completionist",
+			"display": {
+				"text": "ꕪ",
+				"color": "aqua",
+				"bold": true
+			}
+		},
+		{
+			"id": "CHOCOLATE_BAR",
+			"name": "Chocolate Bar",
+			"display": {
+				"text": "▒",
+				"color": "gray"
+			}
+		},
+		{
+			"id": "GOLDEN_CHOCOLATE_BAR",
+			"name": "Golden Chocolate Bar",
+			"display": {
+				"text": "▒",
+				"color": "gold"
+			}
+		},
+		{
+			"id": "RIFT_SUNGECKO",
+			"name": "Emblem of Burning Strength",
+			"display": {
+				"text": "☀",
+				"color": "gold"
+			}
+		}
+	],
+	"superstar": [
+		{
+			"id": "SUPERSTAR_1",
+			"name": "1-Month Subscriber's Star",
+			"display": {
+				"text": "✩",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_2",
+			"name": "2-Month Subscriber's Star",
+			"display": {
+				"text": "✬",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_3",
+			"name": "3-Month Subscriber's Star",
+			"display": {
+				"text": "✭",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_6",
+			"name": "6-Month Subscriber's Star",
+			"display": {
+				"text": "✯",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_9",
+			"name": "9-Month Subscriber's Star",
+			"display": {
+				"text": "✶",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_12",
+			"name": "12-Month Subscriber's Star",
+			"display": {
+				"text": "✳",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_18",
+			"name": "18-Month Subscriber's Star",
+			"display": {
+				"text": "✴",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_24",
+			"name": "24-Month Subscriber's Star",
+			"display": {
+				"text": "✷",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_36",
+			"name": "36-Month Subscriber's Star",
+			"display": {
+				"text": "✸",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_48",
+			"name": "48-Month Subscriber's Star",
+			"display": {
+				"text": "✹",
+				"color": "light_purple"
+			}
+		},
+		{
+			"id": "SUPERSTAR_60",
+			"name": "60-Month Subscriber's Star",
+			"display": {
+				"text": "✺",
+				"color": "light_purple"
+			}
+		}
+	],
+	"special": [
+		{
+			"id": "HYPIXEL",
+			"name": "Hypixel",
+			"display": {
+				"text": "ዞ",
+				"color": "gold"
+			}
+		}
+	]
+}

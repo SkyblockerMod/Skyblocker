@@ -96,6 +96,14 @@ public class ChatCategory {
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideRareCrops"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.chat.hideRareCrops,
+										() -> config.chat.hideRareCrops,
+										newValue -> config.chat.hideRareCrops = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
 								.name(Component.translatable("skyblocker.config.chat.filter.hideAds"))
 								.binding(defaults.chat.hideAds,
 										() -> config.chat.hideAds,
@@ -185,6 +193,15 @@ public class ChatCategory {
 								.binding(defaults.chat.hideDungeonBreaker,
 										() -> config.chat.hideDungeonBreaker,
 										newValue -> config.chat.hideDungeonBreaker = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
+						.option(Option.<ChatFilterResult>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.filter.hideCritterCapture"))
+								.description(Component.translatable("skyblocker.config.chat.filter.hideCritterCapture.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_10_0)
+								.binding(defaults.chat.hideCritterCapture,
+										() -> config.chat.hideCritterCapture,
+										newValue -> config.chat.hideCritterCapture = newValue)
 								.controller(ConfigUtils.createEnumController())
 								.build())
 						.build())

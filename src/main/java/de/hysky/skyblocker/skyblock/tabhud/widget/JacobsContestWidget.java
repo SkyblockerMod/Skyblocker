@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,9 +12,12 @@ import net.minecraft.network.chat.TextColor;
 import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
+import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.SkyBlockIcons;
 
 import static java.util.Map.entry;
@@ -47,14 +49,16 @@ public class JacobsContestWidget extends TabHudWidget {
 	);
 
 	public JacobsContestWidget() {
-		super("Jacob's Contest", TITLE, TextColor.YELLOW.getValue());
+		super("Jacob's Contest", TITLE, TextColor.YELLOW.getValue(), Location.HUB, Location.THE_FARMING_ISLAND, Location.GARDEN);
 	}
 
 	@Override
-	public void updateContent(List<Component> lines) {
-		for (Component line : lines) {
+	public void updateContent(PlayerListManager.Widget widget) {
+		if (widget.lines().isEmpty()) this.addElement(new PlainTextElement(widget.detail()));
+		if (widget.detail().getString().contains("left")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, widget.detail()));
+		for (Component line : widget.lines()) {
 			String string = line.getString();
-			if (string.endsWith("left") || string.contains("Starts")) this.addComponent(Elements.iconTextComponent(Ico.CLOCK, line));
+			if (string.contains("Starts")) this.addElement(Elements.iconTextComponent(Ico.CLOCK, line));
 			else {
 				Matcher matcher = CROP_PATTERN.matcher(string);
 				if (matcher.matches()) {
@@ -63,10 +67,19 @@ public class JacobsContestWidget extends TabHudWidget {
 					MutableComponent cropText = Component.empty().append(crop);
 					if (matcher.group("fortune").equals(String.valueOf(SkyBlockIcons.FARMING_FORTUNE))) cropText.append(Component.literal(" " + SkyBlockIcons.FARMING_FORTUNE).withStyle(ChatFormatting.GOLD));
 
-					this.addComponent(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
-					if (percentage != null) this.addComponent(new PlainTextElement(Component.literal(percentage)));
-				} else this.addComponent(new PlainTextElement(line));
+					this.addElement(Elements.iconTextComponent(FARM_DATA.get(crop), cropText));
+					if (percentage != null) this.addElement(new PlainTextElement(Component.literal(percentage)));
+				} else this.addElement(new PlainTextElement(line));
 			}
+		}
+	}
+
+	@Override
+	protected void updateConfigContentTab(ElementCollector collector) {
+		collector.addElement(Elements.iconTextComponent(Ico.CLOCK, Component.literal("Starts in: ").append(Component.literal("???").withStyle(ChatFormatting.YELLOW))));
+		FlexibleItemStack[] strings = FARM_DATA.values().toArray(FlexibleItemStack[]::new);
+		for (int i = 0; i < 3; i++) {
+			this.addElement(Elements.iconTextComponent(strings[i], Component.literal("Crop " + (i + 1))));
 		}
 	}
 }

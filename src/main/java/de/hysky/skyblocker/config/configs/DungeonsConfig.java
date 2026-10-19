@@ -33,7 +33,8 @@ public class DungeonsConfig {
 
 	public boolean allowDroppingProtectedItems = false;
 
-	public boolean dungeonSplits = false;
+	@Deprecated
+	public transient boolean dungeonSplits = false;
 
 	public boolean hideSoulweaverSkulls = false;
 

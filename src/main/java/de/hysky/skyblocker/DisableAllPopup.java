@@ -41,14 +41,7 @@ public final class DisableAllPopup {
 			Minecraft minecraft = Minecraft.getInstance();
 
 			try {
-				SkyblockerConfigManager.update(config -> {
-					try {
-						DisableAll.disableEntries(config);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
-				});
-
+				DisableAll.disableAll();
 				popupScreen.onClose();
 				minecraft.gui.setScreen(SkyblockerConfigManager.createGUI(null));
 				SystemToast.add(minecraft.gui.toastManager(), TOAST_ID, Component.translatable("skyblocker.disableAll.toast.title"), Component.translatable("skyblocker.disableAll.success").withStyle(ChatFormatting.RED));

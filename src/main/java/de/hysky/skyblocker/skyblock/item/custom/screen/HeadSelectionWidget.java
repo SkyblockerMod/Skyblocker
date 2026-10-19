@@ -44,7 +44,11 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 	private HeadButton selectedButton;
 
 	public HeadSelectionWidget(int x, int y, int width, int height) {
-		super(x + 2, y + 2, width - 4, height - 4, Component.nullToEmpty("HeadSelection"), 20);
+		super(x + 2, y + 2, width - 4, height - 4, Component.nullToEmpty("HeadSelection"), 20, true);
+
+		this.noneButton = new HeadButton("", this::onClick);
+		this.selectedButton = this.noneButton;
+		this.allButtons.add(this.noneButton);
 
 		for (CustomHelmetTextures.NamedTexture tex : CustomHelmetTextures.getTextures()) {
 			ItemStack head = ProfileViewerUtils.createSkull(tex.texture()).getStackOrThrow();
@@ -56,10 +60,6 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 			AnimatedHeadButton button = new AnimatedHeadButton(id, this::onClick);
 			this.allButtons.add(button);
 		}
-
-		this.noneButton = new HeadButton("", this::onClick);
-		this.selectedButton = this.noneButton;
-		this.allButtons.add(this.noneButton);
 
 		setSearch("");
 	}
@@ -96,13 +96,13 @@ public class HeadSelectionWidget extends SearchableGridWidget {
 
 		SkyblockerConfigManager.updateOnly(config -> {
 			switch (this.selectedButton) {
-				case HeadButton button when button == noneButton || button.texture == null -> {
-					config.general.customHelmetTextures.remove(uuid);
-					config.general.customAnimatedHelmetTextures.remove(uuid);
-				}
 				case AnimatedHeadButton button -> {
 					config.general.customAnimatedHelmetTextures.put(uuid, button.id);
 					config.general.customHelmetTextures.remove(uuid);
+				}
+				case HeadButton button when button == noneButton || button.texture == null -> {
+					config.general.customHelmetTextures.remove(uuid);
+					config.general.customAnimatedHelmetTextures.remove(uuid);
 				}
 				case HeadButton button -> {
 					config.general.customHelmetTextures.put(uuid, Objects.requireNonNull(button.texture));

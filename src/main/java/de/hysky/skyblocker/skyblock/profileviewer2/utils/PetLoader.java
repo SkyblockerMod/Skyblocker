@@ -172,9 +172,14 @@ public class PetLoader {
 		// Lines may have a {SEA_CREATURE_CHANCE} (or some other stat) variable which corresponds to a statNumbers entry.
 		// Lines may have a {0} variable and that corresponds to the index in the otherNumbers list where the right value is.
 
+		boolean skipNext = false;
+
 		for (String line : unformattedLore) {
 			// Filter out garbage lines
-			if (line.contains("Right-click to add this") || line.contains("pet menu!")) {
+			boolean isRC = line.contains("Right-click to add this") || line.contains("pet menu!");
+			if (isRC || line.contains("Can be upgraded at") || skipNext) {
+				// Need to skip the empty line after
+				skipNext = isRC;
 				continue;
 			}
 

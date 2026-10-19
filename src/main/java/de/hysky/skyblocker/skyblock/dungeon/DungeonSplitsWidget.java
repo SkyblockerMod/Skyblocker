@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,19 +18,18 @@ import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.RegisterWidget;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.events.SkyblockEvents;
-import de.hysky.skyblocker.skyblock.tabhud.config.WidgetsConfigurationScreen;
 import de.hysky.skyblocker.skyblock.tabhud.widget.TableWidget;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Element;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.ElementCollector;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.PlainTextElement;
+import de.hysky.skyblocker.skyblock.tabhud.widget.element.TableElement;
 import de.hysky.skyblocker.utils.CodecUtils;
 import de.hysky.skyblocker.utils.Location;
 import de.hysky.skyblocker.utils.Utils;
@@ -177,9 +175,6 @@ public class DungeonSplitsWidget extends TableWidget {
 	private static final Codec<Object2ObjectMap<String, Object2LongMap<String>>> BEST_CODEC =
 			CodecUtils.object2ObjectMapCodec(Codec.STRING, CodecUtils.object2LongMapCodec(Codec.STRING));
 	private static final ProfiledData<Object2ObjectMap<String, Object2LongMap<String>>> BEST_SPLITS = new ProfiledData<>(BEST_FILE, BEST_CODEC);
-
-	private static final Set<Location> AVAILABLE_LOCATIONS = Set.of(Location.DUNGEON);
-
 	private static @Nullable DungeonSplitsWidget instance;
 
 	private final List<Split> splits = new ArrayList<>();
@@ -195,7 +190,7 @@ public class DungeonSplitsWidget extends TableWidget {
 
 	public DungeonSplitsWidget() {
 		super(Component.literal("Splits").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
-				TextColor.GOLD.getValue(), "Dungeon Splits", 3, 0, false);
+				TextColor.GOLD.getValue(), 3, 0, false, new Information("dungeon_splits", Component.literal("Dungeon Splits"), Location.DUNGEON));
 		instance = this;
 
 		BEST_SPLITS.init();
@@ -326,34 +321,39 @@ public class DungeonSplitsWidget extends TableWidget {
 	}
 
 	@Override
-	public Set<Location> availableLocations() {
-		return AVAILABLE_LOCATIONS;
-	}
-
-	@Override
-	public void setEnabledIn(Location location, boolean enabled) {
-		if (location != Location.DUNGEON) return;
-		SkyblockerConfigManager.update(config -> config.dungeons.dungeonSplits = enabled);
-	}
-
-	@Override
-	public boolean isEnabledIn(Location location) {
-		return location == Location.DUNGEON && SkyblockerConfigManager.get().dungeons.dungeonSplits;
-	}
-
-	@Override
 	public void updateContent() {
-		if (!(Minecraft.getInstance().gui.screen() instanceof WidgetsConfigurationScreen)) {
-			updateFloor();
-			loadFloorSplits();
-		}
+		updateFloor();
+		loadFloorSplits();
 
-		addComponent(new PlainTextElement(Component.literal("Floor: " + floor)));
+		addElement(new PlainTextElement(Component.literal("Floor: " + floor)));
 
 		super.updateContent();
 
 		long now = running ? System.currentTimeMillis() - startTime : (startTime == 0L ? 0L : elapsedTime);
-		addComponent(new PlainTextElement(Component.literal(formatTime(now)).withStyle(timerColor)));
+		addElement(new PlainTextElement(Component.literal(formatTime(now)).withStyle(timerColor)));
+	}
+
+	@Override
+	protected void updateConfigContent(ElementCollector collector) {
+		collector.addElement(new PlainTextElement(Component.literal("Floor: ???")));
+		TableElement element = new TableElement(3, 5, 0, false);
+		for (int i = 0; i < 5; i++) {
+			element.addToCell(0, i, new PlainTextElement(Component.literal("Split " + (i + 1))));
+			if (i < 3) {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("-5.24s").withStyle(ChatFormatting.GREEN)));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:" + ((i+1) * 10) + ".00").withStyle(ChatFormatting.YELLOW)));
+			} else if (i < 4) {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("00:05.45")));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:40.00")));
+			} else {
+				element.addToCell(1, i, new PlainTextElement(Component.literal("--")));
+				element.addToCell(2, i, new PlainTextElement(Component.literal("00:50.00")));
+
+			}
+		}
+		collector.addElement(element);
+		collector.addElement(new PlainTextElement(Component.literal("00:34.55").withStyle(ChatFormatting.YELLOW)));
+
 	}
 
 	@Override

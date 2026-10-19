@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.tabhud.widget;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +12,7 @@ import de.hysky.skyblocker.annotations.RegisterWidget;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.skyblock.tabhud.widget.element.Elements;
+import de.hysky.skyblocker.utils.Location;
 
 /// This widget shows broad info about the current dungeon,
 /// opened/completed rooms, % of secrets found, and time taken.
@@ -26,24 +26,24 @@ public class DungeonServerWidget extends TabHudWidget {
 	private static final Pattern SECRET_PATTERN = Pattern.compile("Secrets Found: (?<secnum>.*)%");
 
 	public DungeonServerWidget() {
-		super("Dungeon Info", TITLE, TextColor.GOLD.getValue());
+		super("Dungeon Info", TITLE, TextColor.GOLD.getValue(), Location.DUNGEON);
 	}
 
 	@Override
-	public void updateContent(List<Component> ignored) {
+	public void updateContent(PlayerListManager.Widget ignored) {
 		this.addSimpleIcoText(Ico.NTAG, "Name:", ChatFormatting.AQUA, 41);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Visited:", ChatFormatting.DARK_PURPLE, 42);
 		this.addSimpleIcoText(Ico.SIGN, "Rooms Completed:", ChatFormatting.LIGHT_PURPLE, 43);
 
 		Matcher m = PlayerListManager.regexAt(44, SECRET_PATTERN);
 		if (m == null) {
-			this.addComponent(Elements.progressComponent());
+			this.addElement(Elements.progressComponent());
 		} else {
-			this.addComponent(Elements.progressComponent(
+			this.addElement(Elements.progressComponent(
 					Ico.CHEST,
 					Component.nullToEmpty("Secrets found:"),
 					Float.parseFloat(m.group("secnum")),
-					TextColor.DARK_PURPLE.getValue()
+					TextColor.GOLD.getValue()
 			));
 		}
 

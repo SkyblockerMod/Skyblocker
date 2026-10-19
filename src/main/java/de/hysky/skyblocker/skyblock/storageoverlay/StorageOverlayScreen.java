@@ -25,14 +25,12 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -136,6 +134,11 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		savedScroll = grid.getScrollAmount();
 		MessageScheduler.INSTANCE.sendMessageAfterCooldown(getCommandForIndex(index), true);
 		saveMousePosition = SkyblockerConfigManager.get().uiAndVisuals.storageOverlay.doNotResetCursor;
+	}
+
+	public void refreshSearch() {
+		if (grid == null) return;
+		grid.refreshSearch();
 	}
 
 	private static String getCommandForIndex(int index) {
@@ -248,6 +251,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		grid = new BackpackGridWidget(getMinLeftPos() + 8, this.topPos + 8, getMaxWidth() - 16, getHeight() - 16, storagesPerRow, internalCols, true);
 		grid.setSearch(savedSearch);
 		grid.setScrollAmount(savedScroll);
+		grid.scrollToOpenBackpack();
 		this.addRenderableWidget(grid);
 
 		//extra control buttons out the way
@@ -364,20 +368,14 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 		@Nullable
 		private final Button reloadButton;
 
-		private BackpackGridWidget(int x, int y, int width, int height, int storagesPerRow, int internalCols, boolean packed) {
+		private BackpackGridWidget(int x, int y, int width, int height, int maxStoragesPerRow, int internalCols, boolean packed) {
 			// cut down number of columns if it will not fit on to the current gui size
 			int expectedWidth = internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			while (expectedWidth > width - AbstractScrollArea.SCROLLBAR_WIDTH) {
 				expectedWidth = --internalCols * SLOT_SIZE + EDGE_PADDING * 2;
 			}
 
-			if (packed) {
-				storagesPerRow = Math.min((width - AbstractScrollArea.SCROLLBAR_WIDTH) / expectedWidth, storagesPerRow);
-				width = storagesPerRow * expectedWidth + AbstractScrollArea.SCROLLBAR_WIDTH;
-				x = (StorageOverlayScreen.this.width - width) / 2;
-			}
-
-			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, true);
+			super(x, y, width, height, Component.literal("BackPack grid"), expectedWidth, maxStoragesPerRow, packed, true);
 
 			//add backpacks
 			boolean storageLoaded = false;
@@ -408,6 +406,15 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 		private void reload(Button button) {
 			MessageScheduler.INSTANCE.sendMessageAfterCooldown("/storage", true);
+		}
+
+		/// Scrolls the open backpack into view if its header is not visible (e.g. when opened with a command like `/bp 15`)
+		private void scrollToOpenBackpack() {
+			if (openBackpack == null) return;
+			ScreenRectangle rectangle = getGridRectangle();
+			if (openBackpack.getY() < rectangle.top() || openBackpack.getY() + HEADER_H > rectangle.bottom()) {
+				setScrollAmount(getScrollAmount() + openBackpack.getY() - rectangle.top());
+			}
 		}
 
 
@@ -568,9 +575,7 @@ public class StorageOverlayScreen extends AbstractContainerScreen<StorageOverlay
 
 						//draw tooltip if hovered
 						if (graphics.containsPointInScissor(mouseX, mouseY) && mouseX > itemX && mouseX <= itemX + SLOT_SIZE && mouseY > itemY && mouseY <= itemY + SLOT_SIZE && mouseY > topPos && mouseY < topPos + StorageOverlayScreen.this.getHeight()) {
-							Identifier tooltipStyle = currentStack.get(DataComponents.TOOLTIP_STYLE);
-
-							graphics.setComponentTooltipForNextFrame(CLIENT.font, Screen.getTooltipFromItem(CLIENT, currentStack), mouseX, mouseY, tooltipStyle);
+							graphics.setTooltipForNextFrame(CLIENT.font, currentStack, mouseX, mouseY);
 						}
 					}
 

@@ -17,12 +17,10 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -176,9 +174,7 @@ public class SkyblockRecipeResults implements RecipeAreaDisplay {
 			//Draw the tooltip of the hovered result button if one is hovered over
 			if (this.hoveredResultButton != null && !this.hoveredResultButton.getDisplayStack().isEmpty()) {
 				ItemStack stack = this.hoveredResultButton.getDisplayStack();
-				Identifier tooltipStyle = stack.get(DataComponents.TOOLTIP_STYLE);
-
-				graphics.setComponentTooltipForNextFrame(this.client.font, SkyblockRecipeResultButton.getTooltip(stack), x, y, tooltipStyle);
+				graphics.setTooltipForNextFrame(this.client.font, stack, x, y);
 			} else if (this.hoveredText != null) {
 				//Draw text as a tooltip if it got truncated & we're hovering over it (for recipe display)
 				graphics.setTooltipForNextFrame(this.client.font, this.hoveredText, x, y);

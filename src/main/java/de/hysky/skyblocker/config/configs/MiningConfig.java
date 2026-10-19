@@ -17,11 +17,6 @@ public class MiningConfig {
 
 	public boolean redialOnBadSignal = true;
 
-	/**
-	 * TODO: Move into {@link PickobulusHelper} in next config version.
-	 */
-	public boolean enablePickobulusHelper = true;
-
 	public PickobulusHelper pickobulusHelper = new PickobulusHelper();
 
 	public DwarvenMines dwarvenMines = new DwarvenMines();
@@ -42,7 +37,10 @@ public class MiningConfig {
 	public BlockBreakPrediction blockBreakPrediction = new BlockBreakPrediction();
 
 	public static class PickobulusHelper {
-		public boolean enablePickobulusHud = true;
+		public boolean enablePickobulusHelper = true;
+
+		@Deprecated
+		public transient boolean enablePickobulusHud = true;
 
 		public boolean hideHudOnCooldown = false;
 	}
@@ -90,7 +88,8 @@ public class MiningConfig {
 
 		public Color chestHighlightColor = new Color(0, 0, 255, 128);
 
-		public boolean enablePowderTracker = true;
+		@Deprecated
+		public transient boolean enablePowderTracker = true;
 
 		public boolean countNaturalChestsInTracker = true;
 

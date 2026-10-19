@@ -25,7 +25,8 @@ public class HuntingConfig {
 
 	public FloorDrops floorDrops = new FloorDrops();
 
-	public LassoHud lassoHud = new LassoHud();
+	@Deprecated
+	public transient LassoHud lassoHud = new LassoHud();
 
 	public static class HuntingBox {
 		public boolean enabled = true;
@@ -45,6 +46,10 @@ public class HuntingConfig {
 		public boolean highlightCoralot = true;
 
 		public Color coralotGlowColor = new Color(DyeColor.BLUE.getTextColor(), false);
+
+		public boolean highlightInvisibug = true;
+
+		public Color invisibugGlowColor = new Color(DyeColor.CYAN.getTextColor(), false);
 	}
 
 	public static class TorrhusMobs {
@@ -63,6 +68,10 @@ public class HuntingConfig {
 		public boolean highlightSparklingCritters = false;
 
 		public Color sparklingCritterHighlightColor = new Color(SkyBlockColors.GOLD.getValue(), false);
+
+		public boolean critterCapsuleHelper = false;
+
+		public Color critterCapsuleHelperColor = new Color(DyeColor.GREEN.getTextColor(), false);
 	}
 
 	public static class CavernBiome {

@@ -58,7 +58,8 @@ public class DonationButton extends AbstractWidget {
 		FlexibleItemStack flexible = !donation.isSet()
 				? ItemRepository.getItemStack(donation.getId())
 				: ItemRepository.getItemStack(MuseumItemCache.ARMOR_TO_ID.get(donation.getId()));
-		this.itemStack = flexible == null ? null : flexible.getStackOrThrow();
+		if (flexible == null) flexible = ItemUtils.getItemIdPlaceholder(donation.getId());
+		this.itemStack = flexible.getStackOrEmpty();
 		buildTooltip();
 	}
 
@@ -166,6 +167,10 @@ public class DonationButton extends AbstractWidget {
 
 	protected List<Component> getItemTooltip() {
 		return Objects.requireNonNull(this.tooltip, "Tried to get tooltip before button was initialized.");
+	}
+
+	protected ItemStack getItem() {
+		return Objects.requireNonNull(this.itemStack);
 	}
 
 	@Override

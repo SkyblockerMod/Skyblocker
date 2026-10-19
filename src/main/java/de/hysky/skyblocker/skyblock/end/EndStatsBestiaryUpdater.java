@@ -10,7 +10,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.container.SimpleContainerSolver;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
@@ -48,6 +47,6 @@ public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().otherLocations.end.zealotKillsEnabled;
+		return EndHudWidget.getInstance().showZealotKills;
 	}
 }

@@ -1,8 +1,5 @@
 package de.hysky.skyblocker.skyblock.dwarven;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -29,6 +26,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.ParticleEvents;
 import de.hysky.skyblocker.events.PlaySoundEvents;
 import de.hysky.skyblocker.events.WorldEvents;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.LevelRenderExtractionCallback;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
@@ -41,7 +39,7 @@ public class CrystalsChestHighlighter {
 	private static final Vec3 LOCK_HIGHLIGHT_SIZE = new Vec3(0.1, 0.1, 0.1);
 
 	private static int waitingForChest = 0;
-	private static final Set<BlockPos> activeChests = new HashSet<>();
+	private static final BlockPosSet activeChests = new BlockPosSet();
 	private static final Object2LongOpenHashMap<Vec3> activeParticles = new Object2LongOpenHashMap<>();
 	private static int currentLockCount = 0;
 	private static int neededLockCount = 0;
@@ -86,19 +84,17 @@ public class CrystalsChestHighlighter {
 			return;
 		}
 
-		BlockPos immutable = pos.immutable();
-
 		if (waitingForChest > 0 && newState.is(Blocks.CHEST)) {
 			//make sure it is not too far from the player (more than 10 blocks away)
-			if (immutable.distToCenterSqr(CLIENT.player.position()) > 100) {
+			if (pos.distToCenterSqr(CLIENT.player.position()) > 100) {
 				return;
 			}
-			activeChests.add(immutable);
+			activeChests.add(pos);
 			currentLockCount = 0;
 			waitingForChest -= 1;
-		} else if (newState.isAir() && activeChests.contains(immutable)) {
+		} else if (newState.isAir() && activeChests.contains(pos)) {
 			currentLockCount = 0;
-			activeChests.remove(immutable);
+			activeChests.remove(pos);
 		}
 	}
 
@@ -162,7 +158,7 @@ public class CrystalsChestHighlighter {
 		}
 		//render chest outline
 		float[] color = SkyblockerConfigManager.get().mining.crystalHollows.chestHighlightColor.getComponents(new float[]{0, 0, 0, 0});
-		for (BlockPos chest : activeChests) {
+		for (BlockPos chest : activeChests.iterateMut()) {
 			collector.submitOutlinedBox(AABB.ofSize(Vec3.atCenterOf(chest).subtract(0, 0.0625, 0), 0.885, 0.885, 0.885), color, color[3], 3, false);
 		}
 

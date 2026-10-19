@@ -25,7 +25,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
@@ -129,8 +128,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 					save(prevProfileId);
 					load(profileId);
 				}, SkyblockerMod.VIRTUAL_THREAD_EXECUTOR);
-			}
-			else load(profileId);
+			} else load(profileId);
 		}));
 
 		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
@@ -196,7 +194,7 @@ public class SkyblockInventoryScreen extends InventoryScreen implements HoveredI
 		for (Slot equipmentSlot : equipmentSlots) {
 			if (isHovering(equipmentSlot.x, equipmentSlot.y, 16, 16, x, y) && equipmentSlot.hasItem()) {
 				ItemStack itemStack = equipmentSlot.getItem();
-				graphics.setTooltipForNextFrame(this.font, this.getTooltipFromContainerItem(itemStack), itemStack.getTooltipImage(), x, y, itemStack.get(DataComponents.TOOLTIP_STYLE));
+				graphics.setTooltipForNextFrame(this.font, itemStack, x, y);
 				hoveredItem = itemStack;
 			}
 		}

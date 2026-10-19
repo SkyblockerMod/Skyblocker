@@ -77,6 +77,10 @@ public class ArmorTab extends GridLayoutTab implements Closeable {
 		}
 	};
 
+	// TODO: The layout always calculates sizes based on all widgets in the layout, even if they are not visible.
+	//  For example, in helmet customization, the layout uses the color selection widget's width
+	//  as the head selection widget's width, even though the color selection widget is not visible.
+	//  This results in the head selection widgets not being centered correctly on small screen widths.
 	public ArmorTab(CustomizeScreen parent) {
 		super(Component.translatable("skyblocker.customization.armor"));
 		this.parent = parent;

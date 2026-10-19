@@ -2,13 +2,9 @@ package de.hysky.skyblocker.skyblock.dungeon.terminal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
@@ -18,8 +14,7 @@ import de.hysky.skyblocker.utils.container.StackDisplayModifier;
 import de.hysky.skyblocker.utils.render.gui.ColorHighlight;
 
 public final class StartsWithTerminal extends SimpleContainerSolver implements TerminalSolver, StackDisplayModifier {
-	private final Int2ObjectOpenHashMap<ItemState> trackedItemStates = new Int2ObjectOpenHashMap<>();
-	private int lastKnownScreenId = Integer.MIN_VALUE;
+	private List<Integer> clickedSlotIds = List.of();
 
 	public StartsWithTerminal() {
 		super("^What starts with: '([A-Z])'\\?$");
@@ -27,26 +22,22 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 	@Override
 	public boolean isEnabled() {
+		this.clickedSlotIds = new ArrayList<>();
 		return SkyblockerConfigManager.get().dungeons.terminals.solveStartsWith;
 	}
 
 	@Override
 	public List<ColorHighlight> getColors(Int2ObjectMap<ItemStack> slots) {
 		ContainerSolver.trimEdges(slots, 6);
-		setupState(slots);
 
-		String prefix = groups[0];
+		String prefix = this.groups[0];
 		List<ColorHighlight> highlights = new ArrayList<>();
 
 		for (Int2ObjectMap.Entry<ItemStack> slot : slots.int2ObjectEntrySet()) {
 			ItemStack stack = slot.getValue();
-			ItemState state = trackedItemStates.getOrDefault(slot.getIntKey(), ItemState.DEFAULT);
+			boolean clicked = this.clickedSlotIds.contains(slot.getIntKey());
 
-			//If the item hasn't been marked as clicked and it matches the starts with condition
-			//We keep track of the clicks ourselves instead of using the enchantment glint because some items like nether stars have the glint override component by default
-			//so even if Hypixel tries to change that to the same thing it was before (true) it won't work and the solver would permanently consider the item to be clicked
-			//even if it hasn't been yet
-			if (!state.clicked() && stack.getHoverName().getString().startsWith(prefix)) {
+			if (!clicked && stack.getHoverName().getString().startsWith(prefix)) {
 				highlights.add(ColorHighlight.green(slot.getIntKey()));
 			}
 		}
@@ -55,25 +46,20 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 
 	@Override
 	public boolean onClickSlot(int slot, ItemStack stack, int screenId, int button) {
-		//Some random glass pane was clicked or something
-		//Block clicks for this because these slots are replaced with air items
-		if (!trackedItemStates.containsKey(slot) || stack == null || stack.isEmpty()) return shouldBlockIncorrectClicks();
+		boolean clicked = this.clickedSlotIds.contains(slot);
 
-		ItemState state = trackedItemStates.get(slot);
-		String prefix = groups[0];
+		// Block clicks on already clicked items and invalid items
+		if (clicked || stack == null || stack.isEmpty()) {
+			return this.shouldBlockIncorrectClicks();
+		}
 
-		//If the item stack's name starts with the correct letter
-		//Also, since Hypixel closes & reopens the GUI after every click we check if the last known screen id is the same that way in case the server lags and
-		//either a player tries to click a second item or if the player puts the clicked item back and tries to click another that we don't mark multiple items
-		//as clicked when only the first one will count.
+		String prefix = this.groups[0];
 
-		//While Hypixel does use a different syncId each time they open the screen we opt to use our own so as to avoid them potentially changing that
-		//and in turn breaking this logic
-		if (stack.getHoverName().getString().startsWith(prefix) && !state.clicked() && lastKnownScreenId != screenId) {
-			trackedItemStates.put(slot, state.click());
-			lastKnownScreenId = screenId;
+		// Block click if its the wrong solution or if its correct mark the item as clicked
+		if (!stack.getHoverName().getString().startsWith(prefix)) {
+			return this.shouldBlockIncorrectClicks();
 		} else {
-			return shouldBlockIncorrectClicks();
+			this.clickedSlotIds.add(slot);
 		}
 
 		return false;
@@ -82,57 +68,6 @@ public final class StartsWithTerminal extends SimpleContainerSolver implements T
 	@Override
 	public ItemStack modifyDisplayStack(int slotIndex, ItemStack stack) {
 		// 5 rows * 9 = 45
-		return slotIndex >= 45 || stack.getHoverName().getString().startsWith(groups[0]) ? stack : ItemStack.EMPTY;
-	}
-
-	//We only set up the state when all items aren't null or empty. This prevents the state from being reset due to unsent items or server lag spikes/bad TPS (fix ur servers Hypixel)
-	private void setupState(Int2ObjectMap<ItemStack> usefulSlots) {
-		Predicate<Int2ObjectMap.Entry<ItemStack>> notNullOrEmpty = e -> e.getValue() != null && !e.getValue().isEmpty();
-
-		if (allEntriesMatch(usefulSlots.int2ObjectEntrySet(), notNullOrEmpty)) {
-			//If the state hasn't been setup then we will do that
-			if (trackedItemStates.isEmpty()) {
-				for (Int2ObjectMap.Entry<ItemStack> entry : usefulSlots.int2ObjectEntrySet()) {
-					trackedItemStates.put(entry.getIntKey(), ItemState.of(entry.getValue().getItem()));
-				}
-			} else { //If the state is setup then we verify that it hasn't changed since last time, and if it has then we will clear it and call this method again to set it up
-				//Checks whether the trackedItemStates contains the slot id and if it does it checks whether the tracked state's item is a 1:1 match
-				Predicate<Int2ObjectMap.Entry<ItemStack>> doesItemMatch = e -> trackedItemStates.containsKey(e.getIntKey()) && trackedItemStates.get(e.getIntKey()).itemMatches(e.getValue().getItem());
-
-				if (!allEntriesMatch(usefulSlots.int2ObjectEntrySet(), doesItemMatch)) {
-					clearState();
-					setupState(usefulSlots);
-				}
-			}
-		}
-	}
-
-	private void clearState() {
-		trackedItemStates.clear();
-		lastKnownScreenId = Integer.MIN_VALUE;
-	}
-
-	private static boolean allEntriesMatch(ObjectSet<Int2ObjectMap.Entry<ItemStack>> entries, Predicate<Int2ObjectMap.Entry<ItemStack>> predicate) {
-		for (Int2ObjectMap.Entry<ItemStack> entry : entries) {
-			if (!predicate.test(entry)) return false;
-		}
-
-		return true;
-	}
-
-	private record ItemState(Item item, boolean clicked) {
-		private static final ItemState DEFAULT = new ItemState(null, false);
-
-		boolean itemMatches(Item item) {
-			return this.item.equals(item);
-		}
-
-		ItemState click() {
-			return new ItemState(item, true);
-		}
-
-		static ItemState of(Item item) {
-			return new ItemState(item, false);
-		}
+		return slotIndex >= 45 || stack.getHoverName().getString().startsWith(this.groups[0]) ? stack : ItemStack.EMPTY;
 	}
 }

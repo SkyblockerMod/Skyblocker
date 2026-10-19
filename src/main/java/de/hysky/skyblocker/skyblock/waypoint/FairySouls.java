@@ -7,9 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -27,6 +25,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.core.BlockPos;
@@ -38,6 +37,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.HelperConfig;
+import de.hysky.skyblocker.utils.BlockPosSet;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.NEURepoManager;
@@ -110,12 +110,12 @@ public class FairySouls {
 	}
 
 	private static void saveFoundFairySouls(Minecraft client) {
-		Map<String, Map<String, Set<BlockPos>>> foundFairies = new HashMap<>();
+		Map<String, Map<String, BlockPosSet>> foundFairies = new HashMap<>();
 		for (Map.Entry<String, Map<BlockPos, ProfileAwareWaypoint>> fairiesForLocation : fairySouls.entrySet()) {
 			for (ProfileAwareWaypoint fairySoul : fairiesForLocation.getValue().values()) {
 				for (String profile : fairySoul.foundProfiles) {
 					foundFairies.computeIfAbsent(profile, _ -> new HashMap<>());
-					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new HashSet<>());
+					foundFairies.get(profile).computeIfAbsent(fairiesForLocation.getKey(), _ -> new BlockPosSet());
 					foundFairies.get(profile).get(fairiesForLocation.getKey()).add(fairySoul.pos);
 				}
 			}
@@ -123,11 +123,11 @@ public class FairySouls {
 
 		try (BufferedWriter writer = Files.newBufferedWriter(SkyblockerMod.CONFIG_DIR.resolve("found_fairy_souls.json"))) {
 			JsonObject foundFairiesJson = new JsonObject();
-			for (Map.Entry<String, Map<String, Set<BlockPos>>> foundFairiesForProfile : foundFairies.entrySet()) {
+			for (Map.Entry<String, Map<String, BlockPosSet>> foundFairiesForProfile : foundFairies.entrySet()) {
 				JsonObject foundFairiesForProfileJson = new JsonObject();
-				for (Map.Entry<String, Set<BlockPos>> foundFairiesForLocation : foundFairiesForProfile.getValue().entrySet()) {
+				for (Map.Entry<String, BlockPosSet> foundFairiesForLocation : foundFairiesForProfile.getValue().entrySet()) {
 					JsonArray foundFairiesForLocationJson = new JsonArray();
-					for (BlockPos foundFairy : foundFairiesForLocation.getValue()) {
+					for (BlockPos foundFairy : foundFairiesForLocation.getValue().iterateMut()) {
 						foundFairiesForLocationJson.add(PosUtils.getPosString(foundFairy));
 					}
 					foundFairiesForProfileJson.add(foundFairiesForLocation.getKey(), foundFairiesForLocationJson);
@@ -159,7 +159,7 @@ public class FairySouls {
 	private static void extractRendering(PrimitiveCollector collector) {
 		HelperConfig.FairySouls fairySoulsConfig = SkyblockerConfigManager.get().helpers.fairySouls;
 
-		if (fairySoulsConfig.enableFairySoulsHelper && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
+		if (fairySoulsConfig.enableFairySoulsHelper && (fairySoulsConfig.highlightOnBingo || !Utils.isOnBingo()) && fairySoulsLoaded.isDone() && fairySouls.containsKey(Utils.getLocationRaw())) {
 			for (Waypoint fairySoul : fairySouls.get(Utils.getLocationRaw()).values()) {
 				boolean fairySoulNotFound = fairySoul.shouldRender();
 				if (!fairySoulsConfig.highlightFoundSouls && !fairySoulNotFound || fairySoulsConfig.highlightOnlyNearbySouls && fairySoul.pos.distToCenterSqr(RenderHelper.getCamera().position()) > 2500) {
@@ -171,8 +171,8 @@ public class FairySouls {
 	}
 
 	private static boolean onChatMessage(Component text, boolean overlay) {
-		String message = text.getString();
-		if (message.equals("You have already found that Fairy Soul!") || message.equals("§d§lSOUL! §fYou found a §dFairy Soul§f!")) {
+		String message = ChatFormatting.stripFormatting(text.getString());
+		if (message.equals("You have already found that Fairy Soul!") || message.equals("SOUL! You found a Fairy Soul!")) {
 			markClosestFairyFound();
 		}
 

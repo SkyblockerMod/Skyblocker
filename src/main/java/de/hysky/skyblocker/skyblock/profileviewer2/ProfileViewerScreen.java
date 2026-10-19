@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.profileviewer2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -21,10 +22,13 @@ import net.minecraft.util.CommonColors;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfile;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ApiProfileResponse;
 import de.hysky.skyblocker.skyblock.profileviewer2.model.ProfileMember;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CatacombsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CollectionsPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.CombatPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.InventoryPage;
+import de.hysky.skyblocker.skyblock.profileviewer2.pages.MiningPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.ProfileViewerPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.pages.SkillsPage;
-import de.hysky.skyblocker.skyblock.profileviewer2.pages.SlayersPage;
 import de.hysky.skyblocker.skyblock.profileviewer2.utils.ItemLoader;
 import de.hysky.skyblocker.skyblock.profileviewer2.widgets.PageTabWidget;
 
@@ -36,29 +40,37 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 	private final ApiProfile profile;
 	private final GameProfile userProfile;
 	private final ProfileMember member;
+	private final Map<String, Integer> leaderboards;
 	private final long openedAt = System.currentTimeMillis();
-	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new SlayersPage(), new InventoryPage());
+	private final List<ProfileViewerPage<?>> pages = List.of(new SkillsPage(), new CombatPage(), new CatacombsPage(), new InventoryPage(), new CollectionsPage(), new MiningPage());
 	private final Set<ProfileViewerPage<?>> loadedPages = new HashSet<>();
-	private final List<PageTabWidget> tabWidgets = List.of(createPageTab(0), createPageTab(1), createPageTab(2));
+	private final List<PageTabWidget> tabWidgets = this.createPageTabs();
 	private final FrameLayout contentLayout = new FrameLayout(CONTENT_WIDTH, CONTENT_HEIGHT);
 	private int selectedPageIndex;
 
-	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member) {
+	protected ProfileViewerScreen(ApiProfileResponse apiProfileResponse, ApiProfile profile, GameProfile userProfile, ProfileMember member, Map<String, Integer> leaderboards) {
 		super(Component.literal("Skyblocker Profile Viewer"));
 		this.apiProfileResponse = apiProfileResponse;
 		this.profile = profile;
 		this.userProfile = userProfile;
 		this.member = member;
+		this.leaderboards = leaderboards;
 		this.loadPages();
 		this.setSelectedPage(0);
 	}
 
-	private PageTabWidget createPageTab(int index) {
-		return new PageTabWidget(this.pages.get(index).getIcon(), index, this::setSelectedPage);
+	private List<PageTabWidget> createPageTabs() {
+		List<PageTabWidget> tabs = new ArrayList<>();
+
+		for (int i = 0; i < this.pages.size(); i++) {
+			tabs.add(new PageTabWidget(this.pages.get(i).getIcon(), i, this::setSelectedPage));
+		}
+
+		return List.copyOf(tabs);
 	}
 
 	private LoadingInformation createLoadingInformation() {
-		return new LoadingInformation(this.profile, this.userProfile, this.member, ItemLoader.decodeItems(this.member));
+		return new LoadingInformation(this.profile, this.userProfile, this.member, this.leaderboards, ItemLoader.decodeItems(this.member));
 	}
 
 	private void loadPages() {
@@ -66,7 +78,12 @@ public final class ProfileViewerScreen extends AbstractProfileViewerScreen {
 
 		for (ProfileViewerPage<?> page : this.pages) {
 			page.load(loadingInformation).thenAcceptAsync(layoutElement -> {
-				this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				if (page.centred()) {
+					this.contentLayout.addChild(layoutElement);
+				} else {
+					this.contentLayout.addChild(layoutElement, l -> l.alignVerticallyTop().alignHorizontallyLeft()); // custom layout setting cuz FrameLayout centers stuff by default
+				}
+
 				this.contentLayout.arrangeElements();
 				this.repositionElements();
 				this.loadedPages.add(page);
