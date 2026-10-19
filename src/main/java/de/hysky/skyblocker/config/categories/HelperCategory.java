@@ -479,6 +479,7 @@ public class HelperCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax"))
 								.description(Component.translatable("skyblocker.config.helpers.bazaar.enableBazaarMax.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.helpers.bazaar.enableBazaarMax,
 										() -> config.helpers.bazaar.enableBazaarMax,
 										newValue -> config.helpers.bazaar.enableBazaarMax = newValue)

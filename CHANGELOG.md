@@ -1,3 +1,43 @@
+# Release 6.11.0
+
+## Highlight
+* Add outline option to Teleport Overlay
+* Add Rare Crops Chat Filter
+* Add Critter Capsule Helper
+* Add Bazaar Max Item Quantity Helper
+* Fix Storage Overlay not scrolling initialy to the open page
+* Fix Forge widget showing when empty
+* Fix Special and Very Special Phoenix Pet not showing correctly
+* Fix Shortcuts mod incompatibility issue
+* Fix Custom Item Models not working when using Catharsis
+* Fix Animated Custom Heads not being selectable
+* Fix Inventory Search mod incompatibility issue
+* Reorganize Dungeon Messages
+
+## What's Changed
+* make solver handler loop thread safe by @TheTerrariaGuy in https://github.com/SkyblockerMod/Skyblocker/pull/2758
+* Merge dungeon messages into single category by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2712
+* Add outline options to teleport overlay highlight by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2701
+* Add rare crops chat filter by @LJNeon in https://github.com/SkyblockerMod/Skyblocker/pull/2542
+* Critter capsule helper by @olim88 in https://github.com/SkyblockerMod/Skyblocker/pull/2669
+* remove hiding an ElementBasedWidget if it's empty by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2750
+* Fix Phoenix Pet ItemStackBuilder issue by @Alex33856 in https://github.com/SkyblockerMod/Skyblocker/pull/2765
+* New Feature - Galatea Invisibug highlight by @IBeHunting in https://github.com/SkyblockerMod/Skyblocker/pull/2497
+* Bazaar max item amount alias by @TheTerrariaGuy in https://github.com/SkyblockerMod/Skyblocker/pull/2700
+* replace all* formatting codes with components by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2744
+* fix(shortcuts): stop pressed keys list from leaking duplicates on key repeat by @lunaynx in https://github.com/SkyblockerMod/Skyblocker/pull/2764
+* fix custom models not working with catharsis by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2754
+* Scroll storage overlay to the open backpack/ender chest by @CubityFirst in https://github.com/SkyblockerMod/Skyblocker/pull/2771
+* a few bug fixes by @viciscat in https://github.com/SkyblockerMod/Skyblocker/pull/2778
+* Translations update from hysky translate by @Weblate-LifeIsAParadox in https://github.com/SkyblockerMod/Skyblocker/pull/2759
+
+## New Contributors
+* @CubityFirst made their first contribution in https://github.com/SkyblockerMod/Skyblocker/pull/2771
+
+**Full Changelog**: https://github.com/SkyblockerMod/Skyblocker/compare/v6.10.4+26.2...v6.11.0+26.2
+
+___
+
 # Release 6.10.4
 
 ## Highlight
