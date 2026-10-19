@@ -98,6 +98,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibug"))
 								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibug.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.hunting.moongladeMobs.highlightInvisibug,
 										() -> config.hunting.moongladeMobs.highlightInvisibug,
 										newValue -> config.hunting.moongladeMobs.highlightInvisibug = newValue)
@@ -105,6 +106,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibugColor"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.hunting.moongladeMobs.invisibugGlowColor,
 										() -> config.hunting.moongladeMobs.invisibugGlowColor,
 										newValue -> config.hunting.moongladeMobs.invisibugGlowColor = newValue)
@@ -185,6 +187,7 @@ public class HuntingCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper"))
 								.description(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.hunting.safari.critterCapsuleHelper,
 										() -> config.hunting.safari.critterCapsuleHelper,
 										newValue -> config.hunting.safari.critterCapsuleHelper = newValue)
@@ -192,6 +195,7 @@ public class HuntingCategory {
 								.build())
 						.option(Option.<Color>createBuilder()
 								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelperColor"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
 								.binding(defaults.hunting.safari.critterCapsuleHelperColor,
 										() -> config.hunting.safari.critterCapsuleHelperColor,
 										newValue -> config.hunting.safari.critterCapsuleHelperColor = newValue)
