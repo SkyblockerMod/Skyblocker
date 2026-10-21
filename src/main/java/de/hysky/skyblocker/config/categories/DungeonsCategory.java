@@ -120,16 +120,24 @@ public class DungeonsCategory {
 								newValue -> config.dungeons.allowDroppingProtectedItems = newValue)
 						.controller(ConfigUtils.createBooleanController())
 						.build())
-				.option(Option.<Boolean>createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls"))
-						.description(Component.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip"))
-						.binding(defaults.dungeons.hideSoulweaverSkulls,
-								() -> config.dungeons.hideSoulweaverSkulls,
-								newValue -> config.dungeons.hideSoulweaverSkulls = newValue)
-						.controller(ConfigUtils.createBooleanController())
-						.build())
-				.option(ButtonOption.createBuilder()
-						.name(Component.translatable("skyblocker.config.dungeons.dungeonSplits"))
+					.option(Option.<Boolean>createBuilder()
+							.name(Component.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls"))
+							.description(Component.translatable("skyblocker.config.dungeons.hideSoulweaverSkulls.@Tooltip"))
+							.binding(defaults.dungeons.hideSoulweaverSkulls,
+									() -> config.dungeons.hideSoulweaverSkulls,
+									newValue -> config.dungeons.hideSoulweaverSkulls = newValue)
+							.controller(ConfigUtils.createBooleanController())
+							.build())
+					.option(Option.<Boolean>createBuilder()
+							.name(Component.translatable("skyblocker.config.dungeons.middleClickBypass"))
+							.description(Component.translatable("skyblocker.config.dungeons.middleClickBypass.@Tooltip"))
+							.binding(defaults.dungeons.middleClickBypass,
+									() -> config.dungeons.middleClickBypass,
+									newValue -> config.dungeons.middleClickBypass = newValue)
+							.controller(ConfigUtils.createBooleanController())
+							.build())
+					.option(ButtonOption.createBuilder()
+							.name(Component.translatable("skyblocker.config.dungeons.dungeonSplits"))
 						.description(Component.translatable("skyblocker.config.hud.movedMessage"), Component.translatable("skyblocker.config.dungeons.dungeonSplits.@Tooltip"))
 						.action(screen -> Minecraft.getInstance().gui.setScreen(new WidgetsConfigurationScreen(Location.DUNGEON, screen)))
 						.prompt(Component.translatable("text.skyblocker.open"))
@@ -373,6 +381,14 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.puzzleSolvers.solveTeleportMaze = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.puzzle.blockIncorrectClicks"))
+								.description(Component.translatable("skyblocker.config.dungeons.puzzle.blockIncorrectClicks.@Tooltip"))
+								.binding(defaults.dungeons.puzzleSolvers.blockIncorrectClicks,
+										() -> config.dungeons.puzzleSolvers.blockIncorrectClicks,
+										newValue -> config.dungeons.puzzleSolvers.blockIncorrectClicks = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.build())
 
 				// The Professor (F3/M3)
@@ -535,6 +551,14 @@ public class DungeonsCategory {
 								.binding(defaults.dungeons.devices.solveTargetPractice,
 										() -> config.dungeons.devices.solveTargetPractice,
 										newValue -> config.dungeons.devices.solveTargetPractice = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.devices.blockIncorrectClicks"))
+								.description(Component.translatable("skyblocker.config.dungeons.devices.blockIncorrectClicks.@Tooltip"))
+								.binding(defaults.dungeons.devices.blockIncorrectClicks,
+										() -> config.dungeons.devices.blockIncorrectClicks,
+										newValue -> config.dungeons.devices.blockIncorrectClicks = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
