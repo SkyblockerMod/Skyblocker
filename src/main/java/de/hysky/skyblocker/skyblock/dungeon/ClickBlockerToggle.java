@@ -10,6 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.Constants;
 
@@ -18,10 +19,19 @@ import de.hysky.skyblocker.utils.Constants;
  * blockIncorrectClicks toggle at once, for when a blocker misfires mid run.
  */
 public final class ClickBlockerToggle {
-	public static final KeyMapping TOGGLE_CLICK_BLOCKERS = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.skyblocker.toggleClickBlockers", InputConstants.KEY_Z, SkyblockerMod.KEYBINDING_CATEGORY));
+	public static KeyMapping TOGGLE_CLICK_BLOCKERS;
 
 	private ClickBlockerToggle() {}
+
+	/**
+	 * Keybinds must be registered before {@link Minecraft#options} is built, and this class is
+	 * otherwise first loaded from {@code handleKeybinds}, which is far too late.
+	 */
+	@Init
+	public static void init() {
+		TOGGLE_CLICK_BLOCKERS = KeyMappingHelper.registerKeyMapping(
+				new KeyMapping("key.skyblocker.toggleClickBlockers", InputConstants.KEY_Z, SkyblockerMod.KEYBINDING_CATEGORY));
+	}
 
 	public static void handleInputEvents(LocalPlayer player) {
 		while (TOGGLE_CLICK_BLOCKERS.consumeClick()) {
