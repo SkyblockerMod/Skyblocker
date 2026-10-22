@@ -494,6 +494,8 @@
   "skyblocker.config.farming.farmingHud.coins": "Calculated Hourly Profits",
   "skyblocker.config.farming.farmingHud.config": "Farming HUD Config...",
   "skyblocker.config.farming.farmingHud.counter": "Counter & Crops per Minute",
+  "skyblocker.config.farming.farmingHud.estimateCounter": "Interpolate counter",
+  "skyblocker.config.farming.farmingHud.estimateCounter.@Tooltip": "Calculates an estimate to interpolate the counter.",
   "skyblocker.config.farming.farmingHud.experience": "Farming Skill Progress",
   "skyblocker.config.farming.farmingHud.includeSeedsPrice": "Include Seeds in Wheat Hoe's Coins per Hour",
   "skyblocker.config.farming.farmingHud.type": "Use Price Value From",

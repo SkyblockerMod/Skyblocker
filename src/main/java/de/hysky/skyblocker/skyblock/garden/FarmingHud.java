@@ -4,7 +4,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +15,7 @@ import it.unimi.dsi.fastutil.floats.FloatLongPair;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.LongLongPair;
 import it.unimi.dsi.fastutil.longs.LongPriorityQueue;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,14 +38,18 @@ import de.hysky.skyblocker.utils.Utils;
 
 
 public class FarmingHud {
+	private static final long LAUNCH_TIME = System.currentTimeMillis();
 	private static final Logger LOGGER = LoggerFactory.getLogger(FarmingHud.class);
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.US);
 	private static final Pattern FARMING_XP = Pattern.compile("\\+(?<xp>\\d+(?:\\.\\d+)?) Farming \\((?:(?<percent>[\\d,]+(?:\\.\\d+)?%)|(?<current>[\\d,]+)/(?<max>[\\d,]+k?))\\)");
 	private static final Minecraft client = Minecraft.getInstance();
 	private static final int STATS_WINDOW = 5_000;
+	private static final int COUNTER_WINDOW = 30_000;
 
 	private static CounterType counterType = CounterType.NONE;
 	private static final Deque<LongLongPair> counter = new ArrayDeque<>();
+	private static final SimpleRegression counterRegression = new SimpleRegression();
+	private static long estimatedCounter = 0;
 	private static final LongPriorityQueue blockBreaks = new LongArrayFIFOQueue();
 	private static final Queue<FloatLongPair> farmingXp = new ArrayDeque<>();
 
@@ -52,13 +59,21 @@ public class FarmingHud {
 	public static void init() {
 		ClientTickEvents.END_CLIENT_TICK.register(_ -> {
 			if (shouldRender()) {
-				if (!counter.isEmpty() && counter.peek().rightLong() + STATS_WINDOW < System.currentTimeMillis()) {
-					counter.poll();
+				long now = System.currentTimeMillis();
+				if (!counter.isEmpty() && counter.peek().rightLong() + COUNTER_WINDOW < now) {
+					LongLongPair poll = Objects.requireNonNull(counter.poll());
+					if (counter.isEmpty()) counterRegression.clear();
+					else counterRegression.removeData(poll.rightLong() - LAUNCH_TIME, poll.leftLong());
 				}
-				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + STATS_WINDOW < System.currentTimeMillis()) {
+				if (!blockBreaks.isEmpty() && blockBreaks.firstLong() + STATS_WINDOW < now) {
 					blockBreaks.dequeueLong();
 				}
-				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + STATS_WINDOW < System.currentTimeMillis()) {
+				// don't clear if there's only 1 element, as it will just get added back by tryGetCounter anyway
+				if (counter.size() > 1 && blockBreaks.isEmpty()) {
+					counter.clear();
+					counterRegression.clear();
+				}
+				if (!farmingXp.isEmpty() && farmingXp.peek().rightLong() + STATS_WINDOW < now) {
 					farmingXp.poll();
 				}
 
@@ -66,6 +81,14 @@ public class FarmingHud {
 				ItemStack stack = client.player.getMainHandItem();
 				if (tryGetCounter(stack, CounterType.CULTIVATING)) {
 					counterType = CounterType.NONE;
+				}
+				if (counter.size() >= 2 && !blockBreaks.isEmpty() && blockBreaks.lastLong() + 500 > now) {
+					Iterator<LongLongPair> iterator = counter.descendingIterator();
+					LongLongPair last = iterator.next();
+					LongLongPair secondLast = iterator.next();
+					long sinceLast = now - last.rightLong();
+					double v = (last.leftLong() - secondLast.leftLong()) / (double) (last.rightLong() - secondLast.rightLong());
+					estimatedCounter = last.leftLong() + (long) (sinceLast * v);
 				}
 			}
 		});
@@ -116,10 +139,14 @@ public class FarmingHud {
 		long count = customData.getLongOr(counterType.nbtKey, 0);
 		if (FarmingHud.counterType != counterType) {
 			counter.clear();
+			counterRegression.clear();
 			FarmingHud.counterType = counterType;
 		}
 		if (counter.isEmpty() || counter.peekLast().leftLong() != count) {
-			counter.offer(LongLongPair.of(count, System.currentTimeMillis()));
+			long millis = System.currentTimeMillis();
+			counter.offer(LongLongPair.of(count, millis));
+			estimatedCounter = count;
+			counterRegression.addData(millis - LAUNCH_TIME, count);
 		}
 		return false;
 	}
@@ -132,17 +159,16 @@ public class FarmingHud {
 		return counterType;
 	}
 
-	public static long counter() {
-		return counter.isEmpty() ? 0 : counter.peekLast().leftLong();
+	public static long counter(boolean useEstimate) {
+		if (counter.isEmpty()) return 0;
+		return useEstimate ? estimatedCounter : counter.peekLast().leftLong();
 	}
 
 	public static float cropsPerMinute() {
-		if (counter.isEmpty()) {
+		if (counterRegression.getN() < 2) {
 			return 0;
 		}
-		LongLongPair first = counter.peek();
-		LongLongPair last = counter.peekLast();
-		return (float) (last.leftLong() - first.leftLong()) / (last.rightLong() - first.rightLong()) * 60_000f;
+		return (float) (counterRegression.getSlope() * 60_000);
 	}
 
 	public static double blockBreaks() {
