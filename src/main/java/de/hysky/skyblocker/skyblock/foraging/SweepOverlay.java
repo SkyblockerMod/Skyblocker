@@ -44,7 +44,7 @@ import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollector;
 public class SweepOverlay {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SweepOverlay.class);
 	private static final Minecraft CLIENT = Minecraft.getInstance();
-	private static float[] colorComponents;
+	private static float[] colorComponents = new float[4];
 	private static final int MAX_BASIC_WOOD_CUT = 36;
 	private static final Pattern SWEEP_VALUE_PATTERN = Pattern.compile(String.format("Sweep:\\s*(?:[∮%s])*(\\d+)", SkyBlockIcons.SWEEP));
 	private static boolean sweepStatNoticeShown = false;
@@ -236,17 +236,16 @@ public class SweepOverlay {
 		if (CLIENT.player == null) {
 			return 0.0f;
 		}
+		if (!PlayerListManager.isPlayerListLoaded()) return 0.0f;
 
 		List<String> playerList = PlayerListManager.getPlayerStringList();
-		if (playerList != null) {
-			for (String entry : playerList) {
-				Matcher matcher = SWEEP_VALUE_PATTERN.matcher(entry);
-				if (matcher.find()) {
-					try {
-						return Float.parseFloat(matcher.group(1));
-					} catch (NumberFormatException e) {
-						LOGGER.warn("Failed to parse Sweep stat from tab list: {}. Error: {}", entry, e.getMessage());
-					}
+		for (String entry : playerList) {
+			Matcher matcher = SWEEP_VALUE_PATTERN.matcher(entry);
+			if (matcher.find()) {
+				try {
+					return Float.parseFloat(matcher.group(1));
+				} catch (NumberFormatException e) {
+					LOGGER.warn("Failed to parse Sweep stat from tab list: {}. Error: {}", entry, e.getMessage());
 				}
 			}
 		}
@@ -262,7 +261,7 @@ public class SweepOverlay {
 
 	/**
 	 * Calculates the maximum number of logs that can be chopped based on Sweep stat and toughness.
-	 * A hard cap of {@value #MAX_WOOD_CAP} logs is enforced.
+	 * A hard cap of {@value #MAX_BASIC_WOOD_CUT} logs is enforced.
 	 *
 	 * @param sweepStat the player's Sweep stat
 	 * @param toughness the toughness of the log
@@ -329,6 +328,7 @@ public class SweepOverlay {
 	private static void submitConnectedLogs(PrimitiveCollector collector, BlockHitResult blockHitResult, BlockState state, boolean isThrown) {
 		BlockPos startPos = blockHitResult.getBlockPos();
 		Level world = CLIENT.level;
+		if (world == null) return;
 		float sweepStat = getSweepStat();
 		if (sweepStat <= 0) return;
 
