@@ -98,7 +98,6 @@ public final class ItemUtils {
 	private static final Pattern STASH_COUNT_PATTERN = Pattern.compile("x([\\d,]+)$"); // This is used with Matcher#find, not #matches
 	private static final Pattern COMPOSTER_COUNT_PATTERN = Pattern.compile("Compost Available: ([\\d,]+)");
 	private static final Pattern HUNTING_BOX_COUNT_PATTERN = Pattern.compile("Owned: (?<shards>[\\d,]+) Shards?");
-	private static final Pattern ENCHANTMENT_LEVEL_PATTERN = Pattern.compile("_(\\d+)$");
 	private static final short LOG_INTERVAL = 1000;
 	private static long lastLog = Util.getMillis();
 
@@ -372,8 +371,13 @@ public final class ItemUtils {
 		// Enchantments
 		if (apiId.startsWith("ENCHANTMENT_")) {
 			String string = apiId.split("_", 2)[1];
-			Matcher matcher = ENCHANTMENT_LEVEL_PATTERN.matcher(string);
-			return matcher.replaceFirst(result -> ";" + result.group(1));
+			int i = string.lastIndexOf('_');
+			if (i >= 0) {
+				StringBuilder builder = new StringBuilder(string);
+				builder.setCharAt(i, ';');
+				return builder.toString();
+			}
+			return string;
 		}
 
 		return apiId;
