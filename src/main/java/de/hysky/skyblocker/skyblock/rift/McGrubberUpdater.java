@@ -28,7 +28,7 @@ public class McGrubberUpdater {
 	private static final String MOTES_GRUBBER = "Motes Grubber";
 	private static final String CONSUMABLE_ITEMS = "Miscellaneous ➜ Consumable Items";
 	private static final Pattern ORB_PICKUP = Pattern.compile("ORB! Picked up \\+(?<motes>\\d+) Motes, recovered \\+2ф Rift Time!");
-	private static final Pattern MOTES_PRICE = Pattern.compile("(?<price>\\d+(\\.\\d)?) Motes");
+	private static final Pattern MOTES_PRICE = Pattern.compile("(?<price>[\\d,]+(\\.\\d)?) Motes");
 	private static final Pattern MCGRUBBER_PROGRESS = Pattern.compile("Total Progress: (?<percent>\\d+)%");
 
 	private McGrubberUpdater() {}
@@ -63,7 +63,7 @@ public class McGrubberUpdater {
 
 			if (matcher == null) continue;
 
-			float price = NumberUtils.toFloat(matcher.group("price"));
+			float price = NumberUtils.toFloat(matcher.group("price").replace(",", ""));
 			final String internalID = item.getSkyblockId();
 
 			// Compare against base price to determine mcgrubber stacks
@@ -119,8 +119,8 @@ public class McGrubberUpdater {
 
 		if (matcher.matches()) {
 			int motes = RegexUtils.parseIntFromMatcher(matcher, "motes");
-			// Base of 5 motes, +60 motes per mcGrubber stack.
-			int mcGrubberStacks = (motes - 5) / 60;
+			// Base of 5 motes, +40 motes per mcGrubber stack.
+			int mcGrubberStacks = (motes - 5) / 40;
 
 			if (SkyblockerConfigManager.get().otherLocations.rift.mcGrubberStacks != mcGrubberStacks) {
 				SkyblockerConfigManager.updateOnly(config -> config.otherLocations.rift.mcGrubberStacks = mcGrubberStacks);
