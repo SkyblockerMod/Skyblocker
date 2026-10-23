@@ -119,8 +119,8 @@ public class McGrubberUpdater {
 
 		if (matcher.matches()) {
 			int motes = RegexUtils.parseIntFromMatcher(matcher, "motes");
-			// Base of 5 motes, +40 motes per mcGrubber stack.
-			int mcGrubberStacks = (motes - 5) / 40;
+			// Base of 25 motes, +40 motes per mcGrubber stack.
+			int mcGrubberStacks = (motes - 25) / 40;
 
 			if (SkyblockerConfigManager.get().otherLocations.rift.mcGrubberStacks != mcGrubberStacks) {
 				SkyblockerConfigManager.updateOnly(config -> config.otherLocations.rift.mcGrubberStacks = mcGrubberStacks);
