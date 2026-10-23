@@ -18,6 +18,7 @@ import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
+import de.hysky.skyblocker.utils.SkyBlockIcons;
 import de.hysky.skyblocker.utils.Utils;
 
 /**
@@ -27,7 +28,7 @@ import de.hysky.skyblocker.utils.Utils;
 public class McGrubberUpdater {
 	private static final String MOTES_GRUBBER = "Motes Grubber";
 	private static final String CONSUMABLE_ITEMS = "Miscellaneous ➜ Consumable Items";
-	private static final Pattern ORB_PICKUP = Pattern.compile("ORB! Picked up \\+(?<motes>\\d+) Motes, recovered \\+2ф Rift Time!");
+	private static final Pattern ORB_PICKUP = Pattern.compile("ORB! Picked up \\+(?<motes>\\d+) Motes, recovered \\+2" + SkyBlockIcons.RIFT_TIME + " Rift Time!");
 	private static final Pattern MOTES_PRICE = Pattern.compile("(?<price>[\\d,]+(\\.\\d)?) Motes");
 	private static final Pattern MCGRUBBER_PROGRESS = Pattern.compile("Total Progress: (?<percent>\\d+)%");
 
