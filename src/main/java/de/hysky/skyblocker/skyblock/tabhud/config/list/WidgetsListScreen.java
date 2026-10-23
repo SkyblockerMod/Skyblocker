@@ -312,7 +312,7 @@ public class WidgetsListScreen extends Screen implements ContainerListener {
 		WidgetsListSlotEntry entry;
 		if (lowerCase.startsWith("widgets on") || lowerCase.startsWith("widgets in") || lastLowerCase.contains("click to edit") || stack.is(Items.STAINED_GLASS_PANE.red())) {
 			entry = new EditableSlotEntry(this, slot, stack);
-		} else if (lowerCase.endsWith("widget")) {
+		} else if (lowerCase.endsWith("widget") && lastLowerCase.contains("right-click to change settings")) {
 			entry = new WidgetSlotEntry(this, slot, stack);
 		} else if (lastLowerCase.contains("enable") || lastLowerCase.contains("disable")) {
 			entry = new BooleanSlotEntry(this, slot, stack);
