@@ -282,7 +282,7 @@ public class LeapOverlay extends Screen implements ContainerListener {
 		private void clickSlot() {
 			CLIENT.gameMode.handleContainerInput(this.syncId(), this.slotId(), ContainerUtils.getContainerClickButton(InputConstants.MOUSE_BUTTON_LEFT), ContainerInput.PICKUP, CLIENT.player);
 			if (CONFIG.get().enableLeapMessage) {
-				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + CONFIG.get().leapMessage.replaceAll("\\[name]", this.name), true);
+				MessageScheduler.INSTANCE.sendMessageAfterCooldown("/pc " + Constants.PREFIX.get().getString() + "Leaped to ${this.name}"), true);
 			}
 		}
 	}

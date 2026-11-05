@@ -109,7 +109,8 @@ public class DungeonsConfig {
 
 		public boolean enableLeapMessage = false;
 
-		public String leapMessage = "Leaped to [name]!";
+		@Deprecated
+		public transient String leapMessage = "Leaped to [name]!";
 	}
 
 	public static class PuzzleSolvers {
