@@ -273,6 +273,7 @@
   "skyblocker.config.dungeons.dungeonChestProfit.includeEssence.@Tooltip": "Disabling is **not recommended** if you're a forgetful person.",
   "skyblocker.config.dungeons.dungeonChestProfit.includeKismet": "Include Kismet Price",
   "skyblocker.config.dungeons.dungeonChestProfit.includeKismet.@Tooltip": "When enabled, if you used a kismet, the price of one will be subtracted from the profit",
+  "skyblocker.config.dungeons.dungeonChestProfit.includeShards": "Include Attribute Shards",
   "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor": "Incomplete Color",
   "skyblocker.config.dungeons.dungeonChestProfit.incompleteColor.@Tooltip": "The color to display when the price data is incomplete.",
   "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "Loss Color",
