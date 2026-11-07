@@ -536,8 +536,8 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 		@Override
 		protected void extractBarFill(GuiGraphicsExtractor graphics, int barX, int barWidth) {
 			Minecraft client = Minecraft.getInstance();
-			boolean withering = client.player != null && client.player.hasEffect(MobEffects.WITHER);
-			boolean poisoned = client.player != null && client.player.hasEffect(MobEffects.POISON);
+			boolean withering = SkyblockerConfigManager.get().uiAndVisuals.bars.healthBarWitherColor && client.player != null && client.player.hasEffect(MobEffects.WITHER);
+			boolean poisoned = SkyblockerConfigManager.get().uiAndVisuals.bars.healthBarPoisonColor && client.player != null && client.player.hasEffect(MobEffects.POISON);
 
 			int fillColor;
 			if (withering) {

@@ -549,14 +549,30 @@ public class UIAndVisualsCategory {
 										() -> config.uiAndVisuals.bars.intelligenceDisplay,
 										newValue -> config.uiAndVisuals.bars.intelligenceDisplay = newValue)
 								.controller(ConfigUtils.createEnumController(intelligenceDisplay -> Component.translatable("skyblocker.config.uiAndVisuals.bars.intelligenceDisplay." + intelligenceDisplay.name())))
-								.build()
-						).option(Option.<Boolean>createBuilder()
+								.build())
+						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.showEstimatedTilde.@Tooltip"))
 								.tags(CommonTags.ADDED_IN_6_8_1)
 								.binding(defaults.uiAndVisuals.bars.showEstimatedTilde,
 										() -> config.uiAndVisuals.bars.showEstimatedTilde,
 										newValue -> config.uiAndVisuals.bars.showEstimatedTilde = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.healthBarWitherColor"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.healthBarWitherColor.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bars.healthBarWitherColor,
+										() -> config.uiAndVisuals.bars.healthBarWitherColor,
+										newValue -> config.uiAndVisuals.bars.healthBarWitherColor = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.bars.healthBarPoisonColor"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.bars.healthBarPoisonColor.@Tooltip"))
+								.binding(defaults.uiAndVisuals.bars.healthBarPoisonColor,
+										() -> config.uiAndVisuals.bars.healthBarPoisonColor,
+										newValue -> config.uiAndVisuals.bars.healthBarPoisonColor = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
 						.build())
