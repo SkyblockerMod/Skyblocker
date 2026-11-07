@@ -524,7 +524,7 @@ public class StatusBar implements LayoutElement, Renderable, GuiEventListener, N
 	}
 
 	public static class HealthStatusBar extends StatusBar {
-		private static final Color WITHER_COLOR = new Color(76, 48, 57);
+		private static final Color WITHER_COLOR = new Color(100, 55, 60);
 		private static final Color POISON_COLOR = new Color(94, 78, 18);
 		private static final Identifier WITHER_ICON = SkyblockerMod.id("bars/icons/health_wither");
 		private static final Identifier POISON_ICON = SkyblockerMod.id("bars/icons/health_poison");
