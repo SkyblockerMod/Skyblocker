@@ -65,7 +65,7 @@ public class TheEnd {
 			new ProtectorLocation(-678, -332, Component.translatable("skyblocker.end.hud.protectorLocations.rightBack"))
 	);
 	private static final Set<UUID> HIT_ZEALOTS = new ObjectOpenHashSet<>();
-	public static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
+	private static final ProfiledData<EndStats> PROFILES_STATS = new ProfiledData<>(FILE, EndStats.CODEC);
 
 	public static @Nullable ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
