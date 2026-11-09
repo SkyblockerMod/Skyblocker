@@ -77,8 +77,9 @@ public class TheEnd {
 		return PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
 	}
 
-	private static void updateStats(UnaryOperator<EndStats> updater) {
+	public static void updateStats(UnaryOperator<EndStats> updater) {
 		PROFILES_STATS.put(updater.apply(getStats()));
+		EndHudWidget.getInstance().update();
 	}
 
 	@Init
@@ -205,7 +206,6 @@ public class TheEnd {
 
 	private static void increaseKilledZealots(int by) {
 		updateStats(stats -> new EndStats(stats.totalZealotKills() + by, stats.zealotsSinceLastEye() + by, stats.eyes()));
-		EndHudWidget.getInstance().update();
 	}
 
 	public static void onSpecialZealotSpawned() {
