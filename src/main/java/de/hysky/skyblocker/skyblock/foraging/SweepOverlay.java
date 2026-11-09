@@ -93,6 +93,9 @@ public class SweepOverlay {
 		LevelRenderExtractionCallback.EVENT.register(SweepOverlay::extractRendering);
 	}
 
+	public static boolean isValidAxe(ItemStack itemStack) {
+		return VALID_AXES.contains(itemStack.getSkyblockId());
+	}
 
 	private static boolean isValidLocation() {
 		return Utils.isInForagingIsland() || Utils.isInHub() || Utils.isInPrivateIsland();
