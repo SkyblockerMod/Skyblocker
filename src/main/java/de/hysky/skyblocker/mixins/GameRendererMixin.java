@@ -15,6 +15,10 @@ import de.hysky.skyblocker.utils.render.GuiHelper;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
+	@Inject(method = "render", at = @At("HEAD"))
+	private void skyblocker$uploadDungeonMapBeforeRenderPasses(CallbackInfo ci) {
+		DungeonMapTexture.uploadMapTexture();
+	}
 
 	@Inject(method = "close", at = @At("TAIL"))
 	private void skyblocker$onGameRendererClose(CallbackInfo ci) {
