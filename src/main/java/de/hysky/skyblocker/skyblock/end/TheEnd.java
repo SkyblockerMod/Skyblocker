@@ -3,9 +3,11 @@ package de.hysky.skyblocker.skyblock.end;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import com.mojang.serialization.Codec;
@@ -36,6 +38,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
+import de.hysky.skyblocker.skyblock.tabhud.util.PlayerListManager;
 import de.hysky.skyblocker.utils.Area;
 import de.hysky.skyblocker.utils.ColorUtils;
 import de.hysky.skyblocker.utils.Utils;
@@ -66,6 +69,17 @@ public class TheEnd {
 
 	public static @Nullable ProtectorLocation currentProtectorLocation = null;
 	public static int stage = 0;
+	private static int lastPityValue;
+	// an attempt at avoiding weird behavior in case tab updates after the special zealot spawned message showed up.
+	private static boolean specialZealotSpawned;
+
+	public static EndStats getStats() {
+		return PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
+	}
+
+	private static void updateStats(UnaryOperator<EndStats> updater) {
+		PROFILES_STATS.put(updater.apply(getStats()));
+	}
 
 	@Init
 	public static void init() {
@@ -106,9 +120,16 @@ public class TheEnd {
 
 		LevelRenderExtractionCallback.EVENT.register(TheEnd::extractRendering);
 		PROFILES_STATS.init();
+		PlayerListManager.registerTabWidgetListener("Pity", TheEnd::onPityChange);
+	}
+
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private static boolean shouldProcess() {
+		return Utils.isInTheEnd();
 	}
 
 	private static void onMessage(String text) {
+		if (!shouldProcess()) return;
 		if (END_STONE_PROTECTOR_TREMOR.matcher(text).matches()) {
 			if (stage == 0) checkAllProtectorLocations();
 			else stage += 1;
@@ -119,11 +140,15 @@ public class TheEnd {
 			resetLocation();
 		} else if (SPECIAL_ZEALOT_SPAWNED.matcher(text).matches()) {
 			// Assume that the player will kill it and get the Summoning Eye
-			onSpecialZealot();
+			onSpecialZealotSpawned();
 		}
 
 		EndHudWidget.getInstance().update();
 	}
+
+	/* =================
+		PROTECTOR STUFF
+	================= */
 
 	private static void checkAllProtectorLocations() {
 		ClientLevel world = CLIENT.level;
@@ -159,19 +184,34 @@ public class TheEnd {
 		currentProtectorLocation = null;
 	}
 
+	private static void extractRendering(PrimitiveCollector collector) {
+		if (!shouldProcess()) return;
+		if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
+		if (currentProtectorLocation == null || stage != 5) return;
+		currentProtectorLocation.waypoint().extractRendering(collector);
+	}
+
+	/* ==================
+		ZEALOT STUFF
+	================== */
+
 	public static void onEntityDeath(Entity entity) {
+		if (!shouldProcess()) return;
 		if (!(entity instanceof EnderMan enderman) || !isZealot(enderman)) return;
 		if (HIT_ZEALOTS.contains(enderman.getUUID())) {
-			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
-			PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, stats.zealotsSinceLastEye() + 1, stats.eyes()));
+			increaseKilledZealots(1);
 			HIT_ZEALOTS.remove(enderman.getUUID());
-			EndHudWidget.getInstance().update();
 		}
 	}
 
-	public static void onSpecialZealot() {
-		EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
-		PROFILES_STATS.put(new EndStats(stats.totalZealotKills(), 0, stats.eyes() + 1));
+	private static void increaseKilledZealots(int by) {
+		updateStats(stats -> new EndStats(stats.totalZealotKills() + by, stats.zealotsSinceLastEye() + by, stats.eyes()));
+		EndHudWidget.getInstance().update();
+	}
+
+	public static void onSpecialZealotSpawned() {
+		updateStats(stats -> new EndStats(stats.totalZealotKills(), 0, stats.eyes() + 1));
+		specialZealotSpawned = true;
 	}
 
 	public static boolean isZealot(EnderMan enderman) {
@@ -190,10 +230,30 @@ public class TheEnd {
 		return carriedBlock != null && carriedBlock.is(Blocks.END_PORTAL_FRAME) && isZealot(enderman);
 	}
 
-	private static void extractRendering(PrimitiveCollector collector) {
-		if (!SkyblockerConfigManager.get().otherLocations.end.waypoint) return;
-		if (currentProtectorLocation == null || stage != 5) return;
-		currentProtectorLocation.waypoint().extractRendering(collector);
+	// Use pity to track ranged kills
+	private static void onPityChange(PlayerListManager.Widget widget) {
+		if (!shouldProcess()) return;
+		Optional<String> zealotPityOpt = widget.lines().stream()
+				.map(Component::getString)
+				.map(s -> s.toLowerCase(Locale.ENGLISH))
+				.filter(s -> s.startsWith("special zealot"))
+				.findFirst();
+		if (zealotPityOpt.isEmpty()) return;
+		String zealotPity = zealotPityOpt.get();
+		// regex is for nerds
+		int colonPos = zealotPity.indexOf(':');
+		int slashPos = zealotPity.indexOf('/');
+		if (colonPos < 0 || slashPos < 0) return;
+		Utils.parseInt(zealotPity.substring(colonPos + 1, slashPos).trim()).ifPresent(pity -> {
+			if (lastPityValue == pity) return;
+			lastPityValue = pity;
+			// ignore the tab update right after the special zealot spawned message pops up, in case
+			// hypixel is a little slow updating it correctly, to avoid a 400 kill difference or something
+			if (getStats().zealotsSinceLastEye() != pity && !specialZealotSpawned) {
+				increaseKilledZealots(pity - getStats().zealotsSinceLastEye());
+			}
+			specialZealotSpawned = false;
+		});
 	}
 
 	public record EndStats(int totalZealotKills, int zealotsSinceLastEye, int eyes) {
