@@ -84,7 +84,7 @@ public class TheEnd {
 	@Init
 	public static void init() {
 		AttackEntityCallback.EVENT.register((_, _, _, entity, _) -> {
-			if (entity instanceof EnderMan enderman && isZealot(enderman)) {
+			if (shouldProcess() && entity instanceof EnderMan enderman && isZealot(enderman)) {
 				HIT_ZEALOTS.add(enderman.getUUID());
 			}
 			return InteractionResult.PASS;
@@ -113,7 +113,7 @@ public class TheEnd {
 		});
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
-			if (!Utils.isInTheEnd() || overlay) return true;
+			if (!shouldProcess() || overlay) return true;
 			onMessage(message.getString());
 			return true;
 		});
@@ -123,7 +123,6 @@ public class TheEnd {
 		PlayerListManager.registerTabWidgetListener("Pity", TheEnd::onPityChange);
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private static boolean shouldProcess() {
 		return Utils.isInTheEnd();
 	}
