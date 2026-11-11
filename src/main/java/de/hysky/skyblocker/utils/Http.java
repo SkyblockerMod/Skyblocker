@@ -21,6 +21,8 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.SharedConstants;
 
 import de.hysky.skyblocker.SkyblockerMod;
+import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
 /**
  * @implNote All http requests are sent using HTTP 2
@@ -30,11 +32,52 @@ public class Http {
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
 	private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(60);
 	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
-	private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
-			.connectTimeout(Duration.ofSeconds(10))
-			.executor(SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
-			.followRedirects(Redirect.NORMAL)
-			.build();
+	private static HttpClient HTTP_CLIENT = createHttpClient();
+
+	private static HttpClient createHttpClient() {
+		return HttpClient.newBuilder()
+				.connectTimeout(Duration.ofSeconds(10))
+				.executor(SkyblockerMod.VIRTUAL_THREAD_EXECUTOR)
+				.followRedirects(Redirect.NORMAL)
+				.build();
+	}
+
+	@Init
+	public static void init() {
+		// refresh every 20 minutes
+		Scheduler.INSTANCE.scheduleCyclic(Http::refreshHttpClient, 60 * 20 * 20);
+	}
+
+	/**
+	 * Workaround for <a href="https://bugs.openjdk.org/browse/JDK-8361091">JDK-8361091</a>
+	 * where HttpClient leaks HTTP2 connections. <br>
+	 * The issue is fixed in JDK27+ but not in JDK25.
+	 */
+	private static void refreshHttpClient() {
+		HttpClient oldClient = HTTP_CLIENT;
+		HTTP_CLIENT = createHttpClient();
+
+		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.submit(() -> {
+			// copy of HttpClient#close because the default implementation has a timeout of 1 day which is way too long
+			oldClient.shutdown();
+			boolean interrupted = false;
+			boolean terminated = false;
+			while (!terminated) {
+				try {
+					terminated = oldClient.awaitTermination(Duration.ofMinutes(5L));
+				} catch (InterruptedException _) {
+					if (!interrupted) {
+						interrupted = true;
+						oldClient.shutdownNow();
+						if (oldClient.isTerminated()) break;
+					}
+				}
+			}
+			if (interrupted) {
+				Thread.currentThread().interrupt();
+			}
+		});
+	}
 
 	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
