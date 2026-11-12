@@ -181,11 +181,11 @@ public class WishingCompassSolver {
 
 	@SuppressWarnings("incomplete-switch")
 	private static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.getParticle().getType())) {
+		if (!Utils.isInCrystalHollows() || !ParticleTypes.HAPPY_VILLAGER.equals(packet.particle().getType())) {
 			return;
 		}
 		//get location of particle
-		Vec3 particlePos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+		Vec3 particlePos = new Vec3(packet.x(), packet.y(), packet.z());
 		//update particle used time
 		particleLastUpdate = System.currentTimeMillis();
 		//ignore particle not in the line

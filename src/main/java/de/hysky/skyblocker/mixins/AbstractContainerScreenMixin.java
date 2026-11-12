@@ -59,6 +59,7 @@ import de.hysky.skyblocker.skyblock.item.tooltip.BackpackPreview;
 import de.hysky.skyblocker.skyblock.item.tooltip.CompactorDeletorPreview;
 import de.hysky.skyblocker.skyblock.item.wikilookup.WikiLookupManager;
 import de.hysky.skyblocker.skyblock.museum.MuseumItemCache;
+import de.hysky.skyblocker.utils.ContainerUtils;
 import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.container.ContainerSolver;
 import de.hysky.skyblocker.utils.container.ContainerSolverManager;
@@ -163,7 +164,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
 	@SuppressWarnings("DataFlowIssue")
 	// makes intellij be quiet about this.focusedSlot maybe being null. It's already null checked in mixined method.
-	@WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;)V"))
+	@WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;IILnet/minecraft/resources/Identifier;Z)V"))
 	private void skyblocker$extractMouseOverTooltip(
 			GuiGraphicsExtractor graphics,
 			Font textRenderer,
@@ -172,6 +173,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			int x,
 			int y,
 			Identifier texture,
+			boolean extraSpaceAfterFirstLine,
 			Operation<Void> original,
 			@Local(name = "item") ItemStack stack
 	) {
@@ -181,7 +183,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 
 		if (!Utils.isOnSkyblock() || text.isEmpty()) {
-			original.call(graphics, textRenderer, text, data, x, y, texture);
+			original.call(graphics, textRenderer, text, data, x, y, texture, extraSpaceAfterFirstLine);
 			return;
 		}
 
@@ -206,7 +208,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 			}
 		}
 
-		original.call(graphics, textRenderer, text, data, x, y, texture);
+		original.call(graphics, textRenderer, text, data, x, y, texture, extraSpaceAfterFirstLine);
 	}
 
 	@ModifyVariable(method = "extractTooltip", at = @At(value = "STORE"), name = "item")
@@ -325,12 +327,12 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 		}
 
 		//Pet Caching
-		if (button == InputConstants.MOUSE_BUTTON_LEFT && title.startsWith("Pets")) {
+		if (ContainerUtils.getMouseClickButton(button) == InputConstants.MOUSE_BUTTON_LEFT && title.startsWith("Pets")) {
 			PetCache.handlePetEquip(slot, slotId);
 		}
 
 		if (currentSolver != null) {
-			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, button);
+			boolean disallowed = ContainerSolverManager.onSlotClick(slotId, stack, ContainerUtils.getMouseClickButton(button));
 
 			if (disallowed) ci.cancel();
 		}

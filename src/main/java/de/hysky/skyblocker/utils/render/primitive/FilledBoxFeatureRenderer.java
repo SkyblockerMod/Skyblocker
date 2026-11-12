@@ -24,7 +24,7 @@ public class FilledBoxFeatureRenderer extends PrimitiveFeatureRenderer<FilledBox
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (FilledBoxRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS : RenderPipelines.DEBUG_FILLED_BOX);
+				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.FILLED_THROUGH_WALLS : RenderPipelines.DEBUG_FILLED_BOX, RenderPipelines.OIT_DEBUG_FILLED_BOX);
 				float minX = (float) state.minX();
 				float minY = (float) state.minY();
 				float minZ = (float) state.minZ();

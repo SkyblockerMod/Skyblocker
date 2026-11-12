@@ -24,7 +24,7 @@ public class OutlinedBoxFeatureRenderer extends PrimitiveFeatureRenderer<Outline
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (OutlinedBoxRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES);
+				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES, RenderPipelines.OIT_LINES_TRANSLUCENT);
 				float minX = (float) state.minX();
 				float minY = (float) state.minY();
 				float minZ = (float) state.minZ();

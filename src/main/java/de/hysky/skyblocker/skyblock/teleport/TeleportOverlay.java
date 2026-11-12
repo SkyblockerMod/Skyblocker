@@ -3,6 +3,7 @@ package de.hysky.skyblocker.skyblock.teleport;
 import java.awt.Color;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -90,7 +91,7 @@ public class TeleportOverlay {
 		//set up values for smooth AOTEs raycast
 		float pitch = client.player.getXRot();
 		float yaw = client.player.getYRot();
-		Vec3 look = client.player.calculateViewVector(pitch, yaw);
+		Vec3 look = LocalPlayer.calculateViewVector(pitch, yaw);
 		Vec3 startPos = client.player.position().add(0, Utils.getEyeHeight(client.player), 0);
 		Vec3 raycast = PredictiveSmoothAOTE.raycast(range, look, startPos, isEtherwarp);
 

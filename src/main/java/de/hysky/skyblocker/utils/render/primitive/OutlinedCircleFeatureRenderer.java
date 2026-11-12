@@ -23,7 +23,7 @@ public class OutlinedCircleFeatureRenderer extends PrimitiveFeatureRenderer<Outl
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (OutlinedCircleRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CIRCLE_LINES);
+				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CIRCLE_LINES, SkyblockerRenderPipelines.OIT_CIRCLE_LINES);
 
 				float innerRadius = state.radius() - state.thickness() / 2f;
 				float outerRadius = state.radius() + state.thickness() / 2f;

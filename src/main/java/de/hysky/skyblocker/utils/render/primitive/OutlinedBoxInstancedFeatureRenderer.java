@@ -4,12 +4,12 @@ import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.util.List;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.device.GpuDevice;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.FeatureRendererType;
@@ -42,7 +42,7 @@ public class OutlinedBoxInstancedFeatureRenderer extends PrimitiveFeatureRendere
 						.uploadGpu(uniformSegment.asByteBuffer(), device.getDeviceInfo().limits().minUniformOffsetAlignment(), GpuBuffer.USAGE_UNIFORM_TEXEL_BUFFER);
 
 				RenderPipeline pipeline = submit.throughWalls() ? SkyblockerRenderPipelines.OUTLINED_BOX_THROUGH_WALLS_INSTANCED : SkyblockerRenderPipelines.OUTLINED_BOX_INSTANCED;
-				VertexConsumer builder = this.getVertexBuilder(pipeline, new InstancingParameters(boxes, "OutlinedBoxData", tbo));
+				VertexConsumer builder = this.getVertexBuilder(pipeline, SkyblockerRenderPipelines.OIT_OUTLINED_BOX_INSTANCED, new InstancingParameters(boxes, "OutlinedBoxData", tbo));
 				buildUnitBox((float) UNIT_BOX.minX, (float) UNIT_BOX.minY, (float) UNIT_BOX.minZ, (float) UNIT_BOX.maxX, (float) UNIT_BOX.maxY, (float) UNIT_BOX.maxZ, builder);
 			}
 		}

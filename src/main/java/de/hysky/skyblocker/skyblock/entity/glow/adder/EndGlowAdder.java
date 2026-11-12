@@ -2,7 +2,7 @@ package de.hysky.skyblocker.skyblock.entity.glow.adder;
 
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.skyblock.end.TheEnd;
@@ -18,7 +18,7 @@ public class EndGlowAdder extends MobGlowAdder {
 
 	@Override
 	public int computeColour(Entity entity) {
-		return entity instanceof EnderMan enderman && TheEnd.isSpecialZealot(enderman) ? TextColor.RED.getValue() : NO_GLOW;
+		return entity instanceof Enderman enderman && TheEnd.isSpecialZealot(enderman) ? TextColor.RED.getValue() : NO_GLOW;
 	}
 
 	@Override

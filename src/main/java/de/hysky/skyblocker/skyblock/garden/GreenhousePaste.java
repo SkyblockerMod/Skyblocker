@@ -25,6 +25,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -638,7 +639,8 @@ public class GreenhousePaste {
 										LightCoordsUtil.FULL_BRIGHT,
 										OverlayTexture.pack(PREVIEW_TINT, false),
 										0,
-										null
+										null,
+										EntityRenderState.NO_OUTLINE
 								);
 							}
 					);

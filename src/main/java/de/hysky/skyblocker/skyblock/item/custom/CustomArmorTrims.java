@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
@@ -86,7 +85,8 @@ public class CustomArmorTrims {
 	}
 
 	private static SuggestionProvider<FabricClientCommandSource> getIdSuggestionProvider(ResourceKey<? extends Registry<?>> registryKey) {
-		return (context, builder) -> context.getSource().suggestRegistryElements(registryKey, SharedSuggestionProvider.ElementSuggestionType.ELEMENTS, builder, context);
+		return null;
+		//return (context, builder) -> context.getSource().suggestRegistryElements(registryKey, SharedSuggestionProvider.ElementSuggestionType.ELEMENTS, builder, context, _ -> true);
 	}
 
 	@SuppressWarnings("SameReturnValue")

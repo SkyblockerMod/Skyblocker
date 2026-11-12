@@ -3,12 +3,12 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.AddressMode;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.textures.AddressMode;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import org.joml.Matrix4f;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
@@ -46,7 +46,7 @@ public class BlockHologramFeatureRenderer extends PrimitiveFeatureRenderer<Block
 						.translate((float) (state.pos().getX() - submit.camera().pos.x()), (float) (state.pos().getY() - submit.camera().pos.y()), (float) (state.pos().getZ() - submit.camera().pos.z()));
 				PoseStack pose = MatrixHelper.toStack(positionMatrix);
 
-				VertexConsumer builder = this.getVertexBuilder(RenderPipelines.TRANSLUCENT_BLOCK, TextureSetup.singleTextureWithLightmap(blocksAtlasTexture, sampler));
+				VertexConsumer builder = this.getVertexBuilder(RenderPipelines.TRANSLUCENT_BLOCK, RenderPipelines.OIT_TRANSLUCENT_BLOCK, TextureSetup.singleTextureWithLightmap(blocksAtlasTexture, sampler));
 				QuadEmitter quadEmitter = Renderer.get().quadEmitter(quad -> {
 					int colour = ARGB.color(state.alpha(), CommonColors.WHITE);
 

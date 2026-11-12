@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.joml.Matrix4f;
 
+import net.fabricmc.fabric.api.client.rendering.v1.SubmitRenderPhase;
 import net.fabricmc.fabric.api.client.rendering.v1.SubmitRenderPhases;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.state.BeaconRenderState;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.feature.TextFeatureRenderer;
+import net.minecraft.client.renderer.feature.submit.SubmitNode;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.BlockPos;
@@ -260,9 +264,14 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 		Font textRenderer = MINECRAFT.font;
 		float xOffset = -textRenderer.width(text) / 2f;
-		Font.PreparedText glyphs = textRenderer.prepareText(text, xOffset, yOffset, CommonColors.WHITE, false, false, 0);
+		scale *= 0.025f;
 
-		TextRenderState state = new TextRenderState(glyphs, pos, scale * 0.025f, yOffset);
+		CameraRenderState camera = this.worldState.cameraRenderState;
+		Matrix4f positionMatrix = new Matrix4f()
+				.translate((float) (pos.x() - camera.pos.x()), (float) (pos.y() - camera.pos.y()), (float) (pos.z() - camera.pos.z()))
+				.rotate(camera.orientation)
+				.scale(scale, -scale, scale);
+		TextRenderState state = new TextRenderState(text, positionMatrix, xOffset, yOffset);
 
 		if (throughWalls) {
 			this.textThroughWallsStates.add(state);
@@ -395,11 +404,12 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 
 		if (!this.textStates.isEmpty()) {
-			submitNodeCollector.submitCustom(SubmitRenderPhases.TEXTS, new TextFeatureRenderer.Submit(this.textStates, camera, false));
+			// TODO use canRenderAsSolid to determine phase?
+			this.submitTextStates(submitNodeCollector, SubmitRenderPhases.TEXTS);
 		}
 
 		if (!this.textThroughWallsStates.isEmpty()) {
-			submitNodeCollector.submitCustom(SubmitRenderPhases.ALWAYS_ON_TOP, new TextFeatureRenderer.Submit(this.textThroughWallsStates, camera, true));
+			this.submitTextStates(submitNodeCollector, SubmitRenderPhases.ALWAYS_ON_TOP);
 		}
 
 		if (!this.cylinderStates.isEmpty()) {
@@ -416,6 +426,15 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 		if (!this.outlinedCircleStates.isEmpty()) {
 			submitNodeCollector.submitCustom(SubmitRenderPhases.AFTER_TERRAIN, new OutlinedCircleFeatureRenderer.Submit(this.outlinedCircleStates, camera));
+		}
+	}
+
+	private void submitTextStates(SubmitNodeCollector submitNodeCollector, SubmitRenderPhase<SubmitNode> phase) {
+		for (TextRenderState state : this.textStates) {
+			TextFeatureRenderer.Content content = new TextFeatureRenderer.Content.Text(state.xOffset(), state.yOffset(), state.text(), false, CommonColors.WHITE, 0, 0);
+			TextFeatureRenderer.Submit submit = new TextFeatureRenderer.Submit(state.matrix(), Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT, content);
+
+			submitNodeCollector.submitCustom(phase, submit);
 		}
 	}
 

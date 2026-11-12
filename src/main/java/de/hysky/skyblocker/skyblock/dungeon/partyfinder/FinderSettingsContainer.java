@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;
@@ -200,19 +201,19 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 		return false;
 	}
 
-	public boolean handleSign(SignBlockEntity sign, boolean front) {
+	public boolean handleSign(SignBlockEntity sign, SignTextSlot slot) {
 		if (!isInitialized) return false;
 		if (currentlyOpenedOption == classLevelRange) {
-			return updateValues(sign, front, classLevelRange);
+			return updateValues(sign, slot, classLevelRange);
 		} else if (currentlyOpenedOption == dungeonLevelRange) {
-			return updateValues(sign, front, dungeonLevelRange);
+			return updateValues(sign, slot, dungeonLevelRange);
 		}
 		return false;
 	}
 
-	private boolean updateValues(SignBlockEntity sign, boolean front, RangedValueWidget valueWidget) {
+	private boolean updateValues(SignBlockEntity sign, SignTextSlot slot, RangedValueWidget valueWidget) {
 		RangedValueWidget.State state;
-		String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH);
+		String lowerCase = sign.getText(slot).getMessages(false).get(3).getString().toLowerCase(Locale.ENGLISH);
 		if (lowerCase.contains("max")) {
 			state = RangedValueWidget.State.MODIFYING_MAX;
 		} else if (lowerCase.contains("min")) {

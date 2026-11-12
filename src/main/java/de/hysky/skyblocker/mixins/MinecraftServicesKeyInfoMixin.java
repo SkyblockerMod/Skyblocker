@@ -6,7 +6,7 @@ import java.util.Map;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo;
+import com.mojang.authlib.services.MinecraftServicesKeyInfo;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import de.hysky.skyblocker.utils.Utils;
 
-@Mixin(YggdrasilServicesKeyInfo.class)
-public class YggdrasilServicesKeyInfoMixin {
+@Mixin(MinecraftServicesKeyInfo.class)
+public class MinecraftServicesKeyInfoMixin {
 	@Shadow
 	@Final
 	private static Logger LOGGER;

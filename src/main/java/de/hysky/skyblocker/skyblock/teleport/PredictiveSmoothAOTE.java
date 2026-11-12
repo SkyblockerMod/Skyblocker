@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -238,7 +239,7 @@ public class PredictiveSmoothAOTE {
 		//get direction
 		float pitch = CLIENT.player.getXRot();
 		float yaw = CLIENT.player.getYRot();
-		Vec3 look = CLIENT.player.calculateViewVector(pitch, yaw);
+		Vec3 look = LocalPlayer.calculateViewVector(pitch, yaw);
 
 		//make sure the player is not talking to an npc. And if they are cancel the teleport
 		if (startPos == null) return;

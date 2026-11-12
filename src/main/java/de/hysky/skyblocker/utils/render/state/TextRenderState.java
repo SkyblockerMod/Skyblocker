@@ -1,7 +1,8 @@
 package de.hysky.skyblocker.utils.render.state;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4fc;
 
-public record TextRenderState(Font.PreparedText glyphs, Vec3 pos, float scale, float yOffset) {
+import net.minecraft.util.FormattedCharSequence;
+
+public record TextRenderState(FormattedCharSequence text, Matrix4fc matrix, float xOffset, float yOffset) {
 }

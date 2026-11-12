@@ -23,7 +23,7 @@ public class FilledCircleFeatureRenderer extends PrimitiveFeatureRenderer<Filled
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (FilledCircleRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CIRCLE);
+				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CIRCLE, SkyblockerRenderPipelines.OIT_CIRCLE);
 
 				for (int i = 0; i <= state.segments(); i++) {
 					double angle = Math.TAU * i / state.segments();

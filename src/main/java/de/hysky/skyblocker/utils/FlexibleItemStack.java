@@ -114,16 +114,14 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 			this.itemStack.set(type, value);
 		}
 
-		((DataComponentPatchAccessor) (Object) this.components).getMap().put(type, Optional.of(value));
+		((DataComponentPatchAccessor) (Object) this.components).getMap().put(type, value);
 	}
 
 	/// Applies the {@code patch} components on this instance.
 	@SuppressWarnings("unchecked")
 	public void applyComponents(DataComponentPatch patch) {
-		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
-			if (entry.getValue().isPresent()) {
-				this.set((DataComponentType<Object>) entry.getKey(), (Object) entry.getValue().get());
-			}
+		for (Map.Entry<DataComponentType<?>, ?> entry : ((DataComponentPatchAccessor) (Object) this.components).getMap().entrySet()) {
+			this.set((DataComponentType<Object>) entry.getKey(), entry.getValue());
 		}
 	}
 

@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.WorldEvents;
-import de.hysky.skyblocker.mixins.accessors.EnderManAccessor;
+import de.hysky.skyblocker.mixins.accessors.EndermanAccessor;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.SlayerType;
 import de.hysky.skyblocker.utils.Utils;
@@ -72,7 +72,7 @@ public class BeaconHighlighter {
 	public static <T> void onThrowBeacon(SyncedDataHolder dataHolder, SynchedEntityData.DataItem<T> dataItem, SynchedEntityData.DataValue<T> newValue) {
 		if (Utils.isInTheEnd() && (SkyblockerConfigManager.get().slayers.endermanSlayer.enableYangGlyphsNotification || SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons)
 				&& dataHolder instanceof Entity entity && SlayerManager.isSelectedBoss(entity.getUUID())
-				&& dataItem.getAccessor() == EnderManAccessor.getDATA_CARRY_STATE()
+				&& dataItem.getAccessor() == EndermanAccessor.getDATA_CARRY_STATE()
 				&& dataItem.getValue() instanceof Optional<?> value && value.isPresent() && value.get() instanceof BlockState state && state.is(Blocks.BEACON)
 				&& ((Optional<?>) newValue.value()).isEmpty()) {
 			if (SkyblockerConfigManager.get().slayers.endermanSlayer.highlightBeacons) {

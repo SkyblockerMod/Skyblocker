@@ -11,6 +11,7 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.Removed;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +23,7 @@ import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.ItemStack;
 
+import de.hysky.skyblocker.mixins.accessors.DataComponentPatchAccessor;
 import de.hysky.skyblocker.utils.FlexibleItemStack;
 import de.hysky.skyblocker.utils.RegistryUtils;
 
@@ -58,15 +60,15 @@ public class ItemStackComponentizationFixer {
 	public static String componentsAsString(DataComponentPatch components) {
 		RegistryOps<Tag> nbtRegistryOps = RegistryUtils.getRegistryWrapperLookup().createSerializationContext(NbtOps.INSTANCE);
 
-		return Arrays.toString(components.entrySet().stream().map(entry -> {
+		return Arrays.toString(((DataComponentPatchAccessor) (Object) components).getMap().entrySet().stream().map(entry -> {
 			DataComponentType<?> componentType = entry.getKey();
 			Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
 			if (componentId == null) return null;
 
-			Optional<?> component = entry.getValue();
-			if (component.isEmpty()) return "!" + componentId;
+			Object component = entry.getValue();
+			if (component.equals(Removed.INSTANCE)) return "!" + componentId;
 
-			Optional<Tag> encodedComponent = TypedDataComponent.createUnchecked(componentType, component.get()).encodeValue(nbtRegistryOps).result();
+			Optional<Tag> encodedComponent = TypedDataComponent.createUnchecked(componentType, component).encodeValue(nbtRegistryOps).result();
 
 			if (encodedComponent.isEmpty()) return null;
 			return componentId + "=" + encodedComponent.orElseThrow();

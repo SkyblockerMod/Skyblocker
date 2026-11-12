@@ -23,7 +23,7 @@ public class SphereFeatureRenderer extends PrimitiveFeatureRenderer<SphereFeatur
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (SphereRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CYLINDER);
+				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CYLINDER, SkyblockerRenderPipelines.OIT_CYLINDER);
 
 				for (int lat = 0; lat < state.rings(); lat++) {
 					double lat0 = Math.PI * (double) lat / state.rings();

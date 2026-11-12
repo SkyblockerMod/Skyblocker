@@ -59,7 +59,7 @@ public class DungeonMapTexture {
 		});
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> clearMapImage());
 		DungeonEvents.ROOM_MATCHED.register(_ -> onMapItemDataUpdate(DungeonMap.getMapIdComponent(null), true));
-		LevelRenderEvents.START_MAIN.register(DungeonMapTexture::uploadMapTexture);
+		LevelRenderEvents.BEFORE_RENDER_PASS.register(DungeonMapTexture::uploadMapTexture);
 	}
 
 	public static void onMapItemDataUpdate(MapId mapId, boolean updateMapTexture) {

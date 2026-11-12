@@ -3,8 +3,8 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.textures.FilterMode;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.render.TextureSetup;
@@ -24,7 +24,7 @@ public class TexturedQuadFeatureRenderer extends PrimitiveFeatureRenderer<Textur
 		for (Submit submit : submits) {
 			for (TexturedQuadRenderState state : submit.states()) {
 				TextureSetup textureSetup = TextureSetup.singleTexture(context.textureManager().getTexture(state.texture()).getTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE, textureSetup);
+				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.TEXTURE_THROUGH_WALLS : SkyblockerRenderPipelines.TEXTURE, SkyblockerRenderPipelines.OIT_TEXTURE, textureSetup);
 				Matrix4f positionMatrix = new Matrix4f()
 						.translate((float) (state.pos().x() - submit.camera().pos.x()), (float) (state.pos().y() - submit.camera().pos.y()), (float) (state.pos().z() - submit.camera().pos.z()))
 						.rotate(submit.camera().orientation);

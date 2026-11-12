@@ -33,7 +33,6 @@ import de.hysky.skyblocker.utils.render.primitive.OutlinedCircleFeatureRenderer;
 import de.hysky.skyblocker.utils.render.primitive.PrimitiveCollectorImpl;
 import de.hysky.skyblocker.utils.render.primitive.QuadFeatureRenderer;
 import de.hysky.skyblocker.utils.render.primitive.SphereFeatureRenderer;
-import de.hysky.skyblocker.utils.render.primitive.TextFeatureRenderer;
 import de.hysky.skyblocker.utils.render.primitive.TexturedQuadFeatureRenderer;
 
 public class RenderHelper {
@@ -53,7 +52,6 @@ public class RenderHelper {
 		FeatureRendererRegistry.register(QuadFeatureRenderer.TYPE, QuadFeatureRenderer::new);
 		FeatureRendererRegistry.register(TexturedQuadFeatureRenderer.TYPE, TexturedQuadFeatureRenderer::new);
 		FeatureRendererRegistry.register(BlockHologramFeatureRenderer.TYPE, BlockHologramFeatureRenderer::new);
-		FeatureRendererRegistry.register(TextFeatureRenderer.TYPE, TextFeatureRenderer::new);
 		FeatureRendererRegistry.register(CylinderFeatureRenderer.TYPE, CylinderFeatureRenderer::new);
 		FeatureRendererRegistry.register(SphereFeatureRenderer.TYPE, SphereFeatureRenderer::new);
 		FeatureRendererRegistry.register(FilledCircleFeatureRenderer.TYPE, FilledCircleFeatureRenderer::new);

@@ -8,19 +8,42 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.mixins.accessors.LivingEntityAccessor;
 import de.hysky.skyblocker.skyblock.SwingAnimation;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
+import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
+import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
+import de.hysky.skyblocker.skyblock.item.ItemProtection;
+import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
+
+	@Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
+	public void skyblocker$dropSelectedItem(CallbackInfo ci, @Local(name = "player") LocalPlayer player) {
+		ItemStack item = player.getMainHandItem();
+
+		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(item) || HotbarSlotLock.isLocked(player.getInventory().getSelectedSlot()))) {
+			boolean shouldDropInDungeons = SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems && DungeonScore.isDungeonStarted();
+			boolean shouldDropShiningCoins = SkyblockerConfigManager.get().hunting.hauntedBiome.ignoreSlotLockingForShiningCoins && SafariUtils.isInHauntedBiome() && item.getSkyblockId().equals("SHINING_COIN");
+
+			if (!shouldDropInDungeons && !shouldDropShiningCoins) {
+				ci.cancel();
+			}
+		}
+	}
+
 	// Inject so that we only swing when the result is not success because vanilla handles swing on success.
 	@Dynamic("Lambda inside of useItem")
 	@Inject(method = "lambda$useItem$0",
@@ -37,6 +60,7 @@ public class MultiPlayerGameModeMixin {
 
 	@Unique
 	private void swingHandWithoutPackets(Player playerEntity, InteractionHand hand) {
-		playerEntity.swing(hand, false); // The playerEntity override for swingHand is the other method with just the hand parameter, this one isn't overridden and doesn't lead to sending packets.
+		LivingEntityAccessor accessor = ((LivingEntityAccessor) playerEntity);
+		accessor.getSwingState().startIfAble(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, accessor.invokeGetModifiedSwingDuration(net.minecraft.world.item.component.SwingAnimation.DEFAULT));
 	}
 }

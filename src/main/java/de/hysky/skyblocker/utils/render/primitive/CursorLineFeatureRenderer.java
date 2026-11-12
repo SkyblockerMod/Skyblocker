@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.FeatureRendererType;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
@@ -25,7 +26,7 @@ public class CursorLineFeatureRenderer extends PrimitiveFeatureRenderer<CursorLi
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (CursorLineRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.LINES_THROUGH_WALLS);
+				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.LINES_THROUGH_WALLS, RenderPipelines.OIT_LINES_TRANSLUCENT);
 
 				// Start drawing the line from a point slightly in front of the camera
 				Vec3 point = state.point();

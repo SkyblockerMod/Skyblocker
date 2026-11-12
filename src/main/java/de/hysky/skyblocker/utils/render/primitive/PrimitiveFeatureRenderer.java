@@ -3,24 +3,22 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.joml.Matrix4fStack;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.StagedVertexBuffer;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.FeatureRenderer;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
+import net.minecraft.client.renderer.oit.OitStage;
 
 import de.hysky.skyblocker.utils.render.InstancingParameters;
 
@@ -30,16 +28,16 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 
 	protected abstract void buildGroup(FeatureFrameContext context, List<Submit> submits);
 
-	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline) {
-		return this.currentGroup().getVertexBuilder(pipeline, TextureSetup.noTexture(), InstancingParameters.NONE);
+	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline, OitPipelineSet oitPipelineSet) {
+		return this.currentGroup().getVertexBuilder(pipeline, oitPipelineSet, TextureSetup.noTexture(), InstancingParameters.NONE);
 	}
 
-	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline, TextureSetup textureSetup) {
-		return this.currentGroup().getVertexBuilder(pipeline, textureSetup, InstancingParameters.NONE);
+	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline, OitPipelineSet oitPipelineSet, TextureSetup textureSetup) {
+		return this.currentGroup().getVertexBuilder(pipeline, oitPipelineSet, textureSetup, InstancingParameters.NONE);
 	}
 
-	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline, InstancingParameters instancing) {
-		return this.currentGroup().getVertexBuilder(pipeline, TextureSetup.noTexture(), instancing);
+	protected final VertexConsumer getVertexBuilder(RenderPipeline pipeline, OitPipelineSet oitPipelineSet, InstancingParameters instancing) {
+		return this.currentGroup().getVertexBuilder(pipeline, oitPipelineSet, TextureSetup.noTexture(), instancing);
 	}
 
 	private PrimitiveFeatureRenderer.Group currentGroup() {
@@ -51,43 +49,41 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 		this.currentGroup = new PrimitiveFeatureRenderer.Group(context.stagedVertexBuffer(), !strictlyOrdered);
 		this.buildGroup(context, submits);
 		this.groups.add(this.currentGroup);
+
+		for (PrimitiveFeatureRenderer.Group group : this.groups) {
+			for (StagedVertexBuffer.Draw draw : group.draws) {
+				context.stagedVertexBuffer().requestIndexCount(draw);
+			}
+		}
+
 		this.currentGroup = null;
 	}
 
 	@Override
-	public final void executeGroup(FeatureFrameContext context, int groupIndex, List<Submit> submits, boolean strictlyOrdered) {
+	public final void executeGroup(FeatureFrameContext context, @Nullable OitStage stage, RenderPass renderPass, int groupIndex, List<Submit> submits, boolean strictlyOrdered) {
 		PrimitiveFeatureRenderer.Group group = this.groups.get(groupIndex);
 
 		applyViewOffsetZLayering();
+		RenderSystem.bindDefaultUniforms(renderPass);
 
-		RenderTarget mainTarget = Minecraft.getInstance().gameRenderer.mainRenderTarget();
 		GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy());
+		renderPass.setUniform("DynamicTransforms", dynamicTransforms);
 
-		try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
-				() -> "Skyblocker Primitive Feature Renderer",
-				mainTarget.getColorTextureView(),
-				Optional.empty(),
-				mainTarget.useDepth ? mainTarget.getDepthTextureView() : null,
-						OptionalDouble.empty()
-				)) {
-			RenderSystem.bindDefaultUniforms(renderPass);
-			renderPass.setUniform("DynamicTransforms", dynamicTransforms);
+		for (int i = 0; i < group.draws.size(); i++) {
+			PreparedPrimitiveDraw primitiveDraw = group.drawPrimitives.get(i);
+			StagedVertexBuffer.ExecuteInfo info = context.stagedVertexBuffer().getExecuteInfo(group.draws.get(i));
 
-			for (int i = 0; i < group.draws.size(); i++) {
-				PreparedPrimitiveDraw primitiveDraw = group.drawPrimitives.get(i);
-				StagedVertexBuffer.ExecuteInfo info = context.stagedVertexBuffer().getExecuteInfo(group.draws.get(i));
-
-				if (info != null) {
-					executeDraw(renderPass, primitiveDraw, info);
-				}
+			if (info != null) {
+				RenderPipeline pipeline = (stage != null) ? primitiveDraw.oitPipelineSet().getPipeline(stage) : primitiveDraw.pipeline();
+				executeDraw(renderPass, pipeline, primitiveDraw, info);
 			}
 		}
 
 		unapplyViewOffsetZLayering();
 	}
 
-	private static void executeDraw(RenderPass renderPass, PreparedPrimitiveDraw draw, StagedVertexBuffer.ExecuteInfo info) {
-		renderPass.setPipeline(draw.pipeline());
+	private static void executeDraw(RenderPass renderPass, RenderPipeline pipeline, PreparedPrimitiveDraw draw, StagedVertexBuffer.ExecuteInfo info) {
+		renderPass.setPipeline(RenderSystem.getCompiledPipeline(pipeline));
 
 		InstancingParameters instancing = draw.instancing();
 
@@ -97,17 +93,17 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 
 		if (draw.textureSetup.texure0() != null) {
 			// Sampler0 is used for normal texture inputs in shaders
-			renderPass.bindTexture("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
+			renderPass.setUniform("Sampler0", draw.textureSetup.texure0(), draw.textureSetup.sampler0());
 		}
 
 		if (draw.textureSetup.texure1() != null) {
 			// Sampler1 is used for alternate texture inputs in shaders
-			renderPass.bindTexture("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
+			renderPass.setUniform("Sampler1", draw.textureSetup.texure1(), draw.textureSetup.sampler1());
 		}
 
 		if (draw.textureSetup.texure2() != null) {
 			// Sampler2 is used for lightmap texture inputs in shaders
-			renderPass.bindTexture("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
+			renderPass.setUniform("Sampler2", draw.textureSetup.texure2(), draw.textureSetup.sampler2());
 		}
 
 		renderPass.setVertexBuffer(0, info.vertexBuffer().slice());
@@ -137,6 +133,7 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 		private final List<StagedVertexBuffer.Draw> draws = new ArrayList<>();
 		private final List<PreparedPrimitiveDraw> drawPrimitives = new ArrayList<>();
 		private @Nullable RenderPipeline lastPipeline;
+		private @Nullable OitPipelineSet lastOitPipelineSet;
 		private @Nullable TextureSetup lastTextureSetup;
 		private @Nullable InstancingParameters lastInstancing;
 		private StagedVertexBuffer.@Nullable Draw lastDraw;
@@ -146,10 +143,11 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 			this.canReorder = canReorder;
 		}
 
-		public VertexConsumer getVertexBuilder(RenderPipeline pipeline, TextureSetup textureSetup, InstancingParameters instancing) {
-			if (this.lastDraw == null || pipeline != this.lastPipeline || textureSetup != this.lastTextureSetup || this.lastInstancing != instancing || !canConsolidateConsecutiveGeometry(pipeline)) {
-				this.lastDraw = this.getOrAddDraw(pipeline, textureSetup, instancing);
+		public VertexConsumer getVertexBuilder(RenderPipeline pipeline, OitPipelineSet oitPipelineSet, TextureSetup textureSetup, InstancingParameters instancing) {
+			if (this.lastDraw == null || pipeline != this.lastPipeline || oitPipelineSet != this.lastOitPipelineSet || textureSetup != this.lastTextureSetup || this.lastInstancing != instancing || !canConsolidateConsecutiveGeometry(pipeline)) {
+				this.lastDraw = this.getOrAddDraw(pipeline, oitPipelineSet, textureSetup, instancing);
 				this.lastPipeline = pipeline;
+				this.lastOitPipelineSet = oitPipelineSet;
 				this.lastTextureSetup = textureSetup;
 				this.lastInstancing = instancing;
 			}
@@ -157,8 +155,8 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 			return this.stagedBuffer.getVertexBuilder(this.lastDraw);
 		}
 
-		private StagedVertexBuffer.Draw getOrAddDraw(RenderPipeline pipeline, TextureSetup textureSetup, InstancingParameters instancing) {
-			PreparedPrimitiveDraw preparedPrimitiveDraw = new PreparedPrimitiveDraw(pipeline, textureSetup, instancing);
+		private StagedVertexBuffer.Draw getOrAddDraw(RenderPipeline pipeline, OitPipelineSet oitPipelineSet, TextureSetup textureSetup, InstancingParameters instancing) {
+			PreparedPrimitiveDraw preparedPrimitiveDraw = new PreparedPrimitiveDraw(pipeline, oitPipelineSet, textureSetup, instancing);
 			int existingIndex = this.canReorder && canConsolidateConsecutiveGeometry(pipeline) ? this.drawPrimitives.indexOf(preparedPrimitiveDraw) : -1;
 
 			if (existingIndex != -1) {
@@ -177,5 +175,5 @@ public abstract class PrimitiveFeatureRenderer<Submit extends SubmitNode> implem
 		}
 	}
 
-	private record PreparedPrimitiveDraw(RenderPipeline pipeline, TextureSetup textureSetup, InstancingParameters instancing) {}
+	private record PreparedPrimitiveDraw(RenderPipeline pipeline, OitPipelineSet oitPipelineSet, TextureSetup textureSetup, InstancingParameters instancing) {}
 }

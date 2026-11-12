@@ -25,7 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
@@ -70,7 +70,7 @@ public class TheEnd {
 	@Init
 	public static void init() {
 		AttackEntityCallback.EVENT.register((_, _, _, entity, _) -> {
-			if (entity instanceof EnderMan enderman && isZealot(enderman)) {
+			if (entity instanceof Enderman enderman && isZealot(enderman)) {
 				HIT_ZEALOTS.add(enderman.getUUID());
 			}
 			return InteractionResult.PASS;
@@ -160,7 +160,7 @@ public class TheEnd {
 	}
 
 	public static void onEntityDeath(Entity entity) {
-		if (!(entity instanceof EnderMan enderman) || !isZealot(enderman)) return;
+		if (!(entity instanceof Enderman enderman) || !isZealot(enderman)) return;
 		if (HIT_ZEALOTS.contains(enderman.getUUID())) {
 			EndStats stats = PROFILES_STATS.computeIfAbsent(EndStats.EMPTY);
 			PROFILES_STATS.put(new EndStats(stats.totalZealotKills() + 1, stats.zealotsSinceLastEye() + 1, stats.eyes()));
@@ -174,7 +174,7 @@ public class TheEnd {
 		PROFILES_STATS.put(new EndStats(stats.totalZealotKills(), 0, stats.eyes() + 1));
 	}
 
-	public static boolean isZealot(EnderMan enderman) {
+	public static boolean isZealot(Enderman enderman) {
 		if (enderman.getName().getString().toLowerCase(Locale.ENGLISH).contains("zealot")) return true; // Future-proof. If they someday decide to actually rename the entities
 		assert CLIENT.level != null;
 		List<ArmorStand> entities = CLIENT.level.getEntitiesOfClass(
@@ -184,7 +184,7 @@ public class TheEnd {
 		return !entities.isEmpty();
 	}
 
-	public static boolean isSpecialZealot(EnderMan enderman) {
+	public static boolean isSpecialZealot(Enderman enderman) {
 		// Filter out non-special zealots using the faster carried block check first
 		BlockState carriedBlock = enderman.getCarriedBlock();
 		return carriedBlock != null && carriedBlock.is(Blocks.END_PORTAL_FRAME) && isZealot(enderman);

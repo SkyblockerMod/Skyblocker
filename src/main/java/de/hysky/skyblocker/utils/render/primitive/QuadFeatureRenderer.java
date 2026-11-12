@@ -24,7 +24,7 @@ public class QuadFeatureRenderer extends PrimitiveFeatureRenderer<QuadFeatureRen
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (QuadRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.QUADS_THROUGH_WALLS : RenderPipelines.DEBUG_QUADS);
+				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.QUADS_THROUGH_WALLS : RenderPipelines.DEBUG_QUADS, RenderPipelines.OIT_DEBUG_QUADS);
 
 				for (int i = 0; i < 4; i++) {
 					builder.addVertex(positionMatrix, (float) state.points()[i].x(), (float) state.points()[i].y(), (float) state.points()[i].z())

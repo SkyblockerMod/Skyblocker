@@ -33,7 +33,7 @@ public class SnapshotDebug {
 
 	private static void extractRendering(PrimitiveCollector collector) {
 		if (getSeed() == AARON_WORLD_SEED) {
-			collector.submitFilledBoxWithBeaconBeam(new BlockPos(175, 63, -14), RED, ALPHA, true);
+			collector.submitFilledBoxWithBeaconBeam(new BlockPos(175, 63, -14), RED, ALPHA, false);
 			collector.submitLinesFromPoints(new Vec3[] { new Vec3(173, 66, -7.5), new Vec3(178, 66, -7.5) }, RED, ALPHA, LINE_WIDTH, false);
 			collector.submitQuad(new Vec3[] { new Vec3(183, 66, -16), new Vec3(183, 63, -16), new Vec3(183, 63, -14), new Vec3(183, 66, -14) }, RED, ALPHA, false);
 			collector.submitText(Component.nullToEmpty("Skyblocker on " + SharedConstants.getCurrentVersion().name() + "!"), new Vec3(175.5, 67.5, -7.5), false);

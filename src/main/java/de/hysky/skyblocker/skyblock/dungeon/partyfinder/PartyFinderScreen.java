@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +40,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -310,8 +310,8 @@ public class PartyFinderScreen extends Screen {
 		else {
 			ClientPacketListener networkHandler = this.minecraft.getConnection();
 			if (networkHandler != null && sign != null) {
-				List<String> originalText = Arrays.stream(sign.getText(signFront).getMessages(true)).map(Component::getString).toList();
-				networkHandler.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), signFront, originalText.getFirst(), originalText.get(1), originalText.get(2), originalText.get(3)));
+				List<String> originalText = sign.getText(this.signTextSlot).getMessages(true).stream().map(Component::getString).toList();
+				networkHandler.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), originalText, this.signTextSlot));
 			}
 		}
 		super.onClose();
@@ -360,23 +360,23 @@ public class PartyFinderScreen extends Screen {
 		markDirty();
 	}
 
-	public boolean isSignFront() {
-		return signFront;
+	public SignTextSlot getSignTextSlot() {
+		return this.signTextSlot;
 	}
 
 	public @Nullable SignBlockEntity getSign() {
 		return sign;
 	}
 
-	private boolean signFront = true;
+	private SignTextSlot signTextSlot = SignTextSlot.FRONT;
 	private @Nullable SignBlockEntity sign = null;
 
-	public void updateSign(SignBlockEntity sign, boolean front) {
+	public void updateSign(SignBlockEntity sign, SignTextSlot slot) {
 		setCurrentPage(Page.SIGN);
-		signFront = front;
+		signTextSlot = slot;
 		this.sign = sign;
 		waitingForServer = false;
-		if (!settingsContainer.handleSign(sign, front)) abort();
+		if (!settingsContainer.handleSign(sign, slot)) abort();
 	}
 
 	public void closedSign() {
@@ -493,7 +493,7 @@ public class PartyFinderScreen extends Screen {
 	public void abort() {
 		if (currentPage == Page.SIGN) {
 			assert this.minecraft.player != null;
-			this.minecraft.player.openTextEdit(sign, signFront);
+			this.minecraft.player.openTextEdit(sign, this.signTextSlot);
 		} else this.minecraft.gui.setScreen(new ContainerScreen(handler, inventory, title));
 		this.minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
 		aborted = true;

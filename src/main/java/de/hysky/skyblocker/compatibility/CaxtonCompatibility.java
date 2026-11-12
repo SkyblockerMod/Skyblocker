@@ -3,9 +3,7 @@ package de.hysky.skyblocker.compatibility;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.Optional;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -41,23 +39,6 @@ public final class CaxtonCompatibility {
 		}
 	}
 
-	private static Optional<RenderPipeline> getCaxtonPipeline(String name) {
-		if (!CAXTON_ENABLED) return Optional.empty();
-		Class<?> clazz;
-		try {
-			clazz = Class.forName("xyz.flirora.caxton.render.CaxtonShaders");
-		} catch (ClassNotFoundException e) {
-			LOGGER.error("[Skyblocker Caxton Compat] Could not find xyz.flirora.caxton.render.CaxtonShaders", e);
-			return Optional.empty();
-		}
-		try {
-			return Optional.of((RenderPipeline) clazz.getField(name).get(null));
-		} catch (IllegalAccessException | NoSuchFieldException e) {
-			LOGGER.error("[Skyblocker Caxton Compat] Could not find {} shader", name, e);
-			return Optional.empty();
-		}
-	}
-
 	private static final @Nullable MethodHandle HANDLE = createHandle();
 	private static boolean errored = false;
 
@@ -71,13 +52,5 @@ public final class CaxtonCompatibility {
 			return false;
 		}
 		return true;
-	}
-
-	public static Optional<RenderPipeline> getSeeThroughTextPipeline() {
-		return getCaxtonPipeline("TEXT_SEETHROUGH");
-	}
-
-	public static Optional<RenderPipeline> getTextPipeline() {
-		return getCaxtonPipeline("TEXT");
 	}
 }

@@ -23,7 +23,7 @@ public class CylinderFeatureRenderer extends PrimitiveFeatureRenderer<CylinderFe
 					.translate((float) -submit.camera().pos.x, (float) -submit.camera().pos.y, (float) -submit.camera().pos.z);
 
 			for (CylinderRenderState state : submit.states()) {
-				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CYLINDER);
+				VertexConsumer builder = this.getVertexBuilder(SkyblockerRenderPipelines.CYLINDER, SkyblockerRenderPipelines.OIT_CYLINDER);
 
 				float halfHeight = state.height() / 2.0f;
 

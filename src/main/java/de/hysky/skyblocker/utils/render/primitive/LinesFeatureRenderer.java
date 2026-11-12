@@ -27,7 +27,7 @@ public class LinesFeatureRenderer extends PrimitiveFeatureRenderer<LinesFeatureR
 
 			for (LinesRenderState state : submit.states()) {
 				Vec3[] points = state.points();
-				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES);
+				VertexConsumer builder = this.getVertexBuilder(submit.throughWalls() ? SkyblockerRenderPipelines.LINES_THROUGH_WALLS : RenderPipelines.LINES, RenderPipelines.OIT_LINES_TRANSLUCENT);
 
 				for (int i = 0; i < points.length; i++) {
 					Vec3 nextPoint = points[i + 1 == points.length ? i - 1 : i + 1];
