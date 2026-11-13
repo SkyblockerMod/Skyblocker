@@ -52,6 +52,7 @@ import de.hysky.skyblocker.skyblock.fishing.FishingHelper;
 import de.hysky.skyblocker.skyblock.fishing.FishingHookDisplayHelper;
 import de.hysky.skyblocker.skyblock.fishing.SeaCreatureTracker;
 import de.hysky.skyblocker.skyblock.foraging.galatea.TreeBreakProgressHud;
+import de.hysky.skyblocker.skyblock.foraging.torrhus.HoneyhiveHighlighter;
 import de.hysky.skyblocker.skyblock.hunting.LassoHud;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
 import de.hysky.skyblocker.skyblock.slayers.boss.demonlord.FirePillarAnnouncer;
@@ -87,6 +88,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 		SeaCreatureTracker.onEntitySpawn(armorStandEntity);
 		FishingHelper.checkIfFishWasCaught(armorStandEntity);
 		TreeBreakProgressHud.onEntityUpdate(armorStandEntity);
+		HoneyhiveHighlighter.onArmorStandUpdate(armorStandEntity);
 		LassoHud.onEntityUpdate(armorStandEntity);
 		try { //Prevent packet handling fails if something goes wrong so that entity trackers still update, just without compact damage numbers
 			CompactDamage.compactDamage(armorStandEntity);
