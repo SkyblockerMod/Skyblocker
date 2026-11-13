@@ -79,7 +79,7 @@ public class ItemPrice {
 
 			// Handle Enchanted Books
 			if (itemName.equals("Enchanted Book")) {
-				itemName = EnchantedBookUtils.getEnchantNameFromLore(stack.skyblocker$getLoreStrings());
+				itemName = EnchantedBookUtils.getEnchantNameFromLore(neuStack.skyblocker$getLoreStrings());
 			}
 
 			// prevent the player from getting kicked for sending the section symbol character
