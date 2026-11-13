@@ -1,6 +1,5 @@
 package de.hysky.skyblocker.skyblock.item;
 
-import java.util.Set;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -12,11 +11,10 @@ import net.minecraft.world.level.Level;
 
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Utils;
 
 public class ConsumableProtection {
-	private static final Set<String> PROTECTED_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK");
-
 	@Init
 	public static void init() {
 		UseItemCallback.EVENT.register(ConsumableProtection::onInteract);
@@ -29,7 +27,7 @@ public class ConsumableProtection {
 			ItemStack stack = player.getItemInHand(hand);
 			String skyblockId = stack.getSkyblockId();
 
-			if (!skyblockId.isEmpty() && PROTECTED_CONSUMABLES.contains(skyblockId)) {
+			if (!skyblockId.isEmpty() && Constants.EVOLVING_CONSUMABLES.contains(skyblockId)) {
 				return InteractionResult.FAIL;
 			}
 		}

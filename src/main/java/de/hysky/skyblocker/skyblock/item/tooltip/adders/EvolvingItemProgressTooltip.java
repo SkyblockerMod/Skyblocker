@@ -1,6 +1,8 @@
 package de.hysky.skyblocker.skyblock.item.tooltip.adders;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
@@ -12,18 +14,23 @@ import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.item.tooltip.SimpleTooltipAdder;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.render.text.GridComponent;
 
 public class EvolvingItemProgressTooltip extends SimpleTooltipAdder {
-	final List<String> evolutionItems = List.of("DARK_CACAO_TRUFFLE", "MOBY_DUCK", "ROSEWATER_FLASK", "NOT_VERY_MOLDY_BREAD", "DISCRITE", "NEW_BOTTLE_OF_JYRRE", "TRAINING_WEIGHTS");
+	private final Set<String> evolutionItems;
 
 	public EvolvingItemProgressTooltip(int priority) {
 		super(priority);
+		Set<String> items = new HashSet<>(Constants.EVOLVING_CONSUMABLES);
+		items.add("TRAINING_WEIGHTS");
+		evolutionItems = Set.copyOf(items);
 	}
 
 	@Override
 	public void addToTooltip(@Nullable Slot focusedSlot, ItemStack stack, List<Component> lines) {
+
 		if (!evolutionItems.contains(stack.getSkyblockId())) return;
 
 		CompoundTag customData = ItemUtils.getCustomData(stack);
