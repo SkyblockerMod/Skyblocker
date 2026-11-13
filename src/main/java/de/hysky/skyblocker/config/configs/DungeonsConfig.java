@@ -38,6 +38,8 @@ public class DungeonsConfig {
 
 	public boolean hideSoulweaverSkulls = false;
 
+	public boolean middleClickBypass = true;
+
 	public DungeonMap dungeonMap = new DungeonMap();
 
 	public SpiritLeapOverlay leapOverlay = new SpiritLeapOverlay();
@@ -139,6 +141,8 @@ public class DungeonsConfig {
 		public boolean solveTrivia = true;
 
 		public boolean solveTeleportMaze = true;
+
+		public boolean blockIncorrectClicks = false;
 	}
 
 	public static class TheProfessor {
@@ -183,6 +187,8 @@ public class DungeonsConfig {
 		public boolean solveArrowAlign = true;
 
 		public boolean solveTargetPractice = true;
+
+		public boolean blockIncorrectClicks = false;
 	}
 
 	public static class Goldor {

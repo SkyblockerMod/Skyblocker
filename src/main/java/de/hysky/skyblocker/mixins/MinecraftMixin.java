@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -17,6 +18,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.dungeon.ClickBlockerToggle;
+import de.hysky.skyblocker.skyblock.dungeon.DungeonShotBlocker;
 import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
 import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.item.SkyblockInventoryScreen;
@@ -37,6 +40,15 @@ public abstract class MinecraftMixin {
 		if (player != null && gui.screen() == null && Utils.isOnSkyblock()) {
 			HotbarSlotLock.handleInputEvents(player);
 			ItemProtection.handleHotbarKeyPressed(player);
+			ClickBlockerToggle.handleInputEvents(player);
+		}
+	}
+
+	//shortbows fire on left click past block reach, so the shot blockers hook the client attack handler itself
+	@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
+	public void skyblocker$blockWrongLeftClickShots(CallbackInfoReturnable<Boolean> cir) {
+		if (player != null && DungeonShotBlocker.shouldBlockLeftClick(player)) {
+			cir.setReturnValue(false);
 		}
 	}
 
