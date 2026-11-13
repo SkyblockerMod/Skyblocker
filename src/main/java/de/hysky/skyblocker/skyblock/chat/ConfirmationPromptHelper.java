@@ -64,7 +64,7 @@ public class ConfirmationPromptHelper {
 					if (event instanceof ClickEvent.RunCommand(String command)) {
 						MessageScheduler.INSTANCE.sendMessageAfterCooldown(command, true);
 					} else if (event instanceof ClickEvent.Custom(Identifier id, Optional<Tag> payload)) {
-						LocalPlayer player = Minecraft.getInstance().player;
+						LocalPlayer player = client.player;
 						if (player == null) return;
 						player.connection.send(new ServerboundCustomClickActionPacket(id, payload));
 					}
