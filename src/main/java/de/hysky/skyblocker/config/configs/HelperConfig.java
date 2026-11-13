@@ -76,6 +76,8 @@ public class HelperConfig {
 	public static class Fishing {
 		public boolean enableFishingHelper = true;
 
+		public int alertSoundVolume = 100;
+
 		@Deprecated
 		public transient boolean enableFishingHookDisplay = true;
 
