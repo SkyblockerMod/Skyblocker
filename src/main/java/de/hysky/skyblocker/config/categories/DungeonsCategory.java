@@ -1037,6 +1037,13 @@ public class DungeonsCategory {
 										newValue -> config.dungeons.dungeonChestProfit.includeEssence = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.includeShards"))
+								.binding(defaults.dungeons.dungeonChestProfit.includeShards,
+										() -> config.dungeons.dungeonChestProfit.includeShards,
+										newValue -> config.dungeons.dungeonChestProfit.includeShards = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						//FIXME maybe use color controller
 						.option(Option.<Integer>createBuilder()
 								.name(Component.translatable("skyblocker.config.dungeons.dungeonChestProfit.neutralThreshold"))
