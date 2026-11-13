@@ -13,7 +13,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class SlayerBossBar {
-	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=❤)");
+	private static final Pattern HEALTH_PATTERN = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?[kM]?)(?=/.+❤)");
 	private static int bossMaxHealth = -1;
 	private static @Nullable LerpingBossEvent bossBar;
 
