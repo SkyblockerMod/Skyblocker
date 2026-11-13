@@ -41,6 +41,14 @@ public class SackItemAutocomplete {
 
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> longCommandNode;
 	public static @Nullable LiteralCommandNode<FabricClientCommandSource> shortCommandNode;
+	private static Set<String> sackItemIds = Set.of();
+
+	/**
+	 * @return the NEU IDs of every item that can be stored in a sack, or an empty set if the NEU repo hasn't loaded yet
+	 */
+	public static Set<String> getSackItemIds() {
+		return sackItemIds;
+	}
 
 	@Init
 	public static void init() {
@@ -51,7 +59,7 @@ public class SackItemAutocomplete {
 		try (InputStream stream = NEURepoManager.file("constants/sacks.json").stream()) {
 			JsonObject sacks = JsonParser.parseString(new String(stream.readAllBytes())).getAsJsonObject().getAsJsonObject("sacks");
 
-			Set<String> sackItemIds = sacks.entrySet().stream()
+			sackItemIds = sacks.entrySet().stream()
 					.map(entry -> entry.getValue().getAsJsonObject())
 					.map(sack -> sack.getAsJsonArray("contents"))
 					.map(JsonArray::asList)
