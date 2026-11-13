@@ -1,7 +1,9 @@
 package de.hysky.skyblocker.config.configs;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.jspecify.annotations.Nullable;
@@ -17,6 +19,8 @@ public class EventNotificationsConfig {
 	public Criterion criterion = Criterion.SKYBLOCK;
 
 	public Sound reminderSound = Sound.PLING;
+
+	public Set<String> favoriteEvents = new HashSet<>();
 
 	public Map<String, EventConfig> events = new HashMap<>();
 
