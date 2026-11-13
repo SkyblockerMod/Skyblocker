@@ -2,7 +2,6 @@ package de.hysky.skyblocker.skyblock.dungeon.partyfinder;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +40,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -310,8 +310,8 @@ public class PartyFinderScreen extends Screen {
 		else {
 			ClientPacketListener networkHandler = this.minecraft.getConnection();
 			if (networkHandler != null && sign != null) {
-				List<String> originalText = Arrays.stream(sign.getText(signFront).getMessages(true)).map(Component::getString).toList();
-				networkHandler.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), signFront, originalText.getFirst(), originalText.get(1), originalText.get(2), originalText.get(3)));
+				List<String> originalText = sign.getText(signFront ? SignTextSlot.FRONT : SignTextSlot.BACK).getMessages(true).stream().map(Component::getString).toList();
+				networkHandler.send(new ServerboundSignUpdatePacket(sign.getBlockPos(), originalText, signFront ? SignTextSlot.FRONT : SignTextSlot.BACK));
 			}
 		}
 		super.onClose();
@@ -493,7 +493,7 @@ public class PartyFinderScreen extends Screen {
 	public void abort() {
 		if (currentPage == Page.SIGN) {
 			assert this.minecraft.player != null;
-			this.minecraft.player.openTextEdit(sign, signFront);
+			this.minecraft.player.openTextEdit(sign, signFront ? SignTextSlot.FRONT : SignTextSlot.BACK);
 		} else this.minecraft.gui.setScreen(new ContainerScreen(handler, inventory, title));
 		this.minecraft.gui.toastManager().addToast(new SystemToast(SystemToast.SystemToastId.PERIODIC_NOTIFICATION, Component.translatable("skyblocker.partyFinder.error.name"), Component.translatable("skyblocker.partyFinder.error.message")));
 		aborted = true;

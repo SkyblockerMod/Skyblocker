@@ -1,7 +1,7 @@
 package de.hysky.skyblocker.utils.render.state.gui;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 

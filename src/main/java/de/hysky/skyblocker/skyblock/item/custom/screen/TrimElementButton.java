@@ -22,7 +22,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -92,7 +91,7 @@ public abstract sealed class TrimElementButton extends AbstractButton permits Tr
 				equipmentModelData = ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, Minecraft.getInstance().getEntityModels(), modelPart -> new PlayerModel(modelPart, false));
 				equipmentRenderer = new EquipmentLayerRenderer(
 						((EntityRenderDispatcherAccessor) Minecraft.getInstance().getEntityRenderDispatcher()).getEquipmentAssets(),
-						Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.ARMOR_TRIMS));
+						Minecraft.getInstance().getPalettedTextureManager());
 			}
 
 			trim = new ArmorTrim(

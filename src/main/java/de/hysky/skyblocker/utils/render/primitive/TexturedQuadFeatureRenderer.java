@@ -3,8 +3,8 @@ package de.hysky.skyblocker.utils.render.primitive;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.textures.FilterMode;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.render.TextureSetup;

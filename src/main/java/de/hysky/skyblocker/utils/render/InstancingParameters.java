@@ -1,6 +1,6 @@
 package de.hysky.skyblocker.utils.render;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import org.jspecify.annotations.Nullable;
 
 public record InstancingParameters(int count, @Nullable String name, @Nullable GpuBufferSlice buffer) {

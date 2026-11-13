@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.mojang.blaze3d.Blaze3D;
 import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +21,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Util;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -37,7 +37,7 @@ public final class LogsFolderFinder {
 	}
 
 	public static void openLogsFolder() {
-		Util.getPlatform().openPath(getLogsFolder());
+		Blaze3D.openPath(getLogsFolder());
 	}
 
 	@Init

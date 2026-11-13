@@ -63,14 +63,14 @@ public class FloorDrops {
 			return;
 		}
 
-		ParticleType<?> particleType = packet.getParticle().getType();
+		ParticleType<?> particleType = packet.particle().getType();
 		if (!ParticleTypes.HAPPY_VILLAGER.getType().equals(particleType)) {
 			return;
 		}
 
-		double x = packet.getX();
-		double y = packet.getY() - 1;
-		double z = packet.getZ();
+		double x = packet.x();
+		double y = packet.y() - 1;
+		double z = packet.z();
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		// Check for three ItemDisplayEntity with minecraft:string in the same block

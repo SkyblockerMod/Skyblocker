@@ -76,11 +76,11 @@ public class TenacityTestHelper {
 	 * @param packet particle packet
 	 */
 	protected static void onParticle(ClientboundLevelParticlesPacket packet) {
-		if (!ParticleTypes.FLAME.equals(packet.getParticle().getType())) {
+		if (!ParticleTypes.FLAME.equals(packet.particle().getType())) {
 			return;
 		}
 		//get nearest fireball to particle
-		Vec3 particlePos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
+		Vec3 particlePos = new Vec3(packet.x(), packet.y(), packet.z());
 		ArmorStand neareastFireball = null;
 		double clostestDistance = 50;
 		for (ArmorStand fireball : fireBallsWithStartPos.keySet()) {

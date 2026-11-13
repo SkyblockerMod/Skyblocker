@@ -132,7 +132,7 @@ public class CreeperBeams extends DungeonPuzzle {
 
 		for (BlockPos pos : BlockPos.betweenClosed(start, end)) {
 			if (isTarget(world, pos)) {
-				targets.add(new BlockPos(pos));
+				targets.add(pos.immutable());
 			}
 		}
 		return targets;

@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 public class FinderSettingsContainer extends AbstractContainerWidget {
 	private boolean isInitialized = false;
@@ -212,7 +213,7 @@ public class FinderSettingsContainer extends AbstractContainerWidget {
 
 	private boolean updateValues(SignBlockEntity sign, boolean front, RangedValueWidget valueWidget) {
 		RangedValueWidget.State state;
-		String lowerCase = sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH);
+		String lowerCase = sign.getText(front ? SignTextSlot.FRONT : SignTextSlot.BACK).getMessages(false).get(3).getString().toLowerCase(Locale.ENGLISH);
 		if (lowerCase.contains("max")) {
 			state = RangedValueWidget.State.MODIFYING_MAX;
 		} else if (lowerCase.contains("min")) {

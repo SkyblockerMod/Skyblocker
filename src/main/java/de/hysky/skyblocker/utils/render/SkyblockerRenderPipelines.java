@@ -2,11 +2,12 @@ package de.hysky.skyblocker.utils.render;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -38,6 +39,7 @@ public class SkyblockerRenderPipelines {
 			.withDepthStencilState(Optional.empty())
 			.build());
 	public static final RenderPipeline OUTLINED_BOX_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withColorTargetState(ColorTargetState.DEFAULT)
 			.withLocation(SkyblockerMod.id("pipeline/outlined_box_instanced"))
 			.withVertexShader(SkyblockerMod.id("core/outlined_box"))
 			.withBindGroupLayout(SkyblockerBindGroupLayouts.OUTLINED_BOX_DATA)
@@ -45,6 +47,7 @@ public class SkyblockerRenderPipelines {
 			.withPrimitiveTopology(PrimitiveTopology.LINES)
 			.build());
 	public static final RenderPipeline OUTLINED_BOX_THROUGH_WALLS_INSTANCED = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withColorTargetState(ColorTargetState.DEFAULT)
 			.withLocation(SkyblockerMod.id("pipeline/outlined_box_through_walls_instanced"))
 			.withVertexShader(SkyblockerMod.id("core/outlined_box"))
 			.withBindGroupLayout(SkyblockerBindGroupLayouts.OUTLINED_BOX_DATA)
@@ -54,6 +57,7 @@ public class SkyblockerRenderPipelines {
 			.build());
 	/** Similar to {@link RenderPipelines#LINES} */
 	public static final RenderPipeline LINES_THROUGH_WALLS = RenderPipelines.register(RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withColorTargetState(ColorTargetState.DEFAULT)
 			.withLocation(SkyblockerMod.id("pipeline/lines_through_walls"))
 			.withDepthStencilState(Optional.empty())
 			.build());

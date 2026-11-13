@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.auction;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -10,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
@@ -88,12 +91,9 @@ public class EditBidPopup extends AbstractPopupScreen {
 
 	private void sendPacket(String string) {
 		assert Minecraft.getInstance().player != null;
-		Minecraft.getInstance().player.connection.send(new ServerboundSignUpdatePacket(signBlockEntity.getBlockPos(), signFront,
-				string.replace("coins", ""),
-				"",
-				"",
-				""
-		));
+		Minecraft.getInstance().player.connection.send(new ServerboundSignUpdatePacket(signBlockEntity.getBlockPos(),
+				List.of(string.replace("coins", ""), "", "", ""),
+				signFront ? SignTextSlot.FRONT : SignTextSlot.BACK));
 		packetSent = true;
 	}
 
