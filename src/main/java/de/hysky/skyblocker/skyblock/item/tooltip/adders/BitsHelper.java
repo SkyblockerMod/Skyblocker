@@ -59,7 +59,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 			"KAT_BOUQUET",
 			"HEAT_CORE",
 			"ULTIMATE_CARROT_CANDY_UPGRADE",
-			"TALISMAN_ENRICHMENT_SWAPPER",
 			"GOD_POTION_2",
 			"KISMET_FEATHER",
 			"MATRIARCH_PARFUM",
@@ -123,7 +122,6 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	});
 
 	private static final Object2IntMap<String> CAT_ENRICHMENTS = Util.make(new Object2IntOpenHashMap<>(), map -> {
-		map.put("TALISMAN_ENRICHMENT_SWAPPER", 200);
 		map.put("TALISMAN_ENRICHMENT_WALK_SPEED", 5000);
 		map.put("TALISMAN_ENRICHMENT_INTELLIGENCE", 5000);
 		map.put("TALISMAN_ENRICHMENT_CRITICAL_DAMAGE", 5000);
@@ -249,7 +247,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 	 * Why there is no simpler way to get those?
 	 * upd: there is, using `focusedSlot.inventory`, but I don't wanna touch code that already works just fine
 	 */
-	private Int2ObjectMap<ItemStack> getSlots() {
+	private @Nullable Int2ObjectMap<ItemStack> getSlots() {
 		Minecraft client = Minecraft.getInstance();
 		if (client.gui.screen() instanceof AbstractContainerScreen<?> screen) {
 			AbstractContainerMenu handler = screen.getMenu();
@@ -281,7 +279,7 @@ public class BitsHelper extends SimpleContainerSolver implements TooltipAdder {
 		return null;
 	}
 
-	private BestItemsResult calculateBestItems(Int2ObjectMap<ItemStack> slots) {
+	private BestItemsResult calculateBestItems(@Nullable Int2ObjectMap<ItemStack> slots) {
 		long bestCoinsPerBitSelling = 0L;
 		long bestCoinsPerBitAll = 0L;
 		int bestSlotIndexSelling = -1;
