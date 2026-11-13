@@ -76,6 +76,8 @@ public class ConfigDataFixer {
 		builder.addFixer(new ConfigFix11NewHud(schema12, true));
 		Schema schema13 = builder.addSchema(13, Schema::new);
 		builder.addFixer(new ConfigFix12MoveWidgetOptions(schema13, true));
+		Schema schema14 = builder.addSchema(14, Schema::new);
+		builder.addFixer(new ConfigFix13Equipment(schema14, true));
 
 		return dataFixer = builder.build().fixer();
 	}

@@ -49,7 +49,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 
 	@ModifyArg(method = "getRecipeBookButtonPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/navigation/ScreenPosition;<init>(II)V"), index = 0)
 	private int skyblocker$moveButton(int x) {
-		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory ? x + 21 : x;
+		return Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory ? x + 21 : x;
 	}
 
 	@WrapWithCondition(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/EffectsInInventory;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
@@ -71,7 +71,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 	@ModifyExpressionValue(method = "extractBackground", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;INVENTORY_LOCATION:Lnet/minecraft/resources/Identifier;", opcode = Opcodes.GETSTATIC))
 	private Identifier skyblocker$getBackground(Identifier original) {
 		// gotta do this, if I don't call super in SkyblockInventoryScreen quick nav doesn't get rendered
-		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory) return SkyblockInventoryScreen.BACKGROUND.get();
+		if (Utils.isOnSkyblock() && SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory) return SkyblockInventoryScreen.BACKGROUND.get();
 		return original;
 	}
 
