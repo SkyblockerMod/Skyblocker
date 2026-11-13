@@ -45,7 +45,8 @@ public class Http {
 	@Init
 	public static void init() {
 		// refresh every 20 minutes
-		Scheduler.INSTANCE.scheduleCyclic(Http::refreshHttpClient, 60 * 20 * 20);
+		final int period = 60 * 20 * 20;
+		Scheduler.INSTANCE.schedule(() -> Scheduler.INSTANCE.scheduleCyclic(Http::refreshHttpClient, period), period);
 	}
 
 	/**
@@ -57,7 +58,8 @@ public class Http {
 		HttpClient oldClient = HTTP_CLIENT;
 		HTTP_CLIENT = createHttpClient();
 
-		SkyblockerMod.VIRTUAL_THREAD_EXECUTOR.submit(() -> {
+		// close it 2 ticks later to hopefully avoid weird threading issues
+		Scheduler.INSTANCE.schedule(() -> {
 			// copy of HttpClient#close because the default implementation has a timeout of 1 day which is way too long
 			oldClient.shutdown();
 			boolean interrupted = false;
@@ -76,7 +78,7 @@ public class Http {
 			if (interrupted) {
 				Thread.currentThread().interrupt();
 			}
-		});
+		}, 2, true);
 	}
 
 	public static ApiResponse sendCacheableGetRequest(String url, @Nullable String token) throws IOException, InterruptedException {
