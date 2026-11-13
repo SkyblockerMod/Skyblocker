@@ -24,7 +24,7 @@ public class TabLayerBuilder extends LayerBuilder {
 
 	public void clearTab() {
 		tabWidgets.clear();
-		merge();
+		updateList();
 	}
 
 	@Override
@@ -37,9 +37,6 @@ public class TabLayerBuilder extends LayerBuilder {
 		merged.clear();
 		merged.addAll(widgets);
 		merged.addAll(tabWidgets);
-
-		renderedWidgets.clear();
-		merged.stream().map(w -> w.widget).forEach(renderedWidgets::add);
 	}
 
 	public void updateTab(Collection<String> ignoredWidgets) {
@@ -60,7 +57,7 @@ public class TabLayerBuilder extends LayerBuilder {
 		/*for (HudWidget widget : tabWidgets) {
 			if (widget instanceof ComponentBasedWidget componentBasedWidget && !componentBasedWidget.shouldUpdateBeforeRendering()) componentBasedWidget.update();
 		}*/
-		merge();
+		updateList();
 		Profiler.get().pop();
 	}
 
