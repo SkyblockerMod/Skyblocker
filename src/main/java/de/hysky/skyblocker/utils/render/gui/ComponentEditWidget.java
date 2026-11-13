@@ -1,6 +1,8 @@
-package de.hysky.skyblocker.skyblock.item.custom.screen.name;
+package de.hysky.skyblocker.utils.render.gui;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableList;
@@ -30,22 +32,19 @@ import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.PreeditEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 
-import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.ConfigUtils;
-import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.debug.Debug;
+import de.hysky.skyblocker.skyblock.item.custom.screen.name.ColorPopup;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetClickedPositionVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetRenderWidthVisitor;
 import de.hysky.skyblocker.skyblock.item.custom.screen.name.visitor.GetStyleVisitor;
@@ -55,13 +54,11 @@ import de.hysky.skyblocker.utils.OkLabColor;
 import de.hysky.skyblocker.utils.SkyBlockColors;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 
-public class CustomizeNameWidget extends AbstractContainerWidget {
-	private static final Identifier INNER_SPACE_TEXTURE = SkyblockerMod.id("menu_inner_space");
-	private static final int PADDING = 3;
+public class ComponentEditWidget extends AbstractContainerWidget {
 
 	private final Minecraft client = Minecraft.getInstance();
 	private final Font textRenderer = client.font;
-	private String uuid = "";
+	private final Consumer<Component> responder;
 
 	private Component text = Component.empty();
 	private String textString = "";
@@ -78,9 +75,10 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 
 	private @Nullable Style insertAs;
 
-	public CustomizeNameWidget(Screen parent) {
-		super(0, 0, 0, 0, Component.literal("Customize Item Name"), AbstractScrollArea.defaultSettings(4));
+	public ComponentEditWidget(Screen parent, Component message, Consumer<Component> responder) {
+		super(0, 0, 0, 0, message, AbstractScrollArea.defaultSettings(4));
 		ImmutableList.Builder<AbstractWidget> builder = ImmutableList.builder();
+		this.responder = responder;
 		// the gui is a grid of 20 columns, should be 16 px each
 		textField = grid.addChild(new TextField(), 1, 0, 1, 20);
 		builder.add(textField);
@@ -100,12 +98,11 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		builder.add(grid.addChild(Button.builder(Component.translatable("skyblocker.customItemNames.screen.gradientColor"), _ ->
 				client.gui.setScreen(ColorPopup.createGradient(parent, this::createGradient))
 		).size(48, 16).build(), 3, 17, 1, 3));
-		builder.add(grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.translatable("skyblocker.customItemNames.screen.howToRemove").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY), textRenderer)/*.alignLeft()*/, 4, 0, 1, 20, LayoutSettings.defaults().paddingTop(2)));
-		builder.add(previewWidget = grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.empty(), textRenderer).setMaxWidth(20 * 16, StringWidget.TextOverflow.SCROLLING), 5, 0, 1, 20, LayoutSettings.defaults().paddingVertical(2).alignHorizontallyCenter()));
+		builder.add(previewWidget = grid.addChild(new StringWidget(20 * 16, textRenderer.lineHeight, Component.empty(), textRenderer).setMaxWidth(20 * 16, StringWidget.TextOverflow.SCROLLING), 4, 0, 1, 20, LayoutSettings.defaults().paddingVertical(2).alignHorizontallyCenter()));
 		widgets = builder.build();
 		grid.arrangeElements();
-		grid.setPosition(getX() + PADDING, getY() + PADDING);
-		setSize(grid.getWidth() + PADDING * 2, grid.getHeight() + PADDING * 2);
+		grid.setPosition(getX(), getY());
+		setSize(grid.getWidth(), grid.getHeight());
 		selectionStart = selectionEnd = textString.length();
 	}
 
@@ -127,32 +124,24 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	@Override
 	public void setX(int x) {
 		super.setX(x);
-		grid.setX(getX() + PADDING);
+		grid.setX(getX());
 	}
 
 	@Override
 	public void setY(int y) {
 		super.setY(y);
-		grid.setY(getY() + PADDING);
+		grid.setY(getY());
 	}
 
 	public void setItem(ItemStack stack) {
-		uuid = stack.getUuid();
 		setText(stack.getHoverName().copy(), false);
 	}
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
-		graphics.blitSprite(
-				RenderPipelines.GUI_TEXTURED,
-				INNER_SPACE_TEXTURE,
-				getX(),
-				getY(),
-				getWidth(),
-				getHeight());
 		if (Debug.debugEnabled()) {
-			graphics.text(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX(), getBottom(), -1);
-			graphics.text(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getBottom() + 10, -1);
+			graphics.text(textRenderer, Component.literal("Selection Start: " + selectionStart + ", Selection End: " + selectionEnd), getX() + getWidth() / 3, getY(), -1);
+			graphics.text(textRenderer, Component.literal("Insert Style: " + (insertAs == null ? "null" : insertAs.toString())), getX(), getY() + 56, -1);
 		}
 		for (AbstractWidget widget : widgets) {
 			widget.extractRenderState(graphics, mouseX, mouseY, deltaTicks);
@@ -160,7 +149,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	}
 
 	/**
-	 * Creates a gradient that goes from {@link CustomizeNameWidget#selectionStart} to {@link CustomizeNameWidget#selectionEnd}
+	 * Creates a gradient that goes from {@link ComponentEditWidget#selectionStart} to {@link ComponentEditWidget#selectionEnd}
 	 *
 	 * @param startColor the color at the start of the gradient
 	 * @param endColor   the color at the end of the gradient
@@ -215,20 +204,14 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 	 *
 	 * @param text the text to set
 	 */
-	public void setText(Component text, boolean updateConfig) {
+	public void setText(Component text, boolean callCallback) {
 		this.text = text;
 		textString = text.getString();
-		if (updateConfig && !uuid.isEmpty()) {
-			SkyblockerConfigManager.updateOnly(config -> {
-				if (textString.isBlank()) config.general.customItemNames.remove(uuid);
-				else config.general.customItemNames.put(uuid, text.copy().setStyle(Style.EMPTY.withItalic(false).withColor(ChatFormatting.WHITE)));
-			});
-		}
+		if (callCallback) responder.accept(text);
 		previewWidget.setMessage(text);
 		grid.arrangeElements();
 
-		// called before init
-		if (textField != null) textField.updateMePrettyPlease = true;
+		textField.updateMePrettyPlease = true;
 	}
 
 	public void setText(Component text) {
@@ -339,11 +322,6 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		return i;
 	}
 
-	@Override
-	public void setFocused(boolean focused) {
-		if (!focused) setFocused(null);
-	}
-
 	private class FormattingButton extends AbstractButton {
 		private boolean enabled;
 		private final ChatFormatting format;
@@ -396,11 +374,14 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		private final ChatFormatting color;
 		private final int intColor;
 
+		/**
+		 * @param format Callers should ensure that this is a color.
+		 */
 		private ColorButton(ChatFormatting format) {
 			super(0, 0, 16, 16, ConfigUtils.FORMATTING_FORMATTER.apply(format));
 			setTooltip(Tooltip.create(getMessage()));
 			this.color = format;
-			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(TextColor.fromLegacyFormat(color).getValue()));
+			this.intColor = ARGB.opaque(SkyBlockColors.fromVanilla(Objects.requireNonNull(TextColor.fromLegacyFormat(color)).getValue()));
 		}
 
 		@Override
@@ -486,7 +467,6 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 				default -> captured = false;
 			}
 			if (captured) return true;
-			assert client != null;
 			if (input.isSelectAll()) {
 				selectionStart = 0;
 				selectionEnd = textString.length();
@@ -524,7 +504,7 @@ public class CustomizeNameWidget extends AbstractContainerWidget {
 		@Override
 		public boolean preeditUpdated(@Nullable final PreeditEvent event) {
 			if (this.isActive()) {
-				this.preeditOverlay = event != null ? new IMEPreeditOverlay(event, CustomizeNameWidget.this.textRenderer, 9 + 1) : null;
+				this.preeditOverlay = event != null ? new IMEPreeditOverlay(event, ComponentEditWidget.this.textRenderer, 9 + 1) : null;
 				return true;
 			}
 
