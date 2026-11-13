@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
@@ -43,7 +44,11 @@ public class FossilMuncher extends ChatPatternListener {
 		LOGGER.info("Original Fossil Muncher message: {}", message.getString());
 		String riddle = matcher.group(1);
 		String answer = ANSWERS.getOrDefault(riddle, riddle);
-		client.player.sendSystemMessage(Component.nullToEmpty("§e[NPC] §6Fossil Muncher§f: " + answer));
+		client.player.sendSystemMessage(Component.empty()
+				.append(Component.literal("[NPC] ").withColor(TextColor.YELLOW))
+				.append(Component.literal("Fossil Muncher").withColor(TextColor.GOLD))
+				.append(": " + answer)
+		);
 		return true;
 	}
 }

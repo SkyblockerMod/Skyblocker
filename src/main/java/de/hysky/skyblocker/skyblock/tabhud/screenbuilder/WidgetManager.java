@@ -341,6 +341,7 @@ public class WidgetManager {
 		CONFIG.copyTracker().hud().map().clear();
 		CONFIG.copyTracker().tab().map().clear();
 		CONFIG.copyTracker().secondaryTab().map().clear();
+		if (currentLayer != null) SCREEN_BUILDER.get(currentLayer).update();
 	}
 
 	public static void saveConfig() {

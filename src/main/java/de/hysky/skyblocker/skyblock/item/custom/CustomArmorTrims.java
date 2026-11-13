@@ -22,6 +22,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -111,7 +112,7 @@ public class CustomArmorTrims {
 						// Ensure that the material & trim are valid
 						ArmorTrimId trimId = new ArmorTrimId(material, pattern);
 						if (TRIMS_CACHE.get(trimId) == null) {
-							source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern")));
+							source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.invalidMaterialOrPattern").withColor(TextColor.RED)));
 
 							return Command.SINGLE_SUCCESS;
 						}
@@ -120,14 +121,14 @@ public class CustomArmorTrims {
 						source.sendFeedback(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.added")));
 					}
 				} else {
-					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.noItemUuid")));
+					source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.noItemUuid").withColor(TextColor.RED)));
 				}
 			} else {
-				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.notAnArmorPiece")));
+				source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.notAnArmorPiece").withColor(TextColor.RED)));
 				return Command.SINGLE_SUCCESS;
 			}
 		} else {
-			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.unableToSetTrim")));
+			source.sendError(Constants.PREFIX.get().append(Component.translatable("skyblocker.customArmorTrims.unableToSetTrim").withColor(TextColor.RED)));
 		}
 
 		return Command.SINGLE_SUCCESS;

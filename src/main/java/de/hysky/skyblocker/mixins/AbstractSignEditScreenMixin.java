@@ -14,12 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
+import de.hysky.skyblocker.skyblock.bazaar.BazaarMax;
 import de.hysky.skyblocker.skyblock.bazaar.BazaarQuickQuantities;
 import de.hysky.skyblocker.skyblock.calculators.SignCalculator;
 import de.hysky.skyblocker.skyblock.speedpreset.SpeedPresets;
@@ -31,6 +34,12 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	@Shadow
 	@Final
 	private String[] messages;
+
+	@Shadow
+	private int line;
+
+	@Shadow
+	private TextFieldHelper signField;
 
 	@Shadow
 	public abstract void onClose();
@@ -47,6 +56,15 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 				@Nullable Button[] buttons = BazaarQuickQuantities.getButtons(this.width, messages);
 				for (Button button : buttons) if (button != null) addRenderableWidget(button);
 			}
+		}
+	}
+
+	@Inject(method = "charTyped", at = @At("TAIL"))
+	private void skyblocker$charTyped(CharacterEvent event, CallbackInfoReturnable<Boolean> cir) {
+		if (event.codepoint() == ' ' && Utils.isOnSkyblock()
+				&& SkyblockerConfigManager.get().helpers.bazaar.enableBazaarMax
+				&& isInputSign() && messages[3].equals("to order")) {
+			BazaarMax.INSTANCE.expandMax(signField, messages[line]);
 		}
 	}
 

@@ -124,7 +124,6 @@
     "skyblocker.config.dungeons.dungeonChestProfit.profitColor": "Colore per Profitto",
     "skyblocker.config.dungeons.dungeonChestProfit.lossColor": "Colore per Perdita",
     "skyblocker.config.dungeons.map.mapScaling": "Dimensioni della Mappa",
-    "skyblocker.config.dungeons.mimicMessage": "Messaggio per il Mimic",
     "skyblocker.config.dungeons.livid": "Colore Livid",
     "skyblocker.config.mining.dwarvenMines.solveFetchur": "Risolvi Fetchur",
     "skyblocker.config.mining.dwarvenHud": "HUD per le Dwarven Mines",
