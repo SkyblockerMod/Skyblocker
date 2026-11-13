@@ -1,5 +1,6 @@
 package de.hysky.skyblocker.utils;
 
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -7,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +18,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.Item;
@@ -147,9 +148,8 @@ public class ItemUtilsTest {
 
 	@Test
 	void testGetDurability() {
-		IntIntPair durability = ItemUtils.getDurability(TITANIUM_DRILL_DR_X655.getStackOrThrow());
-		Assertions.assertNotNull(durability);
-		Assertions.assertEquals(5395, durability.leftInt());
-		Assertions.assertEquals(10_000, durability.rightInt());
+		OptionalDouble durability = ItemUtils.getDurability(TITANIUM_DRILL_DR_X655.getStackOrThrow());
+		Assertions.assertTrue(durability.isPresent());
+		Assertions.assertTrue(Mth.equal(durability.getAsDouble(), 0.5395));
 	}
 }
