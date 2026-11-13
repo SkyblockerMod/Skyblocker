@@ -1190,7 +1190,7 @@
   "skyblocker.config.otherLocations.end.screen": "End HUD Config...",
   "skyblocker.config.otherLocations.end.waypoint": "End Protector Waypoint",
   "skyblocker.config.otherLocations.end.zealotKillsEnabled": "Zealot Kills Information",
-  "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "Only counts melee kills!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
+  "skyblocker.config.otherLocations.end.zealotKillsEnabled.@Tooltip": "For ranged kills to be counted, please enable the 'Pity' TAB widget!\n\nKills can be updated by going to the Zealot page in the Bestiary.",
 
   "skyblocker.config.otherLocations.rift": "The Rift",
   "skyblocker.config.otherLocations.rift.autoDetectMcGrubber": "Autodetect McGrubber Stacks",

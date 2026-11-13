@@ -33,14 +33,12 @@ public class EndStatsBestiaryUpdater extends SimpleContainerSolver {
 					if (!NumberUtils.isCreatable(killsStr)) return;
 
 					int kills = NumberUtils.toInt(killsStr);
-					var stats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
 
 					if (entry.getIntKey() == ALL_ZEALOTS_INDEX) {
-						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(kills, stats.zealotsSinceLastEye(), stats.eyes()));
+						TheEnd.updateStats(stats -> new TheEnd.EndStats(kills, stats.zealotsSinceLastEye(), stats.eyes()));
 					} else if (entry.getIntKey() == SPECIAL_ZEALOT_INDEX) {
-						TheEnd.PROFILES_STATS.put(new TheEnd.EndStats(stats.totalZealotKills(), stats.zealotsSinceLastEye(), kills));
+						TheEnd.updateStats(stats -> new TheEnd.EndStats(stats.totalZealotKills(), stats.zealotsSinceLastEye(), kills));
 					}
-					EndHudWidget.getInstance().update();
 				});
 		return List.of();
 	}
