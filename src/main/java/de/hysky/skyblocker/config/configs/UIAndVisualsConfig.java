@@ -323,6 +323,10 @@ public class UIAndVisualsConfig {
 
 		public boolean showEstimatedTilde = true;
 
+		public boolean healthBarWitherColor = true;
+
+		public boolean healthBarPoisonColor = true;
+
 		public boolean hasSeenVitalityAtLeastOnce = false;
 
 		// Kept in for backwards compatibility, remove if needed
