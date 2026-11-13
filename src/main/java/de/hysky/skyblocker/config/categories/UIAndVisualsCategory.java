@@ -195,6 +195,14 @@ public class UIAndVisualsCategory {
 										newValue -> config.uiAndVisuals.chestValue.enableChestValue = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.chestValue.useNpcPriceOnly"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.chestValue.useNpcPriceOnly.@Tooltip"))
+								.binding(defaults.uiAndVisuals.chestValue.useNpcPriceOnly,
+										() -> config.uiAndVisuals.chestValue.useNpcPriceOnly,
+										newValue -> config.uiAndVisuals.chestValue.useNpcPriceOnly = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
 						.option(Option.<ChatFormatting>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.chestValue.color"))
 								.binding(defaults.uiAndVisuals.chestValue.color,
