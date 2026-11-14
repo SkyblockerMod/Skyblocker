@@ -2,6 +2,7 @@ package de.hysky.skyblocker.config.configs;
 
 import net.minecraft.network.chat.Component;
 
+import de.hysky.skyblocker.annotations.EnumDisabledValue;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class ChatConfig {
@@ -73,6 +74,7 @@ public class ChatConfig {
 		public boolean mergeAddedRemoved = false;
 
 		public enum EnableState {
+			@EnumDisabledValue
 			OFF,
 			KEEP_MESSAGE,
 			HIDE_MESSAGE;
