@@ -30,6 +30,7 @@ import org.apache.commons.lang3.function.Consumers;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Ref;
@@ -149,7 +150,7 @@ public class NEURepoManager {
 			} catch (TransportException e) {
 				LOGGER.error("[Skyblocker NEU Repo] Transport operation failed. Most likely unable to connect to the remote NEU repo on github", e);
 				success = false;
-			} catch (GitAPIException | RepositoryNotFoundException e) {
+			} catch (GitAPIException | RepositoryNotFoundException | JGitInternalException e) {
 				LOGGER.warn("[Skyblocker NEU Repo] Local NEU Repository not found or corrupted, downloading new one", e);
 				client.execute(() ->
 						Scheduler.INSTANCE.schedule(() -> deleteAndDownloadRepositoryInternal(client.player), 1)
