@@ -20,7 +20,7 @@ import de.hysky.skyblocker.utils.Utils;
 
 public class RareDropSpecialEffects {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RareDropSpecialEffects.class);
-	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? "+SkyBlockIcons.MAGIC_FIND+" Magic Find\\))?$");
+	private static final Pattern MAGIC_FIND_PATTERN = Pattern.compile("^(?!.*:)(?:RARE|VERY RARE|CRAZY RARE|INSANE) DROP!\\s+\\(?(?<item>.+?)\\)?(?:\\s+\\(\\+\\d+%? ?"+SkyBlockIcons.MAGIC_FIND+" Magic Find\\))?$");
 	private static final Pattern OVERBLOOM_PATTERN = Pattern.compile("^RARE CROP!\\s+(?<crop>[\\w\\s]+)\\s+\\(\\+\\d+(?:\\.\\d+)?" + SkyBlockIcons.OVERBLOOM + "\\).*");
 
 	@Init
@@ -100,7 +100,12 @@ public class RareDropSpecialEffects {
 			case "Ray of Helios" -> "RAY_OF_HELIOS";
 			default -> "NONE";
 		};
+		if ("NONE".equals(itemId)) return null;
+		FlexibleItemStack stack = ItemRepository.getItemStack(itemId);
+		if (stack == null) {
+			LOGGER.warn("Couldn't find item '{}' (id: '{}'). NEU Repo Files imported: {}", itemName, itemId, ItemRepository.filesImported());
+		}
 
-		return ItemRepository.getItemStack(itemId);
+		return stack;
 	}
 }
