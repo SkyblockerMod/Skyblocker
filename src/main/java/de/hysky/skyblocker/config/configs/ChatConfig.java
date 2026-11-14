@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.config.configs;
 
+import net.minecraft.network.chat.Component;
+
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
 public class ChatConfig {
@@ -8,6 +10,8 @@ public class ChatConfig {
 	public boolean confirmationPromptHelper = false;
 
 	public float toastDisplayDuration = 4;
+
+	public SackToast sackToast = new SackToast();
 
 	public ChatFilterResult hideAbility = ChatFilterResult.PASS;
 
@@ -59,5 +63,23 @@ public class ChatConfig {
 
 		@Deprecated
 		public transient int announcementScale = 3;
+	}
+
+	public static class SackToast {
+		public EnableState enabled = EnableState.OFF;
+
+		public float itemDisplayDuration = 1.2f;
+
+		public boolean mergeAddedRemoved = false;
+
+		public enum EnableState {
+			OFF,
+			KEEP_MESSAGE,
+			HIDE_MESSAGE;
+
+			public Component toComponent() {
+				return Component.translatable("skyblocker.config.chat.sackToast.enable." + name());
+			}
+		}
 	}
 }
