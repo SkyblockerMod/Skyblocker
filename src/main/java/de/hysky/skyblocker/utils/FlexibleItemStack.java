@@ -120,7 +120,7 @@ public final class FlexibleItemStack implements ItemInstance, SkyblockerStack {
 	/// Applies the {@code patch} components on this instance.
 	@SuppressWarnings("unchecked")
 	public void applyComponents(DataComponentPatch patch) {
-		for (Map.Entry<DataComponentType<?>, ?> entry : ((DataComponentPatchAccessor) (Object) this.components).getMap().entrySet()) {
+		for (Map.Entry<DataComponentType<?>, ?> entry : ((DataComponentPatchAccessor) (Object) patch).getMap().entrySet()) {
 			this.set((DataComponentType<Object>) entry.getKey(), entry.getValue());
 		}
 	}
