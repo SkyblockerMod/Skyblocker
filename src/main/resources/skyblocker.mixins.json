@@ -32,6 +32,7 @@
 		"HudMixin",
 		"InventoryMixin",
 		"InventoryScreenMixin",
+		"ItemModelResolverMixin",
 		"ItemStackMixin",
 		"KeyMappingMixin",
 		"LevelExtractorMixin",

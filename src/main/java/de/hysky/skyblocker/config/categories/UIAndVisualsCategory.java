@@ -677,6 +677,15 @@ public class UIAndVisualsCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(true).build())
 								.build())
+						.option(Option.<UIAndVisualsConfig.TeleportOverlay.HighlightType>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.highlightType"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.highlightType.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.uiAndVisuals.teleportOverlay.highlightType,
+										() -> config.uiAndVisuals.teleportOverlay.highlightType,
+										newValue -> config.uiAndVisuals.teleportOverlay.highlightType = newValue)
+								.controller(ConfigUtils.createEnumController())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.teleportOverlay.enableWeirdTransmission"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.smoothAOTE.enableWeirdTransmission.@Tooltip"))

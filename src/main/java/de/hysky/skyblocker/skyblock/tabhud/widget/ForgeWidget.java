@@ -22,13 +22,21 @@ public class ForgeWidget extends TabHudWidget {
 	private static final MutableComponent TITLE = Component.literal("Forges").withStyle(ChatFormatting.DARK_AQUA,
 			ChatFormatting.BOLD);
 
+	private boolean render;
+
 	public ForgeWidget() {
 		super("Forges", TITLE, TextColor.DARK_AQUA.getValue());
 	}
 
 	@Override
+	public boolean shouldRender() {
+		return render && super.shouldRender();
+	}
+
+	@Override
 	public void updateContent(PlayerListManager.Widget widget) {
 		List<Component> lines = widget.lines();
+		render = !lines.isEmpty();
 		for (int i = 0, slot = 1; i < lines.size(); i++, slot++) {
 			String trim = lines.get(i).getString().trim();
 

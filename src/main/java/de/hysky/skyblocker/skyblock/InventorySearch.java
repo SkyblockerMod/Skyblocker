@@ -85,6 +85,7 @@ public class InventorySearch {
 	}
 
 	public static boolean slotMatches(Slot slot) {
+		if (slot.index < 0) return true; // Band-Aid fix for mods that add custom slots with a negative index
 		if (!computedSlots.get(slot.index)) {
 			computedSlots.set(slot.index);
 			slots.set(slot.index, computeSlot(slot));

@@ -170,8 +170,15 @@ public class ContainerSolverManager {
 			slots = slots.subList(0, chestMenu.getRowCount() * 9);
 		}
 
-		if (highlights == null) highlights = currentSolver.getColors(slotMap(slots));
-		for (ColorHighlight highlight : highlights) {
+
+		List<ColorHighlight> highlightsSafe = highlights;
+
+		if (highlightsSafe == null) {
+			highlightsSafe = currentSolver.getColors(slotMap(slots));
+			highlights = highlightsSafe;
+		}
+
+		for (ColorHighlight highlight : highlightsSafe) {
 			Slot slot = slots.get(highlight.slot());
 			int color = highlight.color();
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, color);

@@ -95,6 +95,23 @@ public class HuntingCategory {
 										})
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibug"))
+								.description(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibug.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.hunting.moongladeMobs.highlightInvisibug,
+										() -> config.hunting.moongladeMobs.highlightInvisibug,
+										newValue -> config.hunting.moongladeMobs.highlightInvisibug = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.moongladeMobs.highlightInvisibugColor"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.hunting.moongladeMobs.invisibugGlowColor,
+										() -> config.hunting.moongladeMobs.invisibugGlowColor,
+										newValue -> config.hunting.moongladeMobs.invisibugGlowColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
 						.build())
 
 				// Torrhus Mobs
@@ -165,6 +182,23 @@ public class HuntingCategory {
 								.binding(defaults.hunting.safari.sparklingCritterHighlightColor,
 										() -> config.hunting.safari.sparklingCritterHighlightColor,
 										newValue -> config.hunting.safari.sparklingCritterHighlightColor = newValue)
+								.controller(ColourController.createBuilder().hasAlpha(false).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper"))
+								.description(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelper.@Tooltip"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.hunting.safari.critterCapsuleHelper,
+										() -> config.hunting.safari.critterCapsuleHelper,
+										newValue -> config.hunting.safari.critterCapsuleHelper = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.option(Option.<Color>createBuilder()
+								.name(Component.translatable("skyblocker.config.hunting.safari.critterCapsuleHelperColor"))
+								.tags(CommonTags.ADDED_IN_6_11_0)
+								.binding(defaults.hunting.safari.critterCapsuleHelperColor,
+										() -> config.hunting.safari.critterCapsuleHelperColor,
+										newValue -> config.hunting.safari.critterCapsuleHelperColor = newValue)
 								.controller(ColourController.createBuilder().hasAlpha(false).build())
 								.build())
 						.build())
