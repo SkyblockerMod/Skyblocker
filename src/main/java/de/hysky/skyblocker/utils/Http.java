@@ -32,7 +32,7 @@ public class Http {
 	private static final String HYPIXEL_PROXY = "https://hysky.de/api/hypixel/v2/";
 	private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(60);
 	public static final String USER_AGENT = "Skyblocker/" + SkyblockerMod.VERSION + " (" + SharedConstants.getCurrentVersion().name() + ")";
-	private static HttpClient HTTP_CLIENT = createHttpClient();
+	private static volatile HttpClient HTTP_CLIENT = createHttpClient();
 
 	private static HttpClient createHttpClient() {
 		return HttpClient.newBuilder()
