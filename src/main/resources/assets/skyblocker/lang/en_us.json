@@ -1367,6 +1367,8 @@
   "skyblocker.config.uiAndVisuals.chestValue.enableChestValue.@Tooltip": "Adds a button in containers to calculate the value of a container.",
   "skyblocker.config.uiAndVisuals.chestValue.incompleteColor": "Incomplete Color",
   "skyblocker.config.uiAndVisuals.chestValue.incompleteColor.@Tooltip": "The color to display when the price data is incomplete.",
+  "skyblocker.config.uiAndVisuals.chestValue.useNpcPriceOnly": "Use NPC Price Only",
+  "skyblocker.config.uiAndVisuals.chestValue.useNpcPriceOnly.@Tooltip": "Only use NPC price value and ignore Bazaar and Auction prices.",
 
   "skyblocker.config.uiAndVisuals.compactDamage": "Compact Damage",
   "skyblocker.config.uiAndVisuals.compactDamage.critDamageGradientEnd": "Crit Damage Gradient End Color",
