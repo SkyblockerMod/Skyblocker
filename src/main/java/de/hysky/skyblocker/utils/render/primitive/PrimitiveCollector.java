@@ -53,7 +53,7 @@ public interface PrimitiveCollector {
 	 * @param textureHeight amount of texture rendered height
 	 * @param renderOffset  offset once it's been placed in the world facing the player
 	 * @param texture       reference to texture to render
-	 * @param shaderColor   colour to apply to the texture (use white if none)
+	 * @param shaderColour   colour to apply to the texture (use white if none)
 	 */
 	void submitTexturedQuad(Vec3 pos, float width, float height, float textureWidth, float textureHeight, Vec3 renderOffset, Identifier texture, float[] shaderColour, float alpha, boolean throughWalls);
 
