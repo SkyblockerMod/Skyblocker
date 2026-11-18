@@ -167,19 +167,18 @@ public class UIAndVisualsCategory {
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory"))
 								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory.@Tooltip"))
-								.binding(defaults.uiAndVisuals.showEquipmentInInventory,
-										() -> config.uiAndVisuals.showEquipmentInInventory,
-										newValue -> config.uiAndVisuals.showEquipmentInInventory = newValue)
+								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory,
+										() -> config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory,
+										newValue -> config.uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
-						.option(Option.<Boolean>createBuilder()
-								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats"))
-								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStats.@Tooltip"))
-								.tags(CommonTags.ADDED_IN_6_7_0)
-								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
-										() -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage,
-										newValue -> config.uiAndVisuals.skyblockInventoryScreen.openEquipmentToStatsPage = newValue)
-								.controller(ConfigUtils.createBooleanController())
+						.option(Option.<UIAndVisualsConfig.SkyBlockInventoryScreen.EquipmentCommands>createBuilder()
+								.name(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.inventoryEquipmentCommand"))
+								.description(Component.translatable("skyblocker.config.uiAndVisuals.skyblockInventoryScreen.inventoryEquipmentCommand.@Tooltip"))
+								.binding(defaults.uiAndVisuals.skyblockInventoryScreen.equipmentCommand,
+										() -> config.uiAndVisuals.skyblockInventoryScreen.equipmentCommand,
+										newValue -> config.uiAndVisuals.skyblockInventoryScreen.equipmentCommand = newValue)
+								.controller(ConfigUtils.createEnumController())
 								.build())
 						.build())
 
