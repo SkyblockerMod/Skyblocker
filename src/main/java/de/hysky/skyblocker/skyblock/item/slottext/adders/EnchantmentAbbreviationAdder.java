@@ -1,6 +1,7 @@
 package de.hysky.skyblocker.skyblock.item.slottext.adders;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.EnchantedBookUtils;
 import de.hysky.skyblocker.utils.ItemUtils;
 
 public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
@@ -227,10 +229,19 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		if (!stack.is(Items.ENCHANTED_BOOK)) return List.of();
 		String name = stack.getHoverName().getString();
-		if (!name.equals("Enchanted Book")) return List.of();
-		CompoundTag enchantments = getEnchantments(stack);
-		if (enchantments == null) return List.of();
-		final String enchantmentId = enchantments.keySet().iterator().next();
+		String enchantmentId;
+		if (name.equals("Enchanted Book")) {
+			CompoundTag enchantments = getEnchantments(stack);
+			if (enchantments == null) return List.of();
+			enchantmentId = enchantments.keySet().iterator().next();
+		} else { // Bazaar my HATED
+			String apiId = EnchantedBookUtils.getApiIdByName(stack.getHoverName());
+			if (apiId.isEmpty()) return List.of();
+			// In case the api id doesn't end with the level, don't see how it would but who knows
+			int end = Character.isDigit(apiId.charAt(apiId.length() - 1)) ? apiId.lastIndexOf('_') : apiId.length();
+			// 12 is the size of "ENCHANTMENT_" prefix in ids.
+			enchantmentId = apiId.substring(12, end).toLowerCase(Locale.ENGLISH);
+		}
 
 		return getAbbreviation(enchantmentId)
 				.map(text -> List.of(SlotText.topRight(text)))
