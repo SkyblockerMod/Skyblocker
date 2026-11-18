@@ -21,12 +21,12 @@ public class TabHud {
 	public static void init() {
 		toggleSecondary = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.toggleA",
-						InputConstants.Type.KEYSYM,
+						InputConstants.Type.KEYBOARD,
 						InputConstants.KEY_Z,
 						SkyblockerMod.KEYBINDING_CATEGORY));
 		defaultTgl = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.skyblocker.defaultTgl",
-						InputConstants.Type.KEYSYM,
+						InputConstants.Type.KEYBOARD,
 						InputConstants.KEY_M,
 						SkyblockerMod.KEYBINDING_CATEGORY));
 

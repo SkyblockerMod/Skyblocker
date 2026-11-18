@@ -107,8 +107,8 @@ public class CrystalsChestHighlighter {
 		if (!Utils.isInCrystalHollows() || !SkyblockerConfigManager.get().mining.crystalHollows.chestHighlighter) {
 			return;
 		}
-		if (ParticleTypes.CRIT.equals(packet.getParticle().getType())) {
-			activeParticles.put(new Vec3(packet.getX(), packet.getY(), packet.getZ()), System.currentTimeMillis());
+		if (ParticleTypes.CRIT.equals(packet.particle().getType())) {
+			activeParticles.put(new Vec3(packet.x(), packet.y(), packet.z()), System.currentTimeMillis());
 		}
 	}
 

@@ -78,7 +78,7 @@ public class UpcomingEventsTab implements RecipeTab {
 	@Override
 	public void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
 		if (this.hovered != null) {
-			graphics.tooltip(CLIENT.font, this.hovered.getTooltip(), x, y, DefaultTooltipPositioner.INSTANCE, null);
+			graphics.tooltip(CLIENT.font, this.hovered.getTooltip(), x, y, DefaultTooltipPositioner.INSTANCE, null, true);
 		}
 	}
 

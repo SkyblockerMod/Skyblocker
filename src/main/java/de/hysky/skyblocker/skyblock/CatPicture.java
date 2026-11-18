@@ -109,7 +109,7 @@ public class CatPicture {
 		PoseStack matrices = new PoseStack();
 		matrices.pushPose();
 		matrices.translate(-levelState.cameraRenderState.pos.x + renderPosition.x + 0.5, -levelState.cameraRenderState.pos.y + renderPosition.y + 0.5, -levelState.cameraRenderState.pos.z + renderPosition.z + 0.5);
-		matrices.mulPose(Axis.YP.rotationDegrees(rotation));
+		matrices.rotate(Axis.YP.rotationDegrees(rotation));
 
 		// Render Item Frame
 		matrices.translate(-0.5, -0.5, -0.5);
@@ -117,7 +117,7 @@ public class CatPicture {
 
 		// Render Kitty
 		matrices.translate(1, 1, 0);
-		matrices.mulPose(Axis.ZP.rotationDegrees(180.0f));
+		matrices.rotate(Axis.ZP.rotationDegrees(180.0f));
 
 		submitNodeCollector.submitCustomGeometry(matrices, RenderTypes.text(TEXTURE), (matricesEntry, buffer) -> {
 			float z = 1f - 1 / 16f - 1 / 2048f;

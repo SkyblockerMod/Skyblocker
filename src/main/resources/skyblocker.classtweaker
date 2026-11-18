@@ -41,13 +41,13 @@ accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	x	F
 accessible	field	net/minecraft/client/gui/Font$PreparedTextBuilder	y	F
 
 # Custom Vertex Formats
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	POSITION_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	COLOR_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV0_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV1_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV2_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	NORMAL_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
-accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	LINE_WIDTH_FORMAT	Lcom/mojang/blaze3d/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	POSITION_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	COLOR_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV0_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV1_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	UV2_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	NORMAL_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
+accessible	field	com/mojang/blaze3d/vertex/DefaultVertexFormat	LINE_WIDTH_FORMAT	Lcom/mojang/renderpearl/api/GpuFormat;
 
 # Custom Screens
 # Gets rid of a compiler error for Eclipse (I guess its more strict)
