@@ -13,6 +13,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.config.CommonTags;
 import de.hysky.skyblocker.config.ConfigUtils;
 import de.hysky.skyblocker.config.SkyblockerConfig;
+import de.hysky.skyblocker.config.configs.ChatConfig;
 import de.hysky.skyblocker.skyblock.chat.ChatRulesConfigScreen;
 import de.hysky.skyblocker.utils.chat.ChatFilterResult;
 
@@ -22,6 +23,7 @@ public class ChatCategory {
 		return ConfigCategory.createBuilder()
 				.id(SkyblockerMod.id("config/chat"))
 				.name(Component.translatable("skyblocker.config.chat"))
+				//Uncategorized Options
 				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.chat.skyblockXpMessages"))
 						.description(Component.translatable("skyblocker.config.chat.skyblockXpMessages.@Tooltip"))
@@ -48,7 +50,40 @@ public class ChatCategory {
 						.controller(FloatController.createBuilder().range(1f, 10f).slider(0.1f).build())
 						.build())
 
-				//Uncategorized Options
+				// Sack Toast
+				.group(OptionGroup.createBuilder()
+						.name(Component.translatable("skyblocker.config.chat.sackToast"))
+						.description(Component.translatable("skyblocker.config.chat.sackToast.@Tooltip"))
+						.collapsed(true)
+						.option(Option.<ChatConfig.SackToast.EnableState>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.sackToast.enable"))
+								.description(
+										Component.translatable("skyblocker.config.chat.sackToast.enable.@Tooltip[0]"),
+										Component.translatable("skyblocker.config.chat.sackToast.enable.@Tooltip[1]")
+								)
+								.binding(defaults.chat.sackToast.enabled,
+										() -> config.chat.sackToast.enabled,
+										newValue -> config.chat.sackToast.enabled = newValue)
+								.controller(ConfigUtils.createEnumController(ChatConfig.SackToast.EnableState::toComponent))
+								.build())
+						.option(Option.<Float>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.sackToast.itemDisplayDuration"))
+								.description(Component.translatable("skyblocker.config.chat.sackToast.itemDisplayDuration.@Tooltip"))
+								.binding(defaults.chat.sackToast.itemDisplayDuration,
+										() -> config.chat.sackToast.itemDisplayDuration,
+										newValue -> config.chat.sackToast.itemDisplayDuration = newValue)
+								.controller(FloatController.createBuilder().range(0.5f, 3f).slider(0.1f).build())
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Component.translatable("skyblocker.config.chat.sackToast.mergeAddedRemoved"))
+								.description(Component.translatable("skyblocker.config.chat.sackToast.mergeAddedRemoved.@Tooltip"))
+								.binding(defaults.chat.sackToast.mergeAddedRemoved,
+										() -> config.chat.sackToast.mergeAddedRemoved,
+										newValue -> config.chat.sackToast.mergeAddedRemoved = newValue)
+								.controller(ConfigUtils.createBooleanController())
+								.build())
+						.build())
+				// Filters
 				.group(OptionGroup.createBuilder()
 						.name(Component.translatable("skyblocker.config.chat.filter"))
 						.option(Option.<ChatFilterResult>createBuilder()

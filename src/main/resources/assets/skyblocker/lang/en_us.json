@@ -185,6 +185,19 @@
   "skyblocker.config.chat.filter.hideToggleSkyMall": "Hide Sky Mall Messages outside Mining Islands",
   "skyblocker.config.chat.filter.hideToggleSkyMall.@Tooltip": "Hides Sky Mall HOTM perk messages while you're outside of a mining island.",
 
+  "skyblocker.config.chat.sackToast": "Sack Toast",
+  "skyblocker.config.chat.sackToast.@Tooltip": "Replaces the sack diff message with a toast that displays the items that were added/removed.",
+  "skyblocker.config.chat.sackToast.enable": "Enable Sack Toast",
+  "skyblocker.config.chat.sackToast.enable.@Tooltip[0]": "Keep Message: Show toast and keep the message in chat.",
+  "skyblocker.config.chat.sackToast.enable.@Tooltip[1]": "Hide Message: Show toast and hide the message from chat.",
+  "skyblocker.config.chat.sackToast.enable.HIDE_MESSAGE": "Hide Message",
+  "skyblocker.config.chat.sackToast.enable.KEEP_MESSAGE": "Keep Message",
+  "skyblocker.config.chat.sackToast.enable.OFF": "Off",
+  "skyblocker.config.chat.sackToast.itemDisplayDuration": "Item Display Duration",
+  "skyblocker.config.chat.sackToast.itemDisplayDuration.@Tooltip": "How long in seconds each item will approximately show for. The toast will stay displayed for a minimum of 3 seconds.",
+  "skyblocker.config.chat.sackToast.mergeAddedRemoved": "Merge Added And Removed Items",
+  "skyblocker.config.chat.sackToast.mergeAddedRemoved.@Tooltip": "Whether added and removed items should be added together.",
+
   "skyblocker.config.chat.skyblockXpMessages": "SkyBlock XP Messages",
   "skyblocker.config.chat.skyblockXpMessages.@Tooltip": "Notifies you in the chat when you gain SkyBlock XP.",
 
