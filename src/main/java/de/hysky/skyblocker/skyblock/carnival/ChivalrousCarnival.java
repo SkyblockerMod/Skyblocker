@@ -13,7 +13,7 @@ public class ChivalrousCarnival {
 	@Init
 	public static void init() {
 		SkyblockEvents.MAYOR_CHANGE.register(() ->
-				isCarnivalActive = MayorUtils.getActivePerks().stream().anyMatch(perk -> perk.equals("Chivalrous Carnival"))
+				isCarnivalActive = MayorUtils.getActivePerkNames().stream().anyMatch(perk -> perk.equals("Chivalrous Carnival"))
 		);
 	}
 
