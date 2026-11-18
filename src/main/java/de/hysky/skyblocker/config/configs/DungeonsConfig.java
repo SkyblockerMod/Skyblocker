@@ -341,6 +341,8 @@ public class DungeonsConfig {
 
 		public boolean includeEssence = true;
 
+		public boolean includeShards = true;
+
 		public boolean croesusProfit = true;
 
 		public int neutralThreshold = 1000;

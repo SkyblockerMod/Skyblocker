@@ -180,6 +180,7 @@ public class ChestValue {
 				return null;
 			}
 
+			DungeonsConfig.DungeonChestProfit chestProfitConfig = SkyblockerConfigManager.get().dungeons.dungeonChestProfit;
 			for (Slot slot : slots) {
 				ItemStack stack = slot.getItem();
 				if (stack.isEmpty()) {
@@ -204,7 +205,7 @@ public class ChestValue {
 				}
 
 				//Essence price
-				if (name.contains("Essence") && SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeEssence) {
+				if (name.contains("Essence") && chestProfitConfig.includeEssence) {
 					Matcher matcher = ESSENCE_PATTERN.matcher(name);
 
 					if (matcher.matches()) {
@@ -228,7 +229,7 @@ public class ChestValue {
 
 				// Shard Prices
 				// Excludes the "Reroll Shard" button which uses a Wheel of Fate as its icon in Kuudra chests
-				if (name.contains("Shard") && !name.contains("Reroll")) {
+				if (name.contains("Shard") && !name.contains("Reroll") && chestProfitConfig.includeShards) {
 					Matcher matcher = SHARD_PATTERN.matcher(name);
 
 					if (matcher.matches()) {
@@ -282,7 +283,7 @@ public class ChestValue {
 				}
 			}
 
-			if (SkyblockerConfigManager.get().dungeons.dungeonChestProfit.includeKismet && usedKismet) {
+			if (chestProfitConfig.includeKismet && usedKismet) {
 				OptionalDouble kismetPriceData = ItemUtils.getItemPrice("KISMET_FEATHER");
 
 				if (kismetPriceData.isPresent()) profit -= kismetPriceData.getAsDouble();
