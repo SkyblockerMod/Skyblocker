@@ -157,15 +157,19 @@ public class WidgetsConfigurationScreen extends Screen {
 		repositionElements();
 	}
 
-	private void addWidget(HudWidget widget) {
+	public void addWidget(HudWidget widget, int x, int y) {
 		layer.editor().add(widget).rule = new PositionRule(
 				"screen",
 				PositionRule.Point.DEFAULT,
 				PositionRule.Point.DEFAULT,
-				(int) (minecraft.mouseHandler.getScaledXPos(minecraft.getWindow()) / TabHud.getScaleFactor()),
-				(int) (minecraft.mouseHandler.getScaledYPos(minecraft.getWindow()) / TabHud.getScaleFactor())
+				x,
+				y
 		);
 		updateBuilderPositions();
+	}
+
+	private void addWidget(HudWidget widget) {
+		addWidget(widget, (int) (minecraft.mouseHandler.getScaledXPos(minecraft.getWindow()) / TabHud.getScaleFactor()), (int) (minecraft.mouseHandler.getScaledYPos(minecraft.getWindow()) / TabHud.getScaleFactor()));
 	}
 
 	@Override
@@ -217,7 +221,7 @@ public class WidgetsConfigurationScreen extends Screen {
 		Matrix3x2f scaleMatrix = new Matrix3x2f().scale(scale);
 		if (hoveredWidget != null && getChildAt(mouseX, mouseY).isEmpty()) {
 			ScreenRectangle rect = hoveredWidget.widget.getRectangle().transformAxisAligned(scaleMatrix);
-			GuiHelper.border(context, rect.left() - 1, rect.top() - 1, rect.width() + 2, rect.height() + 2, CommonColors.YELLOW);
+			GuiHelper.border(context, rect.left() - 1, rect.top() - 1, rect.width() + 2, rect.height() + 2, hoveredWidget.fromTab ? /* Aqua color */ 0xFF00FFFF :  CommonColors.YELLOW);
 		}
 		if (selectedWidget != null) {
 			ScreenRectangle rect = selectedWidget.widget.getRectangle().transformAxisAligned(scaleMatrix);
@@ -524,45 +528,51 @@ public class WidgetsConfigurationScreen extends Screen {
 	public void onClose() {
 		layer.editor().serializeConfig();
 		WidgetManager.SCREEN_BUILDER.hud().update();
+		WidgetManager.onPlayerListUpdate();
 		this.minecraft.gui.setScreen(previousScreen);
 		WidgetManager.saveConfig();
 	}
 
 	public void removeWidget(PositionedWidget widget) {
-		layer.editor().remove(widget);
-		PositionRule deleted = widget.rule;
-		for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
-			PositionRule rule = positionedWidget.rule;
-			if (rule.parent().isEmpty()) continue;
-			if (rule.parent().get().equals(widget.widget.getInternalID())) {
-				positionedWidget.rule = new PositionRule(
-						deleted.parent(),
-						deleted.parentPoint(),
-						rule.thisPoint(),
-						deleted.relativeX() + rule.relativeX(),
-						deleted.relativeY() + rule.relativeY()
-				);
+		if (widget.fromTab) {
+			screenConfig.hiddenTabWidgets().add(widget.widget.getInternalID());
+			screenBuilder.updateFancyTab();
+		} else {
+			layer.editor().remove(widget);
+			PositionRule deleted = widget.rule;
+			for (PositionedWidget positionedWidget : layer.builder().getRendered()) {
+				PositionRule rule = positionedWidget.rule;
+				if (rule.parent().isEmpty()) continue;
+				if (rule.parent().get().equals(widget.widget.getInternalID())) {
+					positionedWidget.rule = new PositionRule(
+							deleted.parent(),
+							deleted.parentPoint(),
+							rule.thisPoint(),
+							deleted.relativeX() + rule.relativeX(),
+							deleted.relativeY() + rule.relativeY()
+					);
+				}
 			}
+			Location location = getCurrentLocation();
+			WidgetManager.getCopyTracker()
+					.get(currentScreenLayer)
+					.get(widget.widget.getInternalID())
+					.ifPresent(copyTracker -> copyTracker.getGroup(location).ifPresent(set -> openPopup(screen ->
+							new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
+									.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
+									.addButton(CommonComponents.GUI_YES, popup -> {
+										removeCopies(set, widget.widget.getInternalID());
+										copyTracker.removeAll(set);
+										popup.onClose();
+									})
+									.addButton(CommonComponents.GUI_NO, popup -> {
+										copyTracker.remove(location);
+										popup.onClose();
+									})
+									.build()
+					)));
 		}
 		updateBuilderPositions();
-		Location location = getCurrentLocation();
-		WidgetManager.getCopyTracker()
-				.get(currentScreenLayer)
-				.get(widget.widget.getInternalID())
-				.ifPresent(copyTracker -> copyTracker.getGroup(location).ifPresent(set -> openPopup(screen ->
-						new PopupScreen.Builder(screen, Component.translatable("skyblocker.config.hud.copy.delete"))
-								.addMessage(Component.translatable("skyblocker.config.hud.copy.delete.description"))
-								.addButton(CommonComponents.GUI_YES, popup -> {
-									removeCopies(set, widget.widget.getInternalID());
-									copyTracker.removeAll(set);
-									popup.onClose();
-								})
-								.addButton(CommonComponents.GUI_NO, popup -> {
-									copyTracker.remove(location);
-									popup.onClose();
-								})
-								.build()
-				)));
 		if (selectedWidget == widget) {
 			sidePanelWidget.close();
 			selectedWidget = null;
