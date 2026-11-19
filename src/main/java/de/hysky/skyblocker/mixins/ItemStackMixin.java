@@ -1,12 +1,12 @@
 package de.hysky.skyblocker.mixins;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,6 +41,9 @@ import de.hysky.skyblocker.utils.Utils;
 public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerStack {
 	@Unique
 	private float durabilityBarFill = -1;
+
+	@Unique
+	private boolean shouldTryToProcessDurabilityFill = false;
 
 	@Unique
 	private @Nullable String skyblockId;
@@ -104,6 +107,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@ModifyReturnValue(method = "isBarVisible", at = @At("RETURN"))
 	private boolean modifyItemBarVisible(boolean original) {
+		shouldTryToProcessDurabilityFill = true;
 		return original || durabilityBarFill >= 0f;
 	}
 
@@ -140,7 +144,7 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 
 	@Unique
 	private boolean skyblocker$shouldProcess() { // Durability bar renders atop of tooltips in ProfileViewer so disable on this screen
-		return !(Minecraft.getInstance() != null && Minecraft.getInstance().gui != null && Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && SkyblockerConfigManager.get().mining.enableDrillFuel && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
+		return shouldTryToProcessDurabilityFill && !(Minecraft.getInstance().gui != null && Minecraft.getInstance().gui.screen() instanceof ProfileViewerScreen) && Utils.isOnSkyblock() && ItemUtils.hasCustomDurability((ItemStack) (Object) this);
 	}
 
 	@Unique
@@ -150,14 +154,14 @@ public abstract class ItemStackMixin implements DataComponentHolder, SkyblockerS
 			return;
 		}
 		// Calculate the durability
-		IntIntPair durability = ItemUtils.getDurability((ItemStack) (Object) this);
+		OptionalDouble durability = ItemUtils.getDurability((ItemStack) (Object) this);
 		// Return if calculating the durability failed
-		if (durability == null) {
+		if (durability.isEmpty()) {
 			durabilityBarFill = -1;
 			return;
 		}
 		// Saves the calculated durability
-		durabilityBarFill = (float) durability.firstInt() / durability.secondInt();
+		durabilityBarFill = (float) durability.getAsDouble();
 	}
 
 	@SuppressWarnings("deprecation")
