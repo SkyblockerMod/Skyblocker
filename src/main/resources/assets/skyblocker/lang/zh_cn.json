@@ -1902,7 +1902,6 @@
     "skyblocker.config.chat.filter.hideRareCrops": "隐藏稀有掉落消息",
     "skyblocker.config.dungeons.dungeonMessages": "地牢消息",
     "skyblocker.config.dungeons.spiritLeapOverlay.enableLeapMessage.@Tooltip[1]": "需要启用Spirit Leap覆盖层。",
-    "skyblocker.config.helpers.buildersWand": "",
     "skyblocker.config.hud.copy.copyTo.disabled.@Tooltip": "没有可被粘贴的目的地！",
     "skyblocker.config.hud.helpText": "右键以添加新的小部件并调整其选项。\n使用删除键以移除小部件。\n按住 SHIFT 可以将小部件吸附到另一小部件上。\n\n和 Hypixel 自带的TAB小部件一样，其选项随岛屿变化。使用“复制到……”按钮以将小部件复制到别的岛屿。\n\n即使你正在配置其他岛屿的小部件，只有当前岛屿的 HypixelTAB小部件会自动出现在花哨的TAB预览中。",
     "skyblocker.config.hud.otherOptions.hiddenTabWidgets": "编辑隐藏的花哨TAB小部件",
