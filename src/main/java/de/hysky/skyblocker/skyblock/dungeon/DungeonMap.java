@@ -34,6 +34,7 @@ import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.DungeonsConfig;
+import de.hysky.skyblocker.events.DungeonEvents;
 import de.hysky.skyblocker.mixins.accessors.MapItemSavedDataAccessor;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
@@ -48,6 +49,8 @@ public class DungeonMap {
 	private static final MapId DEFAULT_MAP_ID_COMPONENT = new MapId(1024);
 	private static @Nullable MapId cachedMapIdComponent = null;
 
+	private static boolean dungeonStarted = false;
+
 	@Init
 	public static void init() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MOB_EFFECTS, DUNGEON_MAP, (context, _) -> extract(context));
@@ -59,10 +62,11 @@ public class DungeonMap {
 				)
 		));
 		ClientPlayConnectionEvents.JOIN.register((_, _, _) -> reset());
+		DungeonEvents.DUNGEON_STARTED_EARLY.register(DungeonMap::onDungeonStart);
 	}
 
-	private static boolean shouldProcess() {
-		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss();
+	public static boolean shouldProcess() {
+		return Utils.isInDungeons() && dungeonStarted && !DungeonManager.isInBoss();
 	}
 
 	private static void extract(GuiGraphicsExtractor graphics) {
@@ -173,8 +177,13 @@ public class DungeonMap {
 		return player.mapPos().distanceSquared(mouseX, mouseY) < 16;
 	}
 
+	private static void onDungeonStart() {
+		dungeonStarted = true;
+	}
+
 	private static void reset() {
 		cachedMapIdComponent = null;
+		dungeonStarted = false;
 	}
 
 	public record PlayerRenderState(UUID uuid, String name, Vector2dc mapPos, float deg) {
