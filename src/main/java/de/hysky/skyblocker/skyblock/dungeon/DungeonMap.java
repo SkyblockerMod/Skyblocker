@@ -127,7 +127,8 @@ public class DungeonMap {
 			// Get the corresponding dungeon player for the map decoration.
 			DungeonPlayerManager.DungeonPlayer dungeonPlayer = null;
 			// If the map decoration is the self player, use the first player in this list. The self player is always the first player in the list.
-			if (mapDecoration.getValue().type().value().equals(MapDecorationTypes.FRAME.value())) {
+			boolean isSelf = mapDecoration.getValue().type().value().equals(MapDecorationTypes.FRAME.value());
+			if (isSelf) {
 				if (!SkyblockerConfigManager.get().dungeons.dungeonMap.showSelfHead) continue;
 				dungeonPlayer = DungeonPlayerManager.getPlayers()[0];
 			} else while (i < DungeonPlayerManager.getPlayers().length && (dungeonPlayer == null || !dungeonPlayer.alive())) { // Find the next alive player in the player list.
@@ -139,7 +140,7 @@ public class DungeonMap {
 			if (dungeonPlayer == null) {
 				dungeonPlayerError(mapDecoration.getKey(), "not found", i - 1, DungeonPlayerManager.getPlayers(), ((MapItemSavedDataAccessor) state).getDecorations());
 				continue;
-			} else if (!dungeonPlayer.alive()) {
+			} else if (!isSelf && !dungeonPlayer.alive()) {
 				dungeonPlayerError(mapDecoration.getKey(), "not alive", i - 1, DungeonPlayerManager.getPlayers(), ((MapItemSavedDataAccessor) state).getDecorations());
 				continue;
 			} else if (dungeonPlayer.uuid() == null) {
