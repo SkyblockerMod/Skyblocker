@@ -12,10 +12,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -66,6 +68,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 @SuppressWarnings("SameReturnValue")
 public class GreenhousePaste {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float PREVIEW_ALPHA = 0.6f;
 	private static final float PREVIEW_TINT = 0.4f;
@@ -212,17 +215,35 @@ public class GreenhousePaste {
 	private static void loadFromLink(String clipboard) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		Objects.requireNonNull(CLIENT.player);
-		String encoded = extractLayoutCode(clipboard);
+		LayoutSite site = siteOf(clipboard);
+
+		// SkyLayouts short links only hold an id, so the layout has to be looked up first
+		String shortLinkId = site == LayoutSite.SKY_LAYOUTS ? SkyLayoutsLayout.shortLinkId(clipboard) : null;
+		if (shortLinkId != null) {
+			SkyLayoutsLayout.resolveShortLink(shortLinkId).whenCompleteAsync((path, throwable) -> {
+				if (throwable != null) LOGGER.warn("[Skyblocker Greenhouse Paste] Failed to resolve SkyLayouts share link {}", shortLinkId, throwable);
+				finishLoad(throwable == null && importSkyLayoutsGreenhouse(path), clipboard.strip());
+			}, CLIENT);
+			return;
+		}
+
+		// SkyLayouts codes are the whole path, which extractLayoutCode would cut off at the first ~
+		String encoded = site == LayoutSite.SKY_LAYOUTS ? clipboard.strip() : extractLayoutCode(clipboard);
 
 		if (encoded.isEmpty()) return;
 
-		boolean success = switch (siteOf(clipboard)) {
+		boolean success = switch (site) {
 			case SKY_SHARDS -> importSkyShardsGreenhouse(encoded);
 			case SKY_MUTATIONS -> importGreenhouse(encoded);
+			case SKY_LAYOUTS -> importSkyLayoutsGreenhouse(encoded);
 			// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
 			case UNKNOWN -> importSkyShardsGreenhouse(encoded) || importGreenhouse(encoded);
 		};
+		finishLoad(success, encoded);
+	}
+
+	private static void finishLoad(boolean success, String encoded) {
+		if (CLIENT.player == null) return;
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
@@ -271,6 +292,7 @@ public class GreenhousePaste {
 	private enum LayoutSite {
 		SKY_SHARDS,
 		SKY_MUTATIONS,
+		SKY_LAYOUTS,
 		UNKNOWN
 	}
 
@@ -290,11 +312,20 @@ public class GreenhousePaste {
 
 		if (host.contains("skyshards")) return LayoutSite.SKY_SHARDS;
 		if (host.contains("skymutations")) return LayoutSite.SKY_MUTATIONS;
+		if (host.contains("skylayouts")) return LayoutSite.SKY_LAYOUTS;
 		return LayoutSite.UNKNOWN;
 	}
 
 	private static boolean importSkyShardsGreenhouse(String encoded) {
 		int[][] layout = SkyShardsLayout.decode(encoded);
+		if (layout == null) return false;
+
+		targetGreenhouse = layout;
+		return true;
+	}
+
+	private static boolean importSkyLayoutsGreenhouse(String link) {
+		int[][] layout = SkyLayoutsLayout.decode(link);
 		if (layout == null) return false;
 
 		targetGreenhouse = layout;
