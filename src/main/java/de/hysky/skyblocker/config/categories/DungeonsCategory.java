@@ -269,16 +269,7 @@ public class DungeonsCategory {
 										() -> config.dungeons.leapOverlay.enableLeapMessage,
 										newValue -> config.dungeons.leapOverlay.enableLeapMessage = newValue)
 								.controller(ConfigUtils.createBooleanController())
-								.build())
-						.option(Option.<String>createBuilder()
-								.name(Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage"))
-								.description(Component.translatable("skyblocker.config.dungeons.spiritLeapOverlay.leapMessage.@Tooltip"))
-								.binding(defaults.dungeons.leapOverlay.leapMessage,
-										() -> config.dungeons.leapOverlay.leapMessage,
-										newValue -> config.dungeons.leapOverlay.leapMessage = newValue)
-								.controller(StringController.createBuilder().build())
-								.build())
-						.build())
+								.build()).build())
 
 				// Puzzle Solver
 				.group(OptionGroup.createBuilder()
