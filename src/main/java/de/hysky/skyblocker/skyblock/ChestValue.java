@@ -47,6 +47,7 @@ import de.hysky.skyblocker.skyblock.hunting.Attributes;
 import de.hysky.skyblocker.skyblock.hunting.HuntingBoxHelper;
 import de.hysky.skyblocker.skyblock.item.PetInfo;
 import de.hysky.skyblocker.skyblock.item.SkyblockItemRarity;
+import de.hysky.skyblocker.skyblock.item.tooltip.info.TooltipInfoType;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexListUtils;
@@ -399,21 +400,35 @@ public class ChestValue {
 				if (count == 0) continue;
 
 				if (!id.isEmpty()) {
-					OptionalDouble priceData = ItemUtils.getItemPrice(id);
+					if (SkyblockerConfigManager.get().uiAndVisuals.chestValue.useNpcPriceOnly) {
+						OptionalDouble priceData = findNpcPrice(stack.getSkyblockId());
+						if (priceData.isEmpty()) hasIncompleteData = true;
+						value += priceData.orElse(0) * count;
+					} else {
+						// OptionalDouble doesn't have an Optional#or equivalent. Valhalla, please SAVE ME
+						OptionalDouble itemPrice = ItemUtils.getItemPrice(id);
+						OptionalDouble priceData = itemPrice.isPresent() ? itemPrice : findNpcPrice(stack.getSkyblockId());
 
-					if (priceData.isEmpty()) hasIncompleteData = true;
+						if (priceData.isEmpty()) hasIncompleteData = true;
 
-					// The networth calculator can't price hunting box shards since they're display items, and shards have no modifiers to account for anyway
-					value += screenType == ScreenType.HUNTING_BOX ? priceData.orElse(0) * count : NetworthCalculator.getItemNetworth(stack, count).price();
+						// The networth calculator can't price hunting box shards since they're display items, and shards have no modifiers to account for anyway
+						value += screenType == ScreenType.HUNTING_BOX ? priceData.orElse(0) * count : NetworthCalculator.getItemNetworth(stack, count).price();
+					}
 				}
 			}
 
-			return getValueText((long) value, hasIncompleteData);
+			return getValueText(Math.round(value), hasIncompleteData);
 		} catch (Exception e) {
 			LOGGER.error("[Skyblocker Value Calculator] Failed to calculate dungeon chest value! ", e);
 		}
 
 		return null;
+	}
+
+	@SuppressWarnings("DataFlowIssue")
+	private static OptionalDouble findNpcPrice(String id) {
+		if (!TooltipInfoType.NPC.hasOrNullWarning(id)) return OptionalDouble.empty();
+		return OptionalDouble.of(TooltipInfoType.NPC.getData().getDouble(id));
 	}
 
 	private static List<Slot> getMinionSlots(ChestMenu handler) {
