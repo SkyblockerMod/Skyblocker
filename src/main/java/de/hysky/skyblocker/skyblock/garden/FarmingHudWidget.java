@@ -92,6 +92,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	private boolean showExperience = true;
 	private boolean showAngle = true;
 	private boolean includeSeedsPrice = true;
+	private boolean estimateCounter = true;
 	private FarmingConfig.Type priceType = FarmingConfig.Type.BOTH;
 
 	public FarmingHudWidget() {
@@ -122,7 +123,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 		if (showCounter) {
 			FarmingHud.CounterType counterType = FarmingHud.counterType();
-			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter());
+			String counterNumber = FarmingHud.NUMBER_FORMAT.format(FarmingHud.counter(estimateCounter));
 			if (counterType == FarmingHud.CounterType.NONE) counterNumber = "";
 			addSimpleIcoText(cropStack, counterType.text, ChatFormatting.YELLOW, counterNumber);
 			addSimpleIconTranslatableText(cropStack, "skyblocker.farming.farmingHud.cropsPerMin", ChatFormatting.YELLOW, FarmingHud.NUMBER_FORMAT.format((int) cropsPerMinute / 10 * 10));
@@ -158,6 +159,8 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	public void getOptionWidgets(OptionWidgetCollector collector) {
 		super.getOptionWidgets(collector);
 		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.counter"), b -> showCounter = b, showCounter);
+		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.estimateCounter"), b -> estimateCounter = b, estimateCounter,
+				Component.translatable("skyblocker.config.farming.farmingHud.estimateCounter.@Tooltip"));
 		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.coins"), b -> showCoins = b, showCoins);
 		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.blocks"), b -> showBlocks = b, showBlocks);
 		collector.yesNoButton(Component.translatable("skyblocker.config.farming.farmingHud.experience"), b -> showExperience = b, showExperience);
@@ -174,6 +177,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	public void load(JsonValueInput input) {
 		super.load(input);
 		showCounter = input.readBooleanOr("counter", true);
+		estimateCounter = input.readBooleanOr("estimate_counter", true);
 		showCoins = input.readBooleanOr("coins", true);
 		showBlocks = input.readBooleanOr("blocks", true);
 		showExperience = input.readBooleanOr("experience", true);
@@ -186,6 +190,7 @@ public class FarmingHudWidget extends ElementBasedWidget {
 	public void save(JsonValueOutput output) {
 		super.save(output);
 		output.writeBool("counter", showCounter);
+		output.writeBool("estimate_counter", estimateCounter);
 		output.writeBool("coins", showCoins);
 		output.writeBool("blocks", showBlocks);
 		output.writeBool("experience", showExperience);
@@ -274,6 +279,6 @@ public class FarmingHudWidget extends ElementBasedWidget {
 
 		if (hasReplenish) cropsPerMinute -= (float) (usedByReplenish);
 		// Multiply by 60 to convert to hourly and divide by 100 for rounding is combined into multiplying by 0.6.
-		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * cropsPerMinute * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
+		return hasValidPrice ? Component.literal(FarmingHud.NUMBER_FORMAT.format((int) (priceToUse * Math.max(cropsPerMinute, 0) * 0.6) * 100)).append(sourceLabel) : Component.translatable("skyblocker.farming.farmingHud.noData");
 	}
 }
