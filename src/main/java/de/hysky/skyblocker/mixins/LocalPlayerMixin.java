@@ -9,28 +9,22 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.config.configs.UIAndVisualsConfig;
 import de.hysky.skyblocker.skyblock.auction.AuctionViewScreen;
 import de.hysky.skyblocker.skyblock.auction.EditBidPopup;
-import de.hysky.skyblocker.skyblock.dungeon.DungeonScore;
 import de.hysky.skyblocker.skyblock.dungeon.partyfinder.PartyFinderScreen;
-import de.hysky.skyblocker.skyblock.hunting.safari.SafariUtils;
-import de.hysky.skyblocker.skyblock.item.HotbarSlotLock;
-import de.hysky.skyblocker.skyblock.item.ItemProtection;
 import de.hysky.skyblocker.skyblock.rift.HealingMelonIndicator;
 import de.hysky.skyblocker.skyblock.searchoverlay.OverlayScreen;
 import de.hysky.skyblocker.skyblock.searchoverlay.SearchOverManager;
-import de.hysky.skyblocker.utils.Utils;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerMixin extends AbstractClientPlayer {
@@ -42,29 +36,16 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 		super(world, profile);
 	}
 
-	@Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
-	public void skyblocker$dropSelectedItem(CallbackInfoReturnable<Boolean> cir) {
-		ItemStack item = this.getMainHandItem();
-
-		if (Utils.isOnSkyblock() && (ItemProtection.isItemProtected(item) || HotbarSlotLock.isLocked(this.getInventory().getSelectedSlot()))) {
-			boolean shouldDropInDungeons = SkyblockerConfigManager.get().dungeons.allowDroppingProtectedItems && DungeonScore.isDungeonStarted();
-			boolean shouldDropShiningCoins = SkyblockerConfigManager.get().hunting.hauntedBiome.ignoreSlotLockingForShiningCoins && SafariUtils.isInHauntedBiome() && item.getSkyblockId().equals("SHINING_COIN");
-
-			if (!shouldDropInDungeons && !shouldDropShiningCoins) {
-				cir.setReturnValue(false);
-			}
-		}
-	}
-
 	@Inject(method = "hurtTo", at = @At("RETURN"))
 	public void skyblocker$updateHealth(CallbackInfo ci) {
 		HealingMelonIndicator.updateHealth();
 	}
 
 	@Inject(method = "openTextEdit", at = @At("HEAD"), cancellable = true)
-	public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, boolean front, CallbackInfo ci) {
+	public void skyblocker$redirectEditSignScreen(SignBlockEntity sign, SignTextSlot slot, CallbackInfo ci) {
+		boolean front = slot == SignTextSlot.FRONT;
 		// Fancy Party Finder
-		if (!PartyFinderScreen.isInKuudraPartyFinder && minecraft.gui.screen() instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(front).getMessage(3, false).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
+		if (!PartyFinderScreen.isInKuudraPartyFinder && minecraft.gui.screen() instanceof PartyFinderScreen partyFinderScreen && !partyFinderScreen.isAborted() && sign.getText(slot).getMessages(false).get(3).getString().toLowerCase(Locale.ENGLISH).contains("level")) {
 			partyFinderScreen.updateSign(sign, front);
 			ci.cancel();
 			return;
@@ -78,7 +59,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 		// Search Overlay
 		if (minecraft.gui.screen() != null) {
 			UIAndVisualsConfig.SearchOverlay config = SkyblockerConfigManager.get().uiAndVisuals.searchOverlay;
-			boolean isInputSign = sign.getText(front).getMessage(3, false).getString().equalsIgnoreCase("enter query");
+			boolean isInputSign = sign.getText(slot).getMessages(false).get(3).getString().equalsIgnoreCase("enter query");
 			if (!isInputSign) return;
 
 			String title = minecraft.gui.screen().getTitle().getString();

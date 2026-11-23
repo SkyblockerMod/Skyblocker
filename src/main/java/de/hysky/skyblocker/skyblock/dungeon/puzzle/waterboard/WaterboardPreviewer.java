@@ -112,7 +112,7 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			while (isWaterPassable(tail.below())) {
 				tail.move(Direction.DOWN);
 			}
-			waterPath.add(Pair.of(root, new BlockPos(tail)));
+			waterPath.add(Pair.of(root, tail.immutable()));
 			findWaterPathHorizontal(tail, waterPath);
 		}
 	}
@@ -136,18 +136,18 @@ public class WaterboardPreviewer extends DungeonPuzzle {
 			// Skyblock only looks up to 5 blocks away when determining if there is an air block.
 			// If no air is found, the water flows in both directions up to a maximum of 7 blocks away.
 			if (isWaterPassable(left.below()) && leftSteps <= 5 && (leftSteps < rightSteps || !isWaterPassable(right.below()))) {
-				waterPath.add(Pair.of(root, new BlockPos(left)));
+				waterPath.add(Pair.of(root, left.immutable()));
 				findWaterPathVertical(left, waterPath);
 			} else if (isWaterPassable(right.below()) && rightSteps <= 5 && (rightSteps < leftSteps || !isWaterPassable(left.below()))) {
-				waterPath.add(Pair.of(root, new BlockPos(right)));
+				waterPath.add(Pair.of(root, right.immutable()));
 				findWaterPathVertical(right, waterPath);
 			} else {
 				if (leftSteps > 0) {
-					waterPath.add(Pair.of(root, new BlockPos(left)));
+					waterPath.add(Pair.of(root, left.immutable()));
 					findWaterPathVertical(left, waterPath);
 				}
 				if (rightSteps > 0) {
-					waterPath.add(Pair.of(root, new BlockPos(right)));
+					waterPath.add(Pair.of(root, right.immutable()));
 					findWaterPathVertical(right, waterPath);
 				}
 			}
