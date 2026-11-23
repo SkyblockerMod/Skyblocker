@@ -55,6 +55,7 @@ import net.minecraft.world.scores.Scoreboard;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
+import de.hysky.skyblocker.config.SkyblockerConfigManager;
 import de.hysky.skyblocker.events.SkyblockEvents;
 import de.hysky.skyblocker.mixins.accessors.ChatListenerAccessor;
 import de.hysky.skyblocker.skyblock.slayers.SlayerManager;
@@ -655,6 +656,30 @@ public class Utils {
 		client.gui.hud.getChat().addClientSystemMessage(message);
 		((ChatListenerAccessor) client.gui.chatListener()).invokeLogSystemMessage(message, Instant.now());
 		client.getNarrator().saySystemQueued(message);
+	}
+
+	//Holding a click re-fires the callbacks every tick, one warning per second is plenty to make the point
+	private static long lastBlockedClickWarning;
+
+	/**
+	 * True while the middle mouse button is held: every incorrect click blocker lets clicks through,
+	 * the escape hatch for when a blocker misfires.
+	 */
+	public static boolean isBlockerBypassed() {
+		return SkyblockerConfigManager.get().dungeons.middleClickBypass && Minecraft.getInstance().options.keyPickItem.isDown();
+	}
+
+	/**
+	 * Sends a prefixed message telling the player that a dungeon solver blocked their click,
+	 * at most once per second across all the blockers.
+	 */
+	public static void sendBlockedClickMessage(String translationKey) {
+		Minecraft client = Minecraft.getInstance();
+		if (client.player == null) return;
+		long now = System.currentTimeMillis();
+		if (now - lastBlockedClickWarning < 1000) return;
+		lastBlockedClickWarning = now;
+		client.player.sendSystemMessage(Constants.PREFIX.get().append(Component.translatable(translationKey).withStyle(ChatFormatting.RED)));
 	}
 
 	public static UUID getUuid() {
