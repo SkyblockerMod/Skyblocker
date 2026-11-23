@@ -86,7 +86,7 @@ public class NEURepoManager {
 	/**
 	 * A cache containing NEUItems indexed by their display name.
 	 */
-	private static Multimap<@Nullable String, @Nullable NEUItem> nameToNEUItem = HashMultimap.create();
+	private static Multimap<@Nullable String, NEUItem> nameToNEUItem = HashMultimap.create();
 
 	/**
 	 * Adds command to update the repository manually from ingame.
@@ -248,7 +248,7 @@ public class NEURepoManager {
 	/**
 	 * Gets the {@link NEUItem} by display name.
 	 */
-	public static Collection<@Nullable NEUItem> getItemByName(String displayName) {
+	public static Collection<NEUItem> getItemByName(String displayName) {
 		return nameToNEUItem.get(displayName);
 	}
 
