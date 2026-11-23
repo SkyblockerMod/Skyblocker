@@ -12,10 +12,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -43,6 +45,7 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import de.hysky.skyblocker.SkyblockerMod;
 import de.hysky.skyblocker.annotations.Init;
@@ -66,6 +69,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 @SuppressWarnings("SameReturnValue")
 public class GreenhousePaste {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final float PREVIEW_ALPHA = 0.6f;
 	private static final float PREVIEW_TINT = 0.4f;
@@ -79,6 +83,8 @@ public class GreenhousePaste {
 	private static @Nullable BlockPos greenhouseCorner = null;
 
 	private static long lastBlockChangeTimeMs;
+	// Counts pastes, so a paste that finishes loading late can tell it was replaced
+	private static int pasteCount;
 
 	public static final JsonData<Object2ObjectMap<String, String>> PRESETS_DATA = new JsonData<>(SkyblockerMod.CONFIG_DIR.resolve("greenhouse_presets.json"), CodecUtils.object2ObjectMapCodec(Codec.STRING, Codec.STRING), new Object2ObjectOpenHashMap<>());
 
@@ -195,6 +201,8 @@ public class GreenhousePaste {
 	}
 
 	public static void removePreview() {
+		// Drops pastes still loading
+		pasteCount++;
 		greenhouseCorner = null;
 		for (int x = 0; x < 10; x++) {
 			for (int z = 0; z < 10; z++) {
@@ -212,17 +220,45 @@ public class GreenhousePaste {
 	private static void loadFromLink(String clipboard) {
 		if (!SkyblockerConfigManager.get().farming.greenhouse.enabled) return;
 		if (!isInGreenhouse()) return;
-		Objects.requireNonNull(CLIENT.player);
-		String encoded = extractLayoutCode(clipboard);
+		int paste = ++pasteCount;
+		PastedLayout pasted = parsePastedLayout(clipboard);
+		String encoded = pasted.code();
 
 		if (encoded.isEmpty()) return;
 
-		boolean success = switch (siteOf(clipboard)) {
+		// SkyLayouts links may need the site's API, so they load in the background
+		if (pasted.site() == LayoutSite.SKY_LAYOUTS) {
+			loadSkyLayouts(encoded, paste);
+			return;
+		}
+
+		boolean success = switch (pasted.site()) {
 			case SKY_SHARDS -> importSkyShardsGreenhouse(encoded);
 			case SKY_MUTATIONS -> importGreenhouse(encoded);
 			// SkyShards codes validate strictly, so try them first and fall back to the SkyMutations format
 			case UNKNOWN -> importSkyShardsGreenhouse(encoded) || importGreenhouse(encoded);
+			case SKY_LAYOUTS -> throw new IllegalStateException("SkyLayouts links are loaded by loadSkyLayouts");
 		};
+		finishLoad(success, encoded);
+	}
+
+	private static void loadSkyLayouts(String link, int paste) {
+		SkyLayoutsLayout.load(link).whenCompleteAsync((layout, throwable) -> {
+			// Another paste or endPaste came in while this one was loading
+			if (paste != pasteCount) return;
+			if (throwable != null) LOGGER.warn("[Skyblocker Greenhouse Paste] Failed to load SkyLayouts layout {}", link, throwable);
+			if (!SkyblockerConfigManager.get().farming.greenhouse.enabled || !isInGreenhouse()) return;
+
+			if (layout != null) targetGreenhouse = layout;
+			finishLoad(layout != null, link);
+		}, CLIENT).exceptionally(throwable -> {
+			LOGGER.error("[Skyblocker Greenhouse Paste] Failed to paste SkyLayouts layout {}", link, throwable);
+			return null;
+		});
+	}
+
+	private static void finishLoad(boolean success, String encoded) {
+		if (CLIENT.player == null) return;
 		if (!success) {
 			CLIENT.player.sendSystemMessage(
 					Constants.PREFIX.get()
@@ -268,10 +304,23 @@ public class GreenhousePaste {
 		return code;
 	}
 
-	private enum LayoutSite {
+	enum LayoutSite {
 		SKY_SHARDS,
 		SKY_MUTATIONS,
+		SKY_LAYOUTS,
 		UNKNOWN
+	}
+
+	/**
+	 * @param code the part of the pasted text the site's importer reads
+	 */
+	record PastedLayout(LayoutSite site, String code) {
+	}
+
+	static PastedLayout parsePastedLayout(String clipboard) {
+		LayoutSite site = siteOf(clipboard);
+		// SkyLayouts importers read the whole link, which extractLayoutCode would cut off at the first ~
+		return new PastedLayout(site, site == LayoutSite.SKY_LAYOUTS ? clipboard.strip() : extractLayoutCode(clipboard));
 	}
 
 	private static LayoutSite siteOf(String clipboard) {
@@ -290,6 +339,7 @@ public class GreenhousePaste {
 
 		if (host.contains("skyshards")) return LayoutSite.SKY_SHARDS;
 		if (host.contains("skymutations")) return LayoutSite.SKY_MUTATIONS;
+		if (host.contains("skylayouts")) return LayoutSite.SKY_LAYOUTS;
 		return LayoutSite.UNKNOWN;
 	}
 
@@ -417,12 +467,18 @@ public class GreenhousePaste {
 	}
 
 	private static void adjustForSpecialCrops() {
-		// Special handling for Plantboy (2x2 crop)
-		for (int x = 0; x < 9; x++) {
-			for (int z = 0; z < 9; z++) {
-				adjustForPlantBoy(x, z);
-				adjustForSnoozling(x, z);
-				adjustForGodseed(x, z);
+		// Expand only from the cells crops were detected in, so the cells an expansion fills in aren't expanded again
+		int[][] detected = new int[10][];
+		for (int x = 0; x < 10; x++) detected[x] = greenhouse[x].clone();
+
+		for (int x = 0; x < 10; x++) {
+			for (int z = 0; z < 10; z++) {
+				switch (detected[x][z]) {
+					case 26 -> adjustForPlantBoy(x, z);
+					case 23 -> adjustForSnoozling(x, z);
+					case 37 -> adjustForGodseed(x, z);
+					default -> {}
+				}
 			}
 		}
 	}
@@ -430,7 +486,6 @@ public class GreenhousePaste {
 	private static void adjustForPlantBoy(int x, int z) {
 		Objects.requireNonNull(greenhouseCorner);
 		Objects.requireNonNull(CLIENT.level);
-		if (greenhouse[x][z] != 26) return;
 
 		BlockPos pos = greenhouseCorner.offset(x, 0, z);
 		AABB detectionBox = new AABB(
@@ -456,49 +511,45 @@ public class GreenhousePaste {
 
 		if (foundArmorStand == null) return;
 
-		// Strategy: since the plantboy is in the middle of the 2x2, we offset by a bit to get the bottom left corner
-		foundArmorStand.position().add(-0.2, 0, -0.2);
+		int[] cell = plantBoyCell(foundArmorStand.position(), greenhouseCorner);
+		if (cell == null) return;
 
-		BlockPos bottomLeft = new BlockPos((int) Math.floor(foundArmorStand.getX()), (int) Math.floor(foundArmorStand.getY()), (int) Math.floor(foundArmorStand.getZ()));
+		greenhouse[cell[0]][cell[1]] = 26;
+		greenhouse[cell[0] + 1][cell[1]] = 26;
+		greenhouse[cell[0]][cell[1] + 1] = 26;
+		greenhouse[cell[0] + 1][cell[1] + 1] = 26;
+	}
 
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
+	/**
+	 * @return the grid cell of the north west quarter of the Plantboy standing at {@code position}, or null if its 2x2 doesn't fit in the grid
+	 */
+	static int @Nullable [] plantBoyCell(Vec3 position, BlockPos greenhouseCorner) {
+		// The Plantboy stands in the middle of its 2x2, so step back a bit to land in its north west cell
+		Vec3 northWest = position.add(-0.2, 0, -0.2);
+		int x = (int) Math.floor(northWest.x()) - greenhouseCorner.getX();
+		int z = (int) Math.floor(northWest.z()) - greenhouseCorner.getZ();
+
+		if (x < 0 || z < 0 || x + 1 >= 10 || z + 1 >= 10) return null;
+		return new int[]{x, z};
 	}
 
 	private static void adjustForSnoozling(int x, int z) {
-		if (greenhouse[x][z] != 23) return;
-		try {
-			greenhouse[x-1][z] = 23;
-			greenhouse[x+1][z] = 23;
-
-			greenhouse[x-1][z-1] = 23;
-			greenhouse[x][z-1] = 23;
-			greenhouse[x+1][z-1] = 23;
-
-			greenhouse[x-1][z-2] = 23;
-			greenhouse[x][z-2] = 23;
-			greenhouse[x+1][z-2] = 23;
-		}
-		catch (ArrayIndexOutOfBoundsException _) { }
+		// The Snoozling is detected in the middle of its southern row
+		fillInGrid(x - 1, z - 2, x + 1, z, 23);
 	}
 
 	private static void adjustForGodseed(int x, int z) {
-		if (greenhouse[x][z] != 37) return;
-		try {
-			greenhouse[x-1][z] = 37;
-			greenhouse[x+1][z] = 37;
+		// The Godseed is detected in its middle
+		fillInGrid(x - 1, z - 1, x + 1, z + 1, 37);
+	}
 
-			greenhouse[x-1][z-1] = 37;
-			greenhouse[x][z-1] = 37;
-			greenhouse[x+1][z-1] = 37;
-
-			greenhouse[x-1][z+1] = 37;
-			greenhouse[x][z+1] = 37;
-			greenhouse[x+1][z+1] = 37;
+	// Fills the cells of the area that are in the grid
+	private static void fillInGrid(int minX, int minZ, int maxX, int maxZ, int cropId) {
+		for (int x = Math.max(minX, 0); x <= Math.min(maxX, 9); x++) {
+			for (int z = Math.max(minZ, 0); z <= Math.min(maxZ, 9); z++) {
+				greenhouse[x][z] = cropId;
+			}
 		}
-		catch (ArrayIndexOutOfBoundsException _) { }
 	}
 
 	/**
