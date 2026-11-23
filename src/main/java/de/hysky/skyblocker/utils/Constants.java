@@ -2,6 +2,7 @@ package de.hysky.skyblocker.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -97,4 +98,6 @@ public interface Constants {
 	List<String> REAPER = List.of("1B1B1B", "FF0000");
 	List<String> ADAPTIVE_CHEST = List.of("3ABE78", "82E3D8", "BFBCB2", "D579FF", "FF4242", "FFC234");
 	List<String> ADAPTIVE = List.of("169F57", "2AB5A5", "6E00A0", "BB0000", "BFBCB2", "FFF7E6");
+	// Evolving items (skyblockId form)
+	Set<String> EVOLVING_CONSUMABLES = Set.of("NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK", "NOT_VERY_MOLDY_BREAD");
 }

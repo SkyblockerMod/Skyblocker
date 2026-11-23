@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 import de.hysky.skyblocker.skyblock.item.slottext.SimpleSlotTextAdder;
 import de.hysky.skyblocker.skyblock.item.slottext.SlotText;
+import de.hysky.skyblocker.utils.Constants;
 import de.hysky.skyblocker.utils.Formatters;
 import de.hysky.skyblocker.utils.ItemUtils;
 import de.hysky.skyblocker.utils.RegexUtils;
@@ -32,7 +33,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 	@Override
 	public List<SlotText> getText(@Nullable Slot slot, ItemStack stack, int slotId) {
 		switch (stack.getSkyblockId()) {
-			case "NEW_BOTTLE_OF_JYRRE", "DARK_CACAO_TRUFFLE", "DISCRITE", "MOBY_DUCK", "ROSEWATER_FLASK", "NOT_VERY_MOLDY_BREAD" -> {
+			case String s when Constants.EVOLVING_CONSUMABLES.contains(s) -> {
 				return actualLogic(stack, "Current Bonus: ");
 			}
 			case "TRAINING_WEIGHTS" -> {
@@ -44,6 +45,7 @@ public class EvolvingItemAdder extends SimpleSlotTextAdder {
 			case "BOTTLE_OF_JYRRE" -> {
 				return actualLogic(stack, "Intelligence Bonus: ");
 			}
+			default -> {}
 		}
 		return List.of();
 	}
