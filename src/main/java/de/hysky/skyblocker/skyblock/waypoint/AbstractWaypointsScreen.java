@@ -75,12 +75,12 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 	 */
 	protected final void lateInit() {
 		layout.visitWidgets(this::addRenderableWidget);
-		// Not using layout due to dynamic height.
-		List<Location> list = new ArrayList<>(List.of(Location.values()));
+		List<Location> locations = new ArrayList<>(List.of(Location.values()));
 		// put unknown first
-		list.remove(Location.UNKNOWN);
-		list.addFirst(Location.UNKNOWN);
-		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, list, this::islandChanged, island, _ -> {}));
+		locations.remove(Location.UNKNOWN);
+		locations.addFirst(Location.UNKNOWN);
+		// Not using layout due to dynamic height.
+		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, locations, this::islandChanged, island, _ -> {}));
 		islandWidget.setFormatter(location -> location == Location.UNKNOWN ? Component.literal("Everywhere").withColor(TextColor.YELLOW) : Component.literal(location.toString()));
 		addRenderableOnly(popupContainer);
 		repositionElements();
