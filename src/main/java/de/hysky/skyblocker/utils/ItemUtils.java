@@ -202,7 +202,11 @@ public final class ItemUtils {
 					CompoundTag enchants = customData.getCompoundOrEmpty("enchantments");
 					Optional<String> firstEnchant = enchants.keySet().stream().findFirst();
 					String enchant = firstEnchant.orElse("");
-					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + enchants.getIntOr(enchant, 0);
+					int level = enchants.getIntOr(enchant, 0);
+					if (enchant.equals("looting_new") && level <= 5) {
+						enchant = "looting";
+					}
+					return "ENCHANTMENT_" + enchant.toUpperCase(Locale.ENGLISH) + "_" + level;
 				}
 			}
 			case "PET" -> {
