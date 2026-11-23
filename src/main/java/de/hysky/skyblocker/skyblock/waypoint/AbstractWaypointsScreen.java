@@ -1,7 +1,6 @@
 package de.hysky.skyblocker.skyblock.waypoint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Multimap;
@@ -25,6 +24,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
@@ -76,7 +76,12 @@ public abstract class AbstractWaypointsScreen<T extends Screen> extends Screen {
 	protected final void lateInit() {
 		layout.visitWidgets(this::addRenderableWidget);
 		// Not using layout due to dynamic height.
-		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, Arrays.asList(Location.values()), this::islandChanged, island, _ -> {}));
+		List<Location> list = new ArrayList<>(List.of(Location.values()));
+		// put unknown first
+		list.remove(Location.UNKNOWN);
+		list.addFirst(Location.UNKNOWN);
+		islandWidget = addRenderableWidget(new DropdownWidget<>(minecraft, width - 160, 8, 150, height - 8, list, this::islandChanged, island, _ -> {}));
+		islandWidget.setFormatter(location -> location == Location.UNKNOWN ? Component.literal("Everywhere").withColor(TextColor.YELLOW) : Component.literal(location.toString()));
 		addRenderableOnly(popupContainer);
 		repositionElements();
 	}

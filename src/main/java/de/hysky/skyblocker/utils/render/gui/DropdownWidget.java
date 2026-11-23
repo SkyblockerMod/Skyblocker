@@ -281,7 +281,7 @@ public class DropdownWidget<T> extends AbstractContainerWidget {
 		@Override
 		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
 			// drawScrollableText does some weird stuff with the y value, so we put startY = y and endY = y + 11 which makes the text render on the same line as the tick mark below (y + 2).
-			graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(Component.literal(entry.toString()).withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
+			graphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.NONE).acceptScrollingWithDefaultCenter(formatter.apply(entry).copy().withStyle(Style.EMPTY.withUnderlined(hovered)), this.getX() + 10, this.getX() + this.getWidth(), this.getY(), this.getY() + 11);
 			if (selected == this.entry) {
 				graphics.text(client.font, "✔", this.getX() + 1, this.getY() + 2, 0xFFFFFFFF);
 			}
