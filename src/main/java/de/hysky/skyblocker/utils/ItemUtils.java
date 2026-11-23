@@ -253,45 +253,55 @@ public final class ItemUtils {
 				return id + "_" + customData.getStringOr("faction_rabbit_id", "").toUpperCase(Locale.ENGLISH);
 			}
 			case "" -> {
-				Screen currentScreen = Minecraft.getInstance().gui.screen();
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().startsWith("Superpairs")) {
-					ItemLore lore = stack.get(DataComponents.LORE);
-					if (lore == null) return id;
-					List<Component> lines = lore.lines();
-					if (lines.size() < 3) return id;
-					return EnchantedBookUtils.getApiIdByName(lines.get(2));
-				}
-
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Experimentation Table RNG")) {
-					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
-					return switch (stackName.getString()) {
-							case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
-							case "Grand Experience Bottle" -> "GRAND_EXP_BOTTLE";
-							default -> EnchantedBookUtils.getApiIdByName(stackName);
-					};
-				}
-
-				if (currentScreen instanceof ContainerScreen container && container.getTitle().getString().contains("Attribute Menu")) {
-					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
-					Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
-					if (attribute != null) return attribute.apiId();
-					return id;
-				}
-
-				if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
-					Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
-					// Enchanted Books in the Bazaar
-					if (realStack.is(Items.ENCHANTED_BOOK)) return EnchantedBookUtils.getApiIdByName(stackName);
-					// Essences
-					if (realStack.is(Items.PLAYER_HEAD)) {
-						Matcher matcher = ChestValue.ESSENCE_PATTERN.matcher(stackName.getString());
-						if (matcher.find()) return "ESSENCE_" + matcher.group("type").toUpperCase(Locale.ENGLISH);
-					}
-				}
+				return getSkyblockApiIdWithoutIdField(stack);
 			}
 			default -> {}
 		}
 		return id;
+	}
+
+	/**
+	 * Tries to get a skyblock API ID from the name and/or description of the item.
+	 */
+	private static String getSkyblockApiIdWithoutIdField(DataComponentGetter stack) {
+		Screen currentScreen = Minecraft.getInstance().gui.screen();
+		if (currentScreen instanceof ContainerScreen container) {
+			if (container.getTitle().getString().startsWith("Superpairs")) {
+				ItemLore lore = stack.get(DataComponents.LORE);
+				if (lore == null) return "";
+				List<Component> lines = lore.lines();
+				if (lines.size() < 3) return "";
+				return EnchantedBookUtils.getApiIdByName(lines.get(2));
+			}
+
+			if (container.getTitle().getString().contains("Experimentation Table RNG")) {
+				Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+				return switch (stackName.getString()) {
+					case "Titanic Experience Bottle" -> "TITANIC_EXP_BOTTLE";
+					case "Grand Experience Bottle" -> "GRAND_EXP_BOTTLE";
+					default -> EnchantedBookUtils.getApiIdByName(stackName);
+				};
+			}
+
+			if (container.getTitle().getString().contains("Attribute Menu")) {
+				Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+				Attribute attribute = Attributes.getAttributeFromAbilityName(stackName.getString());
+				if (attribute != null) return attribute.apiId();
+				return "";
+			}
+		}
+
+		if (stack instanceof ItemStack realStack && realStack.has(DataComponents.CUSTOM_NAME)) {
+			Component stackName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty());
+			// Enchanted Books in the Bazaar
+			if (realStack.is(Items.ENCHANTED_BOOK)) return EnchantedBookUtils.getApiIdByName(stackName);
+			// Essences
+			if (realStack.is(Items.PLAYER_HEAD)) {
+				Matcher matcher = ChestValue.ESSENCE_PATTERN.matcher(stackName.getString());
+				if (matcher.find()) return "ESSENCE_" + matcher.group("type").toUpperCase(Locale.ENGLISH);
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -332,6 +342,7 @@ public final class ItemUtils {
 			case "PARTY_HAT_CRAB_ANIMATED" -> "PARTY_HAT_CRAB_" + customData.getStringOr("party_hat_color", "").toUpperCase(Locale.ENGLISH) + "_ANIMATED";
 			case "PARTY_HAT_SLOTH" -> id + "_" + customData.getStringOr("party_hat_emoji", "").toUpperCase(Locale.ENGLISH);
 			case "FACTION_RABBIT" -> id + "_" + customData.getStringOr("faction_rabbit_id", "").toUpperCase(Locale.ENGLISH);
+			case "" -> getNeuIdFromApiId(getSkyblockApiIdWithoutIdField(stack));
 			default -> id.replace(":", "-");
 		};
 	}
@@ -355,6 +366,18 @@ public final class ItemUtils {
 			parts = parts[1].split("_", 2);
 			String potionLevel = parts[0];
 			return "POTION_" + potionName + ";" + potionLevel;
+		}
+
+		// Enchantments
+		if (apiId.startsWith("ENCHANTMENT_")) {
+			String string = apiId.split("_", 2)[1];
+			int i = string.lastIndexOf('_');
+			if (i >= 0) {
+				StringBuilder builder = new StringBuilder(string);
+				builder.setCharAt(i, ';');
+				return builder.toString();
+			}
+			return string;
 		}
 
 		return apiId;
