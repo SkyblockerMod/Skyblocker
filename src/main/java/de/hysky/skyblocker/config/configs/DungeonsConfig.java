@@ -11,6 +11,8 @@ import de.hysky.skyblocker.utils.waypoint.Waypoint;
 public class DungeonsConfig {
 	public boolean fancyPartyFinder = false;
 
+	public boolean partyQueueCommands = false;
+
 	public boolean croesusHelper = true;
 
 	public boolean salvageHelper = true;

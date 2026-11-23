@@ -41,6 +41,14 @@ public class DungeonsCategory {
 						.controller(ConfigUtils.createBooleanController())
 						.build())
 				.option(Option.<Boolean>createBuilder()
+						.name(Component.translatable("skyblocker.config.dungeons.partyQueueCommands"))
+						.description(Component.translatable("skyblocker.config.dungeons.partyQueueCommands.@Tooltip"))
+						.binding(defaults.dungeons.partyQueueCommands,
+								() -> config.dungeons.partyQueueCommands,
+								newValue -> config.dungeons.partyQueueCommands = newValue)
+						.controller(ConfigUtils.createBooleanController())
+						.build())
+				.option(Option.<Boolean>createBuilder()
 						.name(Component.translatable("skyblocker.config.dungeons.croesusHelper"))
 						.description(Component.translatable("skyblocker.config.dungeons.croesusHelper.@Tooltip"))
 						.binding(defaults.dungeons.croesusHelper,
