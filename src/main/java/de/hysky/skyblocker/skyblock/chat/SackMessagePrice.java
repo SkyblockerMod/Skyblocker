@@ -147,7 +147,7 @@ public class SackMessagePrice {
 		return copy;
 	}
 
-	private static @Nullable String getNeuId(String itemName) {
+	public static @Nullable String getNeuId(String itemName) {
 		return NEURepoManager.getItemByName(itemName)
 				.stream()
 				.filter(Objects::nonNull)
@@ -159,16 +159,19 @@ public class SackMessagePrice {
 				});
 	}
 
-	private static ObjectArrayList<List<Component>> getHoverEventSiblings(Component text) {
+	public static ObjectArrayList<List<Component>> getHoverEventSiblings(Component text) {
 		ObjectArrayList<List<Component>> listList = new ObjectArrayList<>();
 		for (Component sibling : text.getSiblings()) {
-			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Component hoverText)
-					&& hoverText.getContents() instanceof LiteralContents(String rootContent) // Only match the root content since we only need the root content.
-					&& Strings.CS.startsWithAny(rootContent, "Added items:", "Removed items:")) {
+			if (sibling.getStyle().getHoverEvent() instanceof ShowText(Component hoverText) && isSackHover(hoverText)) {
 				listList.add(hoverText.getSiblings());
 			}
 		}
 		return listList;
+	}
+
+	public static boolean isSackHover(Component hoverText) {
+		// Only match the root content since we only need the root content.
+		return hoverText.getContents() instanceof LiteralContents(String rootContent) && Strings.CS.startsWithAny(rootContent, "Added items:", "Removed items:");
 	}
 
 	/**
@@ -177,7 +180,7 @@ public class SackMessagePrice {
 	 * @return A map of item names to their counts.
 	 */
 	@SuppressWarnings("ConstantValue") // It's much easier to read this way.
-	private static Object2IntArrayMap<String> parseItems(List<Component> texts) {
+	public static Object2IntArrayMap<String> parseItems(List<Component> texts) {
 		/*
 			The hover message's structure is as follows:
 			- Added items:
