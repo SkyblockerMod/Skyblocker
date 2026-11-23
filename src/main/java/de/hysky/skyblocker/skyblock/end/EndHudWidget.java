@@ -50,7 +50,7 @@ public class EndHudWidget extends ElementBasedWidget {
 	public void updateContent() {
 		// Zealots
 		if (showZealotKills) {
-			TheEnd.EndStats endStats = TheEnd.PROFILES_STATS.computeIfAbsent(TheEnd.EndStats.EMPTY);
+			TheEnd.EndStats endStats = TheEnd.getStats();
 			addElement(Elements.iconTextComponent(ENDERMAN_HEAD, Component.literal("Zealots").withStyle(ChatFormatting.BOLD)));
 			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsSinceLastEye", endStats.zealotsSinceLastEye())));
 			addElement(new PlainTextElement(Component.translatable("skyblocker.end.hud.zealotsTotalKills", Formatters.INTEGER_NUMBERS.format(endStats.totalZealotKills()))));
