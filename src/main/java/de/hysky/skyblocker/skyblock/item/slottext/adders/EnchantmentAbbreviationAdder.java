@@ -48,7 +48,6 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("caster", "CAT");
 		ENCHANTMENT_ABBREVIATIONS.put("cayenne", "CAY");
 		ENCHANTMENT_ABBREVIATIONS.put("champion", "CHM");
-		ENCHANTMENT_ABBREVIATIONS.put("chance", "CHN");
 		ENCHANTMENT_ABBREVIATIONS.put("charm", "CHR");
 		ENCHANTMENT_ABBREVIATIONS.put("cleave", "CL");
 		ENCHANTMENT_ABBREVIATIONS.put("compact", "COM");
@@ -62,7 +61,6 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("delicate", "DEL");
 
 		ENCHANTMENT_ABBREVIATIONS.put("depth_strider", "DS");
-		ENCHANTMENT_ABBREVIATIONS.put("divine_gift", "DG");
 		ENCHANTMENT_ABBREVIATIONS.put("dragon_hunter", "GV"); // Gravity
 
 		ENCHANTMENT_ABBREVIATIONS.put("efficiency", "EF");
@@ -101,8 +99,7 @@ public class EnchantmentAbbreviationAdder extends SimpleSlotTextAdder {
 		ENCHANTMENT_ABBREVIATIONS.put("lapidary", "LAP");
 		ENCHANTMENT_ABBREVIATIONS.put("lethality", "LE");
 		ENCHANTMENT_ABBREVIATIONS.put("life_steal", "LS");
-		ENCHANTMENT_ABBREVIATIONS.put("looting", "LO");
-		ENCHANTMENT_ABBREVIATIONS.put("luck", "LU");
+		ENCHANTMENT_ABBREVIATIONS.put("looting_new", "LO");
 		ENCHANTMENT_ABBREVIATIONS.put("luck_of_the_sea", "LTS");
 		ENCHANTMENT_ABBREVIATIONS.put("lure", "LR");
 
