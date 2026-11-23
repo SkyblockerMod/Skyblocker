@@ -4,12 +4,14 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.Items;
 
 import de.hysky.skyblocker.annotations.RegisterWidget;
+import de.hysky.skyblocker.skyblock.foraging.SweepOverlay;
 import de.hysky.skyblocker.skyblock.itemlist.ItemRepository;
 import de.hysky.skyblocker.skyblock.tabhud.util.Ico;
 import de.hysky.skyblocker.skyblock.tabhud.widget.ElementBasedWidget;
@@ -46,10 +48,13 @@ public class SweepDetailsHudWidget extends ElementBasedWidget {
 
 	@Override
 	public boolean shouldRender() {
+		Minecraft client = Minecraft.getInstance();
+		if (client.player == null || !SweepOverlay.isValidAxe(client.player.getMainHandItem())) return false;
+
 		// While in the hub only show in the forest and foraging camp
 		return (!Utils.getLocation().equals(Location.HUB) || Utils.getArea() == Area.Hub.FOREST || Utils.getArea() == Area.Hub.FORAGING_CAMP)
-			// While in the garden only show in unclean plots
-			&& (!Utils.getLocation().equals(Location.GARDEN) || Utils.STRING_SCOREBOARD.stream().anyMatch(s -> s.contains("Cleanup")));
+				// While in the garden only show in unclean plots
+				&& (!Utils.getLocation().equals(Location.GARDEN) || Utils.STRING_SCOREBOARD.stream().anyMatch(s -> s.contains("Cleanup")));
 	}
 
 	@Override
