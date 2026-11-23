@@ -186,6 +186,14 @@ public class HelperCategory {
 										newValue -> config.helpers.fishing.enableFishingHelper = newValue)
 								.controller(ConfigUtils.createBooleanController())
 								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("skyblocker.config.helpers.fishing.alertSoundVolume"))
+								.description(Component.translatable("skyblocker.config.helpers.fishing.alertSoundVolume.@Tooltip"))
+								.binding(defaults.helpers.fishing.alertSoundVolume,
+										() -> config.helpers.fishing.alertSoundVolume,
+										newValue -> config.helpers.fishing.alertSoundVolume = newValue)
+								.controller(IntegerController.createBuilder().range(0, 100).slider(10).build())
+								.build())
 						.option(Option.<Boolean>createBuilder()
 								.name(Component.translatable("skyblocker.config.helpers.fishing.hideOtherPlayers"))
 								.description(Component.translatable("skyblocker.config.helpers.fishing.hideOtherPlayers.@Tooltip"))
