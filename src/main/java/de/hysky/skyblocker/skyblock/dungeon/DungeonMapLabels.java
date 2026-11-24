@@ -27,7 +27,6 @@ import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonManager;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.DungeonMapUtils;
 import de.hysky.skyblocker.skyblock.dungeon.secrets.Room;
 import de.hysky.skyblocker.utils.FunUtils;
-import de.hysky.skyblocker.utils.Utils;
 import de.hysky.skyblocker.utils.render.GuiHelper;
 import de.hysky.skyblocker.utils.scheduler.Scheduler;
 
@@ -45,7 +44,7 @@ public class DungeonMapLabels {
 	}
 
 	private static boolean shouldProcess() {
-		return Utils.isInDungeons() && DungeonScore.isDungeonStarted() && !DungeonManager.isInBoss() && SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels;
+		return DungeonMap.shouldProcess() && SkyblockerConfigManager.get().dungeons.dungeonMap.showRoomLabels;
 	}
 
 	private static void clearLabels() {

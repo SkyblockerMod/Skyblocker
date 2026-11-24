@@ -19,6 +19,15 @@ public class DungeonEvents {
 	});
 
 	/**
+	 * Called immediately when the Dungeons run begins, the tab list will not have yet updated.
+	 */
+	public static final Event<DungeonStarted> DUNGEON_STARTED_EARLY = EventFactory.createArrayBacked(DungeonStarted.class, callbacks -> () -> {
+		for (DungeonStarted callback : callbacks) {
+			callback.onDungeonStarted();
+		}
+	});
+
+	/**
 	 * Called after the dungeons run starts and after the tab has changed to include additional information about the run such as each player's class.
 	 */
 	public static final Event<DungeonStarted> DUNGEON_STARTED = EventFactory.createArrayBacked(DungeonStarted.class, callbacks -> () -> {

@@ -844,11 +844,11 @@ public class DungeonManager {
 
 		// Dungeon Events
 
-		if (message.equals("[NPC] Mort: You should find it useful if you get lost.")) {
+		if (message.equals("[NPC] Mort: Here, I found this map when I first entered the dungeon.")) {
+			DungeonEvents.DUNGEON_STARTED_EARLY.invoker().onDungeonStarted();
+		} else if (message.equals("[NPC] Mort: You should find it useful if you get lost.")) {
 			DungeonEvents.DUNGEON_STARTED.invoker().onDungeonStarted();
-		}
-
-		if (TEAM_SCORE_PATTERN.matcher(message).matches()) {
+		} else if (TEAM_SCORE_PATTERN.matcher(message).matches()) {
 			DungeonEvents.DUNGEON_ENDED.invoker().onDungeonEnded();
 			reset();
 			// If the run ends during the clear, mark the run as ended so we don't spam the logs with finding Mort's armor stand.
@@ -1050,7 +1050,6 @@ public class DungeonManager {
 	 * go to the middle, then iterate downwards, and we should find the checkmark about a pixel or two down from there if the segment has the checkmark.
 	 *
 	 * @param onCheckmarkFound Called with the position the checkmark was found at, used for hiding map checkmarks to avoid duplicating code.
-	 *
 	 * @see Room#clearState
 	 */
 	public static int getRoomCheckmarkColour(MapItemSavedData mapState, Room room, @Nullable Consumer<Vector2ic> onCheckmarkFound) {
