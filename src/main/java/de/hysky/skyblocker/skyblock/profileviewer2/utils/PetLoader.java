@@ -119,8 +119,8 @@ public class PetLoader {
 			// Apply allXpCosts override
 			if (override.getPetExpCostModifierType() != null && override.getPetExpCostModifier() != null) {
 				switch (override.getPetExpCostModifierType()) {
-				case PetLevelingBehaviourOverride.PetExpModifierType.APPEND -> allXpCosts.addAll(override.getPetExpCostModifier());
-				case PetLevelingBehaviourOverride.PetExpModifierType.REPLACE -> allXpCosts = override.getPetExpCostModifier();
+					case PetLevelingBehaviourOverride.PetExpModifierType.APPEND -> allXpCosts.addAll(override.getPetExpCostModifier());
+					case PetLevelingBehaviourOverride.PetExpModifierType.REPLACE -> allXpCosts = override.getPetExpCostModifier();
 				}
 			}
 
@@ -305,13 +305,15 @@ public class PetLoader {
 	// TODO more gracefully fail since this will blow up all item loading
 	private static int getRarityIndex(SkyblockItemRarity rarity) {
 		return switch (rarity) {
-		case SkyblockItemRarity.COMMON -> 0;
-		case SkyblockItemRarity.UNCOMMON -> 1;
-		case SkyblockItemRarity.RARE -> 2;
-		case SkyblockItemRarity.EPIC -> 3;
-		case SkyblockItemRarity.LEGENDARY -> 4;
-		case SkyblockItemRarity.MYTHIC -> 5;
-		default -> throw new IllegalArgumentException(String.format("Rarity %s is not supported!", rarity));
+			case SkyblockItemRarity.COMMON -> 0;
+			case SkyblockItemRarity.UNCOMMON -> 1;
+			case SkyblockItemRarity.RARE -> 2;
+			case SkyblockItemRarity.EPIC -> 3;
+			case SkyblockItemRarity.LEGENDARY -> 4;
+			case SkyblockItemRarity.MYTHIC -> 5;
+			case SkyblockItemRarity.SPECIAL -> 7;
+			case SkyblockItemRarity.VERY_SPECIAL -> 8;
+			default -> throw new IllegalArgumentException(String.format("Rarity %s is not supported!", rarity));
 		};
 	}
 }

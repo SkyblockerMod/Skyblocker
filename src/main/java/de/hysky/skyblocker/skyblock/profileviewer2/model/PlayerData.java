@@ -19,7 +19,7 @@ public class PlayerData {
 	@SerializedName("last_death")
 	public long lastDeath;
 	@SerializedName("perks")
-	public Map<String, Integer> essencePerks = Map.of();
+	public Map<String, Object> essencePerks = Map.of();
 	@SerializedName("garden_chips")
 	public Map<String, Integer> gardenChips = Map.of();
 	@SerializedName("active_effects")
