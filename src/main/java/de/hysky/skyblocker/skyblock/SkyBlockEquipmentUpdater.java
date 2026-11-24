@@ -48,7 +48,7 @@ public class SkyBlockEquipmentUpdater extends SimpleContainerSolver {
 
 	@Override
 	public boolean isEnabled() {
-		return SkyblockerConfigManager.get().uiAndVisuals.showEquipmentInInventory;
+		return SkyblockerConfigManager.get().uiAndVisuals.skyblockInventoryScreen.showEquipmentInInventory;
 	}
 
 	public static final class EquipmentWardrobe extends SkyBlockEquipmentUpdater {
