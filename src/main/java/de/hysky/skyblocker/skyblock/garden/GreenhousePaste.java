@@ -1,5 +1,7 @@
 package de.hysky.skyblocker.skyblock.garden;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +31,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.LightCoordsUtil;
@@ -37,8 +40,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -70,6 +73,7 @@ public class GreenhousePaste {
 	private static final float PREVIEW_ALPHA = 0.6f;
 	private static final float PREVIEW_TINT = 0.4f;
 	private static final long BLOCK_CHANGE_RATE_LIMIT_MS = 150;
+	private static final int CACTUS_CROP_ID = 45;
 	/*
 		For normal greenhouse, the grid is 10x10. Each cell can be empty (0) or contain a crop (1-40).
 		For target greenhouse, the grid is also 10x10. Each cell can be ignored (-1) or empty (0) contain a crop (1-40).
@@ -361,25 +365,39 @@ public class GreenhousePaste {
 		for (int x = 0; x < 10; x++) {
 			for (int z = 0; z < 10; z++) {
 				BlockPos pos = new BlockPos(greenhouseCorner.getX() + x, 73, greenhouseCorner.getZ() + z);
-				int cropId = getCropIdAtPosition(CLIENT.level, pos);
+				int cropId = getCropIdAtPosition(pos);
 				greenhouse[x][z] = cropId;
 			}
 		}
 		adjustForSpecialCrops();
 	}
 
-	private static int getCropIdAtPosition(Level level, BlockPos pos) {
+	private static int getCropIdAtPosition(BlockPos pos) {
+		if (CLIENT.level == null) return 0;
+
 		// Scan a 1x5x1 column
 		AABB detectionBox = new AABB(
 				pos.getX(), pos.getY(), pos.getZ(),
 				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
 		);
 
-		// Determine crop ID based on the name of armor stand, should also detect non head crops
-		for (Entity entity : level.getEntities(null, detectionBox)) {
+		List<CropArmorStand> armorStands = new ArrayList<>();
+		for (Entity entity : CLIENT.level.getEntities(null, detectionBox)) {
 			if (!(entity instanceof ArmorStand armorStand)) continue;
 
 			ItemStack head = armorStand.getItemBySlot(EquipmentSlot.HEAD);
+			Rotations headPose = armorStand.getHeadPose();
+			armorStands.add(new CropArmorStand(head, headPose));
+		}
+		return getCropId(armorStands, CLIENT.level.getBlockState(pos.above()));
+	}
+	// To handle cactus specifically, since new cactus is head only and old ones overhang with same-name head (but different rotation)
+	record CropArmorStand(ItemStack head, Rotations headPose) {}
+
+	static int getCropId(Iterable<CropArmorStand> armorStands, BlockState state) {
+		// Determine crop ID based on the name of armor stand, should also detect non head crops
+		for (CropArmorStand armorStand : armorStands) {
+			ItemStack head = armorStand.head();
 			if (head.isEmpty()) continue;
 
 			Component nameComponent = head.getHoverName();
@@ -389,6 +407,9 @@ public class GreenhousePaste {
 
 			for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
 				if (name.contains(crop.armorStandName())) {
+					// Skip if overhanging cactus
+					Rotations headPose = armorStand.headPose();
+					if (crop.id() == CACTUS_CROP_ID && !(headPose.x() == 0.0f && headPose.y() == 0.0f && headPose.z() == 0.0f)) continue;
 					return crop.id();
 				}
 			}
@@ -404,8 +425,8 @@ public class GreenhousePaste {
 			return cropByTexture.id();
 		}
 
-		// If no armor stand found, fallback to checking block type (for non-head crops)
-		BlockState state = level.getBlockState(pos.above());
+		// If no armor stand matched, fall back to physical cactus (WILL HAPPEN, not technically a "fallback") and non-head crops
+		if (state.is(Blocks.CACTUS)) return CACTUS_CROP_ID;
 		Block block = state.getBlock();
 		for (GreenhouseCrops.Crop crop : GreenhouseCrops.CROP_ID_MAP.values()) {
 			if (!crop.isHead() && crop.cropBlock().equals(block)) {
@@ -417,20 +438,27 @@ public class GreenhousePaste {
 	}
 
 	private static void adjustForSpecialCrops() {
+		if (greenhouseCorner == null || CLIENT.level == null) return;
+
 		// Special handling for Plantboy (2x2 crop)
-		for (int x = 0; x < 9; x++) {
-			for (int z = 0; z < 9; z++) {
-				adjustForPlantBoy(x, z);
-				adjustForSnoozling(x, z);
-				adjustForGodseed(x, z);
+		int[][] before = new int[10][10]; // To avoid recursive addition of all cells
+
+		for (int x = 0; x < 10; x++) {
+			before[x] = greenhouse[x].clone();
+		}
+
+		for (int x = 0; x < 10; x++) {
+			for (int z = 0; z < 10; z++) {
+				adjustForPlantBoy(x, z, before);
+				adjustForSnoozling(x, z, before);
+				adjustForGodseed(x, z, before);
 			}
 		}
 	}
 
-	private static void adjustForPlantBoy(int x, int z) {
-		Objects.requireNonNull(greenhouseCorner);
-		Objects.requireNonNull(CLIENT.level);
-		if (greenhouse[x][z] != 26) return;
+	private static void adjustForPlantBoy(int x, int z, int[][] before) {
+		if (greenhouseCorner == null || CLIENT.level == null) return;
+		if (before[x][z] != 26) return;
 
 		BlockPos pos = greenhouseCorner.offset(x, 0, z);
 		AABB detectionBox = new AABB(
@@ -457,48 +485,114 @@ public class GreenhousePaste {
 		if (foundArmorStand == null) return;
 
 		// Strategy: since the plantboy is in the middle of the 2x2, we offset by a bit to get the bottom left corner
-		foundArmorStand.position().add(-0.2, 0, -0.2);
+		BlockPos bottomLeft = new BlockPos(
+				(int) Math.floor(foundArmorStand.getX() - 0.2),
+				(int) Math.floor(foundArmorStand.getY()),
+				(int) Math.floor(foundArmorStand.getZ() - 0.2)
+		);
+		int gx = bottomLeft.getX() - greenhouseCorner.getX();
+		int gz = bottomLeft.getZ() - greenhouseCorner.getZ();
+		if (gx < 0 || gx >= 9 || gz < 0 || gz >= 9) return;
 
-		BlockPos bottomLeft = new BlockPos((int) Math.floor(foundArmorStand.getX()), (int) Math.floor(foundArmorStand.getY()), (int) Math.floor(foundArmorStand.getZ()));
-
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ()] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX()][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
-		greenhouse[bottomLeft.getX() - greenhouseCorner.getX() + 1][bottomLeft.getZ() - greenhouseCorner.getZ() + 1] = 26;
+		greenhouse[gx][gz] = 26;
+		greenhouse[gx + 1][gz] = 26;
+		greenhouse[gx][gz + 1] = 26;
+		greenhouse[gx + 1][gz + 1] = 26;
 	}
 
-	private static void adjustForSnoozling(int x, int z) {
-		if (greenhouse[x][z] != 23) return;
-		try {
-			greenhouse[x-1][z] = 23;
-			greenhouse[x+1][z] = 23;
+	private static void adjustForSnoozling(int x, int z, int[][] before) {
+		if (before[x][z] != 23) return;
 
-			greenhouse[x-1][z-1] = 23;
-			greenhouse[x][z-1] = 23;
-			greenhouse[x+1][z-1] = 23;
+		ArmorStand flower = findSnoozlingFlowerAt(x, z);
+		if (flower == null) return;
+		int rotation = Math.round(flower.getYRot() / 90.0f);
 
-			greenhouse[x-1][z-2] = 23;
-			greenhouse[x][z-2] = 23;
-			greenhouse[x+1][z-2] = 23;
+		int forwardX;
+		int forwardZ;
+		switch (rotation) {
+			case 0 -> { // yaw 0: body toward -Z
+				forwardX = 0;
+				forwardZ = -1;
+			}
+			case 1 -> { // yaw +90: body toward +X
+				forwardX = 1;
+				forwardZ = 0;
+			}
+			case -1 -> { // yaw -90: body toward -X
+				forwardX = -1;
+				forwardZ = 0;
+			}
+			default -> { // yaw +-180: body toward +Z
+				forwardX = 0;
+				forwardZ = 1;
+			}
 		}
-		catch (ArrayIndexOutOfBoundsException _) { }
+
+		// A rotation matrix [[0,-1],[1,0]], makes next step easier
+		int sideX = -forwardZ;
+		int sideZ = forwardX;
+
+
+		// 		[l] [h] [l]		 | depth
+		// 		[l] [l] [l]		 V     side
+		// 		[l] [l] [l] 		  <---->
+		for (int depth = 0; depth < 3; depth++) {
+			for (int side = -1; side <= 1; side++) {
+				int gx = x + depth * forwardX + side * sideX;
+				int gz = z + depth * forwardZ + side * sideZ;
+
+				if (gx >= 0 && gx < 10 && gz >= 0 && gz < 10) {
+					greenhouse[gx][gz] = 23;
+				}
+			}
+		}
 	}
 
-	private static void adjustForGodseed(int x, int z) {
-		if (greenhouse[x][z] != 37) return;
-		try {
-			greenhouse[x-1][z] = 37;
-			greenhouse[x+1][z] = 37;
+	private static @Nullable ArmorStand findSnoozlingFlowerAt(int x, int z) {
+		if (greenhouseCorner == null) return null;
+		if (CLIENT.level == null) return null;
 
-			greenhouse[x-1][z-1] = 37;
-			greenhouse[x][z-1] = 37;
-			greenhouse[x+1][z-1] = 37;
+		BlockPos pos = greenhouseCorner.offset(x, 0, z);
 
-			greenhouse[x-1][z+1] = 37;
-			greenhouse[x][z+1] = 37;
-			greenhouse[x+1][z+1] = 37;
+		AABB box = new AABB(
+				pos.getX(), pos.getY() - 1, pos.getZ(),
+				pos.getX() + 1, pos.getY() + 6, pos.getZ() + 1
+		);
+
+		for (Entity entity : CLIENT.level.getEntities(null, box)) {
+			if (!(entity instanceof ArmorStand stand)) continue;
+
+			// Snoozling has rotated armor stands, which might catch (2+ cells per snoozling)
+			if (Math.floor(stand.getX()) != pos.getX()
+					|| Math.floor(stand.getZ()) != pos.getZ()) {
+				continue;
+			}
+			ItemStack head = stand.getItemBySlot(EquipmentSlot.HEAD);
+			if (head.isEmpty()) continue;
+
+			if (head.getHoverName().getString().startsWith("snoozlingFlower")) {
+				return stand;
+			}
 		}
-		catch (ArrayIndexOutOfBoundsException _) { }
+
+		return null;
+	}
+
+	private static void adjustForGodseed(int x, int z, int[][] before) {
+		if (before[x][z] != 37) return;
+		if (x < 1 || x >= 9 || z < 1 || z >= 9) return;
+
+		// 3x3 Ring
+		greenhouse[x-1][z] = 37;
+		greenhouse[x+1][z] = 37;
+
+		greenhouse[x-1][z-1] = 37;
+		greenhouse[x][z-1] = 37;
+		greenhouse[x+1][z-1] = 37;
+
+		greenhouse[x-1][z+1] = 37;
+		greenhouse[x][z+1] = 37;
+		greenhouse[x+1][z+1] = 37;
 	}
 
 	/**
