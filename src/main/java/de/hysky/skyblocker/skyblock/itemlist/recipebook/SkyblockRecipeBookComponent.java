@@ -29,6 +29,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 import de.hysky.skyblocker.mixins.accessors.RecipeBookComponentAccessor;
+import de.hysky.skyblocker.skyblock.itemlist.recipebook.events.UpcomingEventsTab;
 import de.hysky.skyblocker.utils.FunUtils;
 import de.hysky.skyblocker.utils.render.gui.CyclingTextureWidget;
 
@@ -65,6 +66,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 		super.init(parentWidth, parentHeight, client, narrow);
 	}
 
+	@SuppressWarnings("ConstantValue")
 	@Override
 	protected void initVisuals() {
 		this.xOffset = this.widthTooNarrow ? 0 : OFFSET_X_POSITION;
@@ -110,11 +112,9 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 			this.currentTab = this.tabButtons.stream()
 					.filter(button -> button.first().equals(this.currentTab.first()))
 					.findFirst()
-					.orElse(null);
-		}
-
-		// If there is no current tab, set it to the first one
-		if (this.currentTab == null) {
+					.orElse(tabButtons.getFirst());
+		} else {
+			// If there is no current tab, set it to the first one
 			this.currentTab = this.tabButtons.getFirst();
 		}
 
@@ -148,16 +148,20 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 		}
 	}
 
+	private boolean isNotSpectator() {
+		return this.minecraft.player == null || !this.minecraft.player.isSpectator();
+	}
+
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
-		if (this.isVisible() && !this.minecraft.player.isSpectator()) {
+		if (this.isVisible() && isNotSpectator()) {
 			if (this.currentTab.left().mouseClicked(click, doubled)) {
 				return true;
 			} else {
 				for (Pair<RecipeTab, SkyblockRecipeTabButton> tabButton : this.tabButtons) {
 					if (tabButton.right().mouseClicked(click, doubled)) {
 						if (this.currentTab != tabButton) {
-							if (this.currentTab != null) this.currentTab.right().unselect();
+							this.currentTab.right().unselect();
 
 							this.currentTab = tabButton;
 							this.currentTab.right().select();
@@ -173,9 +177,33 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	}
 
 	@Override
+	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+		if (this.isVisible() && isNotSpectator()) {
+			return this.currentTab.left().mouseScrolled(x, y, scrollX, scrollY);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+		if (this.isVisible() && isNotSpectator()) {
+			return this.currentTab.left().mouseDragged(event, dx, dy);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent event) {
+		if (this.isVisible() && isNotSpectator()) {
+			return this.currentTab.left().mouseReleased(event);
+		}
+		return false;
+	}
+
+	@Override
 	public boolean keyPressed(KeyEvent input) {
 		var client = Minecraft.getInstance();
-		if (client.isWindowActive() && currentTab != null) {
+		if (isVisible() && client.isWindowActive()) {
 			var mouse = client.mouseHandler;
 			var window = client.getWindow();
 			var mouseX = (mouse.xpos() * ((double) window.getGuiScaledWidth() / (double) window.getScreenWidth()));
@@ -249,7 +277,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 
 	/**
 	 * Sets the "Toggle Craftable" Button texture.
-	 *
+	 * <p>
 	 * No-op as we don't use the button.
 	 */
 	@Override
@@ -276,7 +304,7 @@ public class SkyblockRecipeBookComponent extends RecipeBookComponent<NoopRecipeB
 	 */
 	@Override
 	protected Component getRecipeFilterName() {
-		return null;
+		return Component.empty();
 	}
 
 	/**

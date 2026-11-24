@@ -6,6 +6,7 @@
 	"client": [
 		"AbstractContainerMenuMixin",
 		"AbstractContainerScreenMixin",
+		"AbstractRecipeBookScreenMixin",
 		"AbstractSignEditScreenMixin",
 		"BatMixin",
 		"BossHealthOverlayMixin",
