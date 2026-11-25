@@ -72,9 +72,10 @@ public class GuiHelper {
 
 	/**
 	 * Extracts shape with given vertices. Note the vertices must be in the right or for this to work properly this function does not sort them for you.
+	 *
 	 * @param graphics gui graphics extractor
 	 * @param vertices vertices of shape
-	 * @param color color of shape
+	 * @param color    color of shape
 	 */
 	public static void customShape(GuiGraphicsExtractor graphics, List<Vector2f> vertices, int color) {
 		graphics.guiRenderState.addGuiElement(new GuiCustomShapeRenderState(RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(graphics.pose()), vertices, color, graphics.scissorStack.peek()));
@@ -135,6 +136,10 @@ public class GuiHelper {
 		int vertexColour = ARGB.color(radius, 255, 255);
 
 		((GuiGraphicsExtractorInvoker) graphics).invokeInnerFill(SkyblockerRenderPipelines.BLURRED_RECTANGLE, TextureSetup.singleTexture(blitTextureView, sampler), x0, y0, x1, y1, vertexColour, null);
+	}
+
+	public static void onWindowResize() {
+		blitIndexForFrame = -1;
 	}
 
 	public static void updateScreenBlitTexture() {

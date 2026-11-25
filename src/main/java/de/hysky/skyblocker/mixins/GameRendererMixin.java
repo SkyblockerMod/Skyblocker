@@ -36,4 +36,9 @@ public class GameRendererMixin {
 	private void skyblocker$onRenderGui(CallbackInfo ci) {
 		GuiHelper.updateScreenBlitTexture();
 	}
+
+	@Inject(method = "resize", at = @At("TAIL"))
+	private void skyblocker$resize(CallbackInfo ci) {
+		GuiHelper.onWindowResize();
+	}
 }
