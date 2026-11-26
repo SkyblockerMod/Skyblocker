@@ -103,7 +103,7 @@ public class RareDropSpecialEffects {
 		if ("NONE".equals(itemId)) return null;
 		FlexibleItemStack stack = ItemRepository.getItemStack(itemId);
 		if (stack == null) {
-			LOGGER.warn("Couldn't find item '{}' (id: '{}'). NEU Repo Files imported: {}", itemName, itemId, ItemRepository.filesImported());
+			LOGGER.warn("[Skyblocker Special Effects] Couldn't find item '{}' (id: '{}'). NEU Repo Files imported: {}", itemName, itemId, ItemRepository.filesImported());
 		}
 
 		return stack;
