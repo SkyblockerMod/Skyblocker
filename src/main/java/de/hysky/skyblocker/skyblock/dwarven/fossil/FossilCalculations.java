@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ public class FossilCalculations {
 	 */
 	protected static int minimumTiles;
 
-	protected static String fossilName;
+	protected static @Nullable String fossilName;
 
 	/**
 	 * Returns an array of how likely a slot is to contain a fossil assuming one has to exist
