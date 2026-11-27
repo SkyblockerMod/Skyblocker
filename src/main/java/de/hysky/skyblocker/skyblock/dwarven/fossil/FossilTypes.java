@@ -6,13 +6,13 @@ import java.util.List;
  * All the possible fossils and there transformations
  */
 public enum FossilTypes {
-	CLAW(new Structures.TileState[][]{
+	/*CLAW(new Structures.TileState[][]{
 			{Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY},
 			{Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY},
 			{Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY},
 			{Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY}
-	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.FLIP_ROTATED_90, Structures.TransformationOptions.FLIP_ROTATED_180), "7.7", 13, "Claw"),
+	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.FLIP_ROTATED_90, Structures.TransformationOptions.FLIP_ROTATED_180), "7.7", 13, "Claw"),*/
 	TUSK(new Structures.TileState[][]{
 			{Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
@@ -26,12 +26,12 @@ public enum FossilTypes {
 			{Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL},
 			{Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.EMPTY}
 	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_90, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.ROTATED_270), "6.2", 16, "Ugly"),
-	HELIX(new Structures.TileState[][]{
+	/*HELIX(new Structures.TileState[][]{
 			{Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL, Structures.TileState.FOSSIL}
-	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_90, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.FLIP_ROTATED_270), "7.1", 14, "Helix"),
+	}, List.of(Structures.TransformationOptions.ROTATED_0, Structures.TransformationOptions.ROTATED_90, Structures.TransformationOptions.ROTATED_180, Structures.TransformationOptions.FLIP_ROTATED_270), "7.1", 14, "Helix"),*/
 	WEBBED(new Structures.TileState[][]{
 			{Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.EMPTY},
 			{Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL, Structures.TileState.EMPTY, Structures.TileState.EMPTY, Structures.TileState.FOSSIL},
