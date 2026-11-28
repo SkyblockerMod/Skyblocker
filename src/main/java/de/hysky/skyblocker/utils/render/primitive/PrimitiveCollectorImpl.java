@@ -405,11 +405,11 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 
 		if (!this.textStates.isEmpty()) {
 			// TODO use canRenderAsSolid to determine phase?
-			this.submitTextStates(submitNodeCollector, SubmitRenderPhases.TEXTS);
+			this.submitTextStates(this.textStates, submitNodeCollector, SubmitRenderPhases.TEXTS);
 		}
 
 		if (!this.textThroughWallsStates.isEmpty()) {
-			this.submitTextStates(submitNodeCollector, SubmitRenderPhases.ALWAYS_ON_TOP);
+			this.submitTextStates(this.textThroughWallsStates, submitNodeCollector, SubmitRenderPhases.ALWAYS_ON_TOP);
 		}
 
 		if (!this.cylinderStates.isEmpty()) {
@@ -429,8 +429,8 @@ public final class PrimitiveCollectorImpl implements PrimitiveCollector {
 		}
 	}
 
-	private void submitTextStates(SubmitNodeCollector submitNodeCollector, SubmitRenderPhase<SubmitNode> phase) {
-		for (TextRenderState state : this.textStates) {
+	private void submitTextStates(List<TextRenderState> states, SubmitNodeCollector submitNodeCollector, SubmitRenderPhase<SubmitNode> phase) {
+		for (TextRenderState state : states) {
 			TextFeatureRenderer.Content content = new TextFeatureRenderer.Content.Text(state.xOffset(), state.yOffset(), state.text(), false, CommonColors.WHITE, 0, 0);
 			TextFeatureRenderer.Submit submit = new TextFeatureRenderer.Submit(state.matrix(), Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT, content);
 
